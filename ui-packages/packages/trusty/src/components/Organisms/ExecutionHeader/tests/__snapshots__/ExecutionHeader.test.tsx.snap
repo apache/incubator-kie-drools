@@ -3,6 +3,7 @@
 exports[`ExecutionHeader renders a loading animation while fetching data 1`] = `
 <section
   className="execution-header"
+  data-ouia-component-id="execution-header"
 >
   <Flex>
     <FlexItem>
@@ -28,10 +29,12 @@ exports[`ExecutionHeader renders a loading animation while fetching data 1`] = `
 exports[`ExecutionHeader renders the execution info 1`] = `
 <section
   className="execution-header"
+  data-ouia-component-id="execution-header"
 >
   <Flex>
     <FlexItem>
       <Title
+        data-ouia-component-id="title"
         headingLevel="h2"
         size="3xl"
       >
@@ -75,6 +78,7 @@ exports[`ExecutionHeader renders the execution info 1`] = `
       >
         <div>
           <ExecutionStatus
+            ouiaId="status"
             result="success"
           />
         </div>

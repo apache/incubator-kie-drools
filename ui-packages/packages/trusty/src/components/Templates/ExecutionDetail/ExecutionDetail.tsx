@@ -41,6 +41,7 @@ const ExecutionDetail = (props: ExecutionDetailProps) => {
                 outcomes={outcomes.data}
                 onExplanationClick={goToExplanation}
                 listView
+                ouiaId="outcomes-gallery"
               />
             )}
           </StackItem>

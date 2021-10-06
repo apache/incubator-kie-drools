@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
+import {
+  IRow,
+  Table,
+  TableBody,
+  TableHeader,
+  Tr
+} from '@patternfly/react-table';
 import {
   Bullseye,
   EmptyState,
@@ -24,7 +30,7 @@ type ExecutionTableProps = {
   data: RemoteData<Error, Executions>;
 };
 
-const ExecutionTable = (props: ExecutionTableProps) => {
+const ExecutionTable: React.FC<ExecutionTableProps> = props => {
   const { data } = props;
   const columns = ['ID', 'Description', 'Executor', 'Date', 'Execution Status'];
   const [rows, setRows] = useState<IRow[]>(prepareRows(columns.length, data));
@@ -33,10 +39,23 @@ const ExecutionTable = (props: ExecutionTableProps) => {
     setRows(prepareRows(columns.length, data));
   }, [data, columns.length]);
 
+  const customRowWrapper = ({ row, rowProps, ...props }) => {
+    const [rowKey, rowIndex] = rowProps;
+    return (
+      <Tr
+        ouiaId={row.ouiaId}
+        data-key={rowKey} //The "Tr" element does not know "rowKey". When this row is missing then Chrome's console contains Warning.
+        data-index={rowIndex} //The "Tr" element does not know "rowIndex". When this row is missing then Chrome's console contains Warning.
+        {...props} //rows disappear when "props" is missing
+      />
+    );
+  };
+
   return (
     <Table
       cells={columns}
       rows={rows}
+      rowWrapper={customRowWrapper}
       aria-label="Executions list"
       ouiaId="exec-table"
     >
@@ -73,6 +92,7 @@ const prepareRows = (
 const prepareExecutionsRows = (rowData: Execution[]) => {
   return rowData.map(item => ({
     executionKey: 'key-' + item.executionId,
+    ouiaId: item.executionId,
     cells: [
       {
         title: (
@@ -80,6 +100,8 @@ const prepareExecutionsRows = (rowData: Execution[]) => {
             to={`/audit/${item.executionType.toLocaleLowerCase()}/${
               item.executionId
             }`}
+            data-ouia-component-id="show-detail"
+            data-ouia-component-type="link"
           >
             <ExecutionId id={item.executionId} />
           </Link>
@@ -92,6 +114,7 @@ const prepareExecutionsRows = (rowData: Execution[]) => {
         title: (
           <ExecutionStatus
             result={item.executionSucceeded ? 'success' : 'failure'}
+            ouiaId="status"
           />
         )
       }

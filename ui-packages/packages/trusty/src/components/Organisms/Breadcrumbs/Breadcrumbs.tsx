@@ -52,17 +52,26 @@ const routes = [
     breadcrumb: 'Outcomes Details'
   },
   // the following route is needed to display a dedicated breadcrumb path for executions with only 1 outcome
-  { path: '/audit/:executionType/:id/single-outcome', breadcrumb: 'Outcome' },
+  {
+    path: '/audit/:executionType/:id/single-outcome',
+    breadcrumb: 'Outcome'
+  },
   {
     path: '/audit/:executionType/:id/model-lookup',
     breadcrumb: 'Model Lookup'
   },
-  { path: '/audit/:executionType/:id/input-data', breadcrumb: 'Input Data' },
+  {
+    path: '/audit/:executionType/:id/input-data',
+    breadcrumb: 'Input Data'
+  },
   {
     path: '/audit/:executionType/:id/counterfactual-analysis',
     breadcrumb: 'Counterfactual Analysis'
   },
-  { path: '/audit/:executionType/:id', breadcrumb: AuditDetailBreadcrumb }
+  {
+    path: '/audit/:executionType/:id',
+    breadcrumb: AuditDetailBreadcrumb
+  }
 ];
 
 const excludePaths = ['/', '/audit/:executionType'];

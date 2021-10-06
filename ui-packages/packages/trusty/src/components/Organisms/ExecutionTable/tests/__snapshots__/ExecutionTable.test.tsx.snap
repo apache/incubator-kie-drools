@@ -27,12 +27,15 @@ exports[`Execution table renders a list of executions 1`] = `
   ouiaSafe={true}
   role="grid"
   rowLabeledBy="simple-node"
+  rowWrapper={[Function]}
   rows={
     Array [
       Object {
         "cells": Array [
           Object {
             "title": <Link
+              data-ouia-component-id="show-detail"
+              data-ouia-component-type="link"
               to="/audit/decision/b2b0ed8d-c1e2-46b5-ad4f-3ac54ff4beae"
             >
               <ExecutionId
@@ -49,16 +52,20 @@ exports[`Execution table renders a list of executions 1`] = `
           },
           Object {
             "title": <ExecutionStatus
+              ouiaId="status"
               result="success"
             />,
           },
         ],
         "executionKey": "key-b2b0ed8d-c1e2-46b5-ad4f-3ac54ff4beae",
+        "ouiaId": "b2b0ed8d-c1e2-46b5-ad4f-3ac54ff4beae",
       },
       Object {
         "cells": Array [
           Object {
             "title": <Link
+              data-ouia-component-id="show-detail"
+              data-ouia-component-type="link"
               to="/audit/decision/b2b0ed8d-c1e2-46b5-ad4f-3hd83kidi4u74"
             >
               <ExecutionId
@@ -75,11 +82,13 @@ exports[`Execution table renders a list of executions 1`] = `
           },
           Object {
             "title": <ExecutionStatus
+              ouiaId="status"
               result="success"
             />,
           },
         ],
         "executionKey": "key-b2b0ed8d-c1e2-46b5-ad4f-3hd83kidi4u74",
+        "ouiaId": "b2b0ed8d-c1e2-46b5-ad4f-3hd83kidi4u74",
       },
     ]
   }
@@ -120,6 +129,7 @@ exports[`Execution table renders a loading error message when data loading fails
   ouiaSafe={true}
   role="grid"
   rowLabeledBy="simple-node"
+  rowWrapper={[Function]}
   rows={
     Array [
       Object {
@@ -189,6 +199,7 @@ exports[`Execution table renders loading skeletons when the data is loading 1`] 
   ouiaSafe={true}
   role="grid"
   rowLabeledBy="simple-node"
+  rowWrapper={[Function]}
   rows={
     Array [
       Object {
@@ -530,6 +541,7 @@ exports[`Execution table renders loading skeletons when the data is not yet fetc
   ouiaSafe={true}
   role="grid"
   rowLabeledBy="simple-node"
+  rowWrapper={[Function]}
   rows={
     Array [
       Object {
@@ -871,6 +883,7 @@ exports[`Execution table renders no result message if no executions are found 1`
   ouiaSafe={true}
   role="grid"
   rowLabeledBy="simple-node"
+  rowWrapper={[Function]}
   rows={
     Array [
       Object {

@@ -6,6 +6,7 @@ import FormattedDate from '../../Atoms/FormattedDate/FormattedDate';
 import ExecutionId from '../../Atoms/ExecutionId/ExecutionId';
 import { RemoteData, Execution, RemoteDataStatus } from '../../../types';
 import './ExecutionHeader.scss';
+import { attributeOuiaId } from '@kogito-apps/ouia-tools';
 
 type ExecutionHeaderProps = {
   execution: RemoteData<Error, Execution>;
@@ -15,7 +16,10 @@ const ExecutionHeader = (props: ExecutionHeaderProps) => {
   const { execution } = props;
 
   return (
-    <section className="execution-header">
+    <section
+      className="execution-header"
+      {...attributeOuiaId('execution-header')}
+    >
       <Flex>
         <FlexItem>
           {execution.status === RemoteDataStatus.LOADING && (
@@ -30,7 +34,7 @@ const ExecutionHeader = (props: ExecutionHeaderProps) => {
             />
           )}
           {execution.status === RemoteDataStatus.SUCCESS && (
-            <Title size="3xl" headingLevel="h2">
+            <Title size="3xl" headingLevel="h2" {...attributeOuiaId('title')}>
               <span className="execution-header__uuid">
                 Execution <ExecutionId id={execution.data.executionId} />
               </span>
@@ -67,6 +71,7 @@ const ExecutionHeader = (props: ExecutionHeaderProps) => {
                   result={
                     execution.data.executionSucceeded ? 'success' : 'failure'
                   }
+                  ouiaId="status"
                 />
               </div>
             </Tooltip>

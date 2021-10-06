@@ -81,12 +81,17 @@ const AuditDetail = () => {
           </div>
         )}
         {thirdLevelNav.length > 0 && (
-          <Nav className="audit-detail__nav" variant="tertiary">
+          <Nav
+            className="audit-detail__nav"
+            variant="tertiary"
+            ouiaId="nav-audit-detail"
+          >
             <NavList>
               {thirdLevelNav.map((item, index) => (
                 <NavItem
                   key={`sub-nav-${index}`}
                   isActive={location.pathname === url + item.url}
+                  ouiaId={item.url.substr(1)}
                 >
                   <Link to={url + item.url}>{item.desc}</Link>
                 </NavItem>

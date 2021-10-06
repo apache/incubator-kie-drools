@@ -43,7 +43,9 @@
   },
   "devDependencies": {
     "faker": "^4.1.0",
-    "json-server": "^0.16.1"
+    "json-server": "^0.16.1",
+    "@kogito-apps/cypress-ouia": "^1.0.0",
+    "@kogito-apps/ouia-tools": "^1.0.0"
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",

@@ -60,8 +60,9 @@ describe('Basic Elements', () => {
   });
 
   it('Decision result is available', () => {
-    cy.ouiaId('exec-table').find("tr>td>a:contains('6603c574')", {
-      timeout: 5000
-    });
+    cy.ouiaId('exec-table')
+      .ouiaId('6603c574-739f-426b-963a-a0741e0e7272', 'PF4/TableRow')
+      .ouiaId('show-detail', 'link')
+      .should('be.visible');
   });
 });
