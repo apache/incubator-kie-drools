@@ -66,12 +66,13 @@ public class KiePMMLScorecardModel extends KiePMMLModel {
         if (localTransformations != null) {
             derivedFields.addAll(localTransformations.getDerivedFields());
         }
+        outputFieldsMap.clear();
         return characteristics.evaluate(defineFunctions, derivedFields, kiePMMLOutputFields, requestData,
-                                        outputFieldsMap,
-                                        initialScore,
-                                        reasonCodeAlgorithm,
-                                        useReasonCodes,
-                                        baselineScore).orElse(null);
+                                                   outputFieldsMap,
+                                                             initialScore,
+                                                             reasonCodeAlgorithm,
+                                                             useReasonCodes,
+                                                             baselineScore).orElse(null);
     }
 
     @Override

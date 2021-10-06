@@ -49,6 +49,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDroolsModel.class);
 
     private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
+    private static final long serialVersionUID = 5471400949048174357L;
 
     /**
      * Map between the original field name and the generated type.
@@ -75,6 +76,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         String fullClassName = this.getClass().getName();
         String packageName = fullClassName.contains(".") ?
                 fullClassName.substring(0, fullClassName.lastIndexOf('.')) : "";
+        outputFieldsMap.clear();
         KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase) knowledgeBase, name, packageName,
                                                                           toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
