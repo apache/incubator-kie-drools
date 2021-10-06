@@ -139,7 +139,7 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
     }
 
     public void setOutMappings(Map<String, String> outMapping) {
-        this.outMapping = new LinkedList<DataAssociation>();
+        this.outMapping = new LinkedList<>();
         for (Map.Entry<String, String> entry : outMapping.entrySet()) {
             addOutMapping(entry.getKey(), entry.getValue());
         }

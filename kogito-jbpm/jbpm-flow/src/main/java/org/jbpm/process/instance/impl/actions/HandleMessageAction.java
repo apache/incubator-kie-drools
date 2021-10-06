@@ -20,10 +20,9 @@ import java.io.Serializable;
 import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.util.VariableUtil;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.node.Transformation;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 
@@ -57,10 +56,10 @@ public class HandleMessageAction implements Action, Serializable {
 
         KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setName("Send Task");
-        workItem.setNodeInstanceId(((KogitoNodeInstance) context.getNodeInstance()).getStringId());
-        workItem.setProcessInstanceId(((KogitoProcessInstance) context.getProcessInstance()).getStringId());
+        workItem.setNodeInstanceId((context.getNodeInstance()).getStringId());
+        workItem.setProcessInstanceId((context.getProcessInstance()).getStringId());
         workItem.setNodeId(context.getNodeInstance().getNodeId());
-        workItem.setParameter("MessageType", messageType);
+        workItem.setParameter(Metadata.MESSAGE_TYPE, messageType);
         if (variable != null) {
             workItem.setParameter("Message", variable);
         }

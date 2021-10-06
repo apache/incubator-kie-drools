@@ -80,4 +80,13 @@ public class DataAssociation implements Serializable {
         //		this.transformation = transformation;
     }
 
+    @Override
+    public String toString() {
+        return "DataAssociation{" +
+                "sources=" + sources +
+                ", target='" + target + '\'' +
+                ", assignments=" + assignments +
+                ", transformation=" + transformation +
+                '}';
+    }
 }

@@ -62,7 +62,7 @@
     <bpmn2:intermediateCatchEvent id="_527AF0A7-D741-4062-9953-A05E51479C80" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Wait">
       <bpmn2:incoming>_FC65D278-C001-494C-BF47-15EB14E981C3</bpmn2:incoming>
       <bpmn2:outgoing>_A9188FF9-49B0-44A3-9FCF-A87F0CD21D06</bpmn2:outgoing>
-      <bpmn2:dataOutput id="_527AF0A7-D741-4062-9953-A05E51479C80_data" name="data"/>
+      <bpmn2:dataOutput id="_527AF0A7-D741-4062-9953-A05E51479C80_data" name="data" drools:dtype="String" />
       <bpmn2:dataOutputAssociation id="_ohT0ewL6EeWCZM-6YanbhA">
         <bpmn2:sourceRef>_527AF0A7-D741-4062-9953-A05E51479C80_data</bpmn2:sourceRef>
         <bpmn2:targetRef>input</bpmn2:targetRef>
@@ -81,7 +81,7 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>_49C18474-CC32-4B7B-B492-C3B7D22AABF1</bpmn2:incoming>
       <bpmn2:outgoing>_7187346B-B1AE-441E-9A83-A580A567A1F8</bpmn2:outgoing>
-      <bpmn2:dataInput id="_F07DFF08-E72B-4694-A24A-807A69F13615_dataInputX" drools:dtype="Object" name="data"/>
+      <bpmn2:dataInput id="_F07DFF08-E72B-4694-A24A-807A69F13615_dataInputX" drools:dtype="String" name="data"/>
       <bpmn2:dataInputAssociation id="_ohT0fgL6EeWCZM-6YanbhA">
         <bpmn2:sourceRef>output</bpmn2:sourceRef>
         <bpmn2:targetRef>_F07DFF08-E72B-4694-A24A-807A69F13615_dataInputX</bpmn2:targetRef>

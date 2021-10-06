@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
+import java.util.Objects;
 
 import org.jbpm.process.core.TypeObject;
 import org.jbpm.process.core.datatype.DataType;
@@ -70,5 +71,25 @@ public class ListDataType extends ObjectDataType implements TypeObject {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ListDataType that = (ListDataType) o;
+        return Objects.equals(dataType, that.dataType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), dataType);
     }
 }

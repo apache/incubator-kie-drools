@@ -24,9 +24,7 @@ import org.jbpm.process.core.datatype.DataType;
 /**
  * Representation of an integer datatype.
  */
-public class IntegerDataType
-        implements
-        DataType {
+public class IntegerDataType implements DataType {
 
     private static final long serialVersionUID = 510l;
 
@@ -47,7 +45,7 @@ public class IntegerDataType
     }
 
     public Object readValue(String value) {
-        return new Integer(value);
+        return Integer.valueOf(value);
     }
 
     public String writeValue(Object value) {

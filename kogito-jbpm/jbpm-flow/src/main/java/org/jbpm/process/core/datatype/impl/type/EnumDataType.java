@@ -21,6 +21,7 @@ import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jbpm.process.core.datatype.DataType;
 
@@ -127,5 +128,22 @@ public class EnumDataType implements DataType {
 
         }
         return this.valueMap;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        EnumDataType that = (EnumDataType) o;
+        return Objects.equals(className, that.className);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(className);
     }
 }

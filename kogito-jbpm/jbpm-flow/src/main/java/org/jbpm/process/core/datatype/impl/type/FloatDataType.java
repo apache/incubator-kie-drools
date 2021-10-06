@@ -24,9 +24,7 @@ import org.jbpm.process.core.datatype.DataType;
 /**
  * Representation of a float datatype.
  */
-public final class FloatDataType
-        implements
-        DataType {
+public final class FloatDataType implements DataType {
 
     private static final long serialVersionUID = 510l;
 
@@ -47,7 +45,7 @@ public final class FloatDataType
     }
 
     public Object readValue(String value) {
-        return new Float(value);
+        return Float.valueOf(value);
     }
 
     public String writeValue(Object value) {
@@ -58,4 +56,5 @@ public final class FloatDataType
     public String getStringType() {
         return "java.lang.Float";
     }
+
 }

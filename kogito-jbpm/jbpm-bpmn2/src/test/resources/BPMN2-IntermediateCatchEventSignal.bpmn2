@@ -41,7 +41,7 @@
       </dataInputAssociation>
     </userTask>
     <intermediateCatchEvent id="_4" name="event" >
-      <dataOutput id="_4_Output" name="event" />
+      <dataOutput id="_4_Output" name="event" dtype="String" />
       <dataOutputAssociation>
       <sourceRef>_4_Output</sourceRef>
       <targetRef>x</targetRef>

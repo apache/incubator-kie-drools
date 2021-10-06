@@ -48,7 +48,7 @@ public class Trigger implements Mappable, Serializable {
     public Map<String, String> getInMappings() {
         Map<String, String> in = new HashMap<String, String>();
         for (DataAssociation a : inMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().size() == 0) && a.getTransformation() == null) {
+            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
                 in.put(a.getSources().get(0), a.getTarget());
             }
         }

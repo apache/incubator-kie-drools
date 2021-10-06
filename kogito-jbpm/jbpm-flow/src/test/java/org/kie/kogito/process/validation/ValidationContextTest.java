@@ -35,7 +35,7 @@ class ValidationContextTest {
     private RuntimeException exception;
 
     @BeforeEach
-    private void init() {
+    void init() {
         tested = ValidationContext.get();
         error = createError();
         error2 = createError();

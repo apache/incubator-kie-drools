@@ -62,7 +62,7 @@
     <bpmn2:intermediateCatchEvent id="_527AF0A7-D741-4062-9953-A05E51479C80" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Wait">
       <bpmn2:incoming>_FC65D278-C001-494C-BF47-15EB14E981C3</bpmn2:incoming>
       <bpmn2:outgoing>_4880BA4A-56DA-40E7-AB29-51EDE28BA239</bpmn2:outgoing>
-      <bpmn2:dataOutput id="_527AF0A7-D741-4062-9953-A05E51479C80_data" name="data"/>
+      <bpmn2:dataOutput id="_527AF0A7-D741-4062-9953-A05E51479C80_data" name="data" dtype="String" />
       <bpmn2:dataOutputAssociation id="__OW6jAMCEeWCZM-6YanbhA">
         <bpmn2:sourceRef>_527AF0A7-D741-4062-9953-A05E51479C80_data</bpmn2:sourceRef>
         <bpmn2:targetRef>input</bpmn2:targetRef>

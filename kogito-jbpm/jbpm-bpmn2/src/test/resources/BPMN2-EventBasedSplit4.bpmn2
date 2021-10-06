@@ -12,10 +12,10 @@
 
   <itemDefinition id="_xItem" structureRef="String" />
 
-  <itemDefinition id="YesMessageType" structureRef="Object"/>
+  <itemDefinition id="YesMessageType" structureRef="String"/>
   <message id="YesMessage" itemRef="YesMessageType" />
 
-  <itemDefinition id="NoMessageType" structureRef="Object"/>
+  <itemDefinition id="NoMessageType" structureRef="String"/>
   <message id="NoMessage" itemRef="NoMessageType" />
 
   <process processType="Private" isExecutable="true" id="com.sample.test" name="Test" >

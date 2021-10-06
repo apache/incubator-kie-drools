@@ -29,9 +29,11 @@ import org.drools.core.time.impl.CronExpression;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.CompensationScope;
+import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -52,6 +54,7 @@ import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.CompositeNode.CompositeNodeEnd;
 import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
+import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -97,6 +100,13 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeS
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toSet;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.SIGNAL_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 
 /**
  * Default implementation of a RuleFlow validator.
@@ -143,12 +153,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     "Process has no end node."));
         }
 
-        validateNodes(process.getNodes(),
-                errors,
-                process);
+        validateNodes(process.getNodes(), errors, process);
 
-        validateVariables(errors,
-                process);
+        validateVariables(errors, process);
+
+        validateDataAssignments(errors, process);
 
         checkAllNodesConnectedToStart(process,
                 process.isDynamic(),
@@ -722,6 +731,28 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                             errors,
                             "Event should specify an event type");
                 }
+                if (eventNode instanceof BoundaryEventNode && EVENT_TYPE_MESSAGE.equals(eventNode.getMetaData(EVENT_TYPE))) {
+                    if (eventNode.getMetaData(TRIGGER_REF) == null) {
+                        addErrorMessage(process,
+                                node,
+                                errors,
+                                "Boundary event missing message name");
+                    }
+
+                    if (eventNode.getVariableName() == null) {
+                        addErrorMessage(process,
+                                node,
+                                errors,
+                                "Boundary event missing variable in data assignment");
+                    }
+
+                    if (eventNode.getMetaData(MESSAGE_TYPE) == null) {
+                        addErrorMessage(process,
+                                node,
+                                errors,
+                                "Boundary event missing message type");
+                    }
+                }
                 if (eventNode.getDefaultOutgoingConnections().isEmpty()) {
                     addErrorMessage(process,
                             node,
@@ -898,8 +929,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             }
         }
         for (org.kie.api.definition.process.Node eventNode : eventNodes) {
-            processNode(eventNode,
-                    processNodes);
+            processNode(eventNode, processNodes);
         }
         for (CompositeNode compositeNode : compositeNodes) {
             checkAllNodesConnectedToStart(
@@ -924,13 +954,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         if (!nodes.containsKey(node) && !((node instanceof CompositeNodeEnd) || (node instanceof ForEachSplitNode) || (node instanceof ForEachJoinNode))) {
             throw new IllegalStateException("A process node is connected with a node that does not belong to the process: " + node.getName());
         }
-        final Boolean prevValue = nodes.put(node,
-                Boolean.TRUE);
+        final Boolean prevValue = nodes.put(node, Boolean.TRUE);
         if (prevValue == null || Boolean.FALSE.equals(prevValue)) {
             for (final List<Connection> list : node.getOutgoingConnections().values()) {
                 for (final Connection connection : list) {
-                    processNode(connection.getTo(),
-                            nodes);
+                    processNode(connection.getTo(), nodes);
                 }
             }
         }
@@ -1030,8 +1058,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
     }
 
-    private void validateVariables(List<ProcessValidationError> errors,
-            RuleFlowProcess process) {
+    private void validateVariables(List<ProcessValidationError> errors, RuleFlowProcess process) {
 
         List<Variable> variables = process.getVariableScope().getVariables();
 
@@ -1046,9 +1073,65 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
     }
 
+    private void validateDataAssignments(List<ProcessValidationError> errors, RuleFlowProcess process) {
+        Arrays.stream(process.getNodes())
+                .filter(node -> node instanceof Mappable)
+                .forEach(node -> {
+                    Mappable m = (Mappable) node;
+                    m.getInAssociations().forEach(da -> {
+                        validateDataAssignmentsIn(errors, process, node, da);
+                    });
+                    m.getOutAssociations().forEach(da -> {
+                        validateDataAssignmentsOut(errors, process, node, da);
+                    });
+                });
+    }
+
+    private void validateDataAssignmentsOut(List<ProcessValidationError> errors, RuleFlowProcess process, org.kie.api.definition.process.Node node, DataAssociation da) {
+        if (node instanceof StartNode || node instanceof EventNode) {
+            String type = getEventVariableType(node);
+            if (type == null || type.trim().isEmpty()) {
+                return;
+            }
+            String var = da.getSources().get(0);
+            Variable variable = process.getVariableScope().findVariable(var);
+            DataType dataType = DataTypeResolver.fromType(type, Thread.currentThread().getContextClassLoader());
+            if (!variable.getType().equals(dataType)) {
+                addErrorMessage(process, node, errors,
+                        format("Target variable '%s':'%s' has different data type from '%s':'%s' in data output assignment", var, variable.getType().getStringType(), da.getTarget(),
+                                dataType.getStringType()));
+            }
+        }
+    }
+
+    private void validateDataAssignmentsIn(List<ProcessValidationError> errors, RuleFlowProcess process, org.kie.api.definition.process.Node node, DataAssociation da) {
+        if (node instanceof EndNode || node instanceof ActionNode) {
+            String type = getEventVariableType(node);
+            if (type == null || type.trim().isEmpty()) {
+                return;
+            }
+            String var = (String) node.getMetaData().get(MAPPING_VARIABLE);
+            Variable variable = process.getVariableScope().findVariable(var);
+            DataType dataType = DataTypeResolver.fromType(type, Thread.currentThread().getContextClassLoader());
+            if (!variable.getType().equals(dataType)) {
+                addErrorMessage(process, node, errors,
+                        format("Source variable '%s':'%s' has different data type from '%s':'%s' in data input assignment", var, variable.getType().getStringType(), da.getSources().get(0),
+                                dataType.getStringType()));
+            }
+        }
+    }
+
+    private String getEventVariableType(org.kie.api.definition.process.Node node) {
+        if (EVENT_TYPE_SIGNAL.equals(node.getMetaData().get(EVENT_TYPE))) {
+            return (String) node.getMetaData().get(SIGNAL_TYPE);
+        } else if (EVENT_TYPE_MESSAGE.equals(node.getMetaData().get(EVENT_TYPE))) {
+            return (String) node.getMetaData().get(MESSAGE_TYPE);
+        }
+        return null;
+    }
+
     @Override
-    public boolean accept(Process process,
-            Resource resource) {
+    public boolean accept(Process process, Resource resource) {
         return RuleFlowProcess.RULEFLOW_TYPE.equals(process.getType());
     }
 

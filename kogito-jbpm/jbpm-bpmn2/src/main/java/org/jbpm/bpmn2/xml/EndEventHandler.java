@@ -41,6 +41,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
+import static org.jbpm.ruleflow.core.Metadata.PRODUCE_MESSAGE;
 
 public class EndEventHandler extends AbstractNodeHandler {
 
@@ -119,7 +123,6 @@ public class EndEventHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("terminateEventDefinition".equals(nodeName)) {
-
                 String scope = ((Element) xmlNode).getAttribute("scope");
                 if ("process".equalsIgnoreCase(scope)) {
                     endNode.setScope(EndNode.PROCESS_SCOPE);
@@ -145,11 +148,11 @@ public class EndEventHandler extends AbstractNodeHandler {
                 readEndDataInputAssociation(xmlNode, endNode);
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String signalName = ((Element) xmlNode).getAttribute("signalRef");
-                String variable = (String) endNode.getMetaData("MappingVariable");
+                String variable = (String) endNode.getMetaData(MAPPING_VARIABLE);
 
                 signalName = checkSignalAndConvertToRealSignalNam(parser, signalName);
 
-                endNode.setMetaData(Metadata.EVENT_TYPE, "signal");
+                endNode.setMetaData(Metadata.EVENT_TYPE, EVENT_TYPE_SIGNAL);
                 endNode.setMetaData(Metadata.REF, signalName);
                 endNode.setMetaData(Metadata.VARIABLE, variable);
 
@@ -176,7 +179,11 @@ public class EndEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataInputAssociation".equals(nodeName)) {
+            if ("dataInput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String inputName = ((Element) xmlNode).getAttribute("name");
+                dataInputs.put(id, inputName);
+            } else if ("dataInputAssociation".equals(nodeName)) {
                 readEndDataInputAssociation(xmlNode, endNode);
             } else if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
@@ -188,11 +195,12 @@ public class EndEventHandler extends AbstractNodeHandler {
                 if (message == null) {
                     throw new ProcessParsingValidationException("Could not find message " + messageRef);
                 }
-                String variable = (String) endNode.getMetaData("MappingVariable");
+                String variable = (String) endNode.getMetaData(MAPPING_VARIABLE);
+                endNode.setMetaData(Metadata.EVENT_TYPE, EVENT_TYPE_MESSAGE);
                 endNode.setMetaData(Metadata.MESSAGE_TYPE, message.getType());
-                endNode.setMetaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
+                endNode.setMetaData(Metadata.TRIGGER_TYPE, PRODUCE_MESSAGE);
                 endNode.setMetaData(Metadata.TRIGGER_REF, message.getName());
-                List<DroolsAction> actions = new ArrayList<DroolsAction>();
+                List<DroolsAction> actions = new ArrayList<>();
 
                 DroolsConsequenceAction action = createJavaAction(new HandleMessageAction(message.getType(), variable));
 
@@ -213,7 +221,12 @@ public class EndEventHandler extends AbstractNodeHandler {
                     eventVariable = dataInputs.get(eventVariable);
                 }
 
-                endNode.setMetaData("MappingVariable", eventVariable);
+                endNode.setMetaData(MAPPING_VARIABLE, eventVariable);
+                final org.w3c.dom.Node target = subNode.getNextSibling();
+                if (target != null && dataInputs.containsKey(target.getTextContent())) {
+                    //Get variable name from "targetRef"
+                    endNode.addInMapping(eventVariable, dataInputs.get(target.getTextContent()));
+                }
             }
         } else {
             // targetRef
@@ -223,7 +236,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 org.w3c.dom.Node subSubNode = subNode.getFirstChild();
                 NodeList nl = subSubNode.getChildNodes();
                 if (nl.getLength() > 1) {
-                    endNode.setMetaData("MappingVariable", subSubNode.getTextContent());
+                    endNode.setMetaData(MAPPING_VARIABLE, subSubNode.getTextContent());
                     return;
                 } else if (nl.getLength() == 0) {
                     return;
@@ -240,9 +253,10 @@ public class EndEventHandler extends AbstractNodeHandler {
                 } else {
                     result = nl.item(0);
                 }
-                endNode.setMetaData("MappingVariable", "\"" + result + "\"");
+                endNode.setMetaData(MAPPING_VARIABLE, "\"" + result + "\"");
             }
         }
+
     }
 
     @SuppressWarnings("unchecked")

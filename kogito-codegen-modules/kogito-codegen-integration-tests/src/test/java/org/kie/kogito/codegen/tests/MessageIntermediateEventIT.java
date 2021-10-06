@@ -48,13 +48,13 @@ public class MessageIntermediateEventIT extends AbstractCodegenIT {
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
         Process<? extends Model> p = app.get(Processes.class).processById("MessageEndEvent");
         Model m = p.createModel();
-        m.update(Collections.singletonMap("x", "Javierito"));
+        m.update(Collections.singletonMap("customerId", "Javierito"));
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         ArgumentCaptor<MessageEvent> messageEvent = ArgumentCaptor.forClass(MessageEvent.class);
         verify(listener).onMessage(messageEvent.capture());
-        assertThat(messageEvent.getValue().getMessageName()).isEqualTo("_2_Message");
+        assertThat(messageEvent.getValue().getMessageName()).isEqualTo("processedcustomers");
         assertThat(messageEvent.getValue().getMessage()).isEqualTo("Javierito");
     }
 
@@ -63,7 +63,7 @@ public class MessageIntermediateEventIT extends AbstractCodegenIT {
         Application app = generateCodeProcessesOnly("messageevent/IntermediateThrowEventMessage.bpmn2");
         ProcessEventListener listener = mock(KogitoProcessEventListener.class);
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
-        Process<? extends Model> p = app.get(Processes.class).processById("MessageIntermediateEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateThrowEventMessage");
         Model m = p.createModel();
         m.update(Collections.singletonMap("customerId", "Javierito"));
         ProcessInstance<?> processInstance = p.createInstance(m);
@@ -81,7 +81,7 @@ public class MessageIntermediateEventIT extends AbstractCodegenIT {
         Application app = generateCodeProcessesOnly("messageevent/IntermediateCatchEventMessage.bpmn2");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEventMessage");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();

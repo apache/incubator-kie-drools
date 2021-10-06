@@ -46,7 +46,6 @@ import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.compiler.canonical.TriggerMetaData.TriggerType;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.jbpm.compiler.xml.XmlProcessReader;
-import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidatorRegistry;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -175,9 +174,14 @@ public class ProcessCodegen extends AbstractGenerator {
     }
 
     private static Process validate(Process process) {
-        ProcessValidationError[] errors = ProcessValidatorRegistry.getInstance().getValidator(process, process.getResource()).validateProcess(process);
-        //TODO: use the validation context in the ProcessValidator itself
-        Arrays.stream(errors).forEach(e -> ValidationContext.get().add(process.getId(), e));
+        try {
+            ProcessValidatorRegistry.getInstance().getValidator(process, process.getResource()).validate(process);
+        } catch (ValidationException e) {
+            //TODO: add all errors during parsing phase in the ValidationContext itself
+            ValidationContext.get()
+                    .add(process.getId(), e.getErrors())
+                    .putException(e);
+        }
         return process;
     }
 

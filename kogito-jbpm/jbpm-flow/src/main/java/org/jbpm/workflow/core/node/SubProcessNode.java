@@ -38,7 +38,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
 
     private static final long serialVersionUID = 510l;
 
-    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+    // NOTE: ContextInstances are not persisted as current functionality (exception scope) does not require it
     private ContextContainer contextContainer = new ContextContainerImpl();
 
     private String processId;
@@ -89,7 +89,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     public Map<String, String> getInMappings() {
         Map<String, String> in = new HashMap<>();
         for (DataAssociation a : inMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().size() == 0) && a.getTransformation() == null) {
+            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
                 in.put(a.getTarget(), a.getSources().get(0));
             }
         }
@@ -126,7 +126,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     public Map<String, String> getOutMappings() {
         Map<String, String> out = new HashMap<String, String>();
         for (DataAssociation a : outMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().size() == 0) && a.getTransformation() == null) {
+            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
                 out.put(a.getSources().get(0), a.getTarget());
             }
         }

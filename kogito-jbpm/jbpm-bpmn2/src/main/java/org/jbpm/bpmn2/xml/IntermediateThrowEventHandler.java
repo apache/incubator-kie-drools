@@ -47,6 +47,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.PRODUCE_MESSAGE;
+import static org.jbpm.ruleflow.core.Metadata.SIGNAL_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 
 public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
@@ -56,7 +64,6 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
     public static final String LINK_SOURCE = "source";
     public static final String LINK_TARGET = "target";
 
-    private static final String MAPPING_VARIABLE_KEY = "MappingVariable";
     private static final String TRANSFORMATION_KEY = "Transformation";
 
     @Override
@@ -199,18 +206,24 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
             if ("dataInput".equals(nodeName)) {
                 String id = ((Element) xmlNode).getAttribute("id");
                 String inputName = ((Element) xmlNode).getAttribute("name");
+                String type = ((Element) xmlNode).getAttribute("dtype");
                 dataInputs.put(id, inputName);
+                dataInputTypes.put(inputName, type);
             } else if ("dataInputAssociation".equals(nodeName)) {
                 readDataInputAssociation(xmlNode, actionNode, parser);
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String signalName = ((Element) xmlNode).getAttribute("signalRef");
-                String variable = findVariable((String) actionNode.getMetaData(MAPPING_VARIABLE_KEY), parser);
+                String variable = findVariable((String) actionNode.getMetaData(MAPPING_VARIABLE), parser);
 
                 signalName = checkSignalAndConvertToRealSignalNam(parser, signalName);
 
-                actionNode.setMetaData(Metadata.EVENT_TYPE, "signal");
+                actionNode.setMetaData(EVENT_TYPE, "signal");
                 actionNode.setMetaData(Metadata.REF, signalName);
                 actionNode.setMetaData(Metadata.VARIABLE, variable);
+
+                if (dataInputTypes.size() == 1) {
+                    actionNode.setMetaData(SIGNAL_TYPE, dataInputTypes.values().iterator().next());
+                }
 
                 // check if signal should be send async
                 if (dataInputs.containsValue("async")) {
@@ -252,14 +265,15 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                     throw new ProcessParsingValidationException(
                             "Could not find message " + messageRef);
                 }
-                String variable = (String) actionNode.getMetaData(MAPPING_VARIABLE_KEY);
+                String variable = (String) actionNode.getMetaData(MAPPING_VARIABLE);
                 Variable v = (Variable) ((ProcessBuildData) parser.getData()).getMetaData("Variable");
                 if (v != null) {
                     variable = (String) v.getMetaData(variable);
                 }
-                actionNode.setMetaData(Metadata.MESSAGE_TYPE, message.getType());
-                actionNode.setMetaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
-                actionNode.setMetaData(Metadata.TRIGGER_REF, message.getName());
+                actionNode.setMetaData(EVENT_TYPE, EVENT_TYPE_MESSAGE);
+                actionNode.setMetaData(MESSAGE_TYPE, message.getType());
+                actionNode.setMetaData(TRIGGER_TYPE, PRODUCE_MESSAGE);
+                actionNode.setMetaData(TRIGGER_REF, message.getName());
 
                 DroolsConsequenceAction action = createJavaAction(new HandleMessageAction(message.getType(), variable, (Transformation) actionNode.getMetaData().get(TRANSFORMATION_KEY)));
                 actionNode.setAction(action);
@@ -294,7 +308,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                                 "Could not find escalation " + escalationRef);
                     }
                     String faultName = escalation.getEscalationCode();
-                    String variable = (String) actionNode.getMetaData(MAPPING_VARIABLE_KEY);
+                    String variable = (String) actionNode.getMetaData(MAPPING_VARIABLE);
 
                     DroolsConsequenceAction action = createJavaAction(new HandleEscalationAction(faultName, variable));
                     actionNode.setAction(action);
@@ -336,7 +350,8 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                     eventVariable = dataInputs.get(eventVariable);
                 }
 
-                actionNode.setMetaData(MAPPING_VARIABLE_KEY, findVariable(eventVariable, parser));
+                actionNode.setMetaData(MAPPING_VARIABLE, findVariable(eventVariable, parser));
+                actionNode.addInMapping(eventVariable, dataInputs.get(target));
             }
         } else {
             // targetRef
@@ -346,7 +361,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                 org.w3c.dom.Node subSubNode = subNode.getFirstChild();
                 NodeList nl = subSubNode.getChildNodes();
                 if (nl.getLength() > 1) {
-                    actionNode.setMetaData(MAPPING_VARIABLE_KEY, subSubNode.getTextContent());
+                    actionNode.setMetaData(MAPPING_VARIABLE, subSubNode.getTextContent());
                     return;
                 } else if (nl.getLength() == 0) {
                     return;
@@ -363,7 +378,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                 } else {
                     result = nl.item(0);
                 }
-                actionNode.setMetaData(MAPPING_VARIABLE_KEY, "\"" + findVariable(result.toString(), parser) + "\"");
+                actionNode.setMetaData(MAPPING_VARIABLE, "\"" + findVariable(result.toString(), parser) + "\"");
             }
         }
     }

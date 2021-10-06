@@ -65,13 +65,13 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
             if (action != null) {
                 compensateNode = action.getActivityRef();
             }
-            LambdaExpr lambda = TriggerMetaData.buildCompensationLambdaExpr(compensateNode);
+            LambdaExpr lambda = buildCompensationLambdaExpr(compensateNode);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         } else if (node.getMetaData(TRIGGER_REF) != null) { // if there is trigger defined on end event create TriggerMetaData for it
-            LambdaExpr lambda = TriggerMetaData.buildLambdaExpr(node, metadata);
+            LambdaExpr lambda = buildLambdaExpr(node, metadata);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, TriggerMetaData.buildAction((String) node.getMetaData(REF),
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildAction((String) node.getMetaData(REF),
                     (String) node.getMetaData(VARIABLE), (String) node.getMetaData(CUSTOM_SCOPE))));
         } else if (node.getAction() instanceof DroolsConsequenceAction) {
             String consequence = getActionConsequence(node.getAction());

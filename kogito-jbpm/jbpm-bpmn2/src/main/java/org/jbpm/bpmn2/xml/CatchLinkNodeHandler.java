@@ -20,6 +20,8 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.xml.sax.Attributes;
 
+import static org.jbpm.ruleflow.core.Metadata.LINK_NAME;
+
 public class CatchLinkNodeHandler extends AbstractNodeHandler implements
         Handler {
 
@@ -40,8 +42,7 @@ public class CatchLinkNodeHandler extends AbstractNodeHandler implements
         xmlDump.append(">" + EOL);
         writeExtensionElements(linkNode, xmlDump);
 
-        String name = (String) node.getMetaData().get(
-                IntermediateCatchEventHandler.LINK_NAME);
+        String name = (String) node.getMetaData().get(LINK_NAME);
 
         xmlDump.append("<linkEventDefinition name=\"" + name + "\" >" + EOL);
 

@@ -21,7 +21,7 @@
     <startEvent id="_1" name="Start" />
     <eventBasedGateway id="_2" name="Split" gatewayDirection="Diverging" />
     <intermediateCatchEvent id="_3" name="event" >
-      <dataOutput id="_3_Output" name="event" />
+      <dataOutput id="_3_Output" name="event" dtype="String" />
       <dataOutputAssociation>
       <sourceRef>_3_Output</sourceRef>
       <targetRef>x</targetRef>
@@ -32,7 +32,7 @@
       <signalEventDefinition signalRef="Yes"/>
     </intermediateCatchEvent>
     <intermediateCatchEvent id="_4" name="event" >
-      <dataOutput id="_4_Output" name="event" />
+      <dataOutput id="_4_Output" name="event" dtype="String" />
       <dataOutputAssociation>
       <sourceRef>_4_Output</sourceRef>
       <targetRef>x</targetRef>

@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.SessionConfiguration;
@@ -63,6 +64,8 @@ import org.mvel2.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -235,7 +238,7 @@ public abstract class JbpmBpmn2TestCase {
     }
 
     public void assertNodeTriggered(String processInstanceId, String... nodeNames) {
-        List<String> names = getNotTriggeredNodes(processInstanceId, nodeNames);
+        List<String> names = getNotTriggeredNodes(nodeNames);
         if (!names.isEmpty()) {
             String s = names.get(0);
             for (int i = 1; i < names.size(); i++) {
@@ -245,9 +248,8 @@ public abstract class JbpmBpmn2TestCase {
         }
     }
 
-    public void assertNotNodeTriggered(String processInstanceId,
-            String... nodeNames) {
-        List<String> names = getNotTriggeredNodes(processInstanceId, nodeNames);
+    public void assertNotNodeTriggered(String processInstanceId, String... nodeNames) {
+        List<String> names = getNotTriggeredNodes(nodeNames);
         assertTrue(Arrays.equals(names.toArray(), nodeNames));
     }
 
@@ -270,24 +272,13 @@ public abstract class JbpmBpmn2TestCase {
         return processInstance.getState() == state;
     }
 
-    private List<String> getNotTriggeredNodes(String processInstanceId,
-            String... nodeNames) {
-        List<String> names = new ArrayList<>();
-        for (String nodeName : nodeNames) {
-            names.add(nodeName);
-        }
+    private List<String> getNotTriggeredNodes(String... nodeNames) {
+        Set<String> triggeredNodes = workingMemoryLogger.getLogEvents().stream()
+                .filter(e -> e instanceof KogitoRuleFlowNodeLogEvent)
+                .map(e -> ((KogitoRuleFlowNodeLogEvent) e).getNodeName())
+                .collect(toSet());
 
-        for (LogEvent event : workingMemoryLogger.getLogEvents()) {
-            if (event instanceof KogitoRuleFlowNodeLogEvent) {
-                String nodeName = ((KogitoRuleFlowNodeLogEvent) event)
-                        .getNodeName();
-                if (names.contains(nodeName)) {
-                    names.remove(nodeName);
-                }
-            }
-        }
-
-        return names;
+        return Arrays.stream(nodeNames).filter(n -> !triggeredNodes.contains(n)).collect(toList());
     }
 
     protected void clearHistory() {

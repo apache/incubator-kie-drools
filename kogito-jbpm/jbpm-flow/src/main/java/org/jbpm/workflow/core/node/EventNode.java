@@ -16,8 +16,13 @@
 package org.jbpm.workflow.core.node;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -25,7 +30,8 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
 
-public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
+public class EventNode extends ExtendedNodeImpl implements EventNodeInterface,
+        Mappable {
 
     private static final long serialVersionUID = 510l;
 
@@ -33,6 +39,7 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
     private EventTransformer transformer;
     private String variableName;
     private String scope;
+    private List<DataAssociation> outMapping = new LinkedList<>();
 
     public String getVariableName() {
         return variableName;
@@ -118,6 +125,79 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
                     "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName()
                             + "] cannot have more than one outgoing connection!");
         }
+    }
+
+    @Override
+    public void addInAssociation(DataAssociation dataAssociation) {
+        throwUnsupported();
+    }
+
+    @Override
+    public List<DataAssociation> getInAssociations() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void addOutAssociation(DataAssociation dataAssociation) {
+        outMapping.add(dataAssociation);
+    }
+
+    @Override
+    public List<DataAssociation> getOutAssociations() {
+        return Collections.unmodifiableList(outMapping);
+    }
+
+    @Override
+    public void addOutMapping(String parameterName, String variableName) {
+        outMapping.add(new DataAssociation(variableName, parameterName, null, null));
+    }
+
+    private void throwUnsupported() {
+        throw new IllegalArgumentException("An event node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] does not support input mappings");
+    }
+
+    @Override
+    public String getOutMapping(String parameterName) {
+        return getOutMappings().get(parameterName);
+    }
+
+    @Override
+    public Map<String, String> getOutMappings() {
+        Map<String, String> in = new HashMap<>();
+        for (DataAssociation a : outMapping) {
+            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
+                in.put(a.getTarget(), a.getSources().get(0));
+            }
+        }
+        return in;
+    }
+
+    @Override
+    public void setOutMappings(Map<String, String> outMapping) {
+        this.outMapping = new LinkedList<>();
+        for (Map.Entry<String, String> entry : outMapping.entrySet()) {
+            addOutMapping(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @Override
+    public void addInMapping(String parameterName, String variableName) {
+        throwUnsupported();
+    }
+
+    @Override
+    public String getInMapping(String parameterName) {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> getInMappings() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public void setInMappings(Map<String, String> inMapping) {
+        throwUnsupported();
     }
 
 }

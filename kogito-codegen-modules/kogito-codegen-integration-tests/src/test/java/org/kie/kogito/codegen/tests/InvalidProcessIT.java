@@ -15,13 +15,45 @@
  */
 package org.kie.kogito.codegen.tests;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.AbstractCodegenIT;
 import org.kie.kogito.codegen.process.ProcessCodegenException;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InvalidProcessIT extends AbstractCodegenIT {
+
+    //Process Validations Tests
+    static Stream<Arguments> invalidProcessesForTest() {
+        return Stream.of(
+                Arguments.of("invalid/parsing-more-than-one-start.bpmn2"),
+                Arguments.of("invalid/validator-no-start.bpmn2"),
+                Arguments.of("invalid/parsing-multi-connection-end.bpmn2"),
+                Arguments.of("invalid/validator-no-end.bpmn2"),
+                Arguments.of("invalid/parsing-service-task-no-impl.bpmn2"));
+    }
+
+    static Stream<Arguments> invalidDataMappingProcessesForTest() {
+        return Stream.of(
+                Arguments.of(new String[] { "invalid/invalid-message-end-event.bpmn2",
+                        "Errors during validation for processes [MessageEndEvent]",
+                        "Node 'processedconsumers' [2] Source variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data input assignment" }),
+                Arguments.of(new String[] { "invalid/invalid-message-start-event.bpmn2",
+                        "Errors during validation for processes [MessageStartEvent]",
+                        "Node 'StartProcess' [1] Target variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Object' in data output assignment" }),
+                Arguments.of(new String[] { "invalid/intermediate-throw-event-message.bpmn2",
+                        "Errors during validation for processes [IntermediateThrowEventMessage]",
+                        "Node 'Intermediate Throw Event 1' [3] Source variable 'customerId':'java.lang.String' has different data type from 'input':'java.lang.Float' in data input assignment" }),
+                Arguments.of(new String[] { "invalid/intermediate-catch-event-message.bpmn2",
+                        "Errors during validation for processes [IntermediateCatchEventMessage]",
+                        "Node 'Intermediate Catch Event' [2] Target variable 'customerId':'java.lang.String' has different data type from 'event':'org.acme.Customer' in data output assignment" }));
+    }
 
     @Test
     public void testBasicUserTaskProcess() {
@@ -37,35 +69,21 @@ public class InvalidProcessIT extends AbstractCodegenIT {
                 "Duplicated process with id duplicated found in the project, please review .bpmn files");
     }
 
-    //Process Validations Tests
-
-    @Test
-    public void testInvalidProcessParsingMorethanOneStart() throws Exception {
-        assertThrows(ProcessCodegenException.class,
-                () -> generateCodeProcessesOnly("invalid/parsing-more-than-one-start.bpmn2"));
+    @ParameterizedTest
+    @MethodSource("invalidProcessesForTest")
+    public void testInvalidProcess(String processFile) {
+        assertThatThrownBy(() -> generateCodeProcessesOnly(processFile))
+                .isInstanceOf(ProcessCodegenException.class);
     }
 
-    @Test
-    public void testInvalidProcessValidatorNoStart() throws Exception {
-        assertThrows(ProcessCodegenException.class,
-                () -> generateCodeProcessesOnly("invalid/validator-no-start.bpmn2"));
+    @ParameterizedTest
+    @MethodSource("invalidDataMappingProcessesForTest")
+    public void testInvalidDataMappingProcesses(String processFile, String message, String rootCauseMessage) {
+        assertThatThrownBy(() -> generateCodeProcessesOnly(processFile))
+                .isInstanceOf(ProcessCodegenException.class)
+                .hasMessage(message)
+                .hasRootCauseMessage(rootCauseMessage)
+                .getRootCause();
     }
 
-    @Test
-    public void testInvalidProcessParsingValidatorMultiEnd() throws Exception {
-        assertThrows(ProcessCodegenException.class,
-                () -> generateCodeProcessesOnly("invalid/parsing-multi-connection-end.bpmn2"));
-    }
-
-    @Test
-    public void testInvalidProcessValidatorNoEnd() throws Exception {
-        assertThrows(ProcessCodegenException.class,
-                () -> generateCodeProcessesOnly("invalid/validator-no-end.bpmn2"));
-    }
-
-    @Test
-    public void testInvalidProcessParsingServiceTaskNoImpl() throws Exception {
-        assertThrows(ProcessCodegenException.class,
-                () -> generateCodeProcessesOnly("invalid/parsing-service-task-no-impl.bpmn2"));
-    }
 }

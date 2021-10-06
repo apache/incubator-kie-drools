@@ -50,7 +50,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         KogitoProcessEventListener listener = mock(KogitoProcessEventListener.class);
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
         assertThat(app).isNotNull();
-        Process<? extends Model> p = app.get(Processes.class).processById("SignalIntermediateEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateThrowEventSignal");
         Model m = p.createModel();
         m.update(Collections.singletonMap("x", "Javierito"));
         ProcessInstance<?> processInstance = p.createInstance(m);
@@ -87,7 +87,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEventSignal");
 
         Model m = p.createModel();
 
@@ -209,7 +209,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
 
-        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEventSignal");
 
         Model m = p.createModel();
 

@@ -23,7 +23,7 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <intermediateThrowEvent id="_2" name="SignalEvent" >
-      <dataInput id="_2_Input" />
+      <dataInput id="_2_Input" dtype="String" />
       <dataInputAssociation>
         <sourceRef>x</sourceRef>
         <targetRef>_2_Input</targetRef>

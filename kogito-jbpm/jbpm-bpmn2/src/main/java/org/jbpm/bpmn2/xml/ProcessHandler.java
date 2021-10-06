@@ -1073,8 +1073,6 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     public static DroolsConsequenceAction createJavaAction(Action action) {
         DroolsConsequenceAction consequenceAction = new DroolsConsequenceAction("java", "");
         consequenceAction.setMetaData("Action", action);
-
         return consequenceAction;
-
     }
 }

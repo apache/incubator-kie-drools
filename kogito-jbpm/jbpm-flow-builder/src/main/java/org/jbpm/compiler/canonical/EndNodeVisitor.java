@@ -64,13 +64,13 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
             if (compensationAction.get().getActivityRef() != null) {
                 compensateNode = compensationAction.get().getActivityRef();
             }
-            LambdaExpr lambda = TriggerMetaData.buildCompensationLambdaExpr(compensateNode);
+            LambdaExpr lambda = buildCompensationLambdaExpr(compensateNode);
             body.addStatement(getFactoryMethod(getNodeId(node), ActionNodeFactory.METHOD_ACTION, lambda));
         } else if (node.getMetaData(TRIGGER_REF) != null) {
-            LambdaExpr lambda = TriggerMetaData.buildLambdaExpr(node, metadata);
+            LambdaExpr lambda = buildLambdaExpr(node, metadata);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, TriggerMetaData.buildAction((String) node.getMetaData(REF),
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildAction((String) node.getMetaData(REF),
                     (String) node.getMetaData(VARIABLE), (String) node.getMetaData(CUSTOM_SCOPE))));
         }
         visitMetaData(node.getMetaData(), body, getNodeId(node));

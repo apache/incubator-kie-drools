@@ -47,13 +47,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 
 public class StartEventHandler extends AbstractNodeHandler {
-
-    private static final String TRIGGER_REF = "TriggerRef";
-    private static final String MESSAGE_TYPE = "MessageType";
-    private static final String TRIGGER_TYPE = "TriggerType";
 
     private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
@@ -137,6 +138,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 if (message == null) {
                     throw new ProcessParsingValidationException("Could not find message " + messageRef);
                 }
+                startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_MESSAGE);
                 startNode.setMetaData(MESSAGE_TYPE, message.getType());
                 startNode.setMetaData(TRIGGER_TYPE, TriggerMetaData.TriggerType.ConsumeMessage.name());
                 startNode.setMetaData(TRIGGER_REF, message.getName());

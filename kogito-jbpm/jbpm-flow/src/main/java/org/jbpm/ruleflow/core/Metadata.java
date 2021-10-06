@@ -22,6 +22,9 @@ public class Metadata {
     public static final String TRIGGER_REF = "TriggerRef";
     public static final String REF = "Ref";
     public static final String MESSAGE_TYPE = "MessageType";
+    public static final String SIGNAL_TYPE = "SignalType";
+    public static final String PRODUCE_MESSAGE = "ProduceMessage";
+    public static final String CONSUME_MESSAGE = "ConsumeMessage";
     public static final String NODE_TYPE = "NodeType";
     public static final String TRIGGER_TYPE = "TriggerType";
     public static final String TRIGGER_MAPPING = "TriggerMapping";
@@ -32,6 +35,8 @@ public class Metadata {
     public static final String EVENT_TYPE_MESSAGE = "message";
     public static final String EVENT_TYPE_COMPENSATION = "Compensation";
     public static final String EVENT_TYPE_ERROR = "error";
+    public static final String EVENT_TYPE_CONDITIONAL = "conditional";
+    public static final String EVENT_TYPE_LINK = "link";
     public static final String CUSTOM_SCOPE = "customScope";
     public static final String ATTACHED_TO = "AttachedTo";
     public static final String TIME_CYCLE = "TimeCycle";
@@ -42,6 +47,7 @@ public class Metadata {
     public static final String UNIQUE_ID = "UniqueId";
     public static final String LINK_NODE_HIDDEN = "linkNodeHidden";
     public static final String SIGNAL_NAME = "SignalName";
+    public static final String LINK_NAME = "LinkName";
     public static final String CONDITION = "Condition";
     public static final String IS_FOR_COMPENSATION = "isForCompensation";
     public static final String CORRELATION_KEY = "CorrelationKey";

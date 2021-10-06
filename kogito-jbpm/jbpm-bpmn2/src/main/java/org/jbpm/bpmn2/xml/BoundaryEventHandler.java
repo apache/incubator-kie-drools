@@ -44,6 +44,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+
 public class BoundaryEventHandler extends AbstractNodeHandler {
 
     private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();

@@ -65,4 +65,14 @@ public class Assignment implements Serializable {
     public Object getMetaData(String name) {
         return this.metaData.get(name);
     }
+
+    @Override
+    public String toString() {
+        return "Assignment{" +
+                "dialect='" + dialect + '\'' +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", metaData=" + metaData +
+                '}';
+    }
 }
