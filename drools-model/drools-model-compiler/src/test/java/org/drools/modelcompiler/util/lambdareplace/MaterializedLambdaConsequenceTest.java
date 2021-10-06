@@ -49,7 +49,7 @@ public class MaterializedLambdaConsequenceTest {
                 "    public java.lang.String getExpressionHash() {\n" +
                 "        return EXPRESSION_HASH;\n" +
                 "    } " +
-        "        @Override()\n" +
+                "        @Override()\n" +
                 "        public void execute(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) throws java.lang.Exception {\n" +
                 "            result.setValue(p1.getName() + \" is older than \" + p2.getName());\n" +
                 "        }\n" +
@@ -116,8 +116,8 @@ public class MaterializedLambdaConsequenceTest {
 
         String consequenceBlock = "(org.drools.model.Drools drools, org.drools.modelcompiler.domain.Pet $pet, org.drools.modelcompiler.domain.Person $person) -> {{ ($person).setName(\"George\");drools.update($person, mask_$person); ($pet).setAge($pet.getAge() + 1); drools.update($pet, mask_$pet); }}";
         CreatedClass aClass = new MaterializedLambdaConsequence("defaultpkg",
-                                                                "defaultpkg.RulesB45236F6195B110E0FA3A5447BC53274",
-                                                                Arrays.asList(bitMaskPerson, bitMaskPet))
+                "defaultpkg.RulesB45236F6195B110E0FA3A5447BC53274",
+                Arrays.asList(bitMaskPerson, bitMaskPet))
                 .create(consequenceBlock, new ArrayList<>(), new ArrayList<>());
 
         String classNameWithPackage = aClass.getClassNameWithPackage();
@@ -170,8 +170,8 @@ public class MaterializedLambdaConsequenceTest {
 
         String consequenceBlock = "(org.drools.model.Drools drools, org.drools.modelcompiler.domain.Person $p) -> {{ ($p).setAge($p.getAge() + 1); ($p).setLikes(\"Cheese\"); drools.update($p,mask_$p); }}";
         CreatedClass aClass = new MaterializedLambdaConsequence("defaultpkg",
-                                                                "defaultpkg.Rules53448E6B9A07CB05B976425EF329E308",
-                                                                Arrays.asList(bitMaskVariable))
+                "defaultpkg.Rules53448E6B9A07CB05B976425EF329E308",
+                Arrays.asList(bitMaskVariable))
                 .create(consequenceBlock, new ArrayList<>(), new ArrayList<>());
 
         String classNameWithPackage = aClass.getClassNameWithPackage();

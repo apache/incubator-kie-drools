@@ -29,11 +29,11 @@ public class MaterializedLambdaPredicateTest {
     @Test
     public void createClassWithOneParameter() {
         PredicateInformation predicateInformation = new PredicateInformation("p.age > 35", "rule1", "rulefilename1.drl");
-        predicateInformation.addRuleName("rule2", "rulefilename2.drl");
-        predicateInformation.addRuleName("rule3", "rulefilename3.drl");
+        predicateInformation.addRuleNames("rule2", "rulefilename2.drl");
+        predicateInformation.addRuleNames("rule3", "rulefilename3.drl");
         CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace",
-                                                              "rulename",
-                                                              predicateInformation)
+                "rulename",
+                predicateInformation)
                 .create("(org.drools.modelcompiler.domain.Person p) -> p.getAge() > 35", new ArrayList<>(), new ArrayList());
         String classNameWithPackage = aClass.getClassNameWithPackage();
         String expectedPackageName = classNameWithPackage.substring(0, classNameWithPackage.lastIndexOf('.'));
@@ -57,7 +57,8 @@ public class MaterializedLambdaPredicateTest {
                 "        }\n" +
                 "        @Override()\n" +
                 "        public org.drools.model.functions.PredicateInformation predicateInformation() {\n" +
-                "            org.drools.model.functions.PredicateInformation info = new org.drools.model.functions.PredicateInformation(\"p.age > 35\", \"rule1\", \"rulefilename1.drl\", \"rule2\", \"rulefilename2.drl\", \"rule3\", \"rulefilename3.drl\");\n" +
+                "            org.drools.model.functions.PredicateInformation info = new org.drools.model.functions.PredicateInformation(\"p.age > 35\");\n" +
+                "            info.addRuleNames(\"rule1\", \"rulefilename1.drl\", \"rule2\", \"rulefilename2.drl\", \"rule3\", \"rulefilename3.drl\");" +
                 "            return info;\n" +
                 "        }\n" +
                 "" +
@@ -75,12 +76,12 @@ public class MaterializedLambdaPredicateTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.PC2;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.PB4;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaPredicateC2DA82347AA534CD4CACE85D44B46921 implements org.drools.model.functions.Predicate2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
+                "public enum LambdaPredicateB43A7DAEE6E92A2B4A203826B1336F22 implements org.drools.model.functions.Predicate2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 " INSTANCE; \n" +
                 "public static final String EXPRESSION_HASH = \"DC57C20B4AF3C2BFEB2552943994B6F7\";" +
                 "       public java.lang.String getExpressionHash() {\n" +

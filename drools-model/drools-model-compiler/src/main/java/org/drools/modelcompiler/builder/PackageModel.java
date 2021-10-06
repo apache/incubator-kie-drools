@@ -51,7 +51,6 @@ import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -897,7 +896,7 @@ public class PackageModel {
             if (info == null) {
                 return new PredicateInformation(constraint, ruleName, ruleFileName);
             } else {
-                info.addRuleName(ruleName, ruleFileName);
+                info.addRuleNames(ruleName, ruleFileName);
                 return info;
             }
         });

@@ -630,36 +630,6 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Type toType( Class<?> declClass ) {
-        if (declClass.isPrimitive()) {
-            if (declClass == int.class) {
-                return PrimitiveType.intType();
-            }
-            if (declClass == long.class) {
-                return PrimitiveType.longType();
-            }
-            if (declClass == double.class) {
-                return PrimitiveType.doubleType();
-            }
-            if (declClass == float.class) {
-                return PrimitiveType.floatType();
-            }
-            if (declClass == boolean.class) {
-                return PrimitiveType.booleanType();
-            }
-            if (declClass == short.class) {
-                return PrimitiveType.shortType();
-            }
-            if (declClass == char.class) {
-                return PrimitiveType.charType();
-            }
-            if (declClass == byte.class) {
-                return PrimitiveType.byteType();
-            }
-        }
-        return toClassOrInterfaceType(declClass);
-    }
-
     public static ClassOrInterfaceType toClassOrInterfaceType( Class<?> declClass ) {
         return new ClassOrInterfaceType(null, declClass.getCanonicalName());
     }

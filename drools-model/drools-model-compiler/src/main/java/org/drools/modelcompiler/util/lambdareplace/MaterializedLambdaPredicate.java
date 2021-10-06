@@ -89,14 +89,14 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
         block.addStatement(new AssignExpr(infoVar, newPredicateInformation, AssignExpr.Operator.ASSIGN));
 
         int i = 0;
+        NodeList<Expression> addRuleNamesArguments = null;
         for (PredicateInformation.RuleDef ruleDef : predicateInformation.getRuleDefs()) {
-            if (i++ > 125) {
-                block.addStatement(new MethodCallExpr(infoExpr, "addRuleName",
-                        NodeList.nodeList(toStringLiteral(ruleDef.getRuleName()), toStringLiteral(ruleDef.getFileName()))));
-            } else {
-                newPredicateInformationArguments.add(toStringLiteral(ruleDef.getRuleName()));
-                newPredicateInformationArguments.add(toStringLiteral(ruleDef.getFileName()));
+            if (i++ % 125 == 0) {
+                addRuleNamesArguments = NodeList.nodeList();
+                block.addStatement(new MethodCallExpr(infoExpr, "addRuleNames", addRuleNamesArguments));
             }
+            addRuleNamesArguments.add(toStringLiteral(ruleDef.getRuleName()));
+            addRuleNamesArguments.add(toStringLiteral(ruleDef.getFileName()));
         }
 
         block.addStatement(new ReturnStmt(infoExpr));

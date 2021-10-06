@@ -52,8 +52,8 @@ import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
@@ -111,7 +111,7 @@ public class WindowReferenceGenerator {
 
         final Class<?> initClass = DrlxParseUtil.getClassFromContext(typeResolver, pattern.getObjectType());
 
-        initializer.addArgument(new ClassExpr(toType(initClass)));
+        initializer.addArgument(new ClassExpr(toJavaParserType(initClass)));
 
         if (pattern.getSource() != null) {
             String epName = (( EntryPointDescr ) pattern.getSource()).getEntryId();

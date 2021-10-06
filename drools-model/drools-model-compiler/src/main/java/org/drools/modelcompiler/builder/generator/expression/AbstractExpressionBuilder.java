@@ -62,8 +62,8 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLAC
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -301,7 +301,7 @@ public abstract class AbstractExpressionBuilder {
 
         indexedByRightOperandExtractor.setBody(lambdaBlock);
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
-        indexedByDSL.addArgument(new ClassExpr(toType(expression.getRawClass())));
+        indexedByDSL.addArgument(new ClassExpr(toJavaParserType(expression.getRawClass())));
     }
 
     String getIndexIdArgument(SingleDrlxParseSuccess drlxParseResult, TypedExpression left) {

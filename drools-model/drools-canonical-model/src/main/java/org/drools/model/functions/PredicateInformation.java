@@ -37,9 +37,7 @@ public class PredicateInformation {
 
     public PredicateInformation(String stringConstraint, String... ruleNames) {
         this.stringConstraint = defaultToEmptyString(stringConstraint);
-        for (int i = 0; i < ruleNames.length; i+=2) {
-            addRuleName(ruleNames[i], ruleNames[i+1]);
-        }
+        addRuleNames(ruleNames);
     }
 
     public String getStringConstraint() {
@@ -50,8 +48,10 @@ public class PredicateInformation {
         return ruleDefs;
     }
 
-    public void addRuleName(String ruleName, String ruleFileName) {
-        ruleDefs.add(new RuleDef(defaultToEmptyString(ruleFileName), defaultToEmptyString(ruleName)));
+    public void addRuleNames(String... ruleNames) {
+        for (int i = 0; i < ruleNames.length; i+=2) {
+            ruleDefs.add(new RuleDef(defaultToEmptyString(ruleNames[i+1]), defaultToEmptyString(ruleNames[i])));
+        }
     }
 
     public Map<String, Set<String>> getRuleNameMap() {
