@@ -1,8 +1,9 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.FolderUtils
+import org.kie.jenkins.jobdsl.KogitoJobType
+import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.VersionUtils
-import org.kie.jenkins.jobdsl.KogitoJobType
 
 JENKINS_PATH = '.ci/jenkins'
 
@@ -86,6 +87,12 @@ if (Utils.isMainBranch(this)) {
 if (Utils.isLTSBranch(this)) {
     setupNativeLTSJob()
 }
+
+// Tools folder
+KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', 'OptaPlanner', [
+  modules: [ 'optaplanner-build-parent' ],
+  properties: [ 'version.io.quarkus' ],
+])
 
 /////////////////////////////////////////////////////////////////
 // Methods
