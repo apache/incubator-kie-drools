@@ -28,7 +28,6 @@ import java.util.Set;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
@@ -48,6 +47,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.generator.Generat
 
 import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ADD_ANNOTATION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ANNOTATION_VALUE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.TYPE_META_DATA_CALL;
@@ -153,10 +153,10 @@ public class POJOGenerator {
 
         for (AnnotationDescr ann : annotations) {
             typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, ADD_ANNOTATION_CALL);
-            typeMetaDataCall.addArgument(new StringLiteralExpr(ann.getName()));
+            typeMetaDataCall.addArgument(toStringLiteral(ann.getName()));
             for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
                 MethodCallExpr annotationValueCall = createDslTopLevelMethod(ANNOTATION_VALUE_CALL);
-                annotationValueCall.addArgument(new StringLiteralExpr(entry.getKey()));
+                annotationValueCall.addArgument(toStringLiteral(entry.getKey()));
                 String expr = entry.getValue().toString();
                 if (hasMvel() && exprAnnotations.contains(ann.getName()) && ConstraintBuilder.get().analyzeExpression(type, expr) == null) {
                     builder.addBuilderResult(new InvalidExpressionErrorResult("Unable to analyze expression '" + expr + "' for " + ann.getName() + " attribute"));
