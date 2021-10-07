@@ -27,6 +27,18 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
+      # Inspired to maximize-build-space action https://github.com/easimon/maximize-build-space
+      - name: Free disk space (remove dotnet, android and haskell)
+        shell: bash
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+      - name: Disk space report after modification
+        shell: bash
+        run: |
+          echo "Available storage:"
+          df -h
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
@@ -37,7 +49,7 @@ jobs:
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.6.8
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP}/drools/${BRANCH}/.ci/kogito-pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/kiegroup/drools/main/.ci/kogito-pull-request-config.yaml
           starting-project: kiegroup/kogito-examples
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
