@@ -40,7 +40,7 @@ public class GeneratedSources {
     private static final Logger logger = LoggerFactory.getLogger(GeneratedSources.class);
 
     // This is only for debugging purposes and should NEVER be enabled in production
-    private static final boolean DUMP_GENERATED_CLASSES = true;
+    private static final boolean DUMP_GENERATED_CLASSES = false;
 
     private final Map<String, String> allGeneratedSources = new HashMap<>();
 

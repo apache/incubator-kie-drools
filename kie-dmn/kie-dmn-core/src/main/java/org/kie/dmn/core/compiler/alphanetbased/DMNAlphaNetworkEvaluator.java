@@ -27,10 +27,6 @@ import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 // TODO DT-ANC review these four names
 public interface DMNAlphaNetworkEvaluator {
 
-    void setCompiledNetwork(CompiledNetwork compiledAlphaNetwork);
-
-    ObjectTypeNode getObjectTypeNode();
-
     Optional<InvalidInputEvent> validate(EvaluationContext evaluationContext);
 
     Object evaluate(EvaluationContext evaluationContext, DecisionTable decisionTable);
