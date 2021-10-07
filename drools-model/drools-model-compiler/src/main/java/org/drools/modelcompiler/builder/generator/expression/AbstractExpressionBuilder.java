@@ -38,7 +38,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -63,10 +62,11 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLAC
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
-import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public abstract class AbstractExpressionBuilder {
 
@@ -240,20 +240,20 @@ public abstract class AbstractExpressionBuilder {
 
         if (expression instanceof LiteralExpr) {
             if (expression instanceof BigDecimalLiteralExpr) {
-                return toNewExpr(BigDecimal.class, new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
+                return toNewExpr(BigDecimal.class, toStringLiteral(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
             }
             if (expression instanceof BigIntegerLiteralExpr) {
-                return toNewExpr(toRawClass(leftType), new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
+                return toNewExpr(toRawClass(leftType), toStringLiteral(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
             }
             if (leftType.equals(BigDecimal.class)) {
                 String expressionString = stringValue(expression);
                 final BigDecimal bigDecimal = new BigDecimal( expressionString );
-                return toNewExpr(BigDecimal.class, new StringLiteralExpr( bigDecimal.toString() ) );
+                return toNewExpr(BigDecimal.class, toStringLiteral( bigDecimal.toString() ) );
             }
             if (leftType.equals(BigInteger.class)) {
                 String expressionString = stringValue(expression);
                 final BigInteger bigInteger = new BigDecimal(expressionString).toBigInteger();
-                return toNewExpr(BigInteger.class, new StringLiteralExpr(bigInteger.toString()));
+                return toNewExpr(BigInteger.class, toStringLiteral(bigInteger.toString()));
             }
 
         }
@@ -301,7 +301,7 @@ public abstract class AbstractExpressionBuilder {
 
         indexedByRightOperandExtractor.setBody(lambdaBlock);
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
-        indexedByDSL.addArgument(new ClassExpr(toJPType(expression.getRawClass())));
+        indexedByDSL.addArgument(new ClassExpr(toJavaParserType(expression.getRawClass())));
     }
 
     String getIndexIdArgument(SingleDrlxParseSuccess drlxParseResult, TypedExpression left) {
