@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,8 @@ import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -70,42 +73,69 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class PersistenceGenerator extends AbstractGenerator {
 
-    private static final String CLIENT = "client";
-    private static final String QUERY_TIMEOUT = "queryTimeout";
-    private static final String AUTO_DDL = "autoDDL";
-    private static final String KOGITO = "kogito";
-    private static final String CLASS_TEMPLATES_PERSISTENCE = "/class-templates/persistence/";
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceGenerator.class);
+
+    /**
+     * Type of persistence
+     */
     public static final String FILESYSTEM_PERSISTENCE_TYPE = "filesystem";
     public static final String INFINISPAN_PERSISTENCE_TYPE = "infinispan";
-    public static final String DEFAULT_PERSISTENCE_TYPE = INFINISPAN_PERSISTENCE_TYPE;
     public static final String MONGODB_PERSISTENCE_TYPE = "mongodb";
     public static final String POSTGRESQL_PERSISTENCE_TYPE = "postgresql";
     public static final String KAFKA_PERSISTENCE_TYPE = "kafka";
     public static final String JDBC_PERSISTENCE_TYPE = "jdbc";
-    public static final String GENERATOR_NAME = "persistence";
-    public static final String QUARKUS_KAFKA_STREAMS_TOPICS_PROP = "quarkus.kafka-streams.topics";
+    public static final String DEFAULT_PERSISTENCE_TYPE = INFINISPAN_PERSISTENCE_TYPE;
+
+    /**
+     * Kogito persistence properties
+     */
+    // Generic
+    public static final String KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION = "kogito.persistence.data-index.proto.generation";
+    public static final String KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION_DEFAULT = "true";
+    public static final String KOGITO_PERSISTENCE_PROTO_MARSHALLER = "kogito.persistence.proto.marshaller";
+    public static final String KOGITO_PERSISTENCE_PROTO_MARSHALLER_DEFAULT = "true";
+    public static final String KOGITO_PERSISTENCE_TYPE = "kogito.persistence.type";
+    public static final String KOGITO_PERSISTENCE_OPTIMISTIC_LOCK = "kogito.persistence.optimistic.lock";
     public static final String KOGITO_PERSISTENCE_AUTO_DDL = "kogito.persistence.auto.ddl";
-    public static final String KOGITO_POSTGRESQL_CONNECTION_URI = "kogito.persistence.postgresql.connection.uri";
-    protected static final String TEMPLATE_NAME = "templateName";
+    // PostgreSQL specific
+    public static final String KOGITO_PERSISTENCE_QUERY_TIMEOUT = "kogito.persistence.query.timeout.millis";
+    public static final String KOGITO_PERSISTENCE_POSTGRESQL_CONNECTION_URI = "kogito.persistence.postgresql.connection.uri";
+    // MongoDB specific
+    public static final String QUARKUS_MONGODB_DATABASE = "quarkus.mongodb.database";
+    public static final String SPRING_DATA_MONGODB_DATABASE = "spring.data.mongodb.database";
+    public static final String KOGITO_PERSISTENCE_TRANSACTION_ENABLED = "kogito.persistence.transaction.enabled";
+    // File System specific
+    public static final String KOGITO_PERSISTENCE_FILESYSTEM_PATH = "kogito.persistence.filesystem.path";
+    // Kafka specific
+    public static final String QUARKUS_KAFKA_STREAMS_TOPICS_PROP = "quarkus.kafka-streams.topics";
+
+    /**
+     * Constants used during codegen
+     */
+    protected static final String KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
+    protected static final String KOGITO_PROCESS_INSTANCE_FACTORY_IMPL = "KogitoProcessInstancesFactoryImpl";
+    protected static final String KOGITO_PROCESS_INSTANCE_PACKAGE = "org.kie.kogito.persistence";
+    protected static final String CLIENT = "client";
+    protected static final String QUERY_TIMEOUT = "queryTimeout";
+    protected static final String AUTO_DDL = "autoDDL";
+    protected static final String KOGITO = "kogito";
+    protected static final String OR_ELSE = "orElse";
+    protected static final String JAVA = ".java";
+    protected static final String OPTIMISTIC_LOCK = "lock";
     protected static final String PATH_NAME = "path";
-    private static final String KOGITO_PERSISTENCE_FS_PATH_PROP = "kogito.persistence.filesystem.path";
-    private static final String KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
-    private static final String KOGITO_PROCESS_INSTANCE_FACTORY_IMPL = "KogitoProcessInstancesFactoryImpl";
-    private static final String KOGITO_PROCESS_INSTANCE_PACKAGE = "org.kie.kogito.persistence";
-    private static final String TRANSACTION_MANAGER_NAME = "transactionManager";
-    private static final String MONGODB_TRANSACTION_MANAGER_IMPL = "MongoDBTransactionManagerImpl";
-    private static final String MONGODB_TRANSACTION_MANAGER_PACKAGE = "org.kie.kogito.mongodb.transaction";
-    private static final String MONGODB_TRANSACTION_MANAGER_FULLNAME = "org.kie.kogito.mongodb.transaction.MongoDBTransactionManager";
-    private static final String MONGODB_DB_NAME = "dbName";
-    private static final String QUARKUS_PERSISTENCE_MONGODB_NAME_PROP = "quarkus.mongodb.database";
-    private static final String SPRINGBOOT_PERSISTENCE_MONGODB_NAME_PROP = "spring.data.mongodb.database";
-    private static final String TRANSACTION_ENABLED = "enabled";
-    private static final String TRANSACTION_ENABLED_PROP = "kogito.persistence.transaction.enabled";
-    private static final String OR_ELSE = "orElse";
-    private static final String JAVA = ".java";
-    private static final String KOGITO_PERSISTENCE_QUERY_TIMEOUT = "kogito.persistence.query.timeout.millis";
-    private static final String OPTIMISTIC_LOCK = "lock";
-    private static final String OPTIMISTIC_LOCK_PROP = "kogito.persistence.optimistic.lock";
+    protected static final String MONGODB_DB_NAME = "dbName";
+    protected static final String TRANSACTION_ENABLED = "enabled";
+    protected static final String TEMPLATE_NAME = "templateName";
+    protected static final String TRANSACTION_MANAGER_NAME = "transactionManager";
+    protected static final String MONGODB_TRANSACTION_MANAGER_IMPL = "MongoDBTransactionManagerImpl";
+    protected static final String MONGODB_TRANSACTION_MANAGER_PACKAGE = "org.kie.kogito.mongodb.transaction";
+    protected static final String MONGODB_TRANSACTION_MANAGER_FULLNAME = "org.kie.kogito.mongodb.transaction.MongoDBTransactionManager";
+
+    /**
+     * Generic PersistenceGenerator constants
+     */
+    public static final String GENERATOR_NAME = "persistence";
+    protected static final String CLASS_TEMPLATES_PERSISTENCE = "/class-templates/persistence/";
 
     private final ProtoGenerator protoGenerator;
 
@@ -146,6 +176,9 @@ public class PersistenceGenerator extends AbstractGenerator {
                 throw new IllegalArgumentException("Unknown persistenceType " + persistenceType());
         }
 
+        generatedFiles.addAll(generateProtoMarshaller());
+        generatedFiles.addAll(generateProtoForDataIndex());
+
         return generatedFiles;
     }
 
@@ -156,7 +189,7 @@ public class PersistenceGenerator extends AbstractGenerator {
     }
 
     public String persistenceType() {
-        return context().getApplicationProperty("kogito.persistence.type").orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
+        return context().getApplicationProperty(KOGITO_PERSISTENCE_TYPE).orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
     }
 
     protected Collection<GeneratedFile> infinispanBasedPersistence() {
@@ -190,7 +223,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             persistenceProviderClazz.addMember(templateNameMethod);
         }
 
-        Collection<GeneratedFile> generatedFiles = protobufBasedPersistence();
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         CompilationUnit compilationUnit = new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE);
         compilationUnit.getTypes().add(persistenceProviderClazz);
         addOptimisticLockFlag(persistenceProviderClazz);
@@ -208,7 +241,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             context().getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
         }
 
-        Collection<GeneratedFile> generatedFiles = protobufBasedPersistence();
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         TemplatedGenerator generator = TemplatedGenerator.builder().withTemplateBasePath(CLASS_TEMPLATES_PERSISTENCE)
                 .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
                 .withPackageName(KOGITO_PROCESS_INSTANCE_PACKAGE)
@@ -236,7 +269,12 @@ public class PersistenceGenerator extends AbstractGenerator {
         return generatedFiles;
     }
 
-    private Collection<GeneratedFile> protobufBasedPersistence() {
+    protected Collection<GeneratedFile> generateProtoMarshaller() {
+        if (!hasProtoMarshaller(context())) {
+            // TODO implement a validation check to verify that data classes implement Serializable
+            LOGGER.debug("Proto marshaller generation is skipped because " + KOGITO_PERSISTENCE_PROTO_MARSHALLER + "=false");
+            return Collections.emptyList();
+        }
         Proto proto = protoGenerator.protoOfDataClasses(context().getPackageName(), "import \"kogito-types.proto\";");
 
         List<String> variableMarshallers = new ArrayList<>();
@@ -251,8 +289,6 @@ public class PersistenceGenerator extends AbstractGenerator {
         } catch (IOException e) {
             throw new UncheckedIOException("Impossible to obtain marshaller CompilationUnits", e);
         }
-
-        Collection<GeneratedFile> generatedFiles = new ArrayList<>(protoGenerator.generateProtoFiles()); // protofiles for indexing
 
         Collection<GeneratedFile> protoFiles = new ArrayList<>();
         try {
@@ -269,7 +305,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                 typesURI,
                 protoContent));
 
-        generatedFiles.addAll(protoFiles);
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>(protoFiles);
 
         if (!marshallers.isEmpty()) {
 
@@ -349,8 +385,25 @@ public class PersistenceGenerator extends AbstractGenerator {
                     "META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy",
                     fqnProtoStreamMarshaller + "\n"));
         }
-
         return generatedFiles;
+    }
+
+    protected Collection<GeneratedFile> generateProtoForDataIndex() {
+        if (!hasDataIndexProto(context())) {
+            LOGGER.debug("Proto generation for data-index is skipped because " + KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION + "=false");
+            return Collections.emptyList();
+        }
+        return protoGenerator.generateProtoFiles();
+    }
+
+    public static boolean hasProtoMarshaller(KogitoBuildContext context) {
+        return "true".equalsIgnoreCase(context.getApplicationProperty(KOGITO_PERSISTENCE_PROTO_MARSHALLER)
+                .orElse(KOGITO_PERSISTENCE_PROTO_MARSHALLER_DEFAULT));
+    }
+
+    public static boolean hasDataIndexProto(KogitoBuildContext context) {
+        return "true".equalsIgnoreCase(context.getApplicationProperty(KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION)
+                .orElse(KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION_DEFAULT));
     }
 
     private CompilationUnit generateProtostreamBaseMarshaller(TemplatedGenerator generatorProtostreamSerialization, String protobufType, Class<?> javaClazz, String method) {
@@ -400,7 +453,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             FieldDeclaration pathField = new FieldDeclaration().addVariable(new VariableDeclarator()
                     .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getCanonicalName()))))
                     .setName(PATH_NAME));
-            context().getDependencyInjectionAnnotator().withConfigInjection(pathField, KOGITO_PERSISTENCE_FS_PATH_PROP);
+            context().getDependencyInjectionAnnotator().withConfigInjection(pathField, KOGITO_PERSISTENCE_FILESYSTEM_PATH);
             // allow to inject path for the file system storage
             BlockStmt pathMethodBody = new BlockStmt();
             pathMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(PATH_NAME), OR_ELSE).addArgument(new StringLiteralExpr("/tmp"))));
@@ -416,9 +469,8 @@ public class PersistenceGenerator extends AbstractGenerator {
             generatedClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,
                     new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(persistenceProviderClazz));
         }
-        Collection<GeneratedFile> generatedFiles = protobufBasedPersistence();
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         generatedClientFile.ifPresent(generatedFiles::add);
-
         return generatedFiles;
     }
 
@@ -444,9 +496,9 @@ public class PersistenceGenerator extends AbstractGenerator {
                     .setName(MONGODB_DB_NAME));
             //injecting dbName from quarkus/springboot properties else default kogito
             if (context() instanceof QuarkusKogitoBuildContext) {
-                context().getDependencyInjectionAnnotator().withConfigInjection(dbNameField, QUARKUS_PERSISTENCE_MONGODB_NAME_PROP);
+                context().getDependencyInjectionAnnotator().withConfigInjection(dbNameField, QUARKUS_MONGODB_DATABASE);
             } else if (context() instanceof SpringBootKogitoBuildContext) {
-                context().getDependencyInjectionAnnotator().withConfigInjection(dbNameField, SPRINGBOOT_PERSISTENCE_MONGODB_NAME_PROP);
+                context().getDependencyInjectionAnnotator().withConfigInjection(dbNameField, SPRING_DATA_MONGODB_DATABASE);
             }
 
             BlockStmt dbNameMethodBody = new BlockStmt();
@@ -465,7 +517,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                     new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(persistenceProviderClazz));
         }
 
-        Collection<GeneratedFile> generatedFiles = protobufBasedPersistence();
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         generatedClientFile.ifPresent(generatedFiles::add);
         generatedTMFile.ifPresent(generatedFiles::add);
         return generatedFiles;
@@ -477,7 +529,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                 .setModifiers(Modifier.Keyword.PUBLIC)
                 .addExtendedType(KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE);
 
-        Collection<GeneratedFile> generatedFiles = protobufBasedPersistence();
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         if (context().hasDI()) {
             context().getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
 
@@ -530,7 +582,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                                                 new MethodCallExpr(new NameExpr(pgPoolClass), "pool")))));
 
                 //inserting DI annotations
-                context().getDependencyInjectionAnnotator().withConfigInjection(uriConfigParam, KOGITO_POSTGRESQL_CONNECTION_URI);
+                context().getDependencyInjectionAnnotator().withConfigInjection(uriConfigParam, KOGITO_PERSISTENCE_POSTGRESQL_CONNECTION_URI);
                 context().getDependencyInjectionAnnotator().withProduces(clientProviderMethod, true);
                 context().getDependencyInjectionAnnotator().withNamed(clientProviderMethod, KOGITO);
                 context().getDependencyInjectionAnnotator().withApplicationComponent(pgClientProducerClazz);
@@ -544,7 +596,6 @@ public class PersistenceGenerator extends AbstractGenerator {
         Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,
                 new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(persistenceProviderClazz));
         generatedPgClientFile.ifPresent(generatedFiles::add);
-
         return generatedFiles;
     }
 
@@ -554,7 +605,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                 .setModifiers(Modifier.Keyword.PUBLIC)
                 .addExtendedType(KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE);
 
-        Collection<GeneratedFile> generatedFiles = protobufBasedPersistence();
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         if (context().hasDI()) {
             context().getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
 
@@ -568,10 +619,8 @@ public class PersistenceGenerator extends AbstractGenerator {
                             .addArgument(new NameExpr("dataSource"))
                             .addArgument(AUTO_DDL)));
             Optional<Parameter> autoDDL = constructor.getParameterByName(AUTO_DDL);
-            if (autoDDL.isPresent()) {
-                context().getDependencyInjectionAnnotator().withConfigInjection(
-                        autoDDL.get(), KOGITO_PERSISTENCE_AUTO_DDL, Boolean.TRUE.toString());
-            }
+            autoDDL.ifPresent(parameter -> context().getDependencyInjectionAnnotator().withConfigInjection(
+                    parameter, KOGITO_PERSISTENCE_AUTO_DDL, Boolean.TRUE.toString()));
             context().getDependencyInjectionAnnotator().withInjection(constructor);
             //empty constructor for DI
             persistenceProviderClazz.addConstructor(Keyword.PROTECTED);
@@ -581,7 +630,6 @@ public class PersistenceGenerator extends AbstractGenerator {
         Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,
                 new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(persistenceProviderClazz));
         generatedPgClientFile.ifPresent(generatedFiles::add);
-
         return generatedFiles;
     }
 
@@ -590,7 +638,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                 .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, Boolean.class.getCanonicalName()))))
                 .setName(OPTIMISTIC_LOCK));
         if (context().hasDI()) {
-            context().getDependencyInjectionAnnotator().withConfigInjection(lockField, OPTIMISTIC_LOCK_PROP);
+            context().getDependencyInjectionAnnotator().withConfigInjection(lockField, KOGITO_PERSISTENCE_OPTIMISTIC_LOCK);
         }
 
         BlockStmt lockMethodBody = new BlockStmt();
@@ -639,8 +687,9 @@ public class PersistenceGenerator extends AbstractGenerator {
                         new SimpleName(Optional.class.getCanonicalName()),
                         NodeList.nodeList(new ClassOrInterfaceType(null, Boolean.class.getCanonicalName()))))
                 .setName(TRANSACTION_ENABLED));
-        context().getDependencyInjectionAnnotator().withConfigInjection(enabledField, TRANSACTION_ENABLED_PROP);
-
+        if (context().hasDI()) {
+            context().getDependencyInjectionAnnotator().withConfigInjection(enabledField, KOGITO_PERSISTENCE_TRANSACTION_ENABLED);
+        }
         BlockStmt enabledMethodBody = new BlockStmt();
         enabledMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(TRANSACTION_ENABLED), OR_ELSE).addArgument(new BooleanLiteralExpr(false))));
         MethodDeclaration enabledMethod = new MethodDeclaration()

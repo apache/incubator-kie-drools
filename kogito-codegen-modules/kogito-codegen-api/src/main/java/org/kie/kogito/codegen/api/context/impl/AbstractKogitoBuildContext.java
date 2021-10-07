@@ -181,6 +181,16 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         this.contextAttributes.put(key, value);
     }
 
+    @Override
+    public String toString() {
+        return "KogitoBuildContext{" +
+                "contextName='" + contextName + '\'' +
+                ", applicationProperties=" + applicationProperties +
+                ", packageName='" + packageName + '\'' +
+                ", addonsConfig=" + addonsConfig +
+                '}';
+    }
+
     protected abstract static class AbstractBuilder implements Builder {
 
         protected String packageName = DEFAULT_PACKAGE_NAME;

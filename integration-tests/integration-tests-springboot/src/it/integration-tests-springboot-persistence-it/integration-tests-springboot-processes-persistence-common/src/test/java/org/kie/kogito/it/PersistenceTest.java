@@ -15,10 +15,11 @@
  */
 package org.kie.kogito.it;
 
-import java.util.Collections;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Person;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import io.restassured.RestAssured;
@@ -48,9 +49,10 @@ public abstract class PersistenceTest {
 
     @Test
     void testPersistence() {
+        Person person = new Person("Name", 10);
         final String pid = given().contentType(ContentType.JSON)
                 .when()
-                .body(Collections.singletonMap("var1", "Tiago"))
+                .body(Map.of("var1", "Tiago", "person", person))
                 .post("/{processId}", PROCESS_ID)
                 .then()
                 .statusCode(201)
@@ -58,6 +60,8 @@ public abstract class PersistenceTest {
                 .body("id", not(isEmptyOrNullString()))
                 .body("var1", equalTo("Tiago"))
                 .body("var2", equalTo("Hello Tiago! Script"))
+                .body("person.name", equalTo(person.getName()))
+                .body("person.age", equalTo(person.getAge()))
                 .extract()
                 .path("id");
 
@@ -69,6 +73,8 @@ public abstract class PersistenceTest {
                 .body("id", not(isEmptyOrNullString()))
                 .body("var1", equalTo("Tiago"))
                 .body("var2", equalTo("Hello Tiago! Script"))
+                .body("person.name", equalTo(person.getName()))
+                .body("person.age", equalTo(person.getAge()))
                 .extract()
                 .path("id");
 

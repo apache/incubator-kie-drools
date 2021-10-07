@@ -22,5 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.class)
 public class InfinispanPersistenceIT extends PersistenceTest {
-
+    // This test is disabling proto marshaller generator (kogito.persistence.proto.marshaller=false) to fallback
+    // on ProtobufObjectMarshallerStrategy that uses Java serialization (thus domain class must implement Serializable).
 }

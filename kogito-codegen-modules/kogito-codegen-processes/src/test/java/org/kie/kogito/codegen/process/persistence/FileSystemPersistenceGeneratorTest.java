@@ -16,7 +16,6 @@
 package org.kie.kogito.codegen.process.persistence;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -24,11 +23,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
-import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -39,22 +36,17 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.FILESYSTEM_PERSISTENCE_TYPE;
+import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.KOGITO_PERSISTENCE_TYPE;
 import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.PATH_NAME;
+import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.hasDataIndexProto;
+import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.hasProtoMarshaller;
 
-class FileSystemPersistenceGeneratorTest {
-
-    private static final String TEST_RESOURCES = "src/test/resources";
+class FileSystemPersistenceGeneratorTest extends AbstractPersistenceGeneratorTest {
 
     @ParameterizedTest
-    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    void test(KogitoBuildContext.Builder contextBuilder) {
-        KogitoBuildContext context = contextBuilder
-                .withApplicationProperties(new File(TEST_RESOURCES))
-                .withPackageName(this.getClass().getPackage().getName())
-                .withAddonsConfig(AddonsConfig.builder().withPersistence(true).build())
-                .build();
-
-        context.setApplicationProperty("kogito.persistence.type", FILESYSTEM_PERSISTENCE_TYPE);
+    @MethodSource("persistenceTestContexts")
+    void test(KogitoBuildContext context) {
+        context.setApplicationProperty(KOGITO_PERSISTENCE_TYPE, persistenceType());
 
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
@@ -62,9 +54,10 @@ class FileSystemPersistenceGeneratorTest {
                 protoGenerator);
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
-        assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE)).count()).isEqualTo(2);
-        assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE) && gf.relativePath().endsWith(".json")).count()).isEqualTo(1);
-        int expectedNumberOfFiles = context.hasRESTForGenerator(persistenceGenerator) ? 15 : 14;
+        int factoryFiles = context.hasRESTForGenerator(persistenceGenerator) ? 1 : 0;
+        int marshallerFiles = hasProtoMarshaller(context) ? 14 : 0;
+        int dataIndexFiles = hasDataIndexProto(context) ? 2 : 0;
+        int expectedNumberOfFiles = factoryFiles + marshallerFiles + dataIndexFiles;
         assertThat(generatedFiles).hasSize(expectedNumberOfFiles);
 
         if (context.hasDI()) {
@@ -92,5 +85,10 @@ class FileSystemPersistenceGeneratorTest {
             assertThat(fieldDeclaration.get().getVariables()).hasSize(1);
             assertThat(fieldDeclaration.get().getVariables().get(0).getName().asString()).isEqualTo(PATH_NAME);
         }
+    }
+
+    @Override
+    protected String persistenceType() {
+        return FILESYSTEM_PERSISTENCE_TYPE;
     }
 }

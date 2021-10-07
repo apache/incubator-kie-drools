@@ -16,7 +16,6 @@
 package org.kie.kogito.codegen.process.persistence;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -25,14 +24,12 @@ import java.util.Optional;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
-import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -50,34 +47,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.KOGITO_PERSISTENCE_TYPE;
 import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.MONGODB_PERSISTENCE_TYPE;
 
-class MongoDBPersistenceGeneratorTest {
-
-    private static final String TEST_RESOURCES = "src/test/resources";
+class MongoDBPersistenceGeneratorTest extends AbstractPersistenceGeneratorTest {
 
     private static final String PERSISTENCE_FILE_PATH = "org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java";
     private static final String TRANSACTION_FILE_PATH = "org/kie/kogito/mongodb/transaction/MongoDBTransactionManagerImpl.java";
 
     @ParameterizedTest
-    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    void test(KogitoBuildContext.Builder contextBuilder) {
-        KogitoBuildContext context = contextBuilder
-                .withApplicationProperties(new File(TEST_RESOURCES))
-                .withPackageName(this.getClass().getPackage().getName())
-                .withAddonsConfig(AddonsConfig.builder().withPersistence(true).build())
-                .build();
-
-        context.setApplicationProperty("kogito.persistence.type", MONGODB_PERSISTENCE_TYPE);
+    @MethodSource("persistenceTestContexts")
+    void test(KogitoBuildContext context) {
+        context.setApplicationProperty(KOGITO_PERSISTENCE_TYPE, persistenceType());
 
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
                 context,
                 protoGenerator);
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
-
-        assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE)).count()).isEqualTo(2);
-        assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE) && gf.relativePath().endsWith(".json")).count()).isEqualTo(1);
 
         if (context.hasDI()) {
             Optional<GeneratedFile> generatedCLASSFile = generatedFiles.stream().filter(gf -> gf.category() == GeneratedFileType.SOURCE.category())
@@ -176,5 +163,10 @@ class MongoDBPersistenceGeneratorTest {
             default:
                 throw new RuntimeException("No config injection annotation found");
         }
+    }
+
+    @Override
+    protected String persistenceType() {
+        return MONGODB_PERSISTENCE_TYPE;
     }
 }
