@@ -18,7 +18,11 @@ package org.kie.persistence.jdbc;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import javax.sql.DataSource;
+
+import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.persistence.jdbc.JDBCProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
@@ -36,12 +40,13 @@ import static org.mockito.Mockito.verify;
 
 class JdbcProcessInstancesIT extends TestHelper {
 
-    @Test
-    void testBasicTaskFlow() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2", false);
+    @ParameterizedTest
+    @MethodSource("datasources")
+    void testBasicTaskFlow(DataSource dataSource) {
+        var factory = new TestProcessInstancesFactory(dataSource, false);
+        BpmnProcess process = createProcess(factory, null, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
-                .singletonMap("test",
-                        "test")));
+                .singletonMap("test", "test")));
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
@@ -71,9 +76,11 @@ class JdbcProcessInstancesIT extends TestHelper {
         assertThat(process.instances().values()).isEmpty();
     }
 
-    @Test
-    void testBasicFlow() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2", false);
+    @ParameterizedTest
+    @MethodSource("datasources")
+    void testBasicFlow(DataSource dataSource) {
+        var factory = new TestProcessInstancesFactory(dataSource, false);
+        BpmnProcess process = createProcess(factory, null, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
                 .singletonMap("test",
                         "test")));

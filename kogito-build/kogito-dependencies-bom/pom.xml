@@ -29,6 +29,8 @@
     <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
     <version.com.google.protobuf>3.15.8</version.com.google.protobuf>
+    <!-- currently required for integration test only -->
+    <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
 
     <version.org.openapitools>5.0.1</version.org.openapitools>
     <version.org.openapitools.jackson.databind.nullable>0.2.0</version.org.openapitools.jackson.databind.nullable>

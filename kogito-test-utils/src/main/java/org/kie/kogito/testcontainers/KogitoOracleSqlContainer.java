@@ -21,20 +21,21 @@ import java.util.function.Consumer;
 import org.kie.kogito.test.resources.TestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 
 /**
- * PostgreSQL Container for Kogito examples.
+ * OracleXE Container for Kogito examples.
  */
-public class KogitoPostgreSqlContainer extends PostgreSQLContainer<KogitoPostgreSqlContainer> implements TestResource {
+public class KogitoOracleSqlContainer extends OracleContainer implements TestResource {
 
-    public static final String POSTGRESQL_CONNECTION_URI = "kogito.persistence.postgresql.connection.uri";
-    private static final Logger LOGGER = LoggerFactory.getLogger(KogitoPostgreSqlContainer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KogitoOracleSqlContainer.class);
 
-    public KogitoPostgreSqlContainer() {
-        super("postgres:9.6.12");
+    public static final String ORACLE_CONNECTION_URI = "kogito.persistence.oracle.connection.uri";
+
+    public KogitoOracleSqlContainer() {
+        super("oracleinanutshell/oracle-xe-11g");
         withLogConsumer(getLogger());
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
@@ -47,21 +48,21 @@ public class KogitoPostgreSqlContainer extends PostgreSQLContainer<KogitoPostgre
     @Override
     public void start() {
         super.start();
-        LOGGER.info("PostgreSql server: {}", this.getContainerIpAddress() + ":" + this.getMappedPort(POSTGRESQL_PORT));
+        LOGGER.info("Oracle server: {}", this.getContainerIpAddress() + ":" + this.getOraclePort());
     }
 
     @Override
     public int getMappedPort() {
-        return getMappedPort(POSTGRESQL_PORT);
+        return getOraclePort();
     }
 
     @Override
     public String getResourceName() {
-        return "postgresql";
+        return "oracle";
     }
 
     public String getReactiveUrl() {
-        final String connectionTemplate = "postgresql://{0}:{1}@{2}:{3}/{4}?search_path={5}";
+        final String connectionTemplate = "oracle://{0}:{1}@{2}:{3}/{4}?search_path={5}";
         final String user = getUsername();
         final String server = getHost();
         final String secret = getPassword();
@@ -69,5 +70,10 @@ public class KogitoPostgreSqlContainer extends PostgreSQLContainer<KogitoPostgre
         final String database = getDatabaseName();
         final String schema = "public";
         return MessageFormat.format(connectionTemplate, user, secret, server, port, database, schema);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
     }
 }

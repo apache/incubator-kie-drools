@@ -18,7 +18,10 @@ package org.kie.persistence.jdbc;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import javax.sql.DataSource;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.persistence.jdbc.JDBCProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
@@ -30,9 +33,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JdbcProcessInstancesWithLockIT extends TestHelper {
 
-    @Test
-    public void testUpdate() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2", true);
+    @ParameterizedTest
+    @MethodSource("datasources")
+    public void testUpdate(DataSource dataSource) {
+        var factory = new TestProcessInstancesFactory(dataSource, true);
+        BpmnProcess process = createProcess(factory, null, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
 
@@ -60,9 +65,11 @@ class JdbcProcessInstancesWithLockIT extends TestHelper {
         assertThat(process.instances().values()).isEmpty();
     }
 
-    @Test
-    public void testRemove() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2", true);
+    @ParameterizedTest
+    @MethodSource("datasources")
+    public void testRemove(DataSource dataSource) {
+        var factory = new TestProcessInstancesFactory(dataSource, true);
+        BpmnProcess process = createProcess(factory, null, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
 
