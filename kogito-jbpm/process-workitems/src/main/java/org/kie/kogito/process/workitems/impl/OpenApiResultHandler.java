@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.openapi;
+package org.kie.kogito.process.workitems.impl;
 
 import java.util.function.BiFunction;
 

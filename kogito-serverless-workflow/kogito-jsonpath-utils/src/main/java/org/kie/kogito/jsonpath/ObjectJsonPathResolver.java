@@ -13,45 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.functions;
+package org.kie.kogito.jsonpath;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.workitems.impl.WorkItemHandlerParamResolver;
+import org.kie.kogito.process.workitems.impl.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
-public class JsonPathResolver implements WorkItemHandlerParamResolver {
+public class ObjectJsonPathResolver extends ExpressionWorkItemResolver {
 
-    private static final Configuration jsonPathConfig = Configuration
-            .builder()
-            .mappingProvider(new JacksonMappingProvider())
-            .jsonProvider(new JacksonJsonNodeJsonProvider())
-            .build();
-
-    private String jsonPathExpr;
-    private String paramName;
-
-    public JsonPathResolver(String jsonPathExpr, String paramName) {
-        this.jsonPathExpr = jsonPathExpr;
-        this.paramName = paramName;
+    public ObjectJsonPathResolver(String jsonPathExpr, String paramName) {
+        super(jsonPathExpr, paramName);
     }
 
     @Override
-    public Object apply(KogitoWorkItem workItem) {
-        JsonNode node = JsonPath
-                .using(jsonPathConfig)
-                .parse(workItem.getParameter(paramName))
-                .read(jsonPathExpr, JsonNode.class);
-        return readValue(node);
+    protected Object evalExpression(Object inputModel) {
+        return readValue(JsonPathUtils.evalExpr(inputModel, expression));
     }
 
     private Object readValue(JsonNode node) {
@@ -70,9 +51,10 @@ public class JsonPathResolver implements WorkItemHandlerParamResolver {
                 return null;
             case ARRAY:
                 return readArray((ArrayNode) node);
-            default:
             case STRING:
                 return node.asText();
+            default:
+                return node;
         }
     }
 

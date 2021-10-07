@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.openapi;
+package org.kogito.workitem.jsonpath;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.jsonpath.JsonNodeJsonPathResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,22 +28,32 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-class JsonNodeParameterResolverTest {
+class JsonNodeJsonPathResolverTest {
 
     final ObjectMapper mapper = new ObjectMapper();
+    private KogitoWorkItem workItem;
+
+    @BeforeEach
+    void setup() {
+        workItem = mock(KogitoWorkItem.class);
+
+    }
 
     @Test
     void verifyMultipleBranchesNode() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
+        when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "{\n" +
                 "   \"SubtractionOperation\":{\n" +
                 "      \"leftElement\":\"$.fahrenheit\",\n" +
                 "      \"rightElement\":\"$.subtractValue\"\n" +
                 "   }\n" +
                 "}";
-        final JsonNodeParameterResolver resolver = new JsonNodeParameterResolver(parameterDefinition);
-        final JsonNode processedNode = resolver.apply(inputModel);
+        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertThat(processedNode.get("SubtractionOperation").get("leftElement").asInt(), is(32));
         assertThat(processedNode.get("SubtractionOperation").get("rightElement").asInt(), is(3));
     }
@@ -48,6 +61,7 @@ class JsonNodeParameterResolverTest {
     @Test
     void verifyArrayNode() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
+        when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "[\n" +
                 "   {\n" +
                 "      \"leftElement\":\"$.fahrenheit\"\n" +
@@ -56,8 +70,8 @@ class JsonNodeParameterResolverTest {
                 "      \"rightElement\":\"$.subtractValue\"\n" +
                 "   }\n" +
                 "]";
-        final JsonNodeParameterResolver resolver = new JsonNodeParameterResolver(parameterDefinition);
-        final JsonNode processedNode = resolver.apply(inputModel);
+        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isArray());
         assertThat(processedNode.findValue("leftElement").asInt(), equalTo(32));
         assertThat(processedNode.findValue("rightElement").asInt(), equalTo(3));
@@ -66,9 +80,10 @@ class JsonNodeParameterResolverTest {
     @Test
     void verifyValueNode() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
+        when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "\"$.fahrenheit\"";
-        final JsonNodeParameterResolver resolver = new JsonNodeParameterResolver(parameterDefinition);
-        final JsonNode processedNode = resolver.apply(inputModel);
+        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isValueNode());
         assertThat(processedNode.asInt(), equalTo(32));
     }
@@ -76,9 +91,10 @@ class JsonNodeParameterResolverTest {
     @Test
     void verifyArrayValueNode() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
+        when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "[\"$.fahrenheit\", \"$.subtractValue\"]";
-        final JsonNodeParameterResolver resolver = new JsonNodeParameterResolver(parameterDefinition);
-        final JsonNode processedNode = resolver.apply(inputModel);
+        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isArray());
         assertThat(processedNode.get(0).asInt(), equalTo(32));
         assertThat(processedNode.get(1).asInt(), equalTo(3));
@@ -87,9 +103,10 @@ class JsonNodeParameterResolverTest {
     @Test
     void verifyParameterAsJsonPath() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
+        when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "$.fahrenheit";
-        final JsonNodeParameterResolver resolver = new JsonNodeParameterResolver(parameterDefinition);
-        final JsonNode processedNode = resolver.apply(inputModel);
+        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isValueNode());
         assertThat(processedNode.asInt(), equalTo(32));
     }

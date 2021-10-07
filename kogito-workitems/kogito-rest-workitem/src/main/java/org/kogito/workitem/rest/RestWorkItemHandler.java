@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.UnaryOperator;
 
 import org.jbpm.process.core.Process;
 import org.jbpm.process.core.context.variable.Variable;
@@ -36,7 +35,6 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
-import org.kie.kogito.process.workitems.impl.WorkItemHandlerParamResolver;
 import org.kogito.workitem.rest.bodybuilders.DefaultWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.bodybuilders.RestWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.resulthandlers.DefaultRestWorkItemHandlerResult;
@@ -68,23 +66,6 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     private static final RestWorkItemHandlerResult DEFAULT_RESULT_HANDLER = new DefaultRestWorkItemHandlerResult();
     private static final RestWorkItemHandlerBodyBuilder DEFAULT_BODY_BUILDER = new DefaultWorkItemHandlerBodyBuilder();
     private static final Map<String, RestWorkItemHandlerBodyBuilder> BODY_BUILDERS = new ConcurrentHashMap<>();
-
-    // package scoped to allow unit test
-    static class RestUnaryOperator implements UnaryOperator<Object> {
-
-        private KogitoWorkItem workItem;
-
-        public RestUnaryOperator(KogitoWorkItem workItem) {
-            this.workItem = workItem;
-        }
-
-        @Override
-        public Object apply(Object value) {
-            return value instanceof WorkItemHandlerParamResolver
-                    ? ((WorkItemHandlerParamResolver) value).apply(workItem)
-                    : value;
-        }
-    }
 
     private WebClient client;
 
@@ -118,8 +99,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
 
         logger.debug("Filtered parameters are {}", parameters);
         // create request
-        UnaryOperator<Object> resolver = new RestUnaryOperator(workItem);
-        endPoint = resolvePathParams(endPoint, parameters, resolver);
+        endPoint = resolvePathParams(endPoint, parameters);
         Optional<URL> url = getUrl(endPoint);
         String host = url.map(java.net.URL::getHost).orElse(hostProp);
         int port = url.map(java.net.URL::getPort).orElse(portProp);
@@ -129,7 +109,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         if (user != null && !user.trim().isEmpty() && password != null && !password.trim().isEmpty()) {
             request.basicAuthentication(user, password);
         }
-        HttpResponse<Buffer> response = method == HttpMethod.POST || method == HttpMethod.PUT ? request.sendJsonAndAwait(bodyBuilder.apply(inputModel, parameters, resolver)) : request.sendAndAwait();
+        HttpResponse<Buffer> response = method == HttpMethod.POST || method == HttpMethod.PUT ? request.sendJsonAndAwait(bodyBuilder.apply(inputModel, parameters)) : request.sendAndAwait();
         manager.completeWorkItem(workItem.getStringId(), targetInfo != null ? Collections.singletonMap(RESULT,
                 resultHandler.apply(targetInfo, response)) : Collections.emptyMap());
 
@@ -212,7 +192,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     //  package scoped to allow unit test
-    static String resolvePathParams(String endPoint, Map<String, Object> parameters, UnaryOperator<Object> resolver) {
+    static String resolvePathParams(String endPoint, Map<String, Object> parameters) {
         Set<String> toRemove = new HashSet<>();
         int start = endPoint.indexOf('{');
         if (start == -1) {
@@ -225,7 +205,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
                 throw new IllegalArgumentException("malformed endpoint should contain enclosing '}' " + endPoint);
             }
             final String key = sb.substring(start + 1, end);
-            final Object value = resolver.apply(parameters.get(key));
+            final Object value = parameters.get(key);
             if (value == null) {
                 throw new IllegalArgumentException("missing parameter " + key);
             }

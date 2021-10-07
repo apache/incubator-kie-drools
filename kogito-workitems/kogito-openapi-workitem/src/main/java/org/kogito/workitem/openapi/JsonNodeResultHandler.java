@@ -17,6 +17,9 @@ package org.kogito.workitem.openapi;
 
 import java.io.IOException;
 
+import org.kie.kogito.process.workitems.impl.OpenApiResultHandler;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -25,17 +28,31 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonNodeResultHandler implements OpenApiResultHandler {
 
-    private final JsonNodeParser parser;
     private final ObjectMapper mapper;
 
     public JsonNodeResultHandler() {
         this.mapper = new ObjectMapper();
-        this.parser = new JsonNodeParser(mapper);
     }
 
     @Override
     public Object apply(Object inputModel, JsonNode response) {
-        return this.merge(response, this.parser.parse(inputModel));
+        return this.merge(response, fromModel(inputModel));
+    }
+
+    private JsonNode fromModel(Object inputModel) {
+        if (inputModel instanceof JsonNode) {
+            return (JsonNode) inputModel;
+        }
+        if (inputModel instanceof String) {
+
+            try {
+                return mapper.readTree((String) inputModel);
+            } catch (JsonProcessingException e) {
+                // fallback to valueToTree
+            }
+        }
+
+        return mapper.valueToTree(inputModel);
     }
 
     public Object merge(JsonNode src, JsonNode dest) {

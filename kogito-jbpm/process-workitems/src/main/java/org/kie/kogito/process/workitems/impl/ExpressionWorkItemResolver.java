@@ -15,11 +15,23 @@
  */
 package org.kie.kogito.process.workitems.impl;
 
-import java.util.function.Function;
-
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
-/* Added to make it easier to search for ParamResolver function implementations, 
- * see https://github.com/kiegroup/kogito-runtimes/pull/778#pullrequestreview-493382982 */
-public interface WorkItemHandlerParamResolver extends Function<KogitoWorkItem, Object> {
+public abstract class ExpressionWorkItemResolver implements WorkItemParamResolver {
+
+    protected final String expression;
+    private final String paramName;
+
+    protected ExpressionWorkItemResolver(String expression, String paramName) {
+        this.expression = expression;
+        this.paramName = paramName;
+    }
+
+    @Override
+    public Object apply(KogitoWorkItem workItem) {
+        return evalExpression(workItem.getParameter(paramName));
+
+    }
+
+    protected abstract Object evalExpression(Object inputModel);
 }

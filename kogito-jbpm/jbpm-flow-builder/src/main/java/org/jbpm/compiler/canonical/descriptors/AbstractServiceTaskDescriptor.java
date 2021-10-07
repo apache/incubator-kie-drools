@@ -17,6 +17,7 @@ package org.jbpm.compiler.canonical.descriptors;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.jbpm.compiler.canonical.NodeValidator;
 import org.jbpm.workflow.core.node.DataAssociation;
@@ -25,6 +26,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.process.workitems.impl.ExpressionWorkItemResolver;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
@@ -218,4 +220,11 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
 
         return cls;
     }
+
+    public static Object processWorkItemValue(Object object, String paramName, Class<? extends ExpressionWorkItemResolver> clazz, Predicate<String> isExpression) {
+        return object instanceof CharSequence && isExpression.test(object.toString())
+                ? new WorkItemParamResolverSupplier(clazz, () -> new StringLiteralExpr(object.toString()), () -> new StringLiteralExpr(paramName))
+                : object;
+    }
+
 }

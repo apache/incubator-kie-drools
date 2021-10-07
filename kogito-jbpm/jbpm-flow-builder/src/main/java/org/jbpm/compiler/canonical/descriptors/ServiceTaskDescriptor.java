@@ -118,13 +118,11 @@ public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
         }
     }
 
-    protected Map<String, String> extractTaskParameters() {
+    private Map<String, String> extractTaskParameters() {
         String type = (String) workItemNode.getWork().getParameter("ParameterType");
         Map<String, String> methodParameters = null;
         if (type != null) {
-            if (isDefaultParameterType(type)) {
-                type = inferParameterType();
-            }
+            type = inferParameterType(type);
             methodParameters = Collections.singletonMap("Parameter", type);
         } else {
             methodParameters = new LinkedHashMap<>();
@@ -136,25 +134,22 @@ public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
         return methodParameters;
     }
 
-    // assume 1 single arg as above
-    private String inferParameterType() {
-
-        for (Method m : cls.getMethods()) {
-            if (m.getName().equals(operationName) && m.getParameterCount() == 1) {
-                return m.getParameterTypes()[0].getCanonicalName();
+    private String inferParameterType(String type) {
+        if (type.equals("java.lang.Object") || type.equals("Object")) {
+            for (Method m : cls.getMethods()) {
+                if (m.getName().equals(operationName) && m.getParameterCount() == 1) {
+                    return m.getParameterTypes()[0].getCanonicalName();
+                }
             }
+            throw new IllegalArgumentException(
+                    MessageFormat
+                            .format(
+                                    "Invalid work item \"{0}\": could not find a method called \"{1}\" in class \"{2}\"",
+                                    workItemNode.getName(),
+                                    operationName,
+                                    interfaceName));
         }
-        throw new IllegalArgumentException(
-                MessageFormat
-                        .format(
-                                "Invalid work item \"{0}\": could not find a method called \"{1}\" in class \"{2}\"",
-                                workItemNode.getName(),
-                                operationName,
-                                interfaceName));
-    }
-
-    private boolean isDefaultParameterType(String type) {
-        return type.equals("java.lang.Object") || type.equals("Object");
+        return type;
     }
 
     private String mangledHandlerName(String interfaceName, String operationName, String nodeName) {

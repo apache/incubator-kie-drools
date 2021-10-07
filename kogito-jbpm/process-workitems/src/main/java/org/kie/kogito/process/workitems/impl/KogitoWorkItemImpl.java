@@ -16,10 +16,13 @@
 package org.kie.kogito.process.workitems.impl;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -32,7 +35,7 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     private String id;
     private String name;
     private int state = 0;
-    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters = new ProxyMap(new HashMap<>());
     private Map<String, Object> results = new HashMap<>();
     private String processInstanceId;
     private String deploymentId;
@@ -89,7 +92,7 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
 
     @Override
     public void setParameters(Map<String, Object> parameters) {
-        this.parameters = parameters;
+        this.parameters = new ProxyMap(parameters);
     }
 
     @Override
@@ -99,11 +102,7 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
 
     @Override
     public Object getParameter(String name) {
-        Object value = parameters.get(name);
-        if (value instanceof WorkItemHandlerParamResolver) {
-            value = ((WorkItemHandlerParamResolver) value).apply(this);
-        }
-        return value;
+        return this.parameters.get(name);
     }
 
     @Override
@@ -270,4 +269,262 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     public void setProcessInstance(KogitoProcessInstance processInstance) {
         this.processInstance = processInstance;
     }
+
+    private class ProxyMap implements Map<String, Object> {
+
+        private Map<String, Object> map;
+
+        public ProxyMap(Map<String, Object> map) {
+            this.map = map;
+        }
+
+        @Override
+        public int size() {
+            return map.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return map.isEmpty();
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return map.containsKey(key);
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            return map.containsValue(value);
+        }
+
+        @Override
+        public Object get(Object key) {
+            return processValue(map.get(key));
+        }
+
+        @Override
+        public Object put(String key, Object value) {
+            return map.put(key, value);
+        }
+
+        @Override
+        public Object remove(Object key) {
+            return map.remove(key);
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ? extends Object> m) {
+            map.putAll(m);
+
+        }
+
+        @Override
+        public void clear() {
+            map.clear();
+
+        }
+
+        @Override
+        public Set<String> keySet() {
+            return map.keySet();
+        }
+
+        @Override
+        public Collection<Object> values() {
+            return new ProxyCollection(map.values());
+        }
+
+        @Override
+        public Set<Entry<String, Object>> entrySet() {
+            return new ProxyEntrySet(map.entrySet());
+        }
+    }
+
+    private abstract class AbstractProxyCollection<T> {
+
+        protected Collection<T> values;
+
+        protected AbstractProxyCollection(Collection<T> values) {
+            this.values = values;
+        }
+
+        public int size() {
+            return values.size();
+        }
+
+        public boolean isEmpty() {
+            return values.isEmpty();
+        }
+
+        public boolean contains(Object o) {
+            return values.contains(o);
+        }
+
+        public boolean remove(Object o) {
+            return values.remove(o);
+        }
+
+        public boolean containsAll(Collection<?> c) {
+            return values.containsAll(c);
+        }
+
+        public boolean retainAll(Collection<?> c) {
+            return values.retainAll(c);
+        }
+
+        public boolean removeAll(Collection<?> c) {
+            return values.removeAll(c);
+        }
+
+        public void clear() {
+            values.clear();
+        }
+
+        public boolean addAll(Collection<? extends T> c) {
+            return values.addAll(c);
+        }
+
+        public boolean add(T e) {
+            return values.add(e);
+        }
+
+    }
+
+    private class ProxyEntrySet extends AbstractProxyCollection<Entry<String, Object>> implements
+            Set<Entry<String, Object>> {
+
+        public ProxyEntrySet(Set<Entry<String, Object>> entrySet) {
+            super(entrySet);
+        }
+
+        @Override
+        public Iterator<Entry<String, Object>> iterator() {
+            return new ProxyEntryIterator(values.iterator());
+        }
+
+        @Override
+        public Object[] toArray() {
+            return processEntries(values.toArray());
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return processEntries(values.toArray(a));
+        }
+
+        private <T> T[] processEntries(T[] array) {
+            for (int i = 0; i < array.length; i++) {
+                array[i] = (T) new ProxyEntry((Entry<String, Object>) array[i]);
+            }
+            return array;
+        }
+    }
+
+    private class ProxyCollection extends AbstractProxyCollection<Object> implements Collection<Object> {
+
+        public ProxyCollection(Collection<Object> values) {
+            super(values);
+        }
+
+        @Override
+        public Iterator<Object> iterator() {
+            return new ProxyIterator(values.iterator());
+        }
+
+        @Override
+        public Object[] toArray() {
+            return processArray(values.toArray());
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return processArray(values.toArray(a));
+        }
+
+        private <S> S[] processArray(S[] array) {
+            for (int i = 0; i < array.length; i++) {
+                array[i] = (S) processValue(array[i]);
+            }
+            return array;
+        }
+    }
+
+    private class ProxyEntry implements Entry<String, Object> {
+
+        private Entry<String, Object> entry;
+
+        private ProxyEntry(Entry<String, Object> entry) {
+            this.entry = entry;
+        }
+
+        @Override
+        public String getKey() {
+            return entry.getKey();
+        }
+
+        @Override
+        public Object getValue() {
+            return processValue(entry.getValue());
+        }
+
+        @Override
+        public Object setValue(Object value) {
+            return entry.setValue(value);
+        }
+
+    }
+
+    private class ProxyIterator implements Iterator<Object> {
+
+        private Iterator<Object> iter;
+
+        public ProxyIterator(Iterator<Object> iter) {
+            this.iter = iter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return iter.hasNext();
+        }
+
+        @Override
+        public Object next() {
+            return processValue(iter.next());
+        }
+
+        @Override
+        public void remove() {
+            iter.remove();
+        }
+    }
+
+    private class ProxyEntryIterator implements Iterator<Entry<String, Object>> {
+
+        private Iterator<Entry<String, Object>> iter;
+
+        public ProxyEntryIterator(Iterator<Entry<String, Object>> iter) {
+            this.iter = iter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return iter.hasNext();
+        }
+
+        @Override
+        public Entry<String, Object> next() {
+            return new ProxyEntry(iter.next());
+        }
+
+        @Override
+        public void remove() {
+            iter.remove();
+        }
+    }
+
+    private <T> Object processValue(T obj) {
+        return obj instanceof WorkItemParamResolver ? ((WorkItemParamResolver) obj).apply(this) : obj;
+    }
+
 }

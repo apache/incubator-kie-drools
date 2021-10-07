@@ -13,31 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.suppliers;
+package org.jbpm.compiler.canonical.descriptors;
 
 import java.util.function.Supplier;
 
-import org.kie.kogito.serverless.workflow.functions.JsonPathResolver;
+import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-public class JsonPathExprSupplier implements Supplier<Expression> {
+public class WorkItemParamResolverSupplier implements Supplier<Expression> {
 
-    private String jsonPathExpr;
-    private String paramName;
+    private Class<? extends WorkItemParamResolver> clazz;
+    private Supplier<Expression>[] args;
 
-    public JsonPathExprSupplier(String jsonPathExpr, String paramName) {
-        this.jsonPathExpr = jsonPathExpr;
-        this.paramName = paramName;
+    public WorkItemParamResolverSupplier(Class<? extends WorkItemParamResolver> clazz, Supplier<Expression>... args) {
+        this.clazz = clazz;
+        this.args = args;
     }
 
     @Override
     public Expression get() {
-        return new ObjectCreationExpr()
-                .setType(JsonPathResolver.class.getCanonicalName())
-                .addArgument(new StringLiteralExpr(jsonPathExpr)).addArgument(new StringLiteralExpr(paramName));
+        ObjectCreationExpr result = new ObjectCreationExpr().setType(clazz.getCanonicalName());
+        for (Supplier<Expression> arg : args) {
+            result.addArgument(arg.get());
+        }
+        return result;
     }
-
 }

@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.openapi;
+package org.kie.kogito.process.workitems.impl;
 
 import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
-/**
- * Marker interface for @{@link JsonNodeParameterResolver}
- */
-public interface OpenApiParameterResolver extends Function<Object, JsonNode> {
+/* Added to make it easier to search for ParamResolver function implementations, 
+ * see https://github.com/kiegroup/kogito-runtimes/pull/778#pullrequestreview-493382982 */
+public interface WorkItemParamResolver extends Function<KogitoWorkItem, Object> {
 
 }
