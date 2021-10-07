@@ -155,6 +155,7 @@ public class ExplainabilityMetrics {
      * @param prediction the prediction on which explanation stability will be evaluated
      * @param saliencyLocalExplainer a local saliency explainer
      * @param topK no. of top k positive/negative features for which stability report will be generated
+     * @param runs no. of times the saliency for each prediction needs to be generated
      * @return a report about stability of all the decisions/predictions (and for each {@code k < topK})
      */
     public static LocalSaliencyStability getLocalSaliencyStability(PredictionProvider model, Prediction prediction,
@@ -166,10 +167,9 @@ public class ExplainabilityMetrics {
         LocalSaliencyStability saliencyStability = new LocalSaliencyStability(saliencies.keySet());
         // for each decision, calculate the stability rate for the top k important feature set, for each k < topK
         for (Map.Entry<String, List<Saliency>> entry : saliencies.entrySet()) {
+            String decision = entry.getKey();
+            List<Saliency> perDecisionSaliencies = entry.getValue();
             for (int k = 1; k <= topK; k++) {
-                String decision = entry.getKey();
-                List<Saliency> perDecisionSaliencies = entry.getValue();
-
                 int finalK = k;
                 // get the top k positive features list from each saliency and count the frequency of each such list across all saliencies
                 Map<List<String>, Long> topKPositive = getTopKFeaturesFrequency(perDecisionSaliencies, s -> s.getPositiveFeatures(finalK));

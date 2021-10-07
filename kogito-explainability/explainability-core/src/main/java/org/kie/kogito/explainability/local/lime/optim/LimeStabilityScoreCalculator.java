@@ -65,14 +65,15 @@ public class LimeStabilityScoreCalculator implements EasyScoreCalculator<LimeCon
 
     private BigDecimal getStabilityScore(PredictionProvider model, LimeConfig config, List<Prediction> predictions) {
         double succeededEvaluations = 0;
+        int topK = 2;
         BigDecimal stabilityScore = BigDecimal.ZERO;
         LimeExplainer limeExplainer = new LimeExplainer(config);
         for (Prediction prediction : predictions) {
             try {
                 LocalSaliencyStability stability = ExplainabilityMetrics.getLocalSaliencyStability(model, prediction,
-                        limeExplainer, TWO.intValue(), NUM_RUNS);
+                        limeExplainer, topK, NUM_RUNS);
                 for (String decision : stability.getDecisions()) {
-                    BigDecimal decisionMarginalScore = getDecisionMarginalScore(stability, decision);
+                    BigDecimal decisionMarginalScore = getDecisionMarginalScore(stability, decision, topK);
                     stabilityScore = stabilityScore.add(decisionMarginalScore);
                     succeededEvaluations++;
                 }
@@ -91,10 +92,10 @@ public class LimeStabilityScoreCalculator implements EasyScoreCalculator<LimeCon
         return stabilityScore;
     }
 
-    private BigDecimal getDecisionMarginalScore(LocalSaliencyStability stability, String decision) {
+    private BigDecimal getDecisionMarginalScore(LocalSaliencyStability stability, String decision, int topK) {
         BigDecimal positiveStabilityScore = ZERO;
         BigDecimal negativeStabilityScore = ZERO;
-        for (int i = 1; i <= LimeStabilityScoreCalculator.TWO.intValue(); i++) {
+        for (int i = 1; i <= topK; i++) {
             positiveStabilityScore = positiveStabilityScore.add(BigDecimal.valueOf(stability.getPositiveStabilityScore(decision, i)));
             negativeStabilityScore = negativeStabilityScore.add(BigDecimal.valueOf(stability.getNegativeStabilityScore(decision, i)));
         }
