@@ -19,7 +19,7 @@ jobs:
     concurrency:
       group: examples_pr-${{ github.head_ref }}
       cancel-in-progress: true
-    timeout-minutes: 120
+    timeout-minutes: 180
     strategy:
       matrix:
         os: [ubuntu-latest]
