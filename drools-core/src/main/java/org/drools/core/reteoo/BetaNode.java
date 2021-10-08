@@ -340,8 +340,7 @@ public abstract class BetaNode extends LeftTupleSource
                 rightTuple.setPropagationContext( context );
                 doUpdateRightTuple(rightTuple, wm, bm);
             } else if (rightTuple.getMemory() != null) {
-                getBetaMemory( this, wm ).getRightTupleMemory().removeAdd(rightTuple);
-                doUpdatesReorderChildLeftTuple( rightTuple );
+                reorderRightTuple(wm, rightTuple);
             }
         } else {
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
@@ -351,6 +350,11 @@ public abstract class BetaNode extends LeftTupleSource
                               wm );
             }
         }
+    }
+
+    protected void reorderRightTuple(InternalWorkingMemory wm, RightTuple rightTuple) {
+        getBetaMemory( this, wm).getRightTupleMemory().removeAdd(rightTuple);
+        doUpdatesReorderChildLeftTuple(rightTuple);
     }
 
     public void doDeleteRightTuple(final RightTuple rightTuple,

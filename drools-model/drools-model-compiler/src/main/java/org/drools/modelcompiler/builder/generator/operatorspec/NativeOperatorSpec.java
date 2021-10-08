@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.functions.Operator;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -31,6 +30,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.CoercedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.getCoercedRightExpression;
@@ -74,7 +74,7 @@ public class NativeOperatorSpec implements OperatorSpec {
             operator.getClass().getField( "INSTANCE" );
             methodCallExpr.addArgument( operator.getClass().getCanonicalName() + ".INSTANCE" );
         } catch (NoSuchFieldException e) {
-            methodCallExpr.addArgument( new StringLiteralExpr( opName ) );
+            methodCallExpr.addArgument( toStringLiteral( opName ) );
         }
         return operator;
     }

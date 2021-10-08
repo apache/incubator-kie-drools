@@ -22,6 +22,7 @@ import java.util.Map;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -78,6 +79,13 @@ public class KiePMMLTestingModel extends KiePMMLModel {
 
         public Builder withLocalTransformations(final KiePMMLLocalTransformations localTransformations) {
             toBuild.localTransformations = localTransformations;
+            return this;
+        }
+
+        public Builder withMiningFields(final List<MiningField> miningFields) {
+            if (miningFields != null) {
+                toBuild.miningFields = miningFields;
+            }
             return this;
         }
     }

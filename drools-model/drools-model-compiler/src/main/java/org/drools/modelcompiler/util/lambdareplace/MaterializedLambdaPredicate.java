@@ -17,32 +17,27 @@
 
 package org.drools.modelcompiler.util.lambdareplace;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.utils.StringEscapeUtils;
 import org.drools.model.functions.PredicateInformation;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 
 public class MaterializedLambdaPredicate extends MaterializedLambda {
 
@@ -82,30 +77,29 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     private void createPredicateInformationMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("predicateInformation", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
-        ClassOrInterfaceType predicateInformationType = (ClassOrInterfaceType) toJPType(PredicateInformation.class);
+        ClassOrInterfaceType predicateInformationType = toClassOrInterfaceType(PredicateInformation.class);
         methodDeclaration.setType(predicateInformationType);
 
         BlockStmt block = new BlockStmt();
 
         NameExpr infoExpr = new NameExpr("info");
         VariableDeclarationExpr infoVar = new VariableDeclarationExpr(toClassOrInterfaceType(PredicateInformation.class), "info");
-        ObjectCreationExpr newPredicateInformation = new ObjectCreationExpr(null, predicateInformationType, NodeList.nodeList(new StringLiteralExpr().setString(predicateInformation.getStringConstraint())));
-        AssignExpr infoAssign = new AssignExpr(infoVar, newPredicateInformation, AssignExpr.Operator.ASSIGN);
-        block.addStatement(infoAssign);
+        NodeList<Expression> newPredicateInformationArguments = NodeList.nodeList(toStringLiteral(StringEscapeUtils.escapeJava(predicateInformation.getStringConstraint())));
+        ObjectCreationExpr newPredicateInformation = new ObjectCreationExpr(null, predicateInformationType, newPredicateInformationArguments);
+        block.addStatement(new AssignExpr(infoVar, newPredicateInformation, AssignExpr.Operator.ASSIGN));
 
-        List<MethodCallExpr> addRuleNameMethods = new ArrayList<>();
-        Map<String, Set<String>> ruleNameMap = predicateInformation.getRuleNameMap();
-        ruleNameMap.forEach((ruleFileName, ruleNameList) -> {
-            ruleNameList.forEach(ruleName -> {
-                MethodCallExpr addRuleName = new MethodCallExpr(infoExpr, "addRuleName", NodeList.nodeList(new StringLiteralExpr(ruleName), new StringLiteralExpr(ruleFileName)));
-                addRuleNameMethods.add(addRuleName);
-            });
-        });
-        addRuleNameMethods.sort((mce1, mce2) -> mce1.toString().compareTo(mce2.toString()));
-        addRuleNameMethods.forEach(block::addStatement);
+        int i = 0;
+        NodeList<Expression> addRuleNamesArguments = null;
+        for (PredicateInformation.RuleDef ruleDef : predicateInformation.getRuleDefs()) {
+            if (i++ % 125 == 0) {
+                addRuleNamesArguments = NodeList.nodeList();
+                block.addStatement(new MethodCallExpr(infoExpr, "addRuleNames", addRuleNamesArguments));
+            }
+            addRuleNamesArguments.add(toStringLiteral(ruleDef.getRuleName()));
+            addRuleNamesArguments.add(toStringLiteral(ruleDef.getFileName()));
+        }
 
         block.addStatement(new ReturnStmt(infoExpr));
-
         methodDeclaration.setBody(block);
     }
 

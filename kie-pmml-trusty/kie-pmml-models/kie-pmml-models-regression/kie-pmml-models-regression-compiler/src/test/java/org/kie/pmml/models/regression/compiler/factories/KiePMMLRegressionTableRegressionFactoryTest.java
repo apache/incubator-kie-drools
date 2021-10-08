@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.regression.compiler.factories;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,12 +33,10 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.regression.CategoricalPredictor;
@@ -47,10 +46,10 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
@@ -67,8 +66,16 @@ import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressio
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.MAIN_CLASS_NOT_FOUND;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMMLRegressionTableRegressionFactoryTest {
+
+    private static final String TEST_01_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_01.txt";
+    private static final String TEST_02_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_02.txt";
+    private static final String TEST_03_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_03.txt";
+    private static final String TEST_04_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_04.txt";
+    private static final String TEST_05_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_05.txt";
+    private static final String TEST_06_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_06.txt";
 
     private final static List<RegressionModel.NormalizationMethod> SUPPORTED_NORMALIZATION_METHODS =
             Arrays.asList(RegressionModel.NormalizationMethod.SOFTMAX,
@@ -124,7 +131,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
     }
 
     @Test
-    public void addNumericPredictorWithExponent() {
+    public void addNumericPredictorWithExponent() throws IOException {
         String predictorName = "predictorName";
         int exponent = 2;
         double coefficient = 1.23;
@@ -135,13 +142,9 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
         MethodDeclaration retrieved = KiePMMLRegressionTableRegressionFactory.addNumericPredictor(numericPredictor,
                                                                                                   tableTemplate, arity);
         BlockStmt body = retrieved.getBody().get();
-        BlockStmt expected = JavaParserUtils.parseBlock(String.format("{" +
-                                                "    double coefficient = %s;" +
-                                                "    double exponent = %s.0;" +
-                                                "    // Considering exponent because it is != 1\n" +
-                                                "    return Math.pow(input, exponent) * coefficient;" +
-                                                "}", coefficient, exponent));
-        JavaParserUtils.equalsNode(expected, body);
+        String text = getFileContent(TEST_01_SOURCE);
+        BlockStmt expected = JavaParserUtils.parseBlock(String.format(text, coefficient, exponent));
+        assertTrue(JavaParserUtils.equalsNode(expected, body));
     }
 
     @Test
@@ -158,7 +161,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
     }
 
     @Test
-    public void addNumericPredictorWithoutExponent() {
+    public void addNumericPredictorWithoutExponent() throws IOException {
         String predictorName = "predictorName";
         int exponent = 1;
         double coefficient = 1.23;
@@ -169,16 +172,13 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
         MethodDeclaration retrieved = KiePMMLRegressionTableRegressionFactory.addNumericPredictor(numericPredictor,
                                                                                                   tableTemplate, arity);
         BlockStmt body = retrieved.getBody().get();
-        BlockStmt expected = JavaParserUtils.parseBlock(String.format("{" +
-                                                "    double coefficient = %s;" +
-                                                "    // Ignoring exponent because it is 1\n" +
-                                                "    return input * coefficient;" +
-                                                "}", coefficient));
-        JavaParserUtils.equalsNode(expected, body);
+        String text = getFileContent(TEST_02_SOURCE);
+        BlockStmt expected = JavaParserUtils.parseBlock(String.format(text, coefficient));
+        assertTrue(JavaParserUtils.equalsNode(expected, body));
     }
 
     @Test
-    public void getNumericPredictorWithExponentTemplate() {
+    public void getNumericPredictorWithExponentTemplate() throws IOException {
         String predictorName = "predictorName";
         int exponent = 2;
         double coefficient = 1.23;
@@ -193,17 +193,13 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                 KiePMMLRegressionTableRegressionFactory.getNumericPredictorWithExponentTemplate(numericPredictor,
                                                                                                 evaluateTemplateClass);
         BlockStmt body = retrieved.getBody().get();
-        BlockStmt expected = JavaParserUtils.parseBlock(String.format("{" +
-                                                "    double coefficient = %s;" +
-                                                "    double exponent = %s.0;" +
-                                                "    // Considering exponent because it is != 1\n" +
-                                                "    return Math.pow(input, exponent) * coefficient;" +
-                                                "}", coefficient, exponent));
-        JavaParserUtils.equalsNode(expected, body);
+        String text = getFileContent(TEST_03_SOURCE);
+        BlockStmt expected = JavaParserUtils.parseBlock(String.format(text, coefficient, exponent));
+        assertTrue(JavaParserUtils.equalsNode(expected, body));
     }
 
     @Test
-    public void getNumericPredictorWithoutExponentTemplate() {
+    public void getNumericPredictorWithoutExponentTemplate() throws IOException {
         String predictorName = "predictorName";
         int exponent = 2;
         double coefficient = 1.23;
@@ -218,12 +214,9 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                 KiePMMLRegressionTableRegressionFactory.getNumericPredictorWithoutExponentTemplate(numericPredictor,
                                                                                                    evaluateTemplateClass);
         BlockStmt body = retrieved.getBody().get();
-        BlockStmt expected = JavaParserUtils.parseBlock(String.format("{" +
-                                                "    double coefficient = %s;" +
-                                                "    // Ignoring exponent because it is 1\n" +
-                                                "    return input * coefficient;" +
-                                                "}", coefficient));
-        JavaParserUtils.equalsNode(expected, body);
+        String text = getFileContent(TEST_04_SOURCE);
+        BlockStmt expected = JavaParserUtils.parseBlock(String.format(text, coefficient));
+        assertTrue(JavaParserUtils.equalsNode(expected, body));
     }
 
     @Test
@@ -231,10 +224,10 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
         List<CategoricalPredictor> categoricalPredictors = IntStream.range(0, 3).mapToObj(index ->
                                                                                                   IntStream.range(0,
                                                                                                                   3).mapToObj(i -> {
-                                                                                                      String predictorName = "predictorName-" + index;
-                                                                                                      double coefficient = 1.23 * i;
-                                                                                                      return PMMLModelTestUtils.getCategoricalPredictor(predictorName, i, coefficient);
-                                                                                                  })
+                                                                                                              String predictorName = "predictorName-" + index;
+                                                                                                              double coefficient = 1.23 * i;
+                                                                                                              return PMMLModelTestUtils.getCategoricalPredictor(predictorName, i, coefficient);
+                                                                                                          })
                                                                                                           .collect(Collectors.toList())).reduce((categoricalPredictors1, categoricalPredictors2) -> {
             List<CategoricalPredictor> toReturn = new ArrayList<>();
             toReturn.addAll(categoricalPredictors1);
@@ -248,7 +241,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
     }
 
     @Test
-    public void addGroupedCategoricalPredictor() {
+    public void addGroupedCategoricalPredictor() throws IOException {
         final List<CategoricalPredictor> categoricalPredictors = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
@@ -262,24 +255,16 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
         String expectedName = String.format("evaluateCategoricalPredictor%d", arity);
         assertEquals(expectedName, retrieved.getNameAsString());
         BlockStmt body = retrieved.getBody().get();
-        BlockStmt expected = JavaParserUtils.parseBlock(String.format("{" +
-                                         "    if (Objects.equals(%s, input))" +
-                                         "        return %s;" +
-                                         "    else if (Objects.equals(%s, input))" +
-                                         "        return %s;" +
-                                         "    else if (Objects.equals(%s, input))" +
-                                         "        return %s;" +
-                                         "    else" +
-                                         "        return 0.0;" +
-                                         "}",
-                                 categoricalPredictors.get(0).getValue(),
-                                 categoricalPredictors.get(0).getCoefficient(),
-                                 categoricalPredictors.get(1).getValue(),
-                                 categoricalPredictors.get(1).getCoefficient(),
-                                 categoricalPredictors.get(2).getValue(),
-                                 categoricalPredictors.get(2).getCoefficient()
+        String text = getFileContent(TEST_05_SOURCE);
+        BlockStmt expected = JavaParserUtils.parseBlock(String.format(text,
+                                                                      categoricalPredictors.get(0).getValue(),
+                                                                      categoricalPredictors.get(0).getCoefficient(),
+                                                                      categoricalPredictors.get(1).getValue(),
+                                                                      categoricalPredictors.get(1).getCoefficient(),
+                                                                      categoricalPredictors.get(2).getValue(),
+                                                                      categoricalPredictors.get(2).getCoefficient()
         ));
-        JavaParserUtils.equalsNode(expected, body);
+        assertTrue(JavaParserUtils.equalsNode(expected, body));
     }
 
     @Test
@@ -305,7 +290,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
     }
 
     @Test
-    public void addPredictorTerm() {
+    public void addPredictorTerm() throws IOException {
         String predictorName = "predictorName";
         double coefficient = 23.12;
         String fieldRef = "fieldRef";
@@ -318,18 +303,9 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
         String expectedName = String.format("evaluatePredictorTerm%d", arity);
         assertEquals(expectedName, retrieved.getNameAsString());
         BlockStmt body = retrieved.getBody().get();
-        BlockStmt expected = JavaParserUtils.parseBlock(String.format("{" +
-                                         "    final AtomicReference<Double> result = new AtomicReference<>(1.0);" +
-                                         "    List<String> fieldRefs = Arrays.asList(\"%s\");" +
-                                         "    for (String key : resultMap.keySet()) {" +
-                                         "        if (fieldRefs.contains(key)) {" +
-                                         "            result.set(result.get() * (Double) resultMap.get(key));" +
-                                         "        }" +
-                                         "    }" +
-                                         "    double coefficient = %s;" +
-                                         "    return result.get() * coefficient;" +
-                                         "}", fieldRef, coefficient));
-        JavaParserUtils.equalsNode(expected, body);
+        String text = getFileContent(TEST_06_SOURCE);
+        BlockStmt expected = JavaParserUtils.parseBlock(String.format(text, fieldRef, coefficient));
+        assertTrue(JavaParserUtils.equalsNode(expected, body));
     }
 
     @Test

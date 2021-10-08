@@ -87,7 +87,7 @@ public class ConstraintEvaluationExceptionTest extends BaseModelTest {
 
     private void addRuleToConstraintTestField(String ruleName, String ruleFileName) {
         if (testRunType.isExecutableModel()) {
-            predicateInformation.addRuleName(ruleName, ruleFileName);
+            predicateInformation.addRuleNames(ruleName, ruleFileName);
         } else {
             // in non-exec-model, node sharing triggers merging
             MVELConstraint otherMvelConstraint = new MVELConstraint("com.example", mvelConstraint.getExpression(), null, null, null, null, null);

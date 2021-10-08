@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,12 +40,14 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLTextIndexNormalizationFactoryTest {
 
     private static final String TRANSFORMATIONS_SAMPLE = "TransformationsSample.pmml";
     private static final String TEXT_INDEX_NORMALIZATION_FUNCTION = "TEXT_INDEX_NORMALIZATION_FUNCTION";
+    private static final String TEST_01_SOURCE = "KiePMMLTextIndexNormalizationFactoryTest_01.txt";
     private static TextIndexNormalization TEXTINDEXNORMALIZATION;
 
     @BeforeClass
@@ -61,54 +64,17 @@ public class KiePMMLTextIndexNormalizationFactoryTest {
     }
 
     @Test
-    public void getTextIndexNormalizationVariableDeclaration() {
+    public void getTextIndexNormalizationVariableDeclaration() throws IOException {
         String variableName = "variableName";
-        BlockStmt retrieved = KiePMMLTextIndexNormalizationFactory.getTextIndexNormalizationVariableDeclaration(variableName,
-                                                                                          TEXTINDEXNORMALIZATION);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    Map<String, Object> " +
-                                                                              "%1$s_InlineTable_0_columnValues = Stream.of(new Object[][] { { \"regex\", \"true\" }, { \"string\", \"interfaces?\" }, { \"stem\", \"interface\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
-                                                                              "    KiePMMLRow " +
-                                                                              "%1$s_InlineTable_0 = new " +
-                                                                              "KiePMMLRow" +
-                                                                              "(%1$s_InlineTable_0_columnValues);\n" +
-                                                                              "    Map<String, Object> " +
-                                                                              "%1$s_InlineTable_1_columnValues = Stream.of(new Object[][] { { \"regex\", \"true\" }, { \"string\", \"is|are|seem(ed|s?)|were\" }, { \"stem\", \"be\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
-                                                                              "    KiePMMLRow " +
-                                                                              "%1$s_InlineTable_1 = new " +
-                                                                              "KiePMMLRow" +
-                                                                              "(%1$s_InlineTable_1_columnValues);\n" +
-                                                                              "    Map<String, Object> " +
-                                                                              "%1$s_InlineTable_2_columnValues = Stream.of(new Object[][] { { \"regex\", \"true\" }, { \"string\", \"user friendl(y|iness)\" }, { \"stem\", \"user_friendly\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
-                                                                              "    KiePMMLRow " +
-                                                                              "%1$s_InlineTable_2 = new " +
-                                                                              "KiePMMLRow" +
-                                                                              "(%1$s_InlineTable_2_columnValues);\n" +
-                                                                              "    KiePMMLInlineTable " +
-                                                                              "%1$s_InlineTable = new " +
-                                                                              "KiePMMLInlineTable" +
-                                                                              "(\"%1$s_InlineTable\", " +
-                                                                              "Collections.emptyList(), Arrays.asList" +
-                                                                              "(%1$s_InlineTable_0, " +
-                                                                              "%1$s_InlineTable_1, " +
-                                                                              "%1$s_InlineTable_2));\n" +
-                                                                              "    KiePMMLTextIndexNormalization " +
-                                                                              "%1$s = " +
-                                                                              "KiePMMLTextIndexNormalization.builder" +
-                                                                              "(\"%1$s\", Collections" +
-                                                                              ".emptyList()).withInField(\"string\")" +
-                                                                              ".withOutField(\"stem\")" +
-                                                                              ".withKiePMMLInlineTable" +
-                                                                              "(%1$s_InlineTable)" +
-                                                                              ".withRegexField(\"regex\")" +
-                                                                              ".withRecursive(false)" +
-                                                                              ".withIsCaseSensitive(false)" +
-                                                                              ".withMaxLevenshteinDistance(null)" +
-                                                                              ".withWordSeparatorCharacterRE(null)" +
-                                                                              ".withTokenize(false).build();\n" +
-                                                                              "}", variableName));
+        BlockStmt retrieved =
+                KiePMMLTextIndexNormalizationFactory.getTextIndexNormalizationVariableDeclaration(variableName,
+                                                                                                                TEXTINDEXNORMALIZATION);
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
-        List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class, KiePMMLInlineTable.class, KiePMMLTextIndexNormalization.class, KiePMMLRow.class, Map.class, Stream.class);
+        List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class,
+                                               KiePMMLInlineTable.class, KiePMMLTextIndexNormalization.class,
+                                               KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

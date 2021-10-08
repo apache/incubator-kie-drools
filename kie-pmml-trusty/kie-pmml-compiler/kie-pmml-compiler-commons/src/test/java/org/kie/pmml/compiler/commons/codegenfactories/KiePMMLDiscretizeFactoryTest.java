@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLDiscretizeFactoryTest {
 
@@ -44,6 +46,7 @@ public class KiePMMLDiscretizeFactoryTest {
     private static final String MAP_MISSING_TO = "mapMissingTo";
     private static final String DEFAULTVALUE = "defaultValue";
     private static final DataType dataType = DataType.INTEGER;
+    private static final String TEST_01_SOURCE = "KiePMMLDiscretizeFactoryTest_01.txt";
 
     private static DiscretizeBin discretizeBin1;
     private static DiscretizeBin discretizeBin2;
@@ -58,7 +61,7 @@ public class KiePMMLDiscretizeFactoryTest {
     }
 
     @Test
-    public void getDiscretizeBinVariableDeclaration() {
+    public void getDiscretizeVariableDeclaration() throws IOException {
         String variableName = "variableName";
         Discretize discretize = new Discretize();
         discretize.setField(FieldName.create(NAME));
@@ -68,40 +71,14 @@ public class KiePMMLDiscretizeFactoryTest {
         discretize.addDiscretizeBins(discretizeBins.toArray(new DiscretizeBin[0]));
 
         BlockStmt retrieved = KiePMMLDiscretizeFactory.getDiscretizeVariableDeclaration(variableName,
-                                                                                    discretize);
+                                                                                        discretize);
         String dataTypeString = getDATA_TYPEString(discretize.getDataType());
-
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLInterval " +
-                                                                              "%1$s_0_Interval = new " +
-                                                                              "KiePMMLInterval(null, 20, org.kie.pmml" +
-                                                                              ".api.enums.CLOSURE.OPEN_OPEN);\n" +
-                                                                              "    KiePMMLDiscretizeBin " +
-                                                                              "variableName_0 = new " +
-                                                                              "KiePMMLDiscretizeBin" +
-                                                                              "(\"%1$s_0\", Collections" +
-                                                                              ".emptyList(), \"discretizeBin1\", " +
-                                                                              "%1$s_0_Interval);\n" +
-                                                                              "    KiePMMLInterval " +
-                                                                              "%1$s_1_Interval = new " +
-                                                                              "KiePMMLInterval(21, 30, org.kie.pmml" +
-                                                                              ".api.enums.CLOSURE.OPEN_CLOSED);\n" +
-                                                                              "    KiePMMLDiscretizeBin " +
-                                                                              "%1$s_1 = new " +
-                                                                              "KiePMMLDiscretizeBin" +
-                                                                              "(\"%1$s_1\", Collections" +
-                                                                              ".emptyList(), \"discretizeBin2\", " +
-                                                                              "%1$s_1_Interval);\n" +
-                                                                              "    KiePMMLDiscretize %1$s = " +
-                                                                              "new KiePMMLDiscretize" +
-                                                                              "(\"%2$s\", Collections" +
-                                                                              ".emptyList(), Arrays.asList" +
-                                                                              "(%1$s_0, %1$s_1), " +
-                                                                              "\"%3$s\", \"%4$s\", " +
-                                                                              "%5$s);\n" +
-                                                                              "}", variableName, NAME, MAP_MISSING_TO, DEFAULTVALUE, dataTypeString));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, NAME, MAP_MISSING_TO,
+                                                                      DEFAULTVALUE, dataTypeString));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
-        List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLDiscretize.class, KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
+        List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLDiscretize.class,
+                                               KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
@@ -119,5 +96,4 @@ public class KiePMMLDiscretizeFactoryTest {
         toReturn.setInterval(interval);
         return toReturn;
     }
-
 }

@@ -18,7 +18,10 @@ package org.kie.dmn.signavio;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -268,5 +271,26 @@ public class SignavioTest {
         
         assertThat((List<?>) evaluateAll.getDecisionResultByName("zipvararg").getResult(), iterableWithSize(2));
         assertThat((List<?>) evaluateAll.getDecisionResultByName("zipsinglelist").getResult(), iterableWithSize(2));
+    }
+    
+    @Test
+    public void testSignavioIterateMultiinstanceWithComplexInputs() {
+        DMNRuntime runtime = createRuntime("Iterate Complex List.dmn");
+        
+        DMNContext context = runtime.newContext();
+        Map<String, Object> johnDoe = new HashMap<>();
+        johnDoe.put("iD", "id-john");
+        johnDoe.put("name", "John Doe");
+        Map<String, Object> alice = new HashMap<>();
+        alice.put("iD", "id-alice");
+        alice.put("name", "Alice");
+        context.set("customer", Collections.singletonMap("persons", Arrays.asList(johnDoe, alice)));
+        
+        DMNModel model0 = runtime.getModels().get(0);
+        LOG.info("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        LOG.info("{}", evaluateAll);
+    
+        assertEquals(Arrays.asList("John Doe", "Alice"), evaluateAll.getDecisionResultByName("extractNames").getResult());
     }
 }

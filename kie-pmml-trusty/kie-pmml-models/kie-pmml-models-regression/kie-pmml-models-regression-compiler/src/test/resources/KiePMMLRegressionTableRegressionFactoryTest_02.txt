@@ -1,0 +1,5 @@
+{
+    double coefficient = %s;
+    // Ignoring exponent because it is 1
+    return input * coefficient;
+}

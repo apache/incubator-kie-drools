@@ -28,8 +28,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
@@ -53,13 +51,13 @@ import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
-import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class WindowReferenceGenerator {
 
@@ -113,13 +111,12 @@ public class WindowReferenceGenerator {
 
         final Class<?> initClass = DrlxParseUtil.getClassFromContext(typeResolver, pattern.getObjectType());
 
-        final Type initType = toJPType(initClass);
-        initializer.addArgument(new ClassExpr(initType));
+        initializer.addArgument(new ClassExpr(toJavaParserType(initClass)));
 
         if (pattern.getSource() != null) {
             String epName = (( EntryPointDescr ) pattern.getSource()).getEntryId();
             MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
-            entryPointCall.addArgument( new StringLiteralExpr(epName) );
+            entryPointCall.addArgument( toStringLiteral(epName) );
             initializer.addArgument( entryPointCall );
         }
 

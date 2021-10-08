@@ -28,8 +28,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLTest {
@@ -98,12 +101,13 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     }
 
     @Test
-    public void testLogisticRegressionIrisData() throws Exception {
+    public void testLinearRegressionSampleWithTransformations() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("age", age);
         inputData.put("salary", salary);
         inputData.put("car_location", car_location);
         inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 34.1);
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
@@ -163,5 +167,48 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testLinearRegressionSampleWithTransformationsWithoutRequired() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("age", age);
+        inputData.put("salary", salary);
+        inputData.put("car_location", car_location);
+        inputData.put("text_input", TEXT_INPUT);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test
+    public void testLinearRegressionSampleWithTransformationsConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("age", String.valueOf(age));
+        inputData.put("salary",String.valueOf(salary));
+        inputData.put("car_location", car_location);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", "34.1");
+        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testLinearRegressionSampleWithTransformationsNotConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("age", age);
+        inputData.put("salary", salary);
+        inputData.put("car_location", car_location);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", true);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testLinearRegressionSampleInvalidValue() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("age", age);
+        inputData.put("salary", salary);
+        inputData.put("car_location", car_location);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 4.1);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }

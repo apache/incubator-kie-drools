@@ -29,7 +29,6 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -46,6 +45,7 @@ import org.kie.internal.ruleunit.RuleUnitDescription;
 import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
@@ -67,12 +67,12 @@ public class QueryGenerator {
 
         MethodCallExpr queryCall = createDslTopLevelMethod(QUERY_CALL);
         if (!queryDescr.getNamespace().isEmpty()) {
-            queryCall.addArgument( new StringLiteralExpr(queryDescr.getNamespace() ) );
+            queryCall.addArgument( toStringLiteral(queryDescr.getNamespace() ) );
         }
-        queryCall.addArgument(new StringLiteralExpr(queryName));
+        queryCall.addArgument(toStringLiteral(queryName));
         for (QueryParameter qp : context.getQueryParameters()) {
             queryCall.addArgument(new ClassExpr(toClassOrInterfaceType(qp.getType())));
-            queryCall.addArgument(new StringLiteralExpr(qp.getName()));
+            queryCall.addArgument(toStringLiteral(qp.getName()));
         }
         packageModel.getQueryDefWithType().put(queryDefVariableName, new QueryDefWithType(queryDefType, queryCall, context));
     }

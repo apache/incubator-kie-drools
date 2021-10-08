@@ -1,18 +1,23 @@
-<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns="http://www.dmg.org/PMML-4_2">
+<PMML version="4.4" xsi:schemaLocation="http://www.dmg.org/PMML-4_4 http://www.dmg.org/v4-2-1/pmml-4-4.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.dmg.org/PMML-4_4">
   <Header>
-    <Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
+    <Application name="Drools-PMML" version="7.0.0-SNAPSHOT"/>
   </Header>
 
   <DataDictionary numberOfFields="3">
-    <DataField name="temperature" dataType="double" optype="continuous" />
-    <DataField name="humidity" dataType="double" optype="continuous" />
+    <DataField name="temperature" dataType="double" optype="continuous"/>
+    <DataField name="humidity" dataType="double" optype="continuous"/>
     <DataField name="decision" dataType="string" optype="categorical">
-      <Value value="sunglasses" />
-      <Value value="umbrella" />
-      <Value value="nothing" />
+      <Value value="sunglasses"/>
+      <Value value="umbrella"/>
+      <Value value="nothing"/>
     </DataField>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="input3" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6"/>
+      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6"/>
+    </DataField>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -28,7 +33,7 @@
     </DefineFunction>
     <DefineFunction name="norm_discrete_function" optype="categorical" dataType="string">
       <ParameterField name="eval_decision"/>
-      <NormDiscrete field="eval_decision" value="umbrella" />
+      <NormDiscrete field="eval_decision" value="umbrella"/>
     </DefineFunction>
     <DefineFunction name="fun_humidity_fieldref" optype="continuous" dataType="double">
       <ParameterField name="humidity_fake"/>
@@ -97,13 +102,14 @@
   </TransformationDictionary>
   <TreeModel modelName="SampleMineTreeModelWithTransformations" functionName="classification">
     <MiningSchema>
-      <MiningField name="temperature"  usageType="active" />
-      <MiningField name="humidity"  usageType="active" />
+      <MiningField name="temperature"/>
+      <MiningField name="humidity"/>
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
-      <MiningField name="decision" usageType="predicted" />
+      <MiningField name="decision" usageType="predicted"/>
+      <MiningField name="input3" missingValueTreatment="returnInvalid"/>
     </MiningSchema>
     <Output>
-      <OutputField name="weatherdecision" targetField="decision" />
+      <OutputField name="weatherdecision" targetField="decision" dataType="string"/>
       <OutputField name="out_der_temperature" dataType="double" feature="transformedValue">
         <FieldRef field="der_temperature"/>
       </OutputField>
@@ -117,12 +123,12 @@
         <FieldRef field="normcontinuous_field"/>
       </OutputField>
       <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="string" optype="categorical">
-        <Apply function="norm_discrete_function" >
+        <Apply function="norm_discrete_function">
           <FieldRef field="decision"/>
         </Apply>
       </OutputField>
       <OutputField name="out_discretize_field" feature="transformedValue" dataType="string" optype="categorical">
-        <Apply function="discretize_function" >
+        <Apply function="discretize_function">
           <FieldRef field="temperature"/>
         </Apply>
       </OutputField>
@@ -145,26 +151,26 @@
           </InlineTable>
         </MapValues>
       </OutputField>
-      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous" >
-        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION" >
+      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous">
+        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION">
           <FieldRef field="text_input"/>
           <Constant>ui_good</Constant>
         </Apply>
       </OutputField>
     </Output>
     <Node score="nothing" id="1">
-      <True />
+      <True/>
       <Node score="sunglasses" id="2">
         <CompoundPredicate booleanOperator="and">
-          <SimplePredicate field="der_temperature" operator="greaterThan" value="25" />
-          <SimplePredicate field="der_fun_humidity_apply" operator="lessOrEqual" value="20" />
+          <SimplePredicate field="der_temperature" operator="greaterThan" value="25"/>
+          <SimplePredicate field="der_fun_humidity_apply" operator="lessOrEqual" value="20"/>
         </CompoundPredicate>
       </Node>
       <Node score="umbrella" id="3">
-        <SimplePredicate field="der_fun_humidity_apply" operator="greaterThan" value="50" />
+        <SimplePredicate field="der_fun_humidity_apply" operator="greaterThan" value="50"/>
       </Node>
       <Node score="nothing" id="4">
-        <True />
+        <True/>
       </Node>
     </Node>
   </TreeModel>

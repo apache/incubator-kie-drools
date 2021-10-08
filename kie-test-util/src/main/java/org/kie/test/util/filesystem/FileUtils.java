@@ -18,6 +18,10 @@ package org.kie.test.util.filesystem;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -55,5 +59,20 @@ public class FileUtils {
     public static FileInputStream getFileInputStream(String fileName) throws IOException {
         File sourceFile = getFile(fileName);
         return new FileInputStream(sourceFile);
+    }
+
+    /**
+     * Retrieve the <b>content</b> of the given <b>file</b>
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    public static String getFileContent(String fileName) throws IOException {
+        File file = getFile(fileName);
+        Path path = file.toPath();
+        Stream<String> lines = Files.lines(path);
+        String toReturn = lines.collect(Collectors.joining("\n"));
+        lines.close();
+        return toReturn;
     }
 }

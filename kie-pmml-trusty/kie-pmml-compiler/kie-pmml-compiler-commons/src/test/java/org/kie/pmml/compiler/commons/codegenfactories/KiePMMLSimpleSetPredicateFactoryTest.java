@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,37 +40,38 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getArray;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getStringObjects;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLSimpleSetPredicateFactoryTest {
 
     private final static String SIMPLE_SET_PREDICATE_NAME = "SIMPLESETPREDICATENAME";
+    private static final String TEST_01_SOURCE = "KiePMMLSimpleSetPredicateFactoryTest_01.txt";
 
     @Test
-    public void getSimpleSetPredicateVariableDeclaration() {
+    public void getSimpleSetPredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         Array.Type arrayType = Array.Type.STRING;
         List<String> values = getStringObjects(arrayType, 4);
         SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate(values, arrayType,
                                                                       SimpleSetPredicate.BooleanOperator.IS_IN);
-        String arrayTypeString = ARRAY_TYPE.class.getName() + "." + ARRAY_TYPE.byName(simpleSetPredicate.getArray().getType().value());
-        String booleanOperatorString = IN_NOTIN.class.getName() + "." + IN_NOTIN.byName(simpleSetPredicate.getBooleanOperator().value());
+        String arrayTypeString =
+                ARRAY_TYPE.class.getName() + "." + ARRAY_TYPE.byName(simpleSetPredicate.getArray().getType().value());
+        String booleanOperatorString =
+                IN_NOTIN.class.getName() + "." + IN_NOTIN.byName(simpleSetPredicate.getBooleanOperator().value());
 
         String valuesString = values.stream()
-                .map( valueString -> "\""+ valueString + "\"")
-                .collect(Collectors.joining("," ));
+                .map(valueString -> "\"" + valueString + "\"")
+                .collect(Collectors.joining(","));
 
         DataField dataField = new DataField();
         dataField.setName(simpleSetPredicate.getField());
         dataField.setDataType(DataType.DOUBLE);
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
-        BlockStmt retrieved = KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateVariableDeclaration(variableName, simpleSetPredicate);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{" +
-                                                                              "KiePMMLSimpleSetPredicate " +
-                                                                              "%1$s = KiePMMLSimpleSetPredicate.builder(\"%2$s\", Collections.emptyList(), %3$s, %4$s)\n" +
-                                                                              ".withValues(Arrays.asList(%5$s))\n" +
-                                                                              ".build();" +
-                                                                                  "}", variableName,
+        BlockStmt retrieved = KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateVariableDeclaration(variableName,
+                                                                                                        simpleSetPredicate);
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
                                                                       simpleSetPredicate.getField().getValue(),
                                                                       arrayTypeString,
                                                                       booleanOperatorString,
@@ -88,5 +90,4 @@ public class KiePMMLSimpleSetPredicateFactoryTest {
         toReturn.setArray(array);
         return toReturn;
     }
-
 }
