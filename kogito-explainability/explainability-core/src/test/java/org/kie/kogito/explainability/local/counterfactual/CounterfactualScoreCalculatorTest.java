@@ -172,6 +172,22 @@ class CounterfactualScoreCalculatorTest {
 
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void TextDistanceSameValue(int seed) {
+        final String value = UUID.randomUUID().toString();
+        Feature x = FeatureFactory.newTextFeature("x", value);
+        Feature y = FeatureFactory.newTextFeature("y", value);
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        final double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.TEXT, ox.getType());
+        assertEquals(0.0, distance);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void IntegerDistanceDifferentValue(int seed) {
         final Random random = new Random(seed);
         int value = random.nextInt(1000);
@@ -347,6 +363,23 @@ class CounterfactualScoreCalculatorTest {
 
         assertEquals(1.0, distance);
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void TextDistanceDifferentValue(int seed) {
+        final Random random = new Random(seed);
+        Feature x = FeatureFactory.newTextFeature("x", UUID.randomUUID().toString());
+        Feature y = FeatureFactory.newTextFeature("y", UUID.randomUUID().toString());
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.TEXT, ox.getType());
+        assertEquals(Type.TEXT, oy.getType());
+        assertEquals(1.0, distance);
     }
 
     @Test

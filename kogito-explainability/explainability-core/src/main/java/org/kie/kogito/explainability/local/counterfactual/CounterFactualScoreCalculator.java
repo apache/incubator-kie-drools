@@ -79,7 +79,7 @@ public class CounterFactualScoreCalculator implements EasyScoreCalculator<Counte
                 return distance;
             }
 
-        } else if (prediction.getType() == Type.CATEGORICAL || prediction.getType() == Type.BOOLEAN) {
+        } else if (prediction.getType() == Type.CATEGORICAL || prediction.getType() == Type.BOOLEAN || prediction.getType() == Type.TEXT) {
             return prediction.getValue().getUnderlyingObject().equals(goal.getValue().getUnderlyingObject()) ? 0.0 : 1.0;
         } else {
             String message = String.format("Feature '%s' has unsupported type '%s'", prediction.getName(), predictionType.toString());
