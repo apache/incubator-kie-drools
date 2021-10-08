@@ -1,7 +1,7 @@
 import React from 'react';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import ExecutionId from '../../Atoms/ExecutionId/ExecutionId';
 
 const Breadcrumbs = () => {
@@ -15,12 +15,14 @@ const Breadcrumbs = () => {
             return (
               <BreadcrumbItem
                 className="breadcrumb-item"
-                to={match.url}
                 key={match.url}
                 isActive={location.pathname === match.url}
-              >
-                {breadcrumb}
-              </BreadcrumbItem>
+                render={({ className }) => (
+                  <Link to={match.url} className={className}>
+                    {breadcrumb}
+                  </Link>
+                )}
+              />
             );
           })}
         </Breadcrumb>
