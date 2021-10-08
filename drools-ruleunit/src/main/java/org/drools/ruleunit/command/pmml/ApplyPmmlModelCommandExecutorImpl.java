@@ -30,6 +30,9 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.util.StringUtils;
+import org.drools.ruleunit.DataSource;
+import org.drools.ruleunit.RuleUnit;
+import org.drools.ruleunit.RuleUnitExecutor;
 import org.kie.api.KieBase;
 import org.kie.api.pmml.OutputFieldFactory;
 import org.kie.api.pmml.PMML4Output;
@@ -41,17 +44,15 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.ruleunit.ApplyPmmlModelCommandExecutor;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.drools.ruleunit.DataSource;
-import org.drools.ruleunit.RuleUnit;
-import org.drools.ruleunit.RuleUnitExecutor;
 
 public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandExecutor {
 
-    private Class<? extends RuleUnit> getStartingRuleUnit( String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
+    private Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb,
+                                                          List<String> possiblePackages) {
         RuleUnitDescriptionRegistry unitRegistry = ikb.getRuleUnitDescriptionRegistry();
         Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
         RuleImpl ruleImpl = null;
-        for (String pkgName: possiblePackages) {
+        for (String pkgName : possiblePackages) {
             if (pkgs.containsKey(pkgName)) {
                 InternalKnowledgePackage pkg = pkgs.get(pkgName);
                 ruleImpl = pkg.getRule(startingRule);
@@ -66,19 +67,19 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
         return null;
     }
 
-    private List<String> calculatePossiblePackageNames(String modelId, String...knownPackageNames) {
+    private List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
         List<String> packageNames = new ArrayList<>();
-        String javaModelId = modelId.replaceAll("\\s","");
+        String javaModelId = modelId.replaceAll("\\s", "");
         String capJavaModelId = StringUtils.ucFirst(javaModelId);
         if (knownPackageNames != null && knownPackageNames.length > 0) {
-            for (String knownPkgName: knownPackageNames) {
+            for (String knownPkgName : knownPackageNames) {
                 packageNames.add(knownPkgName + "." + javaModelId);
                 if (!javaModelId.equals(capJavaModelId)) {
                     packageNames.add(knownPkgName + "." + capJavaModelId);
                 }
             }
         }
-        String basePkgName = PmmlConstants.DEFAULT_ROOT_PACKAGE+"."+javaModelId;
+        String basePkgName = PmmlConstants.DEFAULT_ROOT_PACKAGE + "." + javaModelId;
         packageNames.add(basePkgName);
         if (!javaModelId.equals(capJavaModelId)) {
             packageNames.add(PmmlConstants.DEFAULT_ROOT_PACKAGE + "." + capJavaModelId);
@@ -95,7 +96,7 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
     }
 
     @SuppressWarnings("unchecked")
-    private <T> DataSource<T> createDataSource( RuleUnitExecutor executor, String dsName, Object o) {
+    private <T> DataSource<T> createDataSource(RuleUnitExecutor executor, String dsName, Object o) {
         T object = (T) castObject(o, o.getClass());
         return executor.newDataSource(dsName, object);
     }
@@ -110,12 +111,12 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
             obj = (T) object;
         } catch (ClassCastException ccx) {
             throw new IllegalArgumentException("Invalid attempt to insert a " + object.getClass().getName() +
-                    " object into a DataSource");
+                                                       " object into a DataSource");
         }
         ds.insert((T) object);
     }
 
-    private KieBase lookupKieBase( RegistryContext ctx) {
+    private KieBase lookupKieBase(RegistryContext ctx) {
         if (ctx == null) {
             return null;
         }
@@ -131,24 +132,28 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
     }
 
     @Override
-    public PMML4Result execute( Context context, PMMLRequestData requestData, List<Object> complexInputObjects, String packageName, boolean isMining ) {
+    public PMML4Result execute(Context context, PMMLRequestData requestData, List<Object> complexInputObjects,
+                               String packageName, boolean isMining) {
         if (isjPMMLAvailableToClassLoader(getClass().getClassLoader())) {
-            throw new IllegalStateException("Availability of jPMML module disables ApplyPmmlModelCommand execution. ApplyPmmlModelCommand requires removal of JPMML libs from classpath");
+            throw new IllegalStateException("Availability of jPMML module disables ApplyPmmlModelCommand execution. " +
+                                                    "ApplyPmmlModelCommand requires removal of JPMML libs from " +
+                                                    "classpath");
         }
         if (requestData == null) {
-            throw new IllegalStateException("ApplyPmmlModelCommandExecutorImpl requires request data (PMMLRequestData) to execute");
+            throw new IllegalStateException("ApplyPmmlModelCommandExecutorImpl requires request data " +
+                                                    "(PMMLRequestData) to execute");
         }
         PMML4Result resultHolder = new PMML4Result(requestData.getCorrelationId());
         RegistryContext ctx = (RegistryContext) context;
         if (packageName == null) {
-            packageName = (String)ctx.get("packageName");
+            packageName = (String) ctx.get("packageName");
         }
 
         KieBase kbase = lookupKieBase(ctx);
         if (kbase == null) {
             resultHolder.setResultCode("ERROR-1");
         } else {
-            boolean hasUnits = ((InternalKnowledgeBase)kbase).getRuleUnitDescriptionRegistry().hasUnits();
+            boolean hasUnits = ((InternalKnowledgeBase) kbase).getRuleUnitDescriptionRegistry().hasUnits();
             if (!hasUnits) {
                 resultHolder.setResultCode("ERROR-2");
             } else {
@@ -179,7 +184,8 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
                     Class<?> clazz = pi.getType();
                     if (!clazz.isAssignableFrom(pi.getValue().getClass())) {
                         try {
-                            Object o = clazz.getDeclaredConstructor(pi.getValue().getClass()).newInstance(pi.getValue());
+                            Object o =
+                                    clazz.getDeclaredConstructor(pi.getValue().getClass()).newInstance(pi.getValue());
                             pi.setValue(o);
                         } catch (Throwable t) {
                             resultHolder.setResultCode("ERROR-3");
@@ -189,9 +195,12 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
                 }
                 data.insert(requestData);
                 resultData.insert(resultHolder);
-                String startingRule = isMining ? "Start Mining - "+requestData.getModelName():"RuleUnitIndicator";
-                List<String> possibleStartingPackages = calculatePossiblePackageNames(requestData.getModelName(), packageName);
-                Class<? extends RuleUnit> ruleUnitClass= getStartingRuleUnit(startingRule, (InternalKnowledgeBase)kbase, possibleStartingPackages);
+                String startingRule = isMining ? "Start Mining - " + requestData.getModelName() : "RuleUnitIndicator";
+                List<String> possibleStartingPackages = calculatePossiblePackageNames(requestData.getModelName(),
+                                                                                      packageName);
+                Class<? extends RuleUnit> ruleUnitClass = getStartingRuleUnit(startingRule,
+                                                                              (InternalKnowledgeBase) kbase,
+                                                                              possibleStartingPackages);
                 executor.run(ruleUnitClass);
             }
         }

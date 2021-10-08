@@ -71,9 +71,7 @@
     <module>kie-ci</module>
     <module>drools-model</module>
     <module>kie-dmn</module>
-    <module>kie-pmml</module>
     <module>kie-pmml-trusty</module>
-    <module>drools-scorecards</module>
     <module>drools-examples-api</module>
     <module>drools-examples-cdi</module>
     <module>drools-test-coverage</module>

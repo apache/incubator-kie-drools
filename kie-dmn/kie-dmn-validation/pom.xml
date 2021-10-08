@@ -25,6 +25,13 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-dmn-core</artifactId>
         <classifier>tests</classifier>
         <version>${project.version}</version>
@@ -130,11 +137,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
       <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
