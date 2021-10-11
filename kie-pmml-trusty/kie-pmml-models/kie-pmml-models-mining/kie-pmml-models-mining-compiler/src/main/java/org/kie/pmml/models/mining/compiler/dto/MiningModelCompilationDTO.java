@@ -21,14 +21,13 @@ import java.util.List;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
-public class MiningModelCompilationDTO extends AbstractSpecificCompilationDTO<MiningModel> {
+public class MiningModelCompilationDTO extends CompilationDTO<MiningModel> {
 
     public static final String SEGMENTATIONNAME_TEMPLATE = "%s_Segmentation";
 
@@ -39,26 +38,13 @@ public class MiningModelCompilationDTO extends AbstractSpecificCompilationDTO<Mi
     private final String segmentationCanonicalClassName;
     private final Segmentation segmentation;
 
-    /**
-     * Private constructor that use given <code>CommonCompilationDTO</code>
-     * @param source
-     */
-    private MiningModelCompilationDTO(final CompilationDTO<MiningModel> source) {
+    public MiningModelCompilationDTO(final CompilationDTO<MiningModel> source) {
         super(source);
         segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, source.getModelName());
         segmentationPackageName = getSanitizedPackageName(getPackageName() + "." + segmentationName);
         segmentationClassName = getSanitizedClassName(segmentationName);
-        segmentationCanonicalClassName = String.format(PACKAGE_CLASS_TEMPLATE, segmentationPackageName,
-                                                       segmentationClassName);
+        segmentationCanonicalClassName = String.format(PACKAGE_CLASS_TEMPLATE, segmentationPackageName, segmentationClassName);
         this.segmentation = source.getModel().getSegmentation();
-    }
-
-    /**
-     * Builder that use given <code>CommonCompilationDTO</code>
-     * @param source
-     */
-    public static MiningModelCompilationDTO fromCompilationDTO(final CompilationDTO<MiningModel> source) {
-        return new MiningModelCompilationDTO(source);
     }
 
     public String getSegmentationName() {

@@ -48,7 +48,7 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
                      compilationDTO.getFields(),
                      compilationDTO.getModel(),
                      compilationDTO.getHasClassloader());
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(compilationDTO));
+        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(new TreeCompilationDTO(compilationDTO));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
                      compilationDTO.getHasClassloader());
         try {
             final Map<String, String> sourcesMap =
-                    KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(compilationDTO));
+                    KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(new TreeCompilationDTO(compilationDTO));
             return new KiePMMLTreeModelWithSources(compilationDTO.getModelName(), compilationDTO.getPackageName(),
                                                    sourcesMap);
         } catch (Exception e) {

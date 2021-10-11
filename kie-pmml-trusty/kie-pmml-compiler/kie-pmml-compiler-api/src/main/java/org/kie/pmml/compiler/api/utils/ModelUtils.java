@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.compiler.api.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -297,7 +297,7 @@ public class ModelUtils {
      */
     public static List<org.kie.pmml.api.models.MiningField> convertToKieMiningFieldList(final MiningSchema toConvert,
                                                                                         final List<Field<?>> fields) {
-        if (toConvert == null) {
+        if (toConvert == null || !toConvert.hasMiningFields()) {
             return Collections.emptyList();
         }
         return toConvert.getMiningFields()

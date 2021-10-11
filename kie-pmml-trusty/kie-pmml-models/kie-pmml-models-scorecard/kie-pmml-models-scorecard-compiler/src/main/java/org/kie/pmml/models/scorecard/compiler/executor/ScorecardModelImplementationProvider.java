@@ -49,7 +49,7 @@ public class ScorecardModelImplementationProvider implements ModelImplementation
                      compilationDTO.getFields(),
                      compilationDTO.getModel(),
                      compilationDTO.getHasClassloader());
-        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(ScorecardCompilationDTO.fromCompilationDTO(compilationDTO));
+        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(new ScorecardCompilationDTO(compilationDTO));
     }
 
     @Override
@@ -59,8 +59,7 @@ public class ScorecardModelImplementationProvider implements ModelImplementation
                      compilationDTO.getModel(),
                      compilationDTO.getHasClassloader());
         try {
-            ScorecardCompilationDTO scorecardCompilationDTO =
-                    ScorecardCompilationDTO.fromCompilationDTO(compilationDTO);
+            ScorecardCompilationDTO scorecardCompilationDTO = new ScorecardCompilationDTO(compilationDTO);
             final Map<String, String> sourcesMap =
                     KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(scorecardCompilationDTO);
             return new KiePMMLScorecardModelWithSources(scorecardCompilationDTO.getModelName(),

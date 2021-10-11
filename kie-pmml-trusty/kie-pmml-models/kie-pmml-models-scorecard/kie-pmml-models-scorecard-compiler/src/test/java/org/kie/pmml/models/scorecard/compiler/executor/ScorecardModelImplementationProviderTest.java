@@ -24,9 +24,9 @@ import org.dmg.pmml.scorecard.Scorecard;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.api.testutils.TestUtils;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModelWithSources;
 
@@ -61,22 +61,20 @@ public class ScorecardModelImplementationProviderTest {
 
     @Test
     public void getKiePMMLModel() {
-        final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
-                                                                       basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
+        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
+                                                                              basicComplexPartialScorePmml,
+                                                                              basicComplexPartialScore,
+                                                                 new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved = provider.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
     }
 
     @Test
     public void getKiePMMLModelWithSources() {
-        final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
-                                                                       basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
+        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
+                                                                              basicComplexPartialScorePmml,
+                                                                              basicComplexPartialScore,
+                                                                              new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved = provider.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLScorecardModelWithSources);

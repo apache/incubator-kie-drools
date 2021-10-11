@@ -36,11 +36,11 @@ import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
-import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.api.testutils.TestUtils;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 
@@ -89,24 +89,22 @@ public class KiePMMLScorecardModelFactoryTest {
 
     @Test
     public void getKiePMMLScorecardModel() {
-        final CommonCompilationDTO<Scorecard> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
-                                                                       basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
+        final CompilationDTO<Scorecard> source = new CompilationDTO<>(PACKAGE_NAME,
+                                                                      basicComplexPartialScorePmml,
+                                                                      basicComplexPartialScore,
+                                                                      new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved =
-                KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(ScorecardCompilationDTO.fromCompilationDTO(source));
+                KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(new ScorecardCompilationDTO(source));
         assertNotNull(retrieved);
     }
 
     @Test
     public void getKiePMMLScorecardModelSourcesMap() {
-        final CommonCompilationDTO<Scorecard> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
-                                                                       basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
-        ScorecardCompilationDTO compilationDTO = ScorecardCompilationDTO.fromCompilationDTO(source);
+        final CompilationDTO<Scorecard> source = new CompilationDTO<>(PACKAGE_NAME,
+                                                                      basicComplexPartialScorePmml,
+                                                                      basicComplexPartialScore,
+                                                                      new HasClassLoaderMock());
+        ScorecardCompilationDTO compilationDTO = new ScorecardCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(compilationDTO);
         assertNotNull(retrieved);
@@ -123,12 +121,11 @@ public class KiePMMLScorecardModelFactoryTest {
     @Test
     public void setConstructor() {
         String fullCharacteristicsClassName = PACKAGE_NAME + ".fullCharacteristicsClassName";
-        final CommonCompilationDTO<Scorecard> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
-                                                                       basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
-        KiePMMLScorecardModelFactory.setConstructor(ScorecardCompilationDTO.fromCompilationDTO(source),
+        final CompilationDTO<Scorecard> source = new CompilationDTO<>(PACKAGE_NAME,
+                                                                      basicComplexPartialScorePmml,
+                                                                      basicComplexPartialScore,
+                                                                      new HasClassLoaderMock());
+        KiePMMLScorecardModelFactory.setConstructor(new ScorecardCompilationDTO(source),
                                                     scorecardTemplate,
                                                     fullCharacteristicsClassName);
         final ConstructorDeclaration constructorDeclaration =

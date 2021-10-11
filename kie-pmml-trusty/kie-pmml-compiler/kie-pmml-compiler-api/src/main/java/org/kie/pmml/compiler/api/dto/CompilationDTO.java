@@ -16,8 +16,11 @@
 package org.kie.pmml.compiler.api.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.Field;
@@ -27,88 +30,240 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.compiler.api.utils.ModelUtils;
+
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 /**
- * Interface to be implemented by all concrete <b>compilation dtos</b>
- * @param <T>
+ * DTO meant to bring around all information needed for compilation, embedding/hiding helper methods
  */
-public interface CompilationDTO<T extends Model> extends Serializable {
+public class CompilationDTO<T extends Model> implements Serializable {
+
+    private static final long serialVersionUID = -9136538788329888191L;
+
+    protected final String packageName;
+    private final String packageCanonicalClassName;
+    private final List<Field<?>> fields;
+    private final TransformationDictionary transformationDictionary;
+    private final T model;
+    /**
+     * Using <code>HasClassloader</code> to avoid coupling with drools
+     */
+    private final HasClassLoader hasClassloader;
+    private final PMML pmml;
+    private final PMML_MODEL pmmlModel;
+    private final String simpleClassName;
+    private final String targetDataFieldName;
+    private final DataField targetDataField;
+    private final OpType opType;
 
     /**
-     * The original <code>PMML</code>
-     * @return
+     * protected constructor needed to preserve original <b>packageName</b> when <b>"cloning"</b> another
+     * <code>CompilationDTO</code>
+     * @param pmml
+     * @param model
+     * @param hasClassloader
+     * @param packageName
      */
-    PMML getPmml();
+    protected CompilationDTO(final PMML pmml,
+                             final T model,
+                             final HasClassLoader hasClassloader,
+                             final String packageName) {
+        this(pmml, model, hasClassloader, packageName,
+             ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel(pmml.getDataDictionary(),
+                                                                                                                              pmml.getTransformationDictionary(),
+                                                                                                                              model));
+    }
 
-    TransformationDictionary getTransformationDictionary();
+    /**
+     * protected constructor needed to preserve original <b>packageName</b> when <b>"cloning"</b> another
+     * <code>CompilationDTO</code>
+     * @param pmml
+     * @param model
+     * @param hasClassloader
+     * @param packageName
+     */
+    protected CompilationDTO(final PMML pmml,
+                             final T model,
+                             final HasClassLoader hasClassloader,
+                             final String packageName,
+                             final List<Field<?>> fields) {
+        this.packageName = packageName;
+        this.pmml = pmml;
+        this.transformationDictionary = pmml.getTransformationDictionary();
+        this.fields = new ArrayList<>(fields);
+        this.model = model;
+        this.hasClassloader = hasClassloader;
+        this.pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
+        simpleClassName = getSanitizedClassName(model.getModelName());
+        packageCanonicalClassName = String.format(PACKAGE_CLASS_TEMPLATE, this.packageName, simpleClassName);
+        targetDataFieldName = ModelUtils.getTargetFieldName(fields, model).orElse(null);
+        if (targetDataFieldName != null) {
+            targetDataField = fields.stream()
+                    .filter(DataField.class::isInstance)
+                    .map(DataField.class::cast)
+                    .filter(field -> Objects.equals(getTargetFieldName(), field.getName().getValue()))
+                    .findFirst().orElse(null);
+        } else {
+            targetDataField = null;
+        }
+        opType = targetDataField != null ? targetDataField.getOpType() : null;
+    }
 
-    T getModel();
+    public CompilationDTO(final String packageName,
+                          final PMML pmml,
+                          final T model,
+                          final HasClassLoader hasClassloader) {
+        this(pmml, model, hasClassloader, getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE, packageName,
+                                                                                model.getModelName())));
+    }
 
-    MiningSchema getMiningSchema();
+    public CompilationDTO(final CompilationDTO source,
+                          final T newModel) {
+        this(source.getPmml(), newModel, source.getHasClassloader(), source.getPackageName(), source.getFields());
+    }
 
-    MiningFunction getMiningFunction();
+    public CompilationDTO(final CompilationDTO source) {
+        this(source.getPmml(), (T) source.getModel(), source.getHasClassloader(), source.getPackageName(), source.getFields());
+    }
 
-    LocalTransformations getLocalTransformations();
+    public String getPackageName() {
+        return packageName;
+    }
 
-    Output getOutput();
-
-    Targets getTargets();
+    public PMML getPmml() {
+        return pmml;
+    }
 
     /**
      * Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
      * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @return
      */
-    List<Field<?>> getFields();
+    public List<Field<?>> getFields() {
+        return Collections.unmodifiableList(fields);
+    }
 
-    DataField getTargetDataField();
+    public void addField(final Field<?> toAdd) {
+        fields.add(toAdd);
+    }
 
-    OpType getOpType();
+    /**
+     * Add <code>Field</code>s to current instance, <b>eventually replacing them if already present</b>
+     * @param toAdd
+     */
+    public void addFields(final List<Field<?>> toAdd) {
+        if (toAdd != null) {
+            toAdd.forEach(field -> {
+                fields.removeIf(e -> e.getName().equals(field.getName()));
+                fields.add(field);
+            });
+        }
+    }
+
+    public TransformationDictionary getTransformationDictionary() {
+        return transformationDictionary;
+    }
+
+    public T getModel() {
+        return model;
+    }
+
+    public HasClassLoader getHasClassloader() {
+        return hasClassloader;
+    }
+
+    public PMML_MODEL getPMML_MODEL() {
+        return pmmlModel;
+    }
 
     /**
      * Returns the <b>model name</b> of the underlying <code>Model</code>
      * @return
      */
-    String getModelName();
-
-    String getTargetFieldName();
-
-    /**
-     * The <b>sanitized</b> base package name
-     * @return
-     */
-    String getPackageName();
+    public String getModelName() {
+        return model.getModelName();
+    }
 
     /**
      * Returns the <b>simple, sanitized</b> class name
      * @return
      */
-    String getSimpleClassName();
+    public String getSimpleClassName() {
+        return simpleClassName;
+    }
 
-    /**
-     * Returns the <b>full, canonical, sanitized</b> class name
-     * @return
-     */
-    String getPackageCanonicalClassName();
+    public String getPackageCanonicalClassName() {
+        return packageCanonicalClassName;
+    }
 
     /**
      * Compile the given sources and add them to given <code>Classloader</code> of the current instance.
      * Returns the <code>Class</code> with the current <b>canonicalClassName</b>
      * @param sourcesMap
      * @return
-     * @see HasClassLoader#compileAndLoadClass(Map, String)
      */
-    Class<?> compileAndLoadClass(Map<String, String> sourcesMap);
+    public Class<?> compileAndLoadClass(Map<String, String> sourcesMap) {
+        return hasClassloader.compileAndLoadClass(sourcesMap, packageCanonicalClassName);
+    }
 
-    HasClassLoader getHasClassloader();
+    public MiningSchema getMiningSchema() {
+        return model.getMiningSchema();
+    }
 
-    PMML_MODEL getPMML_MODEL();
+    public Output getOutput() {
+        return model.getOutput();
+    }
 
-    MINING_FUNCTION getMINING_FUNCTION();
+    public List<OutputField> getOutputFields() {
+        return model.getOutput() != null && model.getOutput().hasOutputFields() ?
+                model.getOutput().getOutputFields() : Collections.emptyList();
+    }
+
+    public MINING_FUNCTION getMINING_FUNCTION() {
+        return model.getMiningFunction() != null ? MINING_FUNCTION.byName(model.getMiningFunction().value()) : null;
+    }
+
+    public String getTargetFieldName() {
+        return targetDataFieldName;
+    }
+
+    public DataField getTargetDataField() {
+        return targetDataField;
+    }
+
+    public OpType getOpType() {
+        return opType;
+    }
+
+    public OP_TYPE getOP_TYPE() {
+        return opType != null ? OP_TYPE.byName(opType.value()) : null;
+    }
+
+    public LocalTransformations getLocalTransformations() {
+        return model.getLocalTransformations();
+    }
+
+    public Targets getTargets() {
+        return model.getTargets();
+    }
+
+    public boolean isRegression() {
+        final OpType targetOpType = targetDataField != null ? targetDataField.getOpType() : null;
+        return Objects.equals(MiningFunction.REGRESSION, model.getMiningFunction()) && (targetDataField == null || Objects.equals(OpType.CONTINUOUS, targetOpType));
+    }
+
+    public boolean isBinary(int tableSize) {
+        return Objects.equals(OpType.CATEGORICAL, opType) && tableSize == 2;
+    }
 }

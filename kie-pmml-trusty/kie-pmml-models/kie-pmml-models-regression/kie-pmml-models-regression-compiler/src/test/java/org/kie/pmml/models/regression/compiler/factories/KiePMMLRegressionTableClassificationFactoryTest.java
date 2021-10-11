@@ -57,7 +57,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
@@ -127,15 +127,13 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         PMML pmml = new PMML();
         pmml.setDataDictionary(dataDictionary);
         pmml.addModels(regressionModel);
-        final CommonCompilationDTO<RegressionModel> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
-        final RegressionCompilationDTO compilationDTO =
-                RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  regressionModel.getRegressionTables(),
-                                                                                                  regressionModel.getNormalizationMethod());
+        final CompilationDTO<RegressionModel> source = new CompilationDTO<>(PACKAGE_NAME,
+                                                                            pmml,
+                                                                            regressionModel,
+                                                                            new HasClassLoaderMock());
+        final RegressionCompilationDTO compilationDTO = new RegressionCompilationDTO(source,
+                                                                                     regressionModel.getRegressionTables(),
+                                                                                     regressionModel.getNormalizationMethod());
         Map<String, KiePMMLTableSourceCategory> retrieved =
                 KiePMMLRegressionTableClassificationFactory.getRegressionTables(compilationDTO);
         assertNotNull(retrieved);
@@ -170,15 +168,12 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         PMML pmml = new PMML();
         pmml.setDataDictionary(dataDictionary);
         pmml.addModels(regressionModel);
-        final CommonCompilationDTO<RegressionModel> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
-        final RegressionCompilationDTO compilationDTO =
-                RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  new ArrayList<>(),
-                                                                                                  regressionModel.getNormalizationMethod());
+        final CompilationDTO<RegressionModel> source = new CompilationDTO<>(PACKAGE_NAME,
+                                                                            pmml,
+                                                                            regressionModel,
+                                                                            new HasClassLoaderMock());
+        final RegressionCompilationDTO compilationDTO = new RegressionCompilationDTO(source, new ArrayList<>(),
+                                                                                     regressionModel.getNormalizationMethod());
 
         LinkedHashMap<String, KiePMMLTableSourceCategory> toReturn = new LinkedHashMap<>();
         Map.Entry<String, String> retrieved =
@@ -213,15 +208,12 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         pmml.setDataDictionary(dataDictionary);
         pmml.addModels(regressionModel);
 
-        final CommonCompilationDTO<RegressionModel> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
-        final RegressionCompilationDTO compilationDTO =
-                RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  new ArrayList<>(),
-                                                                                                  regressionModel.getNormalizationMethod());
+        final CompilationDTO<RegressionModel> source = new CompilationDTO<>(PACKAGE_NAME,
+                                                                            pmml,
+                                                                            regressionModel,
+                                                                            new HasClassLoaderMock());
+        final RegressionCompilationDTO compilationDTO = new RegressionCompilationDTO(source, new ArrayList<>(),
+                                                                                     regressionModel.getNormalizationMethod());
 
         KiePMMLRegressionTableClassificationFactory.setConstructor(compilationDTO,
                                                                    constructorDeclaration,

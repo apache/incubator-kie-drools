@@ -33,8 +33,8 @@ import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.runtime.PMMLContext;
-import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.api.testutils.TestUtils;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementationProvider;
@@ -81,11 +81,10 @@ public class PMMLTreeModelEvaluatorTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       (TreeModel) pmml.getModels().get(0),
-                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CompilationDTO<TreeModel> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
+                                                                              pmml,
+                                                                              (TreeModel) pmml.getModels().get(0),
+                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
 
         kiePMMLModel = provider.getKiePMMLModel(compilationDTO);
         kieBase = new KieHelper()
