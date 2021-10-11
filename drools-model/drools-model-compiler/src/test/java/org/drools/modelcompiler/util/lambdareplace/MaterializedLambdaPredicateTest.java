@@ -29,11 +29,11 @@ public class MaterializedLambdaPredicateTest {
     @Test
     public void createClassWithOneParameter() {
         PredicateInformation predicateInformation = new PredicateInformation("p.age > 35", "rule1", "rulefilename1.drl");
-        predicateInformation.addRuleName("rule2", "rulefilename2.drl");
-        predicateInformation.addRuleName("rule3", "rulefilename3.drl");
+        predicateInformation.addRuleNames("rule2", "rulefilename2.drl");
+        predicateInformation.addRuleNames("rule3", "rulefilename3.drl");
         CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace",
-                                                              "rulename",
-                                                              predicateInformation)
+                "rulename",
+                predicateInformation)
                 .create("(org.drools.modelcompiler.domain.Person p) -> p.getAge() > 35", new ArrayList<>(), new ArrayList());
         String classNameWithPackage = aClass.getClassNameWithPackage();
         String expectedPackageName = classNameWithPackage.substring(0, classNameWithPackage.lastIndexOf('.'));
@@ -58,9 +58,7 @@ public class MaterializedLambdaPredicateTest {
                 "        @Override()\n" +
                 "        public org.drools.model.functions.PredicateInformation predicateInformation() {\n" +
                 "            org.drools.model.functions.PredicateInformation info = new org.drools.model.functions.PredicateInformation(\"p.age > 35\");\n" +
-                "            info.addRuleName(\"rule1\", \"rulefilename1.drl\");\n" +
-                "            info.addRuleName(\"rule2\", \"rulefilename2.drl\");\n" +
-                "            info.addRuleName(\"rule3\", \"rulefilename3.drl\");\n" +
+                "            info.addRuleNames(\"rule1\", \"rulefilename1.drl\", \"rule2\", \"rulefilename2.drl\", \"rule3\", \"rulefilename3.drl\");" +
                 "            return info;\n" +
                 "        }\n" +
                 "" +

@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.stronglytyped.DMNRuntimeTypesTest;
+import org.kie.dmn.core.v1_3.DMN13specificTest;
 import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,5 +66,21 @@ public class MultipleModelsTest extends BaseDMNOASTest {
         assertThat(validateUsing(validator, "{ \"Driver\": { \"Points\": 10 }, \"Violation\" : {\"Type\": 123} }")).isNotEmpty();
         assertThat(validateUsing(validator, "{ \"Driver\": { \"Points\": 10 }, \"Violation\" : {\"Type\": \"string\"} }")).isNotEmpty();
         assertThat(validateUsing(validator, "{ \"Driver\": { \"Points\": 10 }, \"Violation\" : {\"Type\": \"speed\",\"Actual Speed\":140, \"Speed Limit\":100} }")).isEmpty();
+    }
+    
+    @Test
+    public void testCH11() throws Exception {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn",
+                                                                        DMN13specificTest.class,
+                                                                        "Financial.dmn");
+        DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
+
+        DMNModel modelUnderTest = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
+        ObjectNode syntheticJSONSchema = synthesizeSchema(result, modelUnderTest);
+        JsonSchema validator = getJSONSchema(syntheticJSONSchema);
+
+        assertThat(validateUsing(validator, "{ \"asd\":123 }")).isNotEmpty();
+        assertThat(validateUsing(validator, "{ \"Applicant data\": {}, \"Requested product\": {}, \"Bureau data\": {}, \"Supporting documents\": null, \"Loan default data\": \"data...\" }")).isEmpty();
+        
     }
 }

@@ -151,7 +151,7 @@ abstract class MaterializedLambda {
         String expressionHash = md5Hash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(lambdaExpr));
         String expressionHashFieldName = "EXPRESSION_HASH";
         lambdaClass.addFieldWithInitializer(String.class, expressionHashFieldName, new StringLiteralExpr(expressionHash),
-                                                                                   Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
+                Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
 
         createGetterForExpressionHashField(lambdaClass, expressionHashFieldName);
 

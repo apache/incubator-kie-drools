@@ -92,7 +92,6 @@ import org.drools.core.util.IncompatibleGetterOverloadException;
 import org.drools.core.util.MethodUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.model.Index;
-import org.drools.modelcompiler.builder.errors.GetterOverloadWarning;
 import org.drools.modelcompiler.builder.errors.IncompatibleGetterOverloadError;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.mvel.parser.DrlxParser;
@@ -116,7 +115,6 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.isDslTopLevelNamespace;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExprTraversingParent;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
-import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class DrlxParseUtil {
 
@@ -523,7 +521,7 @@ public class DrlxParseUtil {
         if (!skipFirstParamAsThis) {
             Type type;
             if (canResolve) {
-                type = toJPType(patternClass.get());
+                type = toClassOrInterfaceType(patternClass.get());
             } else {
                 type = new UnknownType();
             }
@@ -639,6 +637,10 @@ public class DrlxParseUtil {
     public static ClassOrInterfaceType toClassOrInterfaceType( String className ) {
         String withoutDollars = className.replace("$", "."); // nested class in Java cannot be used in casts
         return withoutDollars.indexOf('<') >= 0 ? StaticJavaParser.parseClassOrInterfaceType(withoutDollars) : new ClassOrInterfaceType(null, withoutDollars);
+    }
+
+    public static StringLiteralExpr toStringLiteral(String s) {
+        return new StringLiteralExpr(null, s);
     }
 
     public static Optional<String> findBindingIdFromDotExpression(String expression) {

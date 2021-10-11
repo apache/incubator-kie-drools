@@ -32,7 +32,6 @@ import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
@@ -57,6 +56,7 @@ import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
@@ -245,7 +245,7 @@ public class FromVisitor {
 
     private Expression createEntryPointCall( String bindingId ) {
         MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
-        entryPointCall.addArgument( new StringLiteralExpr( bindingId ) );
+        entryPointCall.addArgument( toStringLiteral( bindingId ) );
         return entryPointCall;
     }
 
@@ -309,6 +309,6 @@ public class FromVisitor {
             return parseExpression( DrlxParseUtil.toVar( bindingId ) );
         }
         MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
-        return entryPointCall.addArgument( new StringLiteralExpr(bindingId) );
+        return entryPointCall.addArgument( toStringLiteral(bindingId) );
     }
 }
