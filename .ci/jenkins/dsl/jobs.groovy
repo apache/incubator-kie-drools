@@ -23,14 +23,17 @@ def getJobParams(String jobName, String jobFolder, String jenkinsfileName, Strin
 Map getMultijobPRConfig() {
     return [
         parallel: true,
+        buildchain: true,
         jobs : [
             [
-                id: 'Apps',
+                id: 'kogito-apps',
                 primary: true,
+                env : [
+                    // Sonarcloud analysis only on main branch
+                    // As we have only Community edition
+                    DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                ]
             ]
-        ],
-        extraEnv : [
-            ENABLE_SONARCLOUD: Utils.isMainBranch(this)
         ]
     ]
 }
