@@ -24,6 +24,8 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
+
 public class TestModel extends Model {
 
     private static final Boolean DEFAULT_SCORABLE = true;
@@ -35,6 +37,10 @@ public class TestModel extends Model {
     private MiningSchema miningSchema;
     private Output output;
     private LocalTransformations localTransformations;
+
+    public TestModel() {
+        modelName = getGeneratedClassName("TestModel");
+    }
 
     @Override
     public String getModelName() {
@@ -111,7 +117,7 @@ public class TestModel extends Model {
         this.localTransformations = localTransformations;
         return this;
     }
-    
+
     @Override
     public VisitorAction accept(Visitor visitor) {
         return null;

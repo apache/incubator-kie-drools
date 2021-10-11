@@ -61,7 +61,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldType;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.PATH_PATTERN;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getCorrectlyFormattedResult;

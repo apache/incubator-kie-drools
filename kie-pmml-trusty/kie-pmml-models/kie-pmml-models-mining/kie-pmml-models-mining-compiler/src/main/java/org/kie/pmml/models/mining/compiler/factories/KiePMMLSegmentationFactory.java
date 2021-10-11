@@ -31,19 +31,14 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +51,6 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
-import static org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory.SEGMENTATIONNAME_TEMPLATE;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMap;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMapCompiled;
 
@@ -69,63 +63,42 @@ public class KiePMMLSegmentationFactory {
     private KiePMMLSegmentationFactory() {
     }
 
-    public static Map<String, String> getSegmentationSourcesMap(final String parentPackageName,
-                                                                final List<Field<?>> fields,
-                                                                final TransformationDictionary transformationDictionary,
-                                                                final Segmentation segmentation,
-                                                                final String segmentationName,
-                                                                final HasClassLoader hasClassloader,
+    public static Map<String, String> getSegmentationSourcesMap(final MiningModelCompilationDTO compilationDTO,
                                                                 final List<KiePMMLModel> nestedModels) {
-        logger.debug("getSegmentationSourcesMap {}", segmentation);
-        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
-        final Map<String, String> toReturn = getSegmentsSourcesMap(packageName,
-                                                                   fields,
-                                                                   transformationDictionary,
-                                                                   segmentation.getSegments(),
-                                                                   hasClassloader,
+        logger.debug("getSegmentationSourcesMap {}", compilationDTO.getModel().getSegmentation());
+        final Map<String, String> toReturn = getSegmentsSourcesMap(compilationDTO,
                                                                    nestedModels);
-        return getSegmentationSourcesMapCommon(parentPackageName, segmentation, segmentationName, toReturn);
+        return getSegmentationSourcesMapCommon(compilationDTO,
+                                               toReturn);
     }
 
-    public static Map<String, String> getSegmentationSourcesMapCompiled(final String parentPackageName,
-                                                                        final List<Field<?>> fields,
-                                                                        final TransformationDictionary transformationDictionary,
-                                                                        final MiningModel parentModel,
-                                                                        final HasClassLoader hasClassloader,
+    public static Map<String, String> getSegmentationSourcesMapCompiled(final MiningModelCompilationDTO compilationDTO,
                                                                         final List<KiePMMLModel> nestedModels) {
-        logger.debug("getSegmentationSourcesMapCompiled {} {}", parentModel, parentModel.getSegmentation());
-        final String segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, parentModel.getModelName());
-        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
-        final Segmentation segmentation = parentModel.getSegmentation();
-        final Map<String, String> toReturn = getSegmentsSourcesMapCompiled(packageName,
-                                                                           fields,
-                                                                           transformationDictionary,
-                                                                           segmentation.getSegments(),
-                                                                           hasClassloader,
+        logger.debug("getSegmentationSourcesMapCompiled {} {}", compilationDTO.getModel(),
+                     compilationDTO.getModel().getSegmentation());
+        final Map<String, String> toReturn = getSegmentsSourcesMapCompiled(compilationDTO,
                                                                            nestedModels);
-        return getSegmentationSourcesMapCommon(parentPackageName, segmentation, segmentationName, toReturn);
+        return getSegmentationSourcesMapCommon(compilationDTO, toReturn);
     }
 
-    static Map<String, String> getSegmentationSourcesMapCommon(final String parentPackageName,
-                                                               final Segmentation segmentation,
-                                                               final String segmentationName,
+    static Map<String, String> getSegmentationSourcesMapCommon(final MiningModelCompilationDTO compilationDTO,
                                                                final Map<String, String> toReturn) {
-        logger.debug("getSegmentationSourcesMapCommon {}", segmentation);
-        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
-        String className = getSanitizedClassName(segmentationName);
-        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
+        logger.debug("getSegmentationSourcesMapCommon {}", compilationDTO.getSegmentation());
+        String className = compilationDTO.getSegmentationClassName();
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className,
+                                                                                 compilationDTO.getSegmentationPackageName(),
                                                                                  KIE_PMML_SEGMENTATION_TEMPLATE_JAVA,
                                                                                  KIE_PMML_SEGMENTATION_TEMPLATE);
         ClassOrInterfaceDeclaration segmentationTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration =
-                segmentationTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, segmentationName)));
+                segmentationTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, compilationDTO.getSegmentationName())));
 
         // Avoid stream/map to preserve insertion order and then execution order
         final List<String> segmentsClasses = new ArrayList<>();
-        if (segmentation.getSegments() != null) {
-            for (Segment segment : segmentation.getSegments()) {
-                segmentsClasses.add(getSanitizedPackageName(packageName + "." + segment.getId()) + "." + getSanitizedClassName(segment.getId()));
+        if (compilationDTO.getSegmentation().getSegments() != null) {
+            for (Segment segment : compilationDTO.getSegmentation().getSegments()) {
+                segmentsClasses.add(getSanitizedPackageName(compilationDTO.getSegmentationPackageName() + "." + segment.getId()) + "." + getSanitizedClassName(segment.getId()));
             }
         }
         if (!toReturn.keySet().containsAll(segmentsClasses)) {
@@ -133,9 +106,9 @@ public class KiePMMLSegmentationFactory {
             throw new KiePMMLException("Expected generated class " + missingClasses + " not found");
         }
         setConstructor(className,
-                       segmentationName,
+                       compilationDTO.getSegmentationName(),
                        constructorDeclaration,
-                       MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()),
+                       MULTIPLE_MODEL_METHOD.byName(compilationDTO.getSegmentation().getMultipleModelMethod().value()),
                        segmentsClasses);
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;

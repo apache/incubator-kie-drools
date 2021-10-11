@@ -25,20 +25,20 @@ import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class KiePMMLMiningModelWithSourcesTest {
 
     private static final String MINING_MODEL_NAME = "MINING_MODEL_NAME";
-    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private final static Map<String, String> SOURCES_MAP = new HashMap<>();
 
     private KiePMMLMiningModelWithSources kiePMMLMiningModelWithSources;
 
     @Before
     public void setup() {
-        kiePMMLMiningModelWithSources = new KiePMMLMiningModelWithSources(MINING_MODEL_NAME, PACKAGE_NAME, SOURCES_MAP, Collections.emptyList());
+        kiePMMLMiningModelWithSources = new KiePMMLMiningModelWithSources(MINING_MODEL_NAME, PACKAGE_NAME,
+                                                                          SOURCES_MAP, Collections.emptyList());
     }
 
     @Test(expected = KiePMMLException.class)
@@ -50,7 +50,6 @@ public class KiePMMLMiningModelWithSourcesTest {
     public void getOutputFieldsMap() {
         kiePMMLMiningModelWithSources.getOutputFieldsMap();
     }
-
 
     @Test
     public void getSourcesMap() {
@@ -72,5 +71,4 @@ public class KiePMMLMiningModelWithSourcesTest {
         assertTrue(retrieved.containsKey("KEY"));
         assertEquals("VALUE", retrieved.get("KEY"));
     }
-
 }

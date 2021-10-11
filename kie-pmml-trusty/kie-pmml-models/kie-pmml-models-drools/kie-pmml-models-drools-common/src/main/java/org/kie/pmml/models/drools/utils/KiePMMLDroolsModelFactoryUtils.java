@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.drools.utils;
 
-import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -31,8 +30,6 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -40,14 +37,13 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 /**
  * Utility class to provide common methods for KiePMMLDroolsModel-specific <b>factories</b>
@@ -62,32 +58,33 @@ public class KiePMMLDroolsModelFactoryUtils {
     }
 
     /**
-     * @param fields
-     * @param model
-     * @param fieldTypeMap
-     * @param packageName
+     * @param droolsCompilationDTO
      * @param javaTemplate the name of the <b>file</b> to be used as template source
      * @param modelClassName the name of the class used in the provided template
      * @return
      */
-    public static CompilationUnit getKiePMMLModelCompilationUnit(final List<Field<?>> fields,
-                                                                 final Model model,
-                                                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                                 final String packageName,
-                                                                 final String javaTemplate,
-                                                                 final String modelClassName) {
-        logger.trace("getKiePMMLModelCompilationUnit {} {} {}", fields, model, packageName);
-        String className = getSanitizedClassName(model.getModelName());
-        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, javaTemplate, modelClassName);
+    public static <T extends Model> CompilationUnit getKiePMMLModelCompilationUnit(final DroolsCompilationDTO<T> droolsCompilationDTO,
+                                                                                   final String javaTemplate,
+                                                                                   final String modelClassName) {
+        logger.trace("getKiePMMLModelCompilationUnit {} {} {}", droolsCompilationDTO.getFields(),
+                     droolsCompilationDTO.getModel(), droolsCompilationDTO.getPackageName());
+        String className = droolsCompilationDTO.getSimpleClassName();
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className,
+                                                                                 droolsCompilationDTO.getPackageName(),
+                                                                                 javaTemplate,
+                                                                                 modelClassName);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
-        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        String targetField = getTargetFieldName(fields, model).orElse(null);
-        setConstructor(model, constructorDeclaration, modelTemplate.getName(), targetField, miningFunction);
-        addFieldTypeMapPopulation(constructorDeclaration.getBody(), fieldTypeMap);
-        final MethodDeclaration getKModulePackageNameMethod = modelTemplate.getMethodsByName(GETKMODULEPACKAGENAME_METHOD).get(0);
-        populateGetKModulePackageName(getKModulePackageNameMethod, packageName);
+        MINING_FUNCTION miningFunction = droolsCompilationDTO.getMINING_FUNCTION();
+        final ConstructorDeclaration constructorDeclaration =
+                modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
+        String targetField = droolsCompilationDTO.getTargetFieldName();
+        setConstructor(droolsCompilationDTO.getModel(), constructorDeclaration, modelTemplate.getName(), targetField,
+                       miningFunction);
+        addFieldTypeMapPopulation(constructorDeclaration.getBody(), droolsCompilationDTO.getFieldTypeMap());
+        final MethodDeclaration getKModulePackageNameMethod =
+                modelTemplate.getMethodsByName(GETKMODULEPACKAGENAME_METHOD).get(0);
+        populateGetKModulePackageName(getKModulePackageNameMethod, droolsCompilationDTO.getPackageName());
         return cloneCU;
     }
 
@@ -107,9 +104,11 @@ public class KiePMMLDroolsModelFactoryUtils {
         constructorDeclaration.setName(tableName);
         final BlockStmt body = constructorDeclaration.getBody();
         CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
-        CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+        CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction",
+                                                    new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         PMML_MODEL pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
-        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
+        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() +
+                                                                                            "." + pmmlModel.name()));
     }
 
     /**
@@ -120,7 +119,9 @@ public class KiePMMLDroolsModelFactoryUtils {
     static void addFieldTypeMapPopulation(BlockStmt body, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         for (Map.Entry<String, KiePMMLOriginalTypeGeneratedType> entry : fieldTypeMap.entrySet()) {
             KiePMMLOriginalTypeGeneratedType kiePMMLOriginalTypeGeneratedType = entry.getValue();
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(kiePMMLOriginalTypeGeneratedType.getOriginalType()), new StringLiteralExpr(kiePMMLOriginalTypeGeneratedType.getGeneratedType()));
+            NodeList<Expression> expressions =
+                    NodeList.nodeList(new StringLiteralExpr(kiePMMLOriginalTypeGeneratedType.getOriginalType()),
+                                      new StringLiteralExpr(kiePMMLOriginalTypeGeneratedType.getGeneratedType()));
             ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
             objectCreationExpr.setType(KiePMMLOriginalTypeGeneratedType.class.getName());
             objectCreationExpr.setArguments(expressions);
@@ -132,12 +133,13 @@ public class KiePMMLDroolsModelFactoryUtils {
     /**
      * Populate the <b>getKModulePackageName</b> method override
      */
-    static void populateGetKModulePackageName(final MethodDeclaration getKModulePackageNameMethod, final String packageName) {
+    static void populateGetKModulePackageName(final MethodDeclaration getKModulePackageNameMethod,
+                                              final String packageName) {
         final BlockStmt blockStmt = getKModulePackageNameMethod.getBody()
                 .orElseThrow(() -> new KiePMMLException("Missing body inside " + getKModulePackageNameMethod));
         blockStmt.getStatements().forEach(statement -> {
             if (statement instanceof ReturnStmt) {
-                ReturnStmt returnStmt = (ReturnStmt)statement;
+                ReturnStmt returnStmt = (ReturnStmt) statement;
                 returnStmt.setExpression(new StringLiteralExpr(packageName));
             }
         });

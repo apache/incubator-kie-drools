@@ -25,24 +25,19 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMap;
@@ -50,7 +45,6 @@ import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationF
 
 public class KiePMMLMiningModelFactory {
 
-    static final String SEGMENTATIONNAME_TEMPLATE = "%s_Segmentation";
     static final String KIE_PMML_MINING_MODEL_TEMPLATE_JAVA = "KiePMMLMiningModelTemplate.tmpl";
     static final String KIE_PMML_MINING_MODEL_TEMPLATE = "KiePMMLMiningModelTemplate";
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLMiningModelFactory.class.getName());
@@ -59,109 +53,65 @@ public class KiePMMLMiningModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLMiningModel getKiePMMLMiningModel(final List<Field<?>> fields,
-                                                           final TransformationDictionary transformationDictionary,
-                                                           final MiningModel model,
-                                                           final String packageName,
-                                                           final HasClassLoader hasClassLoader) {
-        logger.debug("getKiePMMLMiningModel {}", model);
-        String className = getSanitizedClassName(model.getModelName());
+    public static KiePMMLMiningModel getKiePMMLMiningModel(final MiningModelCompilationDTO compilationDTO) {
+        logger.debug("getKiePMMLMiningModel {}", compilationDTO.getModel());
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        Map<String, String> sourcesMap = getKiePMMLMiningModelSourcesMapCompiled(fields,
-                                                                                 transformationDictionary,
-                                                                                 model,
-                                                                                 packageName,
-                                                                                 hasClassLoader,
+        Map<String, String> sourcesMap = getKiePMMLMiningModelSourcesMapCompiled(compilationDTO,
                                                                                  nestedModels);
-        String fullClassName = packageName + "." + className;
         try {
-            Class<?> kiePMMLMiningModel = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+            Class<?> kiePMMLMiningModel = compilationDTO.compileAndLoadClass(sourcesMap);
             return (KiePMMLMiningModel) kiePMMLMiningModel.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
     }
 
-    public static Map<String, String> getKiePMMLMiningModelSourcesMap(final List<Field<?>> fields,
-                                                                      final TransformationDictionary transformationDictionary,
-                                                                      final MiningModel model,
-                                                                      final String parentPackageName,
-                                                                      final HasClassLoader hasClassloader,
+    public static Map<String, String> getKiePMMLMiningModelSourcesMap(final MiningModelCompilationDTO compilationDTO,
                                                                       final List<KiePMMLModel> nestedModels) {
-        logger.trace("getKiePMMLMiningModelSourcesMap {} {} {}", fields, model, parentPackageName);
-        final String segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName());
-        final Map<String, String> toReturn = getSegmentationSourcesMap(parentPackageName,
-                                                                       fields,
-                                                                       transformationDictionary,
-                                                                       model.getSegmentation(),
-                                                                       segmentationName,
-                                                                       hasClassloader,
+        logger.trace("getKiePMMLMiningModelSourcesMap {} {} {}", compilationDTO.getFields(),
+                     compilationDTO.getModel(), compilationDTO.getPackageName());
+        final Map<String, String> toReturn = getSegmentationSourcesMap(compilationDTO,
                                                                        nestedModels);
-        return getKiePMMLMiningModelSourcesMapCommon(fields, transformationDictionary,
-                                                     model,
-                                                     parentPackageName,
+        return getKiePMMLMiningModelSourcesMapCommon(compilationDTO,
                                                      toReturn);
     }
 
-    public static Map<String, String> getKiePMMLMiningModelSourcesMapCompiled(final List<Field<?>> fields,
-                                                                              final TransformationDictionary transformationDictionary,
-                                                                              final MiningModel model,
-                                                                              final String parentPackageName,
-                                                                              final HasClassLoader hasClassloader,
+    public static Map<String, String> getKiePMMLMiningModelSourcesMapCompiled(final MiningModelCompilationDTO compilationDTO,
                                                                               final List<KiePMMLModel> nestedModels) {
-        logger.trace("getKiePMMLMiningModelSourcesMapCompiled {} {} {}", fields, model, parentPackageName);
-        final Map<String, String> toReturn = getSegmentationSourcesMapCompiled(parentPackageName,
-                                                                               fields,
-                                                                               transformationDictionary,
-                                                                               model,
-                                                                               hasClassloader,
+        logger.trace("getKiePMMLMiningModelSourcesMapCompiled {} {} {}", compilationDTO.getFields(),
+                     compilationDTO.getModel(), compilationDTO.getPackageName());
+        final Map<String, String> toReturn = getSegmentationSourcesMapCompiled(compilationDTO,
                                                                                nestedModels);
-        return getKiePMMLMiningModelSourcesMapCommon(fields, transformationDictionary,
-                                                     model,
-                                                     parentPackageName,
-                                                     toReturn);
+        return getKiePMMLMiningModelSourcesMapCommon(compilationDTO, toReturn);
     }
 
-    static Map<String, String> getKiePMMLMiningModelSourcesMapCommon(final List<Field<?>> fields,
-                                                                     final TransformationDictionary transformationDictionary,
-                                                                     final MiningModel model,
-                                                                     final String parentPackageName,
+    static Map<String, String> getKiePMMLMiningModelSourcesMapCommon(final MiningModelCompilationDTO compilationDTO,
                                                                      final Map<String, String> toReturn) {
-        logger.trace("getKiePMMLMiningModelSourcesMap {} {} {}", fields, model, parentPackageName);
-        final String segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName());
-        String segmentationClass =
-                getSanitizedPackageName(parentPackageName + "." + segmentationName) + "." + getSanitizedClassName(segmentationName);
-        if (!toReturn.containsKey(segmentationClass)) {
-            throw new KiePMMLException("Expected generated class " + segmentationClass + " not found");
+        logger.trace("getKiePMMLMiningModelSourcesMap {} {} {}", compilationDTO.getFields(),
+                     compilationDTO.getModel(), compilationDTO.getPackageName());
+        if (!toReturn.containsKey(compilationDTO.getSegmentationCanonicalClassName())) {
+            throw new KiePMMLException("Expected generated class " + compilationDTO.getSegmentationCanonicalClassName() + " not " +
+                                               "found");
         }
-        String className = getSanitizedClassName(model.getModelName());
-        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, parentPackageName,
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(compilationDTO.getSimpleClassName(),
+                                                                                 compilationDTO.getPackageName(),
                                                                                  KIE_PMML_MINING_MODEL_TEMPLATE_JAVA,
                                                                                  KIE_PMML_MINING_MODEL_TEMPLATE);
-        ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
-                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        setConstructor(model,
-                       fields,
-                       transformationDictionary,
-                       modelTemplate,
-                       segmentationClass);
+        ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(compilationDTO.getSimpleClassName())
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + compilationDTO.getSimpleClassName()));
+        setConstructor(compilationDTO, modelTemplate);
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;
     }
 
-    static void setConstructor(final MiningModel miningModel,
-                               final List<Field<?>> fields,
-                               final TransformationDictionary transformationDictionary,
-                               final ClassOrInterfaceDeclaration modelTemplate,
-                               final String segmentationClass) {
-        KiePMMLModelCodegenUtils.init(modelTemplate,
-                                      fields,
-                                      transformationDictionary,
-                                      miningModel);
+    static void setConstructor(final MiningModelCompilationDTO compilationDTO,
+                               final ClassOrInterfaceDeclaration modelTemplate) {
+        KiePMMLModelCodegenUtils.init(compilationDTO, modelTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();
-        ClassOrInterfaceType kiePMMLSegmentationClass = parseClassOrInterfaceType(segmentationClass);
+        ClassOrInterfaceType kiePMMLSegmentationClass =
+                parseClassOrInterfaceType(compilationDTO.getSegmentationCanonicalClassName());
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(kiePMMLSegmentationClass);
         CommonCodegenUtils.setAssignExpressionValue(body, "segmentation", objectCreationExpr);

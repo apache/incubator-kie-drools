@@ -55,10 +55,10 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
-import org.kie.pmml.compiler.commons.utils.ModelUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

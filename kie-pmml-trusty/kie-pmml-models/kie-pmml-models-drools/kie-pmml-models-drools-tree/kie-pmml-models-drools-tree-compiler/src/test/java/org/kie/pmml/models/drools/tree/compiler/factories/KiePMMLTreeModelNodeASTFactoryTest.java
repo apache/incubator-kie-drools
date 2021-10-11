@@ -41,7 +41,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldType;
 
 public class KiePMMLTreeModelNodeASTFactoryTest {
 
