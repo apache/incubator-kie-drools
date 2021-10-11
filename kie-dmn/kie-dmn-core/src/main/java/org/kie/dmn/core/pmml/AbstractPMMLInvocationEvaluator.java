@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kie.api.io.Resource;
-import org.kie.api.pmml.PMMLConstants;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
@@ -40,8 +39,6 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 
 public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
@@ -133,7 +130,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
             } catch (Throwable e) {
                 LOG.warn("Binding org.kie:kie-dmn-jpmml succeded but initialization failed, with:", e);
             }
-            AbstractPMMLInvocationEvaluator toReturn = getAbstractDMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel, pmmlInfo, classLoader);
+            DMNKiePMMLTrustyInvocationEvaluator toReturn =  getDMNKiePMMLTrustyInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel, pmmlInfo);
             if (toReturn != null) {
                 return toReturn;
             } else {
@@ -151,46 +148,16 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
     }
 
     /**
-     * Retrieve the required <code>AbstractDMNKiePMMLInvocationEvaluator</code>. It may return <code>null</code>
-     * because it is eventually expected by original code
-     * @see {@link DummyPMMLInvocationEvaluator}
+     * Retrieve the required <code>DMNKiePMMLTrustyInvocationEvaluator</code>. It may return <code>null</code>
+     * if <code>org.drools:kie-pmml-trusty</code> is not in the classpath
      *
      * @param nameSpace
      * @param funcDef
      * @param pmmlResource
      * @param pmmlModel
      * @param pmmlInfo
-     * @param classLoader
      * @return
      */
-    private static AbstractDMNKiePMMLInvocationEvaluator getAbstractDMNKiePMMLInvocationEvaluator(String nameSpace,
-                                                                                                  DMNElement funcDef,
-                                                                                                  Resource pmmlResource,
-                                                                                                  String pmmlModel,
-                                                                                                  PMMLInfo<?> pmmlInfo,
-                                                                                                  ClassLoader classLoader) {
-        PMMLConstants pmmlConstants = toEnable(classLoader);
-        switch (pmmlConstants) {
-                case LEGACY:
-                    return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
-                case NEW:
-                    return getDMNKiePMMLTrustyInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
-                default:
-                    return null;
-        }
-    }
-
-    private static DMNKiePMMLInvocationEvaluator getDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
-        try {
-            return new DMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
-        } catch (NoClassDefFoundError e) {
-            LOG.warn("Tried binding org.drools:kie-pmml, failed.");
-        } catch (Throwable e) {
-            LOG.warn("Binding org.drools:kie-pmml succeded but initialization failed, with:", e);
-        }
-        return null;
-    }
-
     private static DMNKiePMMLTrustyInvocationEvaluator getDMNKiePMMLTrustyInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
         try {
             return new DMNKiePMMLTrustyInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);

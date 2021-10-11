@@ -124,13 +124,6 @@
 
     <!-- Used to provide a default binding for PMML, and test in this module -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-    <!-- Used to provide a default binding for PMML, and test in this module -->
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-api</artifactId>
       <scope>provided</scope>

@@ -131,24 +131,6 @@
       <artifactId>drools-beliefs</artifactId>
       <classifier>sources</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-scorecards</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-scorecards</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>
