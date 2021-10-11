@@ -94,11 +94,6 @@
       <artifactId>drools-mvel</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunit</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
