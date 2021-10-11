@@ -543,17 +543,6 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml</artifactId>
-        <version>${version.org.kie}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
         <artifactId>named-kiesession</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
