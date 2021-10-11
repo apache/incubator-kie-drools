@@ -20,19 +20,19 @@ How to retest this PR or trigger a specific build:
   Please add comment: <b>Jenkins retest this</b>
 
 * <b>Run (or rerun) specific test(s)</b>  
-  Please add comment: <b>Jenkins (re)run [runtimes|optaplanner|apps|examples] tests</b>
+  Please add comment: <b>Jenkins (re)run [kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] tests</b>
  
 * <b>Quarkus LTS checks</b>  
   Please add comment: <b>Jenkins run LTS</b>
 
 * <b>Run (or rerun) LTS specific test(s)</b>  
-  Please add comment: <b>Jenkins (re)run [runtimes|optaplanner|apps|examples] LTS</b>
+  Please add comment: <b>Jenkins (re)run [kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] LTS</b>
 
 * <b>Native checks</b>  
   Please add comment: <b>Jenkins run native</b>
 
 * <b>Run (or rerun) native specific test(s)</b>  
-  Please add comment: <b>Jenkins (re)run [runtimes|optaplanner|apps|examples] native</b>
+  Please add comment: <b>Jenkins (re)run [kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] native</b>
 
 * <b>Full Kogito testing</b> (with cloud images and operator BDD testing)  
   Please add comment: <b>Jenkins run BDD</b>  

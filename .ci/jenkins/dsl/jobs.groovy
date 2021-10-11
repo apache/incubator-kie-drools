@@ -26,27 +26,42 @@ def getJobParams(String jobName, String jobFolder, String jenkinsfileName, Strin
 Map getMultijobPRConfig() {
     return [
         parallel: true,
+        buildchain: true,
         jobs : [
             [
-                id: 'Runtimes',
+                id: 'kogito-runtimes',
                 primary: true,
+                env : [
+                    // Sonarcloud analysis only on main branch
+                    // As we have only Community edition
+                    DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                ]
             ], [
-                id: 'Optaplanner',
-                dependsOn: 'Runtimes',
+                id: 'optaplanner',
+                dependsOn: 'kogito-runtimes',
                 repository: 'optaplanner',
             ], [
-                id: 'Apps',
-                dependsOn: 'Optaplanner',
+                id: 'kogito-apps',
+                dependsOn: 'optaplanner',
                 repository: 'kogito-apps'
             ], [
-                id: 'Examples',
+                id: 'kogito-examples',
                 dependsOn: 'Optaplanner',
                 repository: 'kogito-examples'
+            ], [
+                id: 'optaweb-employee-rostering',
+                repository: 'optaweb-employee-rostering'
+            ], [
+                id: 'optaweb-vehicle-routing',
+                repository: 'optaweb-vehicle-routing'
+            ], [
+                id: 'optaplanner-quickstarts',
+                repository: 'optaplanner-quickstarts',
+                env : [
+                    BUILD_MVN_OPTS: '-Dfull'
+                ]
             ]
         ],
-        extraEnv : [
-            ENABLE_SONARCLOUD: Utils.isMainBranch(this)
-        ]
     ]
 }
 
