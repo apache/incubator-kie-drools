@@ -56,7 +56,7 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -131,10 +131,10 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
         PMML pmml = new PMML();
         pmml.setDataDictionary(dataDictionary);
         pmml.addModels(regressionModel);
-        final CompilationDTO<RegressionModel> source = new CompilationDTO<>(PACKAGE_NAME,
-                                                                            pmml,
-                                                                            regressionModel,
-                                                                            new HasClassLoaderMock());
+        final CommonCompilationDTO<RegressionModel> source = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                        pmml,
+                                                                                        regressionModel,
+                                                                                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO = new RegressionCompilationDTO(source, new ArrayList<>(),
                                                                                      regressionModel.getNormalizationMethod());
 

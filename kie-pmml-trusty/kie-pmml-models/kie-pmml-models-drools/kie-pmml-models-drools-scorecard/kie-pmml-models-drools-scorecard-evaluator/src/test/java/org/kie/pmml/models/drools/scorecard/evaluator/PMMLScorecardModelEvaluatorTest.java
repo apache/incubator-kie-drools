@@ -37,7 +37,7 @@ import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.runtime.PMMLContext;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
@@ -92,10 +92,10 @@ public class PMMLScorecardModelEvaluatorTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              (Scorecard) pmml.getModels().get(0),
-                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<Scorecard> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          (Scorecard) pmml.getModels().get(0),
+                                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
 
         kiePMMLModel = provider.getKiePMMLModel(compilationDTO);
         kieBase = new KieHelper()

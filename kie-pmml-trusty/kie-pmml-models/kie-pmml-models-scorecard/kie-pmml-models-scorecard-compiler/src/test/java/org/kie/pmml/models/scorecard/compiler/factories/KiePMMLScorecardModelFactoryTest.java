@@ -36,7 +36,7 @@ import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -89,10 +89,10 @@ public class KiePMMLScorecardModelFactoryTest {
 
     @Test
     public void getKiePMMLScorecardModel() {
-        final CompilationDTO<Scorecard> source = new CompilationDTO<>(PACKAGE_NAME,
-                                                                      basicComplexPartialScorePmml,
-                                                                      basicComplexPartialScore,
-                                                                      new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> source = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                  basicComplexPartialScorePmml,
+                                                                                  basicComplexPartialScore,
+                                                                                  new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(new ScorecardCompilationDTO(source));
         assertNotNull(retrieved);
@@ -100,10 +100,10 @@ public class KiePMMLScorecardModelFactoryTest {
 
     @Test
     public void getKiePMMLScorecardModelSourcesMap() {
-        final CompilationDTO<Scorecard> source = new CompilationDTO<>(PACKAGE_NAME,
-                                                                      basicComplexPartialScorePmml,
-                                                                      basicComplexPartialScore,
-                                                                      new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> source = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                  basicComplexPartialScorePmml,
+                                                                                  basicComplexPartialScore,
+                                                                                  new HasClassLoaderMock());
         ScorecardCompilationDTO compilationDTO = new ScorecardCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(compilationDTO);
@@ -121,10 +121,10 @@ public class KiePMMLScorecardModelFactoryTest {
     @Test
     public void setConstructor() {
         String fullCharacteristicsClassName = PACKAGE_NAME + ".fullCharacteristicsClassName";
-        final CompilationDTO<Scorecard> source = new CompilationDTO<>(PACKAGE_NAME,
-                                                                      basicComplexPartialScorePmml,
-                                                                      basicComplexPartialScore,
-                                                                      new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> source = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                  basicComplexPartialScorePmml,
+                                                                                  basicComplexPartialScore,
+                                                                                  new HasClassLoaderMock());
         KiePMMLScorecardModelFactory.setConstructor(new ScorecardCompilationDTO(source),
                                                     scorecardTemplate,
                                                     fullCharacteristicsClassName);

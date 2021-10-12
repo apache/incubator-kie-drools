@@ -21,36 +21,25 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.mining.Segment;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.dto.AbstractSpecificDTO;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
-public class SegmentCompilationDTO<T extends Model> extends CompilationDTO<T> {
+public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificDTO<T> {
 
     private static final long serialVersionUID = 747528700144401388L;
 
     private final Segment segment;
-    private final String segmentModelPackageName;
 
     public SegmentCompilationDTO(MiningModelCompilationDTO source, Segment segment, List<Field<?>> fields) {
         super(source.getPmml(), (T) segment.getModel(), source.getHasClassloader(),
               getSanitizedPackageName(source.getSegmentationPackageName() + "." + segment.getId()),
               fields);
         this.segment = segment;
-        segmentModelPackageName = getSanitizedPackageName(packageName);
     }
 
     public Segment getSegment() {
         return segment;
-    }
-
-    /**
-     * Returns the <b>sanitized</b> package name
-     * @return
-     */
-    @Override
-    public String getPackageName() {
-        return segmentModelPackageName;
     }
 
     public String getId() {

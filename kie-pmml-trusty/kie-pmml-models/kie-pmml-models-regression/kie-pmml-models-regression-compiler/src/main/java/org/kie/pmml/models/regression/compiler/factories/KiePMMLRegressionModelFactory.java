@@ -53,9 +53,10 @@ public class KiePMMLRegressionModelFactory {
     private KiePMMLRegressionModelFactory() {
     }
 
-    public static KiePMMLRegressionModel getKiePMMLRegressionModelClasses(final CompilationDTO<RegressionModel> compilationDTO) throws IOException, IllegalAccessException, InstantiationException {
+    public static KiePMMLRegressionModel getKiePMMLRegressionModelClasses(final RegressionCompilationDTO compilationDTO) throws IOException, IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLRegressionModelClasses {} {}", compilationDTO.getFields(), compilationDTO.getModel());
-        Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(compilationDTO);
+        Map<String, String> sourcesMap =
+                getKiePMMLRegressionModelSourcesMap(compilationDTO);
         try {
             Class<?> kiePMMLRegressionModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
             return (KiePMMLRegressionModel) kiePMMLRegressionModelClass.newInstance();
@@ -64,7 +65,7 @@ public class KiePMMLRegressionModelFactory {
         }
     }
 
-    public static Map<String, String> getKiePMMLRegressionModelSourcesMap(final CompilationDTO<RegressionModel> compilationDTO) throws IOException {
+    public static Map<String, String> getKiePMMLRegressionModelSourcesMap(final RegressionCompilationDTO compilationDTO) throws IOException {
         logger.trace("getKiePMMLRegressionModelSourcesMap {} {} {}", compilationDTO.getFields(),
                      compilationDTO.getModel(),
                      compilationDTO.getPackageName());
@@ -94,7 +95,7 @@ public class KiePMMLRegressionModelFactory {
         return toReturn;
     }
 
-    static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(final CompilationDTO<RegressionModel> compilationDTO) {
+    static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(final RegressionCompilationDTO compilationDTO) {
         Map<String, KiePMMLTableSourceCategory> toReturn;
         if (compilationDTO.isRegression()) {
             final List<RegressionTable> regressionTables =

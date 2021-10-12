@@ -31,7 +31,7 @@ import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,7 +128,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .getModels()
                 .stream()
                 .map(model -> {
-                    final CompilationDTO compilationDTO = new CompilationDTO(packageName, pmml, model, hasClassloader);
+                    final CommonCompilationDTO compilationDTO = new CommonCompilationDTO(packageName, pmml, model, hasClassloader);
                     return getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
                 })
                 .filter(Optional::isPresent)
@@ -150,7 +150,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .getModels()
                 .stream()
                 .map(model -> {
-                    final CompilationDTO compilationDTO = new CompilationDTO(packageName, pmml, model, hasClassloader);
+                    final CommonCompilationDTO compilationDTO = new CommonCompilationDTO(packageName, pmml, model, hasClassloader);
                     return getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
                 })
                 .filter(Optional::isPresent)

@@ -25,15 +25,14 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
@@ -66,7 +65,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
                      compilationDTO.getHasClassloader());
         validate(compilationDTO.getFields(), compilationDTO.getModel());
         try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(compilationDTO);
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(new RegressionCompilationDTO(compilationDTO));
         } catch (IOException | IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
@@ -80,7 +79,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
                      compilationDTO.getHasClassloader());
         try {
             final Map<String, String> sourcesMap =
-                    KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(compilationDTO);
+                    KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(new RegressionCompilationDTO(compilationDTO));
             return new KiePMMLRegressionModelWithSources(compilationDTO.getModelName(),
                                                          compilationDTO.getPackageName(),
                                                          sourcesMap);

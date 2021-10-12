@@ -36,7 +36,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
@@ -82,10 +82,10 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                            pmml.getTransformationDictionary(),
                                                                                            treeModel.getLocalTransformations());
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CompilationDTO<TreeModel> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              treeModel,
-                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<TreeModel> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          treeModel,
+                                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO = new DroolsCompilationDTO<>(compilationDTO,
                                                                                                 fieldTypeMap);
         KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(droolsCompilationDTO);
@@ -100,10 +100,10 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                            pmml.getTransformationDictionary(),
                                                                                            treeModel.getLocalTransformations());
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CompilationDTO<TreeModel> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              treeModel,
-                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<TreeModel> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          treeModel,
+                                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO = new DroolsCompilationDTO<>(compilationDTO,
                                                                                                 fieldTypeMap);
         Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(droolsCompilationDTO);
@@ -131,10 +131,10 @@ public class KiePMMLTreeModelFactoryTest {
         final String targetField = "whatIdo";
         final ClassOrInterfaceDeclaration modelTemplate = classOrInterfaceDeclaration.clone();
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CompilationDTO<TreeModel> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              treeModel,
-                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<TreeModel> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          treeModel,
+                                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO = new DroolsCompilationDTO<>(compilationDTO,
                                                                                                 new HashMap<>());
         KiePMMLTreeModelFactory.setConstructor(droolsCompilationDTO, modelTemplate);

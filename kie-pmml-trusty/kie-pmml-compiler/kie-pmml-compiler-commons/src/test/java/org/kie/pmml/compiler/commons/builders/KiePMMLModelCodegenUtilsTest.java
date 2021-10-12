@@ -28,6 +28,7 @@ import org.dmg.pmml.PMML;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -63,10 +64,10 @@ public class KiePMMLModelCodegenUtilsTest {
     @Test
     public void init() throws IOException {
         ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
-        final CompilationDTO compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                   pmml,
-                                                                   model,
-                                                                   new HasClassLoaderMock());
+        final CompilationDTO compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                         pmml,
+                                                                         model,
+                                                                         new HasClassLoaderMock());
         KiePMMLModelCodegenUtils.init(compilationDTO, modelTemplate);
         BlockStmt body = constructorDeclaration.getBody();
         String text = getFileContent(TEST_01_SOURCE);
