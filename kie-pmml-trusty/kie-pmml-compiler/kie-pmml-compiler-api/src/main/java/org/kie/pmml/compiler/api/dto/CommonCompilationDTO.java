@@ -66,17 +66,17 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     private final OpType opType;
 
     /**
-     * Private constructor that preserve given <b>packageName</b>
+     * protected constructor needed to preserve original <b>packageName</b> when <b>"cloning"</b> another
      * <code>CompilationDTO</code>
      * @param pmml
      * @param model
      * @param hasClassloader
      * @param packageName
      */
-    private CommonCompilationDTO(final PMML pmml,
-                                 final T model,
-                                 final HasClassLoader hasClassloader,
-                                 final String packageName) {
+    protected CommonCompilationDTO(final PMML pmml,
+                                   final T model,
+                                   final HasClassLoader hasClassloader,
+                                   final String packageName) {
         this(pmml, model, hasClassloader, packageName,
              ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel(pmml.getDataDictionary(),
                                                                                     pmml.getTransformationDictionary(),
@@ -84,18 +84,18 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     }
 
     /**
-     * Private constructor that preserve given <b>packageName</b> and <b>fields</b>
+     * protected constructor needed to preserve original <b>packageName</b> when <b>"cloning"</b> another
+     * <code>CompilationDTO</code>
      * @param pmml
      * @param model
      * @param hasClassloader
      * @param packageName
-     * @param fields
      */
-    private CommonCompilationDTO(final PMML pmml,
-                                 final T model,
-                                 final HasClassLoader hasClassloader,
-                                 final String packageName,
-                                 final List<Field<?>> fields) {
+    public CommonCompilationDTO(final PMML pmml,
+                                final T model,
+                                final HasClassLoader hasClassloader,
+                                final String packageName,
+                                final List<Field<?>> fields) {
         this.packageName = packageName;
         this.pmml = pmml;
         this.transformationDictionary = pmml.getTransformationDictionary();
@@ -118,55 +118,12 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
         opType = targetDataField != null ? targetDataField.getOpType() : null;
     }
 
-    /**
-     * Private constructor that create the <b>packageName</b> name from the given one and retrieve <b>fields</b>
-     * from <b>pmml</b> and <b>model</b>
-     * @param pmml
-     * @param model
-     * @param hasClassloader
-     * @param packageName
-     */
-    private CommonCompilationDTO(final String packageName,
-                                 final PMML pmml,
-                                 final T model,
-                                 final HasClassLoader hasClassloader) {
+    public CommonCompilationDTO(final String packageName,
+                                final PMML pmml,
+                                final T model,
+                                final HasClassLoader hasClassloader) {
         this(pmml, model, hasClassloader, getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE, packageName,
                                                                                 model.getModelName())));
-    }
-
-    /**
-     * Builder that create the <b>packageName</b> name from the given one and retrieve <b>fields</b>
-     * from <b>pmml</b> and <b>model</b>
-     * @param pmml
-     * @param model
-     * @param hasClassloader
-     * @param packageName
-     **/
-    public static <T extends Model> CommonCompilationDTO<T> fromGeneratedPackageNameAndFields(final String packageName,
-                                                                                              final PMML pmml,
-                                                                                              final T model,
-                                                                                              final HasClassLoader hasClassloader) {
-        return new CommonCompilationDTO(packageName,
-                                        pmml,
-                                        model,
-                                        hasClassloader);
-    }
-
-    /**
-     * Builder that preserve given <b>packageName</b> and <b>fields</b>
-     * <code>CompilationDTO</code>
-     * @param pmml
-     * @param model
-     * @param hasClassloader
-     * @param packageName
-     * @param fields
-     */
-    public static <T extends Model> CommonCompilationDTO<T> fromPackageNameAndFields(final PMML pmml,
-                                                                                     final T model,
-                                                                                     final HasClassLoader hasClassloader,
-                                                                                     final String packageName,
-                                                                                     final List<Field<?>> fields) {
-        return new CommonCompilationDTO<>(pmml, model, hasClassloader, packageName, fields);
     }
 
     @Override

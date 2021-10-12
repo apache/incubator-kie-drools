@@ -40,7 +40,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
@@ -109,10 +109,10 @@ public class DroolsModelProviderTest {
     @Test
     public void getKiePMMLModelWithKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              scorecard,
-                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<Scorecard> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          scorecard,
+                                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelTest);
@@ -138,20 +138,20 @@ public class DroolsModelProviderTest {
 
     @Test(expected = KiePMMLException.class)
     public void getKiePMMLModelNoKnowledgeBuilder() {
-        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              scorecard,
-                                                                              new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          scorecard,
+                                                                                          new HasClassLoaderMock());
         droolsModelProvider.getKiePMMLModel(compilationDTO);
     }
 
     @Test
     public void getKiePMMLModelWithSourcesWithKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              scorecard,
-                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<Scorecard> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          scorecard,
+                                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelWithSources);
@@ -169,10 +169,10 @@ public class DroolsModelProviderTest {
 
     @Test(expected = KiePMMLException.class)
     public void getKiePMMLModelWithSourcesNoKnowledgeBuilder() {
-        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              scorecard,
-                                                                              new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          scorecard,
+                                                                                          new HasClassLoaderMock());
         droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
     }
 
@@ -202,10 +202,10 @@ public class DroolsModelProviderTest {
     @Test
     public void getRulesSourceMap() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              scorecard,
-                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<Scorecard> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          scorecard,
+                                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
         String expectedPackageName = compilationDTO.getPackageName();
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
@@ -218,10 +218,10 @@ public class DroolsModelProviderTest {
     @Test
     public void generateRulesFiles() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CompilationDTO<Scorecard> compilationDTO = new CompilationDTO<>(PACKAGE_NAME,
-                                                                              pmml,
-                                                                              scorecard,
-                                                                              new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<Scorecard> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                          pmml,
+                                                                                          scorecard,
+                                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
         String expectedPackageName = compilationDTO.getPackageName();
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);

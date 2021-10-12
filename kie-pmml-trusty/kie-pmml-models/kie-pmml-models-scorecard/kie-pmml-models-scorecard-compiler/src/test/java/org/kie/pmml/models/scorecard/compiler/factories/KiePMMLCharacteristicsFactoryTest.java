@@ -45,7 +45,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.testutils.TestUtils;
@@ -59,7 +59,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
@@ -110,10 +109,10 @@ public class KiePMMLCharacteristicsFactoryTest {
 
     @Test
     public void getKiePMMLCharacteristics() {
-        final CompilationDTO<Scorecard> source = new CompilationDTO<>(PACKAGE_NAME,
-                                                                      basicComplexPartialScorePmml,
-                                                                      basicComplexPartialScore,
-                                                                      new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> source = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                  basicComplexPartialScorePmml,
+                                                                                  basicComplexPartialScore,
+                                                                                  new HasClassLoaderMock());
         final KiePMMLCharacteristics retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristics(new ScorecardCompilationDTO(source));
         assertNotNull(retrieved);
@@ -121,10 +120,10 @@ public class KiePMMLCharacteristicsFactoryTest {
 
     @Test
     public void getKiePMMLCharacteristicsSourcesMap() {
-        final CompilationDTO<Scorecard> source = new CompilationDTO<>(PACKAGE_NAME,
-                                                                      basicComplexPartialScorePmml,
-                                                                      basicComplexPartialScore,
-                                                                      new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> source = new CommonCompilationDTO<>(PACKAGE_NAME,
+                                                                                  basicComplexPartialScorePmml,
+                                                                                  basicComplexPartialScore,
+                                                                                  new HasClassLoaderMock());
         ScorecardCompilationDTO compilationDTO = new ScorecardCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap(compilationDTO);

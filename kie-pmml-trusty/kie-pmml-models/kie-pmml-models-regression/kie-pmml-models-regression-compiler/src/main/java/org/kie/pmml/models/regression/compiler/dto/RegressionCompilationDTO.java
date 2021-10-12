@@ -16,13 +16,19 @@
 package org.kie.pmml.models.regression.compiler.dto;
 
 import java.util.List;
+import java.util.Objects;
 
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.MiningFunction;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.compiler.api.dto.AbstractSpecificDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
-public class RegressionCompilationDTO extends CompilationDTO<RegressionModel> {
+public class RegressionCompilationDTO extends AbstractSpecificDTO<RegressionModel> {
 
     private static final long serialVersionUID = 640809755551594031L;
     private final List<RegressionTable> regressionTables;
@@ -44,6 +50,13 @@ public class RegressionCompilationDTO extends CompilationDTO<RegressionModel> {
         modelNormalizationMethod = source.getModel().getNormalizationMethod();
     }
 
+    /**
+     * @param source
+     */
+    public RegressionCompilationDTO(final CompilationDTO<RegressionModel> source) {
+        this(source, source.getModel().getRegressionTables(), source.getModel().getNormalizationMethod());
+    }
+
     public List<RegressionTable> getRegressionTables() {
         return regressionTables;
     }
@@ -60,7 +73,18 @@ public class RegressionCompilationDTO extends CompilationDTO<RegressionModel> {
         return modelNormalizationMethod;
     }
 
-    public REGRESSION_NORMALIZATION_METHOD getModelREGRESSION_NORMALIZATION_METHOD() {
-        return REGRESSION_NORMALIZATION_METHOD.byName(modelNormalizationMethod.value());
+    public OP_TYPE getOP_TYPE() {
+        OpType opType = getOpType();
+        return opType != null ? OP_TYPE.byName(opType.value()) : null;
+    }
+
+    public boolean isBinary(int tableSize) {
+        return Objects.equals(OpType.CATEGORICAL, getOpType()) && tableSize == 2;
+    }
+
+    public boolean isRegression() {
+        final DataField targetDataField = getTargetDataField();
+        final OpType targetOpType = targetDataField != null ? targetDataField.getOpType() : null;
+        return Objects.equals(MiningFunction.REGRESSION, getMiningFunction()) && (targetDataField == null || Objects.equals(OpType.CONTINUOUS, targetOpType));
     }
 }
