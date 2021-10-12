@@ -21,12 +21,12 @@ import org.dmg.pmml.scorecard.Characteristics;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificDTO;
+import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 
-public class ScorecardCompilationDTO extends AbstractSpecificDTO<Scorecard> {
+public class ScorecardCompilationDTO extends AbstractSpecificCompilationDTO<Scorecard> {
 
     private static final long serialVersionUID = -1797184111198269074L;
     private final Scorecard scorecardModel;

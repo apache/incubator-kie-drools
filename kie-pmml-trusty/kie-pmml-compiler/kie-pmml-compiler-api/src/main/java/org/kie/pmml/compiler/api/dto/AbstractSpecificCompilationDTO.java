@@ -45,8 +45,9 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     private final List<Field<?>> fields;
 
     /**
-     * Protected constructor that generate a <code>CommonCompilationDTO</code> preserving given <b>packageName</b>
-     * and <b>fields</b>
+     * protected constructor needed to preserve original <b>packageName</b> and <b>fields</b> when <b>"cloning"</b>
+     * another
+     * <code>CompilationDTO</code>
      * @param pmml
      * @param model
      * @param hasClassloader
@@ -57,13 +58,9 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
                                              final HasClassLoader hasClassloader,
                                              final String packageName,
                                              final List<Field<?>> fields) {
-        this(CommonCompilationDTO.fromPackageNameAndFields(pmml, model, hasClassloader, packageName, fields));
+        this(new CommonCompilationDTO(pmml, model, hasClassloader, packageName, fields));
     }
 
-    /**
-     * Protected constructor that use given <code>CompilationDTO</code>
-     * @param source
-     */
     protected AbstractSpecificCompilationDTO(CompilationDTO<T> source) {
         this.source = source;
         this.fields = new ArrayList<>(source.getFields());
@@ -176,7 +173,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     public void addFields(final List<Field<?>> toAdd) {
         if (toAdd != null) {
             toAdd.forEach(field -> {
-                fields.removeIf(e -> e.getClass().equals(field.getClass()) &&  e.getName().equals(field.getName()));
+                fields.removeIf(e -> e.getName().equals(field.getName()));
                 fields.add(field);
             });
         }
