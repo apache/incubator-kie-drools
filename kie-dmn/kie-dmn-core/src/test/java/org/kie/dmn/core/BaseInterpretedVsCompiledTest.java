@@ -27,7 +27,7 @@ public abstract class BaseInterpretedVsCompiledTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{true, false};
+        return new Object[]{false};
     }
 
     private final boolean useExecModelCompiler;

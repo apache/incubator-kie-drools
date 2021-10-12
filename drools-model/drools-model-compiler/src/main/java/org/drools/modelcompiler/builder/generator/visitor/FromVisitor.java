@@ -49,7 +49,6 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.printer.PrintUtil;
 
-import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
@@ -61,7 +60,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
-import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class FromVisitor {
 
@@ -176,7 +174,7 @@ public class FromVisitor {
         if (staticField.isPresent()) {
             return of( createSupplier(parsedExpression) );
         }
-        if ( !isLegacyRuleUnit() && packageModel.hasEntryPoint( bindingId ) ) {
+        if ( packageModel.hasEntryPoint( bindingId ) ) {
             return of( createEntryPointCall(bindingId) );
         }
         if ( contextHasDeclaration( bindingId ) ) {
@@ -305,9 +303,6 @@ public class FromVisitor {
     }
 
     private Expression createUnitDataCall( String bindingId ) {
-        if (isLegacyRuleUnit()) {
-            return parseExpression( DrlxParseUtil.toVar( bindingId ) );
-        }
         MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
         return entryPointCall.addArgument( toStringLiteral(bindingId) );
     }

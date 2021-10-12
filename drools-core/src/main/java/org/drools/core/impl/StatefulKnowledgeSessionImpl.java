@@ -48,7 +48,6 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.DefaultFactHandle;
@@ -150,7 +149,6 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -328,8 +326,24 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.propagationIdCounter = new AtomicLong(propagationContext);
         init( config, environment, propagationContext );
-        if (kBase != null) {
-            bindRuleBase( this, kBase, agenda, initInitFactHandle );
+
+        this.kBase = kBase;
+
+        this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
+        registerReceiveNodes(kBase.getReceiveNodes());
+
+        RuleBaseConfiguration conf = kBase.getConfiguration();
+        this.pctxFactory = conf.getComponentFactory().getPropagationContextFactory();
+
+        this.agenda = agenda != null ? agenda : conf.getComponentFactory().getAgendaFactory().createAgenda(kBase);
+        this.agenda.setWorkingMemory(this);
+
+        this.sequential = conf.isSequential();
+
+        initDefaultEntryPoint();
+        updateEntryPointsCache();
+        if (initInitFactHandle) {
+            this.initialFactHandle = initInitialFact(kBase, null);
         }
     }
 
@@ -376,34 +390,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void initMBeans(String containerId, String kbaseName, String ksessionName) {
-        if (((InternalKnowledgeBase) kBase).getConfiguration() != null && ((InternalKnowledgeBase) kBase).getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
+        if (kBase.getConfiguration() != null && kBase.getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
             this.mbeanRegisteredCBSKey = new DroolsManagementAgent.CBSKey( containerId, kbaseName, ksessionName );
             DroolsManagementAgent.getInstance().registerKnowledgeSessionUnderName( mbeanRegisteredCBSKey, this );
-        }
-    }
-
-    public void bindRuleBase( InternalWorkingMemory workingMemory, InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle ) {
-        this.kBase = kBase;
-
-        this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
-        registerReceiveNodes(kBase.getReceiveNodes());
-
-        this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-
-        if (agenda == null) {
-            this.agenda = kBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(kBase);
-        } else {
-            this.agenda = agenda;
-        }
-        this.agenda.setWorkingMemory(workingMemory);
-
-        RuleBaseConfiguration conf = kBase.getConfiguration();
-        this.sequential = conf.isSequential();
-
-        initDefaultEntryPoint();
-        updateEntryPointsCache();
-        if (initInitFactHandle) {
-            this.initialFactHandle = initInitialFact(kBase, null);
         }
     }
 

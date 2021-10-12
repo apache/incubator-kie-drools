@@ -56,7 +56,6 @@ import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
 import org.drools.model.Rule;
-import org.drools.model.UnitData;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -66,7 +65,6 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.stream.Collectors.toList;
@@ -86,13 +84,11 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.METADATA
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.RULE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.SUPPLY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_DATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 import static org.drools.modelcompiler.util.TimerUtil.validateTimer;
-import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class ModelGenerator {
 
@@ -205,10 +201,6 @@ public class ModelGenerator {
 
         RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
         BlockStmt ruleVariablesBlock = context.getRuleVariablesBlock();
-
-        if (isLegacyRuleUnit()) {
-            createUnitData( context, ruleUnitDescr, ruleVariablesBlock );
-        }
 
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         if (context.hasCompilationError()) {
@@ -446,32 +438,6 @@ public class ModelGenerator {
         } catch (Exception e) {
             return Optional.empty();
         }
-    }
-
-    private static void createUnitData(RuleContext context, RuleUnitDescription ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
-        if (ruleUnitDescr != null) {
-            for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
-                addUnitData(context, unitVar, ruleVariablesBlock);
-            }
-        }
-    }
-
-  private static void addUnitData(RuleContext context, RuleUnitVariable unitVar, BlockStmt ruleBlock) {
-        Type declType = classToReferenceType(unitVar.getBoxedVarType());
-        context.addRuleUnitVar( unitVar.getName(), unitVar.getDataSourceParameterType() );
-        context.addRuleUnitVarOriginalType( unitVar.getName(), unitVar.getType() );
-
-        ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
-        varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(unitVar.getName()), Modifier.finalModifier());
-
-        MethodCallExpr unitDataCall = createDslTopLevelMethod(UNIT_DATA_CALL);
-
-        unitDataCall.addArgument(new ClassExpr( declType ));
-        unitDataCall.addArgument(toStringLiteral(unitVar.getName()));
-
-        AssignExpr var_assign = new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
-        ruleBlock.addStatement(var_assign);
     }
 
     public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {

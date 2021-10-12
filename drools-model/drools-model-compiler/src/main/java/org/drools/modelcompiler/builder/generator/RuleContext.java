@@ -70,7 +70,6 @@ import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
-import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class RuleContext {
 
@@ -182,7 +181,7 @@ public class RuleContext {
 
     private void processUnitData() {
         findUnitDescr();
-        if (ruleUnitDescr != null && !isLegacyRuleUnit()) {
+        if (ruleUnitDescr != null) {
             for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
                 String unitVarName = unitVar.getName();
                 Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();

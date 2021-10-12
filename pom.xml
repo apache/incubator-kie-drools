@@ -61,7 +61,6 @@
     <module>drools-serialization-protobuf</module>
     <module>drools-beliefs</module>
     <module>drools-traits</module>
-    <module>drools-ruleunit</module>
     <module>drools-cdi</module>
     <module>drools-verifier</module>
     <module>drools-persistence</module>
