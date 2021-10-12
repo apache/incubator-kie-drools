@@ -24,12 +24,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBException;
+
 import org.dmg.pmml.Extension;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.MiningField.UsageType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
+import org.xml.sax.SAXException;
 
 public class PMMLInfo<M extends PMMLModelInfo> {
 
@@ -41,13 +44,8 @@ public class PMMLInfo<M extends PMMLModelInfo> {
         this.header = header;
     }
 
-    public static PMMLInfo<PMMLModelInfo> from(InputStream is) {
-        PMML pmml;
-        try {
-            pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public static PMMLInfo<PMMLModelInfo> from(InputStream is) throws SAXException, JAXBException {
+        PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
         List<PMMLModelInfo> models = new ArrayList<>();
         for (Model pm : pmml.getModels()) {
             models.add(pmmlToModelInfo(pm));
