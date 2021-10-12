@@ -400,7 +400,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
         }
 
         private static Item parseItem(boolean isDigit, String buf) {
-            return isDigit ? new IntegerItem(buf) : new StringItem(buf, false);
+            return isDigit && buf.length() < 10 ? new IntegerItem(buf) : new StringItem(buf, false);
         }
 
         public int compareTo(ComparableVersion o) {

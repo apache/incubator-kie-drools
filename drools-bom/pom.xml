@@ -308,24 +308,6 @@
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunit</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunit</artifactId>
-        <version>${version.org.kie}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunit</artifactId>
-        <version>${version.org.kie}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
       <!-- /Drools Model -->
       <dependency>
         <groupId>org.drools</groupId>

@@ -37,10 +37,6 @@ public interface RuleUnitComponentFactory {
      */
     RuleUnitDescription createRuleUnitDescription( KiePackage pkg, String ruleUnitSimpleName );
 
-    ApplyPmmlModelCommandExecutor newApplyPmmlModelCommandExecutor();
-
     boolean isRuleUnitClass( Class<?> ruleUnitClass );
     boolean isDataSourceClass( Class<?> ruleUnitClass );
-
-    boolean isLegacyRuleUnit();
 }

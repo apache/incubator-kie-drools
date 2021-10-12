@@ -24,9 +24,4 @@ public class RuleUnitUtil {
         RuleUnitComponentFactory ruleUnitComponent = RuleUnitComponentFactory.get();
         return ruleUnitComponent != null && ruleUnitComponent.isDataSourceClass( clazz );
     }
-
-    public static boolean isLegacyRuleUnit() {
-        RuleUnitComponentFactory ruleUnitComponent = RuleUnitComponentFactory.get();
-        return ruleUnitComponent != null && ruleUnitComponent.isLegacyRuleUnit();
-    }
 }
