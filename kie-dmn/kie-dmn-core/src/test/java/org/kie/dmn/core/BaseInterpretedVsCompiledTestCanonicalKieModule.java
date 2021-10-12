@@ -42,7 +42,7 @@ public abstract class BaseInterpretedVsCompiledTestCanonicalKieModule {
 
     @Parameterized.Parameters
     public static Object[] params() {
-        return new Object[][]{ { true, true}, {true, false} };
+        return new Object[][]{ { false, true}, {false, false} };
     }
 
     private final boolean useExecModelCompiler;
