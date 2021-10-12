@@ -231,4 +231,79 @@ public class NotTest {
         }
         return null;
     }
+
+    public static class Visit {
+        private final String location;
+        private String previous;
+
+        private Visit(String location) {
+            this(location, null);
+        }
+
+        private Visit(String location, String previous) {
+            this.location = location;
+            this.previous = previous;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getPrevious() {
+            return previous;
+        }
+
+        public void setPrevious(String previous) {
+            this.previous = previous;
+        }
+
+        @Override
+        public String toString() {
+            return "Visit{" +
+                    "location='" + location + '\'' +
+                    '}';
+        }
+    }
+
+    @Test
+    public void testNotWithInnerJoin() {
+        // DROOLS-6652
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                "global java.util.List results;\n" +
+                "import " + Visit.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $visit : Visit( previous != null )\n" +
+                "    not( Visit( previous != null, previous == $visit.location ) )\n" +
+                "then" +
+                "    results.add($visit.getLocation());\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("not-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+
+        List<String> results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        Visit london = new Visit("London", "Brussels");
+        Visit dublin = new Visit("Dublin", "London");
+        Visit paris = new Visit("Paris", "Dublin");
+
+        FactHandle dublinFH = ksession.insert(dublin);
+        FactHandle londonFH = ksession.insert(london);
+        FactHandle parisFH = ksession.insert(paris);
+
+        ksession.fireAllRules();
+        results.clear();
+
+        paris.setPrevious("London");
+        ksession.update(parisFH, paris);
+        dublin.setPrevious(null);
+        ksession.update(dublinFH, dublin);
+
+        ksession.fireAllRules();
+        assertEquals(1, results.size());
+        assertEquals("Paris", results.get(0));
+    }
 }
