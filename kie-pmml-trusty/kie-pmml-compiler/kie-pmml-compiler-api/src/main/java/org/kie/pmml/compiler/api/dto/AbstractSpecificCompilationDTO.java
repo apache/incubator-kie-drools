@@ -38,7 +38,7 @@ import org.kie.pmml.commons.model.HasClassLoader;
 /**
  * Abstract class to be extended by all <b>model-specific</b> compilation dtos
  */
-public abstract class AbstractSpecificDTO<T extends Model> implements CompilationDTO<T> {
+public abstract class AbstractSpecificCompilationDTO<T extends Model> implements CompilationDTO<T> {
 
     private static final long serialVersionUID = -3691191496300060907L;
     private final CompilationDTO<T> source;
@@ -53,15 +53,15 @@ public abstract class AbstractSpecificDTO<T extends Model> implements Compilatio
      * @param hasClassloader
      * @param packageName
      */
-    protected AbstractSpecificDTO(final PMML pmml,
-                                  final T model,
-                                  final HasClassLoader hasClassloader,
-                                  final String packageName,
-                                  final List<Field<?>> fields) {
+    protected AbstractSpecificCompilationDTO(final PMML pmml,
+                                             final T model,
+                                             final HasClassLoader hasClassloader,
+                                             final String packageName,
+                                             final List<Field<?>> fields) {
         this(new CommonCompilationDTO(pmml, model, hasClassloader, packageName, fields));
     }
 
-    protected AbstractSpecificDTO(CompilationDTO<T> source) {
+    protected AbstractSpecificCompilationDTO(CompilationDTO<T> source) {
         this.source = source;
         this.fields = new ArrayList<>(source.getFields());
     }

@@ -21,11 +21,11 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.mining.Segment;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificDTO;
+import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
-public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificDTO<T> {
+public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificCompilationDTO<T> {
 
     private static final long serialVersionUID = 747528700144401388L;
 

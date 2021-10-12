@@ -18,11 +18,11 @@ package org.kie.pmml.models.drools.dto;
 import java.util.Map;
 
 import org.dmg.pmml.Model;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificDTO;
+import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-public class DroolsCompilationDTO<T extends Model> extends AbstractSpecificDTO<T> {
+public class DroolsCompilationDTO<T extends Model> extends AbstractSpecificCompilationDTO<T> {
 
     private static final long serialVersionUID = 3279343826083191443L;
     private final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
