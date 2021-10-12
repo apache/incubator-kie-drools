@@ -72,7 +72,7 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
     public static Collection<Object[]> getParameters() {
         Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{false});
-//        parameters.add(new Object[]{true}); // TODO: failed with LambdaConstraint. File JIRA. The way of creating the test LambdaConstraint/Index might be the cause.
+        parameters.add(new Object[]{true});
         return parameters;
     }
 
@@ -187,38 +187,69 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
                       list.size() );
 
         // This tests the hashcode index allocation. If the rehash function (or any other way hashcodes are computed) changes, these numbers will change.
-        
-        Object[] entries = (Object[]) list.get( 0 );
-        assertEquals( 0,
-                      entries[0] );
-        assertEquals( 3,
-                      entries.length );
+        // standard-drl and exec-model have different getRightExtractor().getIndex() value so hashCode changes
 
-        entries = (Object[]) list.get( 1 );
-        assertEquals( 102,
-                      entries[0] );
-        assertEquals( 2,
-                      entries.length );
+        if (useLambdaConstraint) {
+            Object[] entries = (Object[]) list.get(0);
+            assertEquals(0,
+                         entries[0]);
+            assertEquals(3,
+                         entries.length);
 
-        entries = (Object[]) list.get( 2 );
-        assertEquals( 103,
-                      entries[0] );
-        assertEquals( 2,
-                      entries.length );
+            entries = (Object[]) list.get(1);
+            assertEquals(49,
+                         entries[0]);
+            assertEquals(3,
+                         entries.length);
 
-        entries = (Object[]) list.get( 3 );
-        assertEquals( 115,
-                      entries[0] );
-        assertEquals( 3,
-                      entries.length );
+            entries = (Object[]) list.get(2);
+            assertEquals(51,
+                         entries[0]);
+            assertEquals(3,
+                         entries.length);
 
-        entries = (Object[]) list.get( 4 );
-        assertEquals( 117,
-                      entries[0] );
-        assertEquals( 3,
-                      entries.length );
+            entries = (Object[]) list.get(3);
+            assertEquals(60,
+                         entries[0]);
+            assertEquals(2,
+                         entries.length);
 
-        //System.out.println( entries );
+            entries = (Object[]) list.get(4);
+            assertEquals(61,
+                         entries[0]);
+            assertEquals(2,
+                         entries.length);
+        } else {
+            Object[] entries = (Object[]) list.get(0);
+            assertEquals(0,
+                         entries[0]);
+            assertEquals(3,
+                         entries.length);
+
+            entries = (Object[]) list.get(1);
+            assertEquals(102,
+                         entries[0]);
+            assertEquals(2,
+                         entries.length);
+
+            entries = (Object[]) list.get(2);
+            assertEquals(103,
+                         entries[0]);
+            assertEquals(2,
+                         entries.length);
+
+            entries = (Object[]) list.get(3);
+            assertEquals(115,
+                         entries[0]);
+            assertEquals(3,
+                         entries.length);
+
+            entries = (Object[]) list.get(4);
+            assertEquals(117,
+                         entries[0]);
+            assertEquals(3,
+                         entries.length);
+        }
 
         list = new ArrayList<LeftTupleImpl>();
         Iterator it = betaMemory.getLeftTupleMemory().iterator();
