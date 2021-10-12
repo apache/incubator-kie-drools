@@ -12,6 +12,7 @@ public class OptaPlannerFeature implements Feature {
     public void afterRegistration(AfterRegistrationAccess access) {
         final RuntimeClassInitializationSupport runtimeInit = ImageSingletons.lookup(RuntimeClassInitializationSupport.class);
         final String reason = "Quarkus run time init for OptaPlanner";
+        // TODO: Remove after https://issues.redhat.com/browse/DROOLS-6643 is resolved.
         runtimeInit.initializeAtRunTime("org.drools.compiler.kproject.models.KieModuleMarshaller", reason);
     }
 }
