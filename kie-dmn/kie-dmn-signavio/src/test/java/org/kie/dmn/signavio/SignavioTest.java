@@ -72,7 +72,7 @@ public class SignavioTest {
     }
     
     @Test
-    public void test_unmarshall() {
+    public void testUnmarshall() {
         DMNRuntime runtime = createRuntime("Test_Signavio_multiple.dmn");
         DMNModel model0 = runtime.getModels().get(0);
         Definitions definitions = model0.getDefinitions();
