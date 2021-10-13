@@ -115,7 +115,7 @@ public class AndDescr extends AnnotatedBaseDescr
 
         if (descrs.size() == 1) {
             BaseDescr baseDescr = descrs.get(0);
-            if (!(baseDescr instanceof ExprConstraintDescr) || !baseDescr.getText().contains("&&")) {
+            if (!(baseDescr instanceof ExprConstraintDescr) || baseDescr.getText().contains("||") || !baseDescr.getText().contains("&&")) {
                 return new AndDescr(baseDescr.negate());
             }
         }
@@ -125,6 +125,7 @@ public class AndDescr extends AnnotatedBaseDescr
             String expr = descrs.stream()
                     .map( ExprConstraintDescr.class::cast )
                     .map( ExprConstraintDescr::getText )
+                    .map( this::removeEnclosingParenthesis )
                     .flatMap( e -> Stream.of(e.split("&&")))
                     .map( e -> "!(" + e + ")" )
                     .collect( Collectors.joining( "||" ) );
@@ -136,5 +137,10 @@ public class AndDescr extends AnnotatedBaseDescr
             or.addDescr( descr.negate() );
         }
         return or;
+    }
+
+    private String removeEnclosingParenthesis(String expr) {
+        expr = expr.trim();
+        return expr.startsWith("(") && expr.endsWith(")") ? removeEnclosingParenthesis(expr.substring(1, expr.length()-1)) : expr;
     }
 }
