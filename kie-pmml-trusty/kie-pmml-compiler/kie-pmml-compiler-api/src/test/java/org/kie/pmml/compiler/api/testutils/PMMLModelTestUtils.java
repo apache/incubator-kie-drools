@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.testutils;
+package org.kie.pmml.compiler.api.testutils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +55,7 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
-import org.kie.pmml.compiler.commons.mocks.TestModel;
+import org.kie.pmml.compiler.api.mocks.TestModel;
 
 /**
  * Helper methods related to <b>PMML</b> original model

@@ -27,7 +27,7 @@ import org.dmg.pmml.Array;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.junit.Test;
 import org.kie.pmml.api.enums.ResultCode;
-import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
+import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 

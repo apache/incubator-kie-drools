@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.mocks;
+package org.kie.pmml.compiler.api.mocks;
 
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.MathContext;
