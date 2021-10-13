@@ -51,7 +51,7 @@ public class ScorecardCompilationDTO extends AbstractSpecificCompilationDTO<Scor
      * Builder that use given <code>CommonCompilationDTO</code>
      * @param source
      */
-    public static ScorecardCompilationDTO getWithGeneratedPackageNameAndFields(final CompilationDTO<Scorecard> source) {
+    public static ScorecardCompilationDTO fromCompilationDTO(final CompilationDTO<Scorecard> source) {
         return new ScorecardCompilationDTO(source);
     }
 

@@ -142,10 +142,10 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
      * @param hasClassloader
      * @param packageName
      **/
-    public static <T extends Model> CommonCompilationDTO<T> getWithGeneratedPackageNameAndFields(final String packageName,
-                                                                                                 final PMML pmml,
-                                                                                                 final T model,
-                                                                                                 final HasClassLoader hasClassloader) {
+    public static <T extends Model> CommonCompilationDTO<T> fromGeneratedPackageNameAndFields(final String packageName,
+                                                                                              final PMML pmml,
+                                                                                              final T model,
+                                                                                              final HasClassLoader hasClassloader) {
         return new CommonCompilationDTO(packageName,
                                         pmml,
                                         model,
@@ -161,11 +161,11 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
      * @param packageName
      * @param fields
      */
-    public static <T extends Model> CommonCompilationDTO<T> getWithDefinedPackageNameAndFields(final PMML pmml,
-                                                                                               final T model,
-                                                                                               final HasClassLoader hasClassloader,
-                                                                                               final String packageName,
-                                                                                               final List<Field<?>> fields) {
+    public static <T extends Model> CommonCompilationDTO<T> fromPackageNameAndFields(final PMML pmml,
+                                                                                     final T model,
+                                                                                     final HasClassLoader hasClassloader,
+                                                                                     final String packageName,
+                                                                                     final List<Field<?>> fields) {
         return new CommonCompilationDTO<>(pmml, model, hasClassloader, packageName, fields);
     }
 

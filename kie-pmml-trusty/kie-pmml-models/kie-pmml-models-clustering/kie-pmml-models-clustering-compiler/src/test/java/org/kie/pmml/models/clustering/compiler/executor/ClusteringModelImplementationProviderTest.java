@@ -63,10 +63,10 @@ public class ClusteringModelImplementationProviderTest {
         ClusteringModel model = getModel(pmml);
 
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          model,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       model,
+                                                                       new HasClassLoaderMock());
         KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
 
         assertNotNull(retrieved);
@@ -78,10 +78,10 @@ public class ClusteringModelImplementationProviderTest {
         PMML pmml = TestUtils.loadFromFile(SOURCE_FILE);
         ClusteringModel model = getModel(pmml);
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          model,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       model,
+                                                                       new HasClassLoaderMock());
         KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
 
         assertNotNull(retrieved);

@@ -83,37 +83,37 @@ public class KiePMMLTreeModelFactoryTest {
 
     @Test
     public void getKiePMMLTreeModel() {
-        CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                           pmml1,
-                                                                                                           treeModel1,
-                                                                                                           new HasClassLoaderMock());
+        CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                                                        pmml1,
+                                                                                                        treeModel1,
+                                                                                                        new HasClassLoaderMock());
         KiePMMLTreeModel retrieved =
-                KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.getWithGeneratedPackageNameAndFields(source));
+                KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(source));
         assertNotNull(retrieved);
-        source = CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                           pmml2,
-                                                                           treeModel2,
-                                                                           new HasClassLoaderMock());
+        source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                        pmml2,
+                                                                        treeModel2,
+                                                                        new HasClassLoaderMock());
         retrieved =
-                KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.getWithGeneratedPackageNameAndFields(source));
+                KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(source));
         assertNotNull(retrieved);
     }
 
     @Test
     public void getKiePMMLTreeModelSourcesMap() {
-        CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                           pmml1,
-                                                                                                           treeModel1,
-                                                                                                           new HasClassLoaderMock());
+        CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                                                        pmml1,
+                                                                                                        treeModel1,
+                                                                                                        new HasClassLoaderMock());
         Map<String, String> retrieved =
-                KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.getWithGeneratedPackageNameAndFields(source));
+                KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
         assertNotNull(retrieved);
-        source = CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                           pmml2,
-                                                                           treeModel2,
-                                                                           new HasClassLoaderMock());
+        source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                        pmml2,
+                                                                        treeModel2,
+                                                                        new HasClassLoaderMock());
         retrieved =
-                KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.getWithGeneratedPackageNameAndFields(source));
+                KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
         assertNotNull(retrieved);
     }
 
@@ -127,11 +127,11 @@ public class KiePMMLTreeModelFactoryTest {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         String targetField = "whatIdo";
         String fullNodeClassName = "full.Node.ClassName";
-        CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                           pmml1,
-                                                                                                           treeModel1,
-                                                                                                           new HasClassLoaderMock());
-        KiePMMLTreeModelFactory.setConstructor(TreeCompilationDTO.getWithGeneratedPackageNameAndFields(source),
+        CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                                                        pmml1,
+                                                                                                        treeModel1,
+                                                                                                        new HasClassLoaderMock());
+        KiePMMLTreeModelFactory.setConstructor(TreeCompilationDTO.fromCompilationDTO(source),
                                                modelTemplate,
                                                fullNodeClassName);
         ConstructorDeclaration constructorDeclaration = modelTemplate

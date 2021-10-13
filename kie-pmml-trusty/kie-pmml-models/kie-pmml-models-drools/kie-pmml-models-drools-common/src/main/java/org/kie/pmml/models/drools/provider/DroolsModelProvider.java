@@ -79,7 +79,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(compilationDTO.getFields(),
                                                                       compilationDTO.getModel(), fieldTypeMap);
         final DroolsCompilationDTO<T> droolsCompilationDTO =
-                DroolsCompilationDTO.getWithGeneratedPackageNameAndFields(compilationDTO, fieldTypeMap);
+                DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
         E toReturn = getKiePMMLDroolsModel(droolsCompilationDTO);
         PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
         // Needed to compile Rules from PackageDescr
@@ -101,7 +101,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(compilationDTO.getFields(),
                                                                           compilationDTO.getModel(), fieldTypeMap);
             final DroolsCompilationDTO<T> droolsCompilationDTO =
-                    DroolsCompilationDTO.getWithGeneratedPackageNameAndFields(compilationDTO, fieldTypeMap);
+                    DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
             Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(droolsCompilationDTO);
             PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, compilationDTO.getPackageName());
             HasKnowledgeBuilder hasKnowledgeBuilder = (HasKnowledgeBuilder) compilationDTO.getHasClassloader();
@@ -136,7 +136,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(compilationDTO.getFields(),
                                                                           compilationDTO.getModel(), fieldTypeMap);
             final DroolsCompilationDTO<T> droolsCompilationDTO =
-                    DroolsCompilationDTO.getWithGeneratedPackageNameAndFields(compilationDTO, fieldTypeMap);
+                    DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
             Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(droolsCompilationDTO);
             compilationDTO.compileAndLoadClass(sourcesMap);
             PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, compilationDTO.getPackageName());

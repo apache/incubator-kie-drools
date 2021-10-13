@@ -129,8 +129,8 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .stream()
                 .map(model -> {
                     final CommonCompilationDTO compilationDTO =
-                            CommonCompilationDTO.getWithGeneratedPackageNameAndFields(packageName, pmml, model,
-                                                                                      hasClassloader);
+                            CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName, pmml, model,
+                                                                                   hasClassloader);
                     return getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
                 })
                 .filter(Optional::isPresent)
@@ -153,8 +153,8 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .stream()
                 .map(model -> {
                     final CommonCompilationDTO compilationDTO =
-                            CommonCompilationDTO.getWithGeneratedPackageNameAndFields(packageName, pmml, model,
-                                                                                      hasClassloader);
+                            CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName, pmml, model,
+                                                                                   hasClassloader);
                     return getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
                 })
                 .filter(Optional::isPresent)

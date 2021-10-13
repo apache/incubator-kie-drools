@@ -70,9 +70,9 @@ public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<Reg
      * @param defaultNormalizationMethod
      * @return
      */
-    public static RegressionCompilationDTO getWithDefinedRegressionTablesAndNormalizationMethod(final CompilationDTO<RegressionModel> source,
-                                                                                                final List<RegressionTable> regressionTables,
-                                                                                                final RegressionModel.NormalizationMethod defaultNormalizationMethod) {
+    public static RegressionCompilationDTO fromCompilationDTORegressionTablesAndNormalizationMethod(final CompilationDTO<RegressionModel> source,
+                                                                                                    final List<RegressionTable> regressionTables,
+                                                                                                    final RegressionModel.NormalizationMethod defaultNormalizationMethod) {
         return new RegressionCompilationDTO(source, regressionTables, defaultNormalizationMethod);
     }
 
@@ -82,7 +82,7 @@ public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<Reg
      * @param source
      * @return
      */
-    public static RegressionCompilationDTO getWithGeneratedRegressionTablesAndNormalizationMethod(final CompilationDTO<RegressionModel> source) {
+    public static RegressionCompilationDTO fromCompilationDTO(final CompilationDTO<RegressionModel> source) {
         return new RegressionCompilationDTO(source);
     }
 

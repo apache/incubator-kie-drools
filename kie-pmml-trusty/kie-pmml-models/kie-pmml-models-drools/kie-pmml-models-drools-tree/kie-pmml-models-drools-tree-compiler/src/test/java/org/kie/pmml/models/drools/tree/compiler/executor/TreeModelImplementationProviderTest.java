@@ -53,10 +53,10 @@ public class TreeModelImplementationProviderTest {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          (TreeModel) pmml.getModels().get(0),
-                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       (TreeModel) pmml.getModels().get(0),
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);
@@ -67,10 +67,10 @@ public class TreeModelImplementationProviderTest {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          (TreeModel) pmml.getModels().get(0),
-                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       (TreeModel) pmml.getModels().get(0),
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);

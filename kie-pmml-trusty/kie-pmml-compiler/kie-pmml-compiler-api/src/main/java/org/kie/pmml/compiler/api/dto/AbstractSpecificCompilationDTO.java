@@ -57,7 +57,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
                                              final HasClassLoader hasClassloader,
                                              final String packageName,
                                              final List<Field<?>> fields) {
-        this(CommonCompilationDTO.getWithDefinedPackageNameAndFields(pmml, model, hasClassloader, packageName, fields));
+        this(CommonCompilationDTO.fromPackageNameAndFields(pmml, model, hasClassloader, packageName, fields));
     }
 
     /**

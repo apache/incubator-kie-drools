@@ -53,10 +53,10 @@ public class ScorecardModelImplementationProviderTest {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          (Scorecard) pmml.getModels().get(0),
-                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       (Scorecard) pmml.getModels().get(0),
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLScorecardModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);
@@ -67,10 +67,10 @@ public class ScorecardModelImplementationProviderTest {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          (Scorecard) pmml.getModels().get(0),
-                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       (Scorecard) pmml.getModels().get(0),
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);

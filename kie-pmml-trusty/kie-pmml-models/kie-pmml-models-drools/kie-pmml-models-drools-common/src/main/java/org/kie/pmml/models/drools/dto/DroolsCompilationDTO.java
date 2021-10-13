@@ -43,9 +43,9 @@ public class DroolsCompilationDTO<T extends Model> extends AbstractSpecificCompi
      * @param source
      * @param fieldTypeMap
      */
-    public static <T extends Model> DroolsCompilationDTO<T> getWithGeneratedPackageNameAndFields(final CompilationDTO<T> source,
-                                                                                                 final Map<String,
-                                                                                                         KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public static <T extends Model> DroolsCompilationDTO<T> fromCompilationDTO(final CompilationDTO<T> source,
+                                                                               final Map<String,
+                                                                                       KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         return new DroolsCompilationDTO(source, fieldTypeMap);
     }
 

@@ -62,10 +62,10 @@ public class ScorecardModelImplementationProviderTest {
     @Test
     public void getKiePMMLModel() {
         final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          basicComplexPartialScorePmml,
-                                                                          basicComplexPartialScore,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       basicComplexPartialScorePmml,
+                                                                       basicComplexPartialScore,
+                                                                       new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved = provider.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
     }
@@ -73,10 +73,10 @@ public class ScorecardModelImplementationProviderTest {
     @Test
     public void getKiePMMLModelWithSources() {
         final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          basicComplexPartialScorePmml,
-                                                                          basicComplexPartialScore,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       basicComplexPartialScorePmml,
+                                                                       basicComplexPartialScore,
+                                                                       new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved = provider.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLScorecardModelWithSources);
