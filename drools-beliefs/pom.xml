@@ -4,11 +4,12 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>drools</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-parent</artifactId>
     <version>8.13.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.drools</groupId>
   <artifactId>drools-beliefs</artifactId>
 
   <name>Drools :: Beliefs</name>
