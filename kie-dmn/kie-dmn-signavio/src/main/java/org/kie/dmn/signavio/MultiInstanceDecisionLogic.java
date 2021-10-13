@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.kie.dmn.api.core.DMNContext;
@@ -39,6 +41,8 @@ import org.kie.dmn.core.compiler.DecisionCompiler;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.internal.utils.DRGAnalysisUtils;
+import org.kie.dmn.core.internal.utils.DRGAnalysisUtils.DRGDependency;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.functions.AllFunction;
 import org.kie.dmn.feel.runtime.functions.AnyFunction;
@@ -117,13 +121,30 @@ public class MultiInstanceDecisionLogic {
                     getMIDL(node).orElseThrow(() -> new IllegalStateException("Node doesn't contain multi instance decision logic!" + node.toString()));
             
             // set the evaluator accordingly to Signavio logic.
-            di.setEvaluator(new MultiInstanceDecisionNodeEvaluator(midl, model, di, ctx.getFeelHelper().newFEELInstance()));
+            MultiInstanceDecisionNodeEvaluator miEvaluator = new MultiInstanceDecisionNodeEvaluator(midl, model, di, ctx.getFeelHelper().newFEELInstance());
+            di.setEvaluator(miEvaluator);
             
-            // Remove the top level decision and its dependencies, from the DMN Model (Decision|BKM|InputData) indexes
-            // Remember that as the dependencies will be removed from indexes, are no longer available at evalutation from the DMNExpressionEvaluator
-            // hence the MultiInstanceDecisionNodeEvaluator will need to cache anything which is accessed by the DMN Model (Decision|BKM|InputData) indexes 
-            DecisionNodeImpl topLevelDecision = (DecisionNodeImpl) model.getDecisionById(midl.topLevelDecisionId);
-            recurseNodeToRemoveItAndDepsFromModelIndex(topLevelDecision, model);
+            compiler.addCallback((cCompiler, cCtx, cModel) -> {
+                // Remove the top level decision and its dependencies, from the DMN Model (Decision|BKM|InputData) indexes
+                // Remember that as the dependencies will be removed from indexes, are no longer available at evalutation from the DMNExpressionEvaluator
+                // hence the MultiInstanceDecisionNodeEvaluator will need to cache anything which is accessed by the DMN Model (Decision|BKM|InputData) indexes 
+                DecisionNodeImpl topLevelDecision = (DecisionNodeImpl) cModel.getDecisionById(midl.topLevelDecisionId);
+                recurseNodeToRemoveItAndDepsFromModelIndex(topLevelDecision, cModel);
+                
+                List<DMNNode> allWrappedDeps = DRGAnalysisUtils.dependencies(cModel, topLevelDecision).stream().map(DRGDependency::getDependency).collect(Collectors.toList());
+                
+                // DROOLS-6647 multi-instance decisions with multiple levels of decisions inside
+                List<String> reqDecisionKeys = new ArrayList<>();
+                for (Entry<String, DMNNode> candidate : di.getDependencies().entrySet()) { 
+                    if (candidate.getValue() instanceof DecisionNodeImpl && allWrappedDeps.contains(candidate.getValue())) {
+                        DecisionNodeImpl reqDecision = (DecisionNodeImpl) candidate.getValue();
+                        recurseNodeToRemoveItAndDepsFromModelIndex(reqDecision, cModel);
+                        reqDecisionKeys.add(candidate.getKey());
+                        miEvaluator.addReqDecision(reqDecision);
+                    }
+                }
+                reqDecisionKeys.forEach(di.getDependencies()::remove);
+            });
         }
 
         public static void recurseNodeToRemoveItAndDepsFromModelIndex(DMNNode topLevelDecision, DMNModelImpl model) {
@@ -145,6 +166,7 @@ public class MultiInstanceDecisionLogic {
         private DecisionNodeImpl di;
         private String contextIteratorName;
         private DecisionNodeImpl topLevelDecision;
+        private List<DecisionNodeImpl> reqDecisions = new ArrayList<>();
         private final FEEL feel;
         
         public MultiInstanceDecisionNodeEvaluator(MultiInstanceDecisionLogic mi, DMNModelImpl model, DecisionNodeImpl di, FEEL feel) {
@@ -154,6 +176,10 @@ public class MultiInstanceDecisionLogic {
             this.feel = feel;
             contextIteratorName = model.getInputById( mi.iteratorShapeId ).getName();
             topLevelDecision = (DecisionNodeImpl) model.getDecisionById(mi.topLevelDecisionId);
+        }
+        
+        public void addReqDecision(DecisionNodeImpl reqDecision) {
+            this.reqDecisions.add(reqDecision);
         }
 
         @Override
@@ -179,6 +205,10 @@ public class MultiInstanceDecisionLogic {
                     result.setContext( cyclingContext );
                     
                     cyclingContext.set(contextIteratorName, cycledValue);
+                    for (DecisionNodeImpl reqDecision : this.reqDecisions) {
+                        Object subResult = reqDecision.getEvaluator().evaluate(eventManager, result).getResult();
+                        cyclingContext.set(reqDecision.getName(), subResult);
+                    }
                     Object evaluationResult = topLevelDecision.getEvaluator().evaluate(eventManager, result).getResult();
                     invokationResults.add(evaluationResult);
                     
