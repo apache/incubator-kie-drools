@@ -16,18 +16,19 @@
 
 package org.kie.kogito.incubation.common;
 
-/**
- * Utility interface, useful to mix-in to get a default `as` implementation.
- * <p>
- * Provides a default implementation for the {@link #as(Class)} method,
- * delegating to {@link InternalObjectMapper#convertValue(Object, Class)}
- */
-public interface DefaultCastable extends Castable {
+import java.util.Map;
 
-    default <T extends DataContext> T as(Class<T> type) {
-        if (type.isInstance(this)) {
-            return type.cast(this);
-        }
-        return (T) InternalObjectMapper.convertValue(this, type);
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class InternalObjectMapperTest {
+
+    @Test
+    public void testFastAsUsingCast() {
+        DataContext ctx = new MapDataContext(Map.of("full name", "John Doe", "age", 47));
+
+        MapDataContext converted = InternalObjectMapper.convertValue(ctx, MapDataContext.class);
+        assertThat(converted).isSameAs(ctx);
     }
 }

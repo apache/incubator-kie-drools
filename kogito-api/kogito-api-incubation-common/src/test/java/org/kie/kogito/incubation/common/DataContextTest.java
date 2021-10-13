@@ -21,7 +21,10 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DataContextTest {
     public static class Address {
@@ -110,6 +113,13 @@ public class DataContextTest {
         User user = mdc.get("Paul", User.class);
         assertNotNull(user);
         assertEquals(paul, user);
+    }
 
+    @Test
+    public void testFastAsUsingCast() {
+        DataContext ctx = new MapDataContext(Map.of("full name", "John Doe", "age", 47));
+
+        MapDataContext converted = ctx.as(MapDataContext.class);
+        assertThat(converted).isSameAs(ctx);
     }
 }

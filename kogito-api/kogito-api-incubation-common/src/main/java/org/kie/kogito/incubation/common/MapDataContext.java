@@ -56,6 +56,9 @@ public class MapDataContext implements MapLikeDataContext {
 
     @Override
     public <T extends DataContext> T as(Class<T> type) {
+        if (type.isInstance(this)) { // this short circuit is needed as the below passes `map`, not `this`, to the InternalObjectMapper
+            return type.cast(this);
+        }
         return InternalObjectMapper.convertValue(map, type);
     }
 

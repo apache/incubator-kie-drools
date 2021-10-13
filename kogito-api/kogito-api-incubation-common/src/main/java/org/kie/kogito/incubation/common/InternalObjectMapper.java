@@ -36,6 +36,9 @@ public class InternalObjectMapper {
     }
 
     public static <T> T convertValue(Object self, Class<T> type) {
+        if (type.isInstance(self)) {
+            return type.cast(self);
+        }
         if (MapLikeDataContext.class == type || MapDataContext.class == type) {
             return (T) MapDataContext.of(objectMapper.convertValue(self, Map.class));
         }
