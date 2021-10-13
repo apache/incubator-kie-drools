@@ -28,13 +28,11 @@ class CounterfactualExplainerProducerTest {
 
     @Test
     void produce() {
-        CounterfactualExplainerProducer producer = new CounterfactualExplainerProducer(10, 0.01);
+        CounterfactualExplainerProducer producer = new CounterfactualExplainerProducer(0.01);
         LocalExplainer<CounterfactualResult> counterfactualExplainer = producer.produce();
 
         assertNotNull(counterfactualExplainer);
         assertTrue(counterfactualExplainer instanceof CounterfactualExplainer);
-        assertEquals(10, ((CounterfactualExplainer) counterfactualExplainer).getCounterfactualConfig().getSolverConfig()
-                .getTerminationConfig().getSecondsSpentLimit());
         assertEquals(0.01, ((CounterfactualExplainer) counterfactualExplainer).getCounterfactualConfig().getGoalThreshold());
     }
 
