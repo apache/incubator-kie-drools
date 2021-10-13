@@ -48,6 +48,10 @@ public class DRGAnalysisUtils {
         throw new IllegalArgumentException(String.format("No Decision and no BKM found for nodeName: '%s'", nodeName));
     }
     
+    public static Collection<DRGDependency> dependencies(DMNModel model, DMNNode node) {
+        return internalDependencies(0, node, (DMNBaseNode) node);
+    }
+    
     static Collection<DRGDependency> internalDependencies(final int degree, final DMNNode superParent, DMNBaseNode node) {
         LOG.trace("internalDependencies {} {} {}", degree, superParent, node);
         List<DRGDependency> results = new ArrayList<>();

@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -117,6 +118,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         drgCompilers.add( new DecisionServiceCompiler() );
         drgCompilers.add( new KnowledgeSourceCompiler() ); // keep last as it's a void compiler
     }
+    private final List<AfterProcessDrgElements> afterDRGcallbacks = new ArrayList<>();
 
     public DMNCompilerImpl() {
         this(DMNFactory.newCompilerConfiguration());
@@ -461,9 +463,24 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
             }
         }
+        
+        for (AfterProcessDrgElements callback : afterDRGcallbacks) {
+            logger.debug("About to invoke callback: {}", callback);
+            callback.callback(this, ctx, model);
+        }
+        
         detectCycles( model );
 
 
+    }
+    
+    @FunctionalInterface
+    public static interface AfterProcessDrgElements {
+        void callback(DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model);
+    }
+    
+    public void addCallback(AfterProcessDrgElements callback) {
+        this.afterDRGcallbacks.add(callback);
     }
 
     private void detectCycles( DMNModelImpl model ) {
