@@ -84,7 +84,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     }
 
     /**
-     * Protected constructor needed to preserve original <b>packageName</b> and <b>fields</b> when <b>"cloning"</b> another
+     * Constructor needed to preserve original <b>packageName</b> and <b>fields</b> when <b>"cloning"</b> another
      * <code>CompilationDTO</code>
      * @param pmml
      * @param model
