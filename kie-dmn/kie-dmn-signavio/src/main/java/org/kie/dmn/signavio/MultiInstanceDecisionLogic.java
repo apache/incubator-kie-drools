@@ -135,8 +135,8 @@ public class MultiInstanceDecisionLogic {
                 
                 // DROOLS-6647 multi-instance decisions with multiple levels of decisions inside
                 List<String> reqDecisionKeys = new ArrayList<>();
-                for (Entry<String, DMNNode> candidate : di.getDependencies().entrySet()) { 
-                    if (candidate.getValue() instanceof DecisionNodeImpl && allWrappedDeps.contains(candidate.getValue())) {
+                for (DMNNode candidate : allWrappedDeps) { 
+                    if (candidate.getValue() instanceof DecisionNodeImpl) {
                         DecisionNodeImpl reqDecision = (DecisionNodeImpl) candidate.getValue();
                         recurseNodeToRemoveItAndDepsFromModelIndex(reqDecision, cModel);
                         reqDecisionKeys.add(candidate.getKey());
