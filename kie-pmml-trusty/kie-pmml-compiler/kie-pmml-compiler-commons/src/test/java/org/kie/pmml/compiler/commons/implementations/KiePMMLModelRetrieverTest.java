@@ -33,8 +33,8 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.api.mocks.TestModel;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.compiler.commons.mocks.TestModel;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.junit.Assert.assertEquals;
@@ -42,16 +42,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDataField;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPMMLWithMiningRandomTestModel;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPMMLWithRandomTestModel;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataType;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMiningSchema;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomOutput;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPMMLWithMiningRandomTestModel;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPMMLWithRandomTestModel;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataType;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomMiningSchema;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomOutput;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLModelRetrieverTest {

@@ -55,7 +55,6 @@ import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
-import org.kie.pmml.compiler.api.utils.ModelUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

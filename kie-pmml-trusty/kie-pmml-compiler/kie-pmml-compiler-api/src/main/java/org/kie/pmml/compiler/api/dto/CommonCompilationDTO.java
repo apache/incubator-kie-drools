@@ -66,7 +66,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     private final OpType opType;
 
     /**
-     * protected constructor needed to preserve original <b>packageName</b> when <b>"cloning"</b> another
+     * Protected constructor needed to preserve original <b>packageName</b> when <b>"cloning"</b> another
      * <code>CompilationDTO</code>
      * @param pmml
      * @param model
@@ -84,12 +84,13 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     }
 
     /**
-     * protected constructor needed to preserve original <b>packageName</b> when <b>"cloning"</b> another
+     * Protected constructor needed to preserve original <b>packageName</b> and <b>fields</b> when <b>"cloning"</b> another
      * <code>CompilationDTO</code>
      * @param pmml
      * @param model
      * @param hasClassloader
      * @param packageName
+     * @param fields
      */
     public CommonCompilationDTO(final PMML pmml,
                                 final T model,

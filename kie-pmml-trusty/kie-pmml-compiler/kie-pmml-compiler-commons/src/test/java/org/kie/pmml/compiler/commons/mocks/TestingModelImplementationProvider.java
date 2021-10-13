@@ -29,6 +29,7 @@ import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModelWithSources;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.mocks.TestModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
