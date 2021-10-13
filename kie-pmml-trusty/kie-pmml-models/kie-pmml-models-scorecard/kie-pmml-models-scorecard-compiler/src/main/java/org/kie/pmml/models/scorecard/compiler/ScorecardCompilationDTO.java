@@ -34,13 +34,25 @@ public class ScorecardCompilationDTO extends AbstractSpecificCompilationDTO<Scor
     private final String characteristicsClassName;
     private final String packageCharacteristicsClassName;
 
-    public ScorecardCompilationDTO(final CompilationDTO<Scorecard> source) {
+    /**
+     * Private constructor that use given <code>CommonCompilationDTO</code>
+     * @param source
+     */
+    private ScorecardCompilationDTO(final CompilationDTO<Scorecard> source) {
         super(source);
         this.scorecardModel = source.getModel();
         this.reasonCodeAlgorithm = scorecardModel.getReasonCodeAlgorithm();
         characteristicsClassName = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
         packageCharacteristicsClassName = String.format(PACKAGE_CLASS_TEMPLATE, getPackageName(),
                                                         characteristicsClassName);
+    }
+
+    /**
+     * Builder that use given <code>CommonCompilationDTO</code>
+     * @param source
+     */
+    public static ScorecardCompilationDTO getWithGeneratedPackageNameAndFields(final CompilationDTO<Scorecard> source) {
+        return new ScorecardCompilationDTO(source);
     }
 
     /**

@@ -102,11 +102,13 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         PMML pmml = new PMML();
         pmml.setDataDictionary(dataDictionary);
         pmml.addModels(model);
-        final CommonCompilationDTO<TreeModel> source = new CommonCompilationDTO<>(packageName,
-                                                                                  pmml,
-                                                                                  model,
-                                                                                  new HasClassLoaderMock());
-        final DroolsCompilationDTO<TreeModel> droolsCompilationDTO = new DroolsCompilationDTO<>(source, fieldTypeMap);
+        final CommonCompilationDTO<TreeModel> source =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(packageName,
+                                                                          pmml,
+                                                                          model,
+                                                                          new HasClassLoaderMock());
+        final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
+                DroolsCompilationDTO.getWithGeneratedPackageNameAndFields(source, fieldTypeMap);
         CompilationUnit retrieved =
                 KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(droolsCompilationDTO, TEMPLATE_SOURCE,
                                                                               TEMPLATE_CLASS_NAME);

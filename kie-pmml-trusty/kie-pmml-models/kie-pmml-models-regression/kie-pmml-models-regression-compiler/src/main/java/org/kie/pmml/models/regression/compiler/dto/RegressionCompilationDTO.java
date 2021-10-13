@@ -36,14 +36,15 @@ public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<Reg
     private final RegressionModel.NormalizationMethod modelNormalizationMethod;
 
     /**
+     * Private constructor that preserve given <b>regressionTables</b> and <b>defaultNormalizationMethod</b>
      * @param source
      * @param regressionTables
      * @param defaultNormalizationMethod This is used by <code>KiePMMLRegressionTableRegressionFactory</code> when it
      * has to been provided with <code>RegressionModel.NormalizationMethod.NONE</code>
      */
-    public RegressionCompilationDTO(final CompilationDTO<RegressionModel> source,
-                                    final List<RegressionTable> regressionTables,
-                                    final RegressionModel.NormalizationMethod defaultNormalizationMethod) {
+    private RegressionCompilationDTO(final CompilationDTO<RegressionModel> source,
+                                     final List<RegressionTable> regressionTables,
+                                     final RegressionModel.NormalizationMethod defaultNormalizationMethod) {
         super(source);
         this.regressionTables = regressionTables;
         this.defaultNormalizationMethod = defaultNormalizationMethod;
@@ -51,10 +52,38 @@ public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<Reg
     }
 
     /**
+     * Private constructor that use <b>regressionTables</b> and <b>defaultNormalizationMethod</b> from the given
+     * <b>source</b>
      * @param source
      */
-    public RegressionCompilationDTO(final CompilationDTO<RegressionModel> source) {
+    private RegressionCompilationDTO(final CompilationDTO<RegressionModel> source) {
         this(source, source.getModel().getRegressionTables(), source.getModel().getNormalizationMethod());
+    }
+
+    /**
+     * Builder that preserve given <b>regressionTables</b> and <b>defaultNormalizationMethod</b>
+     * <p>
+     * This is used by <code>KiePMMLRegressionTableRegressionFactory</code> when it
+     * has to been provided with <code>RegressionModel.NormalizationMethod.NONE</code>
+     * @param source
+     * @param regressionTables
+     * @param defaultNormalizationMethod
+     * @return
+     */
+    public static RegressionCompilationDTO getWithDefinedRegressionTablesAndNormalizationMethod(final CompilationDTO<RegressionModel> source,
+                                                                                                final List<RegressionTable> regressionTables,
+                                                                                                final RegressionModel.NormalizationMethod defaultNormalizationMethod) {
+        return new RegressionCompilationDTO(source, regressionTables, defaultNormalizationMethod);
+    }
+
+    /**
+     * Builder that that use <b>regressionTables</b> and <b>defaultNormalizationMethod</b> from the given
+     * <b>source</b>
+     * @param source
+     * @return
+     */
+    public static RegressionCompilationDTO getWithGeneratedRegressionTablesAndNormalizationMethod(final CompilationDTO<RegressionModel> source) {
+        return new RegressionCompilationDTO(source);
     }
 
     public List<RegressionTable> getRegressionTables() {

@@ -45,9 +45,8 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     private final List<Field<?>> fields;
 
     /**
-     * protected constructor needed to preserve original <b>packageName</b> and <b>fields</b> when <b>"cloning"</b>
-     * another
-     * <code>CompilationDTO</code>
+     * Protected constructor that generate a <code>CommonCompilationDTO</code> preserving given <b>packageName</b>
+     * and <b>fields</b>
      * @param pmml
      * @param model
      * @param hasClassloader
@@ -58,9 +57,13 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
                                              final HasClassLoader hasClassloader,
                                              final String packageName,
                                              final List<Field<?>> fields) {
-        this(new CommonCompilationDTO(pmml, model, hasClassloader, packageName, fields));
+        this(CommonCompilationDTO.getWithDefinedPackageNameAndFields(pmml, model, hasClassloader, packageName, fields));
     }
 
+    /**
+     * Protected constructor that use given <code>CompilationDTO</code>
+     * @param source
+     */
     protected AbstractSpecificCompilationDTO(CompilationDTO<T> source) {
         this.source = source;
         this.fields = new ArrayList<>(source.getFields());

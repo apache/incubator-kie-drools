@@ -89,22 +89,24 @@ public class KiePMMLScorecardModelFactoryTest {
 
     @Test
     public void getKiePMMLScorecardModel() {
-        final CommonCompilationDTO<Scorecard> source = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                  basicComplexPartialScorePmml,
-                                                                                  basicComplexPartialScore,
-                                                                                  new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> source =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          basicComplexPartialScorePmml,
+                                                                          basicComplexPartialScore,
+                                                                          new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved =
-                KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(new ScorecardCompilationDTO(source));
+                KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(ScorecardCompilationDTO.getWithGeneratedPackageNameAndFields(source));
         assertNotNull(retrieved);
     }
 
     @Test
     public void getKiePMMLScorecardModelSourcesMap() {
-        final CommonCompilationDTO<Scorecard> source = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                  basicComplexPartialScorePmml,
-                                                                                  basicComplexPartialScore,
-                                                                                  new HasClassLoaderMock());
-        ScorecardCompilationDTO compilationDTO = new ScorecardCompilationDTO(source);
+        final CommonCompilationDTO<Scorecard> source =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          basicComplexPartialScorePmml,
+                                                                          basicComplexPartialScore,
+                                                                          new HasClassLoaderMock());
+        ScorecardCompilationDTO compilationDTO = ScorecardCompilationDTO.getWithGeneratedPackageNameAndFields(source);
         final Map<String, String> retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(compilationDTO);
         assertNotNull(retrieved);
@@ -121,11 +123,12 @@ public class KiePMMLScorecardModelFactoryTest {
     @Test
     public void setConstructor() {
         String fullCharacteristicsClassName = PACKAGE_NAME + ".fullCharacteristicsClassName";
-        final CommonCompilationDTO<Scorecard> source = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                  basicComplexPartialScorePmml,
-                                                                                  basicComplexPartialScore,
-                                                                                  new HasClassLoaderMock());
-        KiePMMLScorecardModelFactory.setConstructor(new ScorecardCompilationDTO(source),
+        final CommonCompilationDTO<Scorecard> source =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          basicComplexPartialScorePmml,
+                                                                          basicComplexPartialScore,
+                                                                          new HasClassLoaderMock());
+        KiePMMLScorecardModelFactory.setConstructor(ScorecardCompilationDTO.getWithGeneratedPackageNameAndFields(source),
                                                     scorecardTemplate,
                                                     fullCharacteristicsClassName);
         final ConstructorDeclaration constructorDeclaration =

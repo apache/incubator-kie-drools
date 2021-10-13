@@ -100,16 +100,18 @@ public class KiePMMLRegressionModelFactory {
         if (compilationDTO.isRegression()) {
             final List<RegressionTable> regressionTables =
                     Collections.singletonList(compilationDTO.getModel().getRegressionTables().get(0));
-            final RegressionCompilationDTO regressionCompilationDTO = new RegressionCompilationDTO(compilationDTO,
-                                                                                                   regressionTables,
-                                                                                                   compilationDTO.getModel().getNormalizationMethod());
+            final RegressionCompilationDTO regressionCompilationDTO =
+                    RegressionCompilationDTO.getWithDefinedRegressionTablesAndNormalizationMethod(compilationDTO,
+                                                                                                  regressionTables,
+                                                                                                  compilationDTO.getModel().getNormalizationMethod());
             toReturn =
                     KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionCompilationDTO);
         } else {
             final List<RegressionTable> regressionTables = compilationDTO.getModel().getRegressionTables();
-            final RegressionCompilationDTO regressionCompilationDTO = new RegressionCompilationDTO(compilationDTO,
-                                                                                                   regressionTables,
-                                                                                                   RegressionModel.NormalizationMethod.NONE);
+            final RegressionCompilationDTO regressionCompilationDTO =
+                    RegressionCompilationDTO.getWithDefinedRegressionTablesAndNormalizationMethod(compilationDTO,
+                                                                                                  regressionTables,
+                                                                                                  RegressionModel.NormalizationMethod.NONE);
             toReturn = KiePMMLRegressionTableClassificationFactory.getRegressionTables(regressionCompilationDTO);
         }
         return toReturn;
