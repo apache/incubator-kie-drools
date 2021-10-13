@@ -39,7 +39,11 @@ public class MiningModelCompilationDTO extends AbstractSpecificCompilationDTO<Mi
     private final String segmentationCanonicalClassName;
     private final Segmentation segmentation;
 
-    public MiningModelCompilationDTO(final CompilationDTO<MiningModel> source) {
+    /**
+     * Private constructor that use given <code>CommonCompilationDTO</code>
+     * @param source
+     */
+    private MiningModelCompilationDTO(final CompilationDTO<MiningModel> source) {
         super(source);
         segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, source.getModelName());
         segmentationPackageName = getSanitizedPackageName(getPackageName() + "." + segmentationName);
@@ -47,6 +51,14 @@ public class MiningModelCompilationDTO extends AbstractSpecificCompilationDTO<Mi
         segmentationCanonicalClassName = String.format(PACKAGE_CLASS_TEMPLATE, segmentationPackageName,
                                                        segmentationClassName);
         this.segmentation = source.getModel().getSegmentation();
+    }
+
+    /**
+     * Builder that use given <code>CommonCompilationDTO</code>
+     * @param source
+     */
+    public static MiningModelCompilationDTO getWithGeneratedPackageNameAndFields(final CompilationDTO<MiningModel> source) {
+        return new MiningModelCompilationDTO(source);
     }
 
     public String getSegmentationName() {

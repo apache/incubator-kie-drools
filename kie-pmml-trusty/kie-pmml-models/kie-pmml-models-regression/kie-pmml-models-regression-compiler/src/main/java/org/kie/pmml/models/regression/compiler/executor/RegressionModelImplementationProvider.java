@@ -65,7 +65,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
                      compilationDTO.getHasClassloader());
         validate(compilationDTO.getFields(), compilationDTO.getModel());
         try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(new RegressionCompilationDTO(compilationDTO));
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.getWithGeneratedRegressionTablesAndNormalizationMethod(compilationDTO));
         } catch (IOException | IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
@@ -79,7 +79,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
                      compilationDTO.getHasClassloader());
         try {
             final Map<String, String> sourcesMap =
-                    KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(new RegressionCompilationDTO(compilationDTO));
+                    KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.getWithGeneratedRegressionTablesAndNormalizationMethod(compilationDTO));
             return new KiePMMLRegressionModelWithSources(compilationDTO.getModelName(),
                                                          compilationDTO.getPackageName(),
                                                          sourcesMap);

@@ -78,8 +78,9 @@ public class KiePMMLSegmentFactory {
         logger.debug(GET_SEGMENTS, segments);
         final Map<String, String> toReturn = new HashMap<>();
         segments.forEach(segment -> {
-            final SegmentCompilationDTO segmentCompilationDTO = new SegmentCompilationDTO(compilationDTO, segment,
-                                                                                          compilationDTO.getFields());
+            final SegmentCompilationDTO segmentCompilationDTO =
+                    SegmentCompilationDTO.getWithDefinedPackageNameAndFields(compilationDTO, segment,
+                                                                             compilationDTO.getFields());
             toReturn.putAll(getSegmentSourcesMap(segmentCompilationDTO, nestedModels));
             compilationDTO.addFields(segmentCompilationDTO.getFields());
         });
@@ -92,8 +93,9 @@ public class KiePMMLSegmentFactory {
         logger.debug(GET_SEGMENTS, compilationDTO.getSegments());
         final Map<String, String> toReturn = new HashMap<>();
         compilationDTO.getSegments().forEach(segment -> {
-            final SegmentCompilationDTO segmentCompilationDTO = new SegmentCompilationDTO(compilationDTO, segment,
-                                                                                          compilationDTO.getFields());
+            final SegmentCompilationDTO segmentCompilationDTO =
+                    SegmentCompilationDTO.getWithDefinedPackageNameAndFields(compilationDTO, segment,
+                                                                             compilationDTO.getFields());
             toReturn.putAll(getSegmentSourcesMapCompiled(segmentCompilationDTO,
                                                          nestedModels));
             compilationDTO.addFields(segmentCompilationDTO.getFields());

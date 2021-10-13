@@ -127,10 +127,11 @@ public class MiningModelImplementationProviderTest {
         final KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final MiningModel miningmodel = (MiningModel) pmml.getModels().get(0);
 
-        final CommonCompilationDTO<MiningModel> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                            pmml,
-                                                                                            miningmodel,
-                                                                                            new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<MiningModel> compilationDTO =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          pmml,
+                                                                          miningmodel,
+                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof Serializable);
@@ -141,10 +142,11 @@ public class MiningModelImplementationProviderTest {
         final PMML pmml = getPMML(source);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final MiningModel miningmodel = (MiningModel) pmml.getModels().get(0);
-        final CommonCompilationDTO<MiningModel> compilationDTO = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                            pmml,
-                                                                                            miningmodel,
-                                                                                            new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<MiningModel> compilationDTO =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          pmml,
+                                                                          miningmodel,
+                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);

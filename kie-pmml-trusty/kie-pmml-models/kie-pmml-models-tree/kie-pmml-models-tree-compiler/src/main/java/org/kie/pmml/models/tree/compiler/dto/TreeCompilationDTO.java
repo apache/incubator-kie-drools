@@ -27,11 +27,23 @@ public class TreeCompilationDTO extends AbstractSpecificCompilationDTO<TreeModel
     private final Double missingValuePenalty;
     private final Node node;
 
-    public TreeCompilationDTO(final CompilationDTO<TreeModel> source) {
+    /**
+     * Private constructor that use given <code>CommonCompilationDTO</code>
+     * @param source
+     */
+    private TreeCompilationDTO(final CompilationDTO<TreeModel> source) {
         super(source);
         missingValuePenalty = source.getModel().getMissingValuePenalty() != null ?
                 source.getModel().getMissingValuePenalty().doubleValue() : null;
         node = source.getModel().getNode();
+    }
+
+    /**
+     * Builder that use given <code>CommonCompilationDTO</code>
+     * @param source
+     */
+    public static TreeCompilationDTO getWithGeneratedPackageNameAndFields(final CompilationDTO<TreeModel> source) {
+        return new TreeCompilationDTO(source);
     }
 
     public Double getMissingValuePenalty() {

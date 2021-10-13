@@ -72,11 +72,13 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     public void getSegmentsSourcesMap() {
         final List<Segment> segments = MINING_MODEL.getSegmentation().getSegments();
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final CommonCompilationDTO<MiningModel> source = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                    pmml,
-                                                                                    MINING_MODEL,
-                                                                                    new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
-        final MiningModelCompilationDTO compilationDTO = new MiningModelCompilationDTO(source);
+        final CommonCompilationDTO<MiningModel> source =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          pmml,
+                                                                          MINING_MODEL,
+                                                                          new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+        final MiningModelCompilationDTO compilationDTO =
+                MiningModelCompilationDTO.getWithGeneratedPackageNameAndFields(source);
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentsSourcesMap(
                 compilationDTO,
                 nestedModels);
@@ -91,13 +93,16 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     public void getSegmentSourcesMap() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final CommonCompilationDTO<MiningModel> source = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                    pmml,
-                                                                                    MINING_MODEL,
-                                                                                    new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
-        final MiningModelCompilationDTO compilationDTO = new MiningModelCompilationDTO(source);
-        final SegmentCompilationDTO segmentCompilationDTO = new SegmentCompilationDTO(compilationDTO, segment,
-                                                                                      compilationDTO.getFields());
+        final CommonCompilationDTO<MiningModel> source =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          pmml,
+                                                                          MINING_MODEL,
+                                                                          new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+        final MiningModelCompilationDTO compilationDTO =
+                MiningModelCompilationDTO.getWithGeneratedPackageNameAndFields(source);
+        final SegmentCompilationDTO segmentCompilationDTO =
+                SegmentCompilationDTO.getWithDefinedPackageNameAndFields(compilationDTO, segment,
+                                                                         compilationDTO.getFields());
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(segmentCompilationDTO,
                                                                                          nestedModels);
         commonEvaluateNestedModels(nestedModels);
@@ -118,13 +123,16 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         } catch (Exception e) {
             assertTrue(e instanceof ClassNotFoundException);
         }
-        final CommonCompilationDTO<MiningModel> source = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                    pmml,
-                                                                                    MINING_MODEL,
-                                                                                    hasKnowledgeBuilderMock);
-        final MiningModelCompilationDTO compilationDTO = new MiningModelCompilationDTO(source);
-        final SegmentCompilationDTO segmentCompilationDTO = new SegmentCompilationDTO(compilationDTO, segment,
-                                                                                      compilationDTO.getFields());
+        final CommonCompilationDTO<MiningModel> source =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          pmml,
+                                                                          MINING_MODEL,
+                                                                          hasKnowledgeBuilderMock);
+        final MiningModelCompilationDTO compilationDTO =
+                MiningModelCompilationDTO.getWithGeneratedPackageNameAndFields(source);
+        final SegmentCompilationDTO segmentCompilationDTO =
+                SegmentCompilationDTO.getWithDefinedPackageNameAndFields(compilationDTO, segment,
+                                                                         compilationDTO.getFields());
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMapCompiled(segmentCompilationDTO,
                                                                                                  nestedModels);
         commonEvaluateNestedModels(nestedModels);
@@ -139,13 +147,16 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final String kiePMMLModelClass = PACKAGE_NAME + "." + regressionModelName;
         final Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(kiePMMLModelClass, String.format("public class %s {}", regressionModelName));
-        final CommonCompilationDTO<MiningModel> source = new CommonCompilationDTO<>(PACKAGE_NAME,
-                                                                                    pmml,
-                                                                                    MINING_MODEL,
-                                                                                    new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
-        final MiningModelCompilationDTO compilationDTO = new MiningModelCompilationDTO(source);
-        final SegmentCompilationDTO segmentCompilationDTO = new SegmentCompilationDTO(compilationDTO, segment,
-                                                                                      compilationDTO.getFields());
+        final CommonCompilationDTO<MiningModel> source =
+                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                          pmml,
+                                                                          MINING_MODEL,
+                                                                          new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+        final MiningModelCompilationDTO compilationDTO =
+                MiningModelCompilationDTO.getWithGeneratedPackageNameAndFields(source);
+        final SegmentCompilationDTO segmentCompilationDTO =
+                SegmentCompilationDTO.getWithDefinedPackageNameAndFields(compilationDTO, segment,
+                                                                         compilationDTO.getFields());
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(segmentCompilationDTO);
         commonEvaluateMap(retrieved, segment);
     }

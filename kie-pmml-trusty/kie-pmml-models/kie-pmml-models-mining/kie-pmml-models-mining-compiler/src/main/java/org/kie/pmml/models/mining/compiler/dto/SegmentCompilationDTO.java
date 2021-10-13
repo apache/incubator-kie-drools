@@ -31,11 +31,34 @@ public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificComp
 
     private final Segment segment;
 
-    public SegmentCompilationDTO(MiningModelCompilationDTO source, Segment segment, List<Field<?>> fields) {
+    /**
+     * Private constructor that generates a <code>CommonCompilationDTO</code> creating <b>packageName</b> from
+     * source' <b>segmentationPackageName</b> and segment'
+     * <b>id</b>, preserving given <b>fields</b>
+     * <code>CompilationDTO</code>
+     * @param source
+     * @param segment
+     * @param fields
+     */
+    private SegmentCompilationDTO(MiningModelCompilationDTO source, Segment segment, List<Field<?>> fields) {
         super(source.getPmml(), (T) segment.getModel(), source.getHasClassloader(),
               getSanitizedPackageName(source.getSegmentationPackageName() + "." + segment.getId()),
               fields);
         this.segment = segment;
+    }
+
+    /**
+     * Builder that generates a <code>CommonCompilationDTO</code> creating <b>packageName</b> from source'
+     * <b>segmentationPackageName</b> and segment' <b>id</b>,
+     * preserving given <b>fields</b>
+     * <code>CompilationDTO</code>
+     * @param source
+     * @param segment
+     * @param fields
+     */
+    public static SegmentCompilationDTO getWithDefinedPackageNameAndFields(MiningModelCompilationDTO source,
+                                                                           Segment segment, List<Field<?>> fields) {
+        return new SegmentCompilationDTO(source, segment, fields);
     }
 
     public Segment getSegment() {
