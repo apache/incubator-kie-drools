@@ -67,10 +67,10 @@ public class KiePMMLModelRetrieverTest {
         TestModel model = new TestModel();
         pmml.getModels().set(0, model);
         final CommonCompilationDTO<TestModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          model,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       model,
+                                                                       new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved.isPresent());
@@ -81,10 +81,10 @@ public class KiePMMLModelRetrieverTest {
     public void getFromCommonDataAndTransformationDictionaryAndModelWithoutProvider() throws Exception {
         pmml = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final CommonCompilationDTO compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          pmml.getModels().get(0),
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       pmml.getModels().get(0),
+                                                                       new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
@@ -94,10 +94,10 @@ public class KiePMMLModelRetrieverTest {
     public void getFromCommonDataAndTransformationDictionaryAndModelWithSourcesWithProvider() {
         pmml = getPMMLWithRandomTestModel();
         final CommonCompilationDTO compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          pmml.getModels().get(0),
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       pmml.getModels().get(0),
+                                                                       new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
         assertNotNull(retrieved);
@@ -107,10 +107,10 @@ public class KiePMMLModelRetrieverTest {
     public void getFromDataDictionaryAndModelWithSourcesWithoutProvider() throws Exception {
         pmml = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final CommonCompilationDTO compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          pmml.getModels().get(0),
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       pmml.getModels().get(0),
+                                                                       new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
         assertNotNull(retrieved);
@@ -123,10 +123,10 @@ public class KiePMMLModelRetrieverTest {
         MiningModel parentModel = (MiningModel) pmml.getModels().get(0);
         Model model = parentModel.getSegmentation().getSegments().get(0).getModel();
         final CommonCompilationDTO compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          model,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       model,
+                                                                       new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(compilationDTO);
         assertNotNull(retrieved);
@@ -140,10 +140,10 @@ public class KiePMMLModelRetrieverTest {
         MiningModel parentModel = (MiningModel) pmml.getModels().get(0);
         Model model = parentModel.getSegmentation().getSegments().get(0).getModel();
         final CommonCompilationDTO compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                              pmml,
-                                                                                                              model,
-                                                                                                              new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       model,
+                                                                       new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(compilationDTO);
         assertNotNull(retrieved);

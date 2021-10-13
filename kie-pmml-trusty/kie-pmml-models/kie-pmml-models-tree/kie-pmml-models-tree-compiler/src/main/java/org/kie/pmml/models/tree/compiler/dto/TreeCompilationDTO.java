@@ -42,7 +42,7 @@ public class TreeCompilationDTO extends AbstractSpecificCompilationDTO<TreeModel
      * Builder that use given <code>CommonCompilationDTO</code>
      * @param source
      */
-    public static TreeCompilationDTO getWithGeneratedPackageNameAndFields(final CompilationDTO<TreeModel> source) {
+    public static TreeCompilationDTO fromCompilationDTO(final CompilationDTO<TreeModel> source) {
         return new TreeCompilationDTO(source);
     }
 

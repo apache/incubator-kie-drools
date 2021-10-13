@@ -82,10 +82,10 @@ public class PMMLTreeModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          (TreeModel) pmml.getModels().get(0),
-                                                                          new HasKnowledgeBuilderMock(knowledgeBuilder));
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       (TreeModel) pmml.getModels().get(0),
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
 
         kiePMMLModel = provider.getKiePMMLModel(compilationDTO);
         kieBase = new KieHelper()

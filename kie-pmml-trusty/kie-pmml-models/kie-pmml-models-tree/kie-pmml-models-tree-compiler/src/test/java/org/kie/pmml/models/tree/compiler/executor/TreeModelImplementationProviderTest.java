@@ -57,10 +57,10 @@ public class TreeModelImplementationProviderTest {
     public void getKiePMMLModel() {
         TreeModel treeModel = (TreeModel) pmml.getModels().get(0);
         final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          treeModel,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       treeModel,
+                                                                       new HasClassLoaderMock());
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof Serializable);
@@ -70,10 +70,10 @@ public class TreeModelImplementationProviderTest {
     public void getKiePMMLModelWithSources() {
         TreeModel treeModel = (TreeModel) pmml.getModels().get(0);
         final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          treeModel,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       treeModel,
+                                                                       new HasClassLoaderMock());
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLTreeModelWithSources);

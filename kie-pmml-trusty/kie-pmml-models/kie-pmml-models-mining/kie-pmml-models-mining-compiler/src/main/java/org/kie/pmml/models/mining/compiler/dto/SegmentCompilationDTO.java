@@ -56,8 +56,8 @@ public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificComp
      * @param segment
      * @param fields
      */
-    public static SegmentCompilationDTO getWithDefinedPackageNameAndFields(MiningModelCompilationDTO source,
-                                                                           Segment segment, List<Field<?>> fields) {
+    public static SegmentCompilationDTO fromGeneratedPackageNameAndFields(MiningModelCompilationDTO source,
+                                                                          Segment segment, List<Field<?>> fields) {
         return new SegmentCompilationDTO(source, segment, fields);
     }
 

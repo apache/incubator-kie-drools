@@ -51,7 +51,7 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
             throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,
                                                      compilationDTO.getHasClassloader().getClass().getName()));
         }
-        return getKiePMMLMiningModel(MiningModelCompilationDTO.getWithGeneratedPackageNameAndFields(compilationDTO));
+        return getKiePMMLMiningModel(MiningModelCompilationDTO.fromCompilationDTO(compilationDTO));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
         }
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final Map<String, String> sourcesMap =
-                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(MiningModelCompilationDTO.getWithGeneratedPackageNameAndFields(compilationDTO),
+                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(MiningModelCompilationDTO.fromCompilationDTO(compilationDTO),
                                                                           nestedModels);
         return new KiePMMLMiningModelWithSources(compilationDTO.getModelName(), compilationDTO.getPackageName(),
                                                  sourcesMap, nestedModels);

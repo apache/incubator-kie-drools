@@ -79,10 +79,10 @@ public class RegressionModelImplementationProviderTest {
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
         final CommonCompilationDTO<RegressionModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          regressionModel,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock());
         final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof Serializable);
@@ -96,10 +96,10 @@ public class RegressionModelImplementationProviderTest {
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
         final CommonCompilationDTO<RegressionModel> compilationDTO =
-                CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                          pmml,
-                                                                          regressionModel,
-                                                                          new HasClassLoaderMock());
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock());
         final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLRegressionModelWithSources);

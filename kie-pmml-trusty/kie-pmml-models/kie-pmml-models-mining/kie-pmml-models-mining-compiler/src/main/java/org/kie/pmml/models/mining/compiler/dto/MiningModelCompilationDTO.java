@@ -57,7 +57,7 @@ public class MiningModelCompilationDTO extends AbstractSpecificCompilationDTO<Mi
      * Builder that use given <code>CommonCompilationDTO</code>
      * @param source
      */
-    public static MiningModelCompilationDTO getWithGeneratedPackageNameAndFields(final CompilationDTO<MiningModel> source) {
+    public static MiningModelCompilationDTO fromCompilationDTO(final CompilationDTO<MiningModel> source) {
         return new MiningModelCompilationDTO(source);
     }
 

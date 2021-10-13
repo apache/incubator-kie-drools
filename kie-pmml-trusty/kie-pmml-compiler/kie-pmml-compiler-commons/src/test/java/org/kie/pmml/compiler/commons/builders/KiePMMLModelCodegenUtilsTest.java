@@ -64,10 +64,10 @@ public class KiePMMLModelCodegenUtilsTest {
     @Test
     public void init() throws IOException {
         ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
-        final CompilationDTO compilationDTO = CommonCompilationDTO.getWithGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                        pmml,
-                                                                                                        model,
-                                                                                                        new HasClassLoaderMock());
+        final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                                                     pmml,
+                                                                                                     model,
+                                                                                                     new HasClassLoaderMock());
         KiePMMLModelCodegenUtils.init(compilationDTO, modelTemplate);
         BlockStmt body = constructorDeclaration.getBody();
         String text = getFileContent(TEST_01_SOURCE);
