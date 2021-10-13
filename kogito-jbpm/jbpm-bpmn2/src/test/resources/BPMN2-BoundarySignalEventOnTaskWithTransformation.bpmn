@@ -65,7 +65,7 @@
       <dataOutputAssociation id="DataOutputAssociation_1">
         <sourceRef>_4_Output</sourceRef>
         <targetRef>x</targetRef>
-        <transformation language="http://www.java.com/javascript">param.toUpperCase()</transformation>
+        <transformation language="http://www.java.com/java">param.toUpperCase();</transformation>
       </dataOutputAssociation>
       <outputSet id="OutputSet_1">
         <dataOutputRefs>_4_Output</dataOutputRefs>

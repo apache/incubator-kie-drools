@@ -78,7 +78,6 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     public static final String MVEL_LANGUAGE = "http://www.mvel.org/2.0";
     public static final String RULE_LANGUAGE = "http://www.jboss.org/drools/rule";
     public static final String XPATH_LANGUAGE = "http://www.w3.org/1999/XPath";
-    public static final String JAVASCRIPT_LANGUAGE = "http://www.javascript.com/javascript";
     public static final String FEEL_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";
     public static final String DMN_FEEL_LANGUAGE = "http://www.omg.org/spec/DMN/20180521/FEEL/";
     public static final String FEEL_LANGUAGE_SHORT = "application/feel";
@@ -776,8 +775,6 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                             xmlDump.append("language=\"" + JAVA_LANGUAGE + "\" ");
                         } else if ("XPath".equals(constraint.getDialect())) {
                             xmlDump.append("language=\"" + XPATH_LANGUAGE + "\" ");
-                        } else if ("JavaScript".equals(constraint.getDialect())) {
-                            xmlDump.append("language=\"" + JAVASCRIPT_LANGUAGE + "\" ");
                         } else if ("FEEL".equals(constraint.getDialect())) {
                             xmlDump.append("language=\"" + FEEL_LANGUAGE + "\" ");
                         }

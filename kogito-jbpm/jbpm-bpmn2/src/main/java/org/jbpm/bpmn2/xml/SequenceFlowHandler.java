@@ -134,8 +134,6 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
                         sequenceFlow.setType("rule");
                     } else if (XmlBPMNProcessDumper.XPATH_LANGUAGE.equals(language)) {
                         sequenceFlow.setLanguage("XPath");
-                    } else if (XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE.equals(language)) {
-                        sequenceFlow.setLanguage("JavaScript");
                     } else if (XmlBPMNProcessDumper.FEEL_LANGUAGE.equals(language) || XmlBPMNProcessDumper.DMN_FEEL_LANGUAGE.equals(language)) {
                         sequenceFlow.setLanguage("FEEL");
                     } else {

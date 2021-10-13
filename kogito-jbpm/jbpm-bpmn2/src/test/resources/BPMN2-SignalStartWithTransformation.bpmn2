@@ -24,7 +24,7 @@
       <dataOutputAssociation>
         <sourceRef>_1_Output</sourceRef>
         <targetRef>x</targetRef>
-        <transformation language="http://www.java.com/javascript">event.toUpperCase()</transformation>
+        <transformation language="http://www.mvel.org/2.0">event.toUpperCase();</transformation>
       </dataOutputAssociation>
       <outputSet>
         <dataOutputRefs>_1_Output</dataOutputRefs>

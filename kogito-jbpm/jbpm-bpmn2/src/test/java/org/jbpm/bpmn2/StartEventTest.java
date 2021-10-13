@@ -29,7 +29,6 @@ import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieServices;
@@ -469,7 +468,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
     @Test
     @Timeout(10)
-    @Disabled("Transfomer has been disabled")
     public void testSignalStartWithTransformation() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);
         kruntime = createKogitoProcessRuntime("BPMN2-SignalStartWithTransformation.bpmn2");

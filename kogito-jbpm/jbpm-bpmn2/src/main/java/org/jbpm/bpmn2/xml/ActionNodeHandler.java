@@ -183,8 +183,6 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                         metaDataType);
                 if (JavaDialect.ID.equals(action.getDialect())) {
                     xmlDump.append("scriptFormat=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\" ");
-                } else if ("JavaScript".equals(action.getDialect())) {
-                    xmlDump.append("scriptFormat=\"" + XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE + "\" ");
                 }
                 Object isForCompensationObj = actionNode.getMetaData("isForCompensation");
                 if (isForCompensationObj != null && (Boolean) isForCompensationObj) {

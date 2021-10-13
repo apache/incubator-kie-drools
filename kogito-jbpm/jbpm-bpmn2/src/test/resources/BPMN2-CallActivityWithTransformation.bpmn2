@@ -33,12 +33,12 @@
       <dataInputAssociation>
         <sourceRef>x</sourceRef>
         <targetRef>_2_subXInput</targetRef>
-        <transformation language="http://www.java.com/javascript">subX.toUpperCase()</transformation>
+        <transformation language="http://www.java.com/java">subX.toUpperCase();</transformation>
       </dataInputAssociation>
       <dataOutputAssociation>
         <sourceRef>_2_subYOutput</sourceRef>
         <targetRef>y</targetRef>
-        <transformation language="http://www.java.com/javascript">subY.toUpperCase()</transformation>
+        <transformation language="http://www.java.com/java">subY.toUpperCase();</transformation>
       </dataOutputAssociation>
     </callActivity>
     <endEvent id="_3" name="EndProcess" >

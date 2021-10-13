@@ -24,12 +24,12 @@
       <bpmn2:dataInputAssociation id="_oH8980NHEeSN5rNG3o7Jtw">
         <bpmn2:sourceRef>name</bpmn2:sourceRef>
         <bpmn2:targetRef>_6774E7FE-8F4A-4E44-AC8B-24C0537A601E_name-paramInputX</bpmn2:targetRef>
-        <bpmn2:transformation language="http://www.java.com/javascript">nameParam.toUpperCase()</bpmn2:transformation>
+        <bpmn2:transformation language="http://www.java.com/java">nameParam.toUpperCase();</bpmn2:transformation>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataOutputAssociation id="_oH899ENHEeSN5rNG3o7Jtw">
         <bpmn2:sourceRef>_6774E7FE-8F4A-4E44-AC8B-24C0537A601E_name-paramOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>name</bpmn2:targetRef>
-        <bpmn2:transformation language="http://www.java.com/javascript">nameParam.toLowerCase()</bpmn2:transformation>
+        <bpmn2:transformation language="http://www.java.com/java">nameParam.toLowerCase();</bpmn2:transformation>
       </bpmn2:dataOutputAssociation>
     </bpmn2:businessRuleTask>
     <bpmn2:sequenceFlow id="_BE320783-1348-4F67-A414-9BA86884ECA9" drools:bgcolor="#000000" drools:selectable="true" sourceRef="processStartEvent" targetRef="_6774E7FE-8F4A-4E44-AC8B-24C0537A601E"/>

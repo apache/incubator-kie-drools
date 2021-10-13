@@ -22,9 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.script.ScriptEngineManager;
-
-import org.assertj.core.api.Assumptions;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -201,34 +198,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-ScriptTask.bpmn2");
         KogitoProcessInstance processInstance = kruntime.startProcess("ScriptTask");
         assertProcessInstanceCompleted(processInstance);
-    }
-
-    @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067 and JavaScript not supported in ScriptTask")
-    public void testScriptTaskJS() throws Exception {
-        Assumptions.assumeThat(
-                new ScriptEngineManager().getEngineByName("JavaScript")
-                        .getClass().getSimpleName())
-                .describedAs("GraalJS is not supported.")
-                .isNotEqualTo("GraalJSScriptEngine");
-
-        kruntime = createKogitoProcessRuntime("BPMN2-ScriptTaskJS.bpmn2");
-
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "krisv");
-        Person person = new Person();
-        person.setName("krisv");
-        params.put("person", person);
-
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("ScriptTask", params);
-        assertEquals("Entry", processInstance.getVariable("x"));
-        assertNull(processInstance.getVariable("y"));
-
-        kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-        assertEquals("Exit", getProcessVarValue(processInstance, "y"));
-        assertEquals("tester", processInstance.getVariable("surname"));
     }
 
     @Test
@@ -787,20 +756,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("Transfomer has been disabled")
-    public void testServiceTaskWithTransformation() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ServiceProcessWithTransformation.bpmn2");
-
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task",
-                new ServiceTaskHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("s", "JoHn");
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("ServiceProcess", params);
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertEquals("hello john!", processInstance.getVariable("s"));
-    }
-
-    @Test
     public void testServiceTaskWithMvelTransformation() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-ServiceProcessWithMvelTransformation.bpmn2");
 
@@ -1182,7 +1137,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("Transfomer has been disabled")
+    @Disabled("Transformer has been disabled")
     public void testCallActivityWithTransformation() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-CallActivityWithTransformation.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
 

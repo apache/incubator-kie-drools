@@ -28,7 +28,7 @@
       <dataInputAssociation>
         <sourceRef>x</sourceRef>
         <targetRef>_2_Input</targetRef>
-        <transformation language="http://www.java.com/javascript">param.toUpperCase()</transformation>
+        <transformation language="http://www.java.com/java">param.toUpperCase();</transformation>
       </dataInputAssociation>
       <inputSet>
         <dataInputRefs>_2_Input</dataInputRefs>

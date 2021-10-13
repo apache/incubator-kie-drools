@@ -26,19 +26,18 @@
     
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
-    <scriptTask id="_2" name="Hello" scriptFormat="http://www.javascript.com/javascript" >
+    <scriptTask id="_2" name="Hello" scriptFormat="http://www.java.com/java" >
       <script>
-        kcontext.setVariable('surname', "tester");
-  
+        kcontext.setVariable("surname", "tester");
       </script>
     </scriptTask>
     <userTask id="_3" name="Hello" >
       <extensionElements>
-        <tns:onEntry-script scriptFormat="http://www.javascript.com/javascript">
-          <tns:script>kcontext.setVariable('x', 'Entry')</tns:script>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java">
+          <tns:script>kcontext.setVariable("x", "Entry");</tns:script>
         </tns:onEntry-script>
-        <tns:onExit-script scriptFormat="http://www.javascript.com/javascript">
-          <tns:script>kcontext.setVariable('y', 'Exit')</tns:script>
+        <tns:onExit-script scriptFormat="http://www.java.com/java">
+          <tns:script>kcontext.setVariable("y", "Exit");</tns:script>
         </tns:onExit-script>
       </extensionElements>
       <ioSpecification>
@@ -54,11 +53,11 @@
       </potentialOwner>
     </userTask>
     <exclusiveGateway id="_4" name="Split" gatewayDirection="Diverging" />
-    <scriptTask id="_5" name="Script1" scriptFormat="http://www.javascript.com/javascript">
-      <script>print('x=' + kcontext.getVariable('x') + '\n')</script>
+    <scriptTask id="_5" name="Script1" scriptFormat="http://www.java.com/java">
+      <script>System.out.println("x=" + kcontext.getVariable("x") + "\n");</script>
     </scriptTask>
-    <scriptTask id="_6" name="Script2" scriptFormat="http://www.javascript.com/javascript">
-      <script>print('y=' + kcontext.getVariable('y') + '\n')</script>
+    <scriptTask id="_6" name="Script2" scriptFormat="http://www.java.com/java">
+      <script>System.out.println("y=" + kcontext.getVariable("y") + "\n");</script>
     </scriptTask>
     <exclusiveGateway id="_7" name="Join" gatewayDirection="Converging" />
     <userTask id="_8" name="Hello" >

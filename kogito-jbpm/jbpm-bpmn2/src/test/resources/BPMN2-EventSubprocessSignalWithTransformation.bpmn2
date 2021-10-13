@@ -22,7 +22,7 @@
         <bpmn2:dataOutputAssociation id="_N_BxYUQEEeSsZLKaUkWnFw">
           <bpmn2:sourceRef>_B3F307E0-B1CA-4DF5-B348-6588C9E78112_param</bpmn2:sourceRef>
           <bpmn2:targetRef>x</bpmn2:targetRef>
-          <bpmn2:transformation language="http://www.java.com/javascript">param.toUpperCase()</bpmn2:transformation>
+          <bpmn2:transformation language="http://www.java.com/java">param.toUpperCase();</bpmn2:transformation>
         </bpmn2:dataOutputAssociation>
         <bpmn2:outputSet id="_N_BxYEQEEeSsZLKaUkWnFw">
           <bpmn2:dataOutputRefs>_B3F307E0-B1CA-4DF5-B348-6588C9E78112_param</bpmn2:dataOutputRefs>
