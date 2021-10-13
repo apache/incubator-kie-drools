@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -30,6 +32,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
+
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.persistence.api.TransactionAware;
 import org.drools.persistence.api.TransactionManager;
@@ -207,6 +210,34 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     @Override
     public void onEnd(TransactionManager txm) {
         EntityPersister em = persister.get();
+        if(txm.getStatus() == TransactionManager.STATUS_ROLLEDBACK) {
+            // this is pretty much of a hack but for avoiding issues when rolling back we need to set to null 
+            // the primary key of the entities (simple types)
+            List<Object> entities = em.getEntities();
+            entities.stream().forEach(entity -> {
+                try {
+                    Metamodel metamodel = emf.getMetamodel();
+                    EntityType<? extends Object> jpaEntity = metamodel.entity(entity.getClass());
+		    Class<?> clazz = entity.getClass();
+                    String idFieldName = jpaEntity.getId(jpaEntity.getIdType().getJavaType()).getName();
+	            Field field = null;
+		    while (clazz != null) {
+			try {
+			    field = clazz.getDeclaredField(idFieldName);
+			    break;
+			} catch (Throwable th) {
+			    clazz = clazz.getSuperclass();
+			}
+		    }
+		    if (field != null) {
+                        field.setAccessible(true);
+                        field.set(entity, null);
+		    }
+                } catch(Exception e) {
+                    log.debug("There is a problem trying to rollback id object {}", entity, e);
+                }
+            });
+        }
         if (em != null) {
             em.close();
             persister.set(null);
