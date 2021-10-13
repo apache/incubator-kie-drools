@@ -43,6 +43,10 @@ public class EntityPersister {
     public void processed(Object entity) {
         this.entities.add(entity);
     }
+
+    public List<Object> getEntities() {
+        return entities;
+    }
     
     public void close() {
         this.entities.clear();
