@@ -36,6 +36,9 @@
   </licenses>
 
   <properties>
+    <surefire.forkCount>1</surefire.forkCount>
+    <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
+
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
 
@@ -546,9 +549,9 @@
   </pluginRepositories>
 
   <scm>
-    <connection>scm:git:https://github.com/kiegroup/droolsjbpm-knowledge.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/droolsjbpm-knowledge.git</developerConnection>
-    <url>https://github.com/kiegroup/droolsjbpm-knowledge</url>
+    <connection>scm:git:https://github.com:kiegroup/drools.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/drools.git</developerConnection>
+    <url>https://github.com/kiegroup/drools</url>
   </scm>
 
   <ciManagement>
@@ -1132,6 +1135,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
+            <forkCount>${surefire.forkCount}</forkCount>
+            <reuseForks>true</reuseForks>
+            <runOrder>hourly</runOrder>
             <includes>
               <include>**/*Test.java</include>
             </includes>
@@ -1896,6 +1902,9 @@
           <name>full</name>
         </property>
       </activation>
+      <modules>
+        <module>drools-distribution</module>
+      </modules>
       <build>
         <plugins>
           <plugin>
@@ -1925,19 +1934,19 @@
               </execution>
             </executions>
           </plugin>
-<!--          <plugin>-->
-<!--            <groupId>com.github.spotbugs</groupId>-->
-<!--            <artifactId>spotbugs-maven-plugin</artifactId>-->
-<!--            <executions>-->
-<!--              <execution>-->
-<!--                <id>spotbugs-check</id>-->
-<!--                <phase>compile</phase>-->
-<!--                <goals>-->
-<!--                  <goal>check</goal>-->
-<!--                </goals>-->
-<!--              </execution>-->
-<!--            </executions>-->
-<!--          </plugin>-->
+          <!--          <plugin>-->
+          <!--            <groupId>com.github.spotbugs</groupId>-->
+          <!--            <artifactId>spotbugs-maven-plugin</artifactId>-->
+          <!--            <executions>-->
+          <!--              <execution>-->
+          <!--                <id>spotbugs-check</id>-->
+          <!--                <phase>compile</phase>-->
+          <!--                <goals>-->
+          <!--                  <goal>check</goal>-->
+          <!--                </goals>-->
+          <!--              </execution>-->
+          <!--            </executions>-->
+          <!--          </plugin>-->
         </plugins>
       </build>
     </profile>
@@ -2174,6 +2183,40 @@
         <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
       </properties>
     </profile>
+    <profile>
+      <id>run-code-coverage</id>
+      <properties>
+        <jacoco.excludes>*Lexer</jacoco.excludes>
+
+        <!-- jacoco.exec.file is defined in kie-parent -->
+        <!--suppress UnresolvedMavenProperty -->
+        <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.jacoco.plugin}/org.jacoco.agent-${version.jacoco.plugin}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
+        <surefire.argLine>
+          -Dfile.encoding=${project.build.sourceEncoding}
+          ${jacoco.agent.line}
+        </surefire.argLine>
+      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>${surefire.argLine}</argLine>
+              </configuration>
+              <dependencies>
+                <dependency>
+                  <groupId>org.jacoco</groupId>
+                  <artifactId>org.jacoco.agent</artifactId>
+                  <version>${version.jacoco.plugin}</version>
+                  <classifier>runtime</classifier>
+                </dependency>
+              </dependencies>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
 
   <modules>
@@ -2184,6 +2227,39 @@
     <module>kie-api</module>
     <module>kie-internal</module>
     <module>kie-archetypes</module>
+    <module>kie-util</module>
+    <module>kie-memory-compiler</module>
+    <module>drools-core-reflective</module>
+    <module>drools-core-dynamic</module>
+    <module>kie-test-util</module>
+    <module>drools-core</module>
+    <module>drools-ecj</module>
+    <module>drools-compiler</module>
+    <module>drools-mvel</module>
+    <module>drools-legacy-test-util</module>
+    <module>drools-serialization-protobuf</module>
+    <module>drools-beliefs</module>
+    <module>drools-traits</module>
+    <module>drools-cdi</module>
+    <module>drools-verifier</module>
+    <module>drools-persistence</module>
+    <module>drools-templates</module>
+    <module>drools-decisiontables</module>
+    <module>drools-examples</module>
+    <module>kie-ci</module>
+    <module>drools-model</module>
+    <module>kie-dmn</module>
+    <module>kie-pmml-trusty</module>
+    <module>drools-examples-api</module>
+    <module>drools-examples-cdi</module>
+    <module>drools-test-coverage</module>
+    <module>drools-scenario-simulation</module>
+    <module>drools-metric</module>
+    <module>drools-alphanetwork-compiler</module>
+    <module>drools-engine</module>
+    <module>drools-engine-classic</module>
+    <module>drools-impact-analysis</module>
+    <module>drools-retediagram</module>
   </modules>
 
   <dependencyManagement>
@@ -6459,6 +6535,27 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
     </dependencies>
 
@@ -6478,3 +6575,4 @@
   </dependencies>
 
 </project>
+

@@ -8,7 +8,7 @@ If this PR is not strictly related to drools and kogito project in `drools.git`,
 
 [link](https://www.example.com)
 
-**JIRA**: _(please edit the JIRA link if it exists)_ 
+**JIRA**: _(please edit the JIRA link if it exists)_
 
 [link](https://www.example.com)
 
@@ -24,9 +24,9 @@ How to retest this PR or trigger a specific build:
 </summary>
 
 * <b>a pull request</b> please add comment: <b>Jenkins retest this</b>
- 
+
 * <b>a full downstream build</b> please add comment: <b>Jenkins run fdb</b>
-  
+
 * <b>a compile downstream build</b> please  add comment: <b>Jenkins run cdb</b>
 
 * <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>

@@ -1,14 +1,17 @@
-/target
-/local
+target/
+local/
 
 # Eclipse, Netbeans and IntelliJ files
-/.*
+.*
 !.gitignore
-/nbproject
-/*.ipr
-/*.iws
-/*.iml
-*.xpr
+!.github
+nbproject
+*.ipr
+*.iws
+*.iml
 
-# Repository wide ignore mac DS_Store files
-.DS_Store
+# generated files
+dependency-reduced-pom.xml
+
+#CI
+!.ci
