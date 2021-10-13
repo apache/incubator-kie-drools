@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -134,16 +133,13 @@ public class MultiInstanceDecisionLogic {
                 List<DMNNode> allWrappedDeps = DRGAnalysisUtils.dependencies(cModel, topLevelDecision).stream().map(DRGDependency::getDependency).collect(Collectors.toList());
                 
                 // DROOLS-6647 multi-instance decisions with multiple levels of decisions inside
-                List<String> reqDecisionKeys = new ArrayList<>();
                 for (DMNNode candidate : allWrappedDeps) { 
-                    if (candidate.getValue() instanceof DecisionNodeImpl) {
-                        DecisionNodeImpl reqDecision = (DecisionNodeImpl) candidate.getValue();
+                    if (candidate instanceof DecisionNodeImpl) {
+                        DecisionNodeImpl reqDecision = (DecisionNodeImpl) candidate;
                         recurseNodeToRemoveItAndDepsFromModelIndex(reqDecision, cModel);
-                        reqDecisionKeys.add(candidate.getKey());
                         miEvaluator.addReqDecision(reqDecision);
                     }
                 }
-                reqDecisionKeys.forEach(di.getDependencies()::remove);
             });
         }
 
