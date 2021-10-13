@@ -293,4 +293,19 @@ public class SignavioTest {
     
         assertEquals(Arrays.asList("John Doe", "Alice"), evaluateAll.getDecisionResultByName("extractNames").getResult());
     }
+    
+    @Test
+    public void testSignavioIterateMultiinstanceMultipleDecisions() {
+        DMNRuntime runtime = createRuntime("SumLenghtOfNames.dmn");
+        
+        DMNContext context = runtime.newContext();
+        context.set("names", Arrays.asList("John", "Alice"));
+        
+        DMNModel model0 = runtime.getModels().get(0);
+        LOG.info("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        LOG.info("{}", evaluateAll);
+    
+        assertThat(evaluateAll.getDecisionResultByName("overallage").getResult(), is(new BigDecimal("18")));
+    }
 }
