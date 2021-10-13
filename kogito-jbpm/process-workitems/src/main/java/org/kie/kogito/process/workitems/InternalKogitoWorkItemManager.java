@@ -34,6 +34,8 @@ public interface InternalKogitoWorkItemManager extends org.drools.core.process.i
 
     InternalKogitoWorkItem getWorkItem(String id);
 
+    void internalRemoveWorkItem(String id);
+
     void signalEvent(String type, Object event, String processInstanceId);
 
     void retryWorkItem(String workItemID, Map<String, Object> params);

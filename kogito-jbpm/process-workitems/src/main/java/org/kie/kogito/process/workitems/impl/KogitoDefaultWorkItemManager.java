@@ -74,6 +74,11 @@ public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManag
     }
 
     @Override
+    public void internalRemoveWorkItem(String id) {
+        workItems.remove(id);
+    }
+
+    @Override
     public void internalAbortWorkItem(String id) {
         KogitoWorkItemImpl workItem = (KogitoWorkItemImpl) workItems.get(id);
         // work item may have been aborted

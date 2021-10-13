@@ -18,6 +18,7 @@ package org.jbpm.process.instance.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,8 +32,9 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     private boolean lock = false;
 
     public void addProcessInstance(KogitoProcessInstance processInstance) {
-        String id = UUID.randomUUID().toString();
-        ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(id);
+        if (Objects.isNull(processInstance.getStringId())) {
+            ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(UUID.randomUUID().toString());
+        }
         internalAddProcessInstance(processInstance);
     }
 

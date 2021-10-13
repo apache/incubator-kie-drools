@@ -37,7 +37,6 @@ public class ProtobufProcessInstanceMarshaller implements ProcessInstanceMarshal
         RuleFlowProcessInstance pi = (RuleFlowProcessInstance) ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
         ProtobufProcessInstanceWriter writer = new ProtobufProcessInstanceWriter(context);
         writer.writeProcessInstance(pi, context.output());
-        pi.disconnect();
     }
 
     @Override

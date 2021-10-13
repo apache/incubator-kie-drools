@@ -140,6 +140,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         ((InternalKogitoWorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalAddWorkItem(workItem);
     }
 
+    public void internalRemoveWorkItem() {
+        ((InternalKogitoWorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalRemoveWorkItem(workItem.getStringId());
+    }
+
     @Override
     public void internalTrigger(final KogitoNodeInstance from, String type) {
         super.internalTrigger(from, type);

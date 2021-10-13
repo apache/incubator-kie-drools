@@ -163,6 +163,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             return;
         }
 
+        for (org.kie.api.runtime.process.NodeInstance nodeInstance : processInstance.getNodeInstances()) {
+            if (nodeInstance instanceof WorkItemNodeInstance) {
+                ((WorkItemNodeInstance) nodeInstance).internalRemoveWorkItem();
+            }
+        }
+
         processInstance.disconnect();
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, null);
     }

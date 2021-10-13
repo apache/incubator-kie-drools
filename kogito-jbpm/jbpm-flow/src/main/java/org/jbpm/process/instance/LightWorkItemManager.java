@@ -146,6 +146,11 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
     }
 
     @Override
+    public void internalRemoveWorkItem(String id) {
+        workItems.remove(id);
+    }
+
+    @Override
     public void completeWorkItem(String id, Map<String, Object> results, Policy<?>... policies) {
         transitionWorkItem(id, new TransitionToComplete(results, Arrays.asList(policies)));
     }
