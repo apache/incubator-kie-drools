@@ -503,25 +503,58 @@ const outcomeDetail = [
     evaluationStatus: 'SUCCEEDED',
     hasErrors: false,
     messages: [],
-    outcomeId: '_c6e56793-68d0-4683-b34b-5e9d69e7d0d4',
-    outcomeName: 'Risk Score',
+    outcomeId: '_12345678-9012-3456-7890-123456789012',
+    outcomeName: 'Cheese manufacturer',
     outcomeResult: {
-      name: 'Risk Score',
-      typeRef: 'number',
-      value: 1,
-      components: null
+      name: 'Cheese',
+      type: 'string',
+      value: 'Acme Cheese Specialists'
+    },
+    outcomeInputs: []
+  },
+  {
+    evaluationStatus: 'SUCCEEDED',
+    hasErrors: false,
+    messages: [],
+    outcomeId: '_11145678-9012-3456-7890-123456789012',
+    outcomeName: 'NUllable Cheese manufacturer',
+    outcomeResult: {
+      name: 'Cheese',
+      type: 'string',
+      value: null
+    },
+    outcomeInputs: []
+  },
+  {
+    evaluationStatus: 'SUCCEEDED',
+    hasErrors: false,
+    messages: [],
+    outcomeId: '_c6e56793-68d0-4683-b34b-5e9d69e7d0d4',
+    outcomeName: 'Structured outcome 1',
+    outcomeResult: {
+      name: 'Structure1',
+      typeRef: 'tStructure',
+      value: null,
+      components: [
+        {
+          name: 'Structure1 field1',
+          typeRef: 'tField1',
+          value: 'value',
+          components: null
+        }
+      ]
     },
     outcomeInputs: [
       {
-        name: 'Asset Score',
+        name: 'X',
         typeRef: 'number',
-        value: 738,
+        value: 1,
         components: null
       },
       {
-        name: 'Asset Amount',
+        name: 'Y',
         typeRef: 'number',
-        value: 70000,
+        value: 2,
         components: null
       }
     ]
@@ -531,24 +564,31 @@ const outcomeDetail = [
     hasErrors: false,
     messages: [],
     outcomeId: '_859bea4f-dfc4-480e-96f2-1a756d54b84b',
-    outcomeName: 'Total Amount from Last 24 hours Transactions',
+    outcomeName: 'Structured outcome 2',
     outcomeResult: {
-      name: 'Total Amount from Last 24 hours Transactions',
-      typeRef: 'number',
-      value: 0,
-      components: null
+      name: 'Structure2',
+      typeRef: 'tStructure',
+      value: null,
+      components: [
+        {
+          name: 'Structure2 field1',
+          typeRef: 'tField1',
+          value: 'value',
+          components: null
+        }
+      ]
     },
     outcomeInputs: [
       {
-        name: 'Asset Score',
+        name: 'X',
         typeRef: 'number',
-        value: 738,
+        value: 55,
         components: null
       },
       {
-        name: 'Asset Amount',
+        name: 'Y',
         typeRef: 'number',
-        value: 70000,
+        value: 99,
         components: null
       }
     ]

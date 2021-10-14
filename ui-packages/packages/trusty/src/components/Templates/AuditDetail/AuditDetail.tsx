@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import {
   Nav,
   NavItem,
@@ -6,7 +6,8 @@ import {
   PageSection,
   PageSectionVariants,
   Stack,
-  StackItem
+  StackItem,
+  Tooltip
 } from '@patternfly/react-core';
 import {
   Link,
@@ -30,6 +31,8 @@ import InputData from '../InputData/InputData';
 import ModelLookup from '../ModelLookup/ModelLookup';
 import './AuditDetail.scss';
 import Counterfactual from '../Counterfactual/Counterfactual';
+import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
+import CounterfactualUnsupportedBanner from '../../Atoms/CounterfactualUnsupportedBanner/CounterfactualUnsupportedBanner';
 
 const AuditDetail = () => {
   const { path, url } = useRouteMatch();
@@ -39,7 +42,7 @@ const AuditDetail = () => {
   const outcomes = useDecisionOutcomes(executionId);
 
   const [thirdLevelNav, setThirdLevelNav] = useState<
-    { url: string; desc: string }[]
+    { url: string; desc: string; icon?: ReactNode }[]
   >([]);
 
   useEffect(() => {
@@ -59,7 +62,15 @@ const AuditDetail = () => {
       if (process.env.KOGITO_TRUSTY_COUNTERFACTUAL === 'enabled') {
         newNav.push({
           url: '/counterfactual-analysis',
-          desc: 'Counterfactual Analysis'
+          desc: 'Counterfactual Analysis',
+          icon: (
+            <Tooltip
+              position="top"
+              content={<div>Counterfactuals are an experimental feature.</div>}
+            >
+              <OutlinedQuestionCircleIcon title="An icon with a tooltip" />
+            </Tooltip>
+          )
         });
       }
       setThirdLevelNav(newNav);
@@ -81,23 +92,37 @@ const AuditDetail = () => {
           </div>
         )}
         {thirdLevelNav.length > 0 && (
-          <Nav
-            className="audit-detail__nav"
-            variant="tertiary"
-            ouiaId="nav-audit-detail"
-          >
-            <NavList>
-              {thirdLevelNav.map((item, index) => (
-                <NavItem
-                  key={`sub-nav-${index}`}
-                  isActive={location.pathname === url + item.url}
-                  ouiaId={item.url.substr(1)}
-                >
-                  <Link to={url + item.url}>{item.desc}</Link>
-                </NavItem>
-              ))}
-            </NavList>
-          </Nav>
+          <>
+            {process.env.KOGITO_TRUSTY_COUNTERFACTUAL === 'enabled' && (
+              <CounterfactualUnsupportedBanner />
+            )}
+            <Nav
+              className="audit-detail__nav"
+              variant="tertiary"
+              ouiaId="nav-audit-detail"
+            >
+              <NavList>
+                {thirdLevelNav.map((item, index) => (
+                  <NavItem
+                    key={`sub-nav-${index}`}
+                    isActive={location.pathname === url + item.url}
+                    ouiaId={item.url.substr(1)}
+                  >
+                    <Link to={url + item.url}>
+                      <>
+                        {item.desc}
+                        {item.icon && (
+                          <span className={'audit-detail__nav__badge'}>
+                            {item.icon}
+                          </span>
+                        )}
+                      </>
+                    </Link>
+                  </NavItem>
+                ))}
+              </NavList>
+            </Nav>
+          </>
         )}
       </PageSection>
 

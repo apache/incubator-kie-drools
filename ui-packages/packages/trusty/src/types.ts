@@ -192,3 +192,8 @@ export interface CFAnalysisResultsSets extends CFAnalysisExecution {
   searchDomains: CFSearchInput[];
   solutions: CFAnalysisResult[];
 }
+
+export type CFSupportMessage = {
+  id: string;
+  message: string;
+};

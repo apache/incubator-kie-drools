@@ -6,8 +6,6 @@ import {
   CFGoalRole,
   CFSearchInput,
   CFStatus,
-  isItemObjectArray,
-  isItemObjectMultiArray,
   ItemObject,
   Outcome
 } from '../../../types';
@@ -82,7 +80,7 @@ export const cfReducer = (state: CFState, action: cfActions): CFState => {
       const newState = {
         ...state,
         searchDomains: state.searchDomains.map(input =>
-          isSearchInputSupported(input)
+          isInputTypeSupported(input)
             ? {
                 ...input,
                 fixed: !action.payload.selected
@@ -170,7 +168,7 @@ export const cfInitState = (parameters: {
         typeRef: outcome.outcomeResult.typeRef,
         value: outcome.outcomeResult.value,
         originalValue: outcome.outcomeResult.value,
-        role: isOutcomeSupported(outcome)
+        role: isOutcomeTypeSupported(outcome)
           ? CFGoalRole.ORIGINAL
           : CFGoalRole.UNSUPPORTED,
         kind: outcome.outcomeResult.kind
@@ -184,19 +182,10 @@ export const cfInitState = (parameters: {
 
 const convertInputToSearchDomain = (inputs: ItemObject[]) => {
   const addIsFixed = (input: ItemObject): CFSearchInput => {
-    if (input.components === null) {
-      return { ...input, fixed: true };
-    } else {
-      if (isItemObjectArray(input.components)) {
-        const searchInput = input.components.map(item => addIsFixed(item));
-        return { ...input, components: searchInput };
-      } else if (isItemObjectMultiArray(input.components)) {
-        const searchInput = input.components.map(list => {
-          return list.map(item => addIsFixed(item));
-        });
-        return { ...input, components: searchInput };
-      }
+    if (!isInputTypeSupported(input)) {
+      return input;
     }
+    return { ...input, fixed: true };
   };
   return inputs.map(input => {
     return addIsFixed(input);
@@ -247,21 +236,27 @@ const areGoalsSelected = (goals: CFGoal[]) => {
   );
 };
 
-const isSearchInputSupported = (searchInput: CFSearchInput) => {
-  return isValueSupported(searchInput);
-};
-
-const isOutcomeSupported = (outcome: Outcome) => {
-  return isValueSupported(outcome.outcomeResult);
-};
-
-const isValueSupported = (object: ItemObject) => {
-  switch (typeof object.value) {
-    case 'boolean':
-    case 'number':
-    case 'string':
-      return true;
-    default:
-      return false;
+export const isInputTypeSupported = (searchInput: CFSearchInput): boolean => {
+  //Structures, Collections and Strings are not supported
+  if (searchInput.kind === 'UNIT') {
+    switch (typeof searchInput.value) {
+      case 'boolean':
+      case 'number':
+        return true;
+    }
   }
+  return false;
+};
+
+export const isOutcomeTypeSupported = (outcome: Outcome): boolean => {
+  //Structures and Collections are not supported
+  if (outcome.outcomeResult.kind === 'UNIT') {
+    switch (typeof outcome.outcomeResult.value) {
+      case 'boolean':
+      case 'number':
+      case 'string':
+        return true;
+    }
+  }
+  return false;
 };

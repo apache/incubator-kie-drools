@@ -11,5 +11,9 @@
         }
       }
     }
+
+    &__badge {
+      margin-left: var(--pf-global--spacer--sm);
+    }
   }
 }

@@ -81,18 +81,23 @@ function getResult(executionId, baseId, isFinal) {
     executionId,
     solutionId: (baseId + 1).toString(),
     stage: isFinal ? 'FINAL' : 'INTERMEDIATE',
-    inputs: inputData.inputs.map((input, index) => {
-      if (index === 0) {
-        return {
-          ...input,
-          value: Math.floor(
-            Math.random() * input.value * 0.2 * (Math.random() > 0.5 ? 1 : -1) +
-              input.value
-          )
-        };
-      }
-      return input;
-    })
+    inputs: inputData
+      .find(data => data.executionId === executionId)
+      .inputs.map((input, index) => {
+        if (index === 0) {
+          return {
+            ...input,
+            value: Math.floor(
+              Math.random() *
+                input.value *
+                0.2 *
+                (Math.random() > 0.5 ? 1 : -1) +
+                input.value
+            )
+          };
+        }
+        return input;
+      })
   };
 }
 

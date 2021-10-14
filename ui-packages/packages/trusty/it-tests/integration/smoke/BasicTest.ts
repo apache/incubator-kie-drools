@@ -61,7 +61,7 @@ describe('Basic Elements', () => {
 
   it('Decision result is available', () => {
     cy.ouiaId('exec-table')
-      .ouiaId('6603c574-739f-426b-963a-a0741e0e7272', 'PF4/TableRow')
+      .ouiaId('unsuppor-ted--inpu-ts---a0741e0e7272', 'PF4/TableRow')
       .ouiaId('show-detail', 'link')
       .should('be.visible');
   });

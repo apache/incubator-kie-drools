@@ -72,6 +72,7 @@ describe('Counterfactual', () => {
           outcomeResult: {
             name: 'Mortgage Approval',
             typeRef: 'boolean',
+            kind: 'UNIT',
             value: true,
             components: []
           },
@@ -122,5 +123,83 @@ describe('Counterfactual', () => {
     expect(
       wrapper.find('CounterfactualAnalysis').props()['executionId']
     ).toStrictEqual(executionId);
+  });
+
+  test('renders the counterfactual unsupported component', () => {
+    const outcomesData = {
+      status: RemoteDataStatus.SUCCESS,
+      data: [
+        {
+          outcomeId: '_12268B68-94A1-4960-B4C8-0B6071AFDE58',
+          outcomeName: 'Mortgage Approval',
+          evaluationStatus: 'SUCCEEDED',
+          outcomeResult: {
+            name: 'Mortgage Approval',
+            typeRef: 'tMortgage',
+            kind: 'STRUCTURE',
+            value: null,
+            components: [
+              {
+                name: 'approved',
+                typeRef: 'boolean',
+                kind: 'UNIT',
+                value: true,
+                components: null
+              }
+            ]
+          },
+          messages: [],
+          hasErrors: false
+        }
+      ] as Outcome[]
+    };
+    const inputData = {
+      status: RemoteDataStatus.SUCCESS,
+      data: [
+        {
+          name: 'Asset Score',
+          typeRef: 'tAssetScore',
+          kind: 'STRUCTURE',
+          value: null,
+          components: [
+            {
+              name: 'score',
+              typeRef: 'number',
+              kind: 'UNIT',
+              value: 123,
+              components: null
+            }
+          ]
+        }
+      ] as ItemObject[]
+    };
+
+    (useDecisionOutcomes as jest.Mock).mockReturnValue(outcomesData);
+    (useInputData as jest.Mock).mockReturnValue(inputData);
+
+    const wrapper = mount(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: `/audit/decision/${executionId}/counterfactual-analysis`,
+            key: 'counterfactual-analysis'
+          }
+        ]}
+      >
+        <Counterfactual />
+      </MemoryRouter>
+    );
+
+    expect(wrapper.find('CounterfactualUnsupported')).toHaveLength(1);
+    expect(
+      wrapper.find('CounterfactualUnsupported').props()[
+        'isAtLeastOneInputSupported'
+      ]
+    ).toBeFalsy();
+    expect(
+      wrapper.find('CounterfactualUnsupported').props()[
+        'isAtLeastOneOutcomeSupported'
+      ]
+    ).toBeFalsy();
   });
 });

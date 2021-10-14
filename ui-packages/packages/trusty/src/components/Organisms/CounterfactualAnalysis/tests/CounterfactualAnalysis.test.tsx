@@ -184,58 +184,6 @@ describe('CounterfactualAnalysis', () => {
         .text()
     ).toMatch('1-10');
 
-    wrapper
-      .find('CounterfactualTable Tbody Tr')
-      .at(1)
-      .find('Td:first-child SelectColumn')
-      .simulate('change');
-
-    wrapper
-      .find('CounterfactualTable Tbody Tr')
-      .at(1)
-      .find('Td')
-      .at(2)
-      .find('Button')
-      .simulate('click');
-
-    expect(wrapper.find('CounterfactualInputDomainEdit')).toHaveLength(1);
-    expect(wrapper.find('CounterfactualCategoricalDomainEdit')).toHaveLength(1);
-
-    const firstEnum = wrapper.find(
-      'CounterfactualCategoricalDomainEdit input#enum-value-0'
-    );
-    firstEnum.getDOMNode<HTMLInputElement>().value = 'alpha';
-    firstEnum.simulate('change', 'alpha');
-    firstEnum.simulate('blur');
-
-    wrapper
-      .find('CounterfactualCategoricalDomainEdit button#enum-add')
-      .simulate('click');
-
-    const secondEnum = wrapper.find(
-      'CounterfactualCategoricalDomainEdit input#enum-value-1'
-    );
-    secondEnum.getDOMNode<HTMLInputElement>().value = 'beta';
-    secondEnum.simulate('change', 'beta');
-    secondEnum.simulate('blur');
-
-    wrapper
-      .find('CounterfactualInputDomainEdit ActionListItem:first-child Button')
-      .simulate('click');
-    wrapper.find('.pf-c-drawer__panel').simulate('transitionEnd');
-    expect(wrapper.find('CounterfactualInputDomainEdit')).toHaveLength(0);
-    expect(wrapper.find('CounterfactualCategoricalDomainEdit')).toHaveLength(0);
-
-    expect(
-      wrapper
-        .find('CounterfactualTable Tbody Tr')
-        .at(1)
-        .find('Td')
-        .at(2)
-        .find('Button')
-        .text()
-    ).toMatch('alpha, beta');
-
     expect(wrapper.find('CounterfactualOutcomeSelection')).toHaveLength(0);
     expect(
       wrapper.find('Button#counterfactual-run').props()['isAriaDisabled']
@@ -375,11 +323,6 @@ describe('CounterfactualAnalysis', () => {
         },
         {
           components: null,
-          domain: {
-            categories: ['alpha', 'beta'],
-            type: 'CATEGORICAL'
-          },
-          fixed: false,
           kind: 'UNIT',
           name: 'Type',
           typeRef: 'string',
@@ -553,28 +496,33 @@ describe('CounterfactualAnalysis', () => {
     );
 
     wrapper
-      .find('CounterfactualTable Tbody Tr')
-      .at(1)
-      .find('Td:first-child SelectColumn')
+      .find(
+        'CounterfactualTable Tbody Tr:first-child Td:first-child SelectColumn'
+      )
       .simulate('change');
 
     wrapper
-      .find('CounterfactualTable Tbody Tr')
-      .at(1)
-      .find('Td')
+      .find('CounterfactualTable Tbody Tr:first-child Td')
       .at(2)
       .find('Button')
       .simulate('click');
 
     expect(wrapper.find('CounterfactualInputDomainEdit')).toHaveLength(1);
-    expect(wrapper.find('CounterfactualCategoricalDomainEdit')).toHaveLength(1);
+    expect(wrapper.find('CounterfactualNumericalDomainEdit')).toHaveLength(1);
 
-    const firstEnum = wrapper.find(
-      'CounterfactualCategoricalDomainEdit input#enum-value-0'
-    );
-    firstEnum.getDOMNode<HTMLInputElement>().value = 'alpha';
-    firstEnum.simulate('change', 'alpha');
-    firstEnum.simulate('blur');
+    const lowerBound = wrapper
+      .find('CounterfactualNumericalDomainEdit SplitItem')
+      .at(0)
+      .find('input');
+    lowerBound.getDOMNode<HTMLInputElement>().value = '1';
+    lowerBound.simulate('change', '1');
+
+    const upperBound = wrapper
+      .find('CounterfactualNumericalDomainEdit SplitItem')
+      .at(1)
+      .find('input');
+    upperBound.getDOMNode<HTMLInputElement>().value = '10';
+    upperBound.simulate('change', '10');
 
     wrapper
       .find('CounterfactualInputDomainEdit ActionListItem:first-child Button')
@@ -582,20 +530,16 @@ describe('CounterfactualAnalysis', () => {
 
     expect(
       wrapper
-        .find('CounterfactualTable Tbody Tr')
-        .at(1)
-        .find('Td')
+        .find('CounterfactualTable Tbody Tr:first-child Td')
         .at(2)
         .find('Button')
         .text()
-    ).toMatch('alpha');
+    ).toMatch('1-10');
 
     wrapper.find('Button#counterfactual-reset').simulate('click');
 
     const constraintButton = wrapper
-      .find('CounterfactualTable Tbody Tr')
-      .at(1)
-      .find('Td')
+      .find('CounterfactualTable Tbody Tr:first-child Td')
       .at(2)
       .find('Button');
 

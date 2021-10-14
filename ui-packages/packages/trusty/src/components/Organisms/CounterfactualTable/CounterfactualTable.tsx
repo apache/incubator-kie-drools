@@ -42,6 +42,7 @@ import {
 import { CFDispatch } from '../CounterfactualAnalysis/CounterfactualAnalysis';
 import FormattedValue from '../../Atoms/FormattedValue/FormattedValue';
 import './CounterfactualTable.scss';
+import { isInputTypeSupported } from '../../Templates/Counterfactual/counterfactualReducer';
 
 type CounterfactualTableProps = {
   inputs: CFSearchInput[];
@@ -158,15 +159,11 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
     }
   };
 
-  const isInputTypeSupported = useCallback((input: CFSearchInput) => {
-    return ['string', 'number', 'boolean'].includes(typeof input.value);
-  }, []);
-
   const canSelectInput = useCallback(
     (input: CFSearchInput) => {
       return isInputSelectionEnabled && isInputTypeSupported(input);
     },
-    [isInputSelectionEnabled, isInputTypeSupported]
+    [isInputSelectionEnabled]
   );
 
   useEffect(() => {
@@ -502,9 +499,7 @@ const ConstraintCell = (props: ConstraintCellProps) => {
   } = props;
 
   const isTypeSupported = isInputTypeSupported(row);
-
-  const isConstraintEditEnabled =
-    isInputSelectionEnabled && ['string', 'number'].includes(typeof row.value);
+  const isConstraintEditEnabled = isInputSelectionEnabled && isTypeSupported;
 
   return (
     <>

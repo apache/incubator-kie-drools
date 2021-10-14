@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CounterfactualUnsupported status renders messages 1`] = `
+<EmptyState
+  variant="full"
+>
+  <EmptyStateIcon
+    icon={[Function]}
+  />
+  <Title
+    headingLevel="h1"
+  >
+    Unsupported model
+  </Title>
+  <EmptyStateBody>
+    <p>
+      The model contains elements that are unsupported.
+    </p>
+    <p
+      data-ouia-component-id="msg1"
+      key="msg1"
+    >
+      message1
+    </p>
+    <p
+      data-ouia-component-id="msg2"
+      key="msg2"
+    >
+      message2
+    </p>
+    <p>
+      Consequentially Counterfactuals cannot be generated.
+    </p>
+  </EmptyStateBody>
+</EmptyState>
+`;

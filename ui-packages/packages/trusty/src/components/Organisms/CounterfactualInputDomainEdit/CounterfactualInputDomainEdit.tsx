@@ -16,13 +16,8 @@ import {
   StackItem,
   Title
 } from '@patternfly/react-core';
-import CounterfactualCategoricalDomainEdit from '../CounterfactualCategoricalDomainEdit/CounterfactualCategoricalDomainEdit';
 import CounterfactualNumericalDomainEdit from '../CounterfactualNumericalDomainEdit/CounterfactualNumericalDomainEdit';
-import {
-  CFCategoricalDomain,
-  CFNumericalDomain,
-  CFSearchInput
-} from '../../../types';
+import { CFNumericalDomain, CFSearchInput } from '../../../types';
 import { CFDispatch } from '../CounterfactualAnalysis/CounterfactualAnalysis';
 
 type CounterfactualInputDomainEditProps = {
@@ -74,21 +69,6 @@ const CounterfactualInputDomainEdit = (
     setInputDomain(updatedDomain);
   };
 
-  const onCategoricalDomainUpdate = (categories: string[]) => {
-    let updatedDomain = inputDomain
-      ? ({ ...inputDomain } as CFCategoricalDomain)
-      : ({ type: 'CATEGORICAL' } as CFCategoricalDomain);
-    if (
-      categories.filter(category => category === '').length ===
-      categories.length
-    ) {
-      updatedDomain = null;
-    } else {
-      updatedDomain.categories = categories.filter(category => category !== '');
-    }
-    setInputDomain(updatedDomain);
-  };
-
   const validateDomain = (domain: CFSearchInput['domain']) => {
     if (domain && domain.type === 'RANGE') {
       return validateNumericDomain(domain);
@@ -108,6 +88,10 @@ const CounterfactualInputDomainEdit = (
     ) {
       result.isValid = false;
       result.message = 'Please provide both min and max values';
+    }
+    if (numericDomain.lowerBound === numericDomain.upperBound) {
+      result.isValid = false;
+      result.message = 'Minimum value cannot equal maximum value';
     }
     if (numericDomain.lowerBound > numericDomain.upperBound) {
       result.isValid = false;
@@ -167,12 +151,6 @@ const CounterfactualInputDomainEdit = (
                 inputDomain={inputDomain as CFNumericalDomain}
                 onUpdate={onNumericDomainUpdate}
                 validation={validation}
-              />
-            )}
-            {typeof input.value === 'string' && (
-              <CounterfactualCategoricalDomainEdit
-                inputDomain={input.domain as CFCategoricalDomain}
-                onUpdate={onCategoricalDomainUpdate}
               />
             )}
           </StackItem>
