@@ -1807,87 +1807,42 @@
 
   <profiles>
     <profile>
-      <!-- Mutation coverage disabled by default (use -Dmutation-coverage to activate it) -->
-      <id>mutation-coverage</id>
+      <!-- Performs the quick build: all plugins deactivated -->
+      <id>quick-build</id>
       <activation>
         <property>
-          <name>mutation-coverage</name>
+          <name>quickly</name>
         </property>
       </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.pitest</groupId>
-            <artifactId>pitest-maven</artifactId>
-            <executions>
-              <execution>
-                <id>default-pitest</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>mutationCoverage</goal>
-                </goals>
-                <configuration>
-                  <reportsDirectory>local/pit-reports</reportsDirectory>
-                  <timestampedReports>true</timestampedReports>
-                  <timeoutConstant>1000</timeoutConstant>
-                  <mutators>
-                    <!--
-                    <mutator>CONDITIONALS_BOUNDARY</mutator>
-                    <mutator>NEGATE_CONDITIONALS</mutator>
-                    <mutator>MATH</mutator>
-                    <mutator>INCREMENTS</mutator>
-                    <mutator>INVERT_NEGS</mutator>
-                    <mutator>RETURN_VALS</mutator>
-                    <mutator>VOID_METHOD_CALLS</mutator>
-                    -->
-                    <mutator>DEFAULTS</mutator>
-                    <mutator>NON_VOID_METHOD_CALLS</mutator>
-                    <mutator>REMOVE_CONDITIONALS</mutator>
-                  </mutators>
-                  <avoidCallsTo>java.lang.StringBuilder</avoidCallsTo>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>generate-revapi-report</id>
-      <!-- There is no need to run tests when generating the report -->
       <properties>
+        <formatter.skip>true</formatter.skip>
+        <skipITs>true</skipITs>
         <skipTests>true</skipTests>
+        <invoker.skip>true</invoker.skip>
+        <archetype.test.skip>true</archetype.test.skip>
+        <exec.skip>true</exec.skip>
       </properties>
       <build>
+        <defaultGoal>clean install</defaultGoal>
         <pluginManagement>
           <plugins>
             <plugin>
-              <groupId>org.revapi</groupId>
-              <artifactId>revapi-maven-plugin</artifactId>
-              <configuration>
-                <analysisConfigurationFiles>
-                  <configurationFile>
-                    <!-- Only filters should be taken into account, not ignores -->
-                    <roots>
-                      <root>filters</root>
-                    </roots>
-                  </configurationFile>
-                </analysisConfigurationFiles>
-              </configuration>
-              <!-- Run only report generation goal -->
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>properties-maven-plugin</artifactId>
               <executions>
                 <execution>
-                  <!-- Disable check goal -->
-                  <id>check</id>
-                  <phase>none</phase>
-                </execution>
-                <execution>
-                  <!-- Report can be found in ${build.directory}/site/revapi-report.html -->
-                  <id>report</id>
+                  <phase>initialize</phase>
                   <goals>
-                    <goal>report</goal>
+                    <goal>set-system-properties</goal>
                   </goals>
-                  <phase>package</phase>
+                  <configuration>
+                    <properties>
+                      <property>
+                        <name>quarkus.container-image.build</name>
+                        <value>false</value>
+                      </property>
+                    </properties>
+                  </configuration>
                 </execution>
               </executions>
             </plugin>
@@ -1895,6 +1850,77 @@
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <!-- Performs the quick test: only formatting validation and unit tests enabled -->
+      <id>quick-test</id>
+      <activation>
+        <property>
+          <name>quickTests</name>
+        </property>
+      </activation>
+      <properties>
+        <formatter.skip>false</formatter.skip>
+        <formatter.goal>validate</formatter.goal>
+        <impsort.goal>check</impsort.goal>
+        <skipITs>true</skipITs>
+        <invoker.skip>true</invoker.skip>
+        <archetype.test.skip>true</archetype.test.skip>
+        <exec.skip>true</exec.skip>
+      </properties>
+      <build>
+        <defaultGoal>clean install</defaultGoal>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>properties-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <phase>initialize</phase>
+                  <goals>
+                    <goal>set-system-properties</goal>
+                  </goals>
+                  <configuration>
+                    <properties>
+                      <property>
+                        <name>quarkus.container-image.build</name>
+                        <value>false</value>
+                      </property>
+                    </properties>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <artifactId>maven-invoker-plugin</artifactId>
+              <configuration>
+                <skipInstallation>true</skipInstallation>
+                <skipInvocation>true</skipInvocation>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <!--
+        Translates -DskipTests parameter passed to build into setting corresponding skip properties.
+        It does NOT reflect the change made to the property value inside the pom files, just from cmd line.
+        Inside pom file it needs to be in sync explicitly in each profile.
+      -->
+      <id>skip-tests</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+        </property>
+      </activation>
+      <properties>
+        <invoker.skip>true</invoker.skip>
+        <archetype.test.skip>true</archetype.test.skip>
+        <exec.skip>true</exec.skip>
+      </properties>
+    </profile>
+
     <profile>
       <id>fullProfile</id>
       <activation>
@@ -1934,36 +1960,6 @@
               </execution>
             </executions>
           </plugin>
-          <!--          <plugin>-->
-          <!--            <groupId>com.github.spotbugs</groupId>-->
-          <!--            <artifactId>spotbugs-maven-plugin</artifactId>-->
-          <!--            <executions>-->
-          <!--              <execution>-->
-          <!--                <id>spotbugs-check</id>-->
-          <!--                <phase>compile</phase>-->
-          <!--                <goals>-->
-          <!--                  <goal>check</goal>-->
-          <!--                </goals>-->
-          <!--              </execution>-->
-          <!--            </executions>-->
-          <!--          </plugin>-->
-        </plugins>
-      </build>
-    </profile>
-    <!-- This profile needs to be triggered during releases. -->
-    <profile>
-      <id>releaseProfile</id>
-      <activation>
-        <property>
-          <name>release</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.commonjava.maven.plugins</groupId>
-            <artifactId>project-sources-maven-plugin</artifactId>
-          </plugin>
         </plugins>
       </build>
     </profile>
@@ -1977,74 +1973,6 @@
       <properties>
         <org.kie.productized>true</org.kie.productized>
       </properties>
-    </profile>
-    <profile>
-      <id>m2EclipseIsBeingUsed</id>
-      <activation>
-        <property>
-          <name>m2e.version</name>
-        </property>
-      </activation>
-      <properties>
-        <!-- Stop m2eclipse from continuously regenerating the OSGi manifest timestamp every second -->
-        <osgi.snapshot.qualifier>qualifier</osgi.snapshot.qualifier>
-      </properties>
-    </profile>
-    <profile>
-      <id>java9-specific-config</id>
-      <activation>
-        <jdk>[9,10]</jdk>
-      </activation>
-      <properties>
-        <javadoc.additional.params>-Xdoclint:none --add-modules=java.xml.bind
-          --add-modules=java.xml.ws.annotation --add-modules=java.xml.ws
-        </javadoc.additional.params>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <configuration>
-                <source>${maven.compiler.source}</source>
-                <additionalDependencies>
-                  <additionalDependency>
-                    <groupId>jakarta.transaction</groupId>
-                    <artifactId>jakarta.transaction-api</artifactId>
-                    <version>
-                      ${version.jakarta.transaction-api}
-                    </version>
-                  </additionalDependency>
-                </additionalDependencies>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    <profile>
-      <id>java11-specific-config</id>
-      <activation>
-        <jdk>[11,)</jdk>
-      </activation>
-      <properties>
-        <javadoc.additional.params>-Xdoclint:none</javadoc.additional.params>
-        <maven.compiler.release>8</maven.compiler.release>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <configuration>
-                <source>${maven.compiler.source}</source>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
     </profile>
     <!--
       Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
