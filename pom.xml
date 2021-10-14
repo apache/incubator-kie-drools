@@ -140,7 +140,7 @@
     <version.org.apache.ftpserver>1.0.6</version.org.apache.ftpserver>
     <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.karaf>2.4.0</version.org.apache.karaf>
+    <version.org.apache.karaf>4.2.3</version.org.apache.karaf>
     <version.org.apache.lucene>6.6.1</version.org.apache.lucene>
     <version.org.apache.maven>3.3.9</version.org.apache.maven>
     <version.org.apache.maven.utils>3.2.1</version.org.apache.maven.utils>
