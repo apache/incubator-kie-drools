@@ -24,7 +24,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.Tuple;
 
-public class MockContextEntry implements ContextEntry {
+public class FakeContextEntry implements ContextEntry {
 
     private Tuple tuple;
     private InternalFactHandle handle;

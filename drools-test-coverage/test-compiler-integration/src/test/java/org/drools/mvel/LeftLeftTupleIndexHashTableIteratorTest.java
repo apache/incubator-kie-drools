@@ -27,7 +27,6 @@ import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -48,6 +47,7 @@ import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -86,179 +86,117 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
 
         BetaConstraints betaConstraints = null;
 
-        betaConstraints = new SingleBetaConstraints( constraints,
-                                                     config );
+        betaConstraints = new SingleBetaConstraints(constraints, config);
 
-        BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
+        BetaMemory betaMemory = betaConstraints.createBetaMemory(config, NodeTypeEnums.JoinNode);
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         KieSession ss = kBase.newKieSession();
 
-        InternalFactHandle fh1 = (InternalFactHandle) ss.insert( new Foo( "brie",
-                                                                          1 ) );
-        InternalFactHandle fh2 = (InternalFactHandle) ss.insert( new Foo( "brie",
-                                                                          1 ) );
-        InternalFactHandle fh3 = (InternalFactHandle) ss.insert( new Foo( "soda",
-                                                                          1 ) );
-        InternalFactHandle fh4 = (InternalFactHandle) ss.insert( new Foo( "soda",
-                                                                          1 ) );
-        InternalFactHandle fh5 = (InternalFactHandle) ss.insert( new Foo( "bread",
-                                                                          3 ) );
-        InternalFactHandle fh6 = (InternalFactHandle) ss.insert( new Foo( "bread",
-                                                                          3 ) );
-        InternalFactHandle fh7 = (InternalFactHandle) ss.insert( new Foo( "cream",
-                                                                          3 ) );
-        InternalFactHandle fh8 = (InternalFactHandle) ss.insert( new Foo( "gorda",
-                                                                          15 ) );
-        InternalFactHandle fh9 = (InternalFactHandle) ss.insert( new Foo( "beer",
-                                                                          16 ) );
+        InternalFactHandle fh1 = (InternalFactHandle) ss.insert(new Foo("brie", 1));
+        InternalFactHandle fh2 = (InternalFactHandle) ss.insert(new Foo("brie", 1));
+        InternalFactHandle fh3 = (InternalFactHandle) ss.insert(new Foo("soda", 1));
+        InternalFactHandle fh4 = (InternalFactHandle) ss.insert(new Foo("soda", 1));
+        InternalFactHandle fh5 = (InternalFactHandle) ss.insert(new Foo("bread", 3));
+        InternalFactHandle fh6 = (InternalFactHandle) ss.insert(new Foo("bread", 3));
+        InternalFactHandle fh7 = (InternalFactHandle) ss.insert(new Foo("cream", 3));
+        InternalFactHandle fh8 = (InternalFactHandle) ss.insert(new Foo("gorda", 15));
+        InternalFactHandle fh9 = (InternalFactHandle) ss.insert(new Foo("beer", 16));
 
-        InternalFactHandle fh10 = (InternalFactHandle) ss.insert( new Foo( "mars",
-                                                                           0 ) );
-        InternalFactHandle fh11 = (InternalFactHandle) ss.insert( new Foo( "snicker",
-                                                                           0 ) );
-        InternalFactHandle fh12 = (InternalFactHandle) ss.insert( new Foo( "snicker",
-                                                                           0 ) );
-        InternalFactHandle fh13 = (InternalFactHandle) ss.insert( new Foo( "snicker",
-                                                                           0 ) );
+        InternalFactHandle fh10 = (InternalFactHandle) ss.insert(new Foo("mars", 0));
+        InternalFactHandle fh11 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
+        InternalFactHandle fh12 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
+        InternalFactHandle fh13 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
 
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh1,
-                                                            null,
-                                                            true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh2,
-                                                            null,
-                                                            true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh3,
-                                                            null,
-                                                            true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh4,
-                                                            null,
-                                                            true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh5,
-                                                            null,
-                                                            true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh6,
-                                                            null,
-                                                            true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh7,
-                                                            null,
-                                                            true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh8,
-                                                            null,
-                                                            true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh9,
-                                                            null,
-                                                            true ) );
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh1, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh2, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh3, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh4, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh5, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh6, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh7, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh8, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh9, null, true));
 
         TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getLeftTupleMemory();
         // can't create a 0 hashCode, so forcing 
         TupleList leftTupleList = new TupleList();
-        leftTupleList.add( new LeftTupleImpl( fh10,
-                                          null,
-                                          true ) );
+        leftTupleList.add(new LeftTupleImpl(fh10, null, true));
         hashTable.getTable()[0] = leftTupleList;
         leftTupleList = new TupleList();
-        leftTupleList.add( new LeftTupleImpl( fh11,
-                                          null,
-                                          true ) );
-        leftTupleList.add( new LeftTupleImpl( fh12,
-                                          null,
-                                          true ) );
-        leftTupleList.add( new LeftTupleImpl( fh13,
-                                          null,
-                                          true ) );
-        ((TupleList) hashTable.getTable()[0]).setNext( leftTupleList );
+        leftTupleList.add(new LeftTupleImpl(fh11, null, true));
+        leftTupleList.add(new LeftTupleImpl(fh12, null, true));
+        leftTupleList.add(new LeftTupleImpl(fh13, null, true));
+        ((TupleList) hashTable.getTable()[0]).setNext(leftTupleList);
 
         Entry[] table = hashTable.getTable();
         List list = new ArrayList();
-        for ( int i = 0; i < table.length; i++ ) {
-            if ( table[i] != null ) {
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] != null) {
                 List entries = new ArrayList();
-                entries.add( i );
+                entries.add(i);
                 Entry entry = table[i];
-                while ( entry != null ) {
-                    entries.add( entry );
+                while (entry != null) {
+                    entries.add(entry);
                     entry = entry.getNext();
                 }
-                list.add( entries.toArray() );
+                list.add(entries.toArray());
             }
         }
-        assertEquals( 5,
-                      list.size() );
+        assertEquals(5, list.size());
 
         // This tests the hashcode index allocation. If the rehash function (or any other way hashcodes are computed) changes, these numbers will change.
         // standard-drl and exec-model have different getRightExtractor().getIndex() value so hashCode changes
 
         if (useLambdaConstraint) {
             Object[] entries = (Object[]) list.get(0);
-            assertEquals(0,
-                         entries[0]);
-            assertEquals(3,
-                         entries.length);
+            assertEquals(0, entries[0]);
+            assertEquals(3, entries.length);
 
             entries = (Object[]) list.get(1);
-            assertEquals(49,
-                         entries[0]);
-            assertEquals(3,
-                         entries.length);
+            assertEquals(49, entries[0]);
+            assertEquals(3, entries.length);
 
             entries = (Object[]) list.get(2);
-            assertEquals(51,
-                         entries[0]);
-            assertEquals(3,
-                         entries.length);
+            assertEquals(51, entries[0]);
+            assertEquals(3, entries.length);
 
             entries = (Object[]) list.get(3);
-            assertEquals(60,
-                         entries[0]);
-            assertEquals(2,
-                         entries.length);
+            assertEquals(60, entries[0]);
+            assertEquals(2, entries.length);
 
             entries = (Object[]) list.get(4);
-            assertEquals(61,
-                         entries[0]);
-            assertEquals(2,
-                         entries.length);
+            assertEquals(61, entries[0]);
+            assertEquals(2, entries.length);
         } else {
             Object[] entries = (Object[]) list.get(0);
-            assertEquals(0,
-                         entries[0]);
-            assertEquals(3,
-                         entries.length);
+            assertEquals(0, entries[0]);
+            assertEquals(3, entries.length);
 
             entries = (Object[]) list.get(1);
-            assertEquals(102,
-                         entries[0]);
-            assertEquals(2,
-                         entries.length);
+            assertEquals(102, entries[0]);
+            assertEquals(2, entries.length);
 
             entries = (Object[]) list.get(2);
-            assertEquals(103,
-                         entries[0]);
-            assertEquals(2,
-                         entries.length);
+            assertEquals(103, entries[0]);
+            assertEquals(2, entries.length);
 
             entries = (Object[]) list.get(3);
-            assertEquals(115,
-                         entries[0]);
-            assertEquals(3,
-                         entries.length);
+            assertEquals(115, entries[0]);
+            assertEquals(3, entries.length);
 
             entries = (Object[]) list.get(4);
-            assertEquals(117,
-                         entries[0]);
-            assertEquals(3,
-                         entries.length);
+            assertEquals(117, entries[0]);
+            assertEquals(3, entries.length);
         }
 
         list = new ArrayList<LeftTupleImpl>();
         Iterator it = betaMemory.getLeftTupleMemory().iterator();
-        for ( LeftTupleImpl leftTuple = (LeftTupleImpl) it.next(); leftTuple != null; leftTuple = (LeftTupleImpl) it.next() ) {
-            list.add( leftTuple );
+        for (LeftTupleImpl leftTuple = (LeftTupleImpl) it.next(); leftTuple != null; leftTuple = (LeftTupleImpl) it.next()) {
+            list.add(leftTuple);
         }
 
-        assertEquals( 13,
-                      list.size() );
+        assertEquals(13, list.size());
 
     }
 
@@ -268,38 +206,38 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
         // setup the entry array with an element in the first bucket, one 
         // in the middle and one in the last bucket
         Entry[] entries = new Entry[10];
-        entries[0] = mock( TupleList.class );
-        entries[5] = mock( TupleList.class );
-        entries[9] = mock( TupleList.class );
+        entries[0] = mock(TupleList.class);
+        entries[5] = mock(TupleList.class);
+        entries[9] = mock(TupleList.class);
 
-        LeftTupleImpl[] tuples = new LeftTupleImpl[]{mock( LeftTupleImpl.class ), mock( LeftTupleImpl.class ), mock( LeftTupleImpl.class )};
+        LeftTupleImpl[] tuples = new LeftTupleImpl[]{mock(LeftTupleImpl.class), mock(LeftTupleImpl.class), mock(LeftTupleImpl.class)};
 
         // set return values for methods
-        when( entries[0].getNext() ).thenReturn( null );
-        when( ((TupleList) entries[0]).getFirst() ).thenReturn( tuples[0] );
-        
-        when( entries[5].getNext() ).thenReturn( null );
-        when( ((TupleList) entries[5]).getFirst( ) ).thenReturn( tuples[1] );
+        when(entries[0].getNext()).thenReturn(null);
+        when(((TupleList) entries[0]).getFirst()).thenReturn(tuples[0]);
 
-        when( entries[9].getNext() ).thenReturn( null );
-        when( ((TupleList) entries[9]).getFirst( ) ).thenReturn( tuples[2] );
+        when(entries[5].getNext()).thenReturn(null);
+        when(((TupleList) entries[5]).getFirst()).thenReturn(tuples[1]);
+
+        when(entries[9].getNext()).thenReturn(null);
+        when(((TupleList) entries[9]).getFirst()).thenReturn(tuples[2]);
 
         // create the mock table for the iterator
-        AbstractHashTable table = mock( AbstractHashTable.class );
-        when( table.getTable() ).thenReturn( entries );
+        AbstractHashTable table = mock(AbstractHashTable.class);
+        when(table.getTable()).thenReturn(entries);
 
         // create the iterator
-        FieldIndexHashTableFullIterator iterator = new FieldIndexHashTableFullIterator( table );
+        FieldIndexHashTableFullIterator iterator = new FieldIndexHashTableFullIterator(table);
 
         // test it
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[0] ) );
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[1] ) );
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[2] ) );
-        assertThat( iterator.next(),
-                    is( (Object) null ) );
+        assertThat(iterator.next(),
+                   sameInstance((Object) tuples[0]));
+        assertThat(iterator.next(),
+                   sameInstance((Object) tuples[1]));
+        assertThat(iterator.next(),
+                   sameInstance((Object) tuples[2]));
+        assertThat(iterator.next(),
+                   is((Object) null));
 
     }
 
@@ -312,14 +250,14 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
             return LambdaConstraintTestUtil.createLambdaConstraint2(Foo.class, Foo.class, pattern, varPattern, "d", predicate, index);
         } else {
             ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-            store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
-            store.setEagerWire( true );
-            InternalReadAccessor extractor = store.getReader( Foo.class,
-                                                              "this" );
-            Declaration declaration = new Declaration( "d",
-                                                       extractor,
-                                                       new Pattern( 0,
-                                                                    new ClassObjectType( Foo.class ) ) );
+            store.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
+            store.setEagerWire(true);
+            InternalReadAccessor extractor = store.getReader(Foo.class,
+                                                             "this");
+            Declaration declaration = new Declaration("d",
+                                                      extractor,
+                                                      new Pattern(0,
+                                                                  new ClassObjectType(Foo.class)));
 
             String expression = "this " + Operator.EQUAL.getOperatorString() + " d";
             return new MVELConstraintTestUtil(expression, declaration, extractor);
@@ -327,8 +265,9 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
     }
 
     public static class Foo {
+
         private String val;
-        private int    hashCode;
+        private int hashCode;
 
         public Foo(String val,
                    int hashCode) {
@@ -347,14 +286,20 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
 
         @Override
         public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
             Foo other = (Foo) obj;
-            if ( hashCode != other.hashCode ) return false;
-            if ( val == null ) {
-                if ( other.val != null ) return false;
-            } else if ( !val.equals( other.val ) ) return false;
+            if (hashCode != other.hashCode)
+                return false;
+            if (val == null) {
+                if (other.val != null)
+                    return false;
+            } else if (!val.equals(other.val))
+                return false;
             return true;
         }
 

@@ -30,7 +30,7 @@ import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.ClassUtils;
 
-public class MockBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
+public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
 
     private Class clazz;
     private String fieldName;
@@ -39,7 +39,7 @@ public class MockBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
     private Operator operator;
     private Method accessor;
 
-    public MockBetaNodeFieldConstraint(Class clazz, String fieldName, Declaration declaration, String evaluatorString) {
+    public FakeBetaNodeFieldConstraint(Class clazz, String fieldName, Declaration declaration, String evaluatorString) {
         this.clazz = clazz;
         this.fieldName = fieldName;
         this.declaration = declaration;
@@ -86,13 +86,13 @@ public class MockBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
     @Override
     public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
         Object fact = handle.getObject();
-        Tuple tuple = ((MockContextEntry) context).getTuple();
+        Tuple tuple = ((FakeContextEntry) context).getTuple();
         return evaluate(fact, tuple, context);
     }
 
     @Override
     public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
-        Object fact = ((MockContextEntry) context).getHandle().getObject();
+        Object fact = ((FakeContextEntry) context).getHandle().getObject();
         return evaluate(fact, tuple, context);
     }
 
@@ -100,7 +100,7 @@ public class MockBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
         try {
             Object value = accessor.invoke(fact);
             Object declObj = tuple.getObject(declaration);
-            Object declValue = declaration.getValue(((MockContextEntry) context).getWorkingMemory(), declObj);
+            Object declValue = declaration.getValue(((FakeContextEntry) context).getWorkingMemory(), declObj);
             if (operator == Operator.EQUAL) {
                 return value.equals(declValue);
             } else if (operator == Operator.NOT_EQUAL) {
@@ -119,7 +119,7 @@ public class MockBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
 
     @Override
     public ContextEntry createContextEntry() {
-        return new MockContextEntry();
+        return new FakeContextEntry();
     }
 
     @Override

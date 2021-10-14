@@ -82,70 +82,70 @@ public class RightTupleIndexHashTableIteratorTest {
     public void test1() {
         BetaNodeFieldConstraint constraint0 = createFooThisEqualsDBetaConstraint(useLambdaConstraint);
 
-        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0 };
-        
+        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[]{constraint0};
+
         RuleBaseConfiguration config = new RuleBaseConfiguration();
 
         BetaConstraints betaConstraints = null;
-        
+
         betaConstraints = new SingleBetaConstraints(constraints, config);
-        
-        BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
+
+        BetaMemory betaMemory = betaConstraints.createBetaMemory(config, NodeTypeEnums.JoinNode);
 
         KieBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         KieSession ss = kBase.newKieSession();
 
-        InternalFactHandle fh1 = (InternalFactHandle) ss.insert( new Foo( "brie", 1) );
-        InternalFactHandle fh2 = (InternalFactHandle) ss.insert( new Foo( "brie", 1) );
-        InternalFactHandle fh3 = (InternalFactHandle) ss.insert( new Foo( "soda", 1) );
-        InternalFactHandle fh4 = (InternalFactHandle) ss.insert( new Foo( "soda", 1) );
-        InternalFactHandle fh5 = (InternalFactHandle) ss.insert( new Foo( "bread", 3) );
-        InternalFactHandle fh6 = (InternalFactHandle) ss.insert( new Foo( "bread", 3) );
-        InternalFactHandle fh7 = (InternalFactHandle) ss.insert( new Foo( "cream", 3) );
-        InternalFactHandle fh8 = (InternalFactHandle) ss.insert( new Foo( "gorda", 15) );
-        InternalFactHandle fh9 = (InternalFactHandle) ss.insert( new Foo( "beer", 16) );
-        
-        InternalFactHandle fh10 = (InternalFactHandle) ss.insert( new Foo( "mars", 0) );
-        InternalFactHandle fh11 = (InternalFactHandle) ss.insert( new Foo( "snicker", 0) );
-        InternalFactHandle fh12 = (InternalFactHandle) ss.insert( new Foo( "snicker", 0) );
-        InternalFactHandle fh13 = (InternalFactHandle) ss.insert( new Foo( "snicker", 0) );
-        
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh1, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh2, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh3, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh4, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh5, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh6, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh7, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh8, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh9, null ) );
-        
+        InternalFactHandle fh1 = (InternalFactHandle) ss.insert(new Foo("brie", 1));
+        InternalFactHandle fh2 = (InternalFactHandle) ss.insert(new Foo("brie", 1));
+        InternalFactHandle fh3 = (InternalFactHandle) ss.insert(new Foo("soda", 1));
+        InternalFactHandle fh4 = (InternalFactHandle) ss.insert(new Foo("soda", 1));
+        InternalFactHandle fh5 = (InternalFactHandle) ss.insert(new Foo("bread", 3));
+        InternalFactHandle fh6 = (InternalFactHandle) ss.insert(new Foo("bread", 3));
+        InternalFactHandle fh7 = (InternalFactHandle) ss.insert(new Foo("cream", 3));
+        InternalFactHandle fh8 = (InternalFactHandle) ss.insert(new Foo("gorda", 15));
+        InternalFactHandle fh9 = (InternalFactHandle) ss.insert(new Foo("beer", 16));
+
+        InternalFactHandle fh10 = (InternalFactHandle) ss.insert(new Foo("mars", 0));
+        InternalFactHandle fh11 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
+        InternalFactHandle fh12 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
+        InternalFactHandle fh13 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
+
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh1, null));
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh2, null));
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh3, null));
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh4, null));
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh5, null));
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh6, null));
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh7, null));
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh8, null));
+        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh9, null));
+
         TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getRightTupleMemory();
         // can't create a 0 hashCode, so forcing 
         TupleList rightTupleList = new TupleList();
-        rightTupleList.add( new RightTupleImpl( fh10, null) );
+        rightTupleList.add(new RightTupleImpl(fh10, null));
         hashTable.getTable()[0] = rightTupleList;
         rightTupleList = new TupleList();
-        rightTupleList.add( new RightTupleImpl( fh11, null ) );
-        rightTupleList.add( new RightTupleImpl( fh12, null ) );
-        rightTupleList.add( new RightTupleImpl( fh13, null ) );
-        ((TupleList)hashTable.getTable()[0]).setNext( rightTupleList );
-        
+        rightTupleList.add(new RightTupleImpl(fh11, null));
+        rightTupleList.add(new RightTupleImpl(fh12, null));
+        rightTupleList.add(new RightTupleImpl(fh13, null));
+        ((TupleList) hashTable.getTable()[0]).setNext(rightTupleList);
+
         Entry[] table = hashTable.getTable();
         List list = new ArrayList();
-        for ( int i = 0; i < table.length; i++ ) {
-            if ( table[i] != null ) {
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] != null) {
                 List entries = new ArrayList();
-                entries.add( i );
+                entries.add(i);
                 Entry entry = table[i];
-                while ( entry != null ) {
-                    entries.add( entry );
+                while (entry != null) {
+                    entries.add(entry);
                     entry = entry.getNext();
                 }
-                list.add( entries.toArray() );
+                list.add(entries.toArray());
             }
         }
-        assertEquals( 5, list.size() );
+        assertEquals(5, list.size());
 
         if (useLambdaConstraint) {
             Object[] entries = (Object[]) list.get(0);
@@ -191,52 +191,52 @@ public class RightTupleIndexHashTableIteratorTest {
 
         list = new ArrayList<LeftTupleImpl>();
         Iterator it = betaMemory.getRightTupleMemory().iterator();
-        for ( RightTuple rightTuple = ( RightTuple ) it.next(); rightTuple != null; rightTuple = ( RightTuple ) it.next() ) {
-            list.add( rightTuple );
+        for (RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next()) {
+            list.add(rightTuple);
         }
-        
-        assertEquals( 13, list.size() );
-             
+
+        assertEquals(13, list.size());
+
     }
-    
+
     @Test
     public void testLastBucketInTheTable() {
         // JBRULES-2574
         // setup the entry array with an element in the first bucket, one 
         // in the middle and one in the last bucket
         Entry[] entries = new Entry[10];
-        entries[0] = mock( TupleList.class );
-        entries[5] = mock( TupleList.class );
-        entries[9] = mock( TupleList.class );
+        entries[0] = mock(TupleList.class);
+        entries[5] = mock(TupleList.class);
+        entries[9] = mock(TupleList.class);
 
-        RightTuple[] tuples = new RightTuple[]{mock( RightTuple.class ), mock( RightTuple.class ), mock( RightTuple.class )};
+        RightTuple[] tuples = new RightTuple[]{mock(RightTuple.class), mock(RightTuple.class), mock(RightTuple.class)};
 
         // set return values for methods
-        when( entries[0].getNext() ).thenReturn( null );
-        when( ((TupleList) entries[0]).getFirst() ).thenReturn( tuples[0] );
-        
-        when( entries[5].getNext() ).thenReturn( null );
-        when( ((TupleList) entries[5]).getFirst(  ) ).thenReturn( tuples[1] );
+        when(entries[0].getNext()).thenReturn(null);
+        when(((TupleList) entries[0]).getFirst()).thenReturn(tuples[0]);
 
-        when( entries[9].getNext() ).thenReturn( null );
-        when( ((TupleList) entries[9]).getFirst( ) ).thenReturn( tuples[2] );
+        when(entries[5].getNext()).thenReturn(null);
+        when(((TupleList) entries[5]).getFirst()).thenReturn(tuples[1]);
+
+        when(entries[9].getNext()).thenReturn(null);
+        when(((TupleList) entries[9]).getFirst()).thenReturn(tuples[2]);
 
         // create the mock table for the iterator
-        AbstractHashTable table = mock( AbstractHashTable.class );
-        when( table.getTable() ).thenReturn( entries );
+        AbstractHashTable table = mock(AbstractHashTable.class);
+        when(table.getTable()).thenReturn(entries);
 
         // create the iterator
-        FieldIndexHashTableFullIterator iterator = new FieldIndexHashTableFullIterator( table );
+        FieldIndexHashTableFullIterator iterator = new FieldIndexHashTableFullIterator(table);
 
         // test it
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[0] ) );
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[1] ) );
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[2] ) );
-        assertThat( iterator.next(),
-                    is( (Object) null ) );
+        assertThat(iterator.next(),
+                   sameInstance((Object) tuples[0]));
+        assertThat(iterator.next(),
+                   sameInstance((Object) tuples[1]));
+        assertThat(iterator.next(),
+                   sameInstance((Object) tuples[2]));
+        assertThat(iterator.next(),
+                   is((Object) null));
 
     }
 
@@ -249,14 +249,14 @@ public class RightTupleIndexHashTableIteratorTest {
             return LambdaConstraintTestUtil.createLambdaConstraint2(Foo.class, Foo.class, pattern, varPattern, "d", predicate, index);
         } else {
             ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-            store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
-            store.setEagerWire( true );
-            InternalReadAccessor extractor = store.getReader( Foo.class,
-                                                              "this" );
-            Declaration declaration = new Declaration( "d",
-                                                       extractor,
-                                                       new Pattern( 0,
-                                                                    new ClassObjectType( Foo.class ) ) );
+            store.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
+            store.setEagerWire(true);
+            InternalReadAccessor extractor = store.getReader(Foo.class,
+                                                             "this");
+            Declaration declaration = new Declaration("d",
+                                                      extractor,
+                                                      new Pattern(0,
+                                                                  new ClassObjectType(Foo.class)));
 
             String expression = "this " + Operator.EQUAL.getOperatorString() + " d";
             return new MVELConstraintTestUtil(expression, declaration, extractor);
@@ -264,9 +264,10 @@ public class RightTupleIndexHashTableIteratorTest {
     }
 
     public static class Foo {
+
         private String val;
         private int hashCode;
-        
+
         public Foo(String val, int hashCode) {
             this.val = val;
             this.hashCode = hashCode;
@@ -283,18 +284,23 @@ public class RightTupleIndexHashTableIteratorTest {
 
         @Override
         public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
             Foo other = (Foo) obj;
-            if ( hashCode != other.hashCode ) return false;
-            if ( val == null ) {
-                if ( other.val != null ) return false;
-            } else if ( !val.equals( other.val ) ) return false;
+            if (hashCode != other.hashCode)
+                return false;
+            if (val == null) {
+                if (other.val != null)
+                    return false;
+            } else if (!val.equals(other.val))
+                return false;
             return true;
         }
-        
-        
+
     }
-       
+
 }

@@ -70,7 +70,7 @@ public class ReteTesterHelper {
                                                               final String fieldName,
                                                               final Declaration declaration,
                                                               final String evaluatorString) {
-        return new MockBetaNodeFieldConstraint(clazz, fieldName, declaration, evaluatorString);
+        return new FakeBetaNodeFieldConstraint(clazz, fieldName, declaration, evaluatorString);
     }
 
     public Evaluator getEvaluator(Class<?> cls,
