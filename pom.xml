@@ -199,7 +199,7 @@
     <version.org.jboss.arquillian.container.glassfish>1.0.0.CR3</version.org.jboss.arquillian.container.glassfish>
     <version.org.jboss.arquillian.container.weld>1.0.0.CR5</version.org.jboss.arquillian.container.weld>
     <version.org.jboss.classfilewriter>1.2.4.Final</version.org.jboss.classfilewriter>
-    <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
+    <version.org.jboss.resteasy>4.5.7.Final</version.org.jboss.resteasy>
     <version.org.jboss.marshalling>2.0.11.Final</version.org.jboss.marshalling>
     <version.org.jboss.narayana.tomcat>5.9.0.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.forge.roaster>2.19.5.Final</version.org.jboss.forge.roaster>
