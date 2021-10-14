@@ -37,6 +37,7 @@ import org.drools.modelcompiler.constraints.LambdaFieldReader;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 import org.kie.internal.builder.conf.PropertySpecificOption;
@@ -278,6 +279,11 @@ public class TypeDeclarationUtil {
             super(field.getName(), field.getGenericType().getTypeName());
             this.classDef = classDef;
             this.field = field;
+
+            Position position = field.getAnnotation(Position.class);
+            if (position != null) {
+                setIndex(position.value());
+            }
         }
 
         @Override

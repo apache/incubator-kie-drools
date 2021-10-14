@@ -49,10 +49,14 @@ public class FEELSchemaEnum {
         if (uts.size() <= 2 && uts.stream().allMatch(o -> o instanceof Range)) {
             Range range = consolidateRanges((List) uts); // cast intentional.
             if (range != null) {
-                schema.minimum((BigDecimal) range.getLowEndPoint());
-                schema.exclusiveMinimum(range.getLowBoundary() == RangeBoundary.OPEN);
-                schema.maximum((BigDecimal) range.getHighEndPoint());
-                schema.exclusiveMaximum(range.getHighBoundary() == RangeBoundary.OPEN);
+                if (range.getLowEndPoint() != null) {
+                    schema.minimum((BigDecimal) range.getLowEndPoint());
+                    schema.exclusiveMinimum(range.getLowBoundary() == RangeBoundary.OPEN);
+                }
+                if (range.getHighEndPoint() != null) {
+                    schema.maximum((BigDecimal) range.getHighEndPoint());
+                    schema.exclusiveMaximum(range.getHighBoundary() == RangeBoundary.OPEN);
+                }
             }
         } else if (uts.stream().allMatch(o -> o instanceof Number)) {
             schema.enumeration(uts);

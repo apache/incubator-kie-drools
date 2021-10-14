@@ -17,31 +17,35 @@ package org.kie.pmml.compiler.commons.mocks;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModelWithSources;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.testingutility.KiePMMLTestingModel.PMML_MODEL_TYPE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.compiler.commons.mocks.KiePMMLTestModel.PMML_MODEL_TYPE;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 
 /**
  * <b>Fake</b> <code>ModelImplementationProvider</code> used for testing. It is mapped to <code>TestModel</code> (mock)
  */
-public class TestingModelImplementationProvider implements ModelImplementationProvider<TestModel, KiePMMLTestModel> {
+public class TestingModelImplementationProvider implements ModelImplementationProvider<TestModel, KiePMMLTestingModel> {
 
     public static final String KIE_PMML_TEST_MODEL_TEMPLATE_JAVA =
             "KiePMMLTestModelTemplate.tmpl";
@@ -54,26 +58,29 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     }
 
     @Override
-    public KiePMMLTestModel getKiePMMLModel(final String packageName,
-                                            final DataDictionary dataDictionary,
+    public KiePMMLTestingModel getKiePMMLModel(final String packageName,
+                                               final List<Field<?>> fields,
                                             final TransformationDictionary transformationDictionary,
                                             final TestModel model,
                                             final HasClassLoader hasClassLoader) {
-        return new KiePMMLTestModel("TEST_MODEL", Collections.emptyList());
+        return KiePMMLTestingModel.builder("TEST_MODEL",
+                                    Collections.emptyList(),
+                                    MINING_FUNCTION.REGRESSION)
+                .build();
     }
 
     @Override
-    public KiePMMLTestModel getKiePMMLModelWithSources(final String packageName,
-                                                       final DataDictionary dataDictionary,
+    public KiePMMLTestingModel getKiePMMLModelWithSources(final String packageName,
+                                                          final List<Field<?>> fields,
                                                        final TransformationDictionary transformationDictionary,
                                                        final TestModel model,
                                                        final HasClassLoader hasClassLoader) {
-        final Map<String, String> sourcesMap = getKiePMMLTestModelSourcesMap(dataDictionary, transformationDictionary
+        final Map<String, String> sourcesMap = getKiePMMLTestModelSourcesMap(fields, transformationDictionary
                 , model, packageName);
         return new KiePMMLTestingModelWithSources(model.getModelName(), packageName, sourcesMap);
     }
 
-    private Map<String, String> getKiePMMLTestModelSourcesMap(final DataDictionary dataDictionary,
+    private Map<String, String> getKiePMMLTestModelSourcesMap(final List<Field<?>> fields,
                                                               final TransformationDictionary transformationDictionary,
                                                               final TestModel model,
                                                               final String packageName) {

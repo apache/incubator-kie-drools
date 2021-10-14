@@ -345,6 +345,8 @@ TOKEN :
 | < DOT_DOT_SLASH: "../" >
 | < HASHMARK: "#" >
 | < EXCL_DOT: "!." >
+| < PASSIVE_OOPATH: "?/" >
+
 }
 
 /* LITERALS */
@@ -1872,7 +1874,7 @@ Expression PrimaryExpressionWithoutSuperSuffix():
 Expression PrimaryPrefix():
 {
 	Expression ret = null;
-	SimpleName name;
+	SimpleName name = null;
 	RangedList<Type> typeArgs = new RangedList<Type>(null);
 	NodeList<Expression> args = emptyList();
 	NodeList<Parameter> params = emptyList();
@@ -1889,6 +1891,13 @@ Expression PrimaryPrefix():
 	  ret = Literal()
 	|
 	  <THIS> { ret = new ThisExpr(tokenRange(), null); }
+	  	[ args = Arguments() { hasArgs=true; } ]
+	  	{
+
+	  		if (hasArgs) {
+	  			ret = parseThisExprOrHalfBinary(range(ret, token()), (ThisExpr) ret, args);
+			}
+	  	}
 	|
 	  <SUPER> { ret = new SuperExpr(tokenRange(), null); }
 	  (
@@ -1919,6 +1928,9 @@ Expression PrimaryPrefix():
             params = LambdaParameters() ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
         | LOOKAHEAD(VariableDeclaratorId() ",")
             params = InferredLambdaParameters() ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
+        | LOOKAHEAD(SimpleName() ":")
+            name = SimpleName() ":"
+            ret = Expression() ")" { ret = new DrlxExpression(name, ret); ret = new EnclosedExpr(range(begin, token()), ret); }
         |
             // This could still be a lambda expression, but this is handled after matching -> elsewhere
             ret = Expression() ")" { ret = new EnclosedExpr(range(begin, token()), ret); }
@@ -1976,6 +1988,7 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 	NodeList<Expression> args = emptyList();
 	boolean hasArgs = false;
 	SimpleName name;
+	Name fqname;
 	Type type;
 	NodeList<AnnotationExpr> annotations = new NodeList<AnnotationExpr>();
 }
@@ -1993,9 +2006,9 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 	  	[ args = Arguments() {hasArgs=true;} ]
 	  	{
 			if (hasArgs) {
-	  			ret = new MethodCallExpr(range(scope, token()), scope, typeArgs.list, name, args);
+	  			ret = parseMethodExprOrHalfBinary(range(scope, token()), scope, typeArgs.list, name, args, false);
 			} else {
-	  			ret =  new FieldAccessExpr(range(scope, token()), scope, typeArgs.list, name);
+	  			ret = new FieldAccessExpr(range(scope, token()), scope, typeArgs.list, name);
 			}
 	  	}
 	)
@@ -2005,9 +2018,15 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 	|
 	  "#"
 	  (
-	    name = SimpleName() { ret = new InlineCastExpr(range(scope, token()),
-	                                                   new ClassOrInterfaceType(range(scope, token()), null, name, null, annotations),
-	                                                   scope); }
+	    fqname = Name()
+	  	[ args = Arguments() {hasArgs=true;} ]
+	  	{
+			if (hasArgs) {
+	  			ret = new FullyQualifiedInlineCastExpr(range(scope, token()), scope, fqname, args);
+			} else {
+	  			ret = new FullyQualifiedInlineCastExpr(range(scope, token()), scope, fqname);
+			}
+	  	}
 	  |
 	    "(" type = Type(emptyList()) ")" { ret = new InlineCastExpr(range(scope, token()), type, scope); }
 	  )
@@ -2024,9 +2043,9 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
         [ args = Arguments() {hasArgs=true;} ]
         {
             if (hasArgs) {
-                ret = new NullSafeMethodCallExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name, args);
+                ret = parseMethodExprOrHalfBinary(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name, args, true);
             } else {
-                ret =  new NullSafeFieldAccessExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name);
+                ret = new NullSafeFieldAccessExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name);
             }
         }
         )
@@ -2657,9 +2676,9 @@ ModifyStatement ModifyStatement():
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>)?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>)?)? { begin=token(); all.add(first); }
             (
-                          (<COMMA>)*
+                          (<COMMA>)+
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
@@ -3157,9 +3176,22 @@ OOPathExpr OOPathExpr():
     OOPathChunk chunk;
 }
 {
-  "/" { begin=token(); }
-  chunk = OOPathChunk() { chunks.add(chunk); }
-  ( "/" chunk = OOPathChunk() { chunks.add(chunk); } )*
+  ((
+    "/" { begin=token(); }
+    chunk = OOPathChunk() { chunks.add(chunk); }
+  )
+  |
+  (
+    "?/" { begin=token(); }
+    chunk = OOPathChunk() { chunks.add(chunk.passive()); }
+  ))
+  (
+    ( "/" chunk = OOPathChunk() { chunks.add(chunk); } )
+    |
+    ( "." chunk = OOPathChunk() { chunks.add(chunk.singleValue()); } )
+    |
+    ( "?/" chunk = OOPathChunk() { chunks.add(chunk.passive()); } )
+  )*
 
     { return new OOPathExpr(range(begin, token()), chunks); }
 }
@@ -3183,19 +3215,21 @@ OOPathChunk OOPathChunk():
 
 DrlxExpression DrlxExpression():
 {
-	SimpleName decl = null;
+	DrlxExpression ret = null;
+    SimpleName decl = null;
 	Expression expr;
+	Expression right;
 }
 {
   [ LOOKAHEAD(2) decl = SimpleName() ":" ]
   (
   LOOKAHEAD(OOPathExpr())
-    expr = OOPathExpr()
+    expr = OOPathExpr() { ret = new DrlxExpression(decl, expr); }
   |
-  expr = Expression()
+  expr = Expression() { ret = new DrlxExpression(decl, expr); }
   )
-
-  { return new DrlxExpression(decl, expr); }
+  ( ":" right = Expression() { ret = parseBindingAfterAnd(range(ret, token()), ret, right); } )*
+  { return ret; }
 }
 
 Expression MapCreationLiteralExpression():

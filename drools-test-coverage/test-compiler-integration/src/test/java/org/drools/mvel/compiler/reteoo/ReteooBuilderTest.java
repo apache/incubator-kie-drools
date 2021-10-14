@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
+import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
 
 public class ReteooBuilderTest {
 

@@ -20,8 +20,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.MemoryResourceStore;
+
+import static org.kie.memorycompiler.JavaConfiguration.findJavaVersion;
 
 public class KieMemoryCompiler {
 
@@ -55,11 +58,10 @@ public class KieMemoryCompiler {
         MemoryCompilerClassLoader kieMemoryCompilerClassLoader = new MemoryCompilerClassLoader(classLoader);
 
         Map<String, Class<?>> toReturn = new HashMap<>();
-        for (String className : classNameSourceMap.keySet()) {
-            byte[] bytes = byteCode.get(className);
-            kieMemoryCompilerClassLoader.addCode( className, bytes );
+        for (Map.Entry<String, byte[]> entry : byteCode.entrySet()) {
+            kieMemoryCompilerClassLoader.addCode( entry.getKey(), entry.getValue() );
             try {
-                toReturn.put(className, kieMemoryCompilerClassLoader.loadClass(className));
+                toReturn.put(entry.getKey(), kieMemoryCompilerClassLoader.loadClass(entry.getKey()));
             } catch (ClassNotFoundException e) {
                 throw new KieMemoryCompilerException(e.getMessage(), e);
             }
@@ -124,7 +126,7 @@ public class KieMemoryCompiler {
         }
         JavaConfiguration javaConfiguration = new JavaConfiguration();
         javaConfiguration.setCompiler(compilerType);
-        javaConfiguration.setJavaLanguageLevel("1.8");
+        javaConfiguration.setJavaLanguageLevel(findJavaVersion());
         JavaCompiler compiler = JavaCompilerFactory.loadCompiler(javaConfiguration);
         CompilationResult res = compilerSettings == null ?
                 compiler.compile( classNames, reader, store, classLoader) :
@@ -133,11 +135,12 @@ public class KieMemoryCompiler {
         if (res.getErrors().length > 0) {
             throw new KieMemoryCompilerException(Arrays.toString( res.getErrors() ));
         }
+
         Map<String, byte[]> toReturn = new HashMap<>();
-        for (String className : classNameSourceMap.keySet()) {
-            byte[] bytes = store.read( toClassSource( className ) );
-            toReturn.put(className, bytes);
+        for (Map.Entry<KiePath, byte[]> entry : store.getResources().entrySet()) {
+            toReturn.put(toClassName( entry.getKey().asString() ), entry.getValue());
         }
+
         return toReturn;
     }
 
@@ -145,8 +148,11 @@ public class KieMemoryCompiler {
         return s.replace( '.', '/' ) + ".java";
     }
 
-    private static String toClassSource( String s ) {
-        return s.replace( '.', '/' ) + ".class";
+    private static String toClassName( String s ) {
+        if (s.endsWith(".class")) {
+            s = s.substring(0, s.length()-6);
+        }
+        return s.replace( '/', '.' );
     }
 
     public static class MemoryCompilerClassLoader extends ClassLoader {

@@ -412,8 +412,7 @@ public class ProtobufInputMarshaller {
                 group.addNodeInstance( _nodeInstance.hasProcessInstanceId() ? _nodeInstance.getProcessInstanceId() : _nodeInstance.getProcessInstanceStringId(),
                                        _nodeInstance.getNodeInstanceId() );
             }
-            agenda.getAgendaGroupsMap().put( group.getName(),
-                                             group );
+            agenda.putOnAgendaGroupsMap( group.getName(), group );
         }
         
         for ( String _groupName : _agenda.getFocusStack().getGroupNameList() ) {
@@ -430,8 +429,7 @@ public class ProtobufInputMarshaller {
                 group.addNodeInstance( _nodeInstance.getProcessInstanceId(),
                                        _nodeInstance.getNodeInstanceId() );
             }
-            agenda.getAgendaGroupsMap().put( group.getName(),
-                                             group );
+            agenda.putOnAgendaGroupsMap( group.getName(), group );
             if (group.isActive()) {
                 agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( group.getName() ) );
             }

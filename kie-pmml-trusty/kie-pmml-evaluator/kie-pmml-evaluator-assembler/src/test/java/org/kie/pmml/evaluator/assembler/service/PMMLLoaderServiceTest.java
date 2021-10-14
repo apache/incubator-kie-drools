@@ -18,7 +18,6 @@ package org.kie.pmml.evaluator.assembler.service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,7 +31,9 @@ import org.drools.model.Rule;
 import org.drools.model.TypeMetaData;
 import org.drools.model.impl.GlobalImpl;
 import org.junit.Test;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
 import org.kie.pmml.evaluator.assembler.rulemapping.PMMLRuleMapper;
 
@@ -88,7 +89,9 @@ public class PMMLLoaderServiceTest {
 
     private KiePMMLModelFactory getKiePMMLModelFactory() {
         final List<KiePMMLModel> kiePMMLModels = IntStream.range(0, 3)
-                .mapToObj(i -> new KiePMMLModelMock("KiePMMLModel" + i))
+                .mapToObj(i -> KiePMMLTestingModel.builder("KiePMMLModel" + i,
+                                                           Collections.emptyList(),
+                                                           MINING_FUNCTION.REGRESSION).build())
                 .collect(Collectors.toList());
         return () -> kiePMMLModels;
     }
@@ -140,20 +143,6 @@ public class PMMLLoaderServiceTest {
         @Override
         public List<EntryPoint> getEntryPoints() {
             return Collections.emptyList();
-        }
-    }
-
-    private static class KiePMMLModelMock extends KiePMMLModel {
-
-        private static final long serialVersionUID = -1798555067232424077L;
-
-        public KiePMMLModelMock(final String name) {
-            super(name, Collections.emptyList());
-        }
-
-        @Override
-        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-            return null;
         }
     }
 

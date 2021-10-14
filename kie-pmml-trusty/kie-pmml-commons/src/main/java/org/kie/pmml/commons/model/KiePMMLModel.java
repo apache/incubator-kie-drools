@@ -18,9 +18,10 @@ package org.kie.pmml.commons.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -29,23 +30,29 @@ import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
-import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
+import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
 /**
  * KIE representation of PMML model
  */
 public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements PMMLModel {
 
+    private static final long serialVersionUID = 759750766311061701L;
+
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
-    protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
-    protected Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = new HashMap<>();
-    protected Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = new HashMap<>();
     protected List<MiningField> miningFields = new ArrayList<>();
     protected List<OutputField> outputFields = new ArrayList<>();
     protected List<KiePMMLOutputField> kiePMMLOutputFields = new ArrayList<>();
+    protected List<KiePMMLTarget> kiePMMLTargets = new ArrayList<>();
+    protected KiePMMLTransformationDictionary transformationDictionary;
+    protected KiePMMLLocalTransformations localTransformations;
+    protected Object predictedDisplayValue;
+    protected Object entityId;
+    protected Object affinity;
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -65,18 +72,6 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public Map<String, Object> getOutputFieldsMap() {
         return Collections.unmodifiableMap(outputFieldsMap);
-    }
-
-    public Map<String, Object> getMissingValueReplacementMap() {
-        return Collections.unmodifiableMap(missingValueReplacementMap);
-    }
-
-    public Map<String, Function<List<KiePMMLNameValue>, Object>> getCommonTransformationsMap() {
-        return Collections.unmodifiableMap(commonTransformationsMap);
-    }
-
-    public Map<String, Function<List<KiePMMLNameValue>, Object>> getLocalTransformationsMap() {
-        return Collections.unmodifiableMap(localTransformationsMap);
     }
 
     /**
@@ -109,6 +104,57 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
         this.outputFields = Collections.unmodifiableList(outputFields);
     }
 
+    public List<KiePMMLTarget> getKiePMMLTargets() {
+        return kiePMMLTargets;
+    }
+
+    public void setKiePMMLTargets(List<KiePMMLTarget> kiePMMLTargets) {
+        this.kiePMMLTargets = Collections.unmodifiableList(kiePMMLTargets);
+    }
+
+    public List<KiePMMLOutputField> getKiePMMLOutputFields() {
+        return kiePMMLOutputFields != null ? Collections.unmodifiableList(kiePMMLOutputFields) :
+                Collections.emptyList();
+    }
+
+    public KiePMMLTransformationDictionary getTransformationDictionary() {
+        return transformationDictionary;
+    }
+
+    public KiePMMLLocalTransformations getLocalTransformations() {
+        return localTransformations;
+    }
+
+    public Map<String, Double> getProbabilityMap() {
+        final LinkedHashMap<String, Double> probabilityResultMap = getProbabilityResultMap();
+        return probabilityResultMap != null ?
+                Collections.unmodifiableMap(getFixedProbabilityMap(probabilityResultMap)) : Collections.emptyMap();
+    }
+
+    public Object getPredictedDisplayValue() {
+        return predictedDisplayValue;
+    }
+
+    protected void setPredictedDisplayValue(Object predictedDisplayValue) {
+        this.predictedDisplayValue = predictedDisplayValue;
+    }
+
+    public Object getEntityId() {
+        return entityId;
+    }
+
+    protected void setEntityId(Object entityId) {
+        this.entityId = entityId;
+    }
+
+    public Object getAffinity() {
+        return affinity;
+    }
+
+    protected void setAffinity(Object affinity) {
+        this.affinity = affinity;
+    }
+
     /**
      * @param knowledgeBase the knowledgeBase we are working on. Add as <code>Object</code> to avoid direct
      * dependency. It is needed only by <b>Drools-dependent</b>
@@ -117,6 +163,30 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
      * @return
      */
     public abstract Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData);
+
+    /**
+     * Returns the <b>probability map</b> evaluated by the model
+     * @return
+     */
+    protected abstract LinkedHashMap<String, Double> getProbabilityResultMap();
+
+    private static LinkedHashMap<String, Double> getFixedProbabilityMap(final LinkedHashMap<String, Double> probabilityResultMap) {
+        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
+        String[] resultMapKeys = probabilityResultMap.keySet().toArray(new String[0]);
+        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
+        for (int i = 0; i < probabilityResultMap.size(); i++) {
+            String key = resultMapKeys[i];
+            double value = probabilityResultMap.get(key);
+            if (i < resultMapKeys.length - 1) {
+                sumCounter.accumulateAndGet(value, Double::sum);
+                toReturn.put(key, value);
+            } else {
+                // last element
+                toReturn.put(key, 1 - sumCounter.get());
+            }
+        }
+        return toReturn;
+    }
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLComponent.Builder<T> {
 
@@ -132,12 +202,9 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
         }
 
         public Builder<T> withOutputFieldsMap(Map<String, Object> outputFieldsMap) {
-            toBuild.outputFieldsMap.putAll(outputFieldsMap);
-            return this;
-        }
-
-        public Builder<T> withMissingValueReplacementMap(Map<String, Object> missingValueReplacementMap) {
-            toBuild.missingValueReplacementMap.putAll(missingValueReplacementMap);
+            if (outputFieldsMap != null) {
+                toBuild.outputFieldsMap.putAll(outputFieldsMap);
+            }
             return this;
         }
     }

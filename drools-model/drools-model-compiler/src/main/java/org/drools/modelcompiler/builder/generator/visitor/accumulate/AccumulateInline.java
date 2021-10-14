@@ -67,8 +67,10 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addSemico
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createMvelCompiler;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor.collectNamesInBlock;
 
 public class AccumulateInline {
@@ -102,7 +104,7 @@ public class AccumulateInline {
         this.packageModel = packageModel;
         this.accumulateDescr = descr;
         this.basePattern = basePattern;
-        this.mvelCompiler = createMvelCompiler(context, context.getAllDeclarations());
+        this.mvelCompiler = createMvelCompiler(context);
         singleAccumulateType = null;
     }
 
@@ -206,18 +208,11 @@ public class AccumulateInline {
     }
 
     private void writeAccumulateMethod(List<String> contextFieldNames, MethodDeclaration accumulateMethod, BlockStmt actionBlock) {
+        String parameterName = accumulateMethod.getParameter(1).getNameAsString();
         for (Statement stmt : actionBlock.getStatements()) {
-            final ExpressionStmt convertedExpressionStatement = new ExpressionStmt();
-            for (ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class)) {
-                final Expression expressionUntyped = eStmt.getExpression();
-                final String parameterName = accumulateMethod.getParameter(1).getNameAsString();
-
-                forceCastForName(parameterName, singleAccumulateType, expressionUntyped);
-                rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, expressionUntyped);
-                convertedExpressionStatement.setExpression(expressionUntyped);
-            }
-            accumulateMethod.getBody().orElseThrow(InvalidInlineTemplateException::new)
-                    .addStatement(convertedExpressionStatement);
+            forceCastForName(parameterName, singleAccumulateType, stmt);
+            rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, stmt);
+            accumulateMethod.getBody().orElseThrow(InvalidInlineTemplateException::new).addStatement(stmt);
         }
     }
 
@@ -228,7 +223,7 @@ public class AccumulateInline {
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             actionCode = addSemicolonWhenMissing( actionCode);
-        } else if ( blockIsNonEmptyWithoutSemicolon( actionCode ) ) {
+        } else if ( nonEmptyBlockIsNotTerminated( actionCode ) ) {
             throw new MissingSemicolonInlineAccumulateException( "action" );
         }
 
@@ -265,7 +260,7 @@ public class AccumulateInline {
 
             if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
                 reverseCode = addSemicolonWhenMissing(reverseCode);
-            } else if (blockIsNonEmptyWithoutSemicolon(reverseCode)) {
+            } else if (nonEmptyBlockIsNotTerminated(reverseCode)) {
                 throw new MissingSemicolonInlineAccumulateException(REVERSE);
             }
 
@@ -303,7 +298,7 @@ public class AccumulateInline {
     private void parseResultMethod() {
         // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
         MethodDeclaration resultMethod = getMethodFromTemplateClass("getResult");
-        Type returnExpressionType = StaticJavaParser.parseType("java.lang.Object");
+        Type returnExpressionType = toClassOrInterfaceType(java.lang.Object.class);
         Expression returnExpression = StaticJavaParser.parseExpression(accumulateDescr.getResultCode());
         if (returnExpression instanceof NameExpr) {
             returnExpression = new EnclosedExpr(returnExpression);
@@ -324,7 +319,7 @@ public class AccumulateInline {
     private void addAccumulateClassInitializationToMethod(MethodCallExpr accumulateDSL, String identifier) {
         this.packageModel.addGeneratedPOJO(accumulateInlineClass);
 
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
+        final MethodCallExpr functionDSL = createDslTopLevelMethod(ACC_FUNCTION_CALL);
         functionDSL.addArgument(new MethodReferenceExpr(new NameExpr(accumulateInlineClassName), new NodeList<>(), "new"));
         functionDSL.addArgument(context.getVarExpr(identifier));
 
@@ -342,8 +337,8 @@ public class AccumulateInline {
         return accumulateInlineClass.getMethodsByName(init).get(0);
     }
 
-    private boolean blockIsNonEmptyWithoutSemicolon(String block) {
-        return !"".equals(block) && !block.endsWith(";");
+    private boolean nonEmptyBlockIsNotTerminated(String block) {
+        return !"".equals(block) && !(block.endsWith(";") || block.endsWith("}"));
     }
 
     private String addSemicolonWhenMissing(String block) {

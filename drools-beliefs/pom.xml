@@ -4,13 +4,13 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>drools</artifactId>
-    <version>7.53.0-SNAPSHOT</version>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-parent</artifactId>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.drools</groupId>
   <artifactId>drools-beliefs</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Beliefs</name>
 
@@ -19,17 +19,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -65,10 +54,14 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-util-xml</artifactId>
+    </dependency>
 
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
       <scope>provided</scope> <!-- HACK for OSGi: should be <optional>true</optional> instead-->
     </dependency>
 
@@ -84,24 +77,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>
-                org.drools.beliefs.*
-            </Export-Package>
-            <Import-Package>
-               *
-            </Import-Package>
-            <Bundle-Activator>org.drools.beliefs.osgi.Activator</Bundle-Activator>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

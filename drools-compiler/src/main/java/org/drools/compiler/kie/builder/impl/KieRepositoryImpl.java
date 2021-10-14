@@ -28,9 +28,7 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.appformer.maven.support.PomModel;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.builder.KieModule;
@@ -43,11 +41,13 @@ import org.kie.api.event.kiescanner.KieScannerEventListener;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
+import org.kie.util.maven.support.PomModel;
+import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.compiler.kproject.ReleaseIdImpl.fromPropertiesStream;
+import static org.kie.util.maven.support.ReleaseIdImpl.fromPropertiesStream;
 
 public class KieRepositoryImpl
         implements
@@ -144,7 +144,7 @@ public class KieRepositoryImpl
     private KieModule checkClasspathForKieModule(ReleaseId releaseId) {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
-        URL kmoduleUrl = contextClassLoader.getResource( KieModuleModelImpl.KMODULE_JAR_PATH );
+        URL kmoduleUrl = contextClassLoader.getResource( KieModuleModelImpl.KMODULE_JAR_PATH.asString() );
         if (kmoduleUrl == null) {
             return null;
         }
@@ -166,7 +166,7 @@ public class KieRepositoryImpl
                 pathToKmodule = new URL( pomPropertiesUrl.getProtocol(),
                                          pomPropertiesUrl.getHost(),
                                          pomPropertiesUrl.getPort(),
-                                         pathToJar + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH );
+                                         pathToJar + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString() );
                 
                 // URLConnection.getContentLength() returns -1 if the content length is not known, unable to locate and read from the kmodule
                 // if URL backed by 'file:' then FileURLConnection.getContentLength() returns 0, as per java.io.File.length() returns 0L if the file does not exist. (the same also for WildFly's VFS FileURLConnection) 
@@ -279,10 +279,10 @@ public class KieRepositoryImpl
                     if (!urlPath.endsWith("/")) {
                         urlPath = urlPath + "/";
                     }
-                    urlPath = urlPath + KieModuleModelImpl.KMODULE_JAR_PATH;
+                    urlPath = urlPath + KieModuleModelImpl.KMODULE_JAR_PATH.asString();
 
                 } else {
-                    urlPath = "jar:" + urlPath + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;
+                    urlPath = "jar:" + urlPath + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString();
                 }
                 kModule = ClasspathKieProject.fetchKModule(new URL(urlPath));
                 log.debug("Fetched KieModule from resource: " + resource);

@@ -43,7 +43,7 @@ public final class BenchmarkUtil {
     }
 
     private static void writeDomainModelToKJar(final KieServices kieServices, final KieFileSystem kieFileSystem) {
-        final String javaSrc = Person.class.getCanonicalName().replace( '.', File.separatorChar ) + ".java";
+        final String javaSrc = Person.class.getCanonicalName().replace( '.', '/' ) + ".java";
         final Resource javaResource = kieServices.getResources().newFileSystemResource("src/test/java/" + javaSrc);
         kieFileSystem.write("src/main/java/" + javaSrc, javaResource);
     }

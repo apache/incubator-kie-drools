@@ -1,6 +1,23 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -8,8 +25,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.drools.core.util.MethodUtils;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -29,7 +48,7 @@ public class FieldToAccessorTExpr implements TypedExpression {
     }
 
     private Type parseType(Method accessor) {
-        if(accessor.getParameterTypes().length == 1) {
+        if (accessor.getParameterTypes().length == 1) {
             return accessor.getParameterTypes()[0]; // setter
         } else {
             return accessor.getGenericReturnType(); // getter
@@ -48,10 +67,33 @@ public class FieldToAccessorTExpr implements TypedExpression {
     @Override
     public Node toJavaExpression() {
         List<Expression> expressionArguments = this.arguments.stream()
-                .map(a -> (Expression) (a.toJavaExpression()))
+                .map(this::convertToStringIfNeeded)
                 .collect(Collectors.toList());
 
         return new MethodCallExpr((Expression) scope.toJavaExpression(), accessor.getName(), nodeList(expressionArguments));
+    }
+
+    private Expression convertToStringIfNeeded(TypedExpression argumentExpression) {
+        boolean argumentCanBeToStringed = argumentExpression.getType().filter(this::typeCanBeToStringed).isPresent();
+        boolean fieldIsString = String.class.equals(this.type);
+        if (fieldIsString && argumentCanBeToStringed) {
+            return new MethodCallExpr(new EnclosedExpr((Expression) argumentExpression.toJavaExpression()), "toString");
+        } else {
+            return (Expression) argumentExpression.toJavaExpression();
+        }
+    }
+
+    private Boolean typeCanBeToStringed(Type t) {
+        if(t instanceof ParameterizedType) {
+            return false;
+        }
+
+        Class<?> clazz = (Class<?>) t;
+        boolean isNotPrimitive = !clazz.isPrimitive();
+        boolean isNotString = !t.equals(String.class); // no need to toString a String
+        boolean isNotNull = !t.equals(MethodUtils.NullType.class);
+
+        return isNotString && isNotPrimitive && isNotNull;
     }
 
     @Override

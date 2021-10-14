@@ -18,7 +18,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -26,10 +25,11 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.TimerExpression;
-import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.integration.VariableResolverFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELObjectExpression implements MVELCompileable, TimerExpression, Externalizable {
 
@@ -38,7 +38,7 @@ public class MVELObjectExpression implements MVELCompileable, TimerExpression, E
     private MVELCompilationUnit unit;
     private String              id;
 
-    private Serializable        expr;
+    private MvelEvaluator<Object> evaluator;
 
     public MVELObjectExpression() {
     }
@@ -65,15 +65,15 @@ public class MVELObjectExpression implements MVELCompileable, TimerExpression, E
     }    
 
     public void compile( MVELDialectRuntimeData runtimeData) {
-        expr = unit.getCompiledExpression( runtimeData );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData ) );
     }
 
     public void compile(ParserConfiguration conf) {
-        expr = unit.getCompiledExpression( conf );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( conf ) );
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule ) {
-        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
     @Override
@@ -95,8 +95,7 @@ public class MVELObjectExpression implements MVELCompileable, TimerExpression, E
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        return MVELSafeHelper.getEvaluator().executeExpression(this.expr,
-                                      factory);
+        return evaluator.evaluate(factory);
     }
     
     public String toString() {

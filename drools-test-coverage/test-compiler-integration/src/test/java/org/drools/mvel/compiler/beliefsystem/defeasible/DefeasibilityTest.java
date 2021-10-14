@@ -36,6 +36,7 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -362,7 +363,7 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
+    @Test(timeout = 10000 ) @Ignore
     public void testRemoveDefeasibleEntailmentMultiActivationWithDefeat() {
         KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/defeatDefeaterRetract.drl" );
         ArrayList list = new ArrayList();

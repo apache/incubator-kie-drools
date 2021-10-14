@@ -79,12 +79,11 @@ public class RuleWriter {
                 String addFileName = classOptional.get().getNameAsString();
 
                 if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
-                    CompilationUnit postProcessedCU = cu.clone();
-                    new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
+                    new ExecModelLambdaPostProcessor(pkgModel, cu).convertLambdas();
                     if (checkNonExternalisedLambda) {
-                        checkNonExternalisedLambda(postProcessedCU);
+                        checkNonExternalisedLambda(cu);
                     }
-                    rules.add(new RuleFileSource(addFileName, postProcessedCU));
+                    rules.add(new RuleFileSource(addFileName, cu));
                 } else {
                     rules.add(new RuleFileSource(addFileName, cu));
                 }
@@ -100,7 +99,8 @@ public class RuleWriter {
         }
         StringBuilder sb = new StringBuilder();
         lambdaExprs.stream().forEach(lExpr -> sb.append(lExpr.toString() + "\n"));
-        throw new NonExternalisedLambdaFoundException("Non externalised lambda found in " + rulesFileName + "\n" + sb.toString());
+        sb.append("Generated class:\n").append(postProcessedCU).append("\n");
+        throw new NonExternalisedLambdaFoundException("Non externalised lambda found in " + rulesFileName + "\n" + sb);
     }
     public static boolean isCheckNonExternalisedLambda() {
         return checkNonExternalisedLambda;

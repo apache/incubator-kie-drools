@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.drools.core.common.BaseNode;
@@ -32,7 +34,6 @@ import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.ObjectHashMap;
 
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {
 
@@ -41,7 +42,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     private boolean hashed = true;
     private CompositeObjectSinkAdapter.FieldIndex fieldIndex;
 
-    private ObjectHashMap hashedSinkMap;
+    private Map<CompositeObjectSinkAdapter.HashKey, AlphaNode> hashedSinkMap;
 
     public CompositePartitionAwareObjectSinkAdapter() {
         Arrays.fill(partitionedPropagators, EmptyObjectSinkAdapter.getInstance());
@@ -65,15 +66,14 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
             int index = readAccessor.getIndex();
             if ( fieldIndex == null ) {
                 this.fieldIndex = new CompositeObjectSinkAdapter.FieldIndex( index, readAccessor );
-                this.hashedSinkMap = new ObjectHashMap();
+                this.hashedSinkMap = new HashMap<>();
             }
             if (fieldIndex.getIndex() == index) {
                 AlphaNode alpha = (AlphaNode)sink;
                 this.hashedSinkMap.put( new CompositeObjectSinkAdapter.HashKey( index,
                                                                                 ((IndexableConstraint)alpha.getConstraint()).getField(),
                                                                                 fieldIndex.getFieldExtractor() ),
-                                        alpha,
-                                        false );
+                                        alpha );
                 return true;
             }
         }
@@ -241,7 +241,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
         hashed = in.readBoolean();
         fieldIndex = (FieldIndex) in.readObject();
-        hashedSinkMap = (ObjectHashMap) in.readObject();
+        hashedSinkMap = (Map<CompositeObjectSinkAdapter.HashKey, AlphaNode>) in.readObject();
         for (int i = 0; i < partitionedPropagators.length; i++) {
             partitionedPropagators[i] = (ObjectSinkPropagator) in.readObject();
         }

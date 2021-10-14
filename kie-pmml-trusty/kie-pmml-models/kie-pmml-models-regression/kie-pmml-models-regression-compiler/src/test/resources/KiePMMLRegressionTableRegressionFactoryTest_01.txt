@@ -1,0 +1,6 @@
+{
+    double coefficient = %s;
+    double exponent = %s.0;
+    // Considering exponent because it is != 1
+    return Math.pow(input, exponent) * coefficient;
+}

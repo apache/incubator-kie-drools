@@ -32,7 +32,6 @@ import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
@@ -52,16 +51,15 @@ import org.drools.mvel.parser.printer.PrintUtil;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-
-import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
-import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 public class FromVisitor {
 
@@ -103,7 +101,7 @@ public class FromVisitor {
         }
 
         if (parsedExpression instanceof LiteralExpr ) {
-            MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+            MethodCallExpr fromCall = createDslTopLevelMethod(FROM_CALL);
             fromCall.addArgument( parsedExpression );
             return of(fromCall);
         }
@@ -112,7 +110,7 @@ public class FromVisitor {
     }
 
     private Optional<Expression> createEnumeratedFrom( String expressions ) {
-        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        MethodCallExpr fromCall = createDslTopLevelMethod(FROM_CALL);
         Collection<String> usedDeclarations = new ArrayList<>();
         MethodCallExpr asListCall = createListForLiteralFrom( expressions, fromCall, usedDeclarations );
         fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true , Optional.empty()) );
@@ -143,7 +141,7 @@ public class FromVisitor {
     }
 
     private Optional<Expression> fromConstructorExpr(String expression, ObjectCreationExpr parsedExpression) {
-        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        MethodCallExpr fromCall = createDslTopLevelMethod(FROM_CALL);
         List<String> bindingIds = new ArrayList<>();
 
         for (Expression argument : parsedExpression.getArguments()) {
@@ -156,7 +154,7 @@ public class FromVisitor {
 
         Expression newExpr = generateLambdaWithoutParameters( bindingIds, parsedExpression, true, Optional.empty(), context );
         if (newExpr instanceof LambdaExpr) {
-            context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr)newExpr, DrlxParseUtil.getClassFromType(context.getTypeResolver(), parsedExpression.getType()));
+            context.getPackageModel().registerLambdaReturnType((LambdaExpr)newExpr, DrlxParseUtil.getClassFromType(context.getTypeResolver(), parsedExpression.getType()));
         }
         fromCall.addArgument(newExpr);
         return of( fromCall );
@@ -176,7 +174,7 @@ public class FromVisitor {
         if (staticField.isPresent()) {
             return of( createSupplier(parsedExpression) );
         }
-        if ( !isLegacyRuleUnit() && packageModel.hasEntryPoint( bindingId ) ) {
+        if ( packageModel.hasEntryPoint( bindingId ) ) {
             return of( createEntryPointCall(bindingId) );
         }
         if ( contextHasDeclaration( bindingId ) ) {
@@ -188,13 +186,13 @@ public class FromVisitor {
     private Expression createSupplier(Expression parsedExpression) {
         final LambdaExpr lambdaExpr = new LambdaExpr(NodeList.nodeList(), new ExpressionStmt(parsedExpression), true);
 
-        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        MethodCallExpr fromCall = createDslTopLevelMethod(FROM_CALL);
         fromCall.addArgument(lambdaExpr);
         return fromCall;
     }
 
     private Optional<Expression> fromExpressionUsingArguments(String expression, Expression methodCallExpr) {
-        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        MethodCallExpr fromCall = createDslTopLevelMethod(FROM_CALL);
         String bindingId = addFromArgument( methodCallExpr, fromCall );
 
         return bindingId != null ?
@@ -244,13 +242,13 @@ public class FromVisitor {
     }
 
     private Expression createEntryPointCall( String bindingId ) {
-        MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
-        entryPointCall.addArgument( new StringLiteralExpr( bindingId ) );
+        MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
+        entryPointCall.addArgument( toStringLiteral( bindingId ) );
         return entryPointCall;
     }
 
     private Expression createFromCall( String expression, String bindingId, boolean hasBinding, Expression expr ) {
-        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        MethodCallExpr fromCall = createDslTopLevelMethod(FROM_CALL);
         fromCall.addArgument( context.getVarExpr(bindingId));
         if (hasBinding) {
             return addLambdaToFromExpression(expression, bindingId, fromCall);
@@ -280,7 +278,8 @@ public class FromVisitor {
             DeclarationSpec declarationSpec = context.getDeclarationById( bindingId ).orElseThrow( RuntimeException::new );
             Class<?> clazz = declarationSpec.getDeclarationClass();
 
-            DrlxParseResult drlxParseResult = new ConstraintParser( context, packageModel ).drlxParse( clazz, bindingId, expression );
+            DrlxParseResult drlxParseResult = ConstraintParser.withoutVariableValidationConstraintParser(context, packageModel)
+                    .drlxParse(clazz, bindingId, expression);
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
                 SingleDrlxParseSuccess singleResult = ( SingleDrlxParseSuccess ) drlxParseResult;
@@ -292,7 +291,7 @@ public class FromVisitor {
                 Expression parsedExpression = drlxParseSuccess.getExpr();
                 Expression newExpr = generateLambdaWithoutParameters( singleResult.getUsedDeclarations(), parsedExpression, singleResult.isSkipThisAsParam(), ofNullable(singleResult.getPatternType()), context );
                 if (newExpr instanceof LambdaExpr) {
-                    context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr)newExpr, singleResult.getExprType());
+                    context.getPackageModel().registerLambdaReturnType((LambdaExpr)newExpr, singleResult.getExprType());
                 }
 
                 addArgumentWithPreexistingCheck(fromCall, singleResult.getUsedDeclarations());
@@ -304,10 +303,7 @@ public class FromVisitor {
     }
 
     private Expression createUnitDataCall( String bindingId ) {
-        if (isLegacyRuleUnit()) {
-            return parseExpression( DrlxParseUtil.toVar( bindingId ) );
-        }
-        MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
-        return entryPointCall.addArgument( new StringLiteralExpr(bindingId) );
+        MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
+        return entryPointCall.addArgument( toStringLiteral(bindingId) );
     }
 }

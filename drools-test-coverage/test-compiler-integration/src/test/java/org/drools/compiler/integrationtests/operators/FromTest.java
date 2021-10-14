@@ -1015,4 +1015,43 @@ public class FromTest {
             ksession.dispose();
         }
     }
+
+    @Test
+    public void testUpdateFromCollect() {
+        // DROOLS-6504
+        final String drl =
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "import " + ClassWithValues.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "      $cwvs: List(size > 0) from collect (ClassWithValues(values.size == 0))\n" +
+                "      $values: List(size > 0) from collect (String())\n" +
+                "    then\n" +
+                "      \n" +
+                "      for (ClassWithValues cwv: (List<ClassWithValues>)$cwvs) {\n" +
+                "        cwv.add(\"not in memory\");\n" +
+                "        ((List<String>)$values).forEach(cwv::add);\n" +
+                "        update(cwv);\n" +
+                "      }\n" +
+                "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        ksession.insert(new ClassWithValues());
+        ksession.insert("test");
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static class ClassWithValues {
+        private List<String> values = new ArrayList<>();
+
+        public void add(String value) {
+            this.values.add(value);
+        }
+
+        public List<String> getValues() {
+            return this.values;
+        }
+    }
 }

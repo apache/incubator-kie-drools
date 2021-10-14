@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
+import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
+import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
 
 /**
@@ -32,7 +34,10 @@ public class MiningField implements Serializable {
     private final FIELD_USAGE_TYPE usageType;
     private final OP_TYPE opType;
     private final DATA_TYPE dataType;
+    private final MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod;
+    private final INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod;
     private final String missingValueReplacement;
+    private final String invalidValueReplacement;
     private final List<String> allowedValues;
     private final List<Interval> intervals;
 
@@ -40,14 +45,20 @@ public class MiningField implements Serializable {
                        final FIELD_USAGE_TYPE usageType,
                        final OP_TYPE opType,
                        final DATA_TYPE dataType,
+                       final MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod,
+                       final INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod,
                        final String missingValueReplacement,
+                       final String invalidValueReplacement,
                        final List<String> allowedValues,
                        final List<Interval> intervals) {
         this.name = name;
         this.usageType = usageType;
         this.opType = opType;
         this.dataType = dataType;
+        this.missingValueTreatmentMethod = missingValueTreatmentMethod;
+        this.invalidValueTreatmentMethod = invalidValueTreatmentMethod;
         this.missingValueReplacement = missingValueReplacement;
+        this.invalidValueReplacement = invalidValueReplacement;
         this.allowedValues = allowedValues;
         this.intervals = intervals;
     }
@@ -68,8 +79,20 @@ public class MiningField implements Serializable {
         return dataType;
     }
 
+    public MISSING_VALUE_TREATMENT_METHOD getMissingValueTreatmentMethod() {
+        return missingValueTreatmentMethod;
+    }
+
+    public INVALID_VALUE_TREATMENT_METHOD getInvalidValueTreatmentMethod() {
+        return invalidValueTreatmentMethod;
+    }
+
     public String getMissingValueReplacement() {
         return missingValueReplacement;
+    }
+
+    public String getInvalidValueReplacement() {
+        return invalidValueReplacement;
     }
 
     public List<String> getAllowedValues() {

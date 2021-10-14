@@ -21,7 +21,6 @@ import java.util.Map;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,6 +38,7 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementationProvider;
 import org.kie.pmml.models.drools.tree.evaluator.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
+import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +46,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class PMMLTreeModelEvaluatorTest {
 
@@ -81,7 +82,7 @@ public class PMMLTreeModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         kiePMMLModel = provider.getKiePMMLModel(PACKAGE_NAME,
-                                                pmml.getDataDictionary(),
+                                                getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                 pmml.getTransformationDictionary(),
                                                 (TreeModel) pmml.getModels().get(0),
                                                 new HasKnowledgeBuilderMock(knowledgeBuilder));

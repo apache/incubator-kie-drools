@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -53,7 +54,8 @@ public class JavaDialectTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs. Probably need to modify test code e.g. PredicateConstraint vs LambdaConstraint
+        // This test is explicitly designed for the Java Dialect as implemented in pure drl
+        // and doesn't make any sense to try to adapt it the executable model
         return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
     
@@ -89,10 +91,10 @@ public class JavaDialectTest {
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
-        if (constraint instanceof MVELConstraint ) {
-            FieldValue fieldVal = (( MVELConstraint ) constraint).getField();
-            assertEquals( "xxx", fieldVal.getValue() );
-        }
+        KieSession ksession = kbase.newKieSession();
+        ksession.insert(new Person("xxx"));
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
     }
     
 

@@ -28,10 +28,6 @@ import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.appformer.maven.support.AFReleaseId;
-import org.appformer.maven.support.AFReleaseIdImpl;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -41,12 +37,6 @@ import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.kie.memorycompiler.CompilationProblem;
-import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompiler;
-import org.kie.memorycompiler.JavaCompilerFactory;
-import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -65,10 +55,19 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
+import org.kie.util.maven.support.DependencyFilter;
+import org.kie.util.maven.support.PomModel;
+import org.kie.util.maven.support.ReleaseIdImpl;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.resources.KiePath;
+import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 import static org.drools.core.util.Drools.hasXSTream;
 import static org.drools.core.util.StringUtils.codeAwareIndexOf;
 
@@ -86,6 +85,8 @@ public class KieBuilderImpl
     private static final String RESOURCES_ROOT_DOT_SEPARATOR = RESOURCES_ROOT.replace( '/', '.' );
     private static final String SPRING_BOOT_ROOT = "BOOT-INF.classes.";
 
+    private static final KiePath POM_PATH = KiePath.of("pom.xml");
+
     private static final String[] SUPPORTED_RESOURCES_ROOTS = new String[] { RESOURCES_ROOT_DOT_SEPARATOR, SPRING_BOOT_ROOT };
 
     private ResultsImpl results;
@@ -96,7 +97,7 @@ public class KieBuilderImpl
     private InternalKieModule kModule;
 
     private byte[] pomXml;
-    private AFReleaseId releaseId;
+    private ReleaseId releaseId;
 
     private KieModuleModel kModuleModel;
 
@@ -166,8 +167,8 @@ public class KieBuilderImpl
 
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
-            for ( AFReleaseId dep : actualPomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
-                KieModule depModule = repository.getKieModule( adapt( dep, actualPomModel ), actualPomModel );
+            for ( ReleaseId dep : actualPomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
+                KieModule depModule = repository.getKieModule( dep, actualPomModel );
                 if ( depModule != null ) {
                     addKieDependency( depModule );
                 }
@@ -224,7 +225,7 @@ public class KieBuilderImpl
             addKBasesFilesToTrg();
             markSource();
 
-            MemoryKieModule memoryKieModule = new MemoryKieModule( adapt( releaseId ), kModuleModel, trgMfs );
+            MemoryKieModule memoryKieModule = new MemoryKieModule( releaseId, kModuleModel, trgMfs );
 
             if ( kieDependencies != null && !kieDependencies.isEmpty() ) {
                 for ( KieModule kieModule : kieDependencies ) {
@@ -242,7 +243,7 @@ public class KieBuilderImpl
             
             compileJavaClasses( kProject.getClassLoader(), classFilter );
 
-            buildKieProject( results, kProject, trgMfs );
+            buildKieProject( kProject.createBuildContext(results), kProject, trgMfs );
             kModule = kProject.getInternalKieModule();
         }
         return this;
@@ -260,29 +261,29 @@ public class KieBuilderImpl
         CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
     }
 
-    public static String getCompilationCachePath( AFReleaseId releaseId,
+    public static String getCompilationCachePath( ReleaseId releaseId,
                                                   String kbaseName ) {
-        return ( (AFReleaseIdImpl) releaseId ).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
+        return ( (ReleaseIdImpl) releaseId ).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
     }
 
     public static void buildKieModule( InternalKieModule kModule,
-                                       ResultsImpl messages ) {
-        buildKieProject( messages, new KieModuleKieProject( kModule ), null );
+                                       BuildContext buildContext ) {
+        buildKieProject( buildContext, new KieModuleKieProject( kModule ), null );
     }
 
-    private static void buildKieProject( ResultsImpl messages,
+    private static void buildKieProject( BuildContext buildContext,
                                          KieModuleKieProject kProject,
                                          MemoryFileSystem trgMfs ) {
         kProject.init();
-        kProject.verify( messages );
+        kProject.verify( buildContext );
 
-        if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
+        if ( buildContext.getMessages().filterMessages( Level.ERROR ).isEmpty() ) {
             InternalKieModule kModule = kProject.getInternalKieModule();
             if ( trgMfs != null ) {
                 if (hasXSTream()) {
                     CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
                 }
-                kProject.writeProjectOutput(trgMfs, messages);
+                kProject.writeProjectOutput(trgMfs, buildContext);
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
             kieRepository.addKieModule( kModule );
@@ -293,26 +294,25 @@ public class KieBuilderImpl
     }
 
     private void addKBasesFilesToTrg() {
-        for ( String fileName : srcMfs.getFileNames() ) {
-            String normalizedName = fileName.replace( File.separatorChar, '/' );
-            if ( normalizedName.startsWith( RESOURCES_ROOT ) ) {
-                copySourceToTarget( normalizedName );
+        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+            if ( filePath.startsWith( RESOURCES_ROOT ) ) {
+                copySourceToTarget( filePath );
             }
         }
     }
 
-    String copySourceToTarget( String fileName ) {
-        if ( !fileName.startsWith( RESOURCES_ROOT ) ) {
+    String copySourceToTarget( KiePath filePath ) {
+        if ( !filePath.startsWith( RESOURCES_ROOT ) ) {
             return null;
         }
-        Resource resource = getResource( srcMfs, fileName );
-        String trgFileName = fileName.substring( RESOURCES_ROOT.length() );
+        Resource resource = getResource( srcMfs, filePath );
+        KiePath trgFileName = filePath.substring( RESOURCES_ROOT.length() );
         if ( resource != null ) {
             trgMfs.write( trgFileName, resource, true );
         } else {
             trgMfs.remove( trgFileName );
         }
-        return trgFileName;
+        return trgFileName.asString();
     }
 
     public void setkModule( final MemoryKieModule kModule ) {
@@ -333,14 +333,14 @@ public class KieBuilderImpl
         }
         trgMfs = trgMfs.clone();
         init(pomModel);
-        kModule = kModule.cloneForIncrementalCompilation( adapt( releaseId ), kModuleModel, trgMfs );
+        kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs );
     }
 
     private void addMetaInfBuilder() {
-        for ( String fileName : srcMfs.getFileNames()) {
-            if ( fileName.startsWith( RESOURCES_ROOT ) && !isKieExtension( fileName ) ) {
-                trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
-                              getResource( srcMfs, fileName ),
+        for ( KiePath filePath : srcMfs.getFilePaths()) {
+            if ( filePath.startsWith( RESOURCES_ROOT ) && !isKieExtension( filePath.asString() ) ) {
+                trgMfs.write( filePath.substring( RESOURCES_ROOT.length() ),
+                              getResource( srcMfs, filePath ),
                               true );
             }
         }
@@ -578,8 +578,8 @@ public class KieBuilderImpl
      */
     public void setPomModel( PomModel pomModel ) {
         this.pomModel = pomModel;
-        if ( srcMfs.isAvailable( "pom.xml" ) ) {
-            this.pomXml = srcMfs.getBytes( "pom.xml" );
+        if ( srcMfs.isAvailable( POM_PATH ) ) {
+            this.pomXml = srcMfs.getBytes( POM_PATH );
         }
     }
 
@@ -604,15 +604,15 @@ public class KieBuilderImpl
     }
 
     public static void validatePomModel( PomModel pomModel ) {
-        AFReleaseId pomReleaseId = pomModel.getReleaseId();
+        ReleaseId pomReleaseId = pomModel.getReleaseId();
         if ( StringUtils.isEmpty( pomReleaseId.getGroupId() ) || StringUtils.isEmpty( pomReleaseId.getArtifactId() ) || StringUtils.isEmpty( pomReleaseId.getVersion() ) ) {
             throw new RuntimeException( "Maven pom.properties exists but ReleaseId content is malformed" );
         }
     }
 
     public static byte[] getOrGeneratePomXml( ResourceReader mfs ) {
-        if ( mfs.isAvailable( "pom.xml" ) ) {
-            return mfs.getBytes( "pom.xml" );
+        if ( mfs.isAvailable( POM_PATH ) ) {
+            return mfs.getBytes( POM_PATH );
         } else {
             // There is no pom.xml, and thus no ReleaseId, so generate a pom.xml from the global detault.
             return generatePomXml( KieServices.Factory.get().getRepository().getDefaultReleaseId() ).getBytes( IoUtils.UTF8_CHARSET );
@@ -623,7 +623,7 @@ public class KieBuilderImpl
         addMetaInfBuilder();
 
         if ( pomXml != null ) {
-            AFReleaseIdImpl g = (AFReleaseIdImpl) releaseId;
+            ReleaseIdImpl g = (ReleaseIdImpl) releaseId;
             trgMfs.write( g.getPomXmlPath(),
                           pomXml,
                           true );
@@ -640,7 +640,7 @@ public class KieBuilderImpl
         }
     }
 
-    public static String generatePomXml( AFReleaseId releaseId ) {
+    public static String generatePomXml( ReleaseId releaseId ) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" );
         sBuilder.append( "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n" );
@@ -666,7 +666,7 @@ public class KieBuilderImpl
         return sBuilder.toString();
     }
 
-    public static String generatePomProperties( AFReleaseId releaseId ) {
+    public static String generatePomProperties( ReleaseId releaseId ) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append( "groupId=" );
         sBuilder.append( releaseId.getGroupId() );
@@ -685,23 +685,22 @@ public class KieBuilderImpl
 
     private void compileJavaClasses( ClassLoader classLoader, Predicate<String> classFilter ) {
         List<String> classFiles = new ArrayList<>();
-        for ( String fileName : srcMfs.getFileNames() ) {
-            if ( fileName.endsWith( ".class" ) ) {
-                trgMfs.write( fileName,
-                              getResource( srcMfs, fileName ),
+        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+            if ( filePath.endsWith( ".class" ) ) {
+                trgMfs.write( filePath,
+                              getResource( srcMfs, filePath ),
                               true );
-                classFiles.add( fileName.substring( 0,
-                                                    fileName.length() - ".class".length() ) );
+                classFiles.add( filePath.substring( 0, filePath.asString().length() - ".class".length() ).asString() );
             }
         }
 
         List<String> javaFiles = new ArrayList<>();
         List<String> javaTestFiles = new ArrayList<>();
-        for ( String fileName : srcMfs.getFileNames() ) {
+        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+            String fileName = filePath.asString();
             if ( isJavaSourceFile( fileName )
                     && noClassFileForGivenSourceFile( classFiles, fileName )
                     && notVetoedByFilter( classFilter, fileName ) ) {
-                fileName = fileName.replace( File.separatorChar, '/' );
 
                 if ( !fileName.startsWith( JAVA_ROOT ) && !fileName.startsWith( JAVA_TEST_ROOT ) ) {
                     results.addMessage( Level.WARNING, fileName, "Found Java file out of the Java source folder: \"" + fileName + "\"" );
@@ -818,7 +817,7 @@ public class KieBuilderImpl
         return new KieBuilderSetImpl( this ).build();
     }
 
-    private static Resource getResource( ResourceReader resourceReader, String pResourceName ) {
+    private static Resource getResource( ResourceReader resourceReader, KiePath pResourceName ) {
         if (resourceReader instanceof MemoryFileSystem) {
             return (( MemoryFileSystem ) resourceReader).getResource( pResourceName );
         }

@@ -114,7 +114,7 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public String toString() {
-        return evaluator.toString();
+        return "[" + evaluator.toString() + ", " + predicateInformation.getStringConstraint() + "]";
     }
 
     @Override
@@ -175,20 +175,28 @@ public class LambdaConstraint extends AbstractConstraint {
         try {
             return evaluator.evaluate(handle, workingMemory);
         } catch (RuntimeException e) {
-            throw predicateInformation.betterErrorMessage(e);
+            throw new ConstraintEvaluationException(predicateInformation, e);
         }
     }
 
     @Override
     public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
         LambdaContextEntry lambdaContext = ((LambdaContextEntry) context);
-        return evaluator.evaluate(handle, lambdaContext.getTuple(), lambdaContext.getWorkingMemory());
+        try {
+            return evaluator.evaluate(handle, lambdaContext.getTuple(), lambdaContext.getWorkingMemory());
+        } catch (RuntimeException e) {
+            throw new ConstraintEvaluationException(predicateInformation, e);
+        }
     }
 
     @Override
     public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
         LambdaContextEntry lambdaContext = ((LambdaContextEntry) context);
-        return evaluator.evaluate(lambdaContext.getHandle(), tuple, lambdaContext.getWorkingMemory());
+        try {
+            return evaluator.evaluate(lambdaContext.getHandle(), tuple, lambdaContext.getWorkingMemory());
+        } catch (RuntimeException e) {
+            throw new ConstraintEvaluationException(predicateInformation, e);
+        }
     }
 
     @Override
@@ -258,6 +266,10 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public int hashCode() {
         return evaluator.hashCode();
+    }
+
+    public PredicateInformation getPredicateInformation() {
+        return predicateInformation;
     }
 
     public static class LambdaContextEntry implements ContextEntry {

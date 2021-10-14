@@ -17,7 +17,7 @@
  */
 package org.drools.compiler.rule.builder.dialect.java.parser;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,8 +38,8 @@ public class JavaLocalDeclarationDescr {
         this.start = start;
         this.end = end;
         this.type = type;
-        this.modifiers = new LinkedList<String>();
-        this.identifiers = new LinkedList<IdentifierDescr>();
+        this.modifiers = new ArrayList<String>();
+        this.identifiers = new ArrayList<IdentifierDescr>();
     }
 
     public int getEnd() {

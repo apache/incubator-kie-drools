@@ -32,7 +32,6 @@ import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 
@@ -92,14 +91,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         this.subrule = subrule;
         this.consequenceName = context.getConsequenceName();
         initDeclarations();
-
-        Consequence consequence = consequenceName == null || consequenceName.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ?
-                rule.getConsequence() :
-                rule.getNamedConsequence(consequenceName);
-        if ( consequence != null) {
-            // This can only be null certain mock unit tests
-            consequence.initDeclarations(requiredDeclarations);
-        }
 
         this.subruleIndex = subruleIndex;
 
@@ -289,7 +280,11 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
     private int calculateHashCode() {
-        return 31 * this.rule.hashCode() + (consequenceName == null ? 0 : 37 * consequenceName.hashCode());
+        int result = 31 * rule.hashCode();
+        result = 31 * result + subruleIndex;
+        result = 31 * result + (consequenceName != null ? consequenceName.hashCode() : 0);
+
+        return result;
     }
 
     @Override
@@ -302,7 +297,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             return false;
         }
         final RuleTerminalNode other = (RuleTerminalNode) object;
-        return rule.equals(other.rule) && (consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName));
+        return subruleIndex == other.subruleIndex && rule.equals(other.rule) && (consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName));
     }
 
     public short getType() {

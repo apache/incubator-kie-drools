@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.imports;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Function;
@@ -34,11 +35,11 @@ import org.slf4j.LoggerFactory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
@@ -431,6 +432,33 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("is yes no collection of ps?").getResult(), is(false));
         assertThat(evaluateAll.getDecisionResultByName("is yes yes persons?").getResult(), is(true));
         assertThat(evaluateAll.getDecisionResultByName("is yes yes collection of ps?").getResult(), is(true));
+    }
+
+    @Test
+    public void testImportCalculation() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("baseSum.dmn",
+                                                                                       this.getClass(),
+                                                                                       "importingSum.dmn");
+
+        final DMNModel importedModel = runtime.getModel("https://kiegroup.org/dmn/_FCC62740-4998-47A2-B5F2-CB3E15C98419",
+                                                        "baseSum");
+        assertThat(importedModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
+
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_1D35A3BF-1DBD-4CD0-882A-CA068C6F2A67",
+                                                   "importingSum");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = runtime.newContext();
+        context.set("x", new BigDecimal(1));
+        context.set("y", new BigDecimal(2));
+
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("importing Decision").getResult(), is(new BigDecimal(3)));
     }
 }
 

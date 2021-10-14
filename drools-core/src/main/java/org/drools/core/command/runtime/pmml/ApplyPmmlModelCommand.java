@@ -27,21 +27,15 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLConstants;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.pmml.PMMLCommandExecutorFactory;
-import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 
 @XmlRootElement(name = "apply-pmml-model-command")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -136,40 +130,6 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
         if (requestData == null) {
             throw new IllegalStateException("ApplyPmmlModelCommand requires request data (PMMLRequestData) to execute");
         }
-        final PMMLConstants toInvoke = getToInvoke(context);
-        switch (toInvoke) {
-            case NEW:
-                return executePMMLTrusty(context);
-            case LEGACY:
-                return executePMMLLegacy(context);
-            default:
-                throw new IllegalArgumentException("Unmanaged PMMLConstants " + toInvoke);
-        }
-    }
-
-    protected PMMLConstants getToInvoke(Context context) {
-        ClassLoader classLoader = getClassLoader((RegistryContext) context);
-        return toEnable(classLoader);
-    }
-
-    private ClassLoader getClassLoader(RegistryContext registryContext) {
-        try {
-            KieSession kieSession = registryContext.lookup(KieSession.class);
-            InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
-            return kieBase.getRootClassLoader();
-        } catch (Exception e) {
-            logger.warn("Impossible to retrieve RootClassLoader, using ContextClassLoader {}", e.getMessage(), e);
-            return Thread.currentThread().getContextClassLoader();
-        }
-    }
-
-    protected PMML4Result executePMMLLegacy(Context context) {
-        return RuleUnitComponentFactory.get().newApplyPmmlModelCommandExecutor().execute(context, requestData,
-                                                                                         complexInputObjects,
-                                                                                         packageName, isMining());
-    }
-
-    protected PMML4Result executePMMLTrusty(Context context) {
         RegistryContext registryContext = (RegistryContext) context;
         PMML4Result toReturn = PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData, context);
         // Needed to update the ExecutionResultImpl and the Registry context,

@@ -426,14 +426,14 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
                 false);
     }
 
-    public static void invokeExtractor(MethodVisitor mv, String masterName, ClassDefinition core, FieldDefinition field) {
+    public static void invokeExtractor(MethodVisitor mv, String proxyName, ClassDefinition core, FieldDefinition field) {
         FieldDefinition tgtField = core.getFieldByAlias(field.resolveAlias());
         String fieldType = tgtField.getTypeName();
         String returnType = BuildUtils.getTypeDescriptor(fieldType);
 
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD,
-                          BuildUtils.getInternalType(masterName),
+                          BuildUtils.getInternalType(proxyName),
                           "object",
                           BuildUtils.getTypeDescriptor(core.getClassName()));
 
@@ -444,14 +444,14 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
                            false);
     }
 
-    public static void invokeInjector(MethodVisitor mv, String masterName, ClassDefinition core, FieldDefinition field, boolean toNull, int pointer) {
+    public static void invokeInjector(MethodVisitor mv, String proxyName, ClassDefinition core, FieldDefinition field, boolean toNull, int pointer) {
         FieldDefinition tgtField = core.getFieldByAlias(field.resolveAlias());
         String fieldType = tgtField.getTypeName();
         String returnType = BuildUtils.getTypeDescriptor(fieldType);
 
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD,
-                          BuildUtils.getInternalType(masterName),
+                          BuildUtils.getInternalType(proxyName),
                           "object",
                           BuildUtils.getTypeDescriptor(core.getName()));
 

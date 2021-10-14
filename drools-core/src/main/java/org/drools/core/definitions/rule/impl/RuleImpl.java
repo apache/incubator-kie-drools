@@ -23,11 +23,13 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,8 +59,6 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
-
-import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class RuleImpl implements Externalizable,
                                  Wireable,
@@ -135,7 +135,7 @@ public class RuleImpl implements Externalizable,
 
     private List<QueryImpl>          usedQueries;
 
-    private List<QueryImpl>          dependingQueries;
+    private Collection<QueryImpl>    dependingQueries;
 
     private int                      ruleFlags;
 
@@ -241,14 +241,14 @@ public class RuleImpl implements Externalizable,
      * by their relative dependencies, e.g. if R1 -> A -> B -> C (where the letter are queries)
      * it will return [C, B, A]
      */
-    public List<QueryImpl> getDependingQueries() {
+    public Collection<QueryImpl> getDependingQueries() {
         if (dependingQueries == null) {
-            dependingQueries = usedQueries == null ? Collections.emptyList() : collectDependingQueries(new LinkedList<>());
+            dependingQueries = usedQueries == null ? Collections.emptyList() : collectDependingQueries(new ArrayDeque<>());
         }
         return dependingQueries;
     }
 
-    protected List<QueryImpl> collectDependingQueries(LinkedList<QueryImpl> accumulator) {
+    protected Collection<QueryImpl> collectDependingQueries(Deque<QueryImpl> accumulator) {
         if (usedQueries == null) {
             return accumulator;
         }
@@ -866,9 +866,6 @@ public class RuleImpl implements Externalizable,
 
     public void setRuleUnitClassName( String ruleUnitClassName ) {
         this.ruleUnitClassName = ruleUnitClassName;
-        if (isLegacyRuleUnit()) {
-            setAgendaGroup( ruleUnitClassName );
-        }
     }
 
     public boolean hasRuleUnit() {

@@ -18,7 +18,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
@@ -29,8 +28,9 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.MVELDialectRuntimeData;
-import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELEvalExpression
     implements
@@ -43,7 +43,7 @@ public class MVELEvalExpression
     private MVELCompilationUnit unit;
     private String              id;
 
-    private Serializable        expr;
+    private MvelEvaluator<Boolean> evaluator;
 
     public MVELEvalExpression() {
     }
@@ -66,11 +66,11 @@ public class MVELEvalExpression
     }
 
     public void compile( MVELDialectRuntimeData runtimeData) {
-        expr = unit.getCompiledExpression( runtimeData );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData ) );
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule ) {
-        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
     public Object createContext() {
@@ -97,10 +97,7 @@ public class MVELEvalExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
-                                                                 null,
-                                                                 factory );
-        return result.booleanValue();
+        return evaluator.evaluate( factory );
     }
 
     public String toString() {
@@ -114,10 +111,9 @@ public class MVELEvalExpression
     }
 
     public MVELEvalExpression clone() {
-        MVELEvalExpression clone = new MVELEvalExpression( unit.clone(),
-                                                           id );
+        MVELEvalExpression clone = new MVELEvalExpression( unit.clone(), id );
         // expr should be stateless, so it should be fine to share the reference
-        clone.expr = expr;
+        clone.evaluator = evaluator;
         
         return clone;
     }
@@ -126,10 +122,9 @@ public class MVELEvalExpression
     public MVELEvalExpression clonePreservingDeclarations(EvalExpression original) {
         MVELCompilationUnit cloneUnit = unit.clone();
         cloneUnit.setPreviousDeclarations( ((MVELEvalExpression)original).unit.getPreviousDeclarations() );
-        MVELEvalExpression clone = new MVELEvalExpression( cloneUnit,
-                                                           id );
+        MVELEvalExpression clone = new MVELEvalExpression( cloneUnit, id );
         // expr should be stateless, so it should be fine to share the reference
-        clone.expr = expr;
+        clone.evaluator = evaluator;
 
         return clone;
     }
@@ -138,7 +133,7 @@ public class MVELEvalExpression
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        if ( expr == null ) {
+        if ( evaluator == null ) {
             throw new RuntimeException( "this MVELPredicateExpression must be compiled for hashCode" );
         }
         result = prime * result + unit.getExpression().hashCode();
@@ -151,12 +146,12 @@ public class MVELEvalExpression
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
 
-        if ( expr == null ) {
+        if ( evaluator == null ) {
             throw new RuntimeException( "this MVELReturnValueExpression must be compiled for equality" );
         }
 
         MVELEvalExpression other = (MVELEvalExpression) obj;
-        if ( other.expr == null ) {
+        if ( other.evaluator == null ) {
             throw new RuntimeException( "other MVELReturnValueExpression must be compiled for equality" );
         }
                 

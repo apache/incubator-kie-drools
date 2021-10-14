@@ -60,6 +60,16 @@ public class LambdaEvalExpression implements EvalExpression {
         return new LambdaEvalExpression( evaluator.clone() );
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return this == other || other != null && getClass() == other.getClass() && evaluator.equals( (( LambdaEvalExpression ) other).evaluator );
+    }
+
+    @Override
+    public int hashCode() {
+        return evaluator.hashCode();
+    }
+
     public static final EvalExpression EMPTY = new EvalExpression() {
         @Override
         public Object createContext() {

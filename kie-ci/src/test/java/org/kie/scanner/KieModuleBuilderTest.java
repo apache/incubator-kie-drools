@@ -34,7 +34,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.appformer.maven.integration.MavenRepository;
+import org.kie.maven.integration.MavenRepository;
 
 import static org.junit.Assert.assertTrue;
 
@@ -165,8 +165,9 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
 
         kfs.write("src/main/java/org/kie/test/Bean.java", createJavaSource(3));
 
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        System.out.println(kieBuilder.getResults().getMessages());
+        assertTrue(kieBuilder.getResults().getMessages().isEmpty());
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 

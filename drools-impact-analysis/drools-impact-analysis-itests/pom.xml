@@ -5,11 +5,13 @@
   <parent>
     <artifactId>drools-impact-analysis</artifactId>
     <groupId>org.drools</groupId>
-    <version>7.53.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>drools-impact-analysis-itests</artifactId>
+
+  <name>Drools :: Impact Analysis :: Integration Tests</name>
 
   <dependencies>
 
@@ -24,6 +26,10 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
     </dependency>
 
     <dependency>

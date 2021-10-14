@@ -228,7 +228,6 @@ public class GroupElementBuilder
         public void build(final BuildContext context,
                           final BuildUtils utils,
                           final RuleConditionElement rce) {
-            boolean existSubNetwort = false;
             final GroupElement not = (GroupElement) rce;
 
             final LeftTupleSource tupleSource = context.getTupleSource();
@@ -262,8 +261,6 @@ public class GroupElementBuilder
                 final List<BetaNodeFieldConstraint> predicates = new ArrayList<BetaNodeFieldConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
-                existSubNetwort = true;
-
             }
 
             NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
@@ -276,11 +273,11 @@ public class GroupElementBuilder
             // in each case
 
 
-            NotNode node = context.getComponentFactory().getNodeFactoryService().buildNotNode( context.getNextId(),
-                                                                                               context.getTupleSource(),
-                                                                                               context.getObjectSource(),
-                                                                                               betaConstraints,
-                                                                                               context );
+            NotNode node = nfactory.buildNotNode( context.getNextId(),
+                                                  context.getTupleSource(),
+                                                  context.getObjectSource(),
+                                                  betaConstraints,
+                                                  context );
 
             node.setEmptyBetaConstraints( context.getBetaconstraints().isEmpty() );
 
@@ -310,7 +307,6 @@ public class GroupElementBuilder
         public void build(final BuildContext context,
                           final BuildUtils utils,
                           final RuleConditionElement rce) {
-            boolean existSubNetwort = false;
             final GroupElement exists = (GroupElement) rce;
 
             final LeftTupleSource tupleSource = context.getTupleSource();
@@ -339,13 +335,9 @@ public class GroupElementBuilder
                 // restore tuple source from before the start of the sub network
                 context.setTupleSource( tupleSource );
 
-                // create a tuple start equals constraint and set it in the context
-                final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                final List<BetaNodeFieldConstraint> predicates = new ArrayList<BetaNodeFieldConstraint>();
-                predicates.add( constraint );
-                context.setBetaconstraints( predicates );
-                existSubNetwort = true;
 
+                final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
+                context.setBetaconstraints( betaConstraints ); // Empty list ensures EmptyBetaConstraints is assigned
             }
 
             NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
@@ -354,11 +346,11 @@ public class GroupElementBuilder
                                                                                     context.getBetaconstraints(),
                                                                                     false );
 
-            ExistsNode node = context.getComponentFactory().getNodeFactoryService().buildExistsNode(context.getNextId(),
-                                                                                                    context.getTupleSource(),
-                                                                                                    context.getObjectSource(),
-                                                                                                    betaConstraints,
-                                                                                                    context);
+            ExistsNode node = nfactory.buildExistsNode(context.getNextId(),
+                                                       context.getTupleSource(),
+                                                       context.getObjectSource(),
+                                                       betaConstraints,
+                                                       context);
 
             // then attach the EXISTS node. It will work both as a simple exists node
             // or as subnetwork join node as the context was set appropriatelly

@@ -73,6 +73,12 @@ public class Person implements Serializable {
         this.likes = likes;
     }
 
+    public Person(final String name, final int age, final BigDecimal salary) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+    }
+
     public int getId() {
         return id;
     }

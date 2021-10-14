@@ -17,6 +17,7 @@
 package org.drools.core.util;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 public class MethodUtils {
 
@@ -30,14 +31,15 @@ public class MethodUtils {
         }
     }
 
+    public static Optional<Method> getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
+        return Optional.ofNullable( findMethod(clazz, name, parameterTypes) );
+    }
+
     private static Method getBestCandidate(Class clazz, Class[] argsType, String methodName) {
         return getBestCandidate(clazz, argsType, methodName, clazz.getMethods());
     }
 
     private static Method getBestCandidate(Class clazz, Class[] argsType, String methodName, Method[] methods) {
-        if (methods.length == 0) {
-            return null;
-        }
         final Method bestCandidate = getBestCandidateMethod(methodName, argsType, methods, null);
         if (bestCandidate != null) {
             return bestCandidate;
@@ -56,31 +58,31 @@ public class MethodUtils {
                                                  final Class[] argsType,
                                                  final Method[] methods,
                                                  final Method oldBestCandidate) {
-        Class<?>[] parmTypes;
+        Class<?>[] parameterTypes;
         int bestScore = -1;
         Method bestCandidate = oldBestCandidate;
-        for (final Method meth : methods) {
-            if (methodName.equals(meth.getName())) {
-                parmTypes = meth.getParameterTypes();
-                if (parmTypes.length == 0 && argsType.length == 0) {
-                    if (bestCandidate == null || isMoreSpecialized(meth, bestCandidate) ) {
-                        bestCandidate = meth;
+        for (final Method method : methods) {
+            if (methodName.equals(method.getName())) {
+                parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length == 0 && argsType.length == 0) {
+                    if (bestCandidate == null || isMoreSpecialized(method, bestCandidate) ) {
+                        bestCandidate = method;
                     }
                     continue;
                 }
 
-                final boolean isVarArgs = meth.isVarArgs();
-                if ( isArgsNumberNotCompatible( argsType, parmTypes, isVarArgs ) ) {
+                final boolean isVarArgs = method.isVarArgs();
+                if ( isArgsNumberNotCompatible( argsType, parameterTypes, isVarArgs ) ) {
                     continue;
                 }
 
-                final int score = getMethodScore(argsType, parmTypes, isVarArgs);
+                final int score = getMethodScore(argsType, parameterTypes, isVarArgs);
                 if (score != 0) {
                     if (score > bestScore) {
-                        bestCandidate = meth;
+                        bestCandidate = method;
                         bestScore = score;
-                    } else if ((score == bestScore) && (isMoreSpecialized(meth, bestCandidate) && !isVarArgs)) {
-                        bestCandidate = meth;
+                    } else if ((score == bestScore) && (isMoreSpecialized(method, bestCandidate) && !isVarArgs)) {
+                        bestCandidate = method;
                     }
                 }
             }
@@ -88,8 +90,8 @@ public class MethodUtils {
         return bestCandidate;
     }
 
-    private static boolean isArgsNumberNotCompatible(Class[] arguments, Class<?>[] parmTypes, boolean isVarArgs ) {
-        return ( isVarArgs && parmTypes.length-1 > arguments.length ) || ( !isVarArgs && parmTypes.length != arguments.length );
+    private static boolean isArgsNumberNotCompatible(Class[] arguments, Class<?>[] parameterTypes, boolean isVarArgs ) {
+        return ( isVarArgs && parameterTypes.length-1 > arguments.length ) || ( !isVarArgs && parameterTypes.length != arguments.length );
     }
 
     private static boolean isMoreSpecialized(Method newCandidate, Method oldCandidate ) {
@@ -97,14 +99,14 @@ public class MethodUtils {
                 oldCandidate.getDeclaringClass().isAssignableFrom( newCandidate.getDeclaringClass());
     }
 
-    private static int getMethodScore(Class[] arguments, Class<?>[] parmTypes, boolean varArgs) {
+    private static int getMethodScore(Class[] arguments, Class<?>[] parameterTypes, boolean varArgs) {
         int score = 0;
         for (int i = 0; i != arguments.length; i++) {
             Class<?> actualParamType;
-            if (varArgs && i >= parmTypes.length - 1)
-                actualParamType = parmTypes[parmTypes.length - 1].getComponentType();
+            if (varArgs && i >= parameterTypes.length - 1)
+                actualParamType = parameterTypes[parameterTypes.length - 1].getComponentType();
             else
-                actualParamType = parmTypes[i];
+                actualParamType = parameterTypes[i];
 
             if (arguments[i] == null) {
                 if (!actualParamType.isPrimitive()) {
@@ -154,7 +156,7 @@ public class MethodUtils {
                 break;
             }
         }
-        if (score == 0 && varArgs && parmTypes.length - 1 == arguments.length) {
+        if (score == 0 && varArgs && parameterTypes.length - 1 == arguments.length) {
             score += 3;
         }
         return score;
@@ -195,11 +197,11 @@ public class MethodUtils {
                 ( actualParamType == short.class && primitiveArgument == byte.class );
     }
 
-    private static boolean isNumericallyCoercible(Class target, Class parm) {
+    private static boolean isNumericallyCoercible(Class target, Class parameterMethod) {
         Class boxedTarget = target.isPrimitive() ? boxPrimitive(target) : target;
 
         if (boxedTarget != null && Number.class.isAssignableFrom(target)) {
-            if ((boxedTarget = parm.isPrimitive() ? boxPrimitive(parm) : parm) != null) {
+            if ((boxedTarget = parameterMethod.isPrimitive() ? boxPrimitive(parameterMethod) : parameterMethod) != null) {
                 return Number.class.isAssignableFrom(boxedTarget);
             }
         }
@@ -329,6 +331,12 @@ public class MethodUtils {
         if (primitive == char.class) return boxed == Character.class;
         if (primitive == boolean.class) return boxed == Boolean.class;
         return false;
+    }
+
+    public static boolean isOverride(Method oldMethod, Method newMethod) {
+        return oldMethod.getName().equals(newMethod.getName()) &&
+               !oldMethod.getDeclaringClass().equals(newMethod.getDeclaringClass()) &&
+               oldMethod.getDeclaringClass().isAssignableFrom(newMethod.getDeclaringClass());
     }
 
     public interface NullType { }

@@ -16,18 +16,26 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
+import java.util.Optional;
+
 import org.drools.ancompiler.CompiledNetwork;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.decisiontables.DecisionTable;
+import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 
 public interface DMNCompiledAlphaNetwork {
 
     void initRete();
 
-    CompiledNetwork createCompiledAlphaNetwork(AlphaNetDMNEvaluatorCompiler compiler);
-
     void setCompiledAlphaNetwork(CompiledNetwork compiledAlphaNetwork);
 
-    Object evaluate(EvaluationContext evalCtx);
+    ObjectTypeNode getObjectTypeNode();
+
+    Optional<InvalidInputEvent> validate(EvaluationContext evaluationContext);
+
+    Object evaluate(EvaluationContext evaluationContext, DecisionTable decisionTable);
 
     ResultCollector getResultCollector();
+
 }

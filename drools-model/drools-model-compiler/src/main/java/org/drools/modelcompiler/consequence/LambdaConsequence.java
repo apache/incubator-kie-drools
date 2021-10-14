@@ -36,10 +36,10 @@ public class LambdaConsequence implements Consequence {
 
     // Enable the optimization to extract from the activation tuple the arguments to be passed to this
     // consequence in linear time by traversing the tuple only once.
-    private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION = true;
+    private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIEVAL_OPTIMIZATION = true;
 
     private final org.drools.model.Consequence consequence;
-    private boolean              enabledTupleOptimization;
+    private final boolean        enabledTupleOptimization;
     private Declaration[]        requiredDeclarations;
 
     private TupleFactSupplier[] factSuppliers;
@@ -50,12 +50,7 @@ public class LambdaConsequence implements Consequence {
 
     public LambdaConsequence( org.drools.model.Consequence consequence, boolean enabledTupleOptimization) {
         this.consequence = consequence;
-        this.enabledTupleOptimization = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION & enabledTupleOptimization;
-    }
-
-    @Override
-    public void initDeclarations(Declaration[] requiredDeclarations) {
-        this.requiredDeclarations = enabledTupleOptimization ? requiredDeclarations : null;
+        this.enabledTupleOptimization = ENABLE_LINEARIZED_ARGUMENTS_RETRIEVAL_OPTIMIZATION & enabledTupleOptimization;
     }
 
     @Override
@@ -65,15 +60,19 @@ public class LambdaConsequence implements Consequence {
 
     @Override
     public void evaluate( KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory ) throws Exception {
-        Object[] facts;
         if ( this.requiredDeclarations == null ) {
             Declaration[] declarations = (( RuleTerminalNode ) knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
-            facts = declarationsToFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
-        } else {
-            // declarations is not null when first level rule is AND so it is possible to calculate them upfront
-            facts = fetchFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory );
+            if (enabledTupleOptimization) {
+                this.requiredDeclarations = declarations;
+            } else {
+                Object[] facts = declarationsToFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
+                consequence.getBlock().execute( facts );
+                return;
+            }
         }
-        consequence.getBlock().execute( facts );
+
+        // declarations is not null when first level rule is AND so it is possible to calculate them upfront
+        consequence.getBlock().execute( fetchFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory ) );
     }
 
     public static Object[] declarationsToFacts( WorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars ) {
@@ -283,7 +282,7 @@ public class LambdaConsequence implements Consequence {
         @Override
         public int compareTo( TupleFactSupplier o ) {
             // Sorted from the one extracting a fact from the bottom of the tuple to the one reading from its top
-            // In this way the whole tuple can be traversed only once to retrive all facts
+            // In this way the whole tuple can be traversed only once to retrieve all facts
             return o.declarationTupleIndex - declarationTupleIndex;
         }
     }

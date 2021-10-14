@@ -14,6 +14,7 @@
  */
 
 package org.drools.compiler.integrationtests;
+
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
@@ -30,7 +31,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -62,6 +62,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
+import org.kie.util.maven.support.ReleaseIdImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 

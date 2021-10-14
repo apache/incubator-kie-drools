@@ -17,7 +17,6 @@
 package org.drools.core.reteoo.builder;
 
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -41,7 +40,6 @@ public class AccumulateBuilder
                       final BuildUtils utils,
                       final RuleConditionElement rce) {
         final Accumulate accumulate = (Accumulate) rce;
-        boolean existSubNetwort = false;
         context.pushRuleComponent( accumulate );
 
         final List<BetaNodeFieldConstraint> resultBetaConstraints = context.getBetaconstraints();
@@ -81,11 +79,8 @@ public class AccumulateBuilder
             context.setTupleSource( tupleSource );
 
             // create a tuple start equals constraint and set it in the context
-            final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-            final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<BetaNodeFieldConstraint>();
-            betaConstraints.add( constraint );
-            context.setBetaconstraints( betaConstraints );
-            existSubNetwort = true;
+            final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
+            context.setBetaconstraints( betaConstraints ); // Empty list ensures EmptyBetaConstraints is assigned
         }
 
         NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
@@ -104,7 +99,6 @@ public class AccumulateBuilder
                                                               sourceBinder,
                                                               resultsBinder,
                                                               accumulate,
-                                                              existSubNetwort,
                                                               context);
 
         context.setTupleSource( utils.attachNode( context, accNode ) );

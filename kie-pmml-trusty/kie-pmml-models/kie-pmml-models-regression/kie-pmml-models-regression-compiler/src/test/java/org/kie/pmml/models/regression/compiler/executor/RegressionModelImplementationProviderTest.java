@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.dmg.pmml.Field;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
@@ -45,6 +46,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class RegressionModelImplementationProviderTest {
 
@@ -75,7 +77,7 @@ public class RegressionModelImplementationProviderTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
-                                                                          pmml.getDataDictionary(),
+                                                                          getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                           pmml.getTransformationDictionary(),
                                                                           (RegressionModel) pmml.getModels().get(0),
                                                                           new HasClassLoaderMock());
@@ -92,7 +94,7 @@ public class RegressionModelImplementationProviderTest {
         final String packageName = "packagename";
         final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelWithSources(
                 packageName,
-                pmml.getDataDictionary(),
+                getFieldsFromDataDictionary(pmml.getDataDictionary()),
                 pmml.getTransformationDictionary(),
                 (RegressionModel) pmml.getModels().get(0), new HasClassLoaderMock());
         assertNotNull(retrieved);
@@ -146,15 +148,16 @@ public class RegressionModelImplementationProviderTest {
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
         regressionModel.getRegressionTables().clear();
+        final List<Field<?>> fields = getFieldsFromDataDictionary(pmml.getDataDictionary());
         try {
-            PROVIDER.validate(pmml.getDataDictionary(), regressionModel);
+            PROVIDER.validate(fields, regressionModel);
             fail("Expecting validation failure due to missing RegressionTables");
         } catch (KiePMMLException e) {
             // Expected
         }
         regressionModel = new RegressionModel(regressionModel.getMiningFunction(), regressionModel.getMiningSchema(), null);
         try {
-            PROVIDER.validate(pmml.getDataDictionary(), regressionModel);
+            PROVIDER.validate(fields, regressionModel);
             fail("Expecting validation failure due to missing RegressionTables");
         } catch (KiePMMLException e) {
             // Expected
@@ -166,7 +169,7 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-        PROVIDER.validate(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0));
+        PROVIDER.validate(getFieldsFromDataDictionary(pmml.getDataDictionary()), (RegressionModel) pmml.getModels().get(0));
     }
 
 }

@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
@@ -51,6 +50,7 @@ import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
 import static org.drools.reflective.classloader.ProjectClassLoader.findParentClassLoader;

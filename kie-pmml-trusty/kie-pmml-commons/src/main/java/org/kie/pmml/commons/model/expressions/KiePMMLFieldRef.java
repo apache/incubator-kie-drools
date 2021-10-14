@@ -19,11 +19,18 @@ import java.util.List;
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
+import static org.kie.pmml.commons.model.expressions.ExpressionsUtils.getFromPossibleSources;
+
+/**
+ * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_FieldRef>FieldRef</a>
+ */
 public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
-    private final String mapMissingTo;
+    private static final long serialVersionUID = 4576394527423997787L;
+    private String mapMissingTo;
 
     public KiePMMLFieldRef(String name, List<KiePMMLExtension> extensions, String mapMissingTo) {
         super(name, extensions);
@@ -32,6 +39,12 @@ public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMML
 
     public String getMapMissingTo() {
         return mapMissingTo;
+    }
+
+    @Override
+    public Object evaluate(final ProcessingDTO processingDTO) {
+        return getFromPossibleSources(name, processingDTO)
+                .orElse(mapMissingTo);
     }
 
     @Override
@@ -62,4 +75,5 @@ public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMML
     public int hashCode() {
         return Objects.hash(super.hashCode(), mapMissingTo);
     }
+
 }

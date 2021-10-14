@@ -38,7 +38,7 @@ global VerifierReport result;
 rule "Named consequence declared, but not used"
     when
         $consequence : NamedConsequence( )
-        $rule :VerifierRule( namedConsequences not contains $consequence.name )
+        $rule :VerifierRule( namedConsequences.keySet not contains $consequence.name )
     then
         Map impactedRules = new HashMap();
         impactedRules.put( $rule.getPath(), $rule.getName());

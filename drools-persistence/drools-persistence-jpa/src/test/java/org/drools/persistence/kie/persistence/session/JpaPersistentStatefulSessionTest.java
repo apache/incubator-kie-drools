@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
+
+import org.assertj.core.api.Assertions;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.FireAllRulesInterceptor;
@@ -45,6 +47,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
@@ -73,7 +76,6 @@ import static org.junit.Assert.assertTrue;
 public class JpaPersistentStatefulSessionTest {
 
     private static Logger logger = LoggerFactory.getLogger(JpaPersistentStatefulSessionTest.class);
-    
     private Map<String, Object> context;
     private Environment env;
     private boolean locking;
@@ -485,6 +487,236 @@ public class JpaPersistentStatefulSessionTest {
 
         public List<String> getExits() {
             return exits;
+        }
+    }
+
+    @Test
+    public void testFamilyRulesSerialization() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+
+        Resource drlResource = ks.getResources().newClassPathResource("family_rules.drl", JpaPersistentStatefulSessionTest.class);
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drlResource );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
+        KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
+        //KieSession ksession = kbase.newKieSession();
+
+        FactType manType = kbase.getFactType(this.getClass().getPackage().getName(), "Man");
+        assertNotNull(manType);
+        FactType womanType = kbase.getFactType(this.getClass().getPackage().getName(), "Woman");
+        assertNotNull(womanType);
+        FactType parentType = kbase.getFactType(this.getClass().getPackage().getName(), "Parent");
+        assertNotNull(parentType);
+
+        // create working memory objects
+        List<Command<?>> commands = new ArrayList<Command<?>>();
+
+        FamilyListHolder listHolder = new FamilyListHolder();
+        commands.add(CommandFactory.newInsert(listHolder));
+
+        // parents
+        Object parent1 = parentType.newInstance();
+        parentType.set(parent1, "parent", "Eva");
+        parentType.set(parent1, "child", "Abel");
+        commands.add(CommandFactory.newInsert(parent1));
+
+        Object parent2 = parentType.newInstance();
+        parentType.set(parent2, "parent", "Eva");
+        parentType.set(parent2, "child", "Kain");
+        commands.add(CommandFactory.newInsert(parent2));
+
+        Object parent3 = parentType.newInstance();
+        parentType.set(parent3, "parent", "Adam");
+        parentType.set(parent3, "child", "Abel");
+        commands.add(CommandFactory.newInsert(parent3));
+
+        Object parent4 = parentType.newInstance();
+        parentType.set(parent4, "parent", "Adam");
+        parentType.set(parent4, "child", "Kain");
+        commands.add(CommandFactory.newInsert(parent4));
+
+        Object parent5 = parentType.newInstance();
+        parentType.set(parent5, "parent", "Abel");
+        parentType.set(parent5, "child", "Josef");
+        commands.add(CommandFactory.newInsert(parent5));
+
+        // persons
+        Object adam = manType.newInstance();
+        manType.set(adam, "name", "Adam");
+        commands.add(CommandFactory.newInsert(adam));
+
+        Object eva = womanType.newInstance();
+        womanType.set(eva, "name", "Eva");
+        womanType.set(eva, "age", 101);
+        commands.add(CommandFactory.newInsert(eva));
+
+        Object abel = manType.newInstance();
+        manType.set(abel, "name", "Abel");
+        commands.add(CommandFactory.newInsert(abel));
+
+        Object kain = manType.newInstance();
+        manType.set(kain, "name", "Kain");
+        commands.add(CommandFactory.newInsert(kain));
+
+        Object josef = manType.newInstance();
+        manType.set(josef, "name", "Josef");
+        commands.add(CommandFactory.newInsert(josef));
+
+        // fire all rules
+        commands.add(CommandFactory.newFireAllRules());
+        ksession.execute(CommandFactory.newBatchExecution(commands));
+
+        // asserts
+        List<String> manList = listHolder.getManList();
+        Assertions.assertThat(manList.size()).isEqualTo(4);
+        Assertions.assertThat(manList.contains("Adam")).isTrue();
+        Assertions.assertThat(manList.contains("Kain")).isTrue();
+        Assertions.assertThat(manList.contains("Abel")).isTrue();
+        Assertions.assertThat(manList.contains("Josef")).isTrue();
+
+        List<String> personList = listHolder.getPersonList();
+        Assertions.assertThat(personList.size()).isEqualTo(5);
+        Assertions.assertThat(personList.contains("Adam")).isTrue();
+        Assertions.assertThat(personList.contains("Kain")).isTrue();
+        Assertions.assertThat(personList.contains("Abel")).isTrue();
+        Assertions.assertThat(personList.contains("Josef")).isTrue();
+        Assertions.assertThat(personList.contains("Eva")).isTrue();
+
+        List<String> parentList = listHolder.getParentList();
+        Assertions.assertThat(parentList.size()).isEqualTo(5);
+        Assertions.assertThat(parentList.contains("Adam")).isTrue();
+        Assertions.assertThat(parentList.contains("Eva")).isTrue();
+        Assertions.assertThat(parentList.contains("Abel")).isTrue();
+
+        List<String> motherList = listHolder.getMotherList();
+        Assertions.assertThat(motherList.size()).isEqualTo(2);
+        Assertions.assertThat(motherList.contains("Eva")).isTrue();
+
+        List<String> fatherList = listHolder.getFatherList();
+        Assertions.assertThat(fatherList.size()).isEqualTo(3);
+        Assertions.assertThat(fatherList.contains("Adam")).isTrue();
+        Assertions.assertThat(fatherList.contains("Abel")).isTrue();
+        Assertions.assertThat(fatherList.contains("Eva")).isFalse();
+        Assertions.assertThat(fatherList.contains("Kain")).isFalse();
+        Assertions.assertThat(fatherList.contains("Josef")).isFalse();
+
+        List<String> grandparentList = listHolder.getGrandparentList();
+        Assertions.assertThat(grandparentList.size()).isEqualTo(2);
+        Assertions.assertThat(grandparentList.contains("Eva")).isTrue();
+        Assertions.assertThat(grandparentList.contains("Adam")).isTrue();
+
+        Assertions.assertThat(listHolder.isGrandmaBlessedAgeTriggered()).isTrue();
+    }
+
+    /**
+     * Static class to store results from the working memory.
+     */
+    public static class FamilyListHolder implements Serializable {
+
+        private static final long serialVersionUID = -3058814255413392429L;
+        private List<String> things;
+        private List<String> food;
+        private List<String> exits;
+        private List<String> manList;
+        private List<String> personList;
+        private List<String> parentList;
+        private List<String> motherList;
+        private List<String> fatherList;
+        private List<String> grandparentList;
+        private boolean grandmaBlessedAgeTriggered;
+
+        FamilyListHolder() {
+            setThings(new ArrayList<String>());
+            setFood(new ArrayList<String>());
+            setExits(new ArrayList<String>());
+            setManList(new ArrayList<String>());
+            setPersonList(new ArrayList<String>());
+            setParentList(new ArrayList<String>());
+            setMotherList(new ArrayList<String>());
+            setFatherList(new ArrayList<String>());
+            setGrandparentList(new ArrayList<String>());
+            grandmaBlessedAgeTriggered = false;
+        }
+
+        public void setThings(List<String> things) {
+            this.things = things;
+        }
+
+        public List<String> getThings() {
+            return things;
+        }
+
+        public void setFood(List<String> food) {
+            this.food = food;
+        }
+
+        public List<String> getFood() {
+            return food;
+        }
+
+        public void setExits(List<String> exits) {
+            this.exits = exits;
+        }
+
+        public List<String> getExits() {
+            return exits;
+        }
+
+        public void setManList(List<String> manList) {
+            this.manList = manList;
+        }
+
+        public List<String> getManList() {
+            return manList;
+        }
+
+        public void setPersonList(List<String> PersonList) {
+            personList = PersonList;
+        }
+
+        public List<String> getPersonList() {
+            return personList;
+        }
+
+        public void setParentList(List<String> parentList) {
+            this.parentList = parentList;
+        }
+
+        public List<String> getParentList() {
+            return parentList;
+        }
+
+        public void setMotherList(List<String> motherList) {
+            this.motherList = motherList;
+        }
+
+        public List<String> getMotherList() {
+            return motherList;
+        }
+
+        public void setGrandparentList(List<String> grandparentList) {
+            this.grandparentList = grandparentList;
+        }
+
+        public List<String> getGrandparentList() {
+            return grandparentList;
+        }
+
+        public void setGrandmaBlessedAgeTriggered(boolean grandmaBlessedAgeTriggered) {
+            this.grandmaBlessedAgeTriggered = grandmaBlessedAgeTriggered;
+        }
+
+        public boolean isGrandmaBlessedAgeTriggered() {
+            return grandmaBlessedAgeTriggered;
+        }
+
+        public void setFatherList(List<String> fatherList) {
+            this.fatherList = fatherList;
+        }
+
+        public List<String> getFatherList() {
+            return fatherList;
         }
     }
 

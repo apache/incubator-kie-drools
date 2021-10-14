@@ -18,13 +18,13 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 
 import org.drools.core.spi.Activation;
 
 public class ArrayQueue implements Queue, Externalizable {
 
-    private java.util.Queue<Activation> queue = new LinkedList<>();
+    private java.util.Queue<Activation> queue = new ArrayDeque<>();
 
     @Override
     public void writeExternal( ObjectOutput out ) throws IOException {

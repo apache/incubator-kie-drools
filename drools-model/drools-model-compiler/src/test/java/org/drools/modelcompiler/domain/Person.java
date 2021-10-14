@@ -19,7 +19,7 @@ public class Person extends AbstractReactiveObject {
     @Position(1)
     private int age;
 
-
+    public int publicAge;
     private long ageLong;
 
     private Address address;
@@ -77,6 +77,12 @@ public class Person extends AbstractReactiveObject {
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
+    }
+
+    public Person(String name, int age, BigDecimal money) {
+        this.name = name;
+        this.age = age;
+        this.money = money;
     }
 
     public Person(String name, int age, Address address) {
@@ -274,7 +280,27 @@ public class Person extends AbstractReactiveObject {
         return p1.getAge() + p2.getAge();
     }
 
+    public static BigDecimal identityBigDecimal( BigDecimal bd){
+        return new BigDecimal(bd.toString());
+    }
+
     public static Person identityFunction(Person p) {
         return p;
+    }
+
+    public static boolean isEven( int i ){
+        return (i % 2) == 0;
+    }
+
+    public static boolean isEvenShort( short i ){
+        return (i % 2) == 0;
+    }
+
+    public static boolean isEvenDouble( double i ){
+        return (i % 2) == 0;
+    }
+
+    public static boolean isEvenFloat( float i ){
+        return (i % 2) == 0;
     }
 }

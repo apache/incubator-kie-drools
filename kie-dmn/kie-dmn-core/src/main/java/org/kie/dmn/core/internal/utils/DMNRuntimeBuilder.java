@@ -43,6 +43,7 @@ import org.kie.dmn.core.assembler.DMNResource;
 import org.kie.dmn.core.assembler.DMNResourceDependenciesSorter;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
+import org.kie.dmn.core.compiler.DMNDecisionLogicCompilerFactory;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
@@ -126,6 +127,12 @@ public class DMNRuntimeBuilder {
 
     public DMNRuntimeBuilder setKieRuntimeFactoryFunction(Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction) {
         ctx.setKieRuntimeFactoryFunction(kieRuntimeFactoryFunction);
+        return this;
+    }
+
+    public DMNRuntimeBuilder setDecisionLogicCompilerFactory(DMNDecisionLogicCompilerFactory factory) {
+        ctx.cc.setProperty(DMNAssemblerService.DMN_DECISION_LOGIC_COMPILER, factory.getClass().getCanonicalName());
+        ctx.cc.setDecisionLogicCompilerFactory(factory);
         return this;
     }
 

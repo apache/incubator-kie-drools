@@ -25,14 +25,16 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.TransformationDictionary;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLDerivedFieldASTFactory;
 import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
+
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 /**
  * Utility methods for other <b>Test</b> classes
@@ -40,7 +42,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 public class KiePMMLASTTestUtils {
 
     public static PredicateASTFactoryData getPredicateASTFactoryData(Predicate predicate,
-                                                                     List<KiePMMLOutputField> outputFields,
+                                                                     List<OutputField> outputFields,
                                                                      List<KiePMMLDroolsRule> rules,
                                                                      String parentPath,
                                                                      String currentRule,
@@ -57,7 +59,7 @@ public class KiePMMLASTTestUtils {
         if (localTransformations != null && localTransformations.getDerivedFields() != null) {
             kiePMMLDerivedFieldASTFactory.declareTypes(localTransformations.getDerivedFields());
         }
-        KiePMMLDataDictionaryASTFactory.factory(toReturn).declareTypes(dataDictionary);
+        KiePMMLDataDictionaryASTFactory.factory(toReturn).declareTypes(getFieldsFromDataDictionary(dataDictionary));
         return toReturn;
     }
 

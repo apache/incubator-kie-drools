@@ -27,12 +27,6 @@ import java.util.StringTokenizer;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
-import org.kie.memorycompiler.AbstractJavaCompiler;
-import org.kie.memorycompiler.CompilationProblem;
-import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompilerSettings;
-import org.kie.memorycompiler.resources.ResourceReader;
-import org.kie.memorycompiler.resources.ResourceStore;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.Compiler;
@@ -47,6 +41,13 @@ import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
+import org.kie.memorycompiler.AbstractJavaCompiler;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.resources.KiePath;
+import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceStore;
 
 /**
  * Eclipse compiler implementation
@@ -167,10 +168,10 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         final ICompilationUnit[] compilationUnits = new ICompilationUnit[pSourceFiles.length];
         for (int i = 0; i < compilationUnits.length; i++) {
-            final String sourceFile = pSourceFiles[i];
+            final KiePath sourceFile = KiePath.of(pSourceFiles[i]);
 
             if (pReader.isAvailable(sourceFile)) {
-                compilationUnits[i] = new CompilationUnit(pReader, sourceFile);
+                compilationUnits[i] = new CompilationUnit(pReader, sourceFile.asString());
             } else {
                 // log.error("source not found " + sourceFile);
 
@@ -185,11 +186,11 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     }
 
                     public String getFileName() {
-                        return sourceFile;
+                        return sourceFile.asString();
                     }
 
                     public String getMessage() {
-                        return "Source " + sourceFile + " could not be found";
+                        return "Source " + sourceFile.asString() + " could not be found";
                     }
 
                     public int getStartColumn() {

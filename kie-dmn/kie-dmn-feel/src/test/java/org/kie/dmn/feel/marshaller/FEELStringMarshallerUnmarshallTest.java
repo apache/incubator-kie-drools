@@ -70,7 +70,10 @@ public class FEELStringMarshallerUnmarshallTest {
                 { BuiltInType.DURATION, "-P6Y1M", ComparablePeriod.of( -6, -1, 0 ) },
                 { BuiltInType.DURATION, "P0M", ComparablePeriod.of( 0, 0, 0 ) },
                 // null
-                { BuiltInType.UNKNOWN, "null", null }
+                { BuiltInType.UNKNOWN, "null", null },
+                // Any based best efforts
+                { BuiltInType.UNKNOWN, "John", "John" },
+                { BuiltInType.UNKNOWN, "123", "123" },
         };
         return Arrays.asList( cases );
     }

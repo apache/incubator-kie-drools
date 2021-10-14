@@ -19,7 +19,6 @@ package org.drools.ancompiler;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.common.NamedEntryPoint;

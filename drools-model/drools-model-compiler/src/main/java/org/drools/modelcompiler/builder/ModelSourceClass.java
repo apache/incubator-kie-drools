@@ -14,11 +14,9 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.util.Drools;
 import org.drools.model.Model;
 import org.drools.modelcompiler.CanonicalKieModule;
@@ -28,12 +26,14 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.SessionsPoolOption;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.util.stream.Collectors.joining;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelSourceClass {
@@ -184,7 +184,7 @@ public class ModelSourceClass {
         public String toGetKieModuleModelMethod() {
             MethodDeclaration methodDeclaration = new MethodDeclaration(nodeList(publicModifier()), new ClassOrInterfaceType(null, kieModuleModelCanonicalName), "getKieModuleModel");
             methodDeclaration.setBody(stmt);
-            methodDeclaration.addAnnotation( "Override" );
+            methodDeclaration.addAnnotation( createSimpleAnnotation(Override.class) );
             return methodDeclaration.toString();
         }
 
@@ -192,83 +192,20 @@ public class ModelSourceClass {
             return kBaseModels.keySet();
         }
 
-        public String toGetKieBaseMethods() {
-            return
-                    "    @Override\n" +
-                            "    public KieBase getKieBase() {\n" +
-                            ( defaultKieBaseName != null ?
-                                    "        return getKieBase(\"" + defaultKieBaseName + "\");\n" :
-                                    "        throw new UnsupportedOperationException(\"There is no default KieBase\");\n") +
-                            "    }\n" +
-                            "\n" +
-                            "    @Override\n" +
-                            "    public KieBase getKieBase(String name) {\n" +
-                            "        return kbases.computeIfAbsent(name, n -> KieBaseBuilder.createKieBaseFromModel( model.getModelsForKieBase( n ), model.getKieModuleModel().getKieBaseModels().get( n ) ));\n" +
-                            "    }\n";
+        public String getDefaultKieBaseName() {
+            return defaultKieBaseName;
         }
 
-        public String toNewKieSessionMethods() {
-            return
-                    "    @Override\n" +
-                            "    public KieSession newKieSession() {\n" +
-                            ( defaultKieSessionName != null ?
-                                    "        return newKieSession(\"" + defaultKieSessionName + "\");\n" :
-                                    "        throw new UnsupportedOperationException(\"There is no default KieSession\");\n") +
-                            "    }\n" +
-                            "\n" +
-                            "    @Override\n" +
-                            "    public KieSession newKieSession(String sessionName) {\n" +
-                            "        return newKieSession(sessionName, new org.drools.core.config.StaticRuleConfig(new org.drools.core.config.DefaultRuleEventListenerConfig()));\n" +
-                            "    }\n" +
-                            "\n" +
-                            "    @Override\n" +
-                            "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
-                            "        KieBase kbase = getKieBaseForSession(sessionName);\n" +
-                            "        if (kbase == null) {\n" +
-                            "            throw new RuntimeException(\"Unknown KieSession with name '\" + sessionName + \"'\");\n" +
-                            "        }\n" +
-                            "        KieSession ksession = kbase.newKieSession(getConfForSession(sessionName), null);\n" +
-                            "        ruleConfig.ruleEventListeners().agendaListeners().forEach( ksession::addEventListener );\n" +
-                            "        ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach( ksession::addEventListener );\n" +
-                            "        return ksession;\n" +
-                            "    }\n";
+        public String getDefaultKieSessionName() {
+            return defaultKieSessionName;
         }
 
-        public String toGetKieBaseForSessionMethod() {
-            StringBuilder sb = new StringBuilder(
-                    "    private KieBase getKieBaseForSession(String sessionName) {\n" +
-                            "        switch (sessionName) {\n"
-            );
-
-            for (Map.Entry<String, String> entry : kSessionForkBase.entrySet()) {
-                sb.append( "            case \"" + entry.getKey() + "\": return getKieBase(\"" + entry.getValue() + "\");\n" );
-            }
-
-            sb.append(
-                    "        }\n" +
-                            "        return null;\n" +
-                            "    }\n" );
-            return sb.toString();
+        public Map<String, BlockStmt> getkSessionConfs() {
+            return kSessionConfs;
         }
 
-        public String toKieSessionConfMethod() {
-            StringBuilder sb = new StringBuilder(
-                    "    private org.kie.api.runtime.KieSessionConfiguration getConfForSession(String sessionName) {\n" +
-                            "        org.drools.core.SessionConfigurationImpl conf = new org.drools.core.SessionConfigurationImpl();\n" +
-                            "        switch (sessionName) {\n"
-            );
-
-            for (Map.Entry<String, BlockStmt> entry : kSessionConfs.entrySet()) {
-                sb.append( "            case \"" + entry.getKey() + "\":\n" );
-                sb.append( entry.getValue() );
-                sb.append( "                break;\n" );
-            }
-
-            sb.append(
-                    "        }\n" +
-                            "        return conf;\n" +
-                            "    }\n" );
-            return sb.toString();
+        public Map<String, String> getkSessionForkBase() {
+            return kSessionForkBase;
         }
 
         private void init() {
@@ -320,13 +257,13 @@ public class ModelSourceClass {
 
             private void kieBaseModelPackages() {
                 for (String p : kieBaseModel.getPackages()) {
-                    stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "addPackage", nodeList(new StringLiteralExpr(p))));
+                    stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "addPackage", nodeList(toStringLiteral(p))));
                 }
             }
 
             private void kieBaseModelIncludes() {
                 for (String p : kieBaseModel.getIncludes()) {
-                    stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "addInclude", nodeList(new StringLiteralExpr(p))));
+                    stmt.addStatement(new MethodCallExpr(kieBaseModelNameExpr, "addInclude", nodeList(toStringLiteral(p))));
                 }
             }
 
@@ -381,7 +318,7 @@ public class ModelSourceClass {
 
             private void setClockType() {
                 NameExpr type = new NameExpr(kieSessionModel.getClockType().getClass().getCanonicalName());
-                MethodCallExpr clockTypeEnum = new MethodCallExpr(type, "get", nodeList(new StringLiteralExpr(kieSessionModel.getClockType().getClockType())));
+                MethodCallExpr clockTypeEnum = new MethodCallExpr(type, "get", nodeList(toStringLiteral(kieSessionModel.getClockType().getClockType())));
                 stmt.addStatement(new MethodCallExpr(nameExpr, "setClockType", nodeList(clockTypeEnum)));
 
                 confBlock.addStatement(new MethodCallExpr(confExpr, "setOption", nodeList(clockTypeEnum.clone())));
@@ -410,7 +347,7 @@ public class ModelSourceClass {
         }
 
         private AssignExpr newInstance( String type, String variableName, NameExpr scope, String methodName, String parameter) {
-            MethodCallExpr initMethod = new MethodCallExpr(scope, methodName, nodeList(new StringLiteralExpr(parameter)));
+            MethodCallExpr initMethod = new MethodCallExpr(scope, methodName, nodeList(toStringLiteral(parameter)));
             VariableDeclarationExpr var = new VariableDeclarationExpr(new ClassOrInterfaceType(null, type), variableName);
             return new AssignExpr(var, initMethod, AssignExpr.Operator.ASSIGN);
         }

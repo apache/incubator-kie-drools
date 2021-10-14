@@ -20,23 +20,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 
+import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
-
 /**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate>SimplePredicate</a>
+ * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate>CompoundPredicate</a>
  */
 public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicate.class);
+    private static final long serialVersionUID = -8106791592643949001L;
 
     private final BOOLEAN_OPERATOR booleanOperator;
-    protected BinaryOperator<Boolean> operatorFunction;
     protected List<KiePMMLPredicate> kiePMMLPredicates;
 
     protected KiePMMLCompoundPredicate(final String name, final List<KiePMMLExtension> extensions, final BOOLEAN_OPERATOR booleanOperator) {
@@ -56,7 +54,23 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
     public boolean evaluate(Map<String, Object> values) {
         Boolean toReturn = null;
         for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
-            toReturn = operatorFunction.apply(toReturn, kiePMMLPredicate.evaluate(values));
+            Boolean evaluation = kiePMMLPredicate.evaluate(values);
+            switch (booleanOperator) {
+                case OR:
+                    toReturn = orOperator(toReturn, evaluation);
+                    break;
+                case AND:
+                    toReturn = andOperator(toReturn, evaluation);
+                    break;
+                case XOR:
+                    toReturn = xorOperator(toReturn, evaluation);
+                    break;
+                case SURROGATE:
+                    toReturn = surrogateOperator(toReturn, evaluation);
+                    break;
+                default:
+                    throw new KiePMMLException("Unknown BOOLEAN_OPERATOR " + booleanOperator);
+            }
         }
         return toReturn != null && toReturn;
     }
@@ -78,7 +92,6 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
     public String toString() {
         return "KiePMMLCompoundPredicate{" +
                 "booleanOperator=" + booleanOperator +
-                ", operatorFunction=" + operatorFunction +
                 ", kiePMMLPredicates=" + kiePMMLPredicates +
                 ", extensions=" + extensions +
                 ", id='" + id + '\'' +
@@ -99,20 +112,38 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
         }
         KiePMMLCompoundPredicate that = (KiePMMLCompoundPredicate) o;
         return booleanOperator == that.booleanOperator &&
-                Objects.equals(operatorFunction, that.operatorFunction) &&
                 Objects.equals(kiePMMLPredicates, that.kiePMMLPredicates);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), booleanOperator, operatorFunction, kiePMMLPredicates);
+        return Objects.hash(super.hashCode(), booleanOperator, kiePMMLPredicates);
+    }
+
+    static Boolean orOperator(Boolean aBoolean, Boolean aBoolean2) {
+        logger.trace("orOperator {} {}",  aBoolean,  aBoolean2);
+        return aBoolean != null ? aBoolean || aBoolean2 : aBoolean2;
+    }
+
+    static Boolean andOperator(Boolean aBoolean, Boolean aBoolean2) {
+        logger.trace("andOperator {} {}",  aBoolean,  aBoolean2);
+        return aBoolean != null ? aBoolean && aBoolean2 : aBoolean2;
+    }
+
+    static Boolean xorOperator(Boolean aBoolean, Boolean aBoolean2) {
+        logger.trace("xorOperator {} {}",  aBoolean,  aBoolean2);
+        return aBoolean != null ? aBoolean ^ aBoolean2 : aBoolean2;
+    }
+
+    static Boolean surrogateOperator(Boolean aBoolean, Boolean aBoolean2) {
+        logger.trace("surrogateOperator {} {}",  aBoolean,  aBoolean2);
+        return aBoolean != null ? aBoolean : aBoolean2;
     }
 
     public static class Builder extends KiePMMLPredicate.Builder<KiePMMLCompoundPredicate> {
 
         private Builder(List<KiePMMLExtension> extensions, BOOLEAN_OPERATOR booleanOperator) {
             super("CompoundPredicate-", () -> new KiePMMLCompoundPredicate("CompoundPredicate", extensions, booleanOperator));
-            toBuild.operatorFunction = getInnerBinaryOperator(booleanOperator);
         }
 
         public KiePMMLCompoundPredicate.Builder withKiePMMLPredicates(List<KiePMMLPredicate> kiePMMLPredicates) {
@@ -121,22 +152,5 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
             return this;
         }
 
-        private BinaryOperator<Boolean> getInnerBinaryOperator(BOOLEAN_OPERATOR booleanOperator) {
-            switch (booleanOperator) {
-                // logic here is
-                // first boolean may be null (initial evaluation) so we start taking the second boolean
-                case OR:
-                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean || aBoolean2 : aBoolean2;
-                case AND:
-                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean && aBoolean2 : aBoolean2;
-                case XOR:
-                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean ^ aBoolean2 : aBoolean2;
-                case SURROGATE:
-                    // TODO {gcardosi} DROOLS-5594
-                    throw new IllegalArgumentException(SURROGATE + " not supported, yet");
-                default:
-                    throw new KiePMMLException("Unknown BOOLEAN_OPERATOR " + booleanOperator);
-            }
-        }
     }
 }

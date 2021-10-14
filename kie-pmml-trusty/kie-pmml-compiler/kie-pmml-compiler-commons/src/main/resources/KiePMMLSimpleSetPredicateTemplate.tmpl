@@ -1,0 +1,16 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
+
+public class KiePMMLSimpleSetPredicateTemplate {
+
+
+    private KiePMMLSimpleSetPredicate getKiePMMLSimpleSetPredicate() {
+        KiePMMLSimpleSetPredicate simpleSetPredicate = KiePMMLSimpleSetPredicate.builder(name, Collections.emptyList(), arrayType, inNotIn)
+                                                                   .withValues(Arrays.asList(value1, value2))
+                                                                   .build();
+    }
+
+}

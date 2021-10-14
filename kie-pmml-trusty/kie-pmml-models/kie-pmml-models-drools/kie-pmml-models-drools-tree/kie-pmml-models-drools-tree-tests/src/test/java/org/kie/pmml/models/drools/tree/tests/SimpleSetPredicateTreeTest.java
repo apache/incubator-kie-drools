@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -32,7 +31,6 @@ import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-@Ignore
 public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "SimpleSetPredicateTree.pmml";

@@ -1,0 +1,45 @@
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns="ns1" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" id="_FF9AAED2-3194-41C3-92E6-B62C1CBE3D4F" name="bkmWrongFnType" typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" namespace="ns1">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition name="tFN1" isCollection="false">
+    <dmn:functionItem outputTypeRef="string">
+        <dmn:parameters name="p1" typeRef="string"/>
+        <dmn:parameters name="p2" typeRef="string"/>
+        <dmn:parameters name="p3" typeRef="string"/>
+    </dmn:functionItem>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_03EB96BB-4576-40BB-8442-B496A8EA252F" name="in1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_2B0E414C-67D2-4D36-BCD3-F98ED3052069" name="in1" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:inputData id="_B1B257A7-4DE1-4461-893A-2B333F4168E2" name="in2">
+    <dmn:extensionElements/>
+    <dmn:variable id="_73CDC111-B71E-47C4-BC48-1BAE8EDB13B9" name="in2" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:decision id="_E3618CF2-B8D7-4647-B33F-9A85DA4DF4AA" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_67363191-C7D3-48C7-9395-FCD94DFD9D79" name="Decision-1" typeRef="Any"/>
+    <dmn:informationRequirement id="_F9960253-B7E9-412F-8996-CE476738AF86">
+      <dmn:requiredInput href="#_03EB96BB-4576-40BB-8442-B496A8EA252F"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_CF6BBA06-054B-4045-8E7D-0459839594C2">
+      <dmn:requiredInput href="#_B1B257A7-4DE1-4461-893A-2B333F4168E2"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_B691B96F-A84E-4FEC-B2C1-848333DD44A1">
+      <dmn:requiredKnowledge href="#_A01A4918-FE42-4440-9FE0-1D0D8E8D7A26"/>
+    </dmn:knowledgeRequirement>
+    <dmn:literalExpression id="_05282384-DE67-42ED-A53C-10BAB9FE63C7">
+      <dmn:text>bkm1(in1,in2)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:businessKnowledgeModel id="_A01A4918-FE42-4440-9FE0-1D0D8E8D7A26" name="bkm1">
+    <dmn:variable id="_42425846-3E38-4871-A085-1880CDCCF591" name="bkm1" typeRef="tFN1"/>
+    <dmn:encapsulatedLogic id="_0AE3BF9A-946D-49A2-BBF0-2450C2625ACC" kind="FEEL">
+      <dmn:formalParameter id="_1AB7592E-F48A-4DD1-8415-F87C4CAEB4DF" name="p1"/>
+      <dmn:formalParameter id="_2F1E5677-68C1-48C4-B125-F729C988A8A6" name="p2"/>
+      <dmn:formalParameter name="pwrong"/>
+      <dmn:literalExpression id="_764BB2B3-8897-4FA8-B669-5882B6D184E1">
+        <dmn:text>p1+p2</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+</dmn:definitions>

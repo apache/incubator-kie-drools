@@ -33,7 +33,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.FieldValue;
 import org.drools.core.util.DateUtils;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.compiler.Address;
@@ -371,8 +370,6 @@ public class MVELTest {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof ClassFieldReader);
-            final FieldValue r = (( MVELConstraint ) constraint).getField();
-            assertEquals(p.getAddress(), r.getValue());
         }
     }         
     
@@ -417,7 +414,6 @@ public class MVELTest {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader );
-            assertEquals(new Address("s1"), ((MVELConstraint) constraint).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
@@ -425,7 +421,6 @@ public class MVELTest {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1").getStreet(), ((MVELConstraint) constraint).getField().getValue());
         }
     }    
     
@@ -471,14 +466,12 @@ public class MVELTest {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1"), ((MVELConstraint) alphanode.getConstraint()).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1").getStreet(), ((MVELConstraint) alphanode.getConstraint()).getField().getValue());
         }
     }       
     
@@ -526,7 +519,6 @@ public class MVELTest {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1"), ((MVELConstraint) alphanode.getConstraint()).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
@@ -534,7 +526,6 @@ public class MVELTest {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1").getStreet(), ((MVELConstraint) alphanode.getConstraint()).getField().getValue());
         }
     }     
     

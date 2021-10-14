@@ -18,7 +18,9 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -30,11 +32,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -48,6 +51,7 @@ import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -64,88 +68,99 @@ import org.kie.internal.ruleunit.RuleUnitVariable;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-
+import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
-import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class RuleContext {
 
     private final KnowledgeBuilderImpl kbuilder;
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
-    private DRLIdGenerator idGenerator;
-    private RuleDescr descr;
+    private final RuleDescr ruleDescr;
+    private final int ruleIndex;
 
-    private Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
-    private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
-    private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
-    private Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
-    private List<Expression> expressions = new ArrayList<>();
-    private Map<String, String> namedConsequences = new HashMap<>();
+    private final DRLIdGenerator idGenerator;
 
-    private List<QueryParameter> queryParameters = new ArrayList<>();
+    private final Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
+    private final Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
+    private final List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
+    private final Deque<Consumer<Expression>> exprPointer = new ArrayDeque<>();
+    private final List<Expression> expressions = new ArrayList<>();
+    private final Map<String, String> namedConsequences = new HashMap<>();
+    private Map<String, MethodCallExpr> ooPathBindingPatternExprs;
+    private final BlockStmt ruleVariablesBlock = new BlockStmt();
+
+    private final List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = empty();
 
     private RuleUnitDescription ruleUnitDescr;
-    private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
-    private Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
+    private final Map<String, Class<?>> ruleUnitVars = new HashMap<>();
+    private final Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
 
-    private Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
+    private final Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
 
     /* These are used to check if some binding used in an OR expression is used in every branch */
-    private Boolean isNestedInsideOr = false;
-    private Bag<String> bindingOr = new Bag<>();
-    private Set<String> unusableOrBinding = new HashSet<>();
+    private boolean isNestedInsideOr = false;
+    private final Bag<String> bindingOr = new Bag<>();
+    private final Set<String> unusableOrBinding = new HashSet<>();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
 
     private int scopeCounter = 1;
     private Scope currentScope = new Scope();
-    private Deque<Scope> scopesStack = new LinkedList<>();
-    private Map<String, String> definedVars = new HashMap<>();
+    private final Deque<Scope> scopesStack = new LinkedList<>();
+    private final Map<String, String> definedVars = new HashMap<>();
 
-    private Map<String, Type> explicitCastType = new HashMap<>();
+    private final Map<String, Type> explicitCastType = new HashMap<>();
 
     // These are used for indexing see PatternBuilder:1198
-    private Set<String> patternBindings = new HashSet<>();
+    private final Set<String> patternBindings = new HashSet<>();
 
     private int legacyAccumulateCounter = 0;
 
     private Optional<BaseDescr> currentConstraintDescr = empty();
 
+    private boolean hasCompilationError;
+
     public enum RuleDialect {
-        JAVA,
-        MVEL;
+        JAVA, MVEL
     }
 
     private AndDescr parentDescr;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
+        this(kbuilder, packageModel, typeResolver, ruleDescr, -1);
+    }
+
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
+        this.ruleDescr = ruleDescr;
+        processUnitData();
+        this.ruleIndex = ruleIndex;
     }
 
     private void findUnitDescr() {
-        if (descr == null) {
+        if (ruleDescr == null) {
             return;
         }
 
         boolean useNamingConvention = false;
-        String unitName = null;
-        AnnotationDescr unitAnn = descr.getAnnotation( "Unit" );
+        String unitName;
+        AnnotationDescr unitAnn = ruleDescr.getAnnotation( "Unit" );
         if (unitAnn != null) {
             unitName = ( String ) unitAnn.getValue();
             unitName = unitName.substring( 0, unitName.length() - ".class".length() );
-        } else if (descr.getUnit() != null) {
-            unitName = descr.getUnit().getTarget();
+        } else if (ruleDescr.getUnit() != null) {
+            unitName = ruleDescr.getUnit().getTarget();
         } else {
-            if (descr.getResource() == null) {
+            if (ruleDescr.getResource() == null) {
                 return;
             }
-            String drlFile = descr.getResource().getSourcePath();
+            String drlFile = ruleDescr.getResource().getSourcePath();
             if (drlFile != null) {
                 String drlFileName = drlFile.substring(drlFile.lastIndexOf('/')+1);
                 unitName = packageModel.getName() + '.' + drlFileName.substring(0, drlFileName.length() - ".drl".length());
@@ -166,7 +181,7 @@ public class RuleContext {
 
     private void processUnitData() {
         findUnitDescr();
-        if (ruleUnitDescr != null && !isLegacyRuleUnit()) {
+        if (ruleUnitDescr != null) {
             for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
                 String unitVarName = unitVar.getName();
                 Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
@@ -188,20 +203,43 @@ public class RuleContext {
         return kbuilder;
     }
 
+    public int getRuleIndex() {
+        return ruleIndex;
+    }
+
+    public EvaluatorDefinition getEvaluatorDefinition(String opName) {
+        return kbuilder.getBuilderConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( opName );
+    }
+
     public void addCompilationError( KnowledgeBuilderResult error ) {
+        hasCompilationError = true;
         if ( error instanceof BaseKnowledgeBuilderResultImpl ) {
-            (( BaseKnowledgeBuilderResultImpl ) error).setResource( descr.getResource() );
+            (( BaseKnowledgeBuilderResultImpl ) error).setResource( ruleDescr.getResource() );
         }
-        kbuilder.addBuilderResult( error );
+        synchronized (kbuilder) {
+            kbuilder.addBuilderResult(error);
+        }
+    }
+
+    public void addCompilationWarning( KnowledgeBuilderResult warn ) {
+        if ( warn instanceof BaseKnowledgeBuilderResultImpl ) {
+            (( BaseKnowledgeBuilderResultImpl ) warn).setResource( ruleDescr.getResource() );
+        }
+        synchronized (kbuilder) {
+            kbuilder.addBuilderResult(warn);
+        }
+    }
+
+    public boolean hasCompilationError() {
+        return hasCompilationError;
     }
 
     public boolean hasErrors() {
         return kbuilder.hasResults( ResultSeverity.ERROR );
     }
 
-    public RuleContext addInlineCastType(String field, Type type) {
+    public void addInlineCastType(String field, Type type) {
         explicitCastType.put(field, type);
-        return this;
     }
 
     public Optional<Type> explicitCastType(String field) {
@@ -235,6 +273,7 @@ public class RuleContext {
         String declId = getDeclarationKey( id );
         scopedDeclarations.remove( declId );
         this.allDeclarations.remove( declId );
+        definedVars.remove(id);
     }
 
     public boolean hasDeclaration(String id) {
@@ -326,6 +365,7 @@ public class RuleContext {
         }
         this.scopedDeclarations.put(d.getBindingId(), d);
         this.allDeclarations.put(d.getBindingId(), d);
+        definedVars.put(bindingId, bindingId);
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
@@ -348,6 +388,21 @@ public class RuleContext {
 
     public void addExpression(Expression e) {
         exprPointer.peek().accept(e);
+    }
+
+    public void registerOOPathPatternExpr(String binding, MethodCallExpr patternExpr) {
+        if (ooPathBindingPatternExprs == null) {
+            ooPathBindingPatternExprs = new HashMap<>();
+        }
+        ooPathBindingPatternExprs.put( binding, patternExpr );
+    }
+
+    public void clearOOPathPatternExpr() {
+        ooPathBindingPatternExprs = null;
+    }
+
+    public MethodCallExpr getOOPathPatternExpr(String binding) {
+        return ooPathBindingPatternExprs == null ? null : ooPathBindingPatternExprs.get(binding);
     }
 
     public void pushExprPointer(Consumer<Expression> p) {
@@ -395,16 +450,11 @@ public class RuleContext {
     }
 
     public RuleDescr getRuleDescr() {
-        return descr;
-    }
-
-    public void setDescr(RuleDescr descr) {
-        this.descr = descr;
-        processUnitData();
+        return ruleDescr;
     }
 
     public String getRuleName() {
-        return descr.getName();
+        return ruleDescr.getName();
     }
 
     public RuleDialect getRuleDialect() {
@@ -415,12 +465,16 @@ public class RuleContext {
         this.ruleDialect = ruleDialect;
     }
 
-    public Optional<QueryParameter> queryParameterWithName(Predicate<? super QueryParameter> predicate) {
-        return queryParameters.stream().filter(predicate).findFirst();
+    public Optional<QueryParameter> getQueryParameterByName(String name) {
+        return queryParameters.stream().filter(p -> p.getName().equals( name )).findFirst();
     }
 
     public List<QueryParameter> getQueryParameters() {
         return queryParameters;
+    }
+
+    public void addQueryParameter(QueryParameter queryParameter) {
+        queryParameters.add(queryParameter);
     }
 
     public List<Expression> getExpressions() {
@@ -433,6 +487,10 @@ public class RuleContext {
 
     public void setQueryName(Optional<String> queryName) {
         this.queryName = queryName;
+    }
+
+    public boolean isRecurisveQuery(String queryName) {
+        return this.queryName.isPresent() && this.queryName.get().equals(queryName);
     }
 
     public boolean isQuery() {
@@ -461,16 +519,44 @@ public class RuleContext {
                                                       patternClass.getAnnotation( ClassReactive.class ) != null );
     }
 
-    public Optional<Class<?>> getFunctionType(String name) {
+    public Optional<FunctionType> getFunctionType(String name) {
         Method m = packageModel.getStaticMethod(name);
         if (m != null) {
-            return of(m.getReturnType());
+            return of(new FunctionType(m.getReturnType(), Arrays.asList(m.getParameterTypes())));
         }
 
         return packageModel.getFunctions().stream()
                 .filter( method -> method.getNameAsString().equals( name ) )
                 .findFirst()
-                .flatMap( method -> resolveType( method.getType().asString() ) );
+                .flatMap( method -> {
+                    Optional<Class<?>> returnType = resolveType(method.getType().asString());
+
+                    List<String> parametersType = method.getParameters().stream().map(Parameter::getType).map(Type::asString).collect(toList());
+                    List<Class<?>> resolvedParameterTypes = parametersType.stream()
+                            .map(this::resolveType)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .collect(toList());
+                    return returnType.map(t -> new FunctionType(t, resolvedParameterTypes));
+                });
+    }
+
+    public static class FunctionType {
+        private final Class<?> returnType;
+        private final List<Class<?>> argumentsType;
+
+        public FunctionType(Class<?> returnType, List<Class<?>> argumentsType) {
+            this.returnType = returnType;
+            this.argumentsType = argumentsType;
+        }
+
+        public Class<?> getReturnType() {
+            return returnType;
+        }
+
+        public List<Class<?>> getArgumentsType() {
+            return argumentsType;
+        }
     }
 
     public Optional<Class<?>> resolveType(String name) {
@@ -481,11 +567,11 @@ public class RuleContext {
         }
     }
 
-    public Boolean isNestedInsideOr() {
+    public boolean isNestedInsideOr() {
         return isNestedInsideOr;
     }
 
-    public void setNestedInsideOr(Boolean nestedInsideOr) {
+    public void setNestedInsideOr(boolean nestedInsideOr) {
         isNestedInsideOr = nestedInsideOr;
     }
 
@@ -514,7 +600,7 @@ public class RuleContext {
             new NameExpr( var );
         }
 
-        Optional<QueryParameter> optQueryParameter = queryParameterWithName(p -> p.name.equals( x ));
+        Optional<QueryParameter> optQueryParameter = getQueryParameterByName(x);
         return optQueryParameter.map(qp -> {
 
             final String queryDef = getQueryName().orElseThrow(RuntimeException::new);
@@ -550,7 +636,7 @@ public class RuleContext {
     private class Scope {
         private final String id;
         private final String forallFirstIdentifier;
-        private List<String> vars = new ArrayList<>();
+        private final List<String> vars = new ArrayList<>();
 
         private Scope() {
             this( "", null );
@@ -636,9 +722,13 @@ public class RuleContext {
         return parentDescr;
     }
 
+    public BlockStmt getRuleVariablesBlock() {
+        return ruleVariablesBlock;
+    }
+
     @Override
     public String toString() {
-        return "RuleContext for " + descr.getNamespace() + "." + descr.getName();
+        return "RuleContext for " + ruleDescr.getNamespace() + "." + ruleDescr.getName();
     }
 }
 

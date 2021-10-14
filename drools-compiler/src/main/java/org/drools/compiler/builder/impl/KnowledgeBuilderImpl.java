@@ -34,7 +34,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -64,8 +63,6 @@ import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.DuplicateRule;
 import org.drools.compiler.compiler.GlobalError;
-import org.drools.compiler.compiler.GuidedDecisionTableFactory;
-import org.drools.compiler.compiler.GuidedDecisionTableProvider;
 import org.drools.compiler.compiler.GuidedRuleTemplateFactory;
 import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.GuidedScoreCardFactory;
@@ -81,6 +78,7 @@ import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
@@ -188,7 +186,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
      */
     private final String defaultDialect;
 
-    private ClassLoader rootClassLoader;
+    private final ClassLoader rootClassLoader;
 
     private int parallelRulesBuildThreshold;
 
@@ -219,6 +217,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     private Map<String, Object> builderCache;
 
     private ReleaseId releaseId;
+
+    private BuildContext buildContext;
 
     /**
      * Use this when package is starting from scratch.
@@ -328,6 +328,21 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         this.releaseId = releaseId;
     }
 
+    public BuildContext getBuildContext() {
+        if (buildContext == null) {
+            buildContext = createBuildContext();
+        }
+        return buildContext;
+    }
+
+    protected BuildContext createBuildContext() {
+        return new BuildContext();
+    }
+
+    public void setBuildContext(BuildContext buildContext) {
+        this.buildContext = buildContext;
+    }
+
     Resource getCurrentResource() {
         return resource;
     }
@@ -384,7 +399,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     PackageDescr decisionTableToPackageDescr(Resource resource,
-                                             ResourceConfiguration configuration) throws DroolsParserException, IOException {
+                                             ResourceConfiguration configuration) throws DroolsParserException {
         DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
                 (DecisionTableConfiguration) configuration :
                 new DecisionTableConfigurationImpl();
@@ -413,23 +428,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         String generatedDrl = DecisionTableFactory.loadFromResource(resource, dtableConfiguration);
         return generatedDrlToPackageDescr(resource, generatedDrl);
     }
-
-    public void addPackageFromGuidedDecisionTable(Resource resource) throws DroolsParserException,
-            IOException {
-        this.resource = resource;
-        addPackage(guidedDecisionTableToPackageDescr(resource));
-        this.resource = null;
-    }
-
-    PackageDescr guidedDecisionTableToPackageDescr(Resource resource) throws DroolsParserException, IOException {
-        GuidedDecisionTableProvider guidedDecisionTableProvider = GuidedDecisionTableFactory.getGuidedDecisionTableProvider();
-        if (guidedDecisionTableProvider == null) {
-            throw new MissingImplementationException(resource, "drools-workbench-models-guided-dtable");
-        }
-        ResourceConversionResult conversionResult = guidedDecisionTableProvider.loadFromInputStream(resource.getInputStream());
-        return conversionResultToPackageDescr(resource, conversionResult);
-    }
-
 
     private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
         // dump the generated DRL if the dump dir was configured
@@ -613,28 +611,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         return xmlReader.getPackageDescr();
     }
 
-    /**
-     * Load a rule package from DRL source using the supplied DSL configuration.
-     *
-     * @param source The source of the rules.
-     * @param dsl    The source of the domain specific language configuration.
-     * @throws DroolsParserException
-     * @throws IOException
-     */
-    public void addPackageFromDrl(final Reader source,
-                                  final Reader dsl) throws DroolsParserException,
-            IOException {
-        this.resource = new ReaderResource(source, ResourceType.DSLR);
-
-        final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-        final PackageDescr pkg = parser.parse(source, dsl);
-        this.results.addAll(parser.getErrors());
-        if (!parser.hasErrors()) {
-            addPackage(pkg);
-        }
-        this.resource = null;
-    }
-
     public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
             IOException {
         this.resource = resource;
@@ -760,8 +736,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 addPackageFromDrl(resource);
             } else if (ResourceType.TEMPLATE.equals(type)) {
                 addPackageFromTemplate(resource);
-            } else if (ResourceType.GDST.equals(type)) {
-                addPackageFromGuidedDecisionTable(resource);
             } else if (ResourceType.SCGD.equals(type)) {
                 addPackageFromGuidedScoreCard(resource);
             } else {
@@ -1119,8 +1093,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
-    private static class ForkJoinPoolHolder {
-        private static ForkJoinPool COMPILER_POOL = new ForkJoinPool(); // avoid common pool
+    public static class ForkJoinPoolHolder {
+        public static final ForkJoinPool COMPILER_POOL = new ForkJoinPool(); // avoid common pool
     }
 
     private void compileRulesLevel(PackageDescr packageDescr, PackageRegistry pkgRegistry, List<RuleDescr> rules) {
@@ -1263,10 +1237,36 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 }
 
                 if (!rulesToBeRemoved.isEmpty()) {
+                    rulesToBeRemoved.addAll(findChildrenRulesToBeRemoved(packageDescr, rulesToBeRemoved));
                     kBase.removeRules(rulesToBeRemoved);
                 }
             });
         }
+    }
+
+    private Collection<RuleImpl> findChildrenRulesToBeRemoved(PackageDescr packageDescr, Collection<RuleImpl> rulesToBeRemoved) {
+        Collection<String> childrenRuleNamesToBeRemoved = new HashSet<>();
+        Collection<RuleImpl> childrenRulesToBeRemoved = new HashSet<>();
+        for (RuleImpl rule : rulesToBeRemoved) {
+            if (rule.hasChildren()) {
+                for (RuleImpl child : rule.getChildren()) {
+                    if (!rulesToBeRemoved.contains(child)) {
+                        // if a rule has a child rule not marked to be removed ...
+                        childrenRulesToBeRemoved.add(child);
+                        childrenRuleNamesToBeRemoved.add(child.getName());
+                        // ... remove the child rule but also add it back to the PackageDescr in order to readd it when also the parent rule will be readded ...
+                        RuleDescr toBeReadded = new RuleDescr(child.getName());
+                        toBeReadded.setNamespace(packageDescr.getNamespace());
+                        packageDescr.addRule(toBeReadded);
+                    }
+                }
+            }
+        }
+        // ... add a filter to the PackageDescr to also consider the readded children rules as updated together with the parent one
+        if (!childrenRuleNamesToBeRemoved.isEmpty()) {
+            ((CompositePackageDescr) packageDescr).addFilter((type, pkgName, assetName) -> childrenRuleNamesToBeRemoved.contains(assetName) ? AssetFilter.Action.UPDATE : AssetFilter.Action.DO_NOTHING);
+        }
+        return childrenRulesToBeRemoved;
     }
 
     private Map<String, RuleBuildContext> buildRuleBuilderContexts(List<RuleDescr> rules, PackageRegistry pkgRegistry) {
@@ -1300,7 +1300,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
-        List<RuleDescr> roots = new LinkedList<>();
+        List<RuleDescr> roots = new ArrayList<>();
         Map<String, List<RuleDescr>> children = new HashMap<>();
         LinkedHashMap<String, RuleDescr> sorted = new LinkedHashMap<>();
         List<RuleDescr> queries = new ArrayList<>();
@@ -1412,7 +1412,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     private void manageUnresolvedExtension(RuleDescr ruleDescr,
                                            Collection<RuleDescr> candidates) {
-        List<String> candidateRules = new LinkedList<>();
+        List<String> candidateRules = new ArrayList<>();
         for (RuleDescr r : candidates) {
             if (StringUtils.stringSimilarity(ruleDescr.getParentName(), r.getName(), StringUtils.SIMILARITY_STRATS.DICE) >= 0.75) {
                 candidateRules.add(r.getName());
@@ -1832,8 +1832,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
             String functionClassName = functionDescr.getClassName();
             JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData("java"));
             try {
-                registerFunctionClassAndInnerClasses(functionClassName, runtime,
-                                                     (name, bytes) -> ((ProjectClassLoader) rootClassLoader).storeClass(name, bytes));
+                registerFunctionClassAndInnerClasses(functionClassName, runtime, ((ProjectClassLoader) rootClassLoader)::storeClass);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -2023,28 +2022,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         this.results.clear();
         if (this.processBuilder != null) {
             this.processBuilder.getErrors().clear();
-        }
-    }
-
-    public String getDefaultDialect() {
-        return this.defaultDialect;
-    }
-
-    public static class MissingPackageNameException extends IllegalArgumentException {
-
-        private static final long serialVersionUID = 510L;
-
-        public MissingPackageNameException(final String message) {
-            super(message);
-        }
-    }
-
-    public static class PackageMergeException extends IllegalArgumentException {
-
-        private static final long serialVersionUID = 400L;
-
-        public PackageMergeException(final String message) {
-            super(message);
         }
     }
 

@@ -17,6 +17,7 @@
 package org.drools.impact.analysis.graph;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.drools.impact.analysis.model.Rule;
@@ -31,7 +32,7 @@ public class Node {
 
     private String packageName;
     private String ruleName;
-    private Rule rule;
+    private Optional<Rule> rule;
     protected Status status;
 
     private Set<Link> incomingLinks;
@@ -40,7 +41,20 @@ public class Node {
     public Node(Rule rule) {
         this.packageName = rule.getPkg();
         this.ruleName = rule.getName();
-        this.rule = rule;
+        this.rule = Optional.of(rule);
+        incomingLinks = new HashSet<>();
+        outgoingLinks = new HashSet<>();
+    }
+
+    /**
+     * This constructor is used for a case where Node to Rule is not 1-to-1 (e.g. collapseWithRuleNamePrefix)
+     * @param packageName
+     * @param ruleName
+     */
+    public Node(String packageName, String ruleName) {
+        this.packageName = packageName;
+        this.ruleName = ruleName;
+        this.rule = Optional.empty();
         incomingLinks = new HashSet<>();
         outgoingLinks = new HashSet<>();
     }
@@ -69,7 +83,7 @@ public class Node {
         return ruleName;
     }
 
-    public Rule getRule() {
+    public Optional<Rule> getRule() {
         return rule;
     }
 

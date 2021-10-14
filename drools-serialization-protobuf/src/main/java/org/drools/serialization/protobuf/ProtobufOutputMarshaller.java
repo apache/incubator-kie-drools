@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -324,9 +323,8 @@ public class ProtobufOutputMarshaller {
         }
 
         ProtobufMessages.Agenda.FocusStack.Builder _fsb = ProtobufMessages.Agenda.FocusStack.newBuilder();
-        LinkedList<AgendaGroup> focusStack = agenda.getStackList();
-        for ( AgendaGroup group : focusStack ) {
-            _fsb.addGroupName( group.getName() );
+        for ( String groupName : agenda.getGroupsName() ) {
+            _fsb.addGroupName( groupName );
         }
         _ab.setFocusStack( _fsb.build() );
 

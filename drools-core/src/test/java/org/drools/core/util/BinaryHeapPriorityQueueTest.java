@@ -17,7 +17,7 @@
 package org.drools.core.util;
 
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -28,7 +28,7 @@ public class BinaryHeapPriorityQueueTest {
     @Test
     public void testOptimised() {
         final Random random = new Random();
-        final List items = new LinkedList();
+        final List items = new ArrayList();
 
         final BinaryHeapQueue queue = new BinaryHeapQueue( NaturalComparator.INSTANCE,
                                                  100000 );
@@ -64,7 +64,7 @@ public class BinaryHeapPriorityQueueTest {
     @Test
     public void testBasic() {
         final Random random = new Random();
-        final List items = new LinkedList();
+        final List items = new ArrayList();
 
         final BinaryHeapQueue queue = new BinaryHeapQueue( NaturalComparator.INSTANCE,
                                                            100000 );

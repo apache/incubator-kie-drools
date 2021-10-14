@@ -16,11 +16,24 @@
 
 package org.drools.compiler.integrationtests.operators;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.NodeMemories;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.testcoverage.common.model.AFact;
+import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -33,6 +46,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class NotTest {
@@ -121,5 +135,175 @@ public class NotTest {
         } finally {
             ksession.dispose();
         }
+    }
+
+    @Test
+    public void testMissingRootBlockerEquality() {
+        // DROOLS-6636
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Cheese.class.getCanonicalName() + ";\n" +
+                        "\n" +
+                        "rule R1 when\n" +
+                        "    Cheese($type : type)\n" +
+                        "    not( Person( likes == $type, salary == null ) )\n" +
+                        "then\n" +
+                        "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("not-test", kieBaseTestConfiguration, drl);
+
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            Cheese cheese = new Cheese("cheddar");
+            Person p1 = new Person("John");
+            p1.setLikes("cheddar");
+            p1.setSalary(null);
+            Person p2 = new Person("Paul");
+            p2.setLikes("cheddar");
+            p2.setSalary(null);
+            Person p3 = new Person("George");
+            p3.setLikes("cheddar");
+            p3.setSalary(null);
+
+            ksession.insert(cheese);
+            InternalFactHandle handle1 = (InternalFactHandle) ksession.insert(p1);
+            InternalFactHandle handle2 = (InternalFactHandle) ksession.insert(p2);
+            InternalFactHandle handle3 = (InternalFactHandle) ksession.insert(p3);
+            assertEquals(0, ksession.fireAllRules());
+
+            InternalFactHandle blockerHandle = getBlockerFactHandle(ksession);
+            Person blockerFact = (Person) blockerHandle.getObject(); // for example, it returns p3 "George"
+
+            blockerFact.setAge(40); // modify unrelated property
+            ksession.update(blockerHandle, blockerFact, "age");
+            assertEquals(0, ksession.fireAllRules());
+
+            blockerFact.setSalary(new BigDecimal(1000)); // now this fact should match but remaining 2 facts shouldn't
+            ksession.update(blockerHandle, blockerFact, "salary");
+            assertEquals(0, ksession.fireAllRules());
+
+            // Then, modify remaining facts
+            List<InternalFactHandle> handleList = new ArrayList<>();
+            handleList.add(handle1);
+            handleList.add(handle2);
+            handleList.add(handle3);
+            handleList.remove(blockerHandle);
+
+            for (InternalFactHandle handle : handleList) {
+                Person p = (Person) handle.getObject();
+                p.setSalary(new BigDecimal(1000));
+                ksession.update(handle, p, "salary");
+            }
+            assertEquals(1, ksession.fireAllRules());
+
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    private InternalFactHandle getBlockerFactHandle(KieSession ksession) {
+        ObjectTypeNode otn = getObjectTypeNode(ksession.getKieBase(), Person.class);
+        BetaNode notNode = (BetaNode) ((AlphaNode) otn.getSinks()[0]).getSinks()[0];
+
+        StatefulKnowledgeSessionImpl ksessionImpl = (StatefulKnowledgeSessionImpl) ksession;
+        NodeMemories nodeMemories = ksessionImpl.getNodeMemories();
+        BetaMemory betaMemory = (BetaMemory) nodeMemories.getNodeMemory(notNode, ksessionImpl);
+        TupleMemory rightTupleMemory = betaMemory.getRightTupleMemory();
+        Tuple[] tuples = (Tuple[]) rightTupleMemory.toArray();
+        for (int i = 0; i < tuples.length; i++) {
+            RightTupleImpl tuple = (RightTupleImpl) tuples[i];
+            if (tuple.getBlocked() != null) {
+                return tuple.getFactHandle();
+            }
+        }
+
+        fail("Cannot find blocker in BetaMemory");
+        return null;
+    }
+
+    public static ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
+        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes();
+        for (ObjectTypeNode n : nodes) {
+            if (n.getObjectType().getClassType() == nodeClass) {
+                return n;
+            }
+        }
+        return null;
+    }
+
+    public static class Visit {
+        private final String location;
+        private String previous;
+
+        private Visit(String location) {
+            this(location, null);
+        }
+
+        private Visit(String location, String previous) {
+            this.location = location;
+            this.previous = previous;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getPrevious() {
+            return previous;
+        }
+
+        public void setPrevious(String previous) {
+            this.previous = previous;
+        }
+
+        @Override
+        public String toString() {
+            return "Visit{" +
+                    "location='" + location + '\'' +
+                    '}';
+        }
+    }
+
+    @Test
+    public void testNotWithInnerJoin() {
+        // DROOLS-6652
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                "global java.util.List results;\n" +
+                "import " + Visit.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $visit : Visit( previous != null )\n" +
+                "    not( Visit( previous != null, previous == $visit.location ) )\n" +
+                "then" +
+                "    results.add($visit.getLocation());\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("not-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+
+        List<String> results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        Visit london = new Visit("London", "Brussels");
+        Visit dublin = new Visit("Dublin", "London");
+        Visit paris = new Visit("Paris", "Dublin");
+
+        FactHandle dublinFH = ksession.insert(dublin);
+        FactHandle londonFH = ksession.insert(london);
+        FactHandle parisFH = ksession.insert(paris);
+
+        ksession.fireAllRules();
+        results.clear();
+
+        paris.setPrevious("London");
+        ksession.update(parisFH, paris);
+        dublin.setPrevious(null);
+        ksession.update(dublinFH, dublin);
+
+        ksession.fireAllRules();
+        assertEquals(1, results.size());
+        assertEquals("Paris", results.get(0));
     }
 }

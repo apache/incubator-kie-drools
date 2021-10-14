@@ -35,6 +35,7 @@ import org.kie.test.util.filesystem.FileUtils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class TreeModelImplementationProviderTest {
 
@@ -52,7 +53,7 @@ public class TreeModelImplementationProviderTest {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
-                                                                    pmml.getDataDictionary(),
+                                                                    getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                     pmml.getTransformationDictionary(),
                                                                     (TreeModel) pmml.getModels().get(0),
                                                                     new HasKnowledgeBuilderMock(knowledgeBuilder));
@@ -65,7 +66,7 @@ public class TreeModelImplementationProviderTest {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelWithSources("PACKAGE_NAME",
-                                                                                 pmml.getDataDictionary(),
+                                                                                 getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                                  pmml.getTransformationDictionary(),
                                                                                  (TreeModel) pmml.getModels().get(0),
                                                                                  new HasKnowledgeBuilderMock(knowledgeBuilder));

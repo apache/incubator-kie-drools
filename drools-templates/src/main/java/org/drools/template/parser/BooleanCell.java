@@ -74,7 +74,7 @@ public class BooleanCell implements Cell {
     }
 
     public void setValue(String v) {
-        value = new Boolean(v);
+        value = Boolean.valueOf(v);
     }
 
     public boolean isEmpty() {

@@ -63,7 +63,6 @@
     <!-- Drools binaries (+ transitive dependencies) -->
     <dependencySet>
       <excludes>
-        <exclude>org.kie:kie-ci-osgi</exclude>
         <exclude>org.drools:drools-examples</exclude>
         <exclude>com.miglayout:miglayout</exclude>
         <!-- Examples dependency -->
@@ -75,16 +74,6 @@
       </excludes>
       <outputDirectory>binaries</outputDirectory>
       <useTransitiveDependencies>true</useTransitiveDependencies>
-      <useStrictFiltering>true</useStrictFiltering>
-      <useTransitiveFiltering>true</useTransitiveFiltering>
-      <useProjectArtifact>false</useProjectArtifact>
-    </dependencySet>
-    <!-- Binaries for OSGi -->
-    <dependencySet>
-      <includes>
-        <include>org.kie:kie-ci-osgi:jar</include>
-      </includes>
-      <outputDirectory>osgi-binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <useProjectArtifact>false</useProjectArtifact>

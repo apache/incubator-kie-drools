@@ -26,12 +26,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -66,6 +68,7 @@ import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
@@ -74,6 +77,7 @@ import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.GenFnType;
 import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
@@ -84,6 +88,7 @@ import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.InformationRequirement;
@@ -102,7 +107,7 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNCompilerImpl.class );
 
-    private final DMNEvaluatorCompiler evaluatorCompiler;
+    private final DMNDecisionLogicCompiler evaluatorCompiler;
     private DMNCompilerConfiguration dmnCompilerConfig;
     private Deque<DRGElementCompiler> drgCompilers = new LinkedList<>();
     {
@@ -121,7 +126,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         this.dmnCompilerConfig = dmnCompilerConfig;
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
-        this.evaluatorCompiler = DMNEvaluatorCompiler.dmnEvaluatorCompilerFactory(this, cc);
+        this.evaluatorCompiler = cc.getDecisionLogicCompilerFactory().newDMNDecisionLogicCompiler(this, cc);
     }
 
     private void addDRGElementCompiler(DRGElementCompiler compiler) {
@@ -350,6 +355,26 @@ public class DMNCompilerImpl implements DMNCompiler {
         
         List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
         
+        Set<String> names = new HashSet<>();
+        for (ItemDefinition id : ordered) {
+            boolean added = names.add(id.getName());
+            if (!added) {
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      id,
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.DUPLICATED_ITEM_DEFINITION,
+                                      id.getName());
+            }
+            if (id.getItemComponent() != null && id.getItemComponent().size() > 0) {
+                DMNCompilerHelper.checkVariableName(model, id, id.getName());
+                CompositeTypeImpl compType = new CompositeTypeImpl(model.getNamespace(), id.getName(), id.getId(), id.isIsCollection());
+                DMNType preregistered = model.getTypeRegistry().registerType(compType);
+            }
+        }
+
         for ( ItemDefinition id : ordered ) {
             ItemDefNodeImpl idn = new ItemDefNodeImpl( id );
             DMNType type = buildTypeDef(ctx, model, idn, id, null);
@@ -614,34 +639,72 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }
                 }
             }
-        } else {
+        } else if (itemDef.getItemComponent() != null && itemDef.getItemComponent().size() > 0) {
             // this is a composite type
-            DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
-            CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
-            type = compType;
+            // first, locate preregistered or create anonymous inner composite
             if (topLevel == null) {
-                DMNType registered = dmnModel.getTypeRegistry().registerType( type );
-                if( registered != type ) {
-                    MsgUtil.reportMessage( logger,
-                                           DMNMessage.Severity.ERROR,
-                                           itemDef,
-                                           dmnModel,
-                                           null,
-                                           null,
-                                           Msg.DUPLICATED_ITEM_DEFINITION,
-                                           itemDef.getName() );
+                type = (CompositeTypeImpl) dmnModel.getTypeRegistry().resolveType(dmnModel.getNamespace(), itemDef.getName());
+            } else {
+                DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
+                type = new CompositeTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection());
+                ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
+            }
+            // second, add fields to located composite
+            for (ItemDefinition fieldDef : itemDef.getItemComponent()) {
+                DMNCompilerHelper.checkVariableName(dmnModel, fieldDef, fieldDef.getName());
+                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, type);
+                fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
+                ((CompositeTypeImpl) type).addField(fieldDef.getName(), fieldType);
+            }
+        } else if (isFunctionItem(itemDef)) {
+            FunctionItem fi = itemDef.getFunctionItem();
+            String name = itemDef.getName();
+            String namespace = dmnModel.getNamespace();
+            String id = itemDef.getId();
+            Map<String, DMNType> params = new HashMap<>();
+            for (InformationItem p : fi.getParameters()) {
+                DMNType resolveTypeRef = resolveTypeRef(dmnModel, itemDef, itemDef, p.getTypeRef());
+                params.put(p.getName(), resolveTypeRef);
+            }
+            DMNType returnType = resolveTypeRef(dmnModel, itemDef, itemDef, fi.getOutputTypeRef());
+            List<Type> feelPs = fi.getParameters().stream().map(InformationItem::getName).map(n -> ((BaseDMNTypeImpl) params.get(n)).getFeelType()).collect(Collectors.toList());
+            GenFnType feeltype = new GenFnType(feelPs, ((BaseDMNTypeImpl) returnType).getFeelType());
+            type = new SimpleFnTypeImpl(namespace, name, id, feeltype, params, returnType, fi);
+            DMNType registered = dmnModel.getTypeRegistry().registerType(type);
+            if (registered != type) {
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      itemDef,
+                                      dmnModel,
+                                      null,
+                                      null,
+                                      Msg.DUPLICATED_ITEM_DEFINITION,
+                                      itemDef.getName());
+            }
+        } else {
+            DMNType unknown = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, null);
+            type = new SimpleTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection(), null, unknown, ((BaseDMNTypeImpl) unknown).getFeelType());
+            if (topLevel == null) {
+                DMNType registered = dmnModel.getTypeRegistry().registerType(type);
+                if (registered != type) {
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          itemDef,
+                                          dmnModel,
+                                          null,
+                                          null,
+                                          Msg.DUPLICATED_ITEM_DEFINITION,
+                                          itemDef.getName());
                 }
             } else {
                 ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
             }
-            for (ItemDefinition fieldDef : itemDef.getItemComponent()) {
-                DMNCompilerHelper.checkVariableName(dmnModel, fieldDef, fieldDef.getName());
-                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, compType);
-                fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
-                compType.addField(fieldDef.getName(), fieldType);
-            }
         }
         return type;
+    }
+
+    private static boolean isFunctionItem(ItemDefinition itemDef) {
+        return !(itemDef instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) && !(itemDef instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase) && itemDef.getFunctionItem() != null;
     }
 
     /**
@@ -744,7 +807,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
     
-    public DMNEvaluatorCompiler getEvaluatorCompiler() {
+    public DMNDecisionLogicCompiler getEvaluatorCompiler() {
         return evaluatorCompiler;
     }
     

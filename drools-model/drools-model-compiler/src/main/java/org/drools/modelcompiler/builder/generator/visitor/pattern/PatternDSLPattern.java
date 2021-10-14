@@ -28,16 +28,20 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
+import org.kie.api.definition.rule.Watch;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NO_OP_EXPR;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PASSIVE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 class PatternDSLPattern extends PatternDSL {
 
@@ -61,8 +65,11 @@ class PatternDSLPattern extends PatternDSL {
                 additionalPatterns.add( expr );
             } else {
                 MethodCallExpr currentExpr = ( MethodCallExpr ) expr;
-                findLastMethodInChain( currentExpr ).setScope( patternExpression );
-                patternExpression = currentExpr;
+                MethodCallExpr lastMethodInChain = findLastMethodInChain(currentExpr);
+                if (!NO_OP_EXPR.equals(lastMethodInChain.getNameAsString())) {
+                    lastMethodInChain.setScope(patternExpression);
+                    patternExpression = currentExpr;
+                }
             }
         }
 
@@ -80,18 +87,20 @@ class PatternDSLPattern extends PatternDSL {
     }
 
     private MethodCallExpr addWatchToPattern( MethodCallExpr patternExpression ) {
-        if (context.isPropertyReactive(patternType)) {
-            Set<String> settableWatchedProps = getSettableWatchedProps();
-            if ( !settableWatchedProps.isEmpty() ) {
-                patternExpression = new MethodCallExpr( patternExpression, WATCH_CALL );
-                settableWatchedProps.stream().map( StringLiteralExpr::new ).forEach( patternExpression::addArgument );
+        Set<String> settableWatchedProps = getSettableWatchedProps();
+        if ( !settableWatchedProps.isEmpty() ) {
+            if (context.isPropertyReactive(patternType)) {
+                patternExpression = new MethodCallExpr(patternExpression, WATCH_CALL);
+                settableWatchedProps.stream().map(StringLiteralExpr::new).forEach(patternExpression::addArgument);
+            } else {
+                context.addCompilationError(new InvalidExpressionErrorResult("Wrong usage of @" + Watch.class.getSimpleName() + " annotation on class " + patternType.getName() + " that is not annotated as @PropertyReactive"));
             }
         }
         return patternExpression;
     }
 
     private MethodCallExpr createPatternExpression(PatternDescr pattern, DeclarationSpec declarationSpec) {
-        MethodCallExpr dslExpr = new MethodCallExpr(null, PATTERN_CALL);
+        MethodCallExpr dslExpr = createDslTopLevelMethod(PATTERN_CALL);
         dslExpr.addArgument( context.getVarExpr( pattern.getIdentifier()) );
         if (context.isQuery()) {
             Optional<Expression> declarationSource = declarationSpec.getDeclarationSource();
@@ -101,8 +110,21 @@ class PatternDSLPattern extends PatternDSL {
     }
 
     private void buildConstraints(PatternDescr pattern, Class<?> patternType, List<PatternConstraintParseResult> patternConstraintParseResults) {
+        boolean hasOOPath = false;
         for (PatternConstraintParseResult patternConstraintParseResult : patternConstraintParseResults) {
+            // only one oopath per pattern is allowed
+            if (patternConstraintParseResult.getDrlxParseResult().isOOPath()) {
+                if (hasOOPath) {
+                    context.addCompilationError(new InvalidExpressionErrorResult("Only one oopath per pattern is allowed"));
+                    break;
+                } else {
+                    hasOOPath = true;
+                }
+            }
             buildConstraint(pattern, patternType, patternConstraintParseResult);
+        }
+        if (hasOOPath) {
+            context.clearOOPathPatternExpr();
         }
     }
 

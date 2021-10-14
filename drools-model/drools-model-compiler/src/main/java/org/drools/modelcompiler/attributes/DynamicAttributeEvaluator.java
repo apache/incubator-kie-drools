@@ -23,22 +23,19 @@ import org.drools.model.DynamicValueSupplier;
 
 public class DynamicAttributeEvaluator<T> {
     protected final DynamicValueSupplier<T> supplier;
-    private Declaration[] declarations;
 
     public DynamicAttributeEvaluator( DynamicValueSupplier<T> supplier ) {
         this.supplier = supplier;
     }
 
     protected Declaration[] getDeclarations(Tuple tuple) {
-        if (declarations == null) {
-            Declaration[] allDeclarations = ((RuleTerminalNode )tuple.getTupleSink()).getAllDeclarations();
-            declarations = new Declaration[supplier.getVariables().length];
-            for (int i = 0; i < supplier.getVariables().length; i++) {
-                for (Declaration d : allDeclarations) {
-                    if (d.getIdentifier().equals( supplier.getVariables()[i].getName() )) {
-                        declarations[i] = d;
-                        break;
-                    }
+        Declaration[] declarations = new Declaration[supplier.getVariables().length];
+        Declaration[] allDeclarations = ((RuleTerminalNode) tuple.getTupleSink()).getAllDeclarations();
+        for (int i = 0; i < supplier.getVariables().length; i++) {
+            for (Declaration d : allDeclarations) {
+                if (d.getIdentifier().equals(supplier.getVariables()[i].getName())) {
+                    declarations[i] = d;
+                    break;
                 }
             }
         }

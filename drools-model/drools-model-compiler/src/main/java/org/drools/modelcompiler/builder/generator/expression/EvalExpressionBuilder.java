@@ -28,6 +28,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_EXPR_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 public class EvalExpressionBuilder extends AbstractExpressionBuilder {
 
@@ -40,7 +41,7 @@ public class EvalExpressionBuilder extends AbstractExpressionBuilder {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(drlxParseResult);
             context.addExpression(dslExpr);
-        } else if ( drlxParseResult.isValidExpression() ) {
+        } else if ( drlxParseResult.isPredicate() ) {
             Expression dslExpr = buildSingleExpressionWithIndexing(drlxParseResult);
             context.addExpression(dslExpr);
         }
@@ -48,7 +49,7 @@ public class EvalExpressionBuilder extends AbstractExpressionBuilder {
 
     private MethodCallExpr buildSingleExpressionWithIndexing(SingleDrlxParseSuccess drlxParseResult) {
         String exprId = createExprId(drlxParseResult);
-        MethodCallExpr exprDSL = new MethodCallExpr(null, EVAL_EXPR_CALL);
+        MethodCallExpr exprDSL = createDslTopLevelMethod(EVAL_EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
         }

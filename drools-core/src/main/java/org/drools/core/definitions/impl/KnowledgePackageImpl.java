@@ -371,7 +371,7 @@ public class KnowledgePackageImpl
         if (clazz == null) {
             return null;
         }
-        TypeDeclaration typeDeclaration = getTypeDeclaration(ClassUtils.getSimpleName(clazz));
+        TypeDeclaration typeDeclaration = getExactTypeDeclaration(clazz);
         if (typeDeclaration == null) {
             // check if clazz is resolved by any of the type declarations
             for (TypeDeclaration type : this.typeDeclarations.values()) {
@@ -382,6 +382,10 @@ public class KnowledgePackageImpl
             }
         }
         return typeDeclaration;
+    }
+
+    public TypeDeclaration getExactTypeDeclaration(Class<?> clazz) {
+        return getTypeDeclaration(ClassUtils.getSimpleName(clazz));
     }
 
     public TypeDeclaration getTypeDeclaration(String type) {
@@ -614,6 +618,21 @@ public class KnowledgePackageImpl
                 return decl.getTypeClassDef();
             } else {
                 throw new UnsupportedOperationException("KieBase.getFactType should only be used to retrieve declared beans. Class " + typeName + " exists outside DRL ");
+            }
+        }
+    }
+
+    public void wireTypeDeclarations() {
+        for (TypeDeclaration typeDeclaration : typeDeclarations.values()) {
+            Class<?> typeClass = null;
+            try {
+                typeClass = typeDeclaration.getTypeClass();
+                if (typeClass != null || !typeClass.isPrimitive()) {
+                    Class<?> cls = getPackageClassLoader().loadClass(typeClass.getName());
+                    typeDeclaration.setTypeClass(cls);
+                }
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Unable to load typeClass '" + typeClass.getName() + "'");
             }
         }
     }

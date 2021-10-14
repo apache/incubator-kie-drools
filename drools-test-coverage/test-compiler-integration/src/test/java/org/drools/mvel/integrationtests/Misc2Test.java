@@ -99,6 +99,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -3375,15 +3377,8 @@ public class Misc2Test {
 
         Results results = kieBuilder.getResults();
         List<org.kie.api.builder.Message> errors = results.getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
-
-        List<org.kie.api.builder.Message> warnings = results.getMessages(org.kie.api.builder.Message.Level.WARNING);
-        assertEquals( 2, warnings.size() );
-        for (org.kie.api.builder.Message warning : warnings) {
-            System.out.println( warning );
-        }
+        assertEquals( 2, errors.size() );
     }
-
 
     @Test
     public void testCollectAccumulate() {
@@ -8949,5 +8944,33 @@ public class Misc2Test {
 
         ksession.insert("Hello");
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testKieHelperKieModuleModel() throws Exception {
+
+        // Test to check whether verify method writes KieModuleModel to KieFileSystem
+        final String drl =
+                "import " + Address.class.getCanonicalName() + ";\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "    $alice : Person(name == \"Alice\")\n" +
+                        "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieModuleModel kModuleModel = KieServices.get().newKieModuleModel();
+
+        kModuleModel.setConfigurationProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf", org.drools.compiler.integrationtests.CustomOperatorTest.SupersetOfEvaluatorDefinition.class.getName());
+
+        KieHelper kHelper = new KieHelper();
+
+        Results results = kHelper
+                .setKieModuleModel(kModuleModel)
+                .addContent(drl, ResourceType.DRL)
+                .verify();
+
+        List<org.kie.api.builder.Message> errors = results.getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 }

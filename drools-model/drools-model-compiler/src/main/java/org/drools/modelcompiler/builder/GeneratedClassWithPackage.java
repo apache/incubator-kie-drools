@@ -18,6 +18,7 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import com.github.javaparser.ast.body.TypeDeclaration;
 
@@ -63,4 +64,16 @@ public class GeneratedClassWithPackage {
         return "package " + packageName + "\n" + generatedClass;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeneratedClassWithPackage that = (GeneratedClassWithPackage) o;
+        return getPackageName().equals(that.getPackageName()) && getClassName().equals(that.getClassName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPackageName(), getClassName());
+    }
 }

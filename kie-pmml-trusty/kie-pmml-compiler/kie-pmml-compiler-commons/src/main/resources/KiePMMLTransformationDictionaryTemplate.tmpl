@@ -1,0 +1,17 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
+
+public class KiePMMLTransformationDictionaryTemplate {
+
+
+    private KiePMMLTransformationDictionary getKiePMMLTransformationDictionary() {
+        KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder("transformationDictionary", Collections.emptyList())
+                                                    .withDefineFunctions(null)
+                                                    .withDerivedFields(null)
+                                                    .build();
+    }
+
+}

@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.appformer.maven.integration.MavenRepository;
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.test.model.Cheese;
 import org.junit.After;
@@ -35,6 +34,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.maven.integration.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

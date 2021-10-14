@@ -175,7 +175,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.DTABLE, ResourceToPkgDescrMapper.DTABLE_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TDRL, ResourceToPkgDescrMapper.DRL_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TEMPLATE, ResourceToPkgDescrMapper.TEMPLATE_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.GDST, ResourceToPkgDescrMapper.GUIDED_DTABLE_TO_PKG_DESCR);
         this.resourcesByType.remove(ResourceType.DRT); // drt is a template for dtables but doesn't have to be built on its own
 
         return packages.values();
@@ -344,6 +343,5 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.dslrToPackageDescr(resourceDescr.resource);
         ResourceToPkgDescrMapper XML_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.xmlToPackageDescr(resourceDescr.resource);
         ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
-        ResourceToPkgDescrMapper GUIDED_DTABLE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.guidedDecisionTableToPackageDescr(resourceDescr.resource);
     }
 }

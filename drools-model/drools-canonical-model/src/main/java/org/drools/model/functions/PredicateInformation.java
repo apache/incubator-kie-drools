@@ -16,8 +16,12 @@
 
 package org.drools.model.functions;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Used to generate a better error message when constraints fail
@@ -27,45 +31,39 @@ public class PredicateInformation {
     public static final PredicateInformation EMPTY_PREDICATE_INFORMATION =
             new PredicateInformation("", "", "");
 
-
     // Used to generate a significant error message
     private final String stringConstraint;
-    private final String ruleName;
-    private final String ruleFileName;
+    private final Set<RuleDef> ruleDefs = new TreeSet<>();
 
-    public PredicateInformation(String stringConstraint, String ruleName, String ruleFileName) {
+    public PredicateInformation(String stringConstraint, String... ruleNames) {
         this.stringConstraint = defaultToEmptyString(stringConstraint);
-        this.ruleName = defaultToEmptyString(ruleName);
-        this.ruleFileName = defaultToEmptyString(ruleFileName);
-    }
-
-    private String defaultToEmptyString(String stringConstraint) {
-        return Optional.ofNullable(stringConstraint).orElse("");
-    }
-
-    public RuntimeException betterErrorMessage(RuntimeException originalException) {
-        if("".equals(stringConstraint)) {
-            return originalException;
-        }
-
-        String errorMessage = String.format(
-                "Error evaluating constraint '%s' in [Rule \"%s\" in %s]",
-                stringConstraint,
-                ruleName,
-                ruleFileName);
-        return new RuntimeException(errorMessage, originalException);
+        addRuleNames(ruleNames);
     }
 
     public String getStringConstraint() {
         return stringConstraint;
     }
 
-    public String getRuleName() {
-        return ruleName;
+    public Set<RuleDef> getRuleDefs() {
+        return ruleDefs;
     }
 
-    public String getRuleFileName() {
-        return ruleFileName;
+    public void addRuleNames(String... ruleNames) {
+        for (int i = 0; i < ruleNames.length; i+=2) {
+            ruleDefs.add(new RuleDef(defaultToEmptyString(ruleNames[i+1]), defaultToEmptyString(ruleNames[i])));
+        }
+    }
+
+    public Map<String, Set<String>> getRuleNameMap() {
+        Map<String, Set<String>> map = new HashMap<>();
+        for (RuleDef ruleDef : ruleDefs) {
+            map.computeIfAbsent(ruleDef.fileName, k -> new HashSet<>()).add(ruleDef.ruleName);
+        }
+        return map;
+    }
+
+    public static String defaultToEmptyString(String str) {
+        return str == null ? "" : str;
     }
 
     public boolean isEmpty() {
@@ -82,21 +80,64 @@ public class PredicateInformation {
         }
         PredicateInformation that = (PredicateInformation) o;
         return Objects.equals(stringConstraint, that.stringConstraint) &&
-                Objects.equals(ruleName, that.ruleName) &&
-                Objects.equals(ruleFileName, that.ruleFileName);
+                Objects.equals(ruleDefs, that.ruleDefs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stringConstraint, ruleName, ruleFileName);
+        return Objects.hash(stringConstraint, ruleDefs);
     }
 
     @Override
     public String toString() {
         return "PredicateInformation{" +
                 "stringConstraint='" + stringConstraint + '\'' +
-                ", ruleName='" + ruleName + '\'' +
-                ", ruleFileName='" + ruleFileName + '\'' +
+                ", ruleNameMap='" + ruleDefs + '\'' +
                 '}';
+    }
+
+    public static class RuleDef implements Comparable<RuleDef> {
+        private final String fileName;
+        private final String ruleName;
+
+        public RuleDef(String fileName, String ruleName) {
+            this.fileName = fileName;
+            this.ruleName = ruleName;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public String getRuleName() {
+            return ruleName;
+        }
+
+        @Override
+        public int compareTo(RuleDef other) {
+            int fileNameCompare = this.fileName.compareTo(other.fileName);
+            return fileNameCompare != 0 ? fileNameCompare : this.ruleName.compareTo(other.ruleName);
+        }
+
+        @Override
+        public String toString() {
+            return "RuleDef{" +
+                    "fileName='" + fileName + '\'' +
+                    ", ruleName='" + ruleName + '\'' +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            RuleDef ruleDef = (RuleDef) o;
+            return Objects.equals(fileName, ruleDef.fileName) && Objects.equals(ruleName, ruleDef.ruleName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(fileName, ruleName);
+        }
     }
 }

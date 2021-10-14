@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.api.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +33,7 @@ import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
 public class KiePMMLSimplePredicate extends KiePMMLPredicate {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimplePredicate.class);
+    private static final long serialVersionUID = -572231761649957360L;
 
     private final OPERATOR operator;
     protected Object value;

@@ -41,7 +41,7 @@ public abstract class Waltz {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
-    @Test(timeout = 20000 )
+    @Test(timeout = 60000 )
     public void testWaltz() {
         try {
             //load up the rulebase

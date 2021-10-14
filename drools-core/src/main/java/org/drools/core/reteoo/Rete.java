@@ -20,9 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -183,7 +183,7 @@ public class Rete extends ObjectSource
     }
 
     public List<ObjectTypeNode> getObjectTypeNodes() {
-        List<ObjectTypeNode> allNodes = new LinkedList<ObjectTypeNode>();
+        List<ObjectTypeNode> allNodes = new ArrayList<>();
         for ( EntryPointNode node : this.entryPoints.values() ) {
             allNodes.addAll( node.getObjectTypeNodes().values() );
         }

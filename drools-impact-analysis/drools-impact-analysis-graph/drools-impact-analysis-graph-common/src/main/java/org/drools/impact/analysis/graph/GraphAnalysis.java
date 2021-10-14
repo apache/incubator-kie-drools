@@ -68,6 +68,13 @@ public class GraphAnalysis {
         return rules;
     }
 
+    public Collection<AnalyzedRule> getRulesReactiveToWithoutProperty(Class<?> clazz) {
+        AnalyzedRuleSet rules = new AnalyzedRuleSet();
+        rules.addAll(classReativeMap.getOrDefault(clazz, AnalyzedRuleSet.EMPTY));
+        rules.addAll(insertReactiveMap.getOrDefault(clazz, AnalyzedRuleSet.EMPTY));
+        return rules;
+    }
+
     public Collection<AnalyzedRule> getRulesReactiveTo(Class<?> clazz, String property) {
         AnalyzedRuleSet rules = new AnalyzedRuleSet();
         rules.addAll( propertyReactiveMap.getOrDefault(clazz, Collections.emptyMap()).getOrDefault(property, AnalyzedRuleSet.EMPTY) );

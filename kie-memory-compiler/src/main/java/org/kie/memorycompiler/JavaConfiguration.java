@@ -77,6 +77,10 @@ public class JavaConfiguration {
 
     private CompilerType                compiler;
 
+    public static String findJavaVersion() {
+        return findJavaVersion( System.getProperty( JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version") ) );
+    }
+
     public static String findJavaVersion( String level ) {
         if ( level.startsWith( "1.5" ) ) {
             return "1.5";

@@ -27,8 +27,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class MixedMiningTest extends AbstractPMMLTest {
@@ -36,6 +39,18 @@ public class MixedMiningTest extends AbstractPMMLTest {
     private static final String FILE_NAME = "MiningModel_Mixed.pmml";
     private static final String MODEL_NAME = "MixedMining";
     private static final String TARGET_FIELD = "categoricalResult";
+    private static final String NUMBER_OF_CLAIMS = "Number of Claims";
+    private static final String OUT_DER_FUN_OCCUPATION = "out_der_fun_occupation";
+    private static final String OUT_RESIDENCESTATE = "out_residenceState";
+    private static final String OUT_FUN_OCCUPATION_REFERRED = "out_fun_occupation_referred";
+    private static final String CONSTANT_OCCUPATION = "CONSTANT_OCCUPATION";
+    private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
+    private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
+    private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
+    private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
+            "excellent!";
+
     private static PMMLRuntime pmmlRuntime;
 
     private String categoricalX;
@@ -62,7 +77,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
+    @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -70,18 +85,18 @@ public class MixedMiningTest extends AbstractPMMLTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"red", "classA", 25.0, "ASTRONAUT", "AP", true, 2.3724999999999987},
-                {"blue", "classA", 2.3, "PROGRAMMER", "KN", true, 8.122499999999999},
-                {"yellow", "classC", 333.56, "INSTRUCTOR", "TN", false, -21.502499999999998},
-                {"orange", "classB", 0.12, "ASTRONAUT", "KN", true, 7.3725},
-                {"green", "classC", 122.12, "TEACHER", "TN", false, 36.1225},
-                {"green", "classB", 11.33, "INSTRUCTOR", "AP", false, 21.1225},
-                {"orange", "classB", 423.2, "SKYDIVER", "KN", true, 14.872499999999999},
+                {"red", "classA", 25.0, "ASTRONAUT", "AP", true, 17.0},
+                {"blue", "classA", 2.3, "PROGRAMMER", "KN", true, 36.0},
+                {"yellow", "classC", 333.56, "INSTRUCTOR", "TN", false, -58.0},
+                {"orange", "classB", 0.12, "ASTRONAUT", "KN", true, 33.0},
+                {"green", "classC", 122.12, "TEACHER", "TN", false, 123.0},
+                {"green", "classB", 11.33, "INSTRUCTOR", "AP", false, 76.0},
+                {"orange", "classB", 423.2, "SKYDIVER", "KN", true, 57.0},
         });
     }
 
     @Test
-    public void testMixedMining() {
+    public void testMixedMining() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
         inputData.put("categoricalY", categoricalY);
@@ -89,9 +104,113 @@ public class MixedMiningTest extends AbstractPMMLTest {
         inputData.put("occupation", occupation);
         inputData.put("residenceState", residenceState);
         inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 34.1);
+
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(NUMBER_OF_CLAIMS)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(NUMBER_OF_CLAIMS)).isEqualTo(expectedResult);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_OCCUPATION)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_OCCUPATION)).isEqualTo(occupation);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isEqualTo(residenceState);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_FUN_OCCUPATION_REFERRED)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_FUN_OCCUPATION_REFERRED)).isEqualTo(CONSTANT_OCCUPATION);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
+        if (occupation.equals("SKYDIVER")) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo("1.0");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo("0.0");
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        if (age > 4.2 && age < 30.5) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+        } else if (age >= 114 && age < 250) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        String expected;
+        switch (categoricalX) {
+            case "red":
+                expected = "der";
+                break;
+            case "green":
+                expected = "neerg";
+                break;
+            case "blue":
+                expected = "eulb";
+                break;
+            case "orange":
+                expected = "egnaro";
+                break;
+            case "yellow":
+                expected = "wolley";
+                break;
+            default:
+                throw new Exception("Unexpected categoricalX " + categoricalX);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testMixedMiningWithoutRequired() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("categoricalX", categoricalX);
+        inputData.put("categoricalY", categoricalY);
+        inputData.put("age", age);
+        inputData.put("occupation", occupation);
+        inputData.put("residenceState", residenceState);
+        inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test
+    public void testMixedMiningConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("categoricalX", categoricalX);
+        inputData.put("categoricalY", categoricalY);
+        inputData.put("age", String.valueOf(age));
+        inputData.put("occupation", occupation);
+        inputData.put("residenceState", residenceState);
+        inputData.put("validLicense", String.valueOf(validLicense));
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", "34.1");
+        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testMixedMiningNotConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("categoricalX", categoricalX);
+        inputData.put("categoricalY", categoricalY);
+        inputData.put("age", age);
+        inputData.put("occupation", occupation);
+        inputData.put("residenceState", residenceState);
+        inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", true);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testMixedMiningInvalidValue() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("categoricalX", categoricalX);
+        inputData.put("categoricalY", categoricalY);
+        inputData.put("age", age);
+        inputData.put("occupation", occupation);
+        inputData.put("residenceState", residenceState);
+        inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 4.1);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }

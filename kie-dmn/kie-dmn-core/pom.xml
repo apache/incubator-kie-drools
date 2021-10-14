@@ -7,7 +7,7 @@
   <parent>
     <artifactId>kie-dmn</artifactId>
     <groupId>org.kie</groupId>
-    <version>7.53.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-dmn-core</artifactId>
@@ -88,10 +88,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-canonical-model</artifactId>
     </dependency>
     <dependency>
@@ -124,13 +120,6 @@
 
     <!-- Used to provide a default binding for PMML, and test in this module -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-    <!-- Used to provide a default binding for PMML, and test in this module -->
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-api</artifactId>
       <scope>provided</scope>
@@ -156,13 +145,13 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+      <artifactId>kie-pmml-models-tree-model</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+      <artifactId>kie-pmml-models-tree-compiler</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
       <exclusions>
@@ -174,7 +163,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+      <artifactId>kie-pmml-models-tree-evaluator</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
       <exclusions>
@@ -230,9 +219,9 @@
       <artifactId>yasson</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.openapi</groupId>
-      <artifactId>microprofile-openapi-api</artifactId>
+    <dependency> <!-- rely on SmallRye OpenAPI to define the Eclipse MP OAS API to be using for the tests -->
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -249,6 +238,11 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

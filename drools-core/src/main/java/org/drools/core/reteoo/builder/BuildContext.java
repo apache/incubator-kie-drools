@@ -16,12 +16,12 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Stack;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
@@ -52,21 +52,21 @@ import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 public class BuildContext {
 
     // tuple source to attach next node to
-    private LeftTupleSource                  tupleSource;
+    private LeftTupleSource tupleSource;
     // object source to attach next node to
-    private ObjectSource                     objectSource;
+    private ObjectSource objectSource;
     // object type cache to check for cross products
-    private LinkedList<Pattern>              objectType;
+    private List<Pattern> patterns;
 
     // rule base to add rules to
-    private final InternalKnowledgeBase      kBase;
+    private final InternalKnowledgeBase kBase;
     // rule being added at this moment
-    private RuleImpl                         rule;
-    private GroupElement                     subRule;
+    private RuleImpl rule;
+    private GroupElement subRule;
     // the rule component being processed at the moment
-    private final Stack<RuleComponent>       ruleComponent;
+    private final Deque<RuleComponent> ruleComponent = new ArrayDeque<>();
     // a build stack to track nested elements
-    private LinkedList<RuleConditionElement> buildstack;
+    private Deque<RuleConditionElement> buildstack;
     // beta constraints from the last pattern attached
     private List<BetaNodeFieldConstraint>    betaconstraints;
     // alpha constraints from the last pattern attached
@@ -85,7 +85,7 @@ public class BuildContext {
     /**
      * Stores the list of nodes being added that require partitionIds
      */
-    private List<BaseNode>                   nodes;
+    private List<BaseNode> nodes = new ArrayList<>();
     /**
      * Stores the id of the partition this rule will be added to
      */
@@ -109,29 +109,11 @@ public class BuildContext {
 
     public BuildContext(final InternalKnowledgeBase kBase) {
         this.kBase = kBase;
-
-        this.objectType = null;
-        this.buildstack = null;
-
-        this.tupleSource = null;
-        this.objectSource = null;
-
         this.tupleMemoryEnabled = true;
-
         this.objectTypeNodeMemoryEnabled = true;
-
         this.currentEntryPoint = EntryPointId.DEFAULT;
-
-        this.nodes = new LinkedList<>();
-
-        this.partitionId = null;
-
-        this.ruleComponent = new Stack<>();
-
         this.attachPQN = true;
-
         this.componentFactory = kBase.getConfiguration().getComponentFactory();
-
         this.emptyForAllBetaConstraints = false;
     }
 
@@ -144,12 +126,12 @@ public class BuildContext {
     }
 
     public void syncObjectTypesWithObjectCount() {
-        if (this.objectType == null) {
-            this.objectType = new LinkedList<>();
+        if (this.patterns == null) {
+            return;
         }
         if (tupleSource != null) {
-            while (this.objectType.size() > tupleSource.getObjectCount()) {
-                this.objectType.removeLast();
+            while (this.patterns.size() > tupleSource.getObjectCount()) {
+                this.patterns.remove(this.patterns.size()-1);
             }
         }
     }
@@ -168,24 +150,15 @@ public class BuildContext {
         this.objectSource = objectSource;
     }
 
-    /**
-     * @return the objectType
-     */
-    public LinkedList<Pattern> getObjectType() {
-        if (this.objectType == null) {
-            this.objectType = new LinkedList<>();
-        }
-        return this.objectType;
+    public List<Pattern> getPatterns() {
+        return this.patterns == null ? Collections.emptyList() : this.patterns;
     }
 
-    /**
-     * @param objectType the objectType to set
-     */
-    public void setObjectType(final LinkedList<Pattern> objectType) {
-        if (this.objectType == null) {
-            this.objectType = new LinkedList<>();
+    public void addPattern(Pattern pattern) {
+        if (this.patterns == null) {
+            this.patterns = new ArrayList<>();
         }
-        this.objectType = objectType;
+        this.patterns.add( pattern );
     }
 
     /**
@@ -240,7 +213,7 @@ public class BuildContext {
      */
     public void push(final RuleConditionElement rce) {
         if (this.buildstack == null) {
-            this.buildstack = new LinkedList<>();
+            this.buildstack = new ArrayDeque<>();
         }
         this.buildstack.addLast(rce);
     }
@@ -249,9 +222,6 @@ public class BuildContext {
      * Removes the top stack element
      */
     public RuleConditionElement pop() {
-        if (this.buildstack == null) {
-            this.buildstack = new LinkedList<>();
-        }
         return this.buildstack.removeLast();
     }
 
@@ -259,20 +229,11 @@ public class BuildContext {
      * Returns the top stack element without removing it
      */
     public RuleConditionElement peek() {
-        if (this.buildstack == null) {
-            this.buildstack = new LinkedList<>();
-        }
         return this.buildstack.getLast();
     }
 
-    /**
-     * Returns a list iterator to iterate over the stacked elements
-     */
-    ListIterator<RuleConditionElement> stackIterator() {
-        if (this.buildstack == null) {
-            this.buildstack = new LinkedList<>();
-        }
-        return this.buildstack.listIterator(this.buildstack.size());
+    public Collection<RuleConditionElement> getBuildstack() {
+        return this.buildstack == null ? Collections.emptyList() : buildstack;
     }
 
     public List<BetaNodeFieldConstraint> getBetaconstraints() {

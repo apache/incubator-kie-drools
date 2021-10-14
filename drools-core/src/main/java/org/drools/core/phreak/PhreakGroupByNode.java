@@ -105,7 +105,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                     RightTuple         rightTuple  = childMatch.getRightParent();
                     InternalFactHandle childHandle = rightTuple.getFactHandle();
                     LeftTuple          tuple       = leftTuple;
-                    if (accNode.isUnwrapRightObject()) {
+                    if (accNode.isRightInputIsRiaNode()) {
                         // if there is a subnetwork, handle must be unwrapped
                         tuple = (LeftTuple) rightTuple;
                         childHandle = rightTuple.getFactHandleForEvaluation();

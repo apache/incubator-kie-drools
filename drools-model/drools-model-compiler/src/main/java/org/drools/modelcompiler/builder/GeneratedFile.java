@@ -19,6 +19,8 @@ package org.drools.modelcompiler.builder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import org.kie.memorycompiler.resources.KiePath;
+
 public class GeneratedFile {
 
     public enum Type {
@@ -36,7 +38,7 @@ public class GeneratedFile {
         PMML;
     }
 
-    private final String path;
+    private final KiePath path;
     private final byte[] data;
     private final Type type;
 
@@ -54,7 +56,7 @@ public class GeneratedFile {
 
     private GeneratedFile(Type type, String path, byte[] data) {
         this.type = type;
-        this.path = path;
+        this.path = KiePath.of(path);
         this.data = data;
     }
 
@@ -63,6 +65,10 @@ public class GeneratedFile {
     }
 
     public String getPath() {
+        return path.asString();
+    }
+
+    public KiePath getKiePath() {
         return path;
     }
 
@@ -73,7 +79,7 @@ public class GeneratedFile {
     @Override
     public String toString() {
         return "GeneratedFile{" +
-                "path='" + path + '\'' +
+                "path='" + path.asString() + '\'' +
                 '}';
     }
 

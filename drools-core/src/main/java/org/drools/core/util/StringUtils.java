@@ -30,7 +30,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -649,7 +648,7 @@ public class StringUtils {
         }
 
         String[] pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
-        List pathElements = new LinkedList();
+        List pathElements = new ArrayList();
         int tops = 0;
 
         for (int i = pathArray.length - 1; i >= 0; i--) {
@@ -1020,10 +1019,11 @@ public class StringUtils {
         List<String> args = new ArrayList<String>();
         int lastStart = 0;
         int nestedParam = 0;
-        boolean isQuoted = false;
+        boolean isSingleQuoted = false;
+        boolean isDoubleQuoted = false;
         for (int i = 0; i < string.length(); i++) {
             if (contains(chs, string.charAt( i ))) {
-                if (!isQuoted && nestedParam == 0) {
+                if (!isSingleQuoted && !isDoubleQuoted && nestedParam == 0) {
                     String arg = string.subSequence(lastStart, i).toString();
                     args.add(trimArgs ? arg.trim() : arg);
                     lastStart = i+1;
@@ -1033,17 +1033,21 @@ public class StringUtils {
                     case '(':
                     case '[':
                     case '{':
-                        if (!isQuoted) nestedParam++;
+                        if (!isSingleQuoted && !isDoubleQuoted) nestedParam++;
                         break;
                     case ')':
                     case ']':
                     case '}':
-                        if (!isQuoted) nestedParam--;
+                        if (!isSingleQuoted && !isDoubleQuoted) nestedParam--;
                         break;
                     case '"':
+                        if (!isSingleQuoted && (i == 0 || string.charAt(i-1) != '\\')) {
+                            isDoubleQuoted = !isDoubleQuoted;
+                        }
+                        break;
                     case '\'':
-                        if (i == 0 || string.charAt(i-1) != '\\') {
-                            isQuoted = !isQuoted;
+                        if (!isDoubleQuoted && (i == 0 || string.charAt(i-1) != '\\')) {
+                            isSingleQuoted = !isSingleQuoted;
                         }
                         break;
                     case '\\':

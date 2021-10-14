@@ -74,6 +74,35 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
+    public void testOOPathBinding() {
+        final String str =
+                "import org.drools.modelcompiler.domain.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                " Man( /wife[$age : age] )\n" +
+                "then\n" +
+                "  list.add( $age );\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<Integer> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        final Man carl = new Man( "Carl", 40 );
+        bob.setWife( alice );
+
+        ksession.insert( bob );
+        ksession.insert( carl );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder(38);
+    }
+
+    @Test
     public void testReactiveOOPath() {
         final String str =
                 "import org.drools.modelcompiler.domain.*;\n" +

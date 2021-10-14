@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -116,7 +117,7 @@ public class DOMParserUtil {
      * @param childNodeNameReplacement
      * @return
      */
-    public static String replaceNodeName(Document document, String containerNodeName, String childNodeNameToReplace, String childNodeNameReplacement) throws Exception {
+    public static String replaceNodeName(Document document, String containerNodeName, String childNodeNameToReplace, String childNodeNameReplacement) throws TransformerException {
         final NodeList containerNodes = document.getElementsByTagName(containerNodeName);
         if (containerNodes != null) {
             for (int i = 0; i < containerNodes.getLength(); i++) {
@@ -229,6 +230,17 @@ public class DOMParserUtil {
     }
 
     /**
+     * Create a <b>nodeToCreateName</b> <code>Node</code> and appends it inside <b>containerNode</b>.
+     * @param containerNode
+     * @param nodeToCreateName
+     * @param nodeContent
+     * @return
+     */
+    public static Node createNodeAndAppend(Node containerNode, String nodeToCreateName, String nodeContent) {
+        return createNodeAtPosition(containerNode, nodeToCreateName, nodeContent, null);
+    }
+
+    /**
      * Create a <b>nodeToCreateName</b> <code>Node</code> inside <b>containerNode</b>.
      * If <b>nodeContent</b> is not null, add it as text content.
      * If <b>position</b> is not null, put the created node at position 0
@@ -337,7 +349,7 @@ public class DOMParserUtil {
         }
     }
 
-    public static String getString(Document toRead) throws Exception {
+    public static String getString(Document toRead) throws TransformerException {
         DOMSource domSource = new DOMSource(toRead);
         TransformerFactory factory = TransformerFactory.newInstance();
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);

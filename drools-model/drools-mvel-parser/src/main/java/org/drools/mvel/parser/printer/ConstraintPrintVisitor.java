@@ -37,6 +37,7 @@ import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
@@ -94,6 +95,19 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
         inlineCastExpr.getExpression().accept( this, arg );
         printer.print( "#" );
         inlineCastExpr.getType().accept( this, arg );
+    }
+
+    @Override
+    public void visit( FullyQualifiedInlineCastExpr inlineCastExpr, Void arg ) {
+        printComment(inlineCastExpr.getComment(), arg);
+        inlineCastExpr.getScope().accept( this, arg );
+        printer.print( "#" );
+        inlineCastExpr.getName().accept( this, arg );
+        if (inlineCastExpr.hasArguments()) {
+            printer.print( "(" );
+            inlineCastExpr.getArguments().accept( this, arg );
+            printer.print( ")" );
+        }
     }
 
     @Override
@@ -209,12 +223,17 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
     @Override
     public void visit(OOPathExpr oopathExpr, Void arg ) {
         printComment(oopathExpr.getComment(), arg);
-        printer.print("/");
         NodeList<OOPathChunk> chunks = oopathExpr.getChunks();
         for (int i = 0; i <  chunks.size(); i++) {
             final OOPathChunk chunk = chunks.get(i);
+            printer.print(chunk.isSingleValue() ? "." : "/");
             chunk.accept(this, arg);
             printer.print(chunk.getField().toString());
+
+            if (chunk.getInlineCast() != null) {
+                printer.print("#");
+                chunk.getInlineCast().accept( this, arg );
+            }
 
             List<DrlxExpression> condition = chunk.getConditions();
             final Iterator<DrlxExpression> iterator = condition.iterator();
@@ -227,10 +246,6 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
                     iterator.next().accept(this, arg);
                 }
                 printer.print("]");
-            }
-
-            if(i != chunks.size() - 1) { // Avoid printing last /
-                printer.print("/");
             }
         }
     }

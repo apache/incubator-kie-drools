@@ -17,9 +17,11 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -101,4 +103,194 @@ public class BindingTest extends BaseModelTest {
         assertFalse( result.contains( "R7" ) );
         assertFalse( result.contains( "R8" ) );
     }
+
+    @Test
+    public void testBindMethodCall() {
+        // DROOLS-6521
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    Person( $value: name.charAt(2) == 'r' )\n" +
+                "then\n" +
+                "    result.add($value);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Character> result = new ArrayList<>();
+        ksession.setGlobal( "result", result );
+
+        ksession.insert( new Person("Mario", 47));
+
+        assertEquals( 1, ksession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( 'r', (char) result.get(0) );
+    }
+
+    @Test
+    public void testEnclosedBinding() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global java.util.List result;\n" +
+                        "rule R when\n" +
+                        "  $p : Person( ($n : name == \"Mario\") )\n" +
+                        "then\n" +
+                        "  result.add($n);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactly("Mario");
+    }
+
+    @Test
+    public void testComplexEnclosedBinding() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person( ($n : name == \"Mario\") && (age > 20) )\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactly("Mario");
+    }
+
+    @Test
+    public void testComplexEnclosedDoubleBinding() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person( ($n : name == \"Mario\") && ($a : age > 20) )\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactly("Mario");
+    }
+
+    @Test
+    public void testBindingOnRight() {
+        // DROOLS-6611
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\" && $a : age > 20)\n" +
+                "then\n" +
+                "  result.add($a);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactly(40);
+    }
+
+    @Test
+    public void testBindingOnBoth() {
+        // DROOLS-6611
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name == \"Mario\" && $a : age > 20)\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "  result.add($a);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder("Mario", 40);
+    }
+
+    @Test
+    public void test3BindingOn3Conditions() {
+        // DROOLS-6611
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name == \"Mario\" && $a : age > 20 && $l : likes != null)\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "  result.add($a);\n" +
+                "  result.add($l);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        me.setLikes("Cheddar");
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder("Mario", 40, "Cheddar");
+    }
+
+    @Test
+    public void test2BindingOn3Conditions() {
+        // DROOLS-6611
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\" && $a : age > 20 && $l : likes != null)\n" +
+                "then\n" +
+                "  result.add($a);\n" +
+                "  result.add($l);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        me.setLikes("Cheddar");
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder(40, "Cheddar");
+    }
+
 }

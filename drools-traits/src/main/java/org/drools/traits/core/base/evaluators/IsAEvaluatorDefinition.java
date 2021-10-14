@@ -352,6 +352,9 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 }
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();
+            } else if ( target instanceof Collection ) {
+                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                targetTraits = getCode( target, x );
             } else {
                 TraitableBean tbean = lookForWrapper( target, workingMemory );
                 if ( tbean != null ) {

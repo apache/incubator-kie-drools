@@ -29,11 +29,11 @@ import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.appformer.maven.integration.embedder.MavenSettings;
+import org.kie.maven.integration.embedder.MavenSettings;
 import org.kie.scanner.AbstractKieCiTest;
 import org.kie.scanner.KieMavenRepository;
 
-import static org.appformer.maven.integration.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
+import static org.kie.maven.integration.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class MavenDeployTest extends AbstractKieCiTest {

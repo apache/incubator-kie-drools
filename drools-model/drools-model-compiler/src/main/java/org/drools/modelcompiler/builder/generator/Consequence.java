@@ -40,11 +40,11 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -62,30 +62,29 @@ import org.drools.modelcompiler.builder.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.ModifyCompiler;
-import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
-import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.isGetter;
+import static org.drools.core.util.ClassUtils.isReadableProperty;
 import static org.drools.core.util.ClassUtils.isSetter;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GET_CHANNEL_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
@@ -148,19 +147,24 @@ public class Consequence {
         }
 
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
-        if (isBreaking) {
-            onCall = new MethodCallExpr(onCall, BREAKING_CALL);
-        }
 
+        MethodCallExpr executeCall;
         switch (context.getRuleDialect()) {
             case JAVA:
-                rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS );
-                return executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
+                rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS);
+                executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
+                break;
             case MVEL:
-                return createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
+                executeCall = createExecuteCallMvel(consequenceString, ruleVariablesBlock, usedDeclarationInRHS, onCall);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
         }
 
-        throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
+        if (isBreaking) {
+            executeCall = new MethodCallExpr(executeCall, BREAKING_CALL);
+        }
+        return executeCall;
     }
 
     private void replaceKcontext(BlockStmt ruleConsequence) {
@@ -188,18 +192,11 @@ public class Consequence {
         }
     }
 
-    private MethodCallExpr createExecuteCallMvel(RuleDescr ruleDescr, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
-        String mvelBlock = addCurlyBracesToBlock(ruleDescr.getConsequence().toString());
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
-
-        for(DeclarationSpec d : context.getAllDeclarations()) {
-            Class<?> clazz = getClassFromType(context.getTypeResolver(), d.getRawType());
-            mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
-        }
-
+    private MethodCallExpr createExecuteCallMvel(String consequenceString, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
+        String mvelBlock = addCurlyBracesToBlock(consequenceString);
         CompiledBlockResult compile;
         try {
-            compile = new MvelCompiler(mvelCompilerContext).compileStatement(mvelBlock);
+            compile = DrlxParseUtil.createMvelCompiler(context).compileStatement(mvelBlock);
         } catch (MvelCompilerException e) {
             context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
             return null;
@@ -286,7 +283,7 @@ public class Consequence {
         executeCall.addArgument(executeLambda);
         executeLambda.setEnclosingParameters(true);
         if (requireDrools) {
-            executeLambda.addParameter(new Parameter(parseClassOrInterfaceType("org.drools.model.Drools"), "drools"));
+            executeLambda.addParameter(new Parameter(toClassOrInterfaceType(org.drools.model.Drools.class), "drools"));
         }
 
         NodeList<Parameter> parameters = new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
@@ -300,7 +297,7 @@ public class Consequence {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
-            onCall = new MethodCallExpr(null, ON_CALL);
+            onCall = createDslTopLevelMethod(ON_CALL);
             usedArguments.stream().map(context::getVar).forEach(onCall::addArgument);
         }
         return onCall;
@@ -321,11 +318,12 @@ public class Consequence {
     private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs) {
         AtomicBoolean requireDrools = new AtomicBoolean(false);
         List<MethodCallExpr> methodCallExprs = rhs.findAll(MethodCallExpr.class);
+        List<AssignExpr> assignExprs = rhs.findAll(AssignExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
 
         Map<String, Type> rhsBodyDeclarations = new HashMap<>();
         for (VariableDeclarator variableDeclarator : rhs.findAll(VariableDeclarator.class)) {
-            variableDeclarator.getInitializer().ifPresent( init -> rhsBodyDeclarations.put(variableDeclarator.getNameAsString(), variableDeclarator.getType()));
+            rhsBodyDeclarations.put(variableDeclarator.getNameAsString(), variableDeclarator.getType());
         }
 
         for (MethodCallExpr methodCallExpr : methodCallExprs) {
@@ -363,8 +361,12 @@ public class Consequence {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
                         Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar, updatedClass );
+                        modifiedProps.addAll(findModifiedPropertiesFromAssignment( assignExprs, updateExpr, updatedVar, updatedClass ));
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
-                        ruleBlock.addStatement( createBitMaskField( updatedVar, bitMaskCreation ) );
+                        AssignExpr bitMaskAssign = createBitMaskField(updatedVar, bitMaskCreation);
+                        if (!DrlxParseUtil.hasDuplicateExpr(ruleBlock, bitMaskAssign)) {
+                            ruleBlock.addStatement(bitMaskAssign);
+                        }
                     }
 
                     updateExpr.addArgument( "mask_" + updatedVar );
@@ -397,7 +399,7 @@ public class Consequence {
             String domainClassSourceName = asJavaSourceName( updatedClass );
             bitMaskCreation = new MethodCallExpr(new NameExpr(BitMask.class.getCanonicalName()), "getPatternMask");
             bitMaskCreation.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + packageModel.getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
-            modifiedProps.forEach(s -> bitMaskCreation.addArgument(new StringLiteralExpr(s)));
+            modifiedProps.forEach(s -> bitMaskCreation.addArgument(toStringLiteral(s)));
         } else {
             bitMaskCreation = new MethodCallExpr(new NameExpr(AllSetButLastBitMask.class.getCanonicalName()), "get");
         }
@@ -449,10 +451,27 @@ public class Consequence {
                     continue;
                 }
                 if (propName != null) {
-                    modifiedProps.add(propName);
+                    if (isReadableProperty( updatedClass, propName )) {
+                        modifiedProps.add(propName);
+                    }
                 } else {
                     // if we were unable to detect the property the mask has to be all set, so avoid the rest of the cycle
                     return new HashSet<>();
+                }
+            }
+        }
+        return modifiedProps;
+    }
+
+    private Set<String> findModifiedPropertiesFromAssignment(List<AssignExpr> assignExprs, MethodCallExpr updateExpr, String updatedVar, Class<?> updatedClass) {
+        Set<String> modifiedProps = new HashSet<>();
+        for (AssignExpr assignExpr : assignExprs) {
+            Expression target = assignExpr.getTarget();
+            if (target instanceof FieldAccessExpr) {
+                FieldAccessExpr fieldAccessExpr = (FieldAccessExpr)target;
+                Expression scope = fieldAccessExpr.getScope();
+                if (scope instanceof NameExpr && ((NameExpr)scope).getNameAsString().equals(updatedVar)) {
+                    modifiedProps.add(fieldAccessExpr.getNameAsString());
                 }
             }
         }

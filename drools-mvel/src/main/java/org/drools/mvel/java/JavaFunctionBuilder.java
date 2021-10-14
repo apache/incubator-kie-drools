@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +63,7 @@ public class JavaFunctionBuilder
         vars.put("imports",
                  pkg.getImports().keySet());
 
-        final List<String> staticImports = new LinkedList<String>();
+        final List<String> staticImports = new ArrayList<String>();
         for (String staticImport : pkg.getStaticImports()) {
             if (!staticImport.endsWith(functionDescr.getName())) {
                 staticImports.add(staticImport);

@@ -1,0 +1,58 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.dmn.feel.runtime.functions.extended;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.ParameterName;
+
+/**
+ * Experimental for DMN14-182
+ * See also: DMN14-181, DMN14-183
+ */
+public class PutAllFunction extends BaseFEELFunction {
+
+    public static final PutAllFunction INSTANCE = new PutAllFunction();
+
+    public PutAllFunction() {
+        super("put all");
+    }
+
+    public FEELFnResult<Map<String, Object>> invoke(@ParameterName("contexts") List<Object> contexts) {
+        if (contexts == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "contexts", "cannot be null"));
+        }
+
+        StringBuilder errors = new StringBuilder();
+        Map<String, Object> result = new HashMap<String, Object>();
+        for (int i = 0; i < contexts.size(); i++) {
+            FEELFnResult<Map<String, Object>> ci = PutFunction.toMap(contexts.get(i));
+            final int index = i + 1;
+            ci.consume(event -> errors.append("context of index " + (index) + " " + event.getMessage()), values -> result.putAll(values));
+        }
+
+        return errors.length() == 0 ? FEELFnResult.ofResult(Collections.unmodifiableMap(result)) : FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, errors.toString()));
+    }
+
+}

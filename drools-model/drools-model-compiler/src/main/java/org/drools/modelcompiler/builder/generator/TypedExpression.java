@@ -17,15 +17,16 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.Expression;
 import org.drools.mvel.parser.printer.PrintUtil;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
@@ -88,7 +89,7 @@ public class TypedExpression {
     }
 
     public com.github.javaparser.ast.type.Type getJPType() {
-        return StaticJavaParser.parseClassOrInterfaceType(toNonPrimitiveType((Class<?>) type).getCanonicalName());
+        return toClassOrInterfaceType(toNonPrimitiveType((Class<?>) type));
     }
 
     public boolean isPrimitive() {
@@ -195,5 +196,9 @@ public class TypedExpression {
 
     public Expression uncastExpression() {
         return DrlxParseUtil.uncastExpr(expression);
+    }
+
+    public boolean isBigDecimal() {
+        return type != null && toRawClass(type).isAssignableFrom( BigDecimal.class );
     }
 }

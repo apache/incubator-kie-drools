@@ -90,7 +90,6 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.command.CommandFactory;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -2335,7 +2334,7 @@ public class IncrementalCompilationTest {
     }
 
     @Test
-    public void testIncrementalCompilationChangeingParentRule() {
+    public void testIncrementalCompilationChangeParentRule() {
         // DROOLS-1031
         final String drl1_1 =
                 "rule R1 when\n" +
@@ -2369,6 +2368,46 @@ public class IncrementalCompilationTest {
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-extends", "1.1.2");
         KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1_2 + drl2);
+
+        kc.updateToVersion(releaseId2);
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testIncrementalCompilationChangeParentRuleInDifferentFile() {
+        // DROOLS-6497
+        final String drl1_1 =
+                "rule R1 when\n" +
+                        "   $s : String( this == \"s1\" )\n" +
+                        "then\n" +
+                        "end\n";
+
+        final String drl1_2 =
+                "rule R1 when\n" +
+                        "   $s : String( this == \"s2\" )\n" +
+                        "then\n" +
+                        "end\n";
+
+        final String drl2 =
+                "rule R2 extends R1 when\n" +
+                        "   $i : Integer()\n" +
+                        "then\n" +
+                        "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-extends", "1.1.1");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1_1, drl2);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession ksession = kc.newKieSession();
+
+        ksession.insert(1);
+        ksession.insert("s2");
+        assertEquals(0, ksession.fireAllRules());
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-extends", "1.1.2");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1_2, drl2);
 
         kc.updateToVersion(releaseId2);
         assertEquals(2, ksession.fireAllRules());
@@ -2994,6 +3033,7 @@ public class IncrementalCompilationTest {
 
                 final ReleaseId releaseIdI = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1." + i);
                 KieUtil.getKieModuleFromDrls(releaseIdI, kieBaseTestConfiguration, getTestRuleForFireUntilHalt(i));
+
                 kc.updateToVersion(releaseIdI);
 
                 done.await();
@@ -4852,5 +4892,66 @@ public class IncrementalCompilationTest {
 
         ksession.insert(true);
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test(timeout = 20000L)
+    public void testUpdateToVersionWithFireUntilHaltWithSlowRHS() throws Exception {
+        // DROOLS-6392
+        final KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, getTestRuleForFireUntilHaltSlow(0));
+
+        // Create a session and fire rules
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession kieSession = kc.newKieSession();
+
+        final DebugList<String> list = new DebugList<>();
+        kieSession.setGlobal("list", list);
+
+        kieSession.insert(new Message("X"));
+
+        CountDownLatch done = new CountDownLatch(1);
+        list.done = done;
+
+        try {
+            new Thread(kieSession::fireUntilHalt).start();
+
+            done.await();
+            assertEquals(1, list.size());
+            assertEquals("0 - X", list.get(0));
+            list.clear();
+
+            for (int i = 1; i < 3; i++) {
+                done = new CountDownLatch(1);
+                list.done = done;
+
+                final ReleaseId releaseIdI = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1." + i);
+                KieUtil.getKieModuleFromDrls(releaseIdI, kieBaseTestConfiguration, getTestRuleForFireUntilHaltSlow(i));
+
+                kc.updateToVersion(releaseIdI);
+
+                done.await();
+                assertEquals(1, list.size());
+                assertEquals(i + " - X", list.get(0));
+                list.clear();
+            }
+        } finally {
+            kieSession.halt();
+        }
+    }
+
+    private String getTestRuleForFireUntilHaltSlow(final int i) {
+        return "package org.drools.compiler\n" +
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule Rx when\n" +
+                "   Message( $m : message )\n" +
+                "then\n" +
+                "   list.add(\"" + i + " - \" + $m);\n" +
+                "   System.out.println(\"[\" + Thread.currentThread().getName() + \"] executed! i = " + i + "\");\n" +
+                "   Thread.sleep(200);\n" +
+                "end\n";
     }
 }

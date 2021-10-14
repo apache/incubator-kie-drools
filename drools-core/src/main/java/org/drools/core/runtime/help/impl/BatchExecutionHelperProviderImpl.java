@@ -16,11 +16,10 @@
 
 package org.drools.core.runtime.help.impl;
 
+import com.thoughtworks.xstream.XStream;
 import org.kie.internal.runtime.helper.BatchExecutionHelperProvider;
 
-import com.thoughtworks.xstream.XStream;
-
-import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
+import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
 
 public class BatchExecutionHelperProviderImpl
     implements

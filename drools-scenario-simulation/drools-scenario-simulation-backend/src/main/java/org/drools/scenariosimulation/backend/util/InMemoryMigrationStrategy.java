@@ -110,30 +110,30 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                 switch (typeNode.getTextContent()) {
                     case "RULE":
                         if (DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, "kieSession").isEmpty()) {
-                            DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, "kieSession", defaultContent, null);
+                            DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, "kieSession", defaultContent);
                         }
                         if (DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, "kieBase").isEmpty()) {
-                            DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, "kieBase", defaultContent, null);
+                            DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, "kieBase", defaultContent);
                         }
                         if (DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, "ruleFlowGroup").isEmpty()) {
-                            DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, "ruleFlowGroup", defaultContent, null);
+                            DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, "ruleFlowGroup", defaultContent);
                         }
                         break;
                     case "DMN":
                         if (DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, "dmnNamespace").isEmpty()) {
-                            DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, "dmnNamespace", null, null);
+                            DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, "dmnNamespace", null);
                         }
                         if (DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, "dmnName").isEmpty()) {
-                            DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, "dmnName", null, null);
+                            DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, "dmnName", null);
                         }
                         break;
                     default:
                 }
                 if (DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, "skipFromBuild").isEmpty()) {
-                    DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, "skipFromBuild", "false", null);
+                    DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, "skipFromBuild", "false");
                 }
                 if (DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, "fileName").isEmpty()) {
-                    DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, "fileName", null, null);
+                    DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, "fileName", null);
                 }
             }
             updateVersion(document, "1.4");
@@ -146,7 +146,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             Node simulationDescriptorNode = DOMParserUtil.getNestedChildrenNodesList(document, "ScenarioSimulationModel", SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE).get(0);
             List<Node> dmoSessionNodesList = DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, DMO_SESSION_NODE);
             if (dmoSessionNodesList.isEmpty()) {
-                DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, DMO_SESSION_NODE, null, null);
+                DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, DMO_SESSION_NODE, null);
             } else {
                 Node dmoSessionNode = dmoSessionNodesList.get(0);
                 if (Objects.equals("default", dmoSessionNode.getTextContent()) || Objects.equals("", dmoSessionNode.getTextContent())) {
@@ -181,7 +181,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             factMappingNodeList.forEach(factMappingNode -> {
                 List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, EXPRESSION_IDENTIFIER_NODE, "name");
                 String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
-                DOMParserUtil.createNodeAtPosition(factMappingNode, "columnWidth", Double.toString(getColumnWidth(expressionIdentifierName)), null);
+                DOMParserUtil.createNodeAndAppend(factMappingNode, "columnWidth", Double.toString(getColumnWidth(expressionIdentifierName)));
             });
             updateVersion(document, "1.7");
         };
@@ -190,7 +190,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     @Override
     public ThrowingConsumer<Document> from1_7to1_8() {
         return document -> {
-            final Node settingsNode = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), SETTINGS_NODE, null, null);
+            final Node settingsNode = DOMParserUtil.createNodeAndAppend(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), SETTINGS_NODE, null);
             for (String setting : SETTINGS) {
                 final Map<Node, List<Node>> childrenNodesMap = DOMParserUtil.getChildrenNodesMap(document, SIMULATION_DESCRIPTOR_NODE, setting);
                 childrenNodesMap.values().stream()
@@ -198,39 +198,39 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                         .findFirst()
                         .ifPresent(childNodeList -> {
                             final Node node = childNodeList.get(0);
-                            DOMParserUtil.createNodeAtPosition(settingsNode, node.getNodeName(), node.getTextContent(), null);
+                            DOMParserUtil.createNodeAndAppend(settingsNode, node.getNodeName(), node.getTextContent());
                             node.getParentNode().removeChild(node);
                         });
             }
             final List<Node> factMappingNodesList = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE, FACT_MAPPING_NODE);
-            factMappingNodesList.forEach(factMappingNode -> DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, NOT_EXPRESSION, null));
-            final Node backgroundNode = DOMParserUtil.createNodeAtPosition(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), BACKGROUND_NODE, null, null);
-            final Node simulationDescriptorNode = DOMParserUtil.createNodeAtPosition(backgroundNode, SIMULATION_DESCRIPTOR_NODE, null, null);
-            final Node factMappingsNode = DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, FACT_MAPPINGS_NODE, null, null);
-            final Node factMappingNode = DOMParserUtil.createNodeAtPosition(factMappingsNode, FACT_MAPPING_NODE, null, null);
-            DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, NOT_EXPRESSION, null);
-            final Node expressionElementsNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_ELEMENTS_NODE, null, null);
+            factMappingNodesList.forEach(factMappingNode -> DOMParserUtil.createNodeAndAppend(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, NOT_EXPRESSION));
+            final Node backgroundNode = DOMParserUtil.createNodeAndAppend(document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0), BACKGROUND_NODE, null);
+            final Node simulationDescriptorNode = DOMParserUtil.createNodeAndAppend(backgroundNode, SIMULATION_DESCRIPTOR_NODE, null);
+            final Node factMappingsNode = DOMParserUtil.createNodeAndAppend(simulationDescriptorNode, FACT_MAPPINGS_NODE, null);
+            final Node factMappingNode = DOMParserUtil.createNodeAndAppend(factMappingsNode, FACT_MAPPING_NODE, null);
+            DOMParserUtil.createNodeAndAppend(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE, NOT_EXPRESSION);
+            final Node expressionElementsNode = DOMParserUtil.createNodeAndAppend(factMappingNode, EXPRESSION_ELEMENTS_NODE, null);
             ((Element) expressionElementsNode).setAttribute("class", "linked-list");
-            final Node expressionIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, EXPRESSION_IDENTIFIER_NODE, null, null);
-            DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "name", "1|1", null);
-            DOMParserUtil.createNodeAtPosition(expressionIdentifierNode, "type", "GIVEN", null);
-            final Node factIdentifierNode = DOMParserUtil.createNodeAtPosition(factMappingNode, FACT_IDENTIFIER_NODE, null, null);
-            DOMParserUtil.createNodeAtPosition(factIdentifierNode, "name", "Empty", null);
-            DOMParserUtil.createNodeAtPosition(factIdentifierNode, "className", Void.class.getCanonicalName(), null);
-            DOMParserUtil.createNodeAtPosition(factMappingNode, "className", Void.class.getCanonicalName(), null);
-            DOMParserUtil.createNodeAtPosition(factMappingNode, "factAlias", "Instance 1", null);
-            DOMParserUtil.createNodeAtPosition(factMappingNode, "expressionAlias", "PROPERTY 1", null);
-            final Node scesimData = DOMParserUtil.createNodeAtPosition(backgroundNode, "scesimData", null, null);
+            final Node expressionIdentifierNode = DOMParserUtil.createNodeAndAppend(factMappingNode, EXPRESSION_IDENTIFIER_NODE, null);
+            DOMParserUtil.createNodeAndAppend(expressionIdentifierNode, "name", "1|1");
+            DOMParserUtil.createNodeAndAppend(expressionIdentifierNode, "type", "GIVEN");
+            final Node factIdentifierNode = DOMParserUtil.createNodeAndAppend(factMappingNode, FACT_IDENTIFIER_NODE, null);
+            DOMParserUtil.createNodeAndAppend(factIdentifierNode, "name", "Empty");
+            DOMParserUtil.createNodeAndAppend(factIdentifierNode, "className", Void.class.getCanonicalName());
+            DOMParserUtil.createNodeAndAppend(factMappingNode, "className", Void.class.getCanonicalName());
+            DOMParserUtil.createNodeAndAppend(factMappingNode, "factAlias", "Instance 1");
+            DOMParserUtil.createNodeAndAppend(factMappingNode, "expressionAlias", "PROPERTY 1");
+            final Node scesimData = DOMParserUtil.createNodeAndAppend(backgroundNode, "scesimData", null);
             ((Element)scesimData).setAttribute("class", "linked-list");
-            final Node backgroundData = DOMParserUtil.createNodeAtPosition(scesimData, BACKGROUND_DATA_NODE, null, null);
-            final Node factMappingValues = DOMParserUtil.createNodeAtPosition(backgroundData, FACT_MAPPING_VALUES_NODE, null, null);
-            final Node factMappingValue = DOMParserUtil.createNodeAtPosition(factMappingValues, FACT_MAPPING_VALUE_NODE, null, null);
-            final Node factIdentifier = DOMParserUtil.createNodeAtPosition(factMappingValue, FACT_IDENTIFIER_NODE, null, null);
-            DOMParserUtil.createNodeAtPosition(factIdentifier, "name", "Empty", null);
-            DOMParserUtil.createNodeAtPosition(factIdentifier, "className", Void.class.getCanonicalName(), null);
-            final Node expressionIdentifier = DOMParserUtil.createNodeAtPosition(factMappingValue, EXPRESSION_IDENTIFIER_NODE, null, null);
-            DOMParserUtil.createNodeAtPosition(expressionIdentifier, "name", "1|1", null);
-            DOMParserUtil.createNodeAtPosition(expressionIdentifier, "type", "GIVEN", null);
+            final Node backgroundData = DOMParserUtil.createNodeAndAppend(scesimData, BACKGROUND_DATA_NODE, null);
+            final Node factMappingValues = DOMParserUtil.createNodeAndAppend(backgroundData, FACT_MAPPING_VALUES_NODE, null);
+            final Node factMappingValue = DOMParserUtil.createNodeAndAppend(factMappingValues, FACT_MAPPING_VALUE_NODE, null);
+            final Node factIdentifier = DOMParserUtil.createNodeAndAppend(factMappingValue, FACT_IDENTIFIER_NODE, null);
+            DOMParserUtil.createNodeAndAppend(factIdentifier, "name", "Empty");
+            DOMParserUtil.createNodeAndAppend(factIdentifier, "className", Void.class.getCanonicalName());
+            final Node expressionIdentifier = DOMParserUtil.createNodeAndAppend(factMappingValue, EXPRESSION_IDENTIFIER_NODE, null);
+            DOMParserUtil.createNodeAndAppend(expressionIdentifier, "name", "1|1");
+            DOMParserUtil.createNodeAndAppend(expressionIdentifier, "type", "GIVEN");
             updateVersion(document, "1.8");
         };
     }

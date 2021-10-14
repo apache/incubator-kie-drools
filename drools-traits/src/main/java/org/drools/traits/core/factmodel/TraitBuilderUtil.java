@@ -162,7 +162,7 @@ public class TraitBuilderUtil {
         }
     }
 
-    static void buildMixinMethods( String masterName, MixinInfo mixinInfo, ClassWriter cw ) {
+    static void buildMixinMethods( String proxyName, MixinInfo mixinInfo, ClassWriter cw ) {
         if ( mixinInfo == null ) {
             return;
         }
@@ -172,12 +172,12 @@ public class TraitBuilderUtil {
 
             Set<Method> methods = mixinInfo.mixinMethods.get( mixinClass );
             if (methods != null) {
-                buildMixinMethods( cw, masterName, mixin, mixinClass, mixinInfo, methods, createdSignatures );
+                buildMixinMethods( cw, proxyName, mixin, mixinClass, mixinInfo, methods, createdSignatures );
             }
 
             Map<String, Method> map = mixinInfo.mixinGetSet.get( mixinClass );
             if (map != null) {
-                buildMixinMethods( cw, masterName, mixin, mixinClass, mixinInfo, map.values(), createdSignatures );
+                buildMixinMethods( cw, proxyName, mixin, mixinClass, mixinInfo, map.values(), createdSignatures );
             }
         }
     }

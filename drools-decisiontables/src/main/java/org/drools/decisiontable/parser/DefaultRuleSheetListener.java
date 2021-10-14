@@ -19,7 +19,7 @@ package org.drools.decisiontable.parser;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -108,8 +108,8 @@ implements RuleSheetListener {
 
     //accumulated output
     private Map<Integer, ActionType>       _actions;
-    private final HashMap<Integer, String> _cellComments          = new HashMap<Integer, String>();
-    private final List<Rule>               _ruleList              = new LinkedList<Rule>();
+    private final HashMap<Integer, String> _cellComments          = new HashMap<>();
+    private final List<Rule>               _ruleList              = new ArrayList<>();
 
     //need to keep an ordered list of this to make conditions appear in the right order
     private Collection<SourceBuilder>     sourceBuilders;
@@ -228,7 +228,7 @@ implements RuleSheetListener {
                 switch( code ){
                 case SALIENCE:
                     try {
-                        ruleset.setSalience( new Integer( value ) );
+                        ruleset.setSalience( Integer.valueOf( value ) );
                     } catch( NumberFormatException nfe ){
                         throw new DecisionTableParseException( "Priority is not an integer literal, in cell " +
                                 getProperties().getSinglePropertyCell( code.getColHeader() ) );
@@ -236,7 +236,7 @@ implements RuleSheetListener {
                     break;
                 case DURATION:
                     try {
-                        ruleset.setDuration( new Long( value ) );
+                        ruleset.setDuration( Long.valueOf( value ) );
                     } catch( NumberFormatException nfe ){
                         throw new DecisionTableParseException( "Duration is not an integer literal, in cell " +
                                 getProperties().getSinglePropertyCell( code.getColHeader() )  );
@@ -653,7 +653,7 @@ implements RuleSheetListener {
                     this._currentRule.setSalience( value );
                 } else {
                     try {
-                        this._currentRule.setSalience( new Integer( value ) );
+                        this._currentRule.setSalience( Integer.valueOf( value ) );
                     } catch( NumberFormatException nfe ){
                         throw new DecisionTableParseException( "Priority is not an integer literal, in cell " +
                                 RuleSheetParserUtil.rc2name( row, column ) );
@@ -687,7 +687,7 @@ implements RuleSheetListener {
             break;
         case DURATION:
             try {
-                this._currentRule.setDuration( new Long( value ) );
+                this._currentRule.setDuration( Long.valueOf( value ) );
             } catch( NumberFormatException nfe ){
                 throw new DecisionTableParseException( "Duration is not an integer literal, in cell " +
                         RuleSheetParserUtil.rc2name( row, column ) );

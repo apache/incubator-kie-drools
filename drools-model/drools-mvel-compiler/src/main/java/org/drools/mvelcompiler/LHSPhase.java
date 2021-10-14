@@ -1,9 +1,24 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.mvelcompiler;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,25 +28,21 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.stmt.ForEachStmt;
-import com.github.javaparser.ast.stmt.IfStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
-import org.drools.mvelcompiler.ast.BlockStmtT;
+import org.drools.mvelcompiler.ast.BinaryExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
-import org.drools.mvelcompiler.ast.ForEachDowncastStmtT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.MapPutExprT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
@@ -120,11 +131,18 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
                     .orElseGet(() -> tryParseItAsSetter(n, fieldAccessScope, getRHSType()))
                     .orElse(new UnalteredTypedExpression(n));
         } else {
-            return tryParseAsBigDecimalArithmeticExpression(n, fieldAccessScope)
+            return tryParseAsArithmeticExpression(n, fieldAccessScope)
                     .map(Optional::of)
                     .orElseGet(() -> tryParseItAsSetter(n, fieldAccessScope, getRHSType()))
                     .orElse(new UnalteredTypedExpression(n));
         }
+    }
+
+    private Optional<TypedExpression> tryParseAsArithmeticExpression(FieldAccessExpr n, TypedExpression scope) {
+        Optional<Node> optParentAssignExpr = n.getParentNode().filter(p -> p instanceof AssignExpr);
+        String setterName = printConstraint(n.getName());
+
+        return optParentAssignExpr.flatMap(parentAssignExpr -> findAccessorsAndConvert(scope, setterName, (AssignExpr) parentAssignExpr));
     }
 
 
@@ -152,14 +170,6 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         return Optional.empty();
     }
 
-    // Conversion to BigDecimal Arithmetic operation when LHS is is a BigDecimal variable
-    private Optional<TypedExpression> tryParseAsBigDecimalArithmeticExpression(FieldAccessExpr n, TypedExpression scope) {
-        Optional<Node> optParentAssignExpr = n.getParentNode().filter(p -> p instanceof AssignExpr);
-        String setterName = printConstraint(n.getName());
-
-        return optParentAssignExpr.flatMap(parentAssignExpr -> findAccessorsAndConvert(scope, setterName, (AssignExpr) parentAssignExpr));
-    }
-
     private Optional<TypedExpression> findAccessorsAndConvert(TypedExpression fieldAccessScope,
                                                               String accessorName,
                                                               AssignExpr parentAssignExpr) {
@@ -172,8 +182,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         return optSetter.map(setter -> {
             if(parentOperator.equals(AssignExpr.Operator.ASSIGN)) {
                 return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(rhsOrError()));
-            } else {
+            } else if(setter.getParameterTypes()[0] == BigDecimal.class) {
                 return bigDecimalCompoundOperator(fieldAccessScope, accessorName, scopeType, parentOperator, setter);
+            } else {
+                return compoundOperator(fieldAccessScope, accessorName, scopeType, parentOperator, setter);
             }
         });
     }
@@ -202,6 +214,28 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(bigDecimalArithmeticExprT));
     }
 
+    /**
+        Conversion of the compound operator applied to number literals
+        $p.age += 50;
+        $p.setAge($p.getAge() + 50));
+     */
+    private FieldToAccessorTExpr compoundOperator(TypedExpression fieldAccessScope,
+                                                            String accessorName,
+                                                            Class<?> scopeType,
+                                                            AssignExpr.Operator parentOperator,
+                                                            Method setter) {
+        BinaryExpr.Operator operator = BinaryExprT.compoundToArithmeticOperation(parentOperator);
+
+        Method optGetter = ofNullable(getAccessor(scopeType, accessorName))
+                .orElseThrow(() -> new MvelCompilerException("No getter found but setter is present for accessor: " + accessorName));
+
+        FieldToAccessorTExpr getterExpression = new FieldToAccessorTExpr(fieldAccessScope, optGetter, emptyList());
+        TypedExpression argument = rhsOrError();
+
+        BinaryExprT arithmeticExprT = new BinaryExprT(getterExpression, argument, operator);
+        return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(arithmeticExprT));
+    }
+
     private Optional<TypedExpression> tryParseItAsMap(FieldAccessExpr n, TypedExpression scope) {
         return scope.getType().flatMap(scopeType -> {
             String getterName = printConstraint(n.getName());
@@ -215,7 +249,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     private Optional<TypedExpression> tryParseItAsSetter(FieldAccessExpr n, TypedExpression scope, Class<?> setterArgumentType) {
         return scope.getType().flatMap(scopeType -> {
             String setterName = printConstraint(n.getName());
-            Optional<Method> optAccessor = ofNullable(getSetter((Class<?>) scopeType, setterName, setterArgumentType));
+            Optional<Method> optAccessor =
+                    ofNullable(getSetter((Class<?>) scopeType, setterName, setterArgumentType))
+                    .map(Optional::of)
+                    .orElse(ofNullable(getSetter((Class<?>) scopeType, setterName, String.class)));
 
             List<TypedExpression> arguments = rhs.map(Collections::singletonList)
                     .orElse(emptyList());
@@ -304,46 +341,6 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         return new UnalteredTypedExpression(n, type.orElse(null));
     }
 
-
-    @Override
-    public TypedExpression visit(IfStmt n, Void arg) {
-        return new UnalteredTypedExpression(n);
-    }
-
-    @Override
-    public TypedExpression visit(ForEachStmt n, Void arg) {
-        Expression iterable = n.getIterable();
-        if(iterable.isNameExpr()) {
-            return mvelCompilerContext.findDeclarations(iterable.asNameExpr().toString())
-            .filter(this::isDeclarationIterable)
-            .<TypedExpression>map(d -> {
-                TypedExpression child = this.visit((BlockStmt)n.getBody(), arg);
-                return new ForEachDowncastStmtT(n.getVariable(), n.getIterable().asNameExpr().toString(), child);
-            }).orElse(new UnalteredTypedExpression(n));
-
-        }
-        return new UnalteredTypedExpression(n);
-    }
-
-    @Override
-    public TypedExpression visit(BlockStmt n, Void arg) {
-        List<TypedExpression> statements = new ArrayList<>();
-        for (Statement s : n.getStatements()) {
-            TypedExpression visit;
-            if (s.isForEachStmt()) {
-                visit = visit((ForEachStmt) s, arg);
-            } else {
-                visit = defaultMethod(s, arg);
-            }
-            statements.add(visit);
-        }
-        return new BlockStmtT(statements);
-    }
-
-    private boolean isDeclarationIterable(Declaration declaration) {
-        Class<?> declarationClazz = declaration.getClazz();
-        return Iterable.class.isAssignableFrom(declarationClazz);
-    }
 
     private TypedExpression rhsOrNull() {
         return rhs.orElse(null);

@@ -18,7 +18,7 @@ package org.kie.pmml.models.drools.scorecard.compiler.executor;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -44,14 +44,14 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public KiePMMLScorecardModel getKiePMMLDroolsModel(final DataDictionary dataDictionary,
+    public KiePMMLScorecardModel getKiePMMLDroolsModel(final List<Field<?>> fields,
                                                        final TransformationDictionary transformationDictionary,
                                                        final Scorecard model,
                                                        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                        final String packageName,
                                                        final HasClassLoader hasClassLoader) {
         try {
-            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary,
+            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(fields,
                                                                          transformationDictionary,
                                                                          model,
                                                                          fieldTypeMap,
@@ -63,15 +63,15 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+    public KiePMMLDroolsAST getKiePMMLDroolsAST(final List<Field<?>> fields,
                                                 final Scorecard model,
                                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                 final List<KiePMMLDroolsType> types) {
-        return KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
+        return KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(fields, model, fieldTypeMap, types);
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
-        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final List<Field<?>> fields, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
+        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(fields, transformationDictionary,  model, fieldTypeMap, packageName);
     }
 }

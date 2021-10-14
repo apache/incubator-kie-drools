@@ -15,6 +15,11 @@
  */
 package org.kie.pmml.models.drools.scorecard.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
@@ -24,11 +29,6 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class AirconditioningScorecardTest extends AbstractPMMLTest {

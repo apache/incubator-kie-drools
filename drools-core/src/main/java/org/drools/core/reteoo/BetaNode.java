@@ -96,7 +96,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
 
-    private boolean rightInputIsRiaNode;
+    protected boolean rightInputIsRiaNode;
 
     private transient ObjectTypeNode objectTypeNode;
 
@@ -340,8 +340,7 @@ public abstract class BetaNode extends LeftTupleSource
                 rightTuple.setPropagationContext( context );
                 doUpdateRightTuple(rightTuple, wm, bm);
             } else if (rightTuple.getMemory() != null) {
-                getBetaMemory( this, wm ).getRightTupleMemory().removeAdd(rightTuple);
-                doUpdatesReorderChildLeftTuple( rightTuple );
+                reorderRightTuple(wm, rightTuple);
             }
         } else {
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
@@ -351,6 +350,11 @@ public abstract class BetaNode extends LeftTupleSource
                               wm );
             }
         }
+    }
+
+    protected void reorderRightTuple(InternalWorkingMemory wm, RightTuple rightTuple) {
+        getBetaMemory( this, wm).getRightTupleMemory().removeAdd(rightTuple);
+        doUpdatesReorderChildLeftTuple(rightTuple);
     }
 
     public void doDeleteRightTuple(final RightTuple rightTuple,
@@ -426,7 +430,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public FastIterator getLeftIterator(TupleMemory memory) {
+    public FastIterator getLeftIterator1(TupleMemory memory) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();
         } else {
@@ -445,7 +449,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public LeftTuple getFirstLeftTuple(final RightTuple rightTuple,
+    public LeftTuple getFirstLeftTuple1(final RightTuple rightTuple,
                                        final TupleMemory memory,
                                        final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
@@ -453,6 +457,41 @@ public abstract class BetaNode extends LeftTupleSource
         } else {
             return (LeftTuple) it.next( null );
         }
+    }
+
+    public FastIterator getLeftIterator(TupleMemory memory) {
+        if (!rightInputIsRiaNode) {
+            return getLeftIterator1(memory);
+        } else {
+            return FastIterator.NullFastIterator.INSTANCE;
+        }
+    }
+
+    public LeftTuple getFirstLeftTuple(final RightTuple rightTuple,
+                                       final TupleMemory memory,
+                                       final FastIterator it) {
+        if (!rightInputIsRiaNode) {
+            return getFirstLeftTuple1(rightTuple, memory,it);
+        } else {
+            LeftTuple leftTuple = getStartTuple((SubnetworkTuple)rightTuple);
+            return leftTuple;
+        }
+    }
+
+    public LeftTuple getStartTuple(LeftTuple lt) {
+        LeftTupleSource startTupleSource = (( RightInputAdapterNode ) getRightInput()).getStartTupleSource();
+
+        // Iterate find start
+        while (lt.getIndex() != startTupleSource.getPathIndex()) {
+            lt = lt.getLeftParent();
+        }
+
+        // Now iterate to find peer. It is not guaranteed that the next node is the correct one, see testSubnetworkSharingWith2Sinks
+        while (lt.getTupleSink() != this) {
+            lt = lt.getPeer();
+        }
+
+        return lt;
     }
 
     public static Tuple getFirstTuple(TupleMemory memory, FastIterator it) {

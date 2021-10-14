@@ -20,25 +20,28 @@ package org.drools.modelcompiler.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.Drools;
 import org.kie.api.builder.ReleaseId;
+import org.kie.memorycompiler.resources.KiePath;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
+import static org.drools.modelcompiler.CanonicalKieModule.getGeneratedClassNamesFile;
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 
 public class ModelWriter {
 
-    private final String basePath;
+    private final KiePath basePath;
 
     public ModelWriter() {
         this("src/main/java");
     }
 
     public ModelWriter(String basePath) {
-        this.basePath = basePath;
+        this.basePath = KiePath.of(basePath);
     }
 
     public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageSources> packageSources) {
@@ -52,19 +55,15 @@ public class ModelWriter {
 
         List<String> sourceFiles = new ArrayList<>();
         for (GeneratedFile generatedFile : generatedFiles) {
-            String path = basePath + "/" + generatedFile.getPath();
-            sourceFiles.add(path);
+            KiePath path = basePath.resolve(generatedFile.getKiePath());
+            sourceFiles.add(path.asString());
             srcMfs.write(path, generatedFile.getData());
         }
 
         return new Result(sourceFiles, modelFiles);
     }
 
-    private String pojoName(String folderName, String nameAsString) {
-        return basePath + "/" + folderName + "/" + nameAsString + ".java";
-    }
-
-    public String getBasePath() {
+    public KiePath getBasePath() {
         return basePath;
     }
 
@@ -74,6 +73,18 @@ public class ModelWriter {
             pkgNames += modelSources.stream().collect(Collectors.joining("\n"));
         }
         trgMfs.write(getModelFileWithGAV(releaseId), pkgNames.getBytes());
+    }
+
+    public void writeGeneratedClassNamesFile(Set<String> generatedClassNames, MemoryFileSystem trgMfs, ReleaseId releaseId) {
+        trgMfs.write(getGeneratedClassNamesFile(releaseId), generatedClassNamesFileContent(generatedClassNames).getBytes());
+    }
+
+    public static String generatedClassNamesFileContent(Set<String> generatedClassNames) {
+        String content = "";
+        if (!generatedClassNames.isEmpty()) {
+            content = generatedClassNames.stream().collect(Collectors.joining("\n"));
+        }
+        return content;
     }
 
     public static class Result {

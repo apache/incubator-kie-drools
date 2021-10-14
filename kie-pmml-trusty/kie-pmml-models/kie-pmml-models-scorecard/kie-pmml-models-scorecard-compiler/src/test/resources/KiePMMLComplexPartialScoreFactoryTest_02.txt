@@ -1,0 +1,4 @@
+{
+    KiePMMLFieldRef %2$s_0 = new KiePMMLFieldRef("%1$s", Collections.emptyList(), null);
+    KiePMMLComplexPartialScore %2$s = new KiePMMLComplexPartialScore("%2$s", Collections.emptyList(), %2$s_0);
+}

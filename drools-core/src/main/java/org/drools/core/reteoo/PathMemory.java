@@ -86,7 +86,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         this.allLinkedMaskTest = allLinkedTestMask;
     }
 
-    public void linkNodeWithoutRuleNotify(long mask) {
+    public void linkSegmentWithoutRuleNotify(long mask) {
         linkedSegmentMask |= mask;
     }
 

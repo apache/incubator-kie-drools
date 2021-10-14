@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-trusty</artifactId>
-    <version>7.53.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -29,6 +29,10 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+    </dependency>
     <!-- TEST -->
     <dependency>
       <groupId>org.assertj</groupId>
@@ -36,6 +40,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 
 </project>

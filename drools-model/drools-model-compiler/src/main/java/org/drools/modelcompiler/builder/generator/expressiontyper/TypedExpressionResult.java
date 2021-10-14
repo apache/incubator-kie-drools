@@ -59,6 +59,14 @@ public class TypedExpressionResult {
         return expressionTyperContext.getPrefixExpresssions();
     }
 
+    public List<Expression> getNullSafeExpressions() {
+        return expressionTyperContext.getNullSafeExpressions();
+    }
+
+    public Optional<Expression> getInlineCastExpression() {
+        return expressionTyperContext.getInlineCastExpression();
+    }
+
     @Override
     public String toString() {
         return "{" +

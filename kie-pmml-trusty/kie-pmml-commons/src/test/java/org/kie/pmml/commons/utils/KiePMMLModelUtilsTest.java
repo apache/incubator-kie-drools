@@ -18,7 +18,6 @@ package org.kie.pmml.commons.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

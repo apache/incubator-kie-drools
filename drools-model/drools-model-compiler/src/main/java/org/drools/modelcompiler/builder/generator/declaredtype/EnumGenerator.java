@@ -40,9 +40,9 @@ import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedConstructor;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class EnumGenerator {
 
@@ -85,7 +85,7 @@ public class EnumGenerator {
     }
 
     private void addField(Map.Entry<String, TypeFieldDescr> field) {
-        Type type = parseType(field.getValue().getPattern().getObjectType());
+        Type type = toClassOrInterfaceType(field.getValue().getPattern().getObjectType());
         String key = field.getKey();
         FieldDeclaration fieldDeclaration = enumDeclaration.addField(type, key);
         fields.add(fieldDeclaration);

@@ -16,19 +16,19 @@
 
 package org.drools.core.util.debug;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class StatefulKnowledgeSessionInfo {
     private StatefulKnowledgeSessionImpl session;
@@ -44,7 +44,7 @@ public class StatefulKnowledgeSessionInfo {
                 return o1.getId() - o2.getId();
             }
         } );
-        log = new LinkedList<String>();
+        log = new ArrayList<String>();
         df = new SimpleDateFormat( "HH:mm:ss.SSS" );
     }
 

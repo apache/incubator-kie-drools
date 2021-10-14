@@ -44,6 +44,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.core.common.DroolsObjectInputStream;
@@ -55,7 +56,7 @@ import static java.lang.Character.toUpperCase;
 import static java.lang.System.arraycopy;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
-
+import static org.drools.core.util.MethodUtils.getMethod;
 import static org.drools.core.util.StringUtils.ucFirst;
 
 public final class ClassUtils {
@@ -138,8 +139,7 @@ public final class ClassUtils {
     }
 
     public static String convertClassToResourcePath(final String pName) {
-        return pName.replace( '.',
-                              '/' ) + ".class";
+        return pName.replace( '.', '/' ) + ".class";
     }
 
     /**
@@ -149,21 +149,6 @@ public final class ClassUtils {
     public static String stripExtension(final String pResourceName) {
         final int i = pResourceName.lastIndexOf('.');
         return pResourceName.substring( 0, i );
-    }
-
-    public static String toJavaCasing(final String pName) {
-        final char[] name = pName.toLowerCase().toCharArray();
-        name[0] = Character.toUpperCase( name[0] );
-        return new String( name );
-    }
-
-    public static String clazzName(final File base,
-                                   final File file) {
-        final int rootLength = base.getAbsolutePath().length();
-        final String absFileName = file.getAbsolutePath();
-        final int p = absFileName.lastIndexOf('.');
-        final String relFileName = absFileName.substring(rootLength + 1, p);
-        return relFileName.replace(File.separatorChar, '.');
     }
 
     public static String relative(final File base,
@@ -459,18 +444,60 @@ public final class ClassUtils {
     }
 
     public static Method getAccessor(Class<?> clazz, String field) {
-        return Stream.<Supplier<String>>of(
-                    () -> "get" + ucFirst(field),
-                    () -> field,
-                    () -> "is" + ucFirst(field),
-                    () -> "get" + field,
-                    () -> "is" + field
-        )
-                .map( f -> getMethod(clazz, f.get(), new Class<?>[0] ))
-                .filter( Optional::isPresent )
-                .findFirst()
-                .flatMap( Function.identity() )
-                .orElse( null );
+        return getAccessor(clazz, field, false);
+    }
+
+    public static Method getAccessor(Class<?> clazz, String field, boolean exceptionIfIncompatible) {
+        Map<String, Integer> accessorPriorityMap = accessorPriorityMap(field);
+        List<Method> accessors = accessorPriorityMap.keySet()
+                                                    .stream()
+                                                    .map(methodName -> getMethod(clazz, methodName, new Class<?>[0]))
+                                                    .filter(Optional::isPresent)
+                                                    .map(Optional::get)
+                                                    .filter(method -> !(method.getName().startsWith("is") && !method.getReturnType().equals(boolean.class)))
+                                                    .distinct()
+                                                    .collect(Collectors.toList());
+        return bestCandidateAccessor(clazz, accessors, accessorPriorityMap, exceptionIfIncompatible);
+    }
+
+    public static Map<String, Integer> accessorPriorityMap(String field) {
+        Map<String, Integer> accessorPriorityMap = new HashMap<>();
+        accessorPriorityMap.put("is" + ucFirst(field), 4);
+        accessorPriorityMap.put("is" + field, 3);
+        accessorPriorityMap.put("get" + ucFirst(field), 2);
+        accessorPriorityMap.put("get" + field, 1);
+        accessorPriorityMap.put(field, 0);
+        return accessorPriorityMap;
+    }
+
+    private static Method bestCandidateAccessor(Class<?> clazz, List<Method> accessors, Map<String, Integer> accessorPriorityMap, boolean exceptionIfIncompatible) {
+        Method bestCandidate = null;
+        for (Method method : accessors) {
+            if (bestCandidate != null && !MethodUtils.isOverride(bestCandidate, method)) {
+                if (method.getReturnType() != bestCandidate.getReturnType()) {
+                    if (method.getReturnType().isAssignableFrom(bestCandidate.getReturnType())) {
+                        // a more specialized getter (covariant overload) has been already indexed, so skip this one
+                        continue;
+                    } else if (bestCandidate.getReturnType().isAssignableFrom(method.getReturnType())) {
+                        // this method is a more specialized getter. Overwrite with this one
+                    } else {
+                        // returnType is different so it would likely produce a wrong result
+                        if (exceptionIfIncompatible) {
+                            throw new IncompatibleGetterOverloadException(clazz,
+                                                                          bestCandidate.getName(), bestCandidate.getReturnType(),
+                                                                          method.getName(), method.getReturnType());
+                        }
+                    }
+                } else if (Modifier.isAbstract(method.getModifiers()) && Modifier.isAbstract(bestCandidate.getModifiers())) {
+                    // If both are abstract, no need of Warning
+                } else if (accessorPriorityMap.get(bestCandidate.getName()) > accessorPriorityMap.get(method.getName())) {
+                    // bestCandidate has higher priority
+                    continue;
+                }
+            }
+            bestCandidate = method;
+        }
+        return bestCandidate;
     }
 
     public static Method getSetter(Class<?> clazz, String field, Class<?> parameterType) {
@@ -486,12 +513,8 @@ public final class ClassUtils {
                 .orElse( parameterType.isPrimitive() ? getSetter(clazz, field, convertFromPrimitiveType(parameterType)) : null );
     }
 
-    private static Optional<Method> getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
-        try {
-            return Optional.of( clazz.getMethod(name, parameterTypes) );
-        } catch (NoSuchMethodException e) {
-            return Optional.empty();
-        }
+    public static boolean isReadableProperty( Class clazz, String property ) {
+        return getFieldOrAccessor( clazz, property ) != null;
     }
 
     public static Member getFieldOrAccessor( Class clazz, String property ) {
@@ -501,14 +524,14 @@ public final class ClassUtils {
                 break;
             }
         }
-        return getGetter(clazz, property);
+        return getGetterMethod(clazz, property);
     }
 
-    public static Method getGetter( Class clazz, String property ) {
+    public static Method getGetterMethod(Class clazz, String property ) {
         String simple = "get" + property;
         String simpleIsGet = "is" + property;
         String isGet = getIsGetter(property);
-        String getter = getGetter(property);
+        String getter = getGetterMethod(property);
 
         Method candidate = null;
 
@@ -530,7 +553,7 @@ public final class ClassUtils {
         return candidate;
     }
 
-    public static String getGetter(String s) {
+    public static String getGetterMethod(String s) {
         char[] c = s.toCharArray();
         char[] chars = new char[c.length + 3];
 
@@ -572,7 +595,7 @@ public final class ClassUtils {
             ParameterizedType type = (ParameterizedType) returnType;
             java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
             if (typeArguments.length > 0) {
-                return (Class) typeArguments[0];
+                return typeArguments[0] instanceof ParameterizedType ? (Class) ((ParameterizedType)typeArguments[0]).getRawType() : (Class) typeArguments[0];
             }
         }
         throw new RuntimeException("No generic type");

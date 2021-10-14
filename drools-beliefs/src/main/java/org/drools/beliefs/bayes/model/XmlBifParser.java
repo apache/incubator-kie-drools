@@ -37,7 +37,7 @@ import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderError;
 
-import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
+import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
 
 public class XmlBifParser {
 

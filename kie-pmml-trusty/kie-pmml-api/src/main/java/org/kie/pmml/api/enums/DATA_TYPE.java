@@ -81,6 +81,9 @@ public enum DATA_TYPE {
      * @return
      */
     public Object getActualValue(Object rawValue) {
+        if (rawValue == null) {
+            return null;
+        }
         if (mappedClass.isAssignableFrom(rawValue.getClass())) {
             // No cast/transformation needed
             return rawValue;

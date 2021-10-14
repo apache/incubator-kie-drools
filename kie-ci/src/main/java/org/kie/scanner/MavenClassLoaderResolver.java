@@ -26,17 +26,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.support.DependencyFilter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.artifact.Artifact;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.utils.ClassLoaderResolver;
+import org.kie.maven.integration.ArtifactResolver;
+import org.kie.util.maven.support.DependencyFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
 
 public class MavenClassLoaderResolver implements ClassLoaderResolver {
@@ -109,7 +107,7 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
     private Collection<ReleaseId> getJarDependencies(ArtifactResolver resolver, ReleaseId releaseId, DependencyFilter filter) {
         return resolver.getArtifactDependecies(releaseId.toString()).stream()
                 .filter( dep -> filter.accept( dep.getReleaseId(), dep.getScope() ) )
-                .map( dep -> adapt( dep.getReleaseId() ) )
+                .map( dep -> dep.getReleaseId() )
                 .collect( Collectors.toList() );
     }
 }

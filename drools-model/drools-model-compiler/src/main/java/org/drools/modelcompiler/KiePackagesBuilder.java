@@ -150,9 +150,9 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.ruleunit.RuleUnitUtil;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
+import static org.drools.core.rule.GroupElement.OR;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
@@ -163,7 +163,6 @@ import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactT
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 import static org.drools.modelcompiler.util.TimerUtil.buildTimerExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
-import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class KiePackagesBuilder {
 
@@ -254,14 +253,6 @@ public class KiePackagesBuilder {
         setRuleAttributes( rule, ruleImpl, ctx );
         setRuleMetaAttributes( rule, ruleImpl );
 
-        if (ctx.hasSubRules()) {
-            List<RuleImpl> rules = new ArrayList<>();
-            for (Rule subRule : ctx.getSubRules()) {
-                rules.addAll( compileRule( pkg, subRule ) );
-            }
-            rules.add(ruleImpl);
-            return rules;
-        }
         return Collections.singletonList( ruleImpl );
     }
 
@@ -431,12 +422,12 @@ public class KiePackagesBuilder {
 
     private boolean ruleHasFirstLevelOr(RuleImpl rule) {
         GroupElement lhs = rule.getLhs();
-        if (lhs.getType() == GroupElement.Type.OR) {
+        if (lhs.getType() == OR) {
             return true;
         }
         if (lhs.getType() == GroupElement.Type.AND) {
             for (RuleConditionElement child : lhs.getChildren()) {
-                if ( child instanceof GroupElement && (( GroupElement ) child).getType() == GroupElement.Type.OR ) {
+                if ( child instanceof GroupElement && (( GroupElement ) child).getType() == OR ) {
                     return true;
                 }
             }
@@ -446,9 +437,6 @@ public class KiePackagesBuilder {
 
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
         GroupElement lhs = ctx.getRule().getLhs();
-        if (isLegacyRuleUnit() && ctx.getRule().getRuleUnitClassName() != null) {
-            lhs.addChild( addPatternForVariable( ctx, lhs, getUnitVariable( ctx, pkg, view ), Condition.Type.PATTERN ) );
-        }
         addSubConditions( ctx, lhs, view.getSubConditions());
         if (requiresLeftActivation(lhs)) {
             lhs.addChild( 0, new Pattern( ctx.getNextPatternIndex(), ClassObjectType.InitialFact_ObjectType ) );
@@ -604,7 +592,7 @@ public class KiePackagesBuilder {
             for (Condition c : compositePatterns.getSubConditions()) {
                 recursivelyAddConditions( ctx, group, allSubConditions, c);
             }
-            source = allSubConditions;
+            source = allSubConditions.getChildren().size() == 1 ? allSubConditions.getChildren().get(0) : allSubConditions;
         } else {
             source = buildPattern( ctx, group, accumulatePattern );
         }
@@ -654,7 +642,10 @@ public class KiePackagesBuilder {
                 allSubConditions.addChild( rce );
             }
         } else if (c instanceof AccumulatePattern) {
-            allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
+            RuleConditionElement rce = buildAccumulate( ctx, group, (AccumulatePattern) c );
+            if (rce != null) {
+                allSubConditions.addChild( rce );
+            }
         } else if (c instanceof EvalImpl) {
             allSubConditions.addChild( buildEval( ctx, ( EvalImpl ) c ) );
         }
@@ -695,11 +686,17 @@ public class KiePackagesBuilder {
     }
 
     private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions ) {
+        if (ge.getType() == OR) {
+            ctx.startOrCondition();
+        }
         for (int i = 0; i < subconditions.size(); i++) {
             RuleConditionElement element = conditionToElement( ctx, ge, subconditions.get(i) );
             if (element != null) {
                 ge.addChild( element );
             }
+        }
+        if (ge.getType() == OR) {
+            ctx.endOrCondition();
         }
         if (ge.getType() == AND && ge.getChildren().size() == 1) {
             return ge.getChildren().get(0);
@@ -753,9 +750,6 @@ public class KiePackagesBuilder {
 
     private RuleConditionElement buildPattern(RuleContext ctx, GroupElement group, org.drools.model.Pattern<?> modelPattern) {
         Variable patternVariable = modelPattern.getPatternVariable();
-        if (ctx.getAccumulateSource( patternVariable ) == null) {
-            ctx.setAfterAccumulate( false );
-        }
 
         Pattern pattern = addPatternForVariable( ctx, group, patternVariable, modelPattern.getType() );
 
@@ -841,7 +835,7 @@ public class KiePackagesBuilder {
                              isGroupBy, accFunctions[i],
                              selfReader, accumulators, requiredDeclarationList, arrayIndexOffset, i);
             if (isGroupBy) {
-                ctx.addGroupByDeclaration(((GroupByPattern) accPattern).getVarKey(), boundVar, groupByDeclaration);
+                ctx.addGroupByDeclaration(((GroupByPattern) accPattern).getVarKey(), groupByDeclaration);
             }
         }
 
@@ -1202,7 +1196,7 @@ public class KiePackagesBuilder {
             if (patternClass.getPackage() != null && !patternClass.isPrimitive() &&
                 (!name.startsWith( "java.lang" ) || packages.containsKey( patternClass.getPackage().getName() ))) {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
-                TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
+                TypeDeclaration typeDeclaration = pkg.getExactTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {
                     typeDeclaration = createTypeDeclaration( patternClass, getPropertySpecificOption() );
                     pkg.addTypeDeclaration( typeDeclaration );

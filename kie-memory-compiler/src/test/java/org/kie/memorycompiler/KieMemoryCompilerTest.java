@@ -24,10 +24,13 @@ import static java.util.Collections.singletonMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class KieMemoryCompilerTest {
 
-    private final static String EXAMPLE_CLASS = "package org.kie.memorycompiler;\n" +
+    private final static String EXAMPLE_CLASS =
+            "package org.kie.memorycompiler;\n" +
             "\n" +
             "public class ExampleClass {\n" +
             "\n" +
@@ -56,7 +59,8 @@ public class KieMemoryCompilerTest {
         KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
     }
 
-    private final static String WARNING_CLASS = "package org.kie.memorycompiler;\n" +
+    private final static String WARNING_CLASS =
+            "package org.kie.memorycompiler;\n" +
             "\n" +
             "import java.util.List;\n" +
             "\n" +
@@ -86,5 +90,28 @@ public class KieMemoryCompilerTest {
         Method minusMethod = exampleClazz.getMethod("minus", Integer.class, Integer.class);
         Object result = minusMethod.invoke(instance, 8, 4);
         assertThat(result, is(4));
+    }
+
+    private final static String EXAMPLE_INNER_CLASS =
+            "package org.kie.memorycompiler;\n" +
+            "\n" +
+            "public class ExampleClass {\n" +
+            "\n" +
+            "    public int sum(Integer a, Integer b){\n" +
+            "        return a + b;\n" +
+            "    }\n" +
+            "\n" +
+            "    public static class InnerClass { }\n" +
+            "}";
+
+    @Test
+    public void compileInnerClass() throws Exception {
+        Map<String, String> source = singletonMap("org.kie.memorycompiler.ExampleClass", EXAMPLE_INNER_CLASS);
+        Map<String, Class<?>> compiled = KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
+
+        assertEquals(2, compiled.size());
+
+        assertNotNull(compiled.get("org.kie.memorycompiler.ExampleClass"));
+        assertNotNull(compiled.get("org.kie.memorycompiler.ExampleClass$InnerClass"));
     }
 }

@@ -47,6 +47,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
+import org.drools.core.spi.Activation;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -1231,6 +1232,38 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(23, results.iterator().next().getValue());
     }
 
+    @Test
+    public void testBigDecimalOperationsInAccumulateConstraint() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    $moneySummed : BigDecimal () from accumulate( " +
+                "       Person( money != null, $bd: (money + money)), " +
+                "       sum($bd))\n" +
+                "then\n" +
+                "    results.add($moneySummed);\n" +
+                "end\n";
+
+        KieSession ksession1 = getKieSession(str);
+
+        ArrayList<BigDecimal> results = new ArrayList<>();
+        ksession1.setGlobal("results", results);
+
+        Person p1 = new Person();
+        p1.setMoney( new BigDecimal(1 ));
+        ksession1.insert( p1 );
+        Person p2 = new Person();
+        p2.setMoney( new BigDecimal(3 ));
+        ksession1.insert(p2);
+        assertEquals( 1, ksession1.fireAllRules() );
+
+        Assertions.assertThat(results).containsExactly(BigDecimal.valueOf(8));
+
+    }
+
+
 
     // do also the test with two functions
     @Test
@@ -1973,13 +2006,17 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.insert(parent1);
         ksession.insert(parent2);
-        FactHandle toRemove = ksession.insert(child1);
+       FactHandle toRemove = ksession.insert(child1);
         ksession.insert(child2);
+        ksession.fireAllRules();
+        Assertions.assertThat(results)
+                  .containsOnly(Arrays.asList(child1, 2L), Arrays.asList(child2, 2L));
 
         // Remove child1, therefore it does not exist, therefore there should be no groupBy matches for the child.
+        results.clear();
         ksession.delete(toRemove);
 
-        // Yet, we still get (Child1, 0).
+        // Yet, we still get (Child2, 0).
         ksession.fireAllRules();
         Assertions.assertThat(results)
                 .containsOnly(Arrays.asList(child2, 1L));
@@ -3885,5 +3922,214 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(112, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testAccumulateOnSet() {
+        String str =
+                "import java.util.*;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global " + AtomicReference.class.getCanonicalName() + " holder;\n" +
+                "rule R when\n" +
+                "    Set($size: size) from accumulate( $p: Person(); collectSet($p) )" +
+                "then\n" +
+                "  holder.set($size); \n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        AtomicReference<Integer> holder = new AtomicReference<>(0);
+        ksession.setGlobal("holder", holder);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+        assertEquals(4, (int)holder.get());
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+        assertEquals(3, (int)holder.get());
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+        assertEquals(4, (int)holder.get());
+    }
+
+    @Test
+    public void testNestedAccumulates() {
+        // DROOLS-6202
+        String str =
+                "import java.util.*;\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Activation.class.getCanonicalName() + ";\n" +
+                        "global " + AtomicReference.class.getCanonicalName() + " holder;\n" +
+                        "rule R when\n" +
+                        "  accumulate( $set: Set() from accumulate( $p: Person(); collectSet($p) ); $max: max($set.size()) )\n" +
+                        "then\n" +
+                        "  Activation activation = (Activation) drools.getMatch(); \n" +
+                        "  activation.getObjectsDeep(); \n" +
+                        "  holder.set($max); \n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        AtomicReference<Integer> holder = new AtomicReference<>(0);
+        ksession.setGlobal("holder", holder);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+        assertEquals(4, (int)holder.get());
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+        assertEquals(3, (int)holder.get());
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+        assertEquals(4, (int)holder.get());
+    }
+
+    @Test
+    public void testIfInInlineAccumulate() {
+        // DROOLS-6429
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $avg : Integer() from accumulate (\n" +
+                "            Person( $age : age ), init( int count = 0; int sum = 0; ), " +
+                "                                        action( if ($age > 18) { count++; sum += $age; } ), " +
+                "                                        reverse( if ($age > 18) { count--; sum -= $age; } ), " +
+                "                                        result( sum / count )\n" +
+                "         )" +
+                "then\n" +
+                "  insert($avg);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Sofia", 10));
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 42));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(38));
+
+        ksession.delete(fh_Mario);
+        ksession.fireAllRules();
+
+        results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(2, results.size());
+        assertThat(results, hasItem(36));
+    }
+
+    @Test
+    public void testBindVariableUsedInSubsequentAccumulateString() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List result;\n" +
+                     "rule X when\n" +
+                     "  accumulate( Person($name : name);\n" +
+                     "    $count : count($name),\n" +
+                     "    $maxName : max($name);\n" +
+                     "    $count > 1\n" +
+                     "  )\n" +
+                     "  accumulate( Person(name == $maxName, $age : age);\n" +
+                     "    $maxAge : max($age)\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.add($maxAge);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 37));
+        ksession.insert(new Person("John", 60));
+        ksession.insert(new Person("Paul", 35));
+        ksession.insert(new Person("Paul", 50));
+
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactly(50);
+    }
+
+    @Test
+    public void testBindVariableUsedInSubsequentAccumulateBigDecimal() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List result;\n" +
+                     "rule X when\n" +
+                     "  accumulate( Person($money : money);\n" +
+                     "    $count : count($money),\n" +
+                     "    $maxMoney : max($money);\n" +
+                     "    $count > 1\n" +
+                     "  )\n" +
+                     "  accumulate( Person(money == $maxMoney, $age : age);\n" +
+                     "    $maxAge : max($age)\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.add($maxAge);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 37, new BigDecimal("100.0")));
+        ksession.insert(new Person("John", 60, new BigDecimal("100.0")));
+        ksession.insert(new Person("Paul", 35, new BigDecimal("200.0")));
+        ksession.insert(new Person("Paul", 50, new BigDecimal("200.0")));
+
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactly(50);
+    }
+
+    @Test
+    public void testCollectAfterAccumulate() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                     "dialect \"mvel\"\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  accumulate (\n" +
+                     "    Person($age: age),\n" +
+                     "    $maxAge: max($age)\n" +
+                     "  )\n" +
+                     "  $list: ArrayList() from collect (\n" +
+                     "    Person(age < $maxAge)\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($list)\n" +
+                     "end";
+        try {
+            KieSession ksession = getKieSession(str);
+            List<Person> result = new ArrayList<>();
+            ksession.setGlobal("result", result);
+
+            Person john = new Person("John", 37);
+            Person bob = new Person("Bob", 37);
+            Person paul = new Person("Paul", 35);
+            Person george = new Person("George", 34);
+            ksession.insert(john);
+            ksession.insert(bob);
+            ksession.insert(paul);
+            ksession.insert(george);
+
+            ksession.fireAllRules();
+
+            Assertions.assertThat(result).containsExactlyInAnyOrder(paul, george);
+        } catch (Throwable ex) {
+            Assertions.fail("Should not have thrown.", ex);
+        }
     }
 }

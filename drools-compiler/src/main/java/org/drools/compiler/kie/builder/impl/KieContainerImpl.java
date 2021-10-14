@@ -435,11 +435,11 @@ public class KieContainerImpl
             synchronized (kBaseModel) {
                 kBase = kBases.get( kBaseName );
                 if ( kBase == null ) {
-                    ResultsImpl msgs = new ResultsImpl();
-                    kBase = createKieBase(kBaseModel, kProject, msgs, null);
+                    BuildContext buildContext = new BuildContext();
+                    kBase = createKieBase(kBaseModel, kProject, buildContext, null);
                     if (kBase == null) {
                         // build error, throw runtime exception
-                        throw new RuntimeException("Error while creating KieBase" + msgs.filterMessages(Level.ERROR));
+                        throw new RuntimeException("Error while creating KieBase" + buildContext.getMessages().filterMessages(Level.ERROR));
                     }
                     kBases.put(kBaseName, kBase);
                 }
@@ -457,22 +457,22 @@ public class KieContainerImpl
     }
 
     public KieBase newKieBase(String kBaseName, KieBaseConfiguration conf) {
-        ResultsImpl msgs = new ResultsImpl();
-        KieBase kBase = createKieBase(getKieBaseModelImpl(kBaseName), kProject, msgs, conf);
+        BuildContext buildContext = new BuildContext();
+        KieBase kBase = createKieBase(getKieBaseModelImpl(kBaseName), kProject, buildContext, conf);
         if ( kBase == null ) {
             // build error, throw runtime exception
-            throw new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
+            throw new RuntimeException( "Error while creating KieBase" + buildContext.getMessages().filterMessages( Level.ERROR  ) );
         }
         return kBase;
     }
 
-    private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
+    private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf) {
         if (log.isInfoEnabled()) {
             log.info( "Start creation of KieBase: " + kBaseModel.getName() );
         }
 
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
-        InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, messages, conf);
+        InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, buildContext, conf);
         kModule.afterKieBaseCreationUpdate(kBaseModel.getName(), kBase);
 
         if ( kBase == null ) {

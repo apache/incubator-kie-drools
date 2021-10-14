@@ -24,8 +24,8 @@ public class RangeIndex<K extends Comparable, V> implements Serializable {
 
     private final TreeMap<IndexKey<K>, V> map = new TreeMap<>();
 
-    public void addIndex(IndexType indexType, K key, V value) {
-        map.put(new IndexKey<>(indexType, key), value);
+    public V addIndex(IndexType indexType, K key, V value) {
+        return map.put(new IndexKey<>(indexType, key), value);
     }
 
     public void removeIndex(IndexType indexType, K key) {

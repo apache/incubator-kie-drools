@@ -18,7 +18,6 @@ package org.kie.memorycompiler;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Most common denominator for JavaCompiler settings.
@@ -35,7 +34,7 @@ public class JavaCompilerSettings {
     private boolean warnings = false;
     private boolean deprecations = false;
     private boolean debug = false;
-    private List<String> classpaths;
+    private List<File> classpaths;
 
     private final List<String> options;
 
@@ -119,13 +118,10 @@ public class JavaCompilerSettings {
     }
 
     public List<File> getClasspathLocations() {
-        if ( classpaths == null) {
-            return null;
-        }
-        return classpaths.stream().map( File::new ).collect( Collectors.toList() );
+        return classpaths;
     }
 
-    public void addClasspath(String classpath) {
+    public void addClasspath(File classpath) {
         if ( classpaths == null) {
             classpaths = new ArrayList<>();
         }

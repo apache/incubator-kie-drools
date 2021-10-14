@@ -26,14 +26,15 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
@@ -43,6 +44,8 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelFactory.KIE_PMML_TREE_MODEL_TEMPLATE;
@@ -75,7 +78,7 @@ public class KiePMMLTreeModelFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
                                                                                            pmml.getTransformationDictionary(),
                                                                                            treeModel.getLocalTransformations());
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(),
+        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                                  pmml.getTransformationDictionary(),
                                                                                  treeModel,
                                                                                  fieldTypeMap,
@@ -91,7 +94,7 @@ public class KiePMMLTreeModelFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
                                                                                            pmml.getTransformationDictionary(),
                                                                                            treeModel.getLocalTransformations());
-        Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(pmml.getDataDictionary(),
+        Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                                                         pmml.getTransformationDictionary(),
                                                                                               treeModel,
                                                                                                         fieldTypeMap,
@@ -106,7 +109,7 @@ public class KiePMMLTreeModelFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
                                                                                            pmml.getTransformationDictionary(),
                                                                                            treeModel.getLocalTransformations());
-        KiePMMLDroolsAST retrieved = KiePMMLTreeModelFactory.getKiePMMLDroolsAST(dataDictionary, treeModel, fieldTypeMap, Collections.emptyList());
+        KiePMMLDroolsAST retrieved = KiePMMLTreeModelFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(dataDictionary), treeModel, fieldTypeMap, Collections.emptyList());
         assertNotNull(retrieved);
         List<DataField> dataFields = dataDictionary.getDataFields();
         assertEquals(dataFields.size(), fieldTypeMap.size());
@@ -115,20 +118,24 @@ public class KiePMMLTreeModelFactoryTest {
 
     @Test
     public void setConstructor() {
-        ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
-        SimpleName simpleName = new SimpleName("SIMPLENAME");
+        final String targetField = "whatIdo";
+        final ClassOrInterfaceDeclaration modelTemplate = classOrInterfaceDeclaration.clone();
         KiePMMLTreeModelFactory.setConstructor(treeModel,
-                                               pmml.getDataDictionary(),
-                                               constructorDeclaration,
-                                               simpleName);
+                                               getFieldsFromDataDictionary(pmml.getDataDictionary()),
+                                               pmml.getTransformationDictionary(),
+                                               modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
         superInvocationExpressionsMap.put(2, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));
+        MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(treeModel.getMiningFunction().value());
+        PMML_MODEL pmmlModel = PMML_MODEL.byName(treeModel.getClass().getSimpleName());
         Map<String, Expression> assignExpressionMap = new HashMap<>();
-        assignExpressionMap.put("targetField", new NameExpr("targetField"));
-        assignExpressionMap.put("miningFunction", new NullLiteralExpr());
-        assignExpressionMap.put("pmmlMODEL", new NullLiteralExpr());
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, simpleName.asString(), superInvocationExpressionsMap, assignExpressionMap));
+        assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
+        assignExpressionMap.put("miningFunction",
+                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+        assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
+        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(treeModel.getModelName()), superInvocationExpressionsMap, assignExpressionMap));
     }
 
 }

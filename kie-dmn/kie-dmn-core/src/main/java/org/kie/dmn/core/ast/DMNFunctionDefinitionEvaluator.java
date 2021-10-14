@@ -17,6 +17,7 @@
 package org.kie.dmn.core.ast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,9 +146,10 @@ public class DMNFunctionDefinitionEvaluator
             // context, but for now, cloning the original context
             DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx, resultContext.getContext().getMetadata().asMap());
             dmnContext.enterFrame();
+            Object invocationResult = null;
             try {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {
-                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
+                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext, Arrays.asList(params));
                 }
                 if( evaluator != null ) {
                     closureContext.getAll().forEach(dmnContext::set);
@@ -172,7 +174,8 @@ public class DMNFunctionDefinitionEvaluator
                     resultContext.setContext( dmnContext );
                     EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );
                     if( result.getResultType() == ResultType.SUCCESS ) {
-                        return result.getResult();
+                        invocationResult = result.getResult();
+                        return invocationResult;
                     }
                     return null;
                 } else {
@@ -199,7 +202,7 @@ public class DMNFunctionDefinitionEvaluator
                 return null;
             } finally {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {
-                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
+                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext, invocationResult);
                 }
                 resultContext.setContext( previousContext );
                 dmnContext.exitFrame();

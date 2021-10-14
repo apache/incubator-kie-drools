@@ -16,6 +16,8 @@
 package org.drools.core.reteoo;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
@@ -56,6 +58,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          SegmentMemory      next;
 
     private transient List<PathMemory>  dataDrivenPathMemories;
+
+    private transient List<SegmentMemory> peersWithDataDrivenPathMemories;
 
     public SegmentMemory() { }
 
@@ -162,7 +166,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 PathMemory pmem = pathMemories.get(i);
-                pmem.linkNodeWithoutRuleNotify(segmentPosMaskBit);
+                pmem.linkSegmentWithoutRuleNotify(segmentPosMaskBit);
                 dataDrivePmemLinked |= ( pmem.isDataDriven() && pmem.isRuleLinked() );
             }
         }
@@ -256,6 +260,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public void addPathMemory(PathMemory pathMemory) {
         pathMemories.add(pathMemory);
+        if (isSegmentLinked()) {
+            pathMemory.linkSegmentWithoutRuleNotify(segmentPosMaskBit);
+        }
         if (pathMemory.isDataDriven()) {
             if (dataDrivenPathMemories == null) {
                 dataDrivenPathMemories = new ArrayList<>();
@@ -336,6 +343,32 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public void setStagedTuples(TupleSets<LeftTuple> stagedTuples) {
         this.stagedLeftTuples = stagedTuples;
+    }
+
+    @Override
+    public void add(SegmentMemory segmentMemory) {
+        super.add(segmentMemory);
+        if (segmentMemory.hasDataDrivenPathMemories()) {
+            if (peersWithDataDrivenPathMemories == null) {
+                peersWithDataDrivenPathMemories = new ArrayList<>();
+            }
+            peersWithDataDrivenPathMemories.add(segmentMemory);
+        }
+    }
+
+    @Override
+    public void remove(SegmentMemory segmentMemory) {
+        super.remove(segmentMemory);
+        if (peersWithDataDrivenPathMemories != null) {
+            peersWithDataDrivenPathMemories.remove(segmentMemory);
+            if (peersWithDataDrivenPathMemories.isEmpty()) {
+                peersWithDataDrivenPathMemories = null;
+            }
+        }
+    }
+
+    public Iterator<SegmentMemory> getPeersWithDataDrivenPathMemoriesIterator() {
+        return peersWithDataDrivenPathMemories == null ? Collections.emptyIterator() : peersWithDataDrivenPathMemories.iterator();
     }
 
     public SegmentMemory getNext() {

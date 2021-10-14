@@ -567,7 +567,14 @@ public class ParallelEvaluationTest {
         sb.append( "global java.util.List list;\n" );
         sb.append( "import " + MyEvent.class.getCanonicalName() + ";\n" );
         sb.append( "declare MyEvent @role( event ) @expires( 20ms ) @timestamp( timestamp ) end\n" );
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
+            sb.append( getRuleWithEventForExpiration( i ) );
+        }
+
+        // See DROOLS-6352 : To avoid bias in CompositePartitionAwareObjectSinkAdapter.partitionedPropagators by artificial repetition of rule pattern
+        sb.append("rule R_ex1\n when MyEvent(id == 100)\n then\n end\n");
+
+        for (int i = 5; i < 10; i++) {
             sb.append( getRuleWithEventForExpiration( i ) );
         }
 

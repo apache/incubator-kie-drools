@@ -27,21 +27,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(Parameterized.class)
 public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest {
-
 
     private static final String FILE_NAME = "SampleMineTreeModelWithTransformations.pmml";
     private static final String MODEL_NAME = "SampleMineTreeModelWithTransformations";
     private static final String TARGET_FIELD = "decision";
     private static final String OUT_DER_TEMPERATURE = "out_der_temperature";
-    private static final String OUT_DER_HUMIDITY = "out_der_humidity";
+    private static final String OUT_DER_FUN_HUMIDITY_APPLY = "out_der_fun_humidity_apply";
     private static final String OUT_DER_CONSTANT = "out_der_constant";
     private static final String CONSTANT = "constant";
-
+    private static final String WEATHERDECISION = "weatherdecision";
+    private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
+    private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
+    private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
+    private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
+            "excellent!";
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -55,7 +63,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
+    @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -70,17 +78,90 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     }
 
     @Test
-    public void testSetPredicateTree() {
+    public void testSampleMineTreeModelWithTransformations() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("temperature", temperature);
         inputData.put("humidity", humidity);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 34.1);
 
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
-        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5490
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_TEMPERATURE)).isEqualTo(temperature);
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_HUMIDITY)).isEqualTo(humidity);
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_TEMPERATURE)).isEqualTo(temperature);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_HUMIDITY_APPLY)).isEqualTo(humidity);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(WEATHERDECISION)).isEqualTo(expectedResult);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
+        if (expectedResult.equals("umbrella")) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo("1.0");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo("0.0");
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        if (temperature > 4.2 && temperature < 9.8) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+        } else if (temperature >= 15.4 && temperature < 32.1) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        String expected;
+        switch (expectedResult) {
+            case "sunglasses":
+                expected = "sun";
+                break;
+            case "umbrella":
+                expected = "rain";
+                break;
+            case "nothing":
+                expected = "dunno";
+                break;
+            default:
+                throw new Exception("Unexpected expectedResult " + expectedResult);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testSampleMineTreeModelWithTransformationsWithoutRequired() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("temperature", temperature);
+        inputData.put("humidity", humidity);
+        inputData.put("text_input", TEXT_INPUT);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test
+    public void testSampleMineTreeModelWithTransformationsConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("temperature", String.valueOf(temperature));
+        inputData.put("humidity", String.valueOf(humidity));
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", "34.1");
+        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testSampleMineTreeModelWithTransformationsNotConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("temperature", temperature);
+        inputData.put("humidity", humidity);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", true);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testSampleMineTreeModelWithTransformationsInvalidValue() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("temperature", temperature);
+        inputData.put("humidity", humidity);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 4.1);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }

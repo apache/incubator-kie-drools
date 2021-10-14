@@ -74,6 +74,8 @@ public class DMNRuntimeImpl
 
     private boolean overrideRuntimeTypeCheck = false;
 
+    private DMNResultImplFactory dmnResultFactory = new DMNResultImplFactory();
+
     public DMNRuntimeImpl(DMNRuntimeKB runtimeKB) {
         this.runtimeKB = runtimeKB != null ? runtimeKB : new VoidDMNRuntimeKB();
         this.eventManager = new DMNRuntimeEventManagerImpl();
@@ -246,9 +248,13 @@ public class DMNRuntimeImpl
     }
 
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
-        DMNResultImpl result = new DMNResultImpl(model);
+        DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
         result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
         return result;
+    }
+
+    public void setDMNResultImplFactory(DMNResultImplFactory dmnResultFactory) {
+        this.dmnResultFactory = dmnResultFactory;
     }
 
     @Override

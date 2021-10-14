@@ -35,7 +35,6 @@ import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor;
-import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitorPatternDSL;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternDSL;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor;
 
@@ -56,7 +55,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     private final FromCollectVisitor fromCollectVisitor;
 
     public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel) {
-        accumulateVisitor = new AccumulateVisitorPatternDSL(this, context, packageModel);
+        accumulateVisitor = new AccumulateVisitor(this, context, packageModel);
         andVisitor = new AndVisitor(this, context);
         conditionalElementVisitor = new ConditionalElementVisitor(this, context);
         orVisitor = new OrVisitor(this, context);
@@ -98,7 +97,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
 
     @Override
     public void visit(OrDescr descr) {
-        orVisitor.visit(descr, OR_CALL);
+        orVisitor.visit(descr);
     }
 
     @Override

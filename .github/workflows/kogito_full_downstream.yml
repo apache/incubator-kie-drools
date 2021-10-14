@@ -1,31 +1,62 @@
 name: Kogito Build Chain Full Downstream
 
-on: [pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - 'LICENSE*'
+      - '.gitignore'
+      - '*.md'
+      - '*.txt'
 
 jobs:
   build-chain:
+    concurrency:
+      group: kogito-full-downstream-${{ github.head_ref }}
+      cancel-in-progress: true
     strategy:
       matrix:
         java-version: [11]
+        maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ubuntu-latest
     name: Maven Build
     steps:
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Setup Maven And Java Version
+        uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+      # Inspired to maximize-build-space action https://github.com/easimon/maximize-build-space
+      - name: Free disk space (remove dotnet, android and haskell)
+        shell: bash
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+      - name: Disk space report after modification
+        shell: bash
+        run: |
+          echo "Available storage:"
+          df -h
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build Chain ${{ matrix.java-version }}
+          key: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2
+      - name: Build Chain ${{ matrix.java-version }}. Maven ${{ matrix.maven-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.4
+        uses: kiegroup/github-action-build-chain@v2.6.8
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP}/drools/${BRANCH}/.ci/kogito-pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/kiegroup/drools/main/.ci/kogito-pull-request-config.yaml
           starting-project: kiegroup/kogito-examples
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Check Surefire Report
+        if: ${{ always() }}
+        uses: ScaCap/action-surefire-report@v1.0.10
+        with:
+          fail_on_test_failures: true
+          fail_if_no_tests: false
+          skip_publishing: true

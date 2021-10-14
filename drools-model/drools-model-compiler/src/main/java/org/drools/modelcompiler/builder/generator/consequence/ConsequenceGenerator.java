@@ -41,8 +41,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 /* Used to generate ConsequenceBuilder File */
 class ConsequenceGenerator {
@@ -94,7 +94,7 @@ class ConsequenceGenerator {
     }
 
     private static void replaceName(int arity, ClassOrInterfaceDeclaration clone, ConstructorDeclaration constructor) {
-        ClassOrInterfaceType arityType = parseClassOrInterfaceType(arityName(arity));
+        ClassOrInterfaceType arityType = toClassOrInterfaceType(arityName(arity));
 
         clone.findAll(ClassOrInterfaceDeclaration.class, findNodeWithNameArityClassName(ARITY_CLASS_NAME))
                 .forEach(c -> c.setName(arityName(arity)));
@@ -124,7 +124,7 @@ class ConsequenceGenerator {
                 genericTypeStream(arity, ConsequenceGenerator::parseType)
                         .collect(Collectors.toList());
 
-        ClassOrInterfaceType extendTypeParameter = parseClassOrInterfaceType(arityName(arity));
+        ClassOrInterfaceType extendTypeParameter = toClassOrInterfaceType(arityName(arity));
         extendTypeParameter.setTypeArguments(nodeList(genericTypeList));
 
         ClassOrInterfaceType extendedType = new ClassOrInterfaceType(null, new SimpleName("AbstractValidBuilder"), nodeList(extendTypeParameter));
@@ -136,19 +136,19 @@ class ConsequenceGenerator {
         clone.setExtendedTypes(nodeList(extendedType));
 
         List<Parameter> parameters = genericTypeStream(arity, genericTypeIndex -> {
-            ClassOrInterfaceType type = parseClassOrInterfaceType(String.format("Variable<%s>", argumentTypeName(genericTypeIndex)));
+            ClassOrInterfaceType type = toClassOrInterfaceType(String.format("Variable<%s>", argumentTypeName(genericTypeIndex)));
             return new Parameter(type, argName(genericTypeIndex));
         }).collect(Collectors.toList());
 
         constructor.setParameters(nodeList(parameters));
         constructorBody(arity, constructor);
 
-        ClassOrInterfaceType arityBlockType = parseClassOrInterfaceType("Block" + arity);
+        ClassOrInterfaceType arityBlockType = toClassOrInterfaceType("Block" + arity);
         arityBlockType.setTypeArguments(nodeList(genericTypeList));
 
-        ClassOrInterfaceType arityBlockTypePlusOne = parseClassOrInterfaceType("Block" + (arity + 1));
+        ClassOrInterfaceType arityBlockTypePlusOne = toClassOrInterfaceType("Block" + (arity + 1));
         List<Type> genericTypeListPlusDrools = new ArrayList<>(genericTypeList);
-        genericTypeListPlusDrools.add(0, parseClassOrInterfaceType("Drools"));
+        genericTypeListPlusDrools.add(0, toClassOrInterfaceType("Drools"));
         arityBlockTypePlusOne.setTypeArguments(nodeList(genericTypeListPlusDrools));
 
         clone.findAll(ClassOrInterfaceType.class, findNodeWithNameArityClassName(ARITY_CLASS_BLOCK))
@@ -177,7 +177,7 @@ class ConsequenceGenerator {
     }
 
     private static ClassOrInterfaceType parseType(int genericTypeIndex) {
-        return parseClassOrInterfaceType(argumentTypeName(genericTypeIndex));
+        return toClassOrInterfaceType(argumentTypeName(genericTypeIndex));
     }
 
     private static String argumentTypeName(int genericTypeIndex) {

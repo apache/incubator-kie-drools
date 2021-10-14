@@ -24,11 +24,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
@@ -54,13 +53,15 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
+import org.kie.memorycompiler.resources.KiePath;
+import org.kie.util.maven.support.DependencyFilter;
+import org.kie.util.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
 
 public interface InternalKieModule extends KieModule, Serializable {
@@ -98,7 +99,10 @@ public interface InternalKieModule extends KieModule, Serializable {
     boolean isAvailable( final String pResourceName );
     
     byte[] getBytes( final String pResourceName );
-    
+    default byte[] getBytes( final KiePath resourcePath ) {
+        return getBytes(resourcePath.asString());
+    }
+
     Collection<String> getFileNames();  
     
     File getFile();
@@ -118,16 +122,16 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader );
 
-    InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
+    InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf );
 
     default void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) { }
 
     ClassLoader getModuleClassLoader();
 
     default ResultsImpl build() {
-        ResultsImpl messages = new ResultsImpl();
-        buildKieModule(this, messages);
-        return messages;
+        BuildContext buildContext = new BuildContext();
+        buildKieModule(this, buildContext);
+        return buildContext.getMessages();
     }
 
     default KieJarChangeSet getChanges(InternalKieModule newKieModule) {
@@ -164,7 +168,7 @@ public interface InternalKieModule extends KieModule, Serializable {
             return null;
         }
         try (ZipFile zipFile = new ZipFile(jar)) {
-            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
+            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH.asString());
             if (zipEntry != null) {
                 return internalCreateKieModule( releaseId, jar, zipFile, zipEntry );
             }
@@ -181,7 +185,7 @@ public interface InternalKieModule extends KieModule, Serializable {
         try (InputStream xmlStream = zipFile.getInputStream( zipEntry )) {
             KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML( xmlStream );
             setDefaultsforEmptyKieModule( kieModuleModel );
-            return kieModuleModel != null ? InternalKieModuleProvider.get( adapt( releaseId ), kieModuleModel, jar ) : null;
+            return kieModuleModel != null ? InternalKieModuleProvider.get( releaseId, kieModuleModel, jar ) : null;
         } catch (Exception e) {
             throw new MalformedKieModuleException( e );
         }
@@ -193,9 +197,9 @@ public interface InternalKieModule extends KieModule, Serializable {
         }
     }
 
-    default void updateKieModule(InternalKieModule newKM) {
+    default void updateKieModule(InternalKieModule newKM) {}
 
-    }
+    default void addGeneratedClassNames(Set<String> classNames) {}
 
     class CompilationCache implements Serializable {
         private static final long serialVersionUID = 3812243055974412935L;

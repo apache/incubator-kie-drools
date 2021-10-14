@@ -28,8 +28,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
@@ -53,12 +51,13 @@ import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
-import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 public class WindowReferenceGenerator {
 
@@ -93,7 +92,7 @@ public class WindowReferenceGenerator {
 
         final String windowName = toVar(descr.getName());
 
-        final MethodCallExpr initializer = new MethodCallExpr(null, WINDOW_CALL);
+        final MethodCallExpr initializer = createDslTopLevelMethod(WINDOW_CALL);
 
         final PatternDescr pattern = descr.getPattern();
         ParsedBehavior behavior = pattern
@@ -112,13 +111,12 @@ public class WindowReferenceGenerator {
 
         final Class<?> initClass = DrlxParseUtil.getClassFromContext(typeResolver, pattern.getObjectType());
 
-        final Type initType = toJPType(initClass);
-        initializer.addArgument(new ClassExpr(initType));
+        initializer.addArgument(new ClassExpr(toJavaParserType(initClass)));
 
         if (pattern.getSource() != null) {
             String epName = (( EntryPointDescr ) pattern.getSource()).getEntryId();
-            MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
-            entryPointCall.addArgument( new StringLiteralExpr(epName) );
+            MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
+            entryPointCall.addArgument( toStringLiteral(epName) );
             initializer.addArgument( entryPointCall );
         }
 
@@ -135,8 +133,8 @@ public class WindowReferenceGenerator {
         return descrs.stream()
                 .map( descr -> {
                     String expression = descr.toString();
-                    RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver);
-                    DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, pattern.getIdentifier(), expression);
+                    RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, null);
+                    DrlxParseResult drlxParseResult = ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(patternType, pattern.getIdentifier(), expression);
                     return drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
                         @Override
                         public Optional<Expression> onSuccess(DrlxParseSuccess drlxParseResult) {

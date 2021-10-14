@@ -16,10 +16,9 @@
 
 package org.drools.core.common;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -51,7 +50,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-    * @see org.kie.reteoo.FactHandleFactory#newFactHandle()
+    * @see org.drools.core.spi.FactHandleFactory#newFactHandle()
     */
     public final InternalFactHandle newFactHandle(Object object,
                                                   ObjectTypeConf conf,
@@ -65,7 +64,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
+     * @see org.drools.core.spi.FactHandleFactory#newFactHandle(long)
      */
     public final InternalFactHandle newFactHandle(long id,
                                                   Object object,
@@ -81,7 +80,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
+     * @see org.drools.core.spi.FactHandleFactory#newFactHandle(long)
      */
     public abstract InternalFactHandle newFactHandle(long id,
                                                      Object object,
@@ -99,7 +98,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#newInstance()
+     * @see org.drools.core.spi.FactHandleFactory#newInstance()
      */
     public abstract FactHandleFactory newInstance();
 
@@ -169,7 +168,7 @@ public abstract class AbstractFactHandleFactory
         }
 
         public void doRecycle(Collection<Long> usedIds) {
-            this.usedIds = usedIds.stream().sorted().collect( toCollection( LinkedList::new ) );
+            this.usedIds = usedIds.stream().sorted().collect( toCollection( ArrayDeque::new ) );
             this.usedIds.add( id.get()+1 );
             this.recycledId = 1;
         }

@@ -16,9 +16,7 @@
 
 package org.kie.pmml.models.regression.compiler.factories;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,15 +40,16 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.OutputField;
+import org.dmg.pmml.ResultFeature;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.api.enums.OP_TYPE;
-import org.kie.pmml.api.enums.RESULT_FEATURE;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
@@ -91,10 +90,10 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         RegressionTable regressionTableProf = getRegressionTable(3.5, "professional");
         RegressionTable regressionTableCler = getRegressionTable(27.4, "clerical");
         List<RegressionTable> regressionTables = Arrays.asList(regressionTableProf, regressionTableCler);
-        KiePMMLOutputField outputFieldCat = getOutputField("CAT-1", RESULT_FEATURE.PROBABILITY, "CatPred-1");
-        KiePMMLOutputField outputFieldNum = getOutputField("NUM-1", RESULT_FEATURE.PROBABILITY, "NumPred-0");
-        KiePMMLOutputField outputFieldPrev = getOutputField("PREV", RESULT_FEATURE.PREDICTED_VALUE, null);
-        List<KiePMMLOutputField> outputFields = Arrays.asList(outputFieldCat, outputFieldNum, outputFieldPrev);
+        OutputField outputFieldCat = getOutputField("CAT-1", ResultFeature.PROBABILITY, "CatPred-1");
+        OutputField outputFieldNum = getOutputField("NUM-1", ResultFeature.PROBABILITY, "NumPred-0");
+        OutputField outputFieldPrev = getOutputField("PREV", ResultFeature.PREDICTED_VALUE, null);
+        List<OutputField> outputFields = Arrays.asList(outputFieldCat, outputFieldNum, outputFieldPrev);
         Map<String, KiePMMLTableSourceCategory> retrieved =
                 KiePMMLRegressionTableClassificationFactory.getRegressionTables(regressionTables,
                                                                                 RegressionModel.NormalizationMethod.SOFTMAX,
@@ -109,10 +108,10 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
 
     @Test
     public void getRegressionTable() {
-        KiePMMLOutputField outputFieldCat = getOutputField("CAT-1", RESULT_FEATURE.PROBABILITY, "CatPred-1");
-        KiePMMLOutputField outputFieldNum = getOutputField("NUM-1", RESULT_FEATURE.PROBABILITY, "NumPred-0");
-        KiePMMLOutputField outputFieldPrev = getOutputField("PREV", RESULT_FEATURE.PREDICTED_VALUE, null);
-        List<KiePMMLOutputField> outputFields = Arrays.asList(outputFieldCat, outputFieldNum, outputFieldPrev);
+        OutputField outputFieldCat = getOutputField("CAT-1", ResultFeature.PROBABILITY, "CatPred-1");
+        OutputField outputFieldNum = getOutputField("NUM-1", ResultFeature.PROBABILITY, "NumPred-0");
+        OutputField outputFieldPrev = getOutputField("PREV", ResultFeature.PREDICTED_VALUE, null);
+        List<OutputField> outputFields = Arrays.asList(outputFieldCat, outputFieldNum, outputFieldPrev);
         LinkedHashMap<String, KiePMMLTableSourceCategory> toReturn = new LinkedHashMap<>();
         Map.Entry<String, String> retrieved = KiePMMLRegressionTableClassificationFactory.getRegressionTable(toReturn,
                                                                                                              RegressionModel.NormalizationMethod.SOFTMAX,
@@ -177,70 +176,10 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
     }
 
     @Test
-    public void populateOutputFieldsMap() {
-        final List<KiePMMLOutputField> outputFields = new ArrayList<>();
-        KiePMMLOutputField predictedOutputField = getOutputField("KOF-TARGET", RESULT_FEATURE.PREDICTED_VALUE,
-                                                                 "TARGET");
-        outputFields.add(predictedOutputField);
-        final List<KiePMMLOutputField> probabilityOutputFields = IntStream.range(0, 2)
-                .mapToObj(index -> getOutputField("KOF-PROB-" + index, RESULT_FEATURE.PROBABILITY, "PROB-" + index))
-                .collect(Collectors.toList());
-        outputFields.addAll(probabilityOutputFields);
-        KiePMMLRegressionTableClassificationFactory.populateOutputFieldsMap(modelTemplate, outputFields);
-        MethodDeclaration methodDeclaration =
-                modelTemplate.getMethodsByName("populateOutputFieldsMapWithResult").get(0);
-        BlockStmt body = methodDeclaration.getBody().get();
-        NodeList<Statement> retrieved = body.getStatements();
-        assertEquals(1, retrieved.size());
-        methodDeclaration =
-                modelTemplate.getMethodsByName("populateOutputFieldsMapWithProbability").get(0);
-        body = methodDeclaration.getBody().get();
-        retrieved = body.getStatements();
-        assertEquals(probabilityOutputFields.size(), retrieved.size());
-    }
-
-    @Test
-    public void populateOutputFieldsMapWithProbability() {
-        final List<KiePMMLOutputField> outputFields = IntStream.range(0, 2)
-                .mapToObj(index -> getOutputField("KOF-PROB-" + index, RESULT_FEATURE.PROBABILITY, "PROB-" + index))
-                .collect(Collectors.toList());
-        final MethodDeclaration methodDeclaration =
-                modelTemplate.getMethodsByName("populateOutputFieldsMapWithProbability").get(0);
-        final BlockStmt body = methodDeclaration.getBody().get();
-        KiePMMLRegressionTableClassificationFactory.populateOutputFieldsMapWithProbability(body, outputFields);
-        NodeList<Statement> retrieved = body.getStatements();
-        assertEquals(outputFields.size(), retrieved.size());
-        retrieved.forEach(statement -> {
-            assertTrue(statement instanceof ExpressionStmt);
-            assertTrue(((ExpressionStmt) statement).getExpression() instanceof MethodCallExpr);
-            MethodCallExpr methodCallExpr = (MethodCallExpr) ((ExpressionStmt) statement).getExpression();
-            assertEquals("outputFieldsMap", methodCallExpr.getScope().get().asNameExpr().toString());
-            assertEquals("put", methodCallExpr.getName().asString());
-            assertTrue(methodCallExpr.getArguments().get(1) instanceof MethodCallExpr);
-            MethodCallExpr nestedMethodCallExpr = (MethodCallExpr) methodCallExpr.getArguments().get(1);
-            assertEquals("probabilityMap", nestedMethodCallExpr.getScope().get().asNameExpr().toString());
-            assertEquals("get", nestedMethodCallExpr.getName().asString());
-        });
-        List<MethodCallExpr> methodCallExprs = retrieved.stream()
-                .map(statement -> (MethodCallExpr) ((ExpressionStmt) statement).getExpression())
-                .collect(Collectors.toList());
-        outputFields.forEach(outputField -> assertTrue(methodCallExprs.stream()
-                                                               .anyMatch(methodCallExpr -> {
-                                                                   StringLiteralExpr stringLiteralExpr =
-                                                                           (StringLiteralExpr) methodCallExpr.getArguments().get(0);
-                                                                   MethodCallExpr nestedMethodCallExpr =
-                                                                           (MethodCallExpr) methodCallExpr.getArguments().get(1);
-                                                                   StringLiteralExpr nestedStringLiteralExpr =
-                                                                           (StringLiteralExpr) nestedMethodCallExpr.getArguments().get(0);
-                                                                   return outputField.getName().equals(stringLiteralExpr.getValue())
-                                                                           && outputField.getTargetField().get().equals(nestedStringLiteralExpr.getValue());
-                                                               })));
-    }
-
-    @Test
     public void populateGetProbabilityMapMethodSupported() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             KiePMMLRegressionTableClassificationFactory.populateGetProbabilityMapMethod(normalizationMethod,
+                                                                                        false,
                                                                                         modelTemplate);
             MethodDeclaration methodDeclaration =
                     modelTemplate.getMethodsByName("getProbabilityMap").get(0);
@@ -255,6 +194,7 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             try {
                 KiePMMLRegressionTableClassificationFactory.populateGetProbabilityMapMethod(normalizationMethod,
+                                                                                            false,
                                                                                             modelTemplate);
                 fail("Expecting KiePMMLInternalException with normalizationMethod " + normalizationMethod);
             } catch (Exception e) {
@@ -265,24 +205,10 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
 
     @Test
     public void populateIsBinaryMethod() {
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CATEGORICAL, 1, modelTemplate);
+        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(false, modelTemplate);
         commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CATEGORICAL, 2, modelTemplate);
+        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(true, modelTemplate);
         commonEvaluateIsBinaryMethod(modelTemplate, true);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CATEGORICAL, 3, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CONTINUOUS, 1, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CONTINUOUS, 2, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CONTINUOUS, 3, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.ORDINAL, 1, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.ORDINAL, 2, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.ORDINAL, 3, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
     }
 
     private void commonEvaluateIsBinaryMethod(final ClassOrInterfaceDeclaration tableTemplate, final boolean expected) {
@@ -297,10 +223,13 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         assertEquals(expected, booleanLiteralExpr.getValue());
     }
 
-    private KiePMMLOutputField getOutputField(String name, RESULT_FEATURE resultFeature, String targetField) {
-        return KiePMMLOutputField.builder(name, Collections.emptyList())
-                .withResultFeature(resultFeature)
-                .withTargetField(targetField)
-                .build();
+    private OutputField getOutputField(String name, ResultFeature resultFeature, String targetField) {
+        OutputField toReturn = new OutputField();
+        toReturn.setName(FieldName.create(name));
+        toReturn.setResultFeature(resultFeature);
+        if (targetField != null) {
+            toReturn.setTargetField(FieldName.create(targetField));
+        }
+        return toReturn;
     }
 }

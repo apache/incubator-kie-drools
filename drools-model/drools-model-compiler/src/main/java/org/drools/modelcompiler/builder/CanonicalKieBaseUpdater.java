@@ -25,9 +25,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImpl;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
+import org.drools.core.impl.KieBaseUpdate;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -37,7 +37,6 @@ import org.drools.core.rule.Function;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.CanonicalKiePackages;
-import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.builder.ChangeType;
@@ -56,9 +55,6 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
         CanonicalKieModule oldKM = ( CanonicalKieModule ) ctx.currentKM;
         CanonicalKieModule newKM = ( CanonicalKieModule ) ctx.newKM;
 
-        List<RuleImpl> rulesToBeRemoved;
-        List<RuleImpl> rulesToBeAdded;
-
         Map<String, AtomicInteger> globalsCounter = new HashMap<>();
 
         // To keep compatible the classes generated from declared types the new kmodule has to be loaded with the classloader of the old one
@@ -69,6 +65,9 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
         newKM.setIncrementalUpdate( false );
 
         removeResources(pkgbuilder);
+
+        List<RuleImpl> rulesToBeRemoved;
+        List<RuleImpl> rulesToBeAdded;
 
         if (ctx.modifyingUsedClass) {
             // remove all ObjectTypeNodes for the modified classes
@@ -184,8 +183,11 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
 
         ((CompositeKnowledgeBuilderImpl)ckbuilder).build(false);
 
+        KieBaseUpdate kieBaseUpdate = new KieBaseUpdate(rulesToBeRemoved, rulesToBeAdded);
+        ctx.kBase.beforeIncrementalUpdate( kieBaseUpdate );
         ctx.kBase.removeRules( rulesToBeRemoved );
         ctx.kBase.addRules( rulesToBeAdded );
+        ctx.kBase.afterIncrementalUpdate( kieBaseUpdate );
 
         for ( InternalWorkingMemory wm : ctx.kBase.getWorkingMemories() ) {
             wm.notifyWaitOnRest();
@@ -203,9 +205,5 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
             }
         }
         return rules;
-    }
-
-    private static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
-        return kieBaseModel.getPackages().isEmpty() || KieBuilderImpl.isPackageInKieBase( kieBaseModel, pkgName );
     }
 }

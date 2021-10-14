@@ -48,13 +48,12 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.POSITIVE);
 
         generatePng(graph);
     }
@@ -90,25 +89,24 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
-        assertNodeLink(graph, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
 
         generatePng(graph);
 
         ModelToGraphConverter converterPositiveOnly = new ModelToGraphConverter(true);
         Graph graph2 = converterPositiveOnly.toGraph(analysisModel);
 
-        assertNodeLink(graph2, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-        assertNoNodeLink(graph2, "mypkg.R1", "mypkg.R3");
-        assertNodeLink(graph2, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
-        assertNodeLink(graph2, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
+        assertLink(graph2, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph2, "mypkg.R1", "mypkg.R3");
+        assertLink(graph2, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
+        assertLink(graph2, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
 
         generatePng(graph2, "_positiveOnly");
     }
@@ -130,12 +128,11 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -157,13 +154,12 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R2", "mypkg.R1", ReactivityType.NEGATIVE);
 
         generatePng(graph);
     }
@@ -184,12 +180,11 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNoNodeLink(graph, "mypkg.R1", "mypkg.R2");
+        assertLink(graph, "mypkg.R1", "mypkg.R2");
 
         generatePng(graph);
     }
@@ -210,12 +205,11 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -239,14 +233,77 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", ReactivityType.NEGATIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R2", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R2", "mypkg.R1", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R2", "mypkg.R2", ReactivityType.NEGATIVE);
+
+        generatePng(graph);
+    }
+
+    @Test
+    public void testInsertRelation() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  String(this == \"Start\")\n" +
+                     "then\n" +
+                     "  Person p = new Person();\n" +
+                     "  p.setName(\"John\");\n" +
+                     "  insert(p);\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person(name == \"John\")\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  $p : Person(name == \"Paul\")\n" +
+                     "then\n" +
+                     "end\n";
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R3");
+
+        generatePng(graph);
+    }
+
+    @Test
+    public void testInsertRelationNot() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  String(this == \"Start\")\n" +
+                     "then\n" +
+                     "  Person p = new Person();\n" +
+                     "  p.setName(\"John\");\n" +
+                     "  insert(p);\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  not( Person(name == \"John\") )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  not( Person(name == \"Paul\") )\n" +
+                     "then\n" +
+                     "end\n";
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R3");
 
         generatePng(graph);
     }

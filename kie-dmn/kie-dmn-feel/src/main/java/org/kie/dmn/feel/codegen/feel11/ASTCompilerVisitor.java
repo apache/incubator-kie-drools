@@ -428,7 +428,7 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
                 Expressions.filter(expr.getExpression(), lambda.name()),
                 // here we could still try to infer the result type, but presently use ANY
                 BuiltInType.UNKNOWN).withFD(expr).withFD(filter);
-        r.addFieldDesclaration(lambda.field());
+        r.addFieldDeclaration(lambda.field());
         return r;
     }
 
@@ -557,8 +557,8 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
 
         DirectCompilerResult r =
                 DirectCompilerResult.of(with, BuiltInType.UNKNOWN);
-        r.addFieldDesclaration(nameLambda.field());
-        r.addFieldDesclaration(exprLambda.field());
+        r.addFieldDeclaration(nameLambda.field());
+        r.addFieldDeclaration(exprLambda.field());
         r.withFD(iterName);
         r.withFD(iterExpr);
 
@@ -570,7 +570,7 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
                             rangeEnd.getExpression(),
                             rangeEndExpr.getText());
             with.addArgument(rangeLambda.name());
-            r.addFieldDesclaration(rangeLambda.field());
+            r.addFieldDeclaration(rangeLambda.field());
             r.withFD(rangeEnd);
         }
 
@@ -676,7 +676,7 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
         DirectCompilerResult r =
                 DirectCompilerResult.of(namedLambda.name(), BuiltInType.UNARY_TEST)
                         .withFD(value);
-        r.addFieldDesclaration(namedLambda.field());
+        r.addFieldDeclaration(namedLambda.field());
         return r;
     }
 }

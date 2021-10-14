@@ -51,18 +51,21 @@ import static org.junit.Assert.fail;
  */
 public class ExternalisedLambdaTest extends BaseModelTest {
 
+    private boolean checkNonExternalisedLambdaOrig;
+
     public ExternalisedLambdaTest(RUN_TYPE testRunType) {
         super(testRunType);
     }
 
     @Before
     public void init() {
+        checkNonExternalisedLambdaOrig = RuleWriter.isCheckNonExternalisedLambda();
         RuleWriter.setCheckNonExternalisedLambda(true);
     }
 
     @After
     public void clear() {
-        RuleWriter.setCheckNonExternalisedLambda(false);
+        RuleWriter.setCheckNonExternalisedLambda(checkNonExternalisedLambdaOrig);
     }
 
     @Test

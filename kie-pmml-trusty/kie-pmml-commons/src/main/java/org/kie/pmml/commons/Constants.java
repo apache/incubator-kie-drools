@@ -32,6 +32,25 @@ public class Constants {
     public static final String MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION = "Missing expected parameter %s in constructor invocation %s";
     public static final String MISSING_CONSTRUCTOR_IN_BODY = "Missing constructor invocation in body %s";
     public static final String UNCHANGED_VARIABLE_IN_CONSTRUCTOR = "Unchanged variable {} in constructor {} ";
+    public static final String MISSING_STATIC_INITIALIZER = "Missing expected static initializer in class %s";
+    public static final String MISSING_METHOD_TEMPLATE = "Missing method '%s' in %s";
+    public static final String MISSING_VARIABLE_INITIALIZER_TEMPLATE = "Missing '%s' initializer in %s";
+    public static final String MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE = "Missing '%s' MethodDeclaration in %s";
+    public static final String MISSING_PARENT_NODE_TEMPLATE = "Missing parent node in %s";
+    public static final String MISSING_METHOD_REFERENCE_TEMPLATE = "Missing method reference '%s' in %s";
+    public static final String PACKAGE_CLASS_TEMPLATE = "%s.%s";
+    public static final String WRONG_EXPRESSION_TEMPLATE = "Retrieved %s (%s) while a %s was expected from \n%s";
+
+    //
+    public static final String EVALUATE_PREDICATE = "evaluatePredicate";
+    public static final String PREDICATE_FUNCTION = "predicateFunction";
+    public static final String STRING_OBJECT_MAP = "stringObjectMap";
+    public static final String INITIAL_SCORE = "initialScore";
+    public static final String SCORE = "score";
+    public static final String REASON_CODE = "reasonCode";
+    public static final String REASON_CODE_ALGORITHM = "reasonCodeAlgorithm";
+    public static final String EMPTY_LIST = "emptyList";
+    public static final String AS_LIST = "asList";
 
     private Constants() {
         // Avoid instantiation

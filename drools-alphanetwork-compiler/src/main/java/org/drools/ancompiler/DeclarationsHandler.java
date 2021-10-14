@@ -19,7 +19,7 @@ package org.drools.ancompiler;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -66,7 +66,7 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
 
     public DeclarationsHandler(StringBuilder builder) {
         this.builder = builder;
-        this.hashedAlphaDeclarations = new LinkedList<>();
+        this.hashedAlphaDeclarations = new ArrayList<>();
     }
 
     private String getVariableDeclaration(AlphaNode alphaNode) {

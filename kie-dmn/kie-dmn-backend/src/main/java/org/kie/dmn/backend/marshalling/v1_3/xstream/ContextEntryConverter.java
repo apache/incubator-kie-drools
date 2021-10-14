@@ -56,7 +56,7 @@ public class ContextEntryConverter extends DMNElementConverter {
         ContextEntry ce = (ContextEntry) parent;
         
         if (ce.getVariable() != null) writeChildrenNode(writer, context, ce.getVariable(), VARIABLE);
-        writeChildrenNode(writer, context, ce.getExpression(), MarshallingUtils.defineExpressionNodeName(ce.getExpression()));
+        writeChildrenNode(writer, context, ce.getExpression(), MarshallingUtils.defineExpressionNodeName(xstream, ce.getExpression()));
     }
 
     @Override

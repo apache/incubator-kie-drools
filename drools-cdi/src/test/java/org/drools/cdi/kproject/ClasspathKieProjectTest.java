@@ -20,9 +20,9 @@ import java.io.File;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.ClasspathKieProject;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 public class ClasspathKieProjectTest extends AbstractKnowledgeTest {
 

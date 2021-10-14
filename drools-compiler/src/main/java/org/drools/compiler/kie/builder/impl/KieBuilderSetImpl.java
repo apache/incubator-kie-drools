@@ -31,11 +31,13 @@ import java.util.Set;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.io.impl.BaseResource;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.IncrementalResults;
@@ -43,9 +45,9 @@ import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.memorycompiler.resources.KiePath;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 
 public class KieBuilderSetImpl implements KieBuilderSet {
@@ -109,7 +111,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         kieBuilder.cloneKieModuleForIncrementalCompilation();
         for (String file : srcFiles) {
             if ( !file.endsWith( ".properties" ) ) {
-                String trgFile = kieBuilder.copySourceToTarget(file);
+                String trgFile = kieBuilder.copySourceToTarget(KiePath.of(file));
                 if (trgFile != null) {
                     filesToBuild.add(trgFile);
                 }
@@ -164,7 +166,8 @@ public class KieBuilderSetImpl implements KieBuilderSet {
             }
 
             if (removalResult.isModified()) {
-                if (!removalResult.getRemovedTypes().isEmpty()) {
+                boolean typeRefreshed = !removalResult.getRemovedTypes().isEmpty();
+                if (typeRefreshed) {
                     ProjectClassLoader projectClassLoader = (ProjectClassLoader) kBuilder.getRootClassLoader();
                     projectClassLoader.reinitTypes();
                     for (String removedType : removalResult.getRemovedTypes()) {
@@ -173,6 +176,15 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                 }
 
                 ckbuilder.build();
+
+                if (typeRefreshed) {
+                    Collection<KiePackage> kiePackages = kBuilder.getKnowledgePackages();
+                    for (KiePackage kiePackage : kiePackages) {
+                        ((InternalKnowledgePackage) kiePackage).getClassFieldAccessorStore().wire();
+                        ((InternalKnowledgePackage) kiePackage).wireTypeDeclarations();
+                    }
+                }
+
                 resourcesWithErrors.put(kBaseModel.getName(), findResourcesWithMessages(kBuilder));
                 if ( kBuilder.hasResults( getSeverities() ) ) {
                     currentResults.put( kBaseModel.getName(), kBuilder.getResults( getSeverities() ) );

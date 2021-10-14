@@ -20,13 +20,13 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>drools</artifactId>
-    <version>7.53.0-SNAPSHOT</version>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-parent</artifactId>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.drools</groupId>
   <artifactId>drools-cdi</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: CDI</name>
 
@@ -69,23 +69,6 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-commons</artifactId>
-    </dependency>
-
-    <!-- External dependencies -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -98,32 +81,15 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
-      <exclusions>
-        <exclusion>
-          <groupId>javax.el</groupId>
-          <artifactId>javax.el-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.interceptor</groupId>
-          <artifactId>javax.interceptor-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency><!-- It works in any CDI container, but the weld CDI container is used for testing -->
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <!-- collides with javax.inject:javax.inject:jar:1:compile -->
-        <exclusion>
-          <groupId>jakarta.enterprise</groupId>
-          <artifactId>jakarta.enterprise.cdi-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -132,30 +98,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              javax.enterprise.*;resolution:=optional,
-              org.osgi.*;resolution:=optional,
-              *
-            </Import-Package>
-            <Export-Package>
-              org.drools.cdi.*
-            </Export-Package>
-            <Provide-Capability>
-              org.ops4j.pax.cdi.extension; extension=kie-cdi
-            </Provide-Capability>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

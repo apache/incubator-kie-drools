@@ -21,9 +21,17 @@ import java.util.Collection;
  */
 public interface ResourceReader {
 
-    boolean isAvailable( final String pResourceName );
-    byte[] getBytes( final String pResourceName );
-    Collection<String> getFileNames();
+    boolean isAvailable( KiePath resourcePath );
+    default boolean isAvailable( String resourceName ) {
+        return isAvailable(KiePath.of(resourceName));
+    }
+
+    byte[] getBytes( final KiePath resourcePath );
+    default byte[] getBytes( String resourceName ) {
+        return getBytes(KiePath.of(resourceName));
+    }
+
+    Collection<KiePath> getFilePaths();
 
     void mark();
     Collection<String> getModifiedResourcesSinceLastMark();

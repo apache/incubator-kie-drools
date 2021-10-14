@@ -5,7 +5,7 @@
   <parent>
     <artifactId>drools-scenario-simulation</artifactId>
     <groupId>org.drools</groupId>
-    <version>7.53.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -42,20 +42,14 @@
       <artifactId>xstream</artifactId>
     </dependency>
 
-    <!-- KIE soup -->
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-api</artifactId>
-    </dependency>
-
     <!-- MVEL support -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mvel</groupId>
@@ -80,6 +74,11 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
 

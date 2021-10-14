@@ -56,7 +56,8 @@ public class JavaDialectBinaryEqualityTest{
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs. Probably need to modify test code e.g. getPredicateConstraint()
+        // This test is explicitly designed for the Java Dialect as implemented in pure drl
+        // and doesn't make any sense to try to adapt it the executable model
         return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
     

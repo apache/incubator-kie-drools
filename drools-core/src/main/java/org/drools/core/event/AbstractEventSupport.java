@@ -42,7 +42,7 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
 
     private static final long serialVersionUID = 510l;
 
-    private List<E> listeners = new CopyOnWriteArrayList<E>();
+    private List<E> listeners = new CopyOnWriteArrayList<>();
 
     private volatile boolean hasListeners = false;
 

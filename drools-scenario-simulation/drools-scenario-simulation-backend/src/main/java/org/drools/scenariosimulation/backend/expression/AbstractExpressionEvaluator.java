@@ -57,7 +57,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
      * @return
      */
     protected boolean isStructuredResult(Class<?> resultClass) {
-        return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
+        return resultClass != null && ScenarioSimulationSharedUtils.isCollectionOrMap(resultClass.getCanonicalName());
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
      * @return
      */
     protected boolean isStructuredInput(String className) {
-        return ScenarioSimulationSharedUtils.isCollection(className);
+        return ScenarioSimulationSharedUtils.isCollectionOrMap(className);
     }
 
     protected Object convertResult(String rawString, String className, List<String> genericClasses) {
@@ -115,15 +115,11 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             Map.Entry<String, JsonNode> element = fields.next();
             String key = element.getKey();
             JsonNode jsonNode = element.getValue();
-            // if is a simple value just return the parsed result
+
             if (isSimpleTypeNode(jsonNode)) {
                 Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
-                Object value = internalLiteralEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldDescriptor.getKey());
-                setField(toReturn, key, value);
-                return toReturn;
-            }
-
-            if (jsonNode.isArray()) {
+                setField(toReturn, key, internalLiteralEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldDescriptor.getKey()));
+            } else if (jsonNode.isArray()) {
                 List<Object> nestedList = new ArrayList<>();
                 Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
                 List<Object> returnedList = createAndFillList((ArrayNode) jsonNode, nestedList, fieldDescriptor.getKey(), fieldDescriptor.getValue());

@@ -26,13 +26,16 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
+import org.kie.test.testcategory.TurtleTestCategory;
 
+@Category(TurtleTestCategory.class)
 public class CompositeAgendaTest {
 
     @Test @Ignore
@@ -89,8 +92,6 @@ public class CompositeAgendaTest {
                 "     firings.add(1);\n" +
                 " end";
 
-
-
         final KieBaseConfiguration kieBaseConfiguration = KieBaseTestConfiguration.STREAM_IDENTITY.getKieBaseConfiguration();
         kieBaseConfiguration.setOption(MultithreadEvaluationOption.YES);
         final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(kieBaseConfiguration);
@@ -112,24 +113,29 @@ public class CompositeAgendaTest {
             }
             eventInsertThread.setActive(false);
         } finally {
-            kieSession.halt();
-            kieSession.dispose();
-
-            executor.shutdown();
             try {
-                if (!executor.awaitTermination(10, TimeUnit.MILLISECONDS)) {
-                    executor.shutdownNow();
+                kieSession.halt(); // This may hit GC overhead limit exceeded
+            } catch (Throwable th) {
+                th.printStackTrace();
+                throw th;
+            } finally {
+                kieSession.dispose();
+                executor.shutdown();
+                try {
+                    if (!executor.awaitTermination(10, TimeUnit.MILLISECONDS)) {
+                        executor.shutdownNow();
+                    }
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
+                    Assert.fail(e.getMessage());
                 }
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-                Assert.fail(e.getMessage());
             }
         }
     }
 
     public static class EventInsertThread implements Runnable {
 
-        private boolean active = true;
+        private volatile boolean active = true;
         private KieSession kieSession;
 
         public EventInsertThread(final KieSession kieSession) {

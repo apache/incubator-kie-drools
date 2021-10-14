@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_B2585232-1873-43C5-9D9D-BFD7A93BC51B" xmlns:routes="https://kiegroup.org/dmn/_68BFD4F6-B486-4A1F-9C5B-4BBF1718614E" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_03C5216B-FB6F-4DB2-A94B-479CEB5FCDA6" name="app" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_B2585232-1873-43C5-9D9D-BFD7A93BC51B">
   <dmn:extensionElements/>
-  <dmn:import id="_8D0C0DEB-D75D-4083-9EB3-B3D9F0716970" name="routes" namespace="https://kiegroup.org/dmn/_68BFD4F6-B486-4A1F-9C5B-4BBF1718614E" locationURI="default://master@MySpace/routes/src/main/resources/com/myspace/routes/route.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:import id="_8D0C0DEB-D75D-4083-9EB3-B3D9F0716970" name="routes" namespace="https://kiegroup.org/dmn/_68BFD4F6-B486-4A1F-9C5B-4BBF1718614E" locationURI="default://DEFAULT_BRANCH@MySpace/routes/src/main/resources/com/myspace/routes/route.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
   <dmn:inputData id="_516156F6-68C1-4E2E-BFEA-AE494716D054" name="local">
     <dmn:variable id="_88C36760-283E-401F-A34A-873C879890C0" name="local" typeRef="routes.tRoute"/>
   </dmn:inputData>

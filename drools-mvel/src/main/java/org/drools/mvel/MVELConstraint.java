@@ -22,12 +22,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,6 +39,7 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -48,6 +49,7 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.ConditionEvaluator;
 import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.Constraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
@@ -83,6 +85,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.Drools.isJmxAvailable;
+import static org.drools.core.util.MessageUtils.defaultToEmptyString;
 import static org.drools.core.util.StringUtils.codeAwareIndexOf;
 import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
@@ -95,7 +98,6 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
     protected final transient AtomicInteger invocationCounter = new AtomicInteger(1);
     protected transient volatile boolean jitted = false;
-    protected transient CountDownLatch mvelOptimized = new CountDownLatch(1);
 
     private Set<String> packageNames;
     protected String expression;
@@ -267,38 +269,10 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                     synchronized (this) {
                         if (conditionEvaluator == null) {
                             conditionEvaluator = forceJitEvaluator(handle, workingMemory, tuple);
-                            if (conditionEvaluator instanceof MVELConditionEvaluator) {
-                                // in case of jitting failed
-                                boolean result;
-                                try {
-                                    result = conditionEvaluator.evaluate(handle, workingMemory, tuple);
-                                } catch (Exception e) {
-                                    throw new ConstraintEvaluationException(expression, evaluationContext, e);
-                                } finally {
-                                    mvelOptimized.countDown();
-                                }
-                                return result;
-                            }
                         }
                     }
                 } else {
-                    synchronized (this) {
-                        if (conditionEvaluator == null) {
-                            conditionEvaluator = createMvelConditionEvaluator(workingMemory);
-                            boolean result;
-                            try {
-                                result = conditionEvaluator.evaluate(handle, workingMemory, tuple);
-                            } catch (Exception e) {
-                                throw new ConstraintEvaluationException(expression, evaluationContext, e);
-                            } finally {
-                                mvelOptimized.countDown();
-                            }
-                            if (invocationCounter.getAndIncrement() == jittingThreshold) {
-                                jitEvaluator(handle, workingMemory, tuple);
-                            }
-                            return result;
-                        }
-                    }
+                    conditionEvaluator = createMvelConditionEvaluator(workingMemory);
                 }
             }
 
@@ -307,9 +281,6 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             }
         }
         try {
-            if (conditionEvaluator instanceof MVELConditionEvaluator) {
-                mvelOptimized.await(); // The first evaluation should not be run concurrently. See DROOLS-6067
-            }
             return conditionEvaluator.evaluate(handle, workingMemory, tuple);
         } catch (Exception e) {
             throw new ConstraintEvaluationException(expression, evaluationContext, e);
@@ -1013,27 +984,54 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         evaluationContext.addContext(buildContext);
     }
 
+    @Override
+    public void mergeEvaluationContext(Constraint other) {
+        if (other instanceof MVELConstraint) {
+            evaluationContext.mergeRuleNameMap(((MVELConstraint)other).getEvaluationContext().getRuleNameMap());
+        }
+    }
+
+    public EvaluationContext getEvaluationContext() {
+        return evaluationContext;
+    }
+
     public static class EvaluationContext implements Externalizable {
 
-        private Collection<String> evaluatedRules = new HashSet<String>();
+        private Map<String, Set<String>> ruleNameMap = new HashMap<>();
 
         public void addContext(BuildContext buildContext) {
-            evaluatedRules.add(buildContext.getRule().toRuleNameAndPathString());
+            RuleImpl rule = buildContext.getRule();
+            String ruleName = defaultToEmptyString(rule.getName());
+            String ruleFileName = defaultToEmptyString(rule.getResource() != null ? rule.getResource().getSourcePath() : null);
+            ruleNameMap.computeIfAbsent(ruleFileName, k -> new HashSet<>()).add(ruleName);
+        }
+
+        public void mergeRuleNameMap(Map<String, Set<String>> otherMap) {
+            otherMap.forEach((otherRuleFileName, otherRuleNameSet) -> {
+                ruleNameMap.merge(otherRuleFileName, otherRuleNameSet, (thisSet, otherSet) -> {
+                    thisSet.addAll(otherSet);
+                    return thisSet;
+                });
+            });
+        }
+
+        public Map<String, Set<String>> getRuleNameMap() {
+            return ruleNameMap;
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(evaluatedRules);
+            out.writeObject(ruleNameMap);
         }
 
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            evaluatedRules = (Collection<String>) in.readObject();
+            ruleNameMap = (Map<String, Set<String>>) in.readObject();
         }
 
         @Override
         public String toString() {
-            return evaluatedRules.toString();
+            return ruleNameMap.toString();
         }
     }
 }
