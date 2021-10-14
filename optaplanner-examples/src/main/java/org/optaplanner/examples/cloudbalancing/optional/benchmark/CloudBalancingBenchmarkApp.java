@@ -34,7 +34,8 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
                         "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
                         "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl",
-                        true));
+                        true),
+                new ArgOption("partitioned",
+                        "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingPartitionedSearchBenchmarkConfig.xml"));
     }
-
 }
