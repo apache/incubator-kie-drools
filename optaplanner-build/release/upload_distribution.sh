@@ -72,5 +72,6 @@ mkdir -p "$local_optaplanner_docs/$version/optaplanner-javadoc"
 cp -r "$optaplanner_docs_build_dir/optaplanner-docs-$version"/* "$local_optaplanner_docs/$version/optaplanner-docs"
 cp -r "$optaplanner_javadoc_build_dir/aggregated-javadocs/apidocs"/* "$local_optaplanner_docs/$version/optaplanner-javadoc"
 
+readonly remote_shell="ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -i $optaplanner_ssh_key"
 create_latest_symlinks "$local_optaplanner_docs" "$version"
 rsync -a -r -e "$remote_shell" --protocol=28 "$local_optaplanner_docs/.." "$remote_optaplanner_docs"
