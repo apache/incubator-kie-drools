@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
@@ -36,22 +37,30 @@ import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getDerivedFields;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getFieldsFromDataDictionaryAndTransformationDictionary;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTID_TEMPLATE;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
+import static org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO.SEGMENTATIONNAME_TEMPLATE;
 
 public abstract class AbstractKiePMMLFactoryTest {
 
     protected static final String SOURCE_MIXED = "MiningModel_Mixed.pmml";
-    protected static final String PACKAGE_NAME = "packagename";
     protected static DataDictionary DATA_DICTIONARY;
     protected static TransformationDictionary TRANSFORMATION_DICTIONARY;
+    protected static PMML pmml;
     protected static MiningModel MINING_MODEL;
     protected static List<DerivedField> DERIVED_FIELDS;
     protected static KnowledgeBuilderImpl KNOWLEDGE_BUILDER;
+    protected static String targetFieldName;
 
     protected static void innerSetup() throws JAXBException, SAXException, IOException {
         FileInputStream fis = FileUtils.getFileInputStream(SOURCE_MIXED);
-        PMML pmml = KiePMMLUtil.load(fis, SOURCE_MIXED);
+        pmml = KiePMMLUtil.load(fis, SOURCE_MIXED);
         assertNotNull(pmml);
         DATA_DICTIONARY = pmml.getDataDictionary();
         assertNotNull(DATA_DICTIONARY);
@@ -62,6 +71,9 @@ public abstract class AbstractKiePMMLFactoryTest {
         populateMissingIds(MINING_MODEL);
         DERIVED_FIELDS = getDerivedFields(TRANSFORMATION_DICTIONARY,
                                           MINING_MODEL.getLocalTransformations());
+        List<Field<?>> fields =
+                getFieldsFromDataDictionaryAndTransformationDictionary(DATA_DICTIONARY, TRANSFORMATION_DICTIONARY);
+        targetFieldName = getTargetFieldName(fields, MINING_MODEL).get();
     }
 
     @Before
@@ -69,13 +81,23 @@ public abstract class AbstractKiePMMLFactoryTest {
         KNOWLEDGE_BUILDER = new KnowledgeBuilderImpl();
     }
 
+    protected String getExpectedNestedModelClass(final Segment segment) {
+        final String basePackage = getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE, PACKAGE_NAME,
+                                                                         MINING_MODEL.getModelName()));
+        final String segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, MINING_MODEL.getModelName());
+        final String segmentationPackageName = getSanitizedPackageName(basePackage + "." + segmentationName);
+        final String segmentModelPackageName = getSanitizedPackageName(segmentationPackageName + "." + segment.getId());
+        final String simpleClassName = getSanitizedClassName(segment.getModel().getModelName());
+        return String.format(PACKAGE_CLASS_TEMPLATE, segmentModelPackageName, simpleClassName);
+    }
+
     /**
      * Recursively populate <code>Segment</code>s with auto generated id
      * if missing in original model
      */
     private static void populateMissingIds(final MiningModel model) {
-        final List<Segment> segments =model.getSegmentation().getSegments();
-        for (int i = 0; i < segments.size(); i ++) {
+        final List<Segment> segments = model.getSegmentation().getSegments();
+        for (int i = 0; i < segments.size(); i++) {
             Segment segment = segments.get(i);
             if (segment.getId() == null || segment.getId().isEmpty()) {
                 String toSet = String.format(SEGMENTID_TEMPLATE, model.getModelName(), i);
@@ -86,5 +108,4 @@ public abstract class AbstractKiePMMLFactoryTest {
             }
         }
     }
-
 }

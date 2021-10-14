@@ -29,12 +29,12 @@ import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionTable;
-import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
+import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
 
 import static org.junit.Assert.fail;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getNumericPredictor;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPredictorTerm;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getCategoricalPredictor;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getNumericPredictor;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPredictorTerm;
 
 public abstract class AbstractKiePMMLRegressionTableRegressionFactoryTest {
 

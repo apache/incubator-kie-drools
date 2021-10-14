@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.scorecard.compiler.factories;
 
-import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -26,17 +25,13 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.HasClassLoader;
-import org.kie.pmml.commons.utils.KiePMMLModelUtils;
 import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +40,6 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap;
@@ -60,42 +54,28 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final List<Field<?>> fields,
-                                                                 final TransformationDictionary transformationDictionary,
-                                                                 final Scorecard model,
-                                                                 final String packageName,
-                                                                 final HasClassLoader hasClassLoader) {
-        String className = getSanitizedClassName(model.getModelName());
-        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(fields, transformationDictionary,
-                                                                            model, packageName);
-        String fullClassName = packageName + "." + className;
+    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final ScorecardCompilationDTO compilationDTO) {
+        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(compilationDTO);
         try {
-            Class<?> kiePMMLScorecardModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+            Class<?> kiePMMLScorecardModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
             return (KiePMMLScorecardModel) kiePMMLScorecardModelClass.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
     }
 
-    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final List<Field<?>> fields,
-                                                                         final TransformationDictionary transformationDictionary,
-                                                                         final Scorecard model,
-                                                                         final String packageName) {
-        String className = getSanitizedClassName(model.getModelName());
+    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final ScorecardCompilationDTO compilationDTO) {
+        String className = compilationDTO.getSimpleClassName();
+        String packageName = compilationDTO.getPackageName();
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
                                                                                  KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA, KIE_PMML_SCORECARD_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        String characteristicsClassName = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
+        String characteristicsClassName = compilationDTO.getCharacteristicsClassName();
         String fullCharacteristicsClassName = String.format(PACKAGE_CLASS_TEMPLATE, packageName,
                                                             characteristicsClassName);
-        Map<String, String> toReturn = getKiePMMLCharacteristicsSourcesMap(model.getCharacteristics(),
-                                                                           fields,
-                                                                           characteristicsClassName,
-                                                                           packageName);
-        setConstructor(model,
-                       fields,
-                       transformationDictionary,
+        Map<String, String> toReturn = getKiePMMLCharacteristicsSourcesMap(compilationDTO);
+        setConstructor(compilationDTO,
                        modelTemplate,
                        fullCharacteristicsClassName);
         String fullClassName = packageName + "." + className;
@@ -103,15 +83,11 @@ public class KiePMMLScorecardModelFactory {
         return toReturn;
     }
 
-    static void setConstructor(final Scorecard scorecardModel,
-                               final List<Field<?>> fields,
-                               final TransformationDictionary transformationDictionary,
+    static void setConstructor(final ScorecardCompilationDTO compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate,
                                final String fullCharacteristicsClassName) {
-        KiePMMLModelCodegenUtils.init(modelTemplate,
-                                      fields,
-                                      transformationDictionary,
-                                      scorecardModel);
+        KiePMMLModelCodegenUtils.init(compilationDTO,
+                                      modelTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();
@@ -122,12 +98,11 @@ public class KiePMMLScorecardModelFactory {
         ObjectCreationExpr characteristicsReference = new ObjectCreationExpr();
         characteristicsReference.setType(characteristicsClass);
         superStatement.setArgument(2, characteristicsReference);
-        superStatement.setArgument(3, getExpressionForObject(scorecardModel.getInitialScore()));
-        superStatement.setArgument(4, getExpressionForObject(scorecardModel.isUseReasonCodes()));
-        REASONCODE_ALGORITHM reasoncodeAlgorithm =
-                REASONCODE_ALGORITHM.byName(scorecardModel.getReasonCodeAlgorithm().value());
+        superStatement.setArgument(3, getExpressionForObject(compilationDTO.getInitialScore()));
+        superStatement.setArgument(4, getExpressionForObject(compilationDTO.isUseReasonCodes()));
+        REASONCODE_ALGORITHM reasoncodeAlgorithm = compilationDTO.getREASONCODE_ALGORITHM();
         NameExpr reasonCodeExpr = new NameExpr(REASONCODE_ALGORITHM.class.getName() + "." + reasoncodeAlgorithm.name());
         superStatement.setArgument(5, reasonCodeExpr);
-        superStatement.setArgument(6, getExpressionForObject(scorecardModel.getBaselineScore()));
+        superStatement.setArgument(6, getExpressionForObject(compilationDTO.getBaselineScore()));
     }
 }

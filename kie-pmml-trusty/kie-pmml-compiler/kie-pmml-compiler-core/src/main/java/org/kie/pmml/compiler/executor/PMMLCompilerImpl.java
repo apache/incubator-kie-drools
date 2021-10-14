@@ -23,9 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.dmg.pmml.Field;
 import org.dmg.pmml.PMML;
-import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -33,17 +31,17 @@ import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryAndTransformationDictionary;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel;
 
 /**
  * <code>PMMLCompiler</code> default implementation
@@ -80,7 +78,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
             Set<String> expectedClasses = commonPMMLModel.getModels()
                     .stream()
                     .map(model -> {
-                        String modelPackageName = getSanitizedPackageName(String.format("%s.%s", packageName,
+                        String modelPackageName = getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE, packageName,
                                                                                         model.getModelName()));
                         return modelPackageName + "." + getSanitizedClassName(model.getModelName());
                     })
@@ -130,12 +128,10 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .getModels()
                 .stream()
                 .map(model -> {
-                    final List<Field<?>> fields =
-                            getFieldsFromDataDictionaryTransformationDictionaryAndModel(pmml.getDataDictionary(),
-                                                                                        pmml.getTransformationDictionary(), model);
-                    return getFromCommonDataAndTransformationDictionaryAndModel(packageName, fields,
-                                                                                pmml.getTransformationDictionary(),
-                                                                                model, hasClassloader);
+                    final CommonCompilationDTO compilationDTO =
+                            CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName, pmml, model,
+                                                                                   hasClassloader);
+                    return getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
                 })
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -152,14 +148,15 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     private List<KiePMMLModel> getModelsWithSources(final String packageName, final PMML pmml,
                                                     final HasClassLoader hasClassloader) {
         logger.trace("getModels {}", pmml);
-        TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
-        final List<Field<?>> fields = getFieldsFromDataDictionaryAndTransformationDictionary(pmml.getDataDictionary()
-                , transformationDictionary);
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndTransformationDictionaryAndModelWithSources(packageName, fields,
-                                                                                              transformationDictionary, model, hasClassloader))
+                .map(model -> {
+                    final CommonCompilationDTO compilationDTO =
+                            CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName, pmml, model,
+                                                                                   hasClassloader);
+                    return getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
+                })
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

@@ -26,24 +26,21 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
-import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
-import org.kie.pmml.compiler.commons.utils.ModelUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.GET_CREATED_KIEPMMLOUTPUTFIELDS;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addGetCreatedKiePMMLOutputFieldsMethod;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 /**
  * Class meant to implement all the <b>common</b> code needed to generate a <code>KiePMMLModel</code>
@@ -57,33 +54,30 @@ public class KiePMMLModelCodegenUtils {
     /**
      * Initialize the given <code>ClassOrInterfaceDeclaration</code> with all the <b>common</b> code needed to
      * generate a <code>KiePMMLModel</code>
+     * @param compilationDTO
      * @param modelTemplate
-     * @param fields
-     * @param transformationDictionary
-     * @param pmmlModel
      */
-    public static void init(final ClassOrInterfaceDeclaration modelTemplate,
-                            final List<Field<?>> fields,
-                            final TransformationDictionary transformationDictionary,
-                            final Model pmmlModel) {
+    public static void init(final CompilationDTO<? extends Model> compilationDTO,
+                            final ClassOrInterfaceDeclaration modelTemplate) {
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        final String name = pmmlModel.getModelName();
-        final String generatedClassName = getSanitizedClassName(name);
-        final List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(pmmlModel.getMiningSchema(),
-                                                                                      fields);
-        final List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(pmmlModel.getOutput(), fields);
+        final String name = compilationDTO.getModelName();
+        final String generatedClassName = compilationDTO.getSimpleClassName();
+        final List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(compilationDTO.getMiningSchema(),
+                                                                                      compilationDTO.getFields());
+        final List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(compilationDTO.getOutput(),
+                                                                                      compilationDTO.getFields());
         final Expression miningFunctionExpression;
-        if (pmmlModel.getMiningFunction() != null) {
-            MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(pmmlModel.getMiningFunction().value());
+        if (compilationDTO.getMINING_FUNCTION() != null) {
+            MINING_FUNCTION miningFunction = compilationDTO.getMINING_FUNCTION();
             miningFunctionExpression = new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name());
         } else {
             miningFunctionExpression = new NullLiteralExpr();
         }
-        final PMML_MODEL pmmlModelEnum = PMML_MODEL.byName(pmmlModel.getClass().getSimpleName());
+        final PMML_MODEL pmmlModelEnum = compilationDTO.getPMML_MODEL();
         final NameExpr pmmlMODELExpression =
                 new NameExpr(pmmlModelEnum.getClass().getName() + "." + pmmlModelEnum.name());
-        String targetFieldName = getTargetFieldName(fields, pmmlModel).orElse(null);
+        String targetFieldName = compilationDTO.getTargetFieldName();
         final Expression targetFieldExpression;
         if (targetFieldName != null) {
             targetFieldExpression = new StringLiteralExpr(targetFieldName);
@@ -95,14 +89,14 @@ public class KiePMMLModelCodegenUtils {
                                    name,
                                    miningFields,
                                    outputFields);
-        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary,
-                                                        pmmlModel.getLocalTransformations());
+        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, compilationDTO.getTransformationDictionary(),
+                                                        compilationDTO.getLocalTransformations());
         final BlockStmt body = constructorDeclaration.getBody();
         CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", pmmlMODELExpression);
         CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", miningFunctionExpression);
         CommonCodegenUtils.setAssignExpressionValue(body, "targetField", targetFieldExpression);
-        if (pmmlModel.getOutput() != null) {
-            addGetCreatedKiePMMLOutputFieldsMethod(modelTemplate, pmmlModel.getOutput().getOutputFields());
+        if (compilationDTO.getOutput() != null) {
+            addGetCreatedKiePMMLOutputFieldsMethod(modelTemplate, compilationDTO.getOutput().getOutputFields());
             MethodCallExpr getCreatedKiePMMLOutputFieldsExpr = new MethodCallExpr();
             getCreatedKiePMMLOutputFieldsExpr.setScope(new ThisExpr());
             getCreatedKiePMMLOutputFieldsExpr.setName(GET_CREATED_KIEPMMLOUTPUTFIELDS);

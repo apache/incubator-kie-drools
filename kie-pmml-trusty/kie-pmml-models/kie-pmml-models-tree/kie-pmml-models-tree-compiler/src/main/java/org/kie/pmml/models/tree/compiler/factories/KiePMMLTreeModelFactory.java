@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
-import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -24,25 +23,18 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.models.tree.compiler.dto.TreeCompilationDTO;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.getKiePMMLNodeSourcesMap;
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
 
@@ -56,44 +48,37 @@ public class KiePMMLTreeModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLTreeModel getKiePMMLTreeModel(final List<Field<?>> fields,
-                                                       final TransformationDictionary transformationDictionary,
-                                                       final TreeModel model,
-                                                       final String packageName,
-                                                       final HasClassLoader hasClassLoader) {
-        logger.trace("getKiePMMLTreeModel {} {}", packageName, model);
-        String className = getSanitizedClassName(model.getModelName());
-        Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(fields, transformationDictionary,
-                                                                       model, packageName);
-        String fullClassName = packageName + "." + className;
+    public static KiePMMLTreeModel getKiePMMLTreeModel(final TreeCompilationDTO compilationDTO) {
+        logger.trace("getKiePMMLTreeModel {} {}", compilationDTO.getPackageName(), compilationDTO.getModel());
+        Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(compilationDTO);
         try {
-            Class<?> kiePMMLTreeModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+            Class<?> kiePMMLTreeModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
             return (KiePMMLTreeModel) kiePMMLTreeModelClass.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
     }
 
-    public static Map<String, String> getKiePMMLTreeModelSourcesMap(final List<Field<?>> fields,
-                                                                    final TransformationDictionary transformationDictionary,
-                                                                    final TreeModel model,
-                                                                    final String packageName) {
-        logger.trace("getKiePMMLTreeModelSourcesMap {} {} {}", fields, model, packageName);
-        String className = getSanitizedClassName(model.getModelName());
+    public static Map<String, String> getKiePMMLTreeModelSourcesMap(final TreeCompilationDTO compilationDTO) {
+        logger.trace("getKiePMMLTreeModelSourcesMap {} {} {}", compilationDTO.getFields(),
+                     compilationDTO.getModel(),
+                     compilationDTO.getPackageName());
+        String className = compilationDTO.getSimpleClassName();
+        String packageName = compilationDTO.getPackageName();
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
                                                                                  KIE_PMML_TREE_MODEL_TEMPLATE_JAVA,
                                                                                  KIE_PMML_TREE_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        final Double missingValuePenalty =  model.getMissingValuePenalty() != null ? model.getMissingValuePenalty().doubleValue() : null;
-        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(model.getNode(),
+        final Double missingValuePenalty = compilationDTO.getMissingValuePenalty();
+        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO =
+                new KiePMMLNodeFactory.NodeNamesDTO(compilationDTO.getNode(),
                                                                                                  createNodeClassName(), null, missingValuePenalty);
         String fullNodeClassName = packageName + "." + nodeNamesDTO.nodeClassName;
-        Map<String, String> toReturn = getKiePMMLNodeSourcesMap(nodeNamesDTO, fields,
+        Map<String, String> toReturn = getKiePMMLNodeSourcesMap(nodeNamesDTO,
+                                                                compilationDTO.getFields(),
                                                                 packageName);
-        setConstructor(model,
-                       fields,
-                       transformationDictionary,
+        setConstructor(compilationDTO,
                        modelTemplate,
                        fullNodeClassName);
         String fullClassName = packageName + "." + className;
@@ -101,15 +86,11 @@ public class KiePMMLTreeModelFactory {
         return toReturn;
     }
 
-    static void setConstructor(final TreeModel treeModel,
-                               final List<Field<?>> fields,
-                               final TransformationDictionary transformationDictionary,
+    static void setConstructor(final TreeCompilationDTO compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate,
                                final String fullNodeClassName) {
-        KiePMMLModelCodegenUtils.init(modelTemplate,
-                                      fields,
-                                      transformationDictionary,
-                                      treeModel);
+        KiePMMLModelCodegenUtils.init(compilationDTO,
+                                      modelTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();

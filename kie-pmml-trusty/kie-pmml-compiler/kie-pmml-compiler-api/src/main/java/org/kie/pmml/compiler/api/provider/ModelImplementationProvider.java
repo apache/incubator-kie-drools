@@ -15,20 +15,15 @@
  */
 package org.kie.pmml.compiler.api.provider;
 
-import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
-import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
-
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 
 /**
  * API for actual PMML model implementations
@@ -39,63 +34,32 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
 
     /**
      * Method to be called for a <b>runtime</b> compilation
-     *
-     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
-     * DerivedFields from Transformations/LocalTransformations, OutputFields
-     * @param transformationDictionary
-     * @param model
-     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
+     * @param compilationDTO
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(final String packageName,
-                      final List<Field<?>> fields,
-                      final TransformationDictionary transformationDictionary,
-                      final T model,
-                      final HasClassLoader hasClassloader);
+    E getKiePMMLModel(final CompilationDTO<T> compilationDTO);
 
     /**
      * Method to be called following a <b>kie-maven-plugin</b> invocation
-     *
-     * @param packageName
-     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
-     * DerivedFields from Transformations/LocalTransformations, OutputFields
-     * @param transformationDictionary
-     * @param model
-     * @param hasClassloader
+     * @param compilationDTO
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModelWithSources(final String packageName,
-                                 final List<Field<?>> fields,
-                                 final TransformationDictionary transformationDictionary,
-                                 final T model,
-                                 final HasClassLoader hasClassloader);
+    E getKiePMMLModelWithSources(final CompilationDTO<T> compilationDTO);
 
     /**
      * Method provided only to have <b>drools</b> models working when invoked by a <code>MiningModel</code>
      * Default implementation provided for <b>not-drools</b> models.
-     *
-     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
-     *      * DerivedFields from Transformations/LocalTransformations, OutputFields
-     * @param model
-     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
+     * @param compilationDTO
      * @return
      * @throws KiePMMLInternalException
      */
-    default E getKiePMMLModelWithSourcesCompiled(final String packageName,
-                                                 final List<Field<?>> fields,
-                                                 final TransformationDictionary transformationDictionary,
-                                                 final T model,
-                                                 final HasClassLoader hasClassloader) {
-        E toReturn = getKiePMMLModelWithSources(packageName, fields, transformationDictionary, model, hasClassloader);
-        final Map<String, String> sourcesMap = ((HasSourcesMap)toReturn).getSourcesMap();
-        String className = getSanitizedClassName(model.getModelName());
-        String fullClassName = packageName + "." + className;
+    default E getKiePMMLModelWithSourcesCompiled(final CompilationDTO<T> compilationDTO) {
+        E toReturn = getKiePMMLModelWithSources(compilationDTO);
+        final Map<String, String> sourcesMap = ((HasSourcesMap) toReturn).getSourcesMap();
         try {
-            hasClassloader.compileAndLoadClass(sourcesMap, fullClassName);
+            compilationDTO.compileAndLoadClass(sourcesMap);
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }

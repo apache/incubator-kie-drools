@@ -40,28 +40,28 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
+import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionaryAndTransformationDictionaryAndLocalTransformations;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionaryAndTransformationDictionaryAndLocalTransformations;
 
 public class DroolsModelProviderTest {
 
     private static final String SOURCE_1 = "SimpleScorecardWithTransformations.pmml";
-    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     //  Needed to avoid Mockito usage
     private static final Map<String, String> SOURCE_MAP = new HashMap<>();
     private static PMML pmml;
@@ -76,14 +76,12 @@ public class DroolsModelProviderTest {
         assertNotNull(scorecard);
         droolsModelProvider = new DroolsModelProvider<Scorecard, KiePMMLDroolsModel>() {
             @Override
-            public KiePMMLDroolsModel getKiePMMLDroolsModel(final List<Field<?>> fields,
-                                                            final TransformationDictionary transformationDictionary,
-                                                            final Scorecard model,
-                                                            final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                            final String packageName,
-                                                            final HasClassLoader hasClassLoader) {
+            public KiePMMLDroolsModel getKiePMMLDroolsModel(final DroolsCompilationDTO<Scorecard> compilationDTO) {
                 //  Needed to avoid Mockito usage
-                return new KiePMMLDroolsModelTest(fields, transformationDictionary, model, fieldTypeMap);
+                return new KiePMMLDroolsModelTest(compilationDTO.getFields(),
+                                                  compilationDTO.getTransformationDictionary(),
+                                                  compilationDTO.getModel(),
+                                                  compilationDTO.getFieldTypeMap());
             }
 
             @Override
@@ -96,12 +94,7 @@ public class DroolsModelProviderTest {
             }
 
             @Override
-            public Map<String, String> getKiePMMLDroolsModelSourcesMap(final List<Field<?>> fields,
-                                                                       final TransformationDictionary transformationDictionary,
-                                                                       final Scorecard model,
-                                                                       final Map<String,
-                                                                               KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                                       final String packageName) throws IOException {
+            public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DroolsCompilationDTO<Scorecard> compilationDTO) throws IOException {
                 //  Needed to avoid Mockito usage
                 return SOURCE_MAP;
             }
@@ -110,18 +103,18 @@ public class DroolsModelProviderTest {
             public PMML_MODEL getPMMLModelType() {
                 return PMML_MODEL.SCORECARD_MODEL;
             }
-
         };
     }
 
     @Test
     public void getKiePMMLModelWithKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModel(PACKAGE_NAME,
-                                                                           getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                                           pmml.getTransformationDictionary(),
-                                                                           scorecard,
-                                                                           new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecard,
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelTest);
         KiePMMLDroolsModelTest retrievedTest = (KiePMMLDroolsModelTest) retrieved;
@@ -146,51 +139,45 @@ public class DroolsModelProviderTest {
 
     @Test(expected = KiePMMLException.class)
     public void getKiePMMLModelNoKnowledgeBuilder() {
-        droolsModelProvider.getKiePMMLModel(PACKAGE_NAME,
-                                            getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                            pmml.getTransformationDictionary(),
-                                            scorecard,
-                                            new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecard,
+                                                                       new HasClassLoaderMock());
+        droolsModelProvider.getKiePMMLModel(compilationDTO);
     }
 
     @Test
     public void getKiePMMLModelWithSourcesWithKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
-                                                                                      getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                                                      pmml.getTransformationDictionary(),
-                                                                                      scorecard,
-                                                                                      new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecard,
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelWithSources);
         KiePMMLDroolsModelWithSources retrievedWithSources = (KiePMMLDroolsModelWithSources) retrieved;
         assertEquals(SOURCE_MAP, retrievedWithSources.getSourcesMap());
-        assertEquals(PACKAGE_NAME, retrievedWithSources.getKModulePackageName());
+        String expectedPackageName = compilationDTO.getPackageName();
+        assertEquals(expectedPackageName, retrievedWithSources.getKModulePackageName());
         assertEquals(scorecard.getModelName(), retrievedWithSources.getName());
-        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(PACKAGE_NAME).get(0);
-        commonVerifyPackageDescr(packageDescr, PACKAGE_NAME);
+        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
+        commonVerifyPackageDescr(packageDescr, expectedPackageName);
         assertNotNull(retrieved);
-        final String rootPath = PACKAGE_NAME + ".";
+        final String rootPath = expectedPackageName + ".";
         commonVerifyRulesSourcesMap(retrievedWithSources.getRulesSourcesMap(), packageDescr, rootPath);
     }
 
     @Test(expected = KiePMMLException.class)
-    public void getKiePMMLModelWithSourcesWithException() {
-        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
-    }
-
-    @Test(expected = KiePMMLException.class)
     public void getKiePMMLModelWithSourcesNoKnowledgeBuilder() {
-        droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
-                                                       getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                       pmml.getTransformationDictionary(),
-                                                       scorecard,
-                                                       new HasClassLoaderMock());
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecard,
+                                                                       new HasClassLoaderMock());
+        droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
     }
 
     @Test
@@ -203,9 +190,10 @@ public class DroolsModelProviderTest {
     @Test
     public void getKiePMMLDroolsASTCommon() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        final List<Field<?>> fields = getFieldsFromDataDictionaryAndTransformationDictionaryAndLocalTransformations(pmml.getDataDictionary(),
-                                                                                                                    pmml.getTransformationDictionary(),
-                                                                                                                    scorecard.getLocalTransformations());
+        final List<Field<?>> fields =
+                getFieldsFromDataDictionaryAndTransformationDictionaryAndLocalTransformations(pmml.getDataDictionary(),
+                                                                                              pmml.getTransformationDictionary(),
+                                                                                              scorecard.getLocalTransformations());
         KiePMMLDroolsAST retrieved = droolsModelProvider.getKiePMMLDroolsASTCommon(fields,
                                                                                    scorecard,
                                                                                    fieldTypeMap);
@@ -218,30 +206,34 @@ public class DroolsModelProviderTest {
     @Test
     public void getRulesSourceMap() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
-                                                       getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                       pmml.getTransformationDictionary(),
-                                                       scorecard,
-                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
-        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(PACKAGE_NAME).get(0);
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecard,
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
+        String expectedPackageName = compilationDTO.getPackageName();
+        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         final Map<String, String> retrieved = droolsModelProvider.getRulesSourceMap(packageDescr);
         assertNotNull(retrieved);
-        final String rootPath = PACKAGE_NAME + ".";
+        final String rootPath = expectedPackageName + ".";
         commonVerifyRulesSourcesMap(retrieved, packageDescr, rootPath);
     }
 
     @Test
     public void generateRulesFiles() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
-                                                       getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                       pmml.getTransformationDictionary(),
-                                                       scorecard,
-                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
-        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs("PACKAGE_NAME").get(0);
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecard,
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
+        String expectedPackageName = compilationDTO.getPackageName();
+        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         final List<GeneratedFile> retrieved = droolsModelProvider.generateRulesFiles(packageDescr);
         assertNotNull(retrieved);
-        final String rootPath = "PACKAGE_NAME/";
+        final String rootPath = expectedPackageName.replace('.', '/') + "/";
         packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
             String expectedPath = rootPath + typeDeclarationDescr.getTypeName() + ".java";
             assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedPath)));
@@ -252,8 +244,8 @@ public class DroolsModelProviderTest {
         String expectedDomain = rootPath + "DomainClassesMetadata" + pkgUUID + ".java";
         assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedDomain)));
     }
-    
-    private void commonVerifyRulesSourcesMap( Map<String, String> toVerify,  PackageDescr packageDescr, String rootPath) {
+
+    private void commonVerifyRulesSourcesMap(Map<String, String> toVerify, PackageDescr packageDescr, String rootPath) {
         packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
             String expectedPath = rootPath + typeDeclarationDescr.getTypeName();
             assertTrue(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedPath)));

@@ -39,6 +39,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT;
@@ -46,7 +47,6 @@ import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.P
 
 public class KiePMMLDescrFactoryTest {
 
-    private static final String PACKAGE_NAME = "package";
     private static final String RULE_NAME = "NAME";
     private static final String STATUS_TO_SET = "STATUS_TO_SET";
     private static final String PATTERN_TYPE = "TEMPERATURE";

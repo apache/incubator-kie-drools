@@ -48,17 +48,20 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateAssignExpr;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
@@ -84,7 +87,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         FieldName targetFieldName = FieldName.create(targetFieldString);
         dataDictionary.addDataFields(new DataField(targetFieldName, OpType.CONTINUOUS, DataType.DOUBLE));
         String modelName = "ModelName";
-        Model model = new TreeModel();
+        TreeModel model = new TreeModel();
         model.setModelName(modelName);
         model.setMiningFunction(MiningFunction.CLASSIFICATION);
         MiningField targetMiningField = new MiningField(targetFieldName);
@@ -96,10 +99,20 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         fieldTypeMap.put(targetFieldString, new KiePMMLOriginalTypeGeneratedType(targetFieldString,
                                                                                  getSanitizedClassName(targetFieldString)));
         String packageName = "net.test";
-        CompilationUnit retrieved = KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(getFieldsFromDataDictionary(dataDictionary),
-                                                                                                  model, fieldTypeMap
-                , packageName, TEMPLATE_SOURCE, TEMPLATE_CLASS_NAME);
-        assertEquals(packageName, retrieved.getPackageDeclaration().get().getNameAsString());
+        PMML pmml = new PMML();
+        pmml.setDataDictionary(dataDictionary);
+        pmml.addModels(model);
+        final CommonCompilationDTO<TreeModel> source =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName,
+                                                                       pmml,
+                                                                       model,
+                                                                       new HasClassLoaderMock());
+        final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
+                DroolsCompilationDTO.fromCompilationDTO(source, fieldTypeMap);
+        CompilationUnit retrieved =
+                KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(droolsCompilationDTO, TEMPLATE_SOURCE,
+                                                                              TEMPLATE_CLASS_NAME);
+        assertEquals(droolsCompilationDTO.getPackageName(), retrieved.getPackageDeclaration().get().getNameAsString());
         ConstructorDeclaration constructorDeclaration =
                 retrieved.getClassByName(modelName).get().getDefaultConstructor().get();
         MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
@@ -131,8 +144,9 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         assignExpressionMap.put("miningFunction",
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, tableName.asString(), superInvocationExpressionsMap,
-                                  assignExpressionMap));
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, tableName.asString(),
+                                             superInvocationExpressionsMap,
+                                             assignExpressionMap));
     }
 
     @Test

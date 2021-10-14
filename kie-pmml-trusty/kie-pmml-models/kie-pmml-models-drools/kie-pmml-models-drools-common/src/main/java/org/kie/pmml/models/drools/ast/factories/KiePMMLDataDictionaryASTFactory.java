@@ -38,7 +38,8 @@ public class KiePMMLDataDictionaryASTFactory {
     }
 
     /**
-     * @param fieldTypeMap the <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code> to be populated with mapping between original field' name and <b>original type/generated type</b> tupla
+     * @param fieldTypeMap the <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code> to be populated with
+     * mapping between original field' name and <b>original type/generated type</b> tupla
      * @return
      */
     public static KiePMMLDataDictionaryASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
@@ -47,7 +48,8 @@ public class KiePMMLDataDictionaryASTFactory {
 
     /**
      * Create a <code>List&lt;KiePMMLDroolsType&gt;</code> out of original <code>Field</code>s,
-     * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
+     * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original
+     * type/generated type</b> tupla
      * @param fields
      */
     public List<KiePMMLDroolsType> declareTypes(final List<Field<?>> fields) {
@@ -56,7 +58,8 @@ public class KiePMMLDataDictionaryASTFactory {
 
     /**
      * Create a <code>KiePMMLDroolsType</code> out of original <code>DataField</code>,
-     * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
+     * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original
+     * type/generated type</b> tupla
      * @param field
      */
     public KiePMMLDroolsType declareType(Field field) {
