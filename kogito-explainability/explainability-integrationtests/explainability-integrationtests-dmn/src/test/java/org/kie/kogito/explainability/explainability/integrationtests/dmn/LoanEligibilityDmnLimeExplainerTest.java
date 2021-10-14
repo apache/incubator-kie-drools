@@ -94,7 +94,7 @@ class LoanEligibilityDmnLimeExplainerTest {
     void testExplanationStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
 
-        List<PredictionInput> samples = DmnTestUtils.randomFraudScoringInputs();
+        List<PredictionInput> samples = DmnTestUtils.randomLoanEligibilityInputs();
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         int seed = 0;
@@ -139,7 +139,7 @@ class LoanEligibilityDmnLimeExplainerTest {
     void testExplanationWeightedStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
 
-        List<PredictionInput> samples = DmnTestUtils.randomFraudScoringInputs();
+        List<PredictionInput> samples = DmnTestUtils.randomLoanEligibilityInputs();
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
 
