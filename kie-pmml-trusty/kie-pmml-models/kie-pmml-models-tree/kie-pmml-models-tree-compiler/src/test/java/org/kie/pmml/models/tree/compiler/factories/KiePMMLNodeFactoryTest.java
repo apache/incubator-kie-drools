@@ -50,10 +50,10 @@ import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
-import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.tree.model.KiePMMLNode;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -62,11 +62,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionaryAndDerivedFields;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomPMMLScoreDistributions;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionaryAndDerivedFields;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomPMMLScoreDistributions;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromSource;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.AS_LIST;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.EMPTY_LIST;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.EVALUATE_NODE;
@@ -81,7 +82,6 @@ public class KiePMMLNodeFactoryTest {
 
     private static final String SOURCE_1 = "TreeSample.pmml";
     private static final String SOURCE_2 = "TreeSimplified.pmml";
-    private static final String PACKAGE_NAME = "packagename";
     private static final String TEST_01_SOURCE = "KiePMMLNodeFactoryTest_01.txt";
     private static PMML pmml1;
     private static Node node1;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.compiler.api.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,19 +61,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getArray;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataTypes;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getMiningField;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataField;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataType;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomMiningField;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomOutputField;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomTarget;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomTargetValue;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getTarget;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getArray;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDataField;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDataTypes;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getMiningField;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getParameterFields;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataType;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMiningField;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomOutputField;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTarget;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTargetValue;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getTarget;
 
 public class ModelUtilsTest {
 

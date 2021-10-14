@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.tree.TreeModel;
@@ -32,7 +31,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldType;
 
 /**
  * Class used to generate a <code>KiePMMLDroolsAST</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.mocks;
+package org.kie.pmml.compiler.api.mocks;
 
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.MathContext;
@@ -23,6 +23,8 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
+
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
 
 public class TestModel extends Model {
 
@@ -35,6 +37,10 @@ public class TestModel extends Model {
     private MiningSchema miningSchema;
     private Output output;
     private LocalTransformations localTransformations;
+
+    public TestModel() {
+        modelName = getGeneratedClassName("TestModel");
+    }
 
     @Override
     public String getModelName() {
@@ -111,7 +117,7 @@ public class TestModel extends Model {
         this.localTransformations = localTransformations;
         return this;
     }
-    
+
     @Override
     public VisitorAction accept(Visitor visitor) {
         return null;

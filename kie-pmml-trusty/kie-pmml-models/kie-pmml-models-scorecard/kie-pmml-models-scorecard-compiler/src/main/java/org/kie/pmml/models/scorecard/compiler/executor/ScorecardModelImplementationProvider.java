@@ -1,30 +1,28 @@
 /*
-* Copyright 2021 Red Hat, Inc. and/or its affiliates.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kie.pmml.models.scorecard.compiler.executor;
 
-import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.compiler.factories.KiePMMLScorecardModelFactory;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModelWithSources;
@@ -34,10 +32,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Scorecard</b>
  */
-public class ScorecardModelImplementationProvider implements ModelImplementationProvider<Scorecard,KiePMMLScorecardModel>{
+public class ScorecardModelImplementationProvider implements ModelImplementationProvider<Scorecard,
+        KiePMMLScorecardModel> {
 
-private static final Logger logger = LoggerFactory.getLogger(ScorecardModelImplementationProvider.class.getName());
-
+    private static final Logger logger = LoggerFactory.getLogger(ScorecardModelImplementationProvider.class.getName());
 
     @Override
     public PMML_MODEL getPMMLModelType() {
@@ -46,25 +44,27 @@ private static final Logger logger = LoggerFactory.getLogger(ScorecardModelImple
     }
 
     @Override
-    public KiePMMLScorecardModel getKiePMMLModel(final String packageName,
-                                                 final List<Field<?>> fields,
-                                                 final TransformationDictionary transformationDictionary,
-                                                 final Scorecard model,
-                                                 final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModel {} {} {} {}", packageName, fields, model, hasClassloader);
-        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(fields, transformationDictionary, model, packageName, hasClassloader);
+    public KiePMMLScorecardModel getKiePMMLModel(final CompilationDTO<Scorecard> compilationDTO) {
+        logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
+                     compilationDTO.getFields(),
+                     compilationDTO.getModel(),
+                     compilationDTO.getHasClassloader());
+        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(ScorecardCompilationDTO.fromCompilationDTO(compilationDTO));
     }
 
     @Override
-    public KiePMMLScorecardModel getKiePMMLModelWithSources(final String packageName,
-                                                            final List<Field<?>> fields,
-                                                            final TransformationDictionary transformationDictionary,
-                                                            final Scorecard  model,
-                                                            final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, fields, model, hasClassloader);
+    public KiePMMLScorecardModel getKiePMMLModelWithSources(final CompilationDTO<Scorecard> compilationDTO) {
+        logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
+                     compilationDTO.getFields(),
+                     compilationDTO.getModel(),
+                     compilationDTO.getHasClassloader());
         try {
-            final Map<String, String> sourcesMap = KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(fields, transformationDictionary, model, packageName);
-            return new KiePMMLScorecardModelWithSources(model.getModelName(), packageName, sourcesMap);
+            ScorecardCompilationDTO scorecardCompilationDTO =
+                    ScorecardCompilationDTO.fromCompilationDTO(compilationDTO);
+            final Map<String, String> sourcesMap =
+                    KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(scorecardCompilationDTO);
+            return new KiePMMLScorecardModelWithSources(scorecardCompilationDTO.getModelName(),
+                                                        scorecardCompilationDTO.getPackageName(), sourcesMap);
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }

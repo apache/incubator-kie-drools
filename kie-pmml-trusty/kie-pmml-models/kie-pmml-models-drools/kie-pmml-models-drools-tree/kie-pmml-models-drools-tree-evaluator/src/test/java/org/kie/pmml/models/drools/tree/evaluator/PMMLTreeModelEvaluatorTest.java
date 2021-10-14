@@ -32,7 +32,8 @@ import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.runtime.PMMLContext;
-import org.kie.pmml.compiler.testutils.TestUtils;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementationProvider;
@@ -46,12 +47,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class PMMLTreeModelEvaluatorTest {
 
     private static final String SOURCE_1 = "TreeSample.pmml";
-    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private static final Logger logger = LoggerFactory.getLogger(PMMLTreeModelEvaluatorTest.class);
     private static final String modelName = "golfing";
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
@@ -81,15 +81,17 @@ public class PMMLTreeModelEvaluatorTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        kiePMMLModel = provider.getKiePMMLModel(PACKAGE_NAME,
-                                                getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                pmml.getTransformationDictionary(),
-                                                (TreeModel) pmml.getModels().get(0),
-                                                new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final CommonCompilationDTO<TreeModel> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       (TreeModel) pmml.getModels().get(0),
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+
+        kiePMMLModel = provider.getKiePMMLModel(compilationDTO);
         kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
-                .build( ExecutableModelProject.class );
+                .build(ExecutableModelProject.class);
         assertNotNull(kieBase);
     }
 

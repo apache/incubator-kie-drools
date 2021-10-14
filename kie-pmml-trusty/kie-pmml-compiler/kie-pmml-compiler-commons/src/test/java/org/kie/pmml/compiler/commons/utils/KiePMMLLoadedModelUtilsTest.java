@@ -33,11 +33,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.api.enums.OP_TYPE.CATEGORICAL;
 import static org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getOpType;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldName;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFields;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.MODELNAME_TEMPLATE;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLLoadedModelUtilsTest {

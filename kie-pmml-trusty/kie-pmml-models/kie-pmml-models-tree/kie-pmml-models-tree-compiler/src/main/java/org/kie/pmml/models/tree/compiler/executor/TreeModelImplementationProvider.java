@@ -1,30 +1,28 @@
 /*
-* Copyright 2021 Red Hat, Inc. and/or its affiliates.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kie.pmml.models.tree.compiler.executor;
 
-import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.models.tree.compiler.dto.TreeCompilationDTO;
 import org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelFactory;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModelWithSources;
@@ -34,10 +32,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Tree</b>
  */
-public class TreeModelImplementationProvider implements ModelImplementationProvider<TreeModel,KiePMMLTreeModel>{
+public class TreeModelImplementationProvider implements ModelImplementationProvider<TreeModel, KiePMMLTreeModel> {
 
-private static final Logger logger = LoggerFactory.getLogger(TreeModelImplementationProvider.class.getName());
-
+    private static final Logger logger = LoggerFactory.getLogger(TreeModelImplementationProvider.class.getName());
 
     @Override
     public PMML_MODEL getPMMLModelType() {
@@ -46,25 +43,25 @@ private static final Logger logger = LoggerFactory.getLogger(TreeModelImplementa
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLModel(final String packageName,
-                                            final List<Field<?>> fields,
-                                            final TransformationDictionary transformationDictionary,
-                                            final TreeModel model,
-                                            final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModel {} {} {} {}", packageName, fields, model, hasClassloader);
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(fields, transformationDictionary, model, packageName, hasClassloader);
+    public KiePMMLTreeModel getKiePMMLModel(final CompilationDTO<TreeModel> compilationDTO) {
+        logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
+                     compilationDTO.getFields(),
+                     compilationDTO.getModel(),
+                     compilationDTO.getHasClassloader());
+        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(compilationDTO));
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLModelWithSources(final String packageName,
-                                                       final List<Field<?>> fields,
-                                                       final TransformationDictionary transformationDictionary,
-                                                       final TreeModel  model,
-                                                       final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, fields, model, hasClassloader);
+    public KiePMMLTreeModel getKiePMMLModelWithSources(final CompilationDTO<TreeModel> compilationDTO) {
+        logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
+                     compilationDTO.getFields(),
+                     compilationDTO.getModel(),
+                     compilationDTO.getHasClassloader());
         try {
-            final Map<String, String> sourcesMap = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(fields, transformationDictionary, model, packageName);
-            return new KiePMMLTreeModelWithSources(model.getModelName(), packageName, sourcesMap);
+            final Map<String, String> sourcesMap =
+                    KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(compilationDTO));
+            return new KiePMMLTreeModelWithSources(compilationDTO.getModelName(), compilationDTO.getPackageName(),
+                                                   sourcesMap);
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }

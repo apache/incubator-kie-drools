@@ -32,7 +32,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldType;
 
 /**
  * Class used to generate a <code>KiePMMLDroolsAST</code> out of a
