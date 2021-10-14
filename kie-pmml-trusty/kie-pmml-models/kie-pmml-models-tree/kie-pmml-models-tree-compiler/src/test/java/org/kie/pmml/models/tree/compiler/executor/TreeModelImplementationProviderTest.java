@@ -24,8 +24,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModelWithSources;
 
@@ -34,43 +35,46 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class TreeModelImplementationProviderTest {
 
-    private static final TreeModelImplementationProvider PROVIDER= new TreeModelImplementationProvider();
+    private static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
     private static final String SOURCE_1 = "TreeSample.pmml";
-    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private static PMML pmml;
 
     @BeforeClass
     public static void setup() throws Exception {
-         pmml = TestUtils.loadFromFile(SOURCE_1);
+        pmml = TestUtils.loadFromFile(SOURCE_1);
     }
 
     @Test
-    public void getPMMLModelType(){
-        assertEquals(PMML_MODEL.TREE_MODEL,PROVIDER.getPMMLModelType());
+    public void getPMMLModelType() {
+        assertEquals(PMML_MODEL.TREE_MODEL, PROVIDER.getPMMLModelType());
     }
 
     @Test
     public void getKiePMMLModel() {
-        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
-                                                                    getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                                    pmml.getTransformationDictionary(),
-                                                                    (TreeModel) pmml.getModels().get(0),
-                                                                    new HasClassLoaderMock());
+        TreeModel treeModel = (TreeModel) pmml.getModels().get(0);
+        final CommonCompilationDTO<TreeModel> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       treeModel,
+                                                                       new HasClassLoaderMock());
+        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof Serializable);
     }
 
     @Test
     public void getKiePMMLModelWithSources() {
-        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModelWithSources("PACKAGE_NAME",
-                                                                               getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                                                 pmml.getTransformationDictionary(),
-                                                                                 (TreeModel) pmml.getModels().get(0),
-                                                                               new HasClassLoaderMock());
+        TreeModel treeModel = (TreeModel) pmml.getModels().get(0);
+        final CommonCompilationDTO<TreeModel> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       treeModel,
+                                                                       new HasClassLoaderMock());
+        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLTreeModelWithSources);
         KiePMMLTreeModelWithSources retrievedWithSources = (KiePMMLTreeModelWithSources) retrieved;
@@ -88,5 +92,4 @@ public class TreeModelImplementationProviderTest {
             fail(t.getMessage());
         }
     }
-
 }

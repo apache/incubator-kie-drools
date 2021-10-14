@@ -32,5 +32,4 @@ public interface HasClassLoader {
      * @return
      */
     Class<?> compileAndLoadClass(Map<String, String> sourcesMap, String fullClassName);
-
 }

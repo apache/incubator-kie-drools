@@ -40,11 +40,11 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getSimplePredicate;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getStringObjects;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPredicateFactoryTest.getSimpleSetPredicate;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getSimplePredicate;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getStringObjects;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLCompoundPredicateFactoryTest {

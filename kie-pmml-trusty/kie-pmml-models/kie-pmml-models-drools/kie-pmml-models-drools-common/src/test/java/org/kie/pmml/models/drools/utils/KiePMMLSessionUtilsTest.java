@@ -16,9 +16,7 @@
 
 package org.kie.pmml.models.drools.utils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.command.runtime.SetGlobalCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
@@ -35,13 +33,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class KiePMMLSessionUtilsTest {
 
     private static final KieBase KIE_BASE = new KnowledgeBaseImpl("PMML", null);
     private final static String MODEL_NAME = "MODELNAME";
-    private final static String PACKAGE_NAME = "PACKAGENAME";
     private final static PMML4Result PMML4_RESULT = new PMML4Result();
     private KiePMMLSessionUtils.Builder builder;
     private KiePMMLSessionUtils kiePMMLSessionUtils;
@@ -86,7 +83,7 @@ public class KiePMMLSessionUtilsTest {
 
     @Test
     public void getKieSession() {
-        StatelessKieSession retrieved =  kiePMMLSessionUtils.getKieSession(KIE_BASE);
+        StatelessKieSession retrieved = kiePMMLSessionUtils.getKieSession(KIE_BASE);
         assertNotNull(retrieved);
     }
 

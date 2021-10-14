@@ -29,14 +29,13 @@ import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.enums.ResultCode;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.api.enums.RESULT_FEATURE.PREDICTED_VALUE;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.ADD_PMML4_OUTPUT_FIELD;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.ADD_PMML4_RESULT_VARIABLE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.FOCUS_AGENDA_GROUP;
@@ -46,7 +45,6 @@ import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRulesFact
 
 public class KiePMMLDescrRhsFactoryTest {
 
-    private static final String PACKAGE_NAME = "package";
     private static final String CURRENT_RULE = "currentRule";
     private RuleDescrBuilder ruleBuilder;
 
@@ -135,7 +133,8 @@ public class KiePMMLDescrRhsFactoryTest {
         assertEquals(1, ruleBuilder.getDescr().getNamedConsequences().size());
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL));
         expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, DONE);
-        assertTrue(expectedConsequence, ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL).toString().contains(expectedConsequence));
+        assertTrue(expectedConsequence,
+                   ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL).toString().contains(expectedConsequence));
     }
 
     @Test
@@ -215,7 +214,8 @@ public class KiePMMLDescrRhsFactoryTest {
         OutputField outputField = new OutputField();
         outputField.setName(FieldName.create(outputFieldName));
         outputField.setResultFeature(ResultFeature.PREDICTED_VALUE);
-        List<OutputField> outputFields = Collections.singletonList(outputField); StringJoiner joiner = new StringJoiner("");
+        List<OutputField> outputFields = Collections.singletonList(outputField);
+        StringJoiner joiner = new StringJoiner("");
         KiePMMLDescrRhsFactory.factory(ruleBuilder).commonDeclareOutputFields(outputFields, result, joiner);
         String retrieved = joiner.toString();
         String expected = String.format(ADD_PMML4_OUTPUT_FIELD, outputFieldName, result);

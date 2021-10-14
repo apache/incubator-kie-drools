@@ -31,7 +31,7 @@ import org.dmg.pmml.tree.TreeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
-import org.kie.pmml.compiler.testutils.TestUtils;
+import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -40,8 +40,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldType;
 
 public class KiePMMLTreeModelNodeASTFactoryTest {
 

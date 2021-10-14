@@ -34,7 +34,7 @@ import org.kie.pmml.models.drools.ast.factories.KiePMMLDerivedFieldASTFactory;
 import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 
 /**
  * Utility methods for other <b>Test</b> classes

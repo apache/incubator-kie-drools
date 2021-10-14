@@ -19,13 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
+import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.provider.DroolsModelProvider;
 import org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelFactory;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -44,19 +43,9 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public KiePMMLScorecardModel getKiePMMLDroolsModel(final List<Field<?>> fields,
-                                                       final TransformationDictionary transformationDictionary,
-                                                       final Scorecard model,
-                                                       final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                       final String packageName,
-                                                       final HasClassLoader hasClassLoader) {
+    public KiePMMLScorecardModel getKiePMMLDroolsModel(final DroolsCompilationDTO<Scorecard> compilationDTO) {
         try {
-            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(fields,
-                                                                         transformationDictionary,
-                                                                         model,
-                                                                         fieldTypeMap,
-                                                                         packageName,
-                                                                         hasClassLoader);
+            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(compilationDTO);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
@@ -71,7 +60,7 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final List<Field<?>> fields, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
-        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(fields, transformationDictionary,  model, fieldTypeMap, packageName);
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DroolsCompilationDTO<Scorecard> compilationDTO) {
+        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(compilationDTO);
     }
 }

@@ -28,8 +28,9 @@ import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 
@@ -46,7 +47,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class RegressionModelImplementationProviderTest {
 
@@ -57,13 +58,13 @@ public class RegressionModelImplementationProviderTest {
     private static final String SOURCE_3 = "test_regression_clax.pmml";
     private static final String PACKAGE_NAME = "packagename";
     private static final List<RegressionModel.NormalizationMethod> VALID_NORMALIZATION_METHODS = Arrays.asList(NONE,
-                                                                                                             SOFTMAX,
-                                                                                                             LOGIT,
-                                                                                                             EXP,
-                                                                                                             PROBIT,
-                                                                                                             CLOGLOG,
-                                                                                                             LOGLOG,
-                                                                                                             CAUCHIT);
+                                                                                                               SOFTMAX,
+                                                                                                               LOGIT,
+                                                                                                               EXP,
+                                                                                                               PROBIT,
+                                                                                                               CLOGLOG,
+                                                                                                               LOGLOG,
+                                                                                                               CAUCHIT);
 
     @Test
     public void getPMMLModelType() {
@@ -76,11 +77,13 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
-                                                                          getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                                          pmml.getTransformationDictionary(),
-                                                                          (RegressionModel) pmml.getModels().get(0),
-                                                                          new HasClassLoaderMock());
+        RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
+        final CommonCompilationDTO<RegressionModel> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock());
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof Serializable);
     }
@@ -91,12 +94,13 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-        final String packageName = "packagename";
-        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelWithSources(
-                packageName,
-                getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                pmml.getTransformationDictionary(),
-                (RegressionModel) pmml.getModels().get(0), new HasClassLoaderMock());
+        RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
+        final CommonCompilationDTO<RegressionModel> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock());
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLRegressionModelWithSources);
         KiePMMLRegressionModelWithSources retrievedWithSources = (KiePMMLRegressionModelWithSources) retrieved;
@@ -112,13 +116,13 @@ public class RegressionModelImplementationProviderTest {
     }
 
     @Test
-    public void validateNormalizationMethodValid()  {
+    public void validateNormalizationMethodValid() {
         VALID_NORMALIZATION_METHODS.forEach(PROVIDER::validateNormalizationMethod);
     }
 
     @Test
-    public void validateNormalizationMethodInvalid()  {
-        for(RegressionModel.NormalizationMethod normalizationMethod : RegressionModel.NormalizationMethod.values()) {
+    public void validateNormalizationMethodInvalid() {
+        for (RegressionModel.NormalizationMethod normalizationMethod : RegressionModel.NormalizationMethod.values()) {
             if (!VALID_NORMALIZATION_METHODS.contains(normalizationMethod)) {
                 try {
                     PROVIDER.validateNormalizationMethod(normalizationMethod);
@@ -155,7 +159,8 @@ public class RegressionModelImplementationProviderTest {
         } catch (KiePMMLException e) {
             // Expected
         }
-        regressionModel = new RegressionModel(regressionModel.getMiningFunction(), regressionModel.getMiningSchema(), null);
+        regressionModel = new RegressionModel(regressionModel.getMiningFunction(), regressionModel.getMiningSchema(),
+                                              null);
         try {
             PROVIDER.validate(fields, regressionModel);
             fail("Expecting validation failure due to missing RegressionTables");
@@ -171,5 +176,4 @@ public class RegressionModelImplementationProviderTest {
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         PROVIDER.validate(getFieldsFromDataDictionary(pmml.getDataDictionary()), (RegressionModel) pmml.getModels().get(0));
     }
-
 }

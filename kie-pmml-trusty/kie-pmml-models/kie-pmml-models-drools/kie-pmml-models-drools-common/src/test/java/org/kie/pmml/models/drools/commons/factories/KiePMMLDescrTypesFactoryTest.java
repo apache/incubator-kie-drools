@@ -30,10 +30,10 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class KiePMMLDescrTypesFactoryTest {
 
-    private static final String PACKAGE_NAME = "package";
     private PackageDescrBuilder builder;
 
     @Before

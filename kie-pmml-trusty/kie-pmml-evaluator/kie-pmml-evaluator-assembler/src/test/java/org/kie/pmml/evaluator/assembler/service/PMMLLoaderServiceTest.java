@@ -41,10 +41,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class PMMLLoaderServiceTest {
-
-    private final String PACKAGE_NAME = "apackage";
 
     @Test
     public void getKiePMMLModelsLoadedFromFactory() {
@@ -96,10 +95,10 @@ public class PMMLLoaderServiceTest {
         return () -> kiePMMLModels;
     }
 
-    private static class GlobalMock extends GlobalImpl<Double>  {
+    private static class GlobalMock extends GlobalImpl<Double> {
 
         public GlobalMock(String packageName, int id) {
-            super(Double.class, packageName, "DOUBLE_GLOBAL_" + id );
+            super(Double.class, packageName, "DOUBLE_GLOBAL_" + id);
         }
     }
 

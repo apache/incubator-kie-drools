@@ -22,19 +22,17 @@ import java.util.Map;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
+import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
@@ -52,42 +50,30 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final List<Field<?>> fields,
-                                                                 final TransformationDictionary transformationDictionary,
-                                                                 final Scorecard model,
-                                                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                                 final String packageName,
-                                                                 final HasClassLoader hasClassLoader) throws IllegalAccessException, InstantiationException {
-        logger.trace("getKiePMMLScorecardModel {} {}", packageName, model);
-        String className = getSanitizedClassName(model.getModelName());
-        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(fields, transformationDictionary, model, fieldTypeMap, packageName);
-        String fullClassName = packageName + "." + className;
+    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final DroolsCompilationDTO<Scorecard> compilationDTO) throws IllegalAccessException, InstantiationException {
+        logger.trace("getKiePMMLScorecardModel {} {}", compilationDTO.getPackageName(), compilationDTO.getModel());
+        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(compilationDTO);
         try {
-            Class<?> kiePMMLScorecardModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+            Class<?> kiePMMLScorecardModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
             return (KiePMMLScorecardModel) kiePMMLScorecardModelClass.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
     }
 
-    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final List<Field<?>> fields,
-                                                                         final TransformationDictionary transformationDictionary,
-                                                                         final Scorecard model,
-                                                                         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                                         final String packageName) {
-        logger.trace("getKiePMMLScorecardModelSourcesMap {} {} {}", fields, model, packageName);
-        CompilationUnit cloneCU = getKiePMMLModelCompilationUnit(fields, model, fieldTypeMap, packageName,
+    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DroolsCompilationDTO<Scorecard> compilationDTO) {
+        logger.trace("getKiePMMLScorecardModelSourcesMap {} {} {}", compilationDTO.getFields(),
+                     compilationDTO.getModel(), compilationDTO.getPackageName());
+        CompilationUnit cloneCU = getKiePMMLModelCompilationUnit(compilationDTO,
                                                                  KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA,
                                                                  KIE_PMML_SCORECARD_MODEL_TEMPLATE);
-        String className = getSanitizedClassName(model.getModelName());
+        String className = compilationDTO.getSimpleClassName();
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        setConstructor(model,
-                       fields,
-                       transformationDictionary,
+        setConstructor(compilationDTO,
                        modelTemplate);
         Map<String, String> toReturn = new HashMap<>();
-        String fullClassName = packageName + "." + className;
+        String fullClassName = compilationDTO.getPackageCanonicalClassName();
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
     }
@@ -111,13 +97,9 @@ public class KiePMMLScorecardModelFactory {
         return KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(fields, model, fieldTypeMap, types);
     }
 
-    static void setConstructor(final Scorecard scorecard,
-                               final List<Field<?>> fields,
-                               final TransformationDictionary transformationDictionary,
+    static void setConstructor(final DroolsCompilationDTO<Scorecard> compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate) {
-        KiePMMLModelCodegenUtils.init(modelTemplate,
-                                      fields,
-                                      transformationDictionary,
-                                      scorecard);
+        KiePMMLModelCodegenUtils.init(compilationDTO,
+                                      modelTemplate);
     }
 }

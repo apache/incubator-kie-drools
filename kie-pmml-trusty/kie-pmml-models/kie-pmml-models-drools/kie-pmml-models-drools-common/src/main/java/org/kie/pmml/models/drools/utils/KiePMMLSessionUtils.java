@@ -34,6 +34,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 
@@ -109,6 +110,11 @@ public class KiePMMLSessionUtils {
             try {
                 String generatedTypeName = fieldTypeMap.get(entry.getKey()).getGeneratedType();
                 FactType factType = kieSession.getKieBase().getFactType(packageName, generatedTypeName);
+                if (factType == null) {
+                    String name = String.format(PACKAGE_CLASS_TEMPLATE,  packageName, generatedTypeName);
+                    String error = String.format("Failed to retrieve FactType %s for input value %s", name, entry.getKey());
+                    throw new KiePMMLModelException(error);
+                }
                 Object toAdd = factType.newInstance();
                 factType.set(toAdd, "value", entry.getValue());
                 commands.add(COMMAND_FACTORY_SERVICE.newInsert(toAdd));
