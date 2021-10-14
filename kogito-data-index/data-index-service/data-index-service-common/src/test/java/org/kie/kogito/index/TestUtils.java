@@ -34,6 +34,8 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+import org.kie.kogito.index.model.Attachment;
+import org.kie.kogito.index.model.Comment;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Milestone;
 import org.kie.kogito.index.model.MilestoneStatus;
@@ -244,6 +246,8 @@ public final class TestUtils {
         task.setExcludedUsers(singleton("excluded"));
         task.setPotentialUsers(singleton("potentialUser"));
         task.setPotentialGroups(singleton("potentialGroup"));
+        task.setComments(List.of(Comment.builder().id("commentId" + taskId).content("Comment 1").updatedBy("kogito").build()));
+        task.setAttachments(List.of(Attachment.builder().id("attachmentId" + taskId).content("http://linltodoc.com/1").name("doc1").updatedBy("kogito").build()));
         return task;
     }
 }

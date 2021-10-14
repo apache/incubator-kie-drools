@@ -17,14 +17,17 @@
 package org.kie.kogito.index.postgresql.model;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -80,6 +83,10 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     @Column(columnDefinition = "jsonb")
     private ObjectNode outputs;
     private String endpoint;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<CommentEntity> comments;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<AttachmentEntity> attachments;
 
     @Override
     public String getId() {
@@ -258,6 +265,22 @@ public class UserTaskInstanceEntity extends AbstractEntity {
         this.endpoint = endpoint;
     }
 
+    public List<CommentEntity> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentEntity> comments) {
+        this.comments = comments;
+    }
+
+    public List<AttachmentEntity> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AttachmentEntity> attachments) {
+        this.attachments = attachments;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -300,6 +323,8 @@ public class UserTaskInstanceEntity extends AbstractEntity {
                 ", inputs=" + inputs +
                 ", outputs=" + outputs +
                 ", endpoint='" + endpoint + '\'' +
+                ", comments='" + comments + '\'' +
+                ", attachments='" + attachments + '\'' +
                 '}';
     }
 }

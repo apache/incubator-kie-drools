@@ -16,9 +16,12 @@
 package org.kie.kogito.index.infinispan.protostream;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.infinispan.protostream.MessageMarshaller;
+import org.kie.kogito.index.model.Attachment;
+import org.kie.kogito.index.model.Comment;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
 
@@ -49,6 +52,8 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
     protected static final String REFERENCE_NAME = "referenceName";
     protected static final String LAST_UPDATE = "lastUpdate";
     protected static final String ENDPOINT = "endpoint";
+    protected static final String COMMENTS = "comments";
+    protected static final String ATTACHMENTS = "attachments";
 
     public UserTaskInstanceMarshaller(ObjectMapper mapper) {
         super(mapper);
@@ -79,6 +84,8 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         ut.setReferenceName(reader.readString(REFERENCE_NAME));
         ut.setLastUpdate(dateToZonedDateTime(reader.readDate(LAST_UPDATE)));
         ut.setEndpoint(reader.readString(ENDPOINT));
+        ut.setComments(reader.readCollection(COMMENTS, new ArrayList<>(), Comment.class));
+        ut.setAttachments(reader.readCollection(ATTACHMENTS, new ArrayList<>(), Attachment.class));
         return ut;
     }
 
@@ -106,6 +113,8 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         writer.writeString(REFERENCE_NAME, ut.getReferenceName());
         writer.writeDate(LAST_UPDATE, zonedDateTimeToDate(ut.getLastUpdate()));
         writer.writeString(ENDPOINT, ut.getEndpoint());
+        writer.writeCollection(COMMENTS, ut.getComments(), Comment.class);
+        writer.writeCollection(ATTACHMENTS, ut.getAttachments(), Attachment.class);
     }
 
     @Override

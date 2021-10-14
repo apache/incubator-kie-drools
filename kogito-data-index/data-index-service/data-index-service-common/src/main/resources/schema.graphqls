@@ -274,6 +274,21 @@ input ProcessInstanceStateArgument {
     in: [ProcessInstanceState]
 }
 
+type Comment {
+    id: String!
+    content: String!
+    updatedBy: String!
+    updatedAt: DateTime!
+}
+
+type Attachment {
+    id: String!
+    name: String!
+    content: String!
+    updatedBy: String!
+    updatedAt: DateTime!
+}
+
 type UserTaskInstance {
     id: String!
     description: String
@@ -298,6 +313,8 @@ type UserTaskInstance {
     lastUpdate: DateTime!
     endpoint: String
     schema(user: String, groups:[String]): String
+    comments: [Comment!]
+    attachments: [Attachment!]
 }
 
 type UserTaskInstanceMeta {
@@ -317,6 +334,8 @@ type UserTaskInstanceMeta {
     potentialUsers: [String!]
     referenceName: String
     lastUpdate: DateTime!
+    comments: [Comment!]
+    attachments: [Attachment!]
 }
 
 input UserTaskInstanceArgument {

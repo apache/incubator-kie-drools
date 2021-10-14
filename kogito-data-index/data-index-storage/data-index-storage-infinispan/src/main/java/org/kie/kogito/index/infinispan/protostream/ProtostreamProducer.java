@@ -58,4 +58,14 @@ public class ProtostreamProducer {
     MessageMarshaller milestoneMarshaller() {
         return new MilestoneMarshaller(mapper);
     }
+
+    @Produces
+    MessageMarshaller commentMarshaller() {
+        return new CommentMarshaller(mapper);
+    }
+
+    @Produces
+    MessageMarshaller attachmentMarshaller() {
+        return new AttachmentMarshaller(mapper);
+    }
 }

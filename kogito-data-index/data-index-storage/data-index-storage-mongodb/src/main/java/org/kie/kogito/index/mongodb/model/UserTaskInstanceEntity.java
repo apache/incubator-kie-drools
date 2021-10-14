@@ -16,6 +16,7 @@
 
 package org.kie.kogito.index.mongodb.model;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -68,6 +69,10 @@ public class UserTaskInstanceEntity {
     private Document outputs;
 
     private String endpoint;
+
+    List<CommentEntity> comments;
+
+    List<AttachmentEntity> attachments;
 
     public String getId() {
         return id;
@@ -245,6 +250,22 @@ public class UserTaskInstanceEntity {
         this.endpoint = endpoint;
     }
 
+    public List<CommentEntity> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentEntity> comments) {
+        this.comments = comments;
+    }
+
+    public List<AttachmentEntity> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AttachmentEntity> attachments) {
+        this.attachments = attachments;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -287,6 +308,129 @@ public class UserTaskInstanceEntity {
                 ", inputs=" + inputs +
                 ", outputs=" + outputs +
                 ", endpoint='" + endpoint + '\'' +
+                ", comments='" + comments + '\'' +
+                ", attachments='" + attachments + '\'' +
                 '}';
+    }
+
+    public static class CommentEntity {
+        String id;
+        String content;
+        String updatedBy;
+        Long updatedAt;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getUpdatedBy() {
+            return updatedBy;
+        }
+
+        public void setUpdatedBy(String updatedBy) {
+            this.updatedBy = updatedBy;
+        }
+
+        public Long getUpdatedAt() {
+            return updatedAt;
+        }
+
+        public void setUpdatedAt(Long updatedAt) {
+            this.updatedAt = updatedAt;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            CommentEntity that = (CommentEntity) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
+        }
+    }
+
+    public static class AttachmentEntity {
+        String id;
+        String name;
+        String content;
+        String updatedBy;
+        Long updatedAt;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getUpdatedBy() {
+            return updatedBy;
+        }
+
+        public void setUpdatedBy(String updatedBy) {
+            this.updatedBy = updatedBy;
+        }
+
+        public Long getUpdatedAt() {
+            return updatedAt;
+        }
+
+        public void setUpdatedAt(Long updatedAt) {
+            this.updatedAt = updatedAt;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            AttachmentEntity that = (AttachmentEntity) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
+        }
     }
 }

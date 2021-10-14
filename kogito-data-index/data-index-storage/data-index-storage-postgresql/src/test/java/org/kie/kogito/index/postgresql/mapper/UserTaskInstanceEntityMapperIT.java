@@ -25,7 +25,11 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.model.Attachment;
+import org.kie.kogito.index.model.Comment;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.postgresql.model.AttachmentEntity;
+import org.kie.kogito.index.postgresql.model.CommentEntity;
 import org.kie.kogito.index.postgresql.model.UserTaskInstanceEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +38,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.quarkus.test.junit.QuarkusTest;
 
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
@@ -72,6 +77,29 @@ class UserTaskInstanceEntityMapperIT {
         ObjectNode inputs = jsonMapper.createObjectNode().put("testInput", "testValue");
         ObjectNode outputs = jsonMapper.createObjectNode().put("testOutput", "testValue");
 
+        String commentId = "testCommentId";
+        String comment_content = "testCommentContent";
+        String comment_updatedBy = "testCommentUpdatedBy";
+        Comment comment = Comment.builder().id(commentId).updatedAt(time).updatedBy(comment_updatedBy).content(comment_content).build();
+        CommentEntity commentEntity = new CommentEntity();
+        commentEntity.setId(commentId);
+        commentEntity.setContent(comment_content);
+        commentEntity.setUpdatedAt(time);
+        commentEntity.setUpdatedBy(comment_updatedBy);
+
+        String attachmentId = "testAttachmentId";
+        String attachment_name = "testAttachmentName";
+        String attachment_content = "testAttachmentContent";
+        String attachment_updatedBy = "testAttachmentUpdatedBy";
+        Attachment attachment = Attachment.builder().id(attachmentId).updatedAt(time).updatedBy(attachment_updatedBy)
+                .content(attachment_content).name(attachment_name).build();
+        AttachmentEntity attachmentEntity = new AttachmentEntity();
+        attachmentEntity.setId(attachmentId);
+        attachmentEntity.setContent(attachment_content);
+        attachmentEntity.setName(attachment_name);
+        attachmentEntity.setUpdatedAt(time);
+        attachmentEntity.setUpdatedBy(attachment_updatedBy);
+
         userTaskInstance.setId(testId);
         userTaskInstance.setDescription(description);
         userTaskInstance.setName(name);
@@ -93,6 +121,8 @@ class UserTaskInstanceEntityMapperIT {
         userTaskInstance.setRootProcessInstanceId(rootProcessInstanceId);
         userTaskInstance.setInputs(inputs);
         userTaskInstance.setOutputs(outputs);
+        userTaskInstance.setComments(singletonList(comment));
+        userTaskInstance.setAttachments(singletonList(attachment));
 
         userTaskInstanceEntity.setId(testId);
         userTaskInstanceEntity.setDescription(description);
@@ -115,6 +145,8 @@ class UserTaskInstanceEntityMapperIT {
         userTaskInstanceEntity.setRootProcessInstanceId(rootProcessInstanceId);
         userTaskInstanceEntity.setInputs(inputs);
         userTaskInstanceEntity.setOutputs(outputs);
+        userTaskInstanceEntity.setComments(singletonList(commentEntity));
+        userTaskInstanceEntity.setAttachments(singletonList(attachmentEntity));
     }
 
     @Test

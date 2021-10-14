@@ -16,6 +16,7 @@
 package org.kie.kogito.index.model;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -44,6 +45,8 @@ public class UserTaskInstanceMeta {
     private Set<String> potentialUsers;
     private String referenceName;
     private ZonedDateTime lastUpdate;
+    private List<Comment> comments;
+    private List<Attachment> attachments;
 
     public String getId() {
         return id;
@@ -177,6 +180,22 @@ public class UserTaskInstanceMeta {
         this.lastUpdate = lastUpdate;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
     @Override
     public String toString() {
         return "UserTaskInstanceMeta{" +
@@ -196,6 +215,8 @@ public class UserTaskInstanceMeta {
                 ", potentialUsers=" + potentialUsers +
                 ", referenceName='" + referenceName + '\'' +
                 ", lastUpdate=" + lastUpdate +
+                ", comments=" + comments +
+                ", attachment=" + attachments +
                 '}';
     }
 

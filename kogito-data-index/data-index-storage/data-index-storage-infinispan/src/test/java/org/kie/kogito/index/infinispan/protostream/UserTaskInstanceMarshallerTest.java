@@ -20,11 +20,15 @@ import java.io.IOException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.infinispan.protostream.MessageMarshaller;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.model.Attachment;
+import org.kie.kogito.index.model.Comment;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.mockito.InOrder;
 
@@ -35,6 +39,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.ACTUAL_OWNER;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.ADMIN_GROUPS;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.ADMIN_USERS;
+import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.ATTACHMENTS;
+import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.COMMENTS;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.COMPLETED;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.DESCRIPTION;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.ENDPOINT;
@@ -69,6 +75,7 @@ class UserTaskInstanceMarshallerTest {
 
     @BeforeAll
     static void setup() {
+        ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS);
         TASK.setId("id");
         TASK.setDescription("description");
         TASK.setName("name");
@@ -81,8 +88,8 @@ class UserTaskInstanceMarshallerTest {
         TASK.setActualOwner("actualOwner");
         TASK.setAdminUsers(singleton("admin"));
         TASK.setAdminGroups(singleton("admin"));
-        TASK.setCompleted(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS));
-        TASK.setStarted(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS));
+        TASK.setCompleted(time);
+        TASK.setStarted(time);
         TASK.setExcludedUsers(singleton("admin"));
         TASK.setPotentialGroups(singleton("user"));
         TASK.setPotentialUsers(singleton("user"));
@@ -91,6 +98,19 @@ class UserTaskInstanceMarshallerTest {
         TASK.setReferenceName("referenceName");
         TASK.setLastUpdate(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS));
         TASK.setEndpoint("endpoint");
+        TASK.setComments(List.of(Comment.builder()
+                .id("attId")
+                .content("Text comment")
+                .updatedBy("user")
+                .updatedAt(time)
+                .build()));
+        TASK.setAttachments(List.of(Attachment.builder()
+                .id("attId")
+                .name("doc1")
+                .content("http://documentation.com/doc1")
+                .updatedBy("user")
+                .updatedAt(time)
+                .build()));
     }
 
     @Test
@@ -120,6 +140,8 @@ class UserTaskInstanceMarshallerTest {
         when(reader.readString(REFERENCE_NAME)).thenReturn(TASK.getReferenceName());
         when(reader.readDate(LAST_UPDATE)).thenReturn(marshaller.zonedDateTimeToDate(TASK.getLastUpdate()));
         when(reader.readString(ENDPOINT)).thenReturn(TASK.getEndpoint());
+        when(reader.readCollection(eq(COMMENTS), any(), eq(Comment.class))).thenReturn(TASK.getComments());
+        when(reader.readCollection(eq(ATTACHMENTS), any(), eq(Attachment.class))).thenReturn(TASK.getAttachments());
 
         UserTaskInstance task = marshaller.readFrom(reader);
 
@@ -148,6 +170,8 @@ class UserTaskInstanceMarshallerTest {
         inOrder.verify(reader).readString(REFERENCE_NAME);
         inOrder.verify(reader).readDate(LAST_UPDATE);
         inOrder.verify(reader).readString(ENDPOINT);
+        inOrder.verify(reader).readCollection(COMMENTS, new ArrayList<>(), Comment.class);
+        inOrder.verify(reader).readCollection(ATTACHMENTS, new ArrayList<>(), Attachment.class);
         verifyNoMoreInteractions(reader);
     }
 
@@ -181,6 +205,8 @@ class UserTaskInstanceMarshallerTest {
         inOrder.verify(writer).writeString(REFERENCE_NAME, TASK.getReferenceName());
         inOrder.verify(writer).writeDate(LAST_UPDATE, marshaller.zonedDateTimeToDate(TASK.getLastUpdate()));
         inOrder.verify(writer).writeString(ENDPOINT, TASK.getEndpoint());
+        inOrder.verify(writer).writeCollection(COMMENTS, TASK.getComments(), Comment.class);
+        inOrder.verify(writer).writeCollection(ATTACHMENTS, TASK.getAttachments(), Attachment.class);
         verifyNoMoreInteractions(writer);
     }
 

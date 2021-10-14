@@ -21,7 +21,7 @@
     );
 
     create table MilestoneEntity (
-       id varchar(255) not null,
+        id varchar(255) not null,
         name varchar(255),
         status varchar(255),
         primary key (id)
@@ -123,6 +123,33 @@
         potentialUsers varchar(255)
     );
 
+    create table CommentEntity (
+       id varchar(255) not null,
+       content varchar(255),
+       updatedAt timestamp,
+       updatedBy varchar(255),
+       primary key (id)
+    );
+
+    create table UserTaskInstanceEntity_CommentEntity (
+       UserTaskInstanceEntity_id varchar(255) not null,
+       comments_id varchar(255) not null
+    );
+
+    create table AttachmentEntity (
+       id varchar(255) not null,
+       name varchar(255),
+       content varchar(255),
+       updatedAt timestamp,
+       updatedBy varchar(255),
+       primary key (id)
+    );
+
+    create table UserTaskInstanceEntity_AttachmentEntity(
+        UserTaskInstanceEntity_id varchar(255) not null,
+        attachments_id varchar(255) not null
+    );
+
     alter table if exists ProcessInstanceEntity_MilestoneEntity 
        add constraint UK_iw2hpwwogyfuwe1oss9oqar93 unique (milestones_id);
 
@@ -190,3 +217,30 @@
        foreign key (UserTaskInstanceEntity_id) 
        references UserTaskInstanceEntity 
        on delete cascade;
+
+    alter table if exists UserTaskInstanceEntity_CommentEntity
+       add constraint UserTaskInstanceEntity_CommentEntity_pk unique (comments_id);
+
+    alter table if exists UserTaskInstanceEntity_CommentEntity
+        add constraint UserTaskInstanceEntity_CommentEntity_commentId
+        foreign key (comments_id)
+        references CommentEntity on delete cascade;
+
+    alter table if exists UserTaskInstanceEntity_CommentEntity
+        add constraint UserTaskInstanceEntity_CommentEntity_id
+        foreign key (UserTaskInstanceEntity_id)
+        references UserTaskInstanceEntity on delete cascade;
+
+    alter table if exists UserTaskInstanceEntity_AttachmentEntity
+        add constraint UserTaskInstanceEntity_AttachmentEntity_pk unique (attachments_id);
+
+    alter table if exists UserTaskInstanceEntity_AttachmentEntity
+        add constraint UserTaskInstanceEntity_AttachmentEntity_attachmentId
+        foreign key (attachments_id)
+        references AttachmentEntity on delete cascade;
+
+    alter table if exists UserTaskInstanceEntity_AttachmentEntity
+        add constraint UserTaskInstanceEntity_AttachmentEntity_id
+        foreign key (UserTaskInstanceEntity_id)
+        references UserTaskInstanceEntity on delete cascade;
+

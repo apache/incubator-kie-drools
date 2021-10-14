@@ -153,6 +153,10 @@ message UserTaskInstance {
     optional int64 lastUpdate = 21;
     /* @Field(store = Store.YES) */
     optional string endpoint = 22;
+    /* @Field(store = Store.YES) */
+    repeated Comment comments = 23;
+    /* @Field(store = Store.YES) */
+    repeated Attachment attachments = 24;
 }
 
 /* @Indexed */
@@ -187,6 +191,36 @@ message UserTaskInstanceMeta {
     optional string referenceName = 15;
     /* @Field(store = Store.YES) */
     optional int64 lastUpdate = 16;
+    /* @Field(store = Store.YES) */
+    repeated Comment comments = 17;
+    /* @Field(store = Store.YES) */
+    repeated Attachment attachments = 18;
+}
+
+/* @Indexed */
+message Comment {
+    /* @Field(store = Store.YES) */
+    optional string id = 1;
+    /* @Field(store = Store.YES) */
+    optional string content = 2;
+    /* @Field(store = Store.YES) */
+    optional int64 updatedAt = 3;
+    /* @Field(store = Store.YES) */
+    optional string updatedBy = 4;
+}
+
+/* @Indexed */
+message Attachment {
+    /* @Field(store = Store.YES) */
+    optional string id = 1;
+    /* @Field(store = Store.YES) */
+    optional string name = 2;
+    /* @Field(store = Store.YES) */
+    optional string content = 3;
+    /* @Field(store = Store.YES) */
+    optional int64 updatedAt = 4;
+    /* @Field(store = Store.YES) */
+    optional string updatedBy = 5;
 }
 
 /* @Indexed */

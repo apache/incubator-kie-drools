@@ -146,6 +146,17 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.completed", ZonedDateTime.parse("2019-08-30T11:48:37.828Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("data.started", ZonedDateTime.parse("2019-08-30T11:47:42.886Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("data.endpoint", "http://localhost:8080/travels/f78fb147-ec22-4478-a592-3063add9f956/VisaApplication/228d5922-5e88-4bfa-8329-7116a5cbe58b");
+        softly.assertThat(event.getData().getComments().get(0))
+                .hasFieldOrPropertyWithValue("id", "54e66e2f-2acd-4d47-b8e6-991cb6372888")
+                .hasFieldOrPropertyWithValue("content", "Comment_1")
+                .hasFieldOrPropertyWithValue("updatedBy", "user")
+                .hasFieldOrPropertyWithValue("updatedAt", ZonedDateTime.parse("2019-08-20T19:26:02.092Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
+        softly.assertThat(event.getData().getAttachments().get(0))
+                .hasFieldOrPropertyWithValue("id", "54e66e2f-2acd-4d47-b8e6-991cb6372999")
+                .hasFieldOrPropertyWithValue("name", "doc1")
+                .hasFieldOrPropertyWithValue("content", "http://Attachmentlink.com/doc")
+                .hasFieldOrPropertyWithValue("updatedBy", "user")
+                .hasFieldOrPropertyWithValue("updatedAt", ZonedDateTime.parse("2019-08-20T19:26:02.092Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
 
         softly.assertAll();
     }
