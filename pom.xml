@@ -280,7 +280,7 @@
     <version.tomcat>9.0.22</version.tomcat>
     <version.wsdl4j>1.6.3</version.wsdl4j>
     <version.xalan>2.7.1</version.xalan>
-    <version.xerces>2.12.0.SP03</version.xerces>
+    <version.xerces>2.12.1</version.xerces>
     <version.xml-apis>1.4.01</version.xml-apis>
     <version.xml-apis-ext>1.3.04</version.xml-apis-ext>
     <version.xml-resolver>1.2</version.xml-resolver>
