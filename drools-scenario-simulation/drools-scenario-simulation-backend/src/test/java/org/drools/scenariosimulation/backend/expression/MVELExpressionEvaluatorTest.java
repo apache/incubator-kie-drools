@@ -167,10 +167,7 @@ public class MVELExpressionEvaluatorTest {
         ))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Cannot assign a 'java.lang.Integer");
-    }
 
-    @Test
-    public void evaluateLiteralExpression_Array() {
         assertThat(evaluator.evaluateLiteralExpression(mvelExpression("{\"Jim\", \"Michael\"}"), Object[].class.getName(),
                                                        Collections.emptyList()
         ))
