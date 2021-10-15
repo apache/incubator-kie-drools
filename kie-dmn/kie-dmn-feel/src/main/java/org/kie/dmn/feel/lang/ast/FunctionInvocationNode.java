@@ -30,6 +30,7 @@ import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.functions.AbstractCustomFEELFunction;
 import org.kie.dmn.feel.util.Msg;
+import org.kie.dmn.feel.util.MsgUtil;
 
 public class FunctionInvocationNode
         extends BaseNode {
@@ -119,6 +120,7 @@ public class FunctionInvocationNode
                 ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER, params.getElements().size())));
             }
         }
+        ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.CANNOT_INVOKE, MsgUtil.clipToString(value, 50))));
         return null;
     }
 
