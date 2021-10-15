@@ -46,10 +46,12 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils.NullType;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
+import org.drools.mvelcompiler.ast.BigIntegerConvertedExprT;
 import org.drools.mvelcompiler.ast.BinaryExprT;
 import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.CharacterLiteralExpressionT;
@@ -339,6 +341,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(BigDecimalLiteralExpr n, Context arg) {
         return new BigDecimalConvertedExprT(new StringLiteralExpressionT(new StringLiteralExpr(n.getValue())));
+    }
+
+    @Override
+    public TypedExpression visit(BigIntegerLiteralExpr n, Context arg) {
+        return new BigIntegerConvertedExprT(new StringLiteralExpressionT(new StringLiteralExpr(n.getValue())));
     }
 
     private Class<?> resolveType(com.github.javaparser.ast.type.Type type) {

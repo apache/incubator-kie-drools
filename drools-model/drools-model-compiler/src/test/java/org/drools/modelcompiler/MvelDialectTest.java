@@ -17,6 +17,7 @@
 package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1447,5 +1448,68 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(person);
         ksession.fireAllRules();
         assertThat(result).containsExactly(1);
+    }
+
+    @Test
+    public void testMVELBigIntegerLiteralRHS() {
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  $p.setAgeInSeconds(10000I);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person();
+        ksession.insert(p);
+        ksession.fireAllRules();
+
+        assertTrue(p.getAgeInSeconds().equals(new BigInteger("10000")));
+    }
+
+    @Test
+    public void testMVELBigDecimalLiteralRHS() {
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  $p.setMoney(10000B);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person();
+        ksession.insert(p);
+        ksession.fireAllRules();
+
+        assertTrue(p.getMoney().equals(new BigDecimal("10000")));
+    }
+
+    @Test
+    public void testMVELBigIntegerLiteralLHS() {
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person(ageInSeconds == 10000I)\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person();
+        p.setAgeInSeconds(new BigInteger("10000"));
+        ksession.insert(p);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
     }
 }
