@@ -41,15 +41,15 @@ Map getMultijobPRConfig() {
                 ]
             ], [
                 id: 'kogito-examples',
-                repository: 'kogito-examples'
+                repository: 'kogito-examples',
                 dependsOn: 'optaplanner',
             ], [
                 id: 'optaweb-employee-rostering',
-                repository: 'optaweb-employee-rostering'
+                repository: 'optaweb-employee-rostering',
                 dependsOn: 'optaplanner',
             ], [
                 id: 'optaweb-vehicle-routing',
-                repository: 'optaweb-vehicle-routing'
+                repository: 'optaweb-vehicle-routing',
                 dependsOn: 'optaplanner',
             ], [
                 id: 'optaplanner-quickstarts',
