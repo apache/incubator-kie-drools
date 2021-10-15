@@ -1,18 +1,18 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { Outcome } from '../../../../types';
-import ExplanationSwitch from '../ExplanationSwitch';
+import OutcomeSwitch from '../OutcomeSwitch';
 
 describe('ExplanationSwitch', () => {
   test('renders correctly', () => {
-    const wrapper = shallow(<ExplanationSwitch {...props} />);
+    const wrapper = shallow(<OutcomeSwitch {...props} />);
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('SelectOption')).toHaveLength(2);
   });
 
   test('handles explanation selection', () => {
-    const wrapper = mount(<ExplanationSwitch {...props} />);
+    const wrapper = mount(<OutcomeSwitch {...props} />);
 
     expect(wrapper.find('Select').prop('selections')).toMatch(
       props.currentExplanationId

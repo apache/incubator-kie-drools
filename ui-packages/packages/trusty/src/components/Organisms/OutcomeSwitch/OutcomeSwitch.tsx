@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Select,
   SelectDirection,
@@ -7,15 +7,15 @@ import {
   SelectVariant
 } from '@patternfly/react-core';
 import { Outcome } from '../../../types';
-import './ExplanationSwitch.scss';
+import './OutcomeSwitch.scss';
 
-type ExplanationSwitchProps = {
+type OutcomeSwitchProps = {
   currentExplanationId: string;
   onDecisionSelection: (outcomeId: string) => void;
   outcomesList: Outcome[];
 };
 
-const ExplanationSwitch = (props: ExplanationSwitchProps) => {
+const OutcomeSwitch = (props: OutcomeSwitchProps) => {
   const { outcomesList, onDecisionSelection, currentExplanationId } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<string | SelectOptionObject>(
@@ -35,8 +35,12 @@ const ExplanationSwitch = (props: ExplanationSwitchProps) => {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    setSelected(currentExplanationId);
+  }, [currentExplanationId]);
+
   return (
-    <div className="explanation-switch">
+    <div className="outcome-switch">
       <Select
         variant={SelectVariant.single}
         aria-label="Select Decision Outcome"
@@ -56,4 +60,4 @@ const ExplanationSwitch = (props: ExplanationSwitchProps) => {
   );
 };
 
-export default ExplanationSwitch;
+export default OutcomeSwitch;

@@ -1,3 +1,9 @@
+export interface TrustyContextValue {
+  config: {
+    explanationEnabled: boolean;
+  };
+}
+
 export type RemoteData<E, D> =
   | { status: RemoteDataStatus.NOT_ASKED }
   | { status: RemoteDataStatus.LOADING }

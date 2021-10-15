@@ -26,13 +26,13 @@ import SkeletonStripe from '../../Atoms/SkeletonStripe/SkeletonStripe';
 import SkeletonCards from '../../Molecules/SkeletonCards/SkeletonCards';
 import ExecutionDetail from '../ExecutionDetail/ExecutionDetail';
 import useDecisionOutcomes from './useDecisionOutcomes';
-import Explanation from '../Explanation/Explanation';
+import OutcomeDetails from '../OutcomeDetails/OutcomeDetails';
 import InputData from '../InputData/InputData';
 import ModelLookup from '../ModelLookup/ModelLookup';
-import './AuditDetail.scss';
 import Counterfactual from '../Counterfactual/Counterfactual';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import CounterfactualUnsupportedBanner from '../../Atoms/CounterfactualUnsupportedBanner/CounterfactualUnsupportedBanner';
+import './AuditDetail.scss';
 
 const AuditDetail = () => {
   const { path, url } = useRouteMatch();
@@ -128,13 +128,13 @@ const AuditDetail = () => {
 
       <Switch>
         <Route path={`${path}/single-outcome`}>
-          <Explanation outcomes={outcomes} />
+          <OutcomeDetails outcomes={outcomes} />
         </Route>
         <Route path={`${path}/outcomes`}>
           <ExecutionDetail outcomes={outcomes} />
         </Route>
         <Route path={`${path}/outcomes-details`}>
-          <Explanation outcomes={outcomes} />
+          <OutcomeDetails outcomes={outcomes} />
         </Route>
         <Route path={`${path}/input-data`}>
           <InputData />

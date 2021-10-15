@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { MemoryRouter } from 'react-router';
-import { orderBy } from 'lodash';
-import Explanation from '../Explanation';
-import useOutcomeDetail from '../useOutcomeDetail';
-import useSaliencies from '../useSaliencies';
 import {
   ItemObject,
   Outcome,
@@ -13,6 +9,10 @@ import {
   Saliencies,
   SaliencyStatus
 } from '../../../../types';
+import useSaliencies from '../useSaliencies';
+import OutcomeDetails from '../OutcomeDetails';
+import useOutcomeDetail from '../useOutcomeDetail';
+import { TrustyContext } from '../../TrustyApp/TrustyApp';
 
 const executionId = 'b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000';
 
@@ -29,7 +29,27 @@ jest.mock('react-router-dom', () => ({
   })
 }));
 
-describe('Explanation', () => {
+const setupWrapper = (
+  outcomes: RemoteData<Error, Outcome[]>,
+  explanationEnabled: boolean
+) => {
+  return mount(
+    <MemoryRouter
+      initialEntries={[
+        {
+          pathname: `/audit/decision/${executionId}/outcomes-details`,
+          key: 'outcomes-detail'
+        }
+      ]}
+    >
+      <TrustyContext.Provider value={{ config: { explanationEnabled } }}>
+        <OutcomeDetails outcomes={outcomes} />
+      </TrustyContext.Provider>
+    </MemoryRouter>
+  );
+};
+
+describe('OutcomeDetails', () => {
   test('renders animations while fetching data', () => {
     const loadingOutcomes = {
       status: RemoteDataStatus.LOADING
@@ -44,106 +64,60 @@ describe('Explanation', () => {
     (useOutcomeDetail as jest.Mock).mockReturnValue(loadingOutcomeDetail);
     (useSaliencies as jest.Mock).mockReturnValue(loadingSaliencies);
 
-    const wrapper = mount(
-      <MemoryRouter
-        initialEntries={[
-          {
-            pathname: `/audit/decision/${executionId}/outcomes-details`,
-            key: 'outcomes-detail'
-          }
-        ]}
-      >
-        <Explanation outcomes={loadingOutcomes} />
-      </MemoryRouter>
-    );
+    const wrapper = setupWrapper(loadingOutcomes, true);
 
     expect(useOutcomeDetail).toHaveBeenCalledWith(executionId, null);
-    expect(useSaliencies).toHaveBeenCalledWith(executionId);
 
     expect(
-      wrapper.find(
-        '.explanation-view__section--outcome-selector SkeletonStripe'
-      )
+      wrapper.find('.outcome-details__section--outcome-selector SkeletonStripe')
     ).toHaveLength(1);
-    expect(
-      wrapper.find('.explanation-view__outcome SkeletonGrid')
-    ).toHaveLength(1);
-    expect(wrapper.find('SkeletonDoubleBarChart')).toHaveLength(1);
-    expect(
-      wrapper.find('.explanation-view__score-table SkeletonGrid')
-    ).toHaveLength(1);
+    expect(wrapper.find('.outcome-details__outcome SkeletonGrid')).toHaveLength(
+      1
+    );
   });
 
   test('renders correctly the details of an outcome', () => {
     (useOutcomeDetail as jest.Mock).mockReturnValue(outcomeDetail);
     (useSaliencies as jest.Mock).mockReturnValue(saliencies);
 
-    const wrapper = mount(
-      <MemoryRouter
-        initialEntries={[
-          {
-            pathname: `/audit/decision/${executionId}/outcomes-details`,
-            key: 'outcomes-detail'
-          }
-        ]}
-      >
-        <Explanation outcomes={outcomes} />
-      </MemoryRouter>
-    );
-    let sortedFeatures;
-    if (saliencies.status === RemoteDataStatus.SUCCESS) {
-      sortedFeatures = orderBy(
-        saliencies.data.saliencies[0].featureImportance,
-        item => Math.abs(item.featureScore),
-        'asc'
-      );
-    }
-    expect(useOutcomeDetail).toHaveBeenCalledWith(
-      executionId,
-      '_12268B68-94A1-4960-B4C8-0B6071AFDE58'
-    );
-    expect(useSaliencies).toHaveBeenCalledWith(executionId);
+    const wrapper = setupWrapper(outcomes, true);
+    const outcomeId =
+      outcomes.status === RemoteDataStatus.SUCCESS &&
+      outcomes.data[0].outcomeId;
 
-    expect(wrapper.find('ExplanationSwitch')).toHaveLength(1);
-    expect(
-      wrapper.find('ExplanationSwitch').prop('outcomesList')
-    ).toStrictEqual(
+    expect(useOutcomeDetail).toHaveBeenCalledWith(executionId, outcomeId);
+
+    expect(wrapper.find('OutcomeSwitch')).toHaveLength(1);
+    expect(wrapper.find('OutcomeSwitch').prop('outcomesList')).toStrictEqual(
       outcomes.status === RemoteDataStatus.SUCCESS && outcomes.data
     );
-    expect(wrapper.find('FeaturesScoreChartBySign')).toHaveLength(1);
-    expect(
-      wrapper.find('FeaturesScoreChartBySign').prop('featuresScore')
-    ).toStrictEqual(sortedFeatures);
-    expect(wrapper.find('FeaturesScoreTable')).toHaveLength(1);
-    expect(
-      wrapper.find('FeaturesScoreTable').prop('featuresScore')
-    ).toStrictEqual(sortedFeatures);
+
+    expect(wrapper.find('Outcomes')).toHaveLength(1);
+    expect(wrapper.find('Outcomes').props()['outcomes']).toStrictEqual(
+      outcomes.status === RemoteDataStatus.SUCCESS && [outcomes.data[0]]
+    );
+
+    expect(wrapper.find('Explanation')).toHaveLength(1);
+    expect(wrapper.find('Explanation').prop('executionId')).toStrictEqual(
+      executionId
+    );
+    expect(wrapper.find('Explanation').prop('outcomeId')).toStrictEqual(
+      outcomeId
+    );
+
     expect(wrapper.find('InputDataBrowser')).toHaveLength(1);
     expect(wrapper.find('InputDataBrowser').prop('inputData')).toStrictEqual(
       outcomeDetail
     );
   });
 
-  test('renders an outcome with no explanation info', () => {
+  test('does not contain the explanation section when it is disabled', () => {
     (useOutcomeDetail as jest.Mock).mockReturnValue(outcomeDetail);
-    (useSaliencies as jest.Mock).mockReturnValue(noSaliencies);
+    (useSaliencies as jest.Mock).mockReturnValue(saliencies);
 
-    const wrapper = mount(
-      <MemoryRouter
-        initialEntries={[
-          {
-            pathname: `/audit/decision/${executionId}/outcomes-details`,
-            key: 'outcomes-detail'
-          }
-        ]}
-      >
-        <Explanation outcomes={outcomes} />
-      </MemoryRouter>
-    );
+    const wrapper = setupWrapper(outcomes, false);
 
-    expect(wrapper.find('FeaturesScoreChartBySign')).toHaveLength(0);
-    expect(wrapper.find('FeaturesScoreTable')).toHaveLength(0);
-    expect(wrapper.find('ExplanationUnavailable')).toHaveLength(1);
+    expect(wrapper.find('Explanation')).toHaveLength(0);
   });
 });
 
@@ -225,22 +199,6 @@ const saliencies = {
             featureScore: -0.08937896629080377
           }
         ]
-      }
-    ]
-  } as Saliencies
-} as RemoteData<Error, Saliencies>;
-const noSaliencies = {
-  status: RemoteDataStatus.SUCCESS,
-  data: {
-    status: SaliencyStatus.SUCCEEDED,
-    saliencies: [
-      {
-        outcomeId: '_12268B68-94A1-4960-B4C8-0B6071AFDE58',
-        featureImportance: []
-      },
-      {
-        outcomeId: '_9CFF8C35-4EB3-451E-874C-DB27A5A424C0',
-        featureImportance: []
       }
     ]
   } as Saliencies

@@ -1,0 +1,16 @@
+.explanation {
+  &__chart-card {
+    height: 100%;
+  }
+  &__chart {
+    max-width: 950px;
+    max-height: 600px;
+    margin: var(--pf-global--spacer--md) auto;
+  }
+  &__score-table {
+    height: 100%;
+  }
+  &__all-features-opener {
+    margin-left: var(--pf-global--spacer--md);
+  }
+}

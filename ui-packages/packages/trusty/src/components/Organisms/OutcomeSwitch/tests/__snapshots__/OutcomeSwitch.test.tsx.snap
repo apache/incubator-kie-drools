@@ -2,7 +2,7 @@
 
 exports[`ExplanationSwitch renders correctly 1`] = `
 <div
-  className="explanation-switch"
+  className="outcome-switch"
 >
   <Select
     aria-describedby=""

@@ -23,8 +23,14 @@ import AuditDetail from '../AuditDetail/AuditDetail';
 import imgAvatar from '../../../../static/images/user.svg';
 import Breadcrumbs from '../../Organisms/Breadcrumbs/Breadcrumbs';
 import './TrustyApp.scss';
+import { TrustyContextValue } from '../../../types';
 
-const TrustyApp = () => {
+type TrustyAppProps = {
+  explanationEnabled: boolean;
+};
+
+const TrustyApp = (props: TrustyAppProps) => {
+  const { explanationEnabled } = props;
   const location = useLocation();
   const [isMobileView, setIsMobileView] = useState(false);
   const [isNavOpenDesktop, setIsNavOpenDesktop] = useState(true);
@@ -89,25 +95,29 @@ const TrustyApp = () => {
   );
 
   return (
-    <Page
-      header={Header}
-      sidebar={Sidebar}
-      breadcrumb={<Breadcrumbs />}
-      onPageResize={handlePageResize}
-    >
-      <Switch>
-        <Route exact path="/">
-          <Redirect to="/audit" />
-        </Route>
-        <Route exact path="/audit">
-          <AuditOverview />
-        </Route>
-        <Route path="/audit/:executionType/:executionId">
-          <AuditDetail />
-        </Route>
-      </Switch>
-    </Page>
+    <TrustyContext.Provider value={{ config: { explanationEnabled } }}>
+      <Page
+        header={Header}
+        sidebar={Sidebar}
+        breadcrumb={<Breadcrumbs />}
+        onPageResize={handlePageResize}
+      >
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/audit" />
+          </Route>
+          <Route exact path="/audit">
+            <AuditOverview />
+          </Route>
+          <Route path="/audit/:executionType/:executionId">
+            <AuditDetail />
+          </Route>
+        </Switch>
+      </Page>
+    </TrustyContext.Provider>
   );
 };
 
 export default TrustyApp;
+
+export const TrustyContext = React.createContext<TrustyContextValue>(null);

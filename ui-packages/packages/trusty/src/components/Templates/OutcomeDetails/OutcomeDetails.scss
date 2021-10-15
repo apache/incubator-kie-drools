@@ -1,4 +1,4 @@
-.explanation-view {
+.outcome-details {
   padding-bottom: var(--pf-global--spacer--xl);
   background-color: var(--pf-c-page__main-section--BackgroundColor);
   &__title {
@@ -18,20 +18,6 @@
     display: inline-block;
     vertical-align: middle;
     margin-left: 0.5em;
-  }
-  .all-features-opener {
-    margin-left: var(--pf-global--spacer--md);
-  }
-  &__chart-card {
-    height: 100%;
-  }
-  &__chart {
-    max-width: 950px;
-    max-height: 600px;
-    margin: var(--pf-global--spacer--md) auto;
-  }
-  &__score-table {
-    height: 100%;
   }
   &__outcome-not-successful {
     font-weight: 600;
