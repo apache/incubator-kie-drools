@@ -17,6 +17,7 @@
 
   <properties>
     <java.module.name>org.drools.retediagram</java.module.name>
+    <sonar.exclusions>**/*</sonar.exclusions>
   </properties>
 
   <dependencies>
