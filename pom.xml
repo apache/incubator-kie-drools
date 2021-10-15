@@ -1820,7 +1820,6 @@
         <skipTests>true</skipTests>
         <invoker.skip>true</invoker.skip>
         <archetype.test.skip>true</archetype.test.skip>
-        <exec.skip>true</exec.skip>
       </properties>
       <build>
         <defaultGoal>clean install</defaultGoal>
@@ -1865,7 +1864,6 @@
         <skipITs>true</skipITs>
         <invoker.skip>true</invoker.skip>
         <archetype.test.skip>true</archetype.test.skip>
-        <exec.skip>true</exec.skip>
       </properties>
       <build>
         <defaultGoal>clean install</defaultGoal>
@@ -1904,20 +1902,21 @@
     </profile>
     <profile>
       <!--
-        Translates -DskipTests parameter passed to build into setting corresponding skip properties.
+        Translates -DskipAllTests parameter passed to build into setting corresponding skip properties.
         It does NOT reflect the change made to the property value inside the pom files, just from cmd line.
         Inside pom file it needs to be in sync explicitly in each profile.
       -->
-      <id>skip-tests</id>
+      <id>skip-all-tests</id>
       <activation>
         <property>
-          <name>skipTests</name>
+          <name>skipAllTests</name>
         </property>
       </activation>
       <properties>
+        <skipITs>true</skipITs>
+        <skipTests>true</skipTests>
         <invoker.skip>true</invoker.skip>
         <archetype.test.skip>true</archetype.test.skip>
-        <exec.skip>true</exec.skip>
       </properties>
     </profile>
 
