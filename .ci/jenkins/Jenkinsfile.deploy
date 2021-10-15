@@ -107,23 +107,6 @@ pipeline {
                 }
             }
         }
-        stage('Check integration tests with persistence') {
-            steps {
-                script {
-                    sh 'cp -r kogito-runtimes integration-tests'
-
-                    getMavenCommand('integration-tests')
-                        .withProfiles(['persistence'])
-                        .skipTests(params.SKIP_TESTS)
-                        .run('clean verify')
-                }
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
         stage('Deploy to repository') {
             when {
                 expression { return !shouldStageArtifacts() && shouldDeployToRepository() }
