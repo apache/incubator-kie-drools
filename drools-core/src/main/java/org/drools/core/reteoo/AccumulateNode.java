@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +42,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.FastIterator;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 
@@ -120,21 +116,6 @@ public class AccumulateNode extends BetaNode {
         return pattern != null && isRightInputIsRiaNode() ?
                pattern.getObjectType() :
                leftInput.getParentObjectSource().getObjectTypeNode().getObjectType();
-    }
-
-    public void readExternal( ObjectInput in ) throws IOException,
-                                              ClassNotFoundException {
-        super.readExternal( in );
-        accumulate = (Accumulate) in.readObject();
-        resultConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
-        resultBinder = (BetaConstraints) in.readObject();
-    }
-
-    public void writeExternal( ObjectOutput out ) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( accumulate );
-        out.writeObject( resultConstraints );
-        out.writeObject( resultBinder );
     }
 
     public short getType() {

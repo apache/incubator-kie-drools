@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Comparator;
 import java.util.Map;
 
@@ -115,36 +112,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        rule = (RuleImpl) in.readObject();
-        subrule = (GroupElement) in.readObject();
-        subruleIndex = in.readInt();
-        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-
-        salienceDeclarations = ( Declaration[]) in.readObject();
-        enabledDeclarations = ( Declaration[]) in.readObject();
-        consequenceName = (String) in.readObject();
-
-        fireDirect = rule.getActivationListener().equals( "direct" );
-
-        initDeclarations();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( rule );
-        out.writeObject( subrule );
-        out.writeInt( subruleIndex );
-        out.writeObject( previousTupleSinkNode );
-        out.writeObject( nextTupleSinkNode );
-
-        out.writeObject( salienceDeclarations );
-        out.writeObject( enabledDeclarations );
-        out.writeObject( consequenceName );
-    }
 
     /**
      * Retrieve the <code>Action</code> associated with this node.

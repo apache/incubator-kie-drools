@@ -16,9 +16,6 @@
 
 package org.drools.traits.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.BitSet;
 import java.util.Collection;
 
@@ -26,17 +23,17 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.traits.core.factmodel.TraitProxyImpl;
-import org.drools.core.factmodel.traits.TraitType;
-import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
+import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 
 import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
 
@@ -53,17 +50,6 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                 ((ClassObjectType) objectType).getClassName()
         );
     }
-
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        super.readExternal( in );
-        typeMask = (BitSet) in.readObject();
-    }
-
-    public void writeExternal( ObjectOutput out ) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( typeMask );
-    }
-
 
     @Override
     public void propagateAssert( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {

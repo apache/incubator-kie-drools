@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -84,23 +81,6 @@ public class AsyncReceiveNode extends LeftTupleSource
         initMasks( context, tupleSource );
 
         hashcode = calculateHashCode();
-    }
-
-    public void readExternal( ObjectInput in ) throws IOException,
-            ClassNotFoundException {
-        super.readExternal( in );
-        messageId = ( String ) in.readObject();
-        tupleMemoryEnabled = in.readBoolean();
-        alphaConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
-        betaConstraints = (BetaConstraints) in.readObject();
-    }
-
-    public void writeExternal( ObjectOutput out ) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( messageId );
-        out.writeBoolean(tupleMemoryEnabled);
-        out.writeObject( alphaConstraints );
-        out.writeObject( betaConstraints );
     }
 
     public void doAttach( BuildContext context ) {

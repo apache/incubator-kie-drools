@@ -16,9 +16,6 @@
 
 package org.drools.mvel.model;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,23 +46,8 @@ public class MockObjectSource extends ObjectSource {
         this.facts = new ArrayList();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        attached    = in.readInt();
-        updated    = in.readInt();
-        facts = (List)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeInt(attached);
-        out.writeInt(updated);
-        out.writeObject(facts);
-    }
-
     public void attach() {
         this.attached++;
-
     }
 
     public int getAttached() {

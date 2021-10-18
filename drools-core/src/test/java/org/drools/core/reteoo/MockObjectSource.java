@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +23,6 @@ import java.util.List;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
@@ -46,20 +42,6 @@ public class MockObjectSource extends ObjectSource {
     public MockObjectSource(final int id) {
         super( id, RuleBasePartitionId.MAIN_PARTITION, false);
         this.facts = new ArrayList();
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        attached    = in.readInt();
-        updated    = in.readInt();
-        facts = (List)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeInt(attached);
-        out.writeInt(updated);
-        out.writeObject(facts);
     }
 
     public void attach() {

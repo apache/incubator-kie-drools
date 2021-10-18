@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -123,12 +122,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase();
         kbase.addPackages( Collections.singleton( kpkg ) );
 
-        Map<String, InternalKnowledgeBase> map = new HashMap<String, InternalKnowledgeBase>();
-        map.put( "x",
-                 kbase );
-        map = SerializationHelper.serializeObject( map );
-        kbase = map.get( "x" );
-
         final org.kie.api.definition.rule.Rule[] rules = kbase.getKiePackages().iterator().next().getRules().toArray( new org.kie.api.definition.rule.Rule[0] );
         assertEquals( 4,
                       rules.length );
@@ -187,16 +180,9 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         KieSession session = kBase.newKieSession();
 
-        Map map = new HashMap();
-        map.put( "x",
-                 kBase );
-        map = SerializationHelper.serializeObject( map );
-        kBase = (InternalKnowledgeBase) map.get( "x" );
-
         kBase.addPackages( kpkgs );
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
-        kBase = SerializationHelper.serializeObject( kBase );
 
         session.setGlobal( "list",
                            new ArrayList() );
@@ -248,14 +234,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         Collection<KiePackage>  kpkgs = loadKnowledgePackages("test_Serializable.drl" );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
-
-        // serialise a hashmap with the RuleBase as a key
-        Map map = new HashMap();
-        map.put( "x",
-                 kBase );
-        map = SerializationHelper.serializeObject( map );
-        kBase = (InternalKnowledgeBase) map.get( "x" );
-
         kBase.addPackages(kpkgs);
 
         KieSession session = kBase.newKieSession();
@@ -324,13 +302,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         final Person bob = new Person( "bob" );
         session.insert( bob );
 
-        // serialise a hashmap with the RuleBase as a key, after WM population
-        Map map = new HashMap();
-        map.put( "x",
-                 kBase );
-        map = SerializationHelper.serializeObject( map );
-        kBase = (InternalKnowledgeBase) map.get( "x" );
-
         // now try serialising with a fully populated wm from a serialised rulebase
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
 
@@ -379,7 +350,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         kpkgs = SerializationHelper.serializeObject( kpkgs );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
-        kBase = SerializationHelper.serializeObject( kBase );
 
         KieSession session = kBase.newKieSession();
         List list = new ArrayList();
@@ -436,13 +406,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         kpkgs = SerializationHelper.serializeObject( kpkgs );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
-        kBase = SerializationHelper.serializeObject( kBase );
 
-        Map map = new HashMap();
-        map.put( "x",
-                 kBase );
-        map = SerializationHelper.serializeObject( map );
-        kBase = (InternalKnowledgeBase) map.get( "x" );
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
         assertEquals( 3, rules.length );
 
@@ -497,7 +461,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         kpkgs = SerializationHelper.serializeObject( kpkgs );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
-        kBase = SerializationHelper.serializeObject( kBase );
 
         List results = new ArrayList();
         KieSession session = kBase.newKieSession();
@@ -521,13 +484,11 @@ public class MarshallingTest extends CommonTestMethodBase {
 
 
         // serialize session and rulebase
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         // dynamically add a new package
         kpkgs = loadKnowledgePackages("test_Dynamic3_0.drl" );
         kBase.addPackages(SerializationHelper.serializeObject( kpkgs ));
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
 
         InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton",
@@ -552,7 +513,6 @@ public class MarshallingTest extends CommonTestMethodBase {
                       results.get( 3 ) );
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
 
         // dispose session
         session.dispose();
@@ -575,7 +535,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         kpkgs = SerializationHelper.serializeObject( kpkgs );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
-        kBase = SerializationHelper.serializeObject( kBase );
 
         List results = new ArrayList();
         KieSession session = kBase.newKieSession();
@@ -588,14 +547,12 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                     10 ) );
         session.fireAllRules();
 
-        // serialize session and rulebase
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
+        // serialize session
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         // dynamically add a new package
         kpkgs = loadKnowledgePackages("test_Dynamic1_1.drl" );
         kBase.addPackages(SerializationHelper.serializeObject( kpkgs ));
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
 
         InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton",
@@ -616,7 +573,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertTrue( results.contains( brie3.getObject() ) );
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
 
         session.dispose();
     }
@@ -631,7 +587,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         kpkgs = SerializationHelper.serializeObject( kpkgs );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
-        kBase = SerializationHelper.serializeObject( kBase );
 
         List results = new ArrayList();
         KieSession session = kBase.newKieSession();
@@ -650,14 +605,12 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertEquals( stilton1.getObject(),
                       results.get( 0 ) );
 
-        // serialize session and rulebase
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
+        // serialize session
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         // dynamic add pkgs
         kpkgs = loadKnowledgePackages("test_Dynamic3_0.drl" );
         kBase.addPackages(SerializationHelper.serializeObject( kpkgs ));
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton",
@@ -677,14 +630,12 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertTrue( results.contains( bob2.getObject() ) );
         assertTrue( results.contains( bob1.getObject() ) );
 
-        // serialize session and rulebase
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
+        // serialize session
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         // dynamic add pkgs
         kpkgs = loadKnowledgePackages("test_Dynamic1_2.drl" );
         kBase.addPackages(SerializationHelper.serializeObject( kpkgs ));
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         InternalFactHandle stilton3 = (InternalFactHandle) session.insert( new Cheese( "stilton",
@@ -711,8 +662,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertTrue( results.contains( addr2.getObject() ) );
         assertTrue( results.contains( addr1.getObject() ) );
 
-        // serialize session and rulebase
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
+        // serialize session
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         InternalFactHandle stilton4 = (InternalFactHandle) session.insert( new Cheese( "stilton",
@@ -739,8 +689,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertTrue( results.contains( addr4.getObject() ) );
         assertTrue( results.contains( addr3.getObject() ) );
 
-        // serialize session and rulebase
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
+        // serialize session
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         session.dispose();
@@ -762,7 +711,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         kpkgs = SerializationHelper.serializeObject( kpkgs );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
-        kBase = SerializationHelper.serializeObject( kBase );
 
         List results = new ArrayList();
         KieSession session = kBase.newKieSession();
@@ -781,13 +729,11 @@ public class MarshallingTest extends CommonTestMethodBase {
                       results.get( 0 ) );
 
         // serialize session and rulebase
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         // dynamic add pkgs
         kpkgs = loadKnowledgePackages("test_Dynamic3_0.drl" );
         kBase.addPackages(SerializationHelper.serializeObject( kpkgs ));
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         results.clear();
@@ -809,7 +755,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertTrue( results.contains( bob1.getObject() ) );
         assertTrue( results.contains( bob2.getObject() ) );
 
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
         results.clear();
 
@@ -832,8 +777,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertTrue( results.contains( bob3.getObject() ) );
         assertTrue( results.contains( bob4.getObject() ) );
 
-        // now recreate the rulebase, deserialize the session and test it
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
+        // deserialize the session and test it
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
         results.clear();
 
@@ -855,7 +799,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertTrue( results.contains( bob5.getObject() ) );
         assertTrue( results.contains( bob6.getObject() ) );
 
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
         results.clear();
 
@@ -877,7 +820,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertTrue( results.contains( bob7.getObject() ) );
         assertTrue( results.contains( bob8.getObject() ) );
 
-        kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
         session.dispose();
@@ -898,7 +840,6 @@ public class MarshallingTest extends CommonTestMethodBase {
             kpkgs = SerializationHelper.serializeObject( kpkgs );
             InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
             kBase.addPackages(kpkgs);
-            kBase = SerializationHelper.serializeObject( kBase );
 
         } finally {
             unsetPrivateKeyProperties();
@@ -965,7 +906,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         kpkgs = SerializationHelper.serializeObject( kpkgs );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
-        kBase = SerializationHelper.serializeObject( kBase );
 
         try {
             // set only the deserialisation properties, but not the serialization
@@ -1796,7 +1736,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieBase kBase = loadKnowledgeBaseFromString( rule1, rule2, rule3, rule4);
         KieSession ksession = kBase.newKieSession( );
 
-        kBase = SerializationHelper.serializeObject( kBase );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
         final List list = new ArrayList();
@@ -1878,7 +1817,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieBase kBase = loadKnowledgeBaseFromString( rule1, rule2, rule3, rule4);
         KieSession ksession = kBase.newKieSession( );
 
-        kBase = SerializationHelper.serializeObject( kBase );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
         final List list = new ArrayList();
@@ -1966,7 +1904,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( rule1, rule2, rule3, rule4 );
         KieSession ksession = getSerialisedStatefulKnowledgeSession( kbase.newKieSession(), true );
 
-        kbase = SerializationHelper.serializeObject( kbase );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
         final List list = new ArrayList();
@@ -2012,7 +1949,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieBase kBase = loadKnowledgeBaseFromString( rule );
         KieSession ksession = getSerialisedStatefulKnowledgeSession( kBase.newKieSession(), true );
 
-        kBase = SerializationHelper.serializeObject( kBase );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
         ksession.setGlobal( "results",
@@ -2175,14 +2111,12 @@ public class MarshallingTest extends CommonTestMethodBase {
         Marshaller marshaller = createSerializableMarshaller( kbase );
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new DroolsObjectOutputStream( baos );
-        out.writeObject( kbase );
         marshaller.marshall( out,
                              ksession );
         out.flush();
         out.close();
 
         ObjectInputStream in = new DroolsObjectInputStream( new ByteArrayInputStream( baos.toByteArray() ) );
-        kbase = (InternalKnowledgeBase) in.readObject();
         marshaller = createSerializableMarshaller( kbase );
         ksession = (StatefulKnowledgeSession) marshaller.unmarshall( in );
         in.close();

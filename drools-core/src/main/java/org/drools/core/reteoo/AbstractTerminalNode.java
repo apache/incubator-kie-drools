@@ -15,10 +15,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -36,7 +32,7 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, Externalizable {
+public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode {
 
     private LeftTupleSource tupleSource;
 
@@ -60,24 +56,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         this.setObjectCount(getLeftTupleSource().getObjectCount()); // 'terminal' nodes do not increase the count
         context.addPathEndNode(this);
         initMemoryId( context );
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal( in );
-        tupleSource = (LeftTupleSource) in.readObject();
-        declaredMask = (BitMask) in.readObject();
-        inferredMask = (BitMask) in.readObject();
-        negativeMask = (BitMask) in.readObject();
-        objectCount = in.readInt();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( tupleSource );
-        out.writeObject(declaredMask);
-        out.writeObject(inferredMask);
-        out.writeObject(negativeMask);
-        out.writeInt(objectCount);
     }
 
     @Override

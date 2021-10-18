@@ -371,7 +371,6 @@ public class DynamicRulesTest {
         kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_RemovePackage.drl").getKiePackages();
 
         ruleBaseWM.addPackages( kpkgs );
-        ruleBaseWM = SerializationHelper.serializeObject( ruleBaseWM );
 
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, 
                                                                              true );

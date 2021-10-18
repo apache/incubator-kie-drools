@@ -21,35 +21,33 @@ package org.drools.core.reteoo;
  * 
  * @see LeftTupleSinkNodeList
  */
-public interface LeftTupleSinkNode
-    extends
-    LeftTupleSink {
+public interface LeftTupleSinkNode extends LeftTupleSink {
 
     /**
      * Returns the next node
      * @return
      *      The next LinkedListNode
      */
-    public LeftTupleSinkNode getNextLeftTupleSinkNode();
+    LeftTupleSinkNode getNextLeftTupleSinkNode();
 
     /**
      * Sets the next node 
      * @param next
      *      The next LinkedListNode
      */
-    public void setNextLeftTupleSinkNode(LeftTupleSinkNode next);
+    void setNextLeftTupleSinkNode(LeftTupleSinkNode next);
 
     /**
      * Returns the previous node
      * @return
      *      The previous LinkedListNode
      */
-    public LeftTupleSinkNode getPreviousLeftTupleSinkNode();
+    LeftTupleSinkNode getPreviousLeftTupleSinkNode();
 
     /**
      * Sets the previous node 
      * @param previous
      *      The previous LinkedListNode
      */
-    public void setPreviousLeftTupleSinkNode(LeftTupleSinkNode previous);
+    void setPreviousLeftTupleSinkNode(LeftTupleSinkNode previous);
 }

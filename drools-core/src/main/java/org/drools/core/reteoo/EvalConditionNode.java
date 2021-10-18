@@ -75,21 +75,6 @@ public class EvalConditionNode extends LeftTupleSource
         hashcode = calculateHashCode();
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        condition = (EvalCondition) in.readObject();
-        tupleMemoryEnabled = in.readBoolean();
-        componentsMap = (Map<Rule, RuleComponent>) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( condition );
-        out.writeBoolean( tupleMemoryEnabled );
-        out.writeObject( componentsMap );
-    }
-
     public void doAttach( BuildContext context ) {
         super.doAttach(context);
         this.leftInput.addTupleSink( this, context );

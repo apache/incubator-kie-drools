@@ -16,10 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,10 +45,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
  * @see LeftTupleSource
  * @see LeftTuple
  */
-public abstract class LeftTupleSource extends BaseNode
-        implements
-        LeftTupleNode,
-        Externalizable {
+public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode {
 
     protected BitMask                 leftDeclaredMask = EmptyBitMask.get();
     protected BitMask                 leftInferredMask = EmptyBitMask.get();
@@ -98,26 +91,6 @@ public abstract class LeftTupleSource extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        sink = (LeftTupleSinkPropagator) in.readObject();
-        leftDeclaredMask = (BitMask) in.readObject();
-        leftInferredMask = (BitMask) in.readObject();
-        leftNegativeMask = (BitMask) in.readObject();
-        pathIndex = in.readInt();
-        objectCount = in.readInt();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( sink );
-        out.writeObject(leftDeclaredMask);
-        out.writeObject(leftInferredMask);
-        out.writeObject(leftNegativeMask);
-        out.writeInt(pathIndex);
-        out.writeInt(objectCount);
-    }
 
     public int getPathIndex() {
         return pathIndex;

@@ -16,9 +16,6 @@
 
 package org.drools.core.common;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Collection;
 
 import org.drools.core.reteoo.EntryPointNode;
@@ -68,28 +65,6 @@ public abstract class BaseNode
         this.partitionId = partitionId;
         this.partitionsEnabled = partitionsEnabled;
         this.associations = new Bag<Rule>();
-    }
-
-    @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        id = in.readInt();
-        memoryId = in.readInt();
-        partitionId = (RuleBasePartitionId) in.readObject();
-        partitionsEnabled = in.readBoolean();
-        associations = (Bag<Rule>) in.readObject();
-        streamMode = in.readBoolean();
-        hashcode = in.readInt();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt( id );
-        out.writeInt( memoryId );
-        out.writeObject( partitionId );
-        out.writeBoolean( partitionsEnabled );
-        out.writeObject( associations );
-        out.writeBoolean( streamMode );
-        out.writeInt(hashcode);
     }
 
     /* (non-Javadoc)
