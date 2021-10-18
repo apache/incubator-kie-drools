@@ -1,0 +1,104 @@
+[id="proc-kogito-messaging-enabling_{context}"]
+= Enabling Kafka messaging for {KOGITO} microservices
+
+[role="_abstract"]
+{KOGITO} supports the https://github.com/eclipse/microprofile-reactive-messaging[MicroProfile Reactive Messaging] specification for messaging in your microservices. You can enable messaging to configure message events as either input or output of business process execution.
+
+For example, the following `handle-travelers.bpmn2` process uses messaging start and end events to communicate with travelers:
+
+.Example process with messaging start and end events
+image::KogitoMicroservices/bpmn-messaging-example.png[Image of message-based process]
+
+In this example, the message start and end events require the following information:
+
+* Message name that maps to the channel that delivers messages
+* Message payload that maps to a process instance variable
+
+.Example message configuration for start event
+image::KogitoMicroservices/bpmn-messaging-start-event.png[Image of message start event data]
+
+.Example message configuration for end event
+image::KogitoMicroservices/bpmn-messaging-end-event.png[Image of message end event data]
+
+For this procedure, the messaging is based on https://kafka.apache.org/[Apache Kafka] as the event publisher, so you must have Kafka installed in order to enable messaging. Your marshalling configuration depends on the messaging solution that you use.
+
+.Prerequisites
+* https://kafka.apache.org/[Apache Kafka] is installed and includes any required topics. For information about Kafka installation and configuration, see the https://kafka.apache.org/documentation/[Apache Kafka documentation].
+
+.Procedure
+. Add the following dependencies to the `pom.xml` file of your project:
++
+--
+.On {QUARKUS}
+[source, xml]
+----
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-addons-quarkus-cloudevents</artifactId>
+</dependency>
+----
+
+.On Spring Boot
+[source,xml]
+----
+<dependency>
+  <groupId>org.springframework.kafka</groupId>
+  <artifactId>spring-kafka</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-addons-springboot-cloudevents</artifactId>
+</dependency>
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+</dependency>
+----
+--
+. Configure the incoming and outgoing messaging channels and properties:
++
+--
+* *On {QUARKUS}*: Add the following properties to the `src/main/resources/application.properties` file in your project to configure the incoming and outgoing messages and channels:
++
+.Configure incoming and outgoing messages and channels
+[source]
+----
+mp.messaging.incoming.kogito_incoming_stream.connector=smallrye-kafka
+mp.messaging.incoming.kogito_incoming_stream.topic=travellers
+mp.messaging.incoming.kogito_incoming_stream.value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+mp.messaging.outgoing.kogito_outgoing_stream.connector=smallrye-kafka
+mp.messaging.outgoing.kogito_outgoing_stream.topic=processedtravellers
+mp.messaging.outgoing.kogito_outgoing_stream.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+----
++
+Replace `travellers` with the name of the message start event.
+Replace `processedtravellers` with the name of the message end event.
++
+[NOTE]
+====
+To prevent execution errors due to long wait times with messaging, you can also use the following property to disable waiting for message completion:
+
+.Disable message wait time
+[source]
+----
+mp.messaging.outgoing.[channel-name].waitForWriteCompletion=false
+----
+====
+
+* *On Spring Boot*: Add the following property to the `src/main/resources/application.properties` file in your project to configure the messaging channel:
++
+.Configure messaging channel
+[source]
+----
+kafka.bootstrapAddress=localhost:9092
+kogito.addon.cloudevents.kafka.kogito_incoming_stream=travellers
+kogito.addon.cloudevents.kafka.kogito_outgoing_stream=processedtravellers
+----
++
+--
+
+//NOTE: As an alternative to enabling Kafka messaging explicitly in {KOGITO} microservices, you can use the Kogito Operator to install the Kafka infrastructure and enable messaging for the service during deployment on OpenShift. For more information about enabling Kafka messaging with the {PRODUCT} Operator, see {URL_DEPLOYING_ON_OPENSHIFT}#con-kogito-operator-with-kafka_kogito-deploying-on-openshift[_{DEPLOYING_ON_OPENSHIFT}_].

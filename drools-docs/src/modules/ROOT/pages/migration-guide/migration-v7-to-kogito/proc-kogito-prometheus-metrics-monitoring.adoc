@@ -1,0 +1,132 @@
+[id="proc-kogito-prometheus-metrics-monitoring_{context}"]
+= Enabling Prometheus metrics monitoring in {KOGITO}
+
+[role="_abstract"]
+https://prometheus.io/[Prometheus] is an open source systems monitoring toolkit that you can use with {KOGITO} to collect and store metrics related to the execution of Business Process Model and Notation (BPMN) process models, business rules, and Decision Model and Notation (DMN) decision models. You can access the stored metrics through a REST API call to a configured application endpoint, through the Prometheus expression browser, or using a data-graphing tool such as https://grafana.com/[Grafana].
+
+.Prerequisites
+* Prometheus is installed. For information about downloading and using Prometheus, see the https://prometheus.io/docs/introduction/overview/[Prometheus documentation page].
+
+.Procedure
+. To enable the Prometheus add-on in your project, add one of the following dependencies to the `pom.xml` file depending on the framework you are using:
++
+--
+.Dependency for the Prometheus {QUARKUS} add-on
+[source,xml,subs="+quotes"]
+----
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-addons-quarkus-monitoring-prometheus</artifactId>
+  <version>__KOGITO_VERSION__</version>
+</dependency>
+----
+
+.Dependency for the Prometheus Spring Boot add-on
+[source,xml,subs="+quotes"]
+----
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-addons-springboot-monitoring-prometheus</artifactId>
+  <version>__KOGITO_VERSION__</version>
+</dependency>
+----
+--
+
+. Optional: Set any of the following properties in the `application.properties` file of your project to prevent specific metrics from being exported:
++
+--
+.Specific metrics disabled for export
+[source]
+----
+kogito.monitoring.rule.useDefault=false
+kogito.monitoring.process.useDefault=false
+kogito.monitoring.interceptor.useDefault=false
+----
+
+By default, all stored metrics are exported to the configured monitoring module.
+--
+
+. To configure Prometheus to scrape metrics from your {KOGITO} microservice, add the following settings to the `scrape_configs` section in the `prometheus.yaml` file of your Prometheus distribution:
++
+--
+.Example scrape configurations in `prometheus.yaml` file
+[source,yaml,subs="+quotes"]
+----
+scrape_configs:
+  job_name: 'kogito-metrics'
+metrics_path: /metrics
+static_configs:
+  - targets: ["localhost:8080"]
+----
+
+Replace the values according to your {KOGITO} microservice settings.
+--
+. In a command terminal, navigate to your project and run the project in your preferred mode, such as development mode:
++
+--
+.On {QUARKUS}
+[source]
+----
+mvn clean compile quarkus:dev
+----
+
+.On Spring Boot
+[source]
+----
+mvn clean compile spring-boot:run
+----
+
+After you start your {KOGITO} microservice, Prometheus begins collecting metrics and {KOGITO} publishes the metrics to the configured REST API endpoint.
+--
+. To verify the metrics configuration, use a REST client or curl utility to send a `GET` request to the configured `/metrics` endpoint, for example, `\http://localhost:8080/metrics`:
++
+--
+.Example curl command to return Prometheus metrics
+[source]
+----
+curl -X GET http://localhost:8080/metrics
+----
+
+.Example response
+[source]
+----
+# HELP kogito_process_instance_completed_total Completed Process Instances
+# TYPE kogito_process_instance_completed_total counter
+# HELP kogito_process_instance_started_total Started Process Instances
+# TYPE kogito_process_instance_started_total counter
+kogito_process_instance_started_total{app_id="acme-travels",process_id="travels",} 1.0
+# HELP kogito_work_item_duration_seconds Work Items Duration
+# TYPE kogito_work_item_duration_seconds summary
+# HELP drl_match_fired_nanosecond Drools Firing Time
+# TYPE drl_match_fired_nanosecond histogram
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="1000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="2000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="3000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="4000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="5000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="6000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="7000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="8000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="9000000.0",} 1.0
+drl_match_fired_nanosecond_bucket{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",le="+Inf",} 1.0
+drl_match_fired_nanosecond_count{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",} 1.0
+drl_match_fired_nanosecond_sum{identifier="acme-travels",rule_name="Brazilian citizens require visa to Australia",} 789941.0
+# HELP kogito_process_instance_sla_violated_total Process Instances SLA Violated
+# TYPE kogito_process_instance_sla_violated_total counter
+# HELP kogito_process_instance_duration_seconds Process Instances Duration
+# TYPE kogito_process_instance_duration_seconds summary
+# HELP kogito_process_instance_running_total Running Process Instances
+# TYPE kogito_process_instance_running_total gauge
+kogito_process_instance_running_total{app_id="acme-travels",process_id="travels",} 1.0
+----
+
+If the metrics are not available at the defined endpoint, review and verify the {KOGITO} and Prometheus configurations described in this section.
+
+You can also interact with your collected metrics and application targets in the Prometheus expression browser at `http://__HOST:PORT__/graph` and `http://__HOST:PORT__/targets`, or integrate your Prometheus data source with a data-graphing tool such as Grafana:
+
+.Prometheus expression browser with {KOGITO} service targets
+image::KogitoMicroservices/prometheus-expression-browser-targets.png[Image of targets in Prometheus expression browser]
+
+.Grafana dashboard with {KOGITO} service metrics
+image::KogitoMicroservices/prometheus-grafana-data.png[Image of application metrics in Grafana]
+--

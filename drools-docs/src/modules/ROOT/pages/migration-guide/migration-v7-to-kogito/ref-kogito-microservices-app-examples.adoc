@@ -1,7 +1,7 @@
 [id="ref-kogito-microservices-app-examples_{context}"]
 = Example applications with {KOGITO} microservices
 
-{KOGITO} microservices include example applications in the `{PRODUCT_FILE}-decision-services-quickstarts.zip` file. These example applications contain various types of services on {QUARKUS} or Spring Boot to help you develop your own applications. The services use one or more Decision Model and Notation (DMN) decision models, Drools Rule Language (DRL) rule units, Predictive Model Markup Language (PMML) models, or Java classes to define the service logic.
+{KOGITO} microservices include example applications in the `{PRODUCT_FILE}-decision-services-quickstarts.zip` file. These example applications contain various types of services on {QUARKUS} or Spring Boot to help you develop your own applications. The services use one or more Business Process Model and Notation (BPMN) process models, Decision Model and Notation (DMN) decision models, Drools Rule Language (DRL) rule units, Predictive Model Markup Language (PMML) models, or Java classes to define the service logic.
 
 For information about each example application and instructions for using them, see the `README` file in the relevant application folder.
 
@@ -17,4 +17,19 @@ Decision services::
 * `dmn-drools-quarkus-metrics` and `dmn-drools-springboot-metrics`: A decision service (on {QUARKUS} or Spring Boot) that enables and consumes the runtime metrics monitoring feature in {KOGITO}.
 * `pmml-quarkus-example` and `pmml-springboot-example`: A decision service (on {QUARKUS} or Spring Boot) that uses PMML.
 
-For more information about using DMN, DRL, and PMML models in {PRODUCT}, see {URL_DEVELOPING_DECISION_SERVICES}#assembly-dmn-models[_{DMN_MODELS}_], {URL_DEVELOPING_DECISION_SERVICES}#assembly-drl-rules[_{DRL_RULES}_], and {URL_DEVELOPING_DECISION_SERVICES}#assembly-pmml-models[_{PMML_MODELS}_].
+Process services::
+* `process-scripts-quarkus` and `process-scripts-springboot`: A process service (on {QUARKUS} and Spring Boot) that invokes scripts within a process.
+* `process-service-calls-quarkus` and `process-service-calls-springboot`: A process service (on {QUARKUS} and Spring Boot) that invokes service calls within a process.
+* `process-rest-service-call-quarkus` and `process-rest-service-call-springboot`:  A process service (on {QUARKUS} and Spring Boot) that invokes REST service calls within a process using a service task.
+* `process-rest-workitem-quarkus`: A process service on {QUARKUS} that invokes a REST call using a REST work item within a finding user process.
+* `process-rest-workitem-multi-quarkus`: A process service on {QUARKUS} that invokes two consecutive REST work item calls within a process.
+
+Process services that use decision services::
+* `process-decisions-quarkus` and `process-decisions-springboot`: A process service (on {QUARKUS} and Spring Boot) that is integrated with the decision services using an embedded method. In the embedded method, the business rule tasks are used for communication and the decisions are defined in DMN and DRL.
+* `process-decisions-rest-quarkus` and `process-decisions-rest-springboot`: A process service (on {QUARKUS} and Spring Boot) that is integrated with the decision services using a remote method. In the remote method, the REST endpoints are used for communication and the decisions are defined in DMN and DRL.
+
+Process services that use Apache Kafka::
+* `process-kafka-quickstart-quarkus` and `process-kafka-quickstart-springboot`: A process service (on {QUARKUS} and Spring Boot) that uses Apache Kafka to manage traveler process containing different rules.
+* `process-kafka-multi-quarkus` and `process-kafka-multi-springboot`:  A process service (on {QUARKUS} and Spring Boot) that uses Apache Kafka to send messages to different topics.
+
+For more information, see {URL_DEVELOPING_PROCESS_SERVICES}#assembly-designing-business-processes[_{DESIGNING_BUSINESS_PROCESSES}_], {URL_DEVELOPING_DECISION_SERVICES}#assembly-dmn-models[_{DMN_MODELS}_], {URL_DEVELOPING_DECISION_SERVICES}#assembly-drl-rules[_{DRL_RULES}_], and {URL_DEVELOPING_DECISION_SERVICES}#assembly-pmml-models[_{PMML_MODELS}_].

@@ -1,0 +1,10 @@
+[id="con-kogito-process-decisions-integration_{context}"]
+= Integration of process and decision microservices in {KOGITO}
+
+[role="_abstract"]
+When designing a business process in {KOGITO}, you can use DMN and DRL to define the decisions as distinct microservices. In {KOGITO}, you can use the following methods to integrate the processes and decisions:
+
+* *Embedded method*: Enables you to integrate process and decision microservices using business rule tasks.
+* *Remote method*: Enables you to integrate process and decision microservices using REST endpoints.
+
+Depending on the use case, you can use either the embedded method or the remote method, or you can combine both methods in a single process.

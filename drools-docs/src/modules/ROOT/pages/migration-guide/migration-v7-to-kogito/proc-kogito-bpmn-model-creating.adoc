@@ -1,0 +1,174 @@
+[id="proc-kogito-bpmn-model-creating_{context}"]
+= Creating and editing BPMN models in the BPMN modeler
+
+[role="_abstract"]
+You can use the BPMN modeler in VS Code to design BPMN process models and define process logic for a complete and functional BPMN model.
+
+{KOGITO} currently supports a subset of the https://www.omg.org/spec/BPMN/2.0/About-BPMN[Business Process Model and Notation 2.0 specification]. Although the BPMN modeler displays many BPMN components in the canvas palette, the {PROCESS_ENGINE} executes only the supported subset of components. If you use any BPMN components from the BPMN modeler palette that are not supported by the {PROCESS_ENGINE}, your {KOGITO} project might fail to compile or execute.
+
+For more information about BPMN2 support in {PRODUCT}, see {URL_DEVELOPING_PROCESS_SERVICES}#assembly-designing-business-processes[_{DESIGNING_BUSINESS_PROCESSES}_].
+
+.Prerequisites
+* https://code.visualstudio.com/[VS Code] 1.46.0 or later is installed.
+* The *Red Hat Business Automation Bundle* VS Code extension is installed and enabled in your VS Code IDE. For information about enabling the VS Code extension, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}#proc-vscode-extension_getting-started-kogito-microservices[_Installing the {PRODUCT} VSCode extension bundle_].
+* You have created a project and have included any Java objects required for your {KOGITO} microservice. For information about creating a project, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}#proc-kogito-creating-maven-project_getting-started-kogito-microservices[_Creating a Maven project for a {KOGITO} microservice_].
+
+.Procedure
+. In your VS Code IDE, create or import a BPMN file in the relevant folder of your project, typically in `src/main/resources`.
++
+NOTE: For a new BPMN file, you can also enter `bpmn.new` in a web browser to design your business process in the online BPMN modeler. When you finish creating your process model, you can click *Download* in the online modeler page to import your BPMN file into your {KOGITO} project.
+
+. Open the new or imported BPMN file to view the process diagram in the BPMN modeler.
++
+--
+If the process diagram does not open in the BPMN modeler, ensure that you have installed and enabled the *Red Hat Business Automation Bundle* VS Code extension.
+
+If the BPMN modeler opens only the XML source of the BPMN file and displays an error message, review the reported errors and the BPMN model file to ensure that all BPMN elements are correctly defined.
+--
+. Select the background of the BPMN modeler canvas and, in the upper-right corner of the modeler, click *Properties* to add or verify information for the BPMN file as described in the following table:
++
+--
+.General process properties
+[cols="30%,70%", options="header"]
+|===
+|Label
+|Description
+
+| *Name*
+| Enter the name of the process.
+
+| *Documentation*
+| Describes the process. The text in this field is included in the process documentation, if applicable.
+
+| *ID*
+| Enter an identifier for this process, such as `orderItems`.
+
+| *Package*
+| Enter the package location for this process in your project, such as `org.acme`.
+
+| *ProcessType*
+| Specify whether the process is public or private (or null, if not applicable).
+
+| *Version*
+| Enter the artifact version for the process.
+
+| *Ad hoc*
+| Select this option if this process is a flexible process that uses other ad hoc auto-start fragments and that does not require strict start and end events.
+
+| *Process Instance Description*
+| Enter a description of the process purpose.
+
+| *Imports*
+| Click to open the *Imports* window and add any data object classes required for your process.
+
+| *Executable*
+| Select this option to make the process executable as part of your project.
+
+| *SLA Due Date*
+| Enter the date when the service level agreement (SLA) expires.
+
+| *Process Variables*
+| Add any process variables for the process. Process variables are visible within the specific process instance. Process variables are initialized at process creation and destroyed on process completion. Variable *Tags* provide greater control over the variable behavior, such as whether the variable is `required` or `internal`. For more information about variables, see {URL_DEVELOPING_PROCESS_SERVICES}#variables-con_business-processes[_{DESIGNING_BUSINESS_PROCESSES}_].
+
+| *Metadata Attributes*
+| Add any custom metadata attribute name and value that you want to use for custom event listeners, such as a listener to implement some action when a metadata attribute is present.
+
+You can also use this field to configure role-based access to the process. To configure role-based access, set the attribute *Name* to `securityRoles` and set the attribute value to the relevant group or groups defined for the process, such as `employees,managers`.
+
+| *Global Variables*
+|  Not supported in {KOGITO}. Global variables are visible to all process instances and assets in a project, and apply only to distributions of the BPMN modeler in {PRODUCT}.
+|===
+--
+. Begin adding components to your new or imported BPMN process model by clicking and dragging one of the BPMN nodes from the left palette:
++
+--
+.Adding BPMN components
+image::KogitoMicroservices/bpmn-drag-nodes.png[]
+
+Although the BPMN modeler displays many BPMN components in the canvas palette, the {PROCESS_ENGINE} in {PRODUCT} currently supports only the following BPMN components:
+
+* *Start events*
+** *Start*
+** *Start Signal*
+** *Start Message*
+* *Intermediate events*
+** *Intermediate Signal* (catching and boundary)
+** *Intermediate Message* (catching, boundary, and throwing)
+* *End events*
+** *End*
+** *End Error*
+** *End Terminate*
+** *End Message*
+* *Tasks*
+** *Business Rule*
+** *User*
+** *Service*
+** *Script*
+* *Subprocesses*
+** *Embedded*
+** *Reusable*
+* *Gateways*
+** *Parallel*
+** *Event*
+** *Exclusive*
+** *Inclusive*
+
+--
+. In the BPMN modeler canvas, for each new BPMN component that you add, select the new node, and in the upper-right corner of the BPMN modeler, click *Properties* to define the node identity and behavior.
++
+--
+For more information about BPMN component properties, see {URL_DEVELOPING_PROCESS_SERVICES}#assembly-designing-business-processes[_{DESIGNING_BUSINESS_PROCESSES}_].
+
+For this example, use a business rule task based on a Decision Model and Notation (DMN) decision model as your first activity node.
+
+This example assumes that you have the following assets in your {PRODUCT} project:
+
+* A Java object `org.acme.Person`
+* A DMN model `PersonDecisions.dmn` with the namespace `\https://kiegroup.org/dmn/_52CEF9FD-9943-4A89-96D5-6F66810CA4C1`
+--
+. In the left palette, select *Activities* -> *Business Rule*, drag the task to the canvas, and link to it from a start event.
+. Select the business rule task and define the following properties:
+
+* *General*: Name the rule task `Evaluate person`.
+* *Implementation/Execution*: Set the following values:
+** *Rule Language*: `DMN`
+** *Namespace*: `\https://kiegroup.org/dmn/_52CEF9FD-9943-4A89-96D5-6F66810CA4C1`
+** *Decision Name*: `isAdult`
+** *DMN Model Name*: `PersonDecisions`
+* *Data Assignments*: Add the following assignments:
+** *Data Input*: Add a data input with the name `Person`, with the type `org.acme.Person`, and with the source `person`.
+** *Data Output*: Add a data output with the name `isAdult`, with the type `Boolean`, and with the source `isAdult`.
+. In the left palette, select *Gateways* -> *Exclusive*, drag the gateway to the canvas, and link to it from the rule task.
+. In the left palette, select *Activities* -> *User*, drag the user task to the canvas, and link to it from the exclusive gateway.
+. Select the user task and define the following properties:
+
+* *General*: Name the user task `Special handling for children`.
+* *Implementation/Execution*: Set the task name to `ChildrenHandling`, and add a data input with the name `person`, the type `org.acme.Person`, and the source `person`.
+. In the left palette, select *End Events* -> *End*, drag two end events to the canvas, and link to one end event from the user task and to the other end event from the exclusive gateway.
+. Select the connector that connects the exclusive gateway to the end event and for the *Implementation/Execution* property, set the *Condition Expression* to `Java` and enter the condition `return isAdult == true;`.
+. Select the connector that connects the exclusive gateway to the user task and for the *Implementation/Execution* property, set the *Condition Expression* to `Java` and enter the condition to `return isAdult == false;`.
+. Save the BPMN process file.
++
+--
+The following is the BPMN model for applicant age evaluation in this example:
+
+.Example `persons.bpmn2` BPMN process
+image::KogitoMicroservices/kogito-bpmn-example-person.png[Image of `persons.bpmn2` process diagram]
+
+You can continue adding or modifying any remaining components and properties of your BPMN process or create a separate example.
+
+The following additional BPMN models are used with the `persons.bpmn2` process as part of the same example application:
+
+.Example `orders.bpmn2` process
+image::KogitoMicroservices/bpmn-model-example-orders.png[Image of `orders.bpmn2` example process]
+
+.Example `orderItems.bpmn2` process invoked as a subprocess
+image::KogitoMicroservices/bpmn-model-example-order-items.png[Image of `orderItems.bpmn` example process]
+
+The following example illustrates a more complex use case. It is an example BPMN model from a separate mortgage loan application for determining loan approval:
+
+.Example business process for a mortgage loan application
+image::KogitoMicroservices/bpmn-model-example-mortgage-application.png[Image of mortgage application business process.]
+
+For more examples and instructions, see the https://github.com/kiegroup/kogito-examples[`kogito-examples`] repository in GitHub.
+--
