@@ -58,7 +58,8 @@ public class KiePMMLModelRetriever {
                 .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel, compilationDTO.getFields(),
                                                                      compilationDTO.getMiningSchema(),
                                                                      compilationDTO.getOutput()))
-                .map(kiePMMLModel -> getPopulatedWithKiePMMLTargets(kiePMMLModel, compilationDTO.getTargets()))
+                // Additional cast necessary to make it compile with JDK8
+                .map(kiePMMLModel -> getPopulatedWithKiePMMLTargets((KiePMMLModel) kiePMMLModel, compilationDTO.getTargets()))
                 .findFirst();
     }
 
