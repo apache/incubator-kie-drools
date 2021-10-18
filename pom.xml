@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>org.kie</groupId>
-  <artifactId>kie-parent</artifactId>
+  <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
   <version>8.13.0-SNAPSHOT</version>
 
@@ -361,10 +361,7 @@
   </mailingLists>
 
   <modules>
-    <module>kie-core-bom</module>
-    <module>drools-bom</module>
-    <module>kie-dmn-bom</module>
-    <module>kie-pmml-bom</module>
+    <module>bom</module>
     <module>build-parent</module>
     <module>kie-api</module>
     <module>kie-internal</module>
