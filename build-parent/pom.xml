@@ -2680,9 +2680,6 @@
                     <name>full</name>
                 </property>
             </activation>
-            <modules>
-                <module>drools-distribution</module>
-            </modules>
             <build>
                 <plugins>
                     <plugin>
