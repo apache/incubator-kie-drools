@@ -170,54 +170,21 @@
     <!-- New and overwritten dependencies -->
     <!-- ################################################################################ -->
 
-    <version.com.google.testing.compile>0.11</version.com.google.testing.compile>
     <version.org.antlr4>4.8</version.org.antlr4>
-    <!-- CXF's version is aligned with Jetty -->
-    <version.org.apache.cxf>3.3.9</version.org.apache.cxf>
-    <version.org.apache.camel>2.24.0</version.org.apache.camel>
-    <version.org.codehaus.cargo>1.9.3</version.org.codehaus.cargo>
-    <version.org.freemarker>2.3.30</version.org.freemarker>
-    <!-- Dependencies for selenium tests -->
-    <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
-    <version.org.jboss.arquillian.extension.drone>2.5.1</version.org.jboss.arquillian.extension.drone>
-    <version.org.jboss.arquillian.graphene>2.3.2</version.org.jboss.arquillian.graphene>
-    <version.com.google.guava.for-selenium>23.0</version.com.google.guava.for-selenium>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
-    <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
-    <!-- WildFly version used together with  the GWT's Super Dev Mode -->
-    <version.org.jboss.errai.wildfly>23.0.2.Final</version.org.jboss.errai.wildfly>
-    <!-- Required by jboss-remoting version above -->
-    <version.org.ow2.asm>7.1</version.org.ow2.asm>
-    <version.org.wildfly.security>1.15.3.Final</version.org.wildfly.security>
-    <version.org.picketlink>2.6.0.Final</version.org.picketlink>
-    <version.com.unboundid>3.2.0</version.com.unboundid>
-    <version.com.wordnik.swagger>1.3.10</version.com.wordnik.swagger>
     <version.io.swagger>1.6.2</version.io.swagger>
     <version.io.swagger.core.v3>2.0.6</version.io.swagger.core.v3>
     <version.io.swagger.parser.v3>2.0.6</version.io.swagger.parser.v3>
     <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
-    <version.io.rest-assured>4.3.3</version.io.rest-assured>
-    <version.org.jboss.byteman>4.0.13</version.org.jboss.byteman>
-    <version.org.roboguice>3.0.1</version.org.roboguice>
-    <version.org.robolectric>3.1.2</version.org.robolectric>
     <version.org.xmlunit>2.8.2</version.org.xmlunit>
-    <version.org.skyscreamer.jsonassert>1.2.3</version.org.skyscreamer.jsonassert>
-    <version.org.jboss.jboss-dmr>1.5.1.Final</version.org.jboss.jboss-dmr>
-    <version.org.jboss.jboss-msc>1.4.12.Final</version.org.jboss.jboss-msc>
-    <!-- Version of Camel patch for Wildfly -->
-    <version.org.wildfly.camel>11.0.1</version.org.wildfly.camel>
     <!-- The version greater than 1.0.0.GA is not compatible with GWT 2.8.x -->
     <!-- therefore the property is rewritten in that repository parent -->
     <version.javax.validation>2.0.1.Final</version.javax.validation>
-    <version.org.ops4j.pax.url>2.2.0</version.org.ops4j.pax.url>
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
+<!--    TODO to be removed? only used by kie-test-util -->
     <version.simple-jndi>0.11.4.1</version.simple-jndi>
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
-    <!-- Downgrade required for Errai Dynamic Bean validation  -->
-    <version.org.hibernate.hibernate-validator>4.1.0.Final</version.org.hibernate.hibernate-validator>
-    <!-- CSS parsing library from Apache used by Stunner. -->
-    <version.net.sourceforge.cssparser>0.9.21</version.net.sourceforge.cssparser>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
     <version.org.mockito>3.6.0</version.org.mockito>
     <!-- Version of JMH -->
@@ -231,14 +198,6 @@
     <!-- This property needs to be defined in all modules that use the packaging 'jar' or 'bundle'. It is
          being used by different plugins to make sure the module/bundle names are consistent. -->
     <java.module.name/>
-    <!-- Make OSGi happy -->
-    <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
-
-    <version.io.netty>4.1.59.Final</version.io.netty>
-    <!-- IMPORTANT: Don't use this dependency. The right dependency version is the one named as "version.io.netty".
-         This is just needed by Elasticsearch Transport Plugin because it has a compatibility mode with netty 3 and
-         it can't be removed -->
-    <version.io.netty.old>3.10.6.Final</version.io.netty.old>
 
     <!-- Plugin version overrides.
          IMPORTANT: always explain the reason for overriding the plugin version! -->
@@ -272,58 +231,25 @@
     <!-- property for productisation to know the last released version -->
     <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
 
-    <version.org.codehaus.plexus.plexus-io>3.0.0</version.org.codehaus.plexus.plexus-io>
-    <version.org.apache.maven.shared.maven-artifact-transfer>0.9.1
-    </version.org.apache.maven.shared.maven-artifact-transfer>
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
 
     <version.net.byte-buddy>1.10.3</version.net.byte-buddy>
-    <version.arquillian-cube>1.0.0.Alpha15</version.arquillian-cube>
-    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/
-    </jboss.releases.repo.url>
-    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/
-    </jboss.snapshots.repo.url>
-
-    <version.org.apache.maven.plugins.dependency>3.0.2</version.org.apache.maven.plugins.dependency>
 
     <version.org.postgresql>42.2.14</version.org.postgresql>
-    <version.mariadb-java-client>1.3.4</version.mariadb-java-client>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.org.jboss.jandex>2.2.3.Final</version.org.jboss.jandex>
-    <version.jandex.plugin>1.0.6</version.jandex.plugin>
     <version.org.eclipse.yasson>1.0.6</version.org.eclipse.yasson>
-    <version.com.sun.xml.messaging.saaj>1.5.0</version.com.sun.xml.messaging.saaj>
 
-    <!-- specifal versions to support different version of hibernate for ee7 servers such as WAS and WLS -->
-    <version.org.hibernate-4ee7>5.1.15.Final</version.org.hibernate-4ee7>
-    <version.org.jboss.logging-4ee7>3.3.1.Final</version.org.jboss.logging-4ee7>
-    <version.org.javassist-4ee7>3.20.0-GA</version.org.javassist-4ee7>
-    <version.antlr-4ee7>2.7.7</version.antlr-4ee7>
-    <version.org.jboss.jandex-4ee7>2.0.3.Final</version.org.jboss.jandex-4ee7>
-    <version.com.fasterxml.classmate-4ee7>1.3.0</version.com.fasterxml.classmate-4ee7>
-
-    <version.io.prometheus>0.5.0</version.io.prometheus>
     <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
 
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
-    <!-- com.github.eirslett:frontend-maven-plugin version -->
-    <version.frontend-maven-plugin>1.8.0</version.frontend-maven-plugin>
-    <version.node>v12.16.2</version.node>
-    <version.npm>6.14.4</version.npm>
-    <version.yarn>v1.22.4</version.yarn>
 
     <version.org.awaitility>3.0.0</version.org.awaitility>
     <version.io.github.bonigarcia>3.8.1</version.io.github.bonigarcia>
-
-    <version.org.kogito.gwt-jsonix-schema-compiler>1.2.1</version.org.kogito.gwt-jsonix-schema-compiler>
-    <version.org.hisrc.jsonix.jsonix-scripts>3.0.0</version.org.hisrc.jsonix.jsonix-scripts>
-    <version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin>0.14.0</version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin>
-    <version.org.mock-server>5.11.1</version.org.mock-server>
-    <version.org.apache.kafka>2.8.0</version.org.apache.kafka>
   </properties>
 
   <repositories>

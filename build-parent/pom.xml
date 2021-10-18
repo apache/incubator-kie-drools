@@ -30,13 +30,6 @@
                 <version>${version.org.springframework.amqpboot}</version>
             </dependency>
 
-            <!-- Required by Thorntail -->
-            <dependency>
-                <groupId>org.ow2.asm</groupId>
-                <artifactId>asm</artifactId>
-                <version>${version.org.ow2.asm}</version>
-            </dependency>
-
             <!-- Keep in sync with groupId org.slf4j -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -236,12 +229,6 @@
                 <groupId>com.thoughtworks.xstream</groupId>
                 <artifactId>xstream-hibernate</artifactId>
                 <version>${version.com.thoughtworks.xstream}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty</artifactId>
-                <version>${version.io.netty.old}</version>
             </dependency>
 
             <dependency>
@@ -520,623 +507,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-core</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>activation</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-bindings-soap</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>saaj-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-activation_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-annotation_1.0_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>saaj-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.xml.messaging.saaj</groupId>
-                        <artifactId>saaj-impl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-activation_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jaxws_2.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>asm</groupId>
-                        <artifactId>asm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-asm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-jms</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-databinding-jaxb</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-databinding-aegis</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.jetty</groupId>
-                        <artifactId>jetty-server</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-simple</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-http</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-asm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-http-jetty</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>javax.servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-policy</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-annotation_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jaxws_2.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-asm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-jms</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-bindings-xml</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-addr</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-rs-client</artifactId>
-                <version>${version.org.apache.cxf}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.rmi</groupId>
-                        <artifactId>jboss-rmi-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jta_1.1_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.ws</groupId>
-                        <artifactId>jaxws-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>javax.annotation-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.deltaspike.core</groupId>
                 <artifactId>deltaspike-core-impl</artifactId>
                 <version>${version.org.apache.deltaspike.core}</version>
@@ -1357,12 +727,6 @@
                 </exclusions>
             </dependency>
 
-            <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>${version.org.freemarker}</version>
-            </dependency>
-
             <!--Hamcrest should be versioned with JUnit, as they are related-->
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -1500,37 +864,6 @@
                 <groupId>org.mvel</groupId>
                 <artifactId>mvel2</artifactId>
                 <version>${version.org.mvel}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.picketlink</groupId>
-                <artifactId>picketlink-api</artifactId>
-                <version>${version.org.picketlink}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.picketlink</groupId>
-                <artifactId>picketlink-idm-api</artifactId>
-                <version>${version.org.picketlink}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.picketlink</groupId>
-                <artifactId>picketlink-impl</artifactId>
-                <version>${version.org.picketlink}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.picketlink</groupId>
-                <artifactId>picketlink-tomcat7-single</artifactId>
-                <version>${version.org.picketlink}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -1811,54 +1144,6 @@
             </dependency>
             <!-- END of jboss-ip-bom -->
 
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-core</artifactId>
-                <version>${version.org.apache.camel}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-test</artifactId>
-                <version>${version.org.apache.camel}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-cxf</artifactId>
-                <version>${version.org.apache.camel}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>javax.servlet-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-xstream</artifactId>
-                <version>${version.org.apache.camel}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-jaxb</artifactId>
-                <version>${version.org.apache.camel}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-cxf-transport</artifactId>
-                <version>${version.org.apache.camel}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>javax.servlet-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-test-spring</artifactId>
-                <version>${version.org.apache.camel}</version>
-            </dependency>
-
             <!--JMH (Benchmarks)-->
             <dependency>
                 <groupId>org.openjdk.jmh</groupId>
@@ -1877,24 +1162,6 @@
                 <groupId>org.apache.deltaspike.cdictrl</groupId>
                 <artifactId>deltaspike-cdictrl-weld</artifactId>
                 <version>${version.org.apache.deltaspike.core}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.testing.compile</groupId>
-                <artifactId>compile-testing</artifactId>
-                <version>${version.com.google.testing.compile}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.sun</groupId>
-                        <artifactId>tools</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>com.unboundid</groupId>
-                <artifactId>unboundid-ldapsdk</artifactId>
-                <version>${version.com.unboundid}</version>
             </dependency>
 
             <dependency>
@@ -1968,24 +1235,6 @@
                 </exclusions>
             </dependency>
 
-            <dependency>
-                <groupId>com.google.elemental2</groupId>
-                <artifactId>elemental2-dom</artifactId>
-                <version>${version.com.google.elemental2}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.elemental2</groupId>
-                <artifactId>elemental2-core</artifactId>
-                <version>${version.com.google.elemental2}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.elemental2</groupId>
-                <artifactId>elemental2-promise</artifactId>
-                <version>${version.com.google.elemental2}</version>
-            </dependency>
-
             <!-- GWT -->
             <dependency>
                 <groupId>com.google.gwt</groupId>
@@ -2012,32 +1261,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.roboguice</groupId>
-                <artifactId>roboguice</artifactId>
-                <version>${version.org.roboguice}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.roboguice</groupId>
-                <artifactId>roboblender</artifactId>
-                <version>${version.org.roboguice}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.robolectric</groupId>
-                <artifactId>robolectric</artifactId>
-                <version>${version.org.robolectric}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.robolectric</groupId>
-                <artifactId>robolectric-annotations</artifactId>
-                <version>${version.org.robolectric}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.robolectric</groupId>
-                <artifactId>shadows-core</artifactId>
-                <version>${version.org.robolectric}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.springframework.osgi</groupId>
                 <artifactId>spring-osgi-core</artifactId>
                 <version>${version.org.springframework.osgi}</version>
@@ -2059,68 +1282,6 @@
                         <artifactId>org.springframework.core</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-aether</artifactId>
-                <version>${version.org.ops4j.pax.url}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.sonatype.aether</groupId>
-                        <artifactId>aether-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.sonatype.aether</groupId>
-                        <artifactId>aether-spi</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.sonatype.aether</groupId>
-                        <artifactId>aether-util</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.sonatype.aether</groupId>
-                        <artifactId>aether-impl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.sonatype.aether</groupId>
-                        <artifactId>aether-connector-wagon</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.maven</groupId>
-                        <artifactId>maven-aether-provider</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-provider-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-file</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-http-lightweight</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.codehaus.plexus</groupId>
-                        <artifactId>plexus-container-default</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.codehaus.plexus</groupId>
-                        <artifactId>plexus-utils</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-httpclient</groupId>
-                        <artifactId>commons-httpclient</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>com.wordnik</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${version.com.wordnik.swagger}</version>
             </dependency>
 
             <dependency>
@@ -2181,54 +1342,6 @@
             </dependency>
 
             <dependency>
-                <groupId>io.rest-assured</groupId>
-                <artifactId>rest-assured</artifactId>
-                <version>${version.io.rest-assured}</version>
-                <scope>test</scope>
-                <exclusions><!-- banned for kie-server tests: -->
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.byteman</groupId>
-                <artifactId>byteman</artifactId>
-                <scope>test</scope>
-                <version>${version.org.jboss.byteman}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.byteman</groupId>
-                <artifactId>byteman-submit</artifactId>
-                <scope>test</scope>
-                <version>${version.org.jboss.byteman}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.byteman</groupId>
-                <artifactId>byteman-install</artifactId>
-                <scope>test</scope>
-                <version>${version.org.jboss.byteman}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.byteman</groupId>
-                <artifactId>byteman-bmunit</artifactId>
-                <scope>test</scope>
-                <version>${version.org.jboss.byteman}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.testng</groupId>
-                        <artifactId>testng</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jboss.narayana.jta</groupId>
                 <artifactId>narayana-jta</artifactId>
                 <version>${version.org.jboss.narayana.tomcat}</version>
@@ -2284,13 +1397,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.skyscreamer</groupId>
-                <artifactId>jsonassert</artifactId>
-                <version>${version.org.skyscreamer.jsonassert}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>simple-jndi</groupId>
                 <artifactId>simple-jndi</artifactId>
                 <version>${version.simple-jndi}</version>
@@ -2337,17 +1443,6 @@
             </dependency>
             <!-- Required for Errai Dynamic Bean validation  -->
             <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${version.org.hibernate.hibernate-validator}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${version.org.hibernate.hibernate-validator}</version>
-                <classifier>sources</classifier>
-            </dependency>
-            <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
                 <version>${version.javax.validation}</version>
@@ -2378,26 +1473,7 @@
                 </exclusions>
             </dependency>
 
-            <!-- Required by jboss-remoting -->
-            <dependency>
-                <groupId>org.wildfly.security</groupId>
-                <artifactId>wildfly-elytron</artifactId>
-                <version>${version.org.wildfly.security}</version>
-            </dependency>
-
             <!-- Data source management libraries -->
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-dmr</artifactId>
-                <version>${version.org.jboss.jboss-dmr}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.msc</groupId>
-                <artifactId>jboss-msc</artifactId>
-                <version>${version.org.jboss.jboss-msc}</version>
-            </dependency>
-
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
@@ -2411,50 +1487,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.arquillian.cube</groupId>
-                <artifactId>arquillian-cube-docker</artifactId>
-                <version>${version.arquillian-cube}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.arquillian.cube</groupId>
-                <artifactId>arquillian-cube-requirement</artifactId>
-                <version>${version.arquillian-cube}</version>
-            </dependency>
-
-            <!-- CSS parsing library from Apache used by Stunner. -->
-            <dependency>
-                <groupId>net.sourceforge.cssparser</groupId>
-                <artifactId>cssparser</artifactId>
-                <version>${version.net.sourceforge.cssparser}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.w3c</groupId>
                 <artifactId>dom</artifactId>
                 <version>${version.org.w3c.dom}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${version.org.apache.maven.plugins.dependency}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-io</artifactId>
-                <version>${version.org.codehaus.plexus.plexus-io}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.maven.shared</groupId>
-                <artifactId>maven-artifact-transfer</artifactId>
-                <version>${version.org.apache.maven.shared.maven-artifact-transfer}</version>
             </dependency>
 
             <!-- kie server controller over websockets -->
@@ -2475,29 +1510,6 @@
                 <artifactId>postgresql</artifactId>
                 <version>${version.org.postgresql}</version>
                 <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mariadb.jdbc</groupId>
-                <artifactId>mariadb-java-client</artifactId>
-                <version>${version.mariadb-java-client}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.sun.xml.messaging.saaj</groupId>
-                <artifactId>saaj-impl</artifactId>
-                <version>${version.com.sun.xml.messaging.saaj}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.xml.soap</groupId>
-                        <artifactId>javax.xml.soap-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>activation</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!-- used by DMN for BigDecimal arithmetics -->
@@ -2527,22 +1539,6 @@
             </dependency>
 
             <dependency>
-                <groupId>io.prometheus</groupId>
-                <artifactId>simpleclient</artifactId>
-                <version>${version.io.prometheus}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.prometheus</groupId>
-                <artifactId>simpleclient_common</artifactId>
-                <version>${version.io.prometheus}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.prometheus</groupId>
-                <artifactId>simpleclient_httpserver</artifactId>
-                <version>${version.io.prometheus}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.github.javaparser</groupId>
                 <artifactId>javaparser-core</artifactId>
                 <version>${version.com.github.javaparser}</version>
@@ -2562,46 +1558,11 @@
                 <scope>test</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.kogito</groupId>
-                <artifactId>gwt-jsonix-schema-compiler</artifactId>
-                <version>${version.org.kogito.gwt-jsonix-schema-compiler}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mock-server</groupId>
-                <artifactId>mockserver-netty</artifactId>
-                <version>${version.org.mock-server}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>javax.servlet-api</artifactId>
-                    </exclusion>
-                </exclusions>
-                <scope>test</scope>
-            </dependency>
-
             <!-- Used by kie-pmml-trusty projects -->
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-pmml-dependencies</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.kafka</groupId>
-                <artifactId>kafka-clients</artifactId>
-                <version>${version.org.apache.kafka}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.kafka</groupId>
-                <artifactId>kafka-clients</artifactId>
-                <version>${version.org.apache.kafka}</version>
-                <classifier>test</classifier>
             </dependency>
 
             <!-- Used by drools-metric -->
@@ -2652,11 +1613,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <dependencies>
-                        <dependency>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm-analysis</artifactId>
-                            <version>${version.org.ow2.asm}</version>
-                        </dependency>
                         <dependency>
                             <groupId>de.is24.maven.enforcer.rules</groupId>
                             <artifactId>illegal-transitive-dependency-check</artifactId>
@@ -2767,7 +1723,6 @@
 
                                             <exclude>log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
                                             <exclude>javassist:javassist</exclude>  <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
-                                            <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
                                             <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
                                             <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
 
@@ -2828,13 +1783,6 @@
                                             <ignoreClass>module-info</ignoreClass>
                                             <!-- ignoring multirelease jar classes -->
                                             <ignoreClass>META-INF/versions/*</ignoreClass>
-                                            <!-- Classes repackaged in the maven world-->
-                                            <ignoreClass>org.eclipse.aether.*</ignoreClass>
-                                            <ignoreClass>org.apache.maven.*</ignoreClass>
-                                            <ignoreClass>org.codehaus.plexus.*</ignoreClass>
-                                            <!-- This package contains auto generated code and is available both in kafka-clients
-                                            and in kafka-clients-test -->
-                                            <ignoreClass>org.apache.kafka.common.message.*</ignoreClass>
                                         </ignoreClasses>
                                         <dependencies>
                                             <!-- This JAR contains impl and is aligned with Jakarta spec JARs -->
@@ -2936,14 +1884,6 @@
                                                     <ignoreClass>org.xnio.*</ignoreClass>
                                                     <ignoreClass>org.wildfly.*</ignoreClass>
                                                     <ignoreClass>org.apache.commons.*</ignoreClass>
-                                                </ignoreClasses>
-                                            </dependency>
-                                            <dependency>
-                                                <groupId>org.wildfly.security</groupId>
-                                                <artifactId>wildfly-elytron</artifactId>
-                                                <type>jar</type>
-                                                <ignoreClasses>
-                                                    <ignoreClass>*</ignoreClass>
                                                 </ignoreClasses>
                                             </dependency>
                                             <!-- sundr-codegen is required to compile test classes. -->
@@ -3071,11 +2011,6 @@
                             <org.uberfire.sys.repo.monitor.disabled>true</org.uberfire.sys.repo.monitor.disabled>
                         </systemPropertyVariables>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.cargo</groupId>
-                    <artifactId>cargo-maven3-plugin</artifactId>
-                    <version>${version.org.codehaus.cargo}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -3531,29 +2466,6 @@
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
                     <version>3.6.0.1398</version>
-                </plugin>
-                <plugin>
-                    <groupId>com.github.eirslett</groupId>
-                    <artifactId>frontend-maven-plugin</artifactId>
-                    <version>${version.frontend-maven-plugin}</version>
-                    <configuration>
-                        <nodeVersion>${version.node}</nodeVersion>
-                        <npmVersion>${version.npm}</npmVersion>
-                        <yarnVersion>${version.yarn}</yarnVersion>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.jboss.jandex</groupId>
-                    <artifactId>jandex-maven-plugin</artifactId>
-                    <version>${version.jandex.plugin}</version>
-                    <executions>
-                        <execution>
-                            <id>make-index</id>
-                            <goals>
-                                <goal>jandex</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
