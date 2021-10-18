@@ -1,0 +1,86 @@
+[id="proc-kogito-remote-process-decision-integrating_{context}"]
+= Integrating process and decision microservices in {KOGITO} using the remote method
+
+[role="_abstract"]
+The remote method uses REST endpoints from the decision microservices to integrate the process and decision microservices. In the REST endpoints, the process microservice can use BPMN components to send HTTP requests, such as a service task or a REST work item.
+
+The remote method does not require the process and decision microservices to run in the same application, because the communication is performed using the network.
+
+.Remote method of integrating process and decision microservices
+image::KogitoMicroservices/process-decisions-rest-integration.png[Image of Process integration with decisions through REST]
+
+You can define the decisions in different domains or assets, such as DMN and DRL. In the remote method, the decision microservices are deployed from the process microservice. Also, the REST endpoints are generated under the same application for the process and decision microservices, but using different methods. However, the endpoints can be placed in different applications.
+
+You can also use the `process-decisions-rest-quarkus` and `process-decisions-rest-springboot` example applications for {QUARKUS} and Spring Boot, respectively. When an example application is running, two different processes microservices also run, such as:
+
+* A process microservice using a service task, containing the URL as `http://__HOST__:__PORT__/{serviceTask}`, such as `http://localhost:8080/traffic_service`.
+* A process using a REST work item, containing the URL as `http://__HOST__:__PORT__/{workItem}`, such as `http://localhost:8080/traffic_wih`.
+
+To use the example application, you can send requests to the related URL:
+
+.Example JSON request
+[source,json]
+----
+{
+  "driverId": "12345",
+  "violation": {
+    "Type": "speed",
+    "Speed Limit": 100,
+    "Actual Speed": 140
+  }
+}
+----
+
+.Example CURL request
+[source]
+----
+curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -d '{"driverId": "12345","violation":{"Type":"speed","Speed Limit": 100,"Actual Speed":140}}' http://localhost:8080/traffic_service
+----
+
+.Example response
+[source,json]
+----
+{
+  "id": "e499326d-3bd2-4ddb-93b7-0f68f74a9673",
+  "driverId": "12345",
+  "driver": {
+    "licenseExpiration": "2021-08-12T19:35:48.971+00:00",
+    "validLicense": true,
+    "Name": "Arthur",
+    "State": "SP",
+    "City": "Campinas",
+    "Points": 13,
+    "Age": 30
+  },
+  "trafficViolationResponse": {
+    "Fine": {
+      "Amount": 1000,
+      "Points": 7
+    },
+    "Suspended": "Yes"
+  },
+  "violation": {
+    "Code": null,
+    "Date": null,
+    "Type": "speed",
+    "Speed Limit": 100,
+    "Actual Speed": 140
+  }
+}
+----
+
+In the remote method of integrating a process and decision microservices, you can use different tasks to perform the calls to the decision microservices.
+
+.Prerequisites
+* You have created a project and have included any Java objects required for your {KOGITO} microservice.
+* You have created or imported Business Process Model and Notation (BPMN) 2.0 business processes, Decision Model and Notation (DMN) decision models, Drools Rule Language (DRL) business rules, and other assets in the `src/main/resources` folder of your project.
+
+.Procedure
+. Open the new or imported BPMN file to view the process microservice.
+. To map data between a process microservice and decision microservices, align all of the attribute names in a Java class, which is used as process variables.
++
+--
+If the attributes names contain spaces or not following Java conventions, then you can use https://github.com/FasterXML/jackson[Jackson] annotations. The Jackson annotations align the process variables with the data types of the DMN model.
+
+For example, in the traffic violations project, the `Violation` class is mapped with the `speedLimit` attribute using the `@JsonProperty` annotation. Therefore, the `speedLimit` attribute can be integrated with the `Violation` data type defined in the DMN model.
+--

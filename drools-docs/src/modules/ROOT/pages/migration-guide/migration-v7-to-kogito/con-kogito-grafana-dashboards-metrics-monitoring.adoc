@@ -1,0 +1,23 @@
+[id="con-kogito-grafana-dashboards-metrics-monitoring_{context}"]
+= Grafana dashboards for default metrics in {PRODUCT}
+
+[role="_abstract"]
+If any of the Prometheus monitoring modules are imported as dependencies in the `pom.xml` file of your project, some Grafana dashboards that use the default metrics are generated under the folder `target/classes/META-INF/resources/monitoring/dashboards/` every time you compile your {KOGITO} microservice.
+
+Two types of dashboards are exported depending on the decision model used on the endpoints:
+
+* *Operational dashboard*: This dashboard is generated for BPMN, DMN, and DRL endpoints and contains the following metrics:
+** Total number of requests on the endpoint
+** Average number of requests per minute on the endpoint
+** Quantiles on the elapsed time to evaluate the requests
+** Exception details
++
+.Generated operational dashboard example
+image::KogitoMicroservices/grafana-operational-dashboard.png[Generated operational dashboard]
+
+* *Domain-specific dashboard*: This dashboard is exported only for DMN endpoints. The domain-specific dashboard contains a graph for each type of decision in the DMN model. Only the built-in types `number`, `string`, and `boolean` are currently supported.
+** If the output of the decision is a `number` type, the graph contains the quantiles for that metric on a sliding window of 3 minutes.
+** If the output is a `boolean` or a `string` type, the graph contains the number of occurrences for each output on a 10-minute average.
++
+.Generated domain-specific dashboard example
+image::KogitoMicroservices/grafana-domain-dashboard.png[Generated domain specific dashboard]

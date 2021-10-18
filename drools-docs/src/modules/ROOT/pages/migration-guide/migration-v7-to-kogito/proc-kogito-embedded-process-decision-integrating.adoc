@@ -1,0 +1,26 @@
+[id="proc-kogito-embedded-process-decision-integrating_{context}"]
+= Integrating process and decision microservices in {KOGITO} using the embedded method
+
+[role="_abstract"]
+The embedded method of integrating processes and decisions uses business rule tasks. Business rule tasks access the communication between a local process and a {DECISION_ENGINE} that is running in the same application. The embedded method requires the decision microservices to be deployed in the same application in which the process microservice is running.
+
+For more information about business rule tasks, see {URL_DEVELOPING_PROCESS_SERVICES}#bpmn-tasks-overview-con_business-processes[_BPMN2 tasks in process designer_].
+
+.Embedded method of integrating a process with decisions
+image::KogitoMicroservices/process-decisions-embedded-integration.png[Image of Embedded process integration with decisions]
+
+You can also use the `process-decisions-quarkus` and `process-decisions-springboot` example applications for {QUARKUS} and Spring Boot, respectively.
+
+.Prerequisites
+* You have created a project and have included any Java objects required for your {KOGITO} microservice.
+* You have created or imported Business Process Model and Notation (BPMN) 2.0 business processes, Decision Model and Notation (DMN) decision models, Drools Rule Language (DRL) business rules, and other assets in the `src/main/resources` folder of your project.
+
+.Procedure
+. Open the new or imported BPMN file to view the process microservice.
+. To map data between a process microservice and decision microservices, align all of the attribute names in a Java class, which is used as process variables.
++
+--
+If the attributes names contain spaces or do not follow Java conventions, then you can use https://github.com/FasterXML/jackson[Jackson] annotations. The Jackson annotations align the process variables with the data types of the DMN model.
+
+For example, in the traffic violations project, the `Violation` class is mapped with the `speedLimit` attribute using the `@JsonProperty` annotation. Therefore, the `speedLimit` attribute can be integrated with the `Violation` data type defined in the DMN model.
+--

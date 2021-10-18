@@ -1,0 +1,145 @@
+[id="ref-kogito-remote-process-decision-traffic-example_{context}"]
+= Example traffic violations project for the remote method
+
+The traffic violations project is used as an example for the remote method of integrating process and decision microservices in {KOGITO}.
+
+In the traffic violations project, first the information of the driver is fetched, and based on the fetched information, the driver’s license is validated using a RuleUnit in DRL. After the driver’s license is validated, the violation evaluation is executed that is defined as a DMN decision microservice. The output contains information about whether or not the driver is suspended.
+
+The traffic violations example of the remote method contains the following microservices:
+
+* DMN to define a decision microservice
+* DRL to define rules decision microservice
+* REST endpoints to integrate the process and decision microservices
+* Service task to call an external decision microservice
+* REST work item to call an external decision microservice
+
+IMPORTANT: The ID property of a process microservice is used to generate the REST endpoint, which refers to the path that is used to interact with the process microservice.
+
+The classes in the process microservice are used to define the Plain Old Java Objects (POJOs), enabling the interaction between the process microservice and decision microservices. The classes include `Violation`, `Driver`, `Fine`, and `TrafficViolationResponse`.
+
+Traffic process microservice using service tasks::
++
+--
+When using service tasks for defining a process microservice, you can provide an implementation in the application that executes the task, such as a REST or HTTP call.
+
+.Traffic process microservice with service tasks
+image::KogitoMicroservices/traffic-rules-dmn-service-task.png[Image of Traffic Process with service tasks for REST in process designer]
+
+For implementation details, see the following `LicenseValidationRestClient` interface and `TrafficViolationRestClient` class.
+
+.LicenseValidationRestClient class in traffic violations example
+[source,java]
+----
+@Path("/validation/first")
+@RegisterRestClient
+public interface LicenseValidationRestClient {
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    Driver post(Map<String, Object> parameters);
+
+}
+----
+
+.TrafficViolationRestClient class in traffic violations example
+[source,java]
+----
+@Path("/Traffic%20Violation")
+@RegisterRestClient
+public interface TrafficViolationRestClient {
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    TrafficViolationResponse post(Map<String, Object> parameters);
+
+}
+----
+
+The `application.properties` file contains following system properties for the location where the decision microservices are deployed, such as `http://__HOST__:__PORT__/`:
+
+.Example system properties in `application.properties` file
+[source]
+----
+org.kie.kogito.traffic.TrafficViolationRestClient/mp-rest/url=http://localhost:8080/
+org.kie.kogito.traffic.LicenseValidationRestClient/mp-rest/url=http://localhost:8080/
+----
+
+NOTE: The decision microservices are not required to run on the same application or on the same system.
+
+The process microservice using a service task is defined in the `traffic-rules-dmn-service-task.bpmn` file.
+--
+
+Traffic process microservice using REST work item::
++
+--
+Using the REST work item is a declarative method, which does not require additional implementation and the REST or HTTP call is executed by the {PROCESS_ENGINE}.
+
+.Process microservice using REST work item
+image::KogitoMicroservices/traffic-rules-dmn-wih.png[Image of Traffic Process with service tasks for REST in process designer]
+
+The information that is required to execute the REST call, such as URL and HTTP method must be defined in the *Data Assignments* property for the REST work item. The process microservice using REST work item is defined in the `traffic-rules-dmn-wih.bpmn` file.
+--
+
+In the traffic violations project, the `Violation` class is mapped with the `speedLimit` attribute using the `@JsonProperty` annotation. Therefore, the `speedLimit` attribute can be integrated with the `Violation` data type defined in the DMN model.
+
+.`Violation` class defined in traffic process microservice
+[source,java]
+----
+public class Violation {
+
+    @JsonProperty("Code")
+    private String code;
+
+    @JsonProperty("Date")
+    private Date date;
+
+    @JsonProperty("Type")
+    private String type;
+
+    @JsonProperty("Speed Limit")
+    private BigDecimal speedLimit;
+
+    @JsonProperty("Actual Speed")
+    private BigDecimal actualSpeed;
+
+    //Getters / Setters
+}
+----
+
+In the traffic violations example, when fetching the driver information, a mocked external call with a service task is performed to retrieve the driver information from the database. In this case, the service task implementation is performed using the `DriverService` class. In the *Data Assignments* property of the service task, the `driverId` is defined as an input variable and the `driver` is defined as an output variable, which contains the driver information.
+
+Fetching the driver information leads to the license validation task, representing the task of calling a DRL service. The license validation task can be performed using a service task or REST work item:
+
+* When using a service task, you must define the implementation properties along with the method. In the implementation properties, you must set the Java class to implement the service task that executes the REST call.
++
+--
+The input and output mapping for the license validation service task is the `driver` variable that contains the validated license information.
+
+.License validation service task data assignment
+image::KogitoMicroservices/license-drl-service-task-data-mapping.png[Image of License Validation Service Task data assignment in process designer]
+--
+
+* When using a REST work item, the input and output mapping for the license validation task includes the `driver` variable that contains the validated license information. Also, the URL and HTTP method is set as input parameters for the process microservice.
++
+.License validation REST work item data assignment
+image::KogitoMicroservices/license-validation-drl-wih-data-mapping.png[Image of License Validation Service Task data assignment in process designer]
+
+Similar to the license validation task, the traffic violation task represents the task of calling a DMN service using a service task or REST work item:
+
+* When using a service task, the implementation properties must be set along with the method. The implementation properties contain the Java class that implements the service task.
++
+--
+The input for the traffic violation task includes `Driver` and `Violation` variables, and the output includes `Suspended` and `Fine`, which is part of `TrafficViolationResponse` class.
+
+.Traffic violation service task data assignment
+image::KogitoMicroservices/traffic-violation-drl-service-task-data.png[Image of Traffic Violation Service Task data assignment in process designer]
+--
+
+* When using a REST work item, the input for the task violation task includes `Driver` and `Violation` variables, and the output includes `Suspended` and `Fine`, which is part of `TrafficViolationResponse` class. Also, the URL and HTTP method is set as input parameters for the process microservice.
++
+.Traffic violation REST work item data assignment
+image::KogitoMicroservices/traffic-violation-drl-wih-data.png[Image of Traffic Violation REST Work Item data assignmentg in process designer]
+
+In both cases, whether the driver is suspended or not, the information is logged in the console.
