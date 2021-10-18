@@ -33,6 +33,7 @@
         <container.image.data-index-service-postgresql>org.kie.kogito/data-index-service-postgresql:${project.version}</container.image.data-index-service-postgresql>
         <container.image.data-index-service-infinispan>org.kie.kogito/data-index-service-infinispan:${project.version}</container.image.data-index-service-infinispan>
         <container.image.data-index-service-mongodb>org.kie.kogito/data-index-service-mongodb:${project.version}</container.image.data-index-service-mongodb>
+        <container.image.data-index-service-inmemory>org.kie.kogito/data-index-service-inmemory:${project.version}</container.image.data-index-service-inmemory>
         <container.image.trusty-service-infinispan>org.kie.kogito/trusty-service-infinispan:${project.version}</container.image.trusty-service-infinispan>
         <container.image.trusty-service>org.kie.kogito/trusty-service:${project.version}</container.image.trusty-service>
         <container.image.task-assigning-service>org.kie.kogito/task-assigning-service:${project.version}</container.image.task-assigning-service>
@@ -47,7 +48,7 @@
         <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
         <version.org.redis>2.0.4</version.org.redis>
         <version.org.skyscreamer>1.5.0</version.org.skyscreamer>
-        <version.io.zonky.test>1.3.0</version.io.zonky.test>
+        <version.io.zonky.test>1.3.1</version.io.zonky.test>
     </properties>
 
     <repositories>
@@ -94,6 +95,7 @@
                             <container.image.kafka>${container.image.kafka}</container.image.kafka>
                             <container.image.redis>${container.image.redis}</container.image.redis>
                             <container.image.data-index-service-postgresql>${container.image.data-index-service-postgresql}</container.image.data-index-service-postgresql>
+                            <container.image.data-index-service-inmemory>${container.image.data-index-service-inmemory}</container.image.data-index-service-inmemory>
                             <container.image.data-index-service-infinispan>${container.image.data-index-service-infinispan}</container.image.data-index-service-infinispan>
                             <container.image.data-index-service-mongodb>${container.image.data-index-service-mongodb}</container.image.data-index-service-mongodb>
                             <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>

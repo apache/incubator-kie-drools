@@ -13,15 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.index.messaging;
+package org.kie.kogito.index.inmemory;
 
-import org.kie.kogito.index.test.KafkaMessageTestProfile;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.index.AbstractProcessDataIndexIT;
+import org.kie.kogito.index.quarkus.DataIndexInMemoryQuarkusTestResource;
+import org.kie.kogito.index.quarkus.InMemoryTestProfile;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@TestProfile(KafkaMessageTestProfile.class)
-class InmemoryPostgreSqlMessagingConsumerKafkaIT extends AbstractMessagingConsumerKafkaIT {
+@TestProfile(InMemoryTestProfile.class)
+public class ProcessDataIndexInMemoryIT extends AbstractProcessDataIndexIT {
 
+    @ConfigProperty(name = DataIndexInMemoryQuarkusTestResource.KOGITO_DATA_INDEX_SERVICE_URL)
+    String dataIndex;
+
+    @Override
+    public String getDataIndexURL() {
+        return dataIndex;
+    }
+
+    @Override
+    public boolean validateDomainData() {
+        return false;
+    }
 }

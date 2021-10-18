@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.test;
+package org.kie.kogito.index.quarkus;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
-
 import io.quarkus.test.junit.QuarkusTestProfile;
 
-public class KafkaMessageTestProfile implements QuarkusTestProfile {
+public class InMemoryTestProfile implements QuarkusTestProfile {
 
     @Override
     public List<TestResourceEntry> testResources() {
-        return Arrays.asList(new TestResourceEntry(KafkaQuarkusTestResource.class));
+        return Arrays.asList(new TestResourceEntry(KogitoServiceRandomPortQuarkusTestResource.class),
+                new TestResourceEntry(DataIndexInMemoryQuarkusTestResource.class));
     }
 
 }

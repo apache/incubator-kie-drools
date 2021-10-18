@@ -46,8 +46,8 @@
       <artifactId>quarkus-vertx-graphql</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-reactive-messaging-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

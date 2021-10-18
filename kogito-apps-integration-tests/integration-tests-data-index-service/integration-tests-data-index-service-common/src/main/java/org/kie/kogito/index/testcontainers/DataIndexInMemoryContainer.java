@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.messaging;
+package org.kie.kogito.index.testcontainers;
 
-import org.junit.jupiter.api.Disabled;
-import org.kie.kogito.index.test.KafkaMessageTestProfile;
+/**
+ * This container wraps Data Index Service container
+ */
+public class DataIndexInMemoryContainer extends AbstractDataIndexContainer {
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.TestProfile;
+    public static final String NAME = "data-index-service-inmemory";
 
-@QuarkusTest
-@TestProfile(KafkaMessageTestProfile.class)
-@Disabled
-class InmemoryPostgreSqlMessagingLoadKafkaIT extends AbstractMessagingLoadKafkaIT {
+    public DataIndexInMemoryContainer() {
+        super(NAME);
+        withPrivilegedMode(true);
+    }
+
+    @Override
+    public String getResourceName() {
+        return NAME;
+    }
 
 }

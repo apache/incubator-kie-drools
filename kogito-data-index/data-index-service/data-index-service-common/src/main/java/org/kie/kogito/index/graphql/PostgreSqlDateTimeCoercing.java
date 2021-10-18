@@ -20,9 +20,12 @@ import java.time.ZonedDateTime;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import io.quarkus.arc.properties.IfBuildProperty;
+
 import graphql.language.StringValue;
 
 @ApplicationScoped
+@IfBuildProperty(name = "kogito.persistence.type", stringValue = "postgresql")
 public class PostgreSqlDateTimeCoercing extends DefaultDateTimeCoercing implements DateTimeCoercing {
 
     @Override

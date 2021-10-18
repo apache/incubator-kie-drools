@@ -80,7 +80,11 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     }
 
     protected WebClient getWebClient(String runtimeServiceUrl) {
-        return serviceWebClientMap.computeIfAbsent(runtimeServiceUrl, url -> WebClient.create(vertx, getWebClientToURLOptions(runtimeServiceUrl)));
+        if (runtimeServiceUrl == null) {
+            throw new DataIndexServiceException("Runtime service URL not defined, please review the kogito.service.url system property to point the public URL for this runtime.");
+        } else {
+            return serviceWebClientMap.computeIfAbsent(runtimeServiceUrl, url -> WebClient.create(vertx, getWebClientToURLOptions(runtimeServiceUrl)));
+        }
     }
 
     protected WebClientOptions getWebClientToURLOptions(String targetHttpURL) {
@@ -90,8 +94,8 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
                     .setDefaultHost(dataIndexURL.getHost())
                     .setDefaultPort((dataIndexURL.getPort() != -1 ? dataIndexURL.getPort() : dataIndexURL.getDefaultPort()))
                     .setSsl(dataIndexURL.getProtocol().compareToIgnoreCase("https") == 0);
-        } catch (MalformedURLException malformedURLException) {
-            LOGGER.error("getWebClientToURLOptions has thrown malformedURLException with " + targetHttpURL);
+        } catch (MalformedURLException ex) {
+            LOGGER.error("Invalid runtime service URL: " + targetHttpURL, ex);
             return null;
         }
     }
@@ -286,7 +290,7 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
                             future.complete(res.result().bodyAsString());
                         }
                     } else {
-                        future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result())));
+                        future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result()), res.cause()));
                     }
                 });
         return future;
