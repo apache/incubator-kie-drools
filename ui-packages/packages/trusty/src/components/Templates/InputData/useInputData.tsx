@@ -1,38 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { ItemObject, RemoteData, RemoteDataStatus } from '../../../types';
-import { AxiosRequestConfig } from 'axios';
-import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
+import { AxiosError } from 'axios';
+import { EXECUTIONS_PATH } from '../../../utils/api/httpClient';
+import useAPI from '../../../utils/api/useAPI';
 
 const useInputData = (executionId: string) => {
-  const [inputData, setInputData] = useState<RemoteData<Error, ItemObject[]>>({
-    status: RemoteDataStatus.NOT_ASKED
-  });
+  const inputData = useAPI<{ inputs: ItemObject[] }>(
+    `${EXECUTIONS_PATH}/decisions/${executionId}/structuredInputs`,
+    'get'
+  );
 
-  useEffect(() => {
-    let isMounted = true;
-    const config: AxiosRequestConfig = {
-      url: `${EXECUTIONS_PATH}/decisions/${executionId}/structuredInputs`,
-      method: 'get'
-    };
-    setInputData({ status: RemoteDataStatus.LOADING });
-    httpClient(config)
-      .then(response => {
-        if (isMounted) {
-          setInputData({
-            status: RemoteDataStatus.SUCCESS,
-            data: response.data.inputs
-          });
-        }
-      })
-      .catch(error => {
-        setInputData({ status: RemoteDataStatus.FAILURE, error });
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [executionId]);
+  const onlyInputs: RemoteData<AxiosError, ItemObject[]> = useMemo(() => {
+    return inputData.status === RemoteDataStatus.SUCCESS
+      ? { ...inputData, data: inputData.data.inputs }
+      : inputData;
+  }, [inputData]);
 
-  return inputData;
+  return onlyInputs;
 };
 
 export default useInputData;

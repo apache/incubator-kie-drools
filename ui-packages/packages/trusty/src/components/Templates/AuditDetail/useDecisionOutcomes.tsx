@@ -1,39 +1,22 @@
-import { useEffect, useState } from 'react';
-import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
-import { RemoteData, Outcome, RemoteDataStatus } from '../../../types';
-import { AxiosRequestConfig } from 'axios';
+import { EXECUTIONS_PATH } from '../../../utils/api/httpClient';
+import { Outcome, RemoteData, RemoteDataStatus } from '../../../types';
+import useAPI from '../../../utils/api/useAPI';
+import { useMemo } from 'react';
+import { AxiosError } from 'axios';
 
 const useDecisionOutcomes = (executionId: string) => {
-  const [outcomes, setOutcomes] = useState<RemoteData<Error, Outcome[]>>({
-    status: RemoteDataStatus.NOT_ASKED
-  });
+  const outcomes = useAPI<{ outcomes: Outcome[] }>(
+    `${EXECUTIONS_PATH}/decisions/${executionId}/outcomes`,
+    'get'
+  );
 
-  useEffect(() => {
-    let isMounted = true;
-    const config: AxiosRequestConfig = {
-      url: `${EXECUTIONS_PATH}/decisions/${executionId}/outcomes`,
-      method: 'get'
-    };
+  const onlyOutcomes: RemoteData<AxiosError, Outcome[]> = useMemo(() => {
+    return outcomes.status === RemoteDataStatus.SUCCESS
+      ? { ...outcomes, data: outcomes.data.outcomes }
+      : outcomes;
+  }, [outcomes]);
 
-    setOutcomes({ status: RemoteDataStatus.LOADING });
-    httpClient(config)
-      .then(response => {
-        if (isMounted) {
-          setOutcomes({
-            status: RemoteDataStatus.SUCCESS,
-            data: response.data.outcomes
-          });
-        }
-      })
-      .catch(error => {
-        setOutcomes({ status: RemoteDataStatus.FAILURE, error });
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [executionId]);
-
-  return outcomes;
+  return onlyOutcomes;
 };
 
 export default useDecisionOutcomes;

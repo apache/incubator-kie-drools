@@ -32,6 +32,7 @@ import ModelLookup from '../ModelLookup/ModelLookup';
 import Counterfactual from '../Counterfactual/Counterfactual';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import CounterfactualUnsupportedBanner from '../../Atoms/CounterfactualUnsupportedBanner/CounterfactualUnsupportedBanner';
+import NotFound from '../NotFound/NotFound';
 import './AuditDetail.scss';
 import { TrustyContext } from '../TrustyApp/TrustyApp';
 
@@ -150,21 +151,24 @@ const AuditDetail = () => {
           </Route>
         )}
         <Route exact path={`${path}/`}>
-          {outcomes.status === RemoteDataStatus.SUCCESS &&
-            outcomes.data.length === 1 && (
-              <Redirect
-                exact
-                from={path}
-                to={`${location.pathname}/single-outcome?outcomeId=${outcomes.data[0].outcomeId}`}
-              />
-            )}
-          {outcomes.status === RemoteDataStatus.SUCCESS &&
-            outcomes.data.length > 1 && (
-              <Redirect
-                exact
-                from={path}
-                to={`${location.pathname}/outcomes`}
-              />
+          {execution.status === RemoteDataStatus.SUCCESS &&
+            outcomes.status === RemoteDataStatus.SUCCESS && (
+              <>
+                {outcomes.data.length === 1 && (
+                  <Redirect
+                    exact
+                    from={path}
+                    to={`${location.pathname}/single-outcome?outcomeId=${outcomes.data[0].outcomeId}`}
+                  />
+                )}
+                {outcomes.data.length > 1 && (
+                  <Redirect
+                    exact
+                    from={path}
+                    to={`${location.pathname}/outcomes`}
+                  />
+                )}
+              </>
             )}
           {outcomes.status === RemoteDataStatus.LOADING && (
             <PageSection>
@@ -182,6 +186,8 @@ const AuditDetail = () => {
             </PageSection>
           )}
         </Route>
+        <Route path="/not-found" component={NotFound} />
+        <Redirect to="/not-found" />
       </Switch>
     </>
   );

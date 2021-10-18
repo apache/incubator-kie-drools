@@ -24,6 +24,7 @@ import CounterfactualCompletedMessage from '../../Molecules/CounterfactualComple
 import CounterfactualToolbar from '../CounterfactualToolbar/CounterfactualToolbar';
 import CounterfactualTable from '../CounterfactualTable/CounterfactualTable';
 import useCounterfactualExecution from './useCounterfactualExecution';
+import CounterfactualError from '../../Molecules/CounterfactualError/CounterfactualError';
 import {
   CFAnalysisResetType,
   CFExecutionStatus,
@@ -118,6 +119,15 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
     }
   }, [cfResults]);
 
+  useEffect(() => {
+    if (cfAnalysis?.status === RemoteDataStatus.FAILURE) {
+      dispatch({
+        type: 'CF_RESET_ANALYSIS',
+        payload: { resetType: 'EDIT', inputs, outcomes }
+      });
+    }
+  }, [cfAnalysis, inputs, outcomes]);
+
   const maxRunningTimeSeconds = useMemo(() => {
     if (cfAnalysis?.status === RemoteDataStatus.SUCCESS) {
       return cfAnalysis.data.maxRunningTimeSeconds;
@@ -139,71 +149,78 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
   return (
     <CFDispatch.Provider value={dispatch}>
       {containerHeight > 0 && (
-        <Drawer
-          isExpanded={isSidePanelExpanded}
-          className="counterfactual__drawer"
-        >
-          <DrawerContent
-            panelContent={panelContent}
-            style={{ height: containerHeight }}
+        <>
+          {cfAnalysis?.status === RemoteDataStatus.FAILURE && (
+            <CounterfactualError />
+          )}
+          <Drawer
+            isExpanded={isSidePanelExpanded}
+            className="counterfactual__drawer"
           >
-            <DrawerContentBody
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%'
-              }}
+            <DrawerContent
+              panelContent={panelContent}
+              style={{ height: containerHeight }}
             >
-              <PageSection variant="light" isFilled={true}>
-                <section className="counterfactual__section">
-                  <Stack hasGutter>
-                    <StackItem>
-                      <Flex spaceItems={{ default: 'spaceItemsXl' }}>
-                        <FlexItem>
-                          <Title headingLevel="h3" size="2xl">
-                            Counterfactual Analysis
-                          </Title>
-                        </FlexItem>
-                        <FlexItem>
-                          <CounterfactualOutcomesSelected goals={state.goals} />
-                        </FlexItem>
-                        {state.status.executionStatus ===
-                          CFExecutionStatus.COMPLETED && (
-                          <CounterfactualExecutionInfo
-                            resultsCount={state.results.length}
-                          />
-                        )}
-                      </Flex>
-                    </StackItem>
-                    <CounterfactualHint
-                      isVisible={
-                        state.status.executionStatus ===
-                        CFExecutionStatus.NOT_STARTED
-                      }
-                    />
-                    <CounterfactualCompletedMessage status={state.status} />
-                    <StackItem isFilled={true} style={{ overflow: 'hidden' }}>
-                      <CounterfactualToolbar
-                        status={state.status}
-                        goals={state.goals}
-                        onRunAnalysis={onRunAnalysis}
-                        onSetupNewAnalysis={onSetupNewAnalysis}
-                        maxRunningTimeSeconds={maxRunningTimeSeconds}
+              <DrawerContentBody
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%'
+                }}
+              >
+                <PageSection variant="light" isFilled={true}>
+                  <section className="counterfactual__section">
+                    <Stack hasGutter>
+                      <StackItem>
+                        <Flex spaceItems={{ default: 'spaceItemsXl' }}>
+                          <FlexItem>
+                            <Title headingLevel="h3" size="2xl">
+                              Counterfactual Analysis
+                            </Title>
+                          </FlexItem>
+                          <FlexItem>
+                            <CounterfactualOutcomesSelected
+                              goals={state.goals}
+                            />
+                          </FlexItem>
+                          {state.status.executionStatus ===
+                            CFExecutionStatus.COMPLETED && (
+                            <CounterfactualExecutionInfo
+                              resultsCount={state.results.length}
+                            />
+                          )}
+                        </Flex>
+                      </StackItem>
+                      <CounterfactualHint
+                        isVisible={
+                          state.status.executionStatus ===
+                          CFExecutionStatus.NOT_STARTED
+                        }
                       />
-                      <CounterfactualTable
-                        inputs={state.searchDomains}
-                        results={state.results}
-                        status={state.status}
-                        onOpenInputDomainEdit={handleInputDomainEdit}
-                        containerWidth={containerWidth}
-                      />
-                    </StackItem>
-                  </Stack>
-                </section>
-              </PageSection>
-            </DrawerContentBody>
-          </DrawerContent>
-        </Drawer>
+                      <CounterfactualCompletedMessage status={state.status} />
+                      <StackItem isFilled={true} style={{ overflow: 'hidden' }}>
+                        <CounterfactualToolbar
+                          status={state.status}
+                          goals={state.goals}
+                          onRunAnalysis={onRunAnalysis}
+                          onSetupNewAnalysis={onSetupNewAnalysis}
+                          maxRunningTimeSeconds={maxRunningTimeSeconds}
+                        />
+                        <CounterfactualTable
+                          inputs={state.searchDomains}
+                          results={state.results}
+                          status={state.status}
+                          onOpenInputDomainEdit={handleInputDomainEdit}
+                          containerWidth={containerWidth}
+                        />
+                      </StackItem>
+                    </Stack>
+                  </section>
+                </PageSection>
+              </DrawerContentBody>
+            </DrawerContent>
+          </Drawer>
+        </>
       )}
     </CFDispatch.Provider>
   );

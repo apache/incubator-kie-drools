@@ -22,8 +22,10 @@ import kogitoLogo from '../../../../static/images/kogitoLogo.svg';
 import AuditDetail from '../AuditDetail/AuditDetail';
 import imgAvatar from '../../../../static/images/user.svg';
 import Breadcrumbs from '../../Organisms/Breadcrumbs/Breadcrumbs';
-import './TrustyApp.scss';
+import NotFound from '../NotFound/NotFound';
+import ApplicationError from '../ApplicationError/ApplicationError';
 import { TrustyContextValue } from '../../../types';
+import './TrustyApp.scss';
 
 type TrustyAppProps = {
   counterfactualEnabled: boolean;
@@ -115,6 +117,11 @@ const TrustyApp = (props: TrustyAppProps) => {
           <Route path="/audit/:executionType/:executionId">
             <AuditDetail />
           </Route>
+          <Route exact path="/error">
+            <ApplicationError />
+          </Route>
+          <Route path="/not-found" component={NotFound} />
+          <Redirect to="/not-found" />
         </Switch>
       </Page>
     </TrustyContext.Provider>

@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotFound renders correctly 1`] = `
+<Fragment>
+  <PageSection
+    variant="light"
+  >
+    <TextContent>
+      <Title
+        headingLevel="h2"
+        size="3xl"
+      >
+        Not Found
+      </Title>
+    </TextContent>
+  </PageSection>
+  <PageSection
+    isFilled={true}
+  >
+    <EmptyState
+      variant="xl"
+    >
+      <EmptyStateIcon
+        icon={[Function]}
+      />
+      <Title
+        headingLevel="h4"
+        size="2xl"
+      >
+        The page you are looking for does not exist
+      </Title>
+      <EmptyStatePrimary>
+        <NavLink
+          to="/"
+        >
+          Go back to the "Audit investigation" home page
+        </NavLink>
+      </EmptyStatePrimary>
+    </EmptyState>
+  </PageSection>
+</Fragment>
+`;

@@ -7,7 +7,8 @@ import {
   CFExecutionStatus,
   CFGoalRole,
   ItemObject,
-  Outcome
+  Outcome,
+  RemoteDataStatus
 } from '../../../../types';
 import useCounterfactualExecution from '../useCounterfactualExecution';
 
@@ -419,6 +420,25 @@ describe('CounterfactualAnalysis', () => {
       wrapper.find('CounterfactualCompletedMessage').props()['status']
         .executionStatus
     ).toEqual(CFExecutionStatus.FAILED);
+  });
+
+  test('displays an error message when CF ajax requests fail', () => {
+    (useCounterfactualExecution as jest.Mock).mockReturnValue({
+      runCFAnalysis,
+      cfAnalysis: { status: RemoteDataStatus.FAILURE, error: 'error' },
+      cfResults: undefined
+    });
+    const wrapper = mount(
+      <CounterfactualAnalysis
+        inputs={inputs}
+        outcomes={outcomes}
+        executionId={executionId}
+        containerHeight={900}
+        containerWidth={900}
+      />
+    );
+
+    expect(wrapper.find('CounterfactualError')).toHaveLength(1);
   });
 
   test('lets the user start another analysis', () => {

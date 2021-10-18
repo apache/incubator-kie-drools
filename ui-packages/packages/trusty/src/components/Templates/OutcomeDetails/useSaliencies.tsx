@@ -1,39 +1,13 @@
-import { useEffect, useState } from 'react';
-import { RemoteData, RemoteDataStatus, Saliencies } from '../../../types';
-import { AxiosRequestConfig } from 'axios';
-import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
+import { Saliencies } from '../../../types';
+
+import { EXECUTIONS_PATH } from '../../../utils/api/httpClient';
+import useAPI from '../../../utils/api/useAPI';
 
 const useSaliencies = (executionId: string) => {
-  const [saliencies, setSaliencies] = useState<RemoteData<Error, Saliencies>>({
-    status: RemoteDataStatus.NOT_ASKED
-  });
-
-  useEffect(() => {
-    let isMounted = true;
-    const config: AxiosRequestConfig = {
-      url: `${EXECUTIONS_PATH}/decisions/${executionId}/explanations/saliencies`,
-      method: 'get'
-    };
-
-    setSaliencies({ status: RemoteDataStatus.LOADING });
-    httpClient(config)
-      .then(response => {
-        if (isMounted) {
-          setSaliencies({
-            status: RemoteDataStatus.SUCCESS,
-            data: response.data
-          });
-        }
-      })
-      .catch(error => {
-        setSaliencies({ status: RemoteDataStatus.FAILURE, error });
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [executionId]);
-
-  return saliencies;
+  return useAPI<Saliencies>(
+    `${EXECUTIONS_PATH}/decisions/${executionId}/explanations/saliencies`,
+    'get'
+  );
 };
 
 export default useSaliencies;
