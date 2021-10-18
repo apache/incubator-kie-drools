@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import {
   Nav,
   NavItem,
@@ -33,6 +33,7 @@ import Counterfactual from '../Counterfactual/Counterfactual';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import CounterfactualUnsupportedBanner from '../../Atoms/CounterfactualUnsupportedBanner/CounterfactualUnsupportedBanner';
 import './AuditDetail.scss';
+import { TrustyContext } from '../TrustyApp/TrustyApp';
 
 const AuditDetail = () => {
   const { path, url } = useRouteMatch();
@@ -40,6 +41,7 @@ const AuditDetail = () => {
   const { executionId } = useParams<ExecutionRouteParams>();
   const execution = useExecutionInfo(executionId);
   const outcomes = useDecisionOutcomes(executionId);
+  const { config } = useContext(TrustyContext);
 
   const [thirdLevelNav, setThirdLevelNav] = useState<
     { url: string; desc: string; icon?: ReactNode }[]
@@ -59,7 +61,7 @@ const AuditDetail = () => {
       }
       newNav.push({ url: '/input-data', desc: 'Input Data' });
       newNav.push({ url: '/model-lookup', desc: 'Model Lookup' });
-      if (process.env.KOGITO_TRUSTY_COUNTERFACTUAL === 'enabled') {
+      if (config.counterfactualEnabled) {
         newNav.push({
           url: '/counterfactual-analysis',
           desc: 'Counterfactual Analysis',
@@ -93,7 +95,7 @@ const AuditDetail = () => {
         )}
         {thirdLevelNav.length > 0 && (
           <>
-            {process.env.KOGITO_TRUSTY_COUNTERFACTUAL === 'enabled' && (
+            {config.counterfactualEnabled && (
               <CounterfactualUnsupportedBanner />
             )}
             <Nav
@@ -142,7 +144,7 @@ const AuditDetail = () => {
         <Route path={`${path}/model-lookup`}>
           <ModelLookup />
         </Route>
-        {process.env.KOGITO_TRUSTY_COUNTERFACTUAL === 'enabled' && (
+        {config.counterfactualEnabled && (
           <Route path={`${path}/counterfactual-analysis`}>
             <Counterfactual />
           </Route>

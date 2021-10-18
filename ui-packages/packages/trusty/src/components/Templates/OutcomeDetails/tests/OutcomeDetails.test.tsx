@@ -31,6 +31,7 @@ jest.mock('react-router-dom', () => ({
 
 const setupWrapper = (
   outcomes: RemoteData<Error, Outcome[]>,
+  counterfactualEnabled: boolean,
   explanationEnabled: boolean
 ) => {
   return mount(
@@ -42,7 +43,9 @@ const setupWrapper = (
         }
       ]}
     >
-      <TrustyContext.Provider value={{ config: { explanationEnabled } }}>
+      <TrustyContext.Provider
+        value={{ config: { counterfactualEnabled, explanationEnabled } }}
+      >
         <OutcomeDetails outcomes={outcomes} />
       </TrustyContext.Provider>
     </MemoryRouter>
@@ -64,7 +67,7 @@ describe('OutcomeDetails', () => {
     (useOutcomeDetail as jest.Mock).mockReturnValue(loadingOutcomeDetail);
     (useSaliencies as jest.Mock).mockReturnValue(loadingSaliencies);
 
-    const wrapper = setupWrapper(loadingOutcomes, true);
+    const wrapper = setupWrapper(loadingOutcomes, false, true);
 
     expect(useOutcomeDetail).toHaveBeenCalledWith(executionId, null);
 
@@ -80,7 +83,7 @@ describe('OutcomeDetails', () => {
     (useOutcomeDetail as jest.Mock).mockReturnValue(outcomeDetail);
     (useSaliencies as jest.Mock).mockReturnValue(saliencies);
 
-    const wrapper = setupWrapper(outcomes, true);
+    const wrapper = setupWrapper(outcomes, false, true);
     const outcomeId =
       outcomes.status === RemoteDataStatus.SUCCESS &&
       outcomes.data[0].outcomeId;
@@ -115,7 +118,7 @@ describe('OutcomeDetails', () => {
     (useOutcomeDetail as jest.Mock).mockReturnValue(outcomeDetail);
     (useSaliencies as jest.Mock).mockReturnValue(saliencies);
 
-    const wrapper = setupWrapper(outcomes, false);
+    const wrapper = setupWrapper(outcomes, false, false);
 
     expect(wrapper.find('Explanation')).toHaveLength(0);
   });

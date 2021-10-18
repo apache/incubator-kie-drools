@@ -15,7 +15,7 @@ datePickerSetup();
 
 ReactDOM.render(
   <BrowserRouter>
-    <TrustyApp explanationEnabled={true} />
+    <TrustyApp counterfactualEnabled={true} explanationEnabled={true} />
   </BrowserRouter>,
   document.getElementById('root')
 );

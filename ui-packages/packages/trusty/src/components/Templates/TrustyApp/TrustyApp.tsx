@@ -26,11 +26,12 @@ import './TrustyApp.scss';
 import { TrustyContextValue } from '../../../types';
 
 type TrustyAppProps = {
+  counterfactualEnabled: boolean;
   explanationEnabled: boolean;
 };
 
 const TrustyApp = (props: TrustyAppProps) => {
-  const { explanationEnabled } = props;
+  const { counterfactualEnabled, explanationEnabled } = props;
   const location = useLocation();
   const [isMobileView, setIsMobileView] = useState(false);
   const [isNavOpenDesktop, setIsNavOpenDesktop] = useState(true);
@@ -95,7 +96,9 @@ const TrustyApp = (props: TrustyAppProps) => {
   );
 
   return (
-    <TrustyContext.Provider value={{ config: { explanationEnabled } }}>
+    <TrustyContext.Provider
+      value={{ config: { counterfactualEnabled, explanationEnabled } }}
+    >
       <Page
         header={Header}
         sidebar={Sidebar}

@@ -19,8 +19,7 @@ module.exports = {
     new webpack.EnvironmentPlugin({
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Trusty',
-      KOGITO_TRUSTY_API_HTTP_URL: 'http://localhost:1336',
-      KOGITO_TRUSTY_COUNTERFACTUAL: 'disabled'
+      KOGITO_TRUSTY_API_HTTP_URL: 'http://localhost:1336'
     })
   ],
   module: {
