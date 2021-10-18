@@ -68,7 +68,7 @@ public class TestGenTestWriterTest {
         TestGenTestWriter writer = new TestGenTestWriter();
         writer.setClassName("TestGenWriterOutput");
         writer.setScoreDefinition(new SimpleScoreDefinition());
-        writer.setScoreDrlFileList(Arrays.asList(new File(DRL_FILE_PATH)));
+        writer.setScoreDrlFileList(List.of(new File(DRL_FILE_PATH)));
         writer.setScoreDrlList(Arrays.asList("x", "y"));
         writer.setConstraintMatchEnabled(true);
         writer.setCorruptedScoreException(new TestGenCorruptedScoreException(
@@ -101,7 +101,7 @@ public class TestGenTestWriterTest {
         TestClassWithDateField entity = new TestClassWithDateField();
         Date now = new Date();
         entity.setDate(now);
-        journal.addFacts(Arrays.asList(entity));
+        journal.addFacts(List.of(entity));
 
         TestGenTestWriter writer = new TestGenTestWriter();
         writer.setClassName("TestGenWriterOutput");
@@ -123,14 +123,16 @@ public class TestGenTestWriterTest {
         for (int i = 0; i < Math.min(expectedLines.size(), actualLines.size()); i++) {
             String expectedLine = StringUtils.replace(expectedLines.get(i),
                     DRL_FILE_PLACEHOLDER, new File(DRL_FILE_PATH).getAbsolutePath());
-            assertThat(actualLines.get(i)).isEqualTo(expectedLine).withFailMessage("At line " + (i + 1));
+            assertThat(actualLines.get(i))
+                    .withFailMessage("At line " + (i + 1))
+                    .isEqualTo(expectedLine);
         }
 
         // then check line counts are the same
         assertThat(actualLines).hasSameSizeAs(expectedLines);
 
         // finally check the whole string
-        String expectedString = StringUtils.replace(new String(Files.readAllBytes(expected), StandardCharsets.UTF_8),
+        String expectedString = StringUtils.replace(Files.readString(expected, StandardCharsets.UTF_8),
                 DRL_FILE_PLACEHOLDER, new File(DRL_FILE_PATH).getAbsolutePath());
         assertThat(actual).isEqualTo(expectedString);
     }
