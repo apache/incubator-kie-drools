@@ -20,6 +20,8 @@ import org.jboss.logging.Logger;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.quarkus.OptaPlannerBenchmarkBeanProvider;
 import org.optaplanner.benchmark.quarkus.OptaPlannerBenchmarkRecorder;
+import org.optaplanner.benchmark.quarkus.UnavailableOptaPlannerBenchmarkBeanProvider;
+import org.optaplanner.quarkus.deployment.SolverConfigBuildItem;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
@@ -53,7 +55,13 @@ class OptaPlannerBenchmarkProcessor {
     @Record(ExecutionTime.STATIC_INIT)
     void registerAdditionalBeans(BuildProducer<AdditionalBeanBuildItem> additionalBeans,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeans,
+            SolverConfigBuildItem solverConfigBuildItem,
             OptaPlannerBenchmarkRecorder recorder) {
+        if (solverConfigBuildItem.getSolverConfig() == null) {
+            log.warn("Skipping OptaPlanner Benchmark extension because the OptaPlanner extension was skipped.");
+            additionalBeans.produce(new AdditionalBeanBuildItem(UnavailableOptaPlannerBenchmarkBeanProvider.class));
+            return;
+        }
         PlannerBenchmarkConfig benchmarkConfig;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml.isPresent()) {
