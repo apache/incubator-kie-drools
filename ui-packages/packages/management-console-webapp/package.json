@@ -28,7 +28,8 @@
     "codegen": "graphql-codegen",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
-    "test:it": "start-server-and-test 'yarn dev' 9000 'yarn cypress:run'"
+    "start:it": "concurrently 'webpack --config webpack.it.js && yarn serve -p 9000 -c ../serve.json ./dist-it/' 'yarn run dev:server'",
+    "test:it": "start-server-and-test 'yarn start:it' 9000 'yarn cypress:run' && echo"
   },
   "dependencies": {
     "@kogito-apps/components-common": "^1.0.0",
@@ -40,7 +41,8 @@
   "devDependencies": {
     "@kogito-apps/cypress-ouia": "^1.0.0",
     "@kogito-apps/ouia-tools": "^1.0.0",
-    "core-js": "3.6.5"
+    "core-js": "3.6.5",
+    "serve": "^12.0.1"
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",

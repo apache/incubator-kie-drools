@@ -12,11 +12,7 @@
     "build:fast": "lerna run build:fast --stream --",
     "build:prod": "lerna run build:prod --include-dependencies --stream --",
     "test": "lerna run test:coverage --stream --",
-    "cypress:run": "lerna run cypress:run --",
-    "cypress:run-management-console": "cypress run --project ./packages/management-console",
-    "cypress:run-management-console-webapp": "cypress run --project ./packages/management-console-webapp",
-    "cypress:run-task-console-webapp": "cypress run --project ./packages/task-console-webapp",
-    "cypress:run-runtime-tools-dev-ui-webapp": "cypress run --project ./packages/runtime-tools-dev-ui-webapp",
+    "test:it": "lerna run test:it --stream --concurrency=1 --no-bail --",
     "locktt": "locktt",
     "postinstall": "patch-package"
   },
@@ -88,7 +84,7 @@
     "concurrently": "^5.1.0",
     "copy-webpack-plugin": "^6.0.3",
     "css-loader": "^3.2.0",
-    "cypress": "^4.1.0",
+    "cypress": "^7.4.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
@@ -143,6 +139,7 @@
     "@patternfly/react-icons": "4.11.0",
     "@patternfly/react-styles": "4.11.0",
     "@patternfly/react-tokens": "4.12.0",
+    "@types/express-serve-static-core": "^4.17.21",
     "axios": "0.21.1"
   }
 }

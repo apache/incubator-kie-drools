@@ -29,8 +29,7 @@
     "clean": "rimraf dist",
     "codegen": "graphql-codegen",
     "cypress:run": "cypress run",
-    "cypress:open": "cypress open",
-    "test:it": "start-server-and-test 'yarn dev' 9000 'yarn cypress:run'"
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@babel/standalone": "^7.15.3",

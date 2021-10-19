@@ -280,18 +280,22 @@ exports[`ProcessListTable test initial render with data 1`] = `
             <thead
               className=""
             >
-              <Tr>
+              <Tr
+                ouiaId="process-list-table-header"
+              >
                 <TrBase
                   innerRef={null}
+                  ouiaId="process-list-table-header"
                 >
                   <tr
                     className=""
-                    data-ouia-component-id="OUIA-Generated-TableRow-19"
+                    data-ouia-component-id="process-list-table-header"
                     data-ouia-component-type="PF4/TableRow"
                     data-ouia-safe={true}
                     hidden={false}
                   >
                     <Th
+                      key="0"
                       style={
                         Object {
                           "width": "72px",
@@ -319,6 +323,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </ThBase>
                     </Th>
                     <Th
+                      key="1"
                       style={
                         Object {
                           "width": "86px",
@@ -343,176 +348,6 @@ exports[`ProcessListTable test initial render with data 1`] = `
                             }
                           }
                         />
-                      </ThBase>
-                    </Th>
-                    <Th
-                      key="0"
-                      sort={
-                        Object {
-                          "columnIndex": 0,
-                          "onSort": [MockFunction],
-                          "sortBy": Object {
-                            "lastUpdate": "DESC",
-                          },
-                        }
-                      }
-                    >
-                      <ThBase
-                        innerRef={null}
-                        sort={
-                          Object {
-                            "columnIndex": 0,
-                            "onSort": [MockFunction],
-                            "sortBy": Object {
-                              "lastUpdate": "DESC",
-                            },
-                          }
-                        }
-                      >
-                        <th
-                          aria-sort="none"
-                          className="pf-c-table__sort"
-                          onMouseEnter={[Function]}
-                          scope="col"
-                        >
-                          <SortColumn
-                            isSortedBy={false}
-                            onSort={[Function]}
-                            sortDirection=""
-                          >
-                            <button
-                              className="pf-c-table__button"
-                              onClick={[Function]}
-                              type="button"
-                            >
-                              <div
-                                className="pf-c-table__button-content"
-                              >
-                                <TableText>
-                                  <span
-                                    className="pf-c-table__text"
-                                    onMouseEnter={[Function]}
-                                  >
-                                    Id
-                                  </span>
-                                </TableText>
-                                <span
-                                  className="pf-c-table__sort-indicator"
-                                >
-                                  <ArrowsAltVIcon
-                                    color="currentColor"
-                                    noVerticalAlign={false}
-                                    size="sm"
-                                  >
-                                    <svg
-                                      aria-hidden={true}
-                                      aria-labelledby={null}
-                                      fill="currentColor"
-                                      height="1em"
-                                      role="img"
-                                      style={
-                                        Object {
-                                          "verticalAlign": "-0.125em",
-                                        }
-                                      }
-                                      viewBox="0 0 256 512"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
-                                      />
-                                    </svg>
-                                  </ArrowsAltVIcon>
-                                </span>
-                              </div>
-                            </button>
-                          </SortColumn>
-                        </th>
-                      </ThBase>
-                    </Th>
-                    <Th
-                      key="1"
-                      sort={
-                        Object {
-                          "columnIndex": 1,
-                          "onSort": [MockFunction],
-                          "sortBy": Object {
-                            "lastUpdate": "DESC",
-                          },
-                        }
-                      }
-                    >
-                      <ThBase
-                        innerRef={null}
-                        sort={
-                          Object {
-                            "columnIndex": 1,
-                            "onSort": [MockFunction],
-                            "sortBy": Object {
-                              "lastUpdate": "DESC",
-                            },
-                          }
-                        }
-                      >
-                        <th
-                          aria-sort="none"
-                          className="pf-c-table__sort"
-                          onMouseEnter={[Function]}
-                          scope="col"
-                        >
-                          <SortColumn
-                            isSortedBy={false}
-                            onSort={[Function]}
-                            sortDirection=""
-                          >
-                            <button
-                              className="pf-c-table__button"
-                              onClick={[Function]}
-                              type="button"
-                            >
-                              <div
-                                className="pf-c-table__button-content"
-                              >
-                                <TableText>
-                                  <span
-                                    className="pf-c-table__text"
-                                    onMouseEnter={[Function]}
-                                  >
-                                    Status
-                                  </span>
-                                </TableText>
-                                <span
-                                  className="pf-c-table__sort-indicator"
-                                >
-                                  <ArrowsAltVIcon
-                                    color="currentColor"
-                                    noVerticalAlign={false}
-                                    size="sm"
-                                  >
-                                    <svg
-                                      aria-hidden={true}
-                                      aria-labelledby={null}
-                                      fill="currentColor"
-                                      height="1em"
-                                      role="img"
-                                      style={
-                                        Object {
-                                          "verticalAlign": "-0.125em",
-                                        }
-                                      }
-                                      viewBox="0 0 256 512"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
-                                      />
-                                    </svg>
-                                  </ArrowsAltVIcon>
-                                </span>
-                              </div>
-                            </button>
-                          </SortColumn>
-                        </th>
                       </ThBase>
                     </Th>
                     <Th
@@ -563,7 +398,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                     className="pf-c-table__text"
                                     onMouseEnter={[Function]}
                                   >
-                                    Created
+                                    Id
                                   </span>
                                 </TableText>
                                 <span
@@ -648,6 +483,176 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                     className="pf-c-table__text"
                                     onMouseEnter={[Function]}
                                   >
+                                    Status
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
+                        </th>
+                      </ThBase>
+                    </Th>
+                    <Th
+                      key="4"
+                      sort={
+                        Object {
+                          "columnIndex": 4,
+                          "onSort": [MockFunction],
+                          "sortBy": Object {
+                            "lastUpdate": "DESC",
+                          },
+                        }
+                      }
+                    >
+                      <ThBase
+                        innerRef={null}
+                        sort={
+                          Object {
+                            "columnIndex": 4,
+                            "onSort": [MockFunction],
+                            "sortBy": Object {
+                              "lastUpdate": "DESC",
+                            },
+                          }
+                        }
+                      >
+                        <th
+                          aria-sort="none"
+                          className="pf-c-table__sort"
+                          onMouseEnter={[Function]}
+                          scope="col"
+                        >
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    Created
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
+                        </th>
+                      </ThBase>
+                    </Th>
+                    <Th
+                      key="5"
+                      sort={
+                        Object {
+                          "columnIndex": 5,
+                          "onSort": [MockFunction],
+                          "sortBy": Object {
+                            "lastUpdate": "DESC",
+                          },
+                        }
+                      }
+                    >
+                      <ThBase
+                        innerRef={null}
+                        sort={
+                          Object {
+                            "columnIndex": 5,
+                            "onSort": [MockFunction],
+                            "sortBy": Object {
+                              "lastUpdate": "DESC",
+                            },
+                          }
+                        }
+                      >
+                        <th
+                          aria-sort="none"
+                          className="pf-c-table__sort"
+                          onMouseEnter={[Function]}
+                          scope="col"
+                        >
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
                                     Last update
                                   </span>
                                 </TableText>
@@ -686,6 +691,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </ThBase>
                     </Th>
                     <Th
+                      key="6"
                       style={
                         Object {
                           "width": "188px",
@@ -729,19 +735,28 @@ exports[`ProcessListTable test initial render with data 1`] = `
               role="rowgroup"
             >
               <Tr
+                data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                data-ouia-component-type="process-list-row"
+                data-ouia-safe={true}
                 key="0-parent"
               >
                 <TrBase
+                  data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                  data-ouia-component-type="process-list-row"
+                  data-ouia-safe={true}
                   innerRef={null}
                 >
                   <tr
                     className=""
-                    data-ouia-component-id="OUIA-Generated-TableRow-21"
-                    data-ouia-component-type="PF4/TableRow"
+                    data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                    data-ouia-component-type="process-list-row"
                     data-ouia-safe={true}
                     hidden={false}
                   >
                     <Td
+                      data-ouia-component-id="__toggle"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
                       expand={
                         Object {
                           "isExpanded": false,
@@ -752,6 +767,9 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       key="0-parent-0"
                     >
                       <TdBase
+                        data-ouia-component-id="__toggle"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
                         expand={
                           Object {
                             "isExpanded": false,
@@ -763,6 +781,9 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       >
                         <td
                           className="pf-c-table__toggle"
+                          data-ouia-component-id="__toggle"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <CollapseColumn
                             aria-labelledby="simple-node0 expand-toggle0"
@@ -840,16 +861,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
-                      dataLabel="Status"
+                      data-ouia-component-id="__select"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="__Select"
                       key="0-parent-1"
                     >
                       <TdBase
-                        dataLabel="Status"
+                        data-ouia-component-id="__select"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="__Select"
                         innerRef={null}
                       >
                         <td
                           className=""
-                          data-label="Status"
+                          data-label="__Select"
+                          data-ouia-component-id="__select"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <Checkbox
                             aria-label="process-list-checkbox"
@@ -881,16 +911,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
-                      dataLabel="Created"
+                      data-ouia-component-id="id"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="Id"
                       key="0-parent-2"
                     >
                       <TdBase
-                        dataLabel="Created"
+                        data-ouia-component-id="id"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="Id"
                         innerRef={null}
                       >
                         <td
                           className=""
-                          data-label="Created"
+                          data-label="Id"
+                          data-ouia-component-id="id"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <a
                             className="kogito-process-list__link"
@@ -1075,16 +1114,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
-                      dataLabel="Last update"
+                      data-ouia-component-id="status"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="Status"
                       key="0-parent-3"
                     >
                       <TdBase
-                        dataLabel="Last update"
+                        data-ouia-component-id="status"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="Status"
                         innerRef={null}
                       >
                         <td
                           className=""
-                          data-label="Last update"
+                          data-label="Status"
+                          data-ouia-component-id="status"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <MockedErrorPopover
                             onRetryClick={[Function]}
@@ -1155,13 +1203,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
+                      data-ouia-component-id="created"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="Created"
                       key="0-parent-4"
                     >
                       <TdBase
+                        data-ouia-component-id="created"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="Created"
                         innerRef={null}
                       >
                         <td
                           className=""
+                          data-label="Created"
+                          data-ouia-component-id="created"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <t
                             ago={false}
@@ -1190,13 +1250,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
+                      data-ouia-component-id="last update"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="Last update"
                       key="0-parent-5"
                     >
                       <TdBase
+                        data-ouia-component-id="last update"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="Last update"
                         innerRef={null}
                       >
                         <td
                           className=""
+                          data-label="Last update"
+                          data-ouia-component-id="last update"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <span>
                             <HistoryIcon
@@ -1255,13 +1327,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
+                      data-ouia-component-id="__actions"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="__Actions"
                       key="0-parent-6"
                     >
                       <TdBase
+                        data-ouia-component-id="__actions"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="__Actions"
                         innerRef={null}
                       >
                         <td
                           className=""
+                          data-label="__Actions"
+                          data-ouia-component-id="__actions"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <MockedProcessListActionsKebab
                             key="538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -1337,17 +1421,23 @@ exports[`ProcessListTable test initial render with data 1`] = `
                 </TrBase>
               </Tr>
               <Tr
+                data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                data-ouia-component-type="process-list-row-expanded"
+                data-ouia-safe={true}
                 isExpanded={false}
                 key="0-child"
               >
                 <TrBase
+                  data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                  data-ouia-component-type="process-list-row-expanded"
+                  data-ouia-safe={true}
                   innerRef={null}
                   isExpanded={false}
                 >
                   <tr
                     className="pf-c-table__expandable-row"
-                    data-ouia-component-id="OUIA-Generated-TableRow-22"
-                    data-ouia-component-type="PF4/TableRow"
+                    data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                    data-ouia-component-type="process-list-row-expanded"
                     data-ouia-safe={true}
                     hidden={true}
                   >
@@ -1364,18 +1454,18 @@ exports[`ProcessListTable test initial render with data 1`] = `
                     </Td>
                     <Td
                       colSpan={6}
-                      dataLabel="Status"
+                      dataLabel="__Select"
                       key="0-child-1"
                     >
                       <TdBase
                         colSpan={6}
-                        dataLabel="Status"
+                        dataLabel="__Select"
                         innerRef={null}
                       >
                         <td
                           className=""
                           colSpan={6}
-                          data-label="Status"
+                          data-label="__Select"
                         >
                           <ExpandableRowContent>
                             <div
@@ -1402,19 +1492,28 @@ exports[`ProcessListTable test initial render with data 1`] = `
               role="rowgroup"
             >
               <Tr
+                data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                data-ouia-component-type="process-list-row"
+                data-ouia-safe={true}
                 key="1-parent"
               >
                 <TrBase
+                  data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                  data-ouia-component-type="process-list-row"
+                  data-ouia-safe={true}
                   innerRef={null}
                 >
                   <tr
                     className=""
-                    data-ouia-component-id="OUIA-Generated-TableRow-23"
-                    data-ouia-component-type="PF4/TableRow"
+                    data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                    data-ouia-component-type="process-list-row"
                     data-ouia-safe={true}
                     hidden={false}
                   >
                     <Td
+                      data-ouia-component-id="__toggle"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
                       expand={
                         Object {
                           "isExpanded": undefined,
@@ -1425,6 +1524,9 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       key="1-parent-0"
                     >
                       <TdBase
+                        data-ouia-component-id="__toggle"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
                         expand={
                           Object {
                             "isExpanded": undefined,
@@ -1436,6 +1538,9 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       >
                         <td
                           className=""
+                          data-ouia-component-id="__toggle"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <CollapseColumn
                             aria-labelledby="simple-node1 expand-toggle1"
@@ -1446,16 +1551,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
-                      dataLabel="Status"
+                      data-ouia-component-id="__select"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="__Select"
                       key="1-parent-1"
                     >
                       <TdBase
-                        dataLabel="Status"
+                        data-ouia-component-id="__select"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="__Select"
                         innerRef={null}
                       >
                         <td
                           className=""
-                          data-label="Status"
+                          data-label="__Select"
+                          data-ouia-component-id="__select"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <Checkbox
                             aria-label="process-list-checkbox"
@@ -1487,16 +1601,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
-                      dataLabel="Created"
+                      data-ouia-component-id="id"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="Id"
                       key="1-parent-2"
                     >
                       <TdBase
-                        dataLabel="Created"
+                        data-ouia-component-id="id"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="Id"
                         innerRef={null}
                       >
                         <td
                           className=""
-                          data-label="Created"
+                          data-label="Id"
+                          data-ouia-component-id="id"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <a
                             className="kogito-process-list__link"
@@ -1681,16 +1804,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
-                      dataLabel="Last update"
+                      data-ouia-component-id="status"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="Status"
                       key="1-parent-3"
                     >
                       <TdBase
-                        dataLabel="Last update"
+                        data-ouia-component-id="status"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="Status"
                         innerRef={null}
                       >
                         <td
                           className=""
-                          data-label="Last update"
+                          data-label="Status"
+                          data-ouia-component-id="status"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <MockedErrorPopover
                             onRetryClick={[Function]}
@@ -1760,13 +1892,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
+                      data-ouia-component-id="created"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="Created"
                       key="1-parent-4"
                     >
                       <TdBase
+                        data-ouia-component-id="created"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="Created"
                         innerRef={null}
                       >
                         <td
                           className=""
+                          data-label="Created"
+                          data-ouia-component-id="created"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <t
                             ago={false}
@@ -1795,13 +1939,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
+                      data-ouia-component-id="last update"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="Last update"
                       key="1-parent-5"
                     >
                       <TdBase
+                        data-ouia-component-id="last update"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="Last update"
                         innerRef={null}
                       >
                         <td
                           className=""
+                          data-label="Last update"
+                          data-ouia-component-id="last update"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <span>
                             <HistoryIcon
@@ -1860,13 +2016,25 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       </TdBase>
                     </Td>
                     <Td
+                      data-ouia-component-id="__actions"
+                      data-ouia-component-type="process-list-cell"
+                      data-ouia-safe={true}
+                      dataLabel="__Actions"
                       key="1-parent-6"
                     >
                       <TdBase
+                        data-ouia-component-id="__actions"
+                        data-ouia-component-type="process-list-cell"
+                        data-ouia-safe={true}
+                        dataLabel="__Actions"
                         innerRef={null}
                       >
                         <td
                           className=""
+                          data-label="__Actions"
+                          data-ouia-component-id="__actions"
+                          data-ouia-component-type="process-list-cell"
+                          data-ouia-safe={true}
                         >
                           <MockedProcessListActionsKebab
                             key="538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -1941,17 +2109,23 @@ exports[`ProcessListTable test initial render with data 1`] = `
                 </TrBase>
               </Tr>
               <Tr
+                data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                data-ouia-component-type="process-list-row-expanded"
+                data-ouia-safe={true}
                 isExpanded={false}
                 key="1-child"
               >
                 <TrBase
+                  data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                  data-ouia-component-type="process-list-row-expanded"
+                  data-ouia-safe={true}
                   innerRef={null}
                   isExpanded={false}
                 >
                   <tr
                     className="pf-c-table__expandable-row"
-                    data-ouia-component-id="OUIA-Generated-TableRow-24"
-                    data-ouia-component-type="PF4/TableRow"
+                    data-ouia-component-id="538f9feb-5a14-4096-b791-2055b38da7c6"
+                    data-ouia-component-type="process-list-row-expanded"
                     data-ouia-safe={true}
                     hidden={true}
                   >
@@ -1968,18 +2142,18 @@ exports[`ProcessListTable test initial render with data 1`] = `
                     </Td>
                     <Td
                       colSpan={6}
-                      dataLabel="Status"
+                      dataLabel="__Select"
                       key="1-child-1"
                     >
                       <TdBase
                         colSpan={6}
-                        dataLabel="Status"
+                        dataLabel="__Select"
                         innerRef={null}
                       >
                         <td
                           className=""
                           colSpan={6}
-                          data-label="Status"
+                          data-label="__Select"
                         >
                           <ExpandableRowContent>
                             <div
@@ -2033,6 +2207,7 @@ exports[`ProcessListTable test snapshot test for process list - with expanded 1`
   onAbortClick={[Function]}
   onRetryClick={[Function]}
   onSkipClick={[Function]}
+  ouiaId="538f9feb-5a14-4096-b791-2055b38da7c6"
   parentProcessId="538f9feb-5a14-4096-b791-2055b38da7c6"
   processInstances={
     Array [

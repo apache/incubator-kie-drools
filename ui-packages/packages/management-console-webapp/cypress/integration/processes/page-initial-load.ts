@@ -39,8 +39,7 @@ describe('Process List Page test', () => {
         });
     });
     it('Check main content', () => {
-      cy.ouiaId('management-console', 'page')
-        .find('[data-ouia-main=true]')
+      cy.get('[data-ouia-main=true]')
         .should('exist')
         .within($main => {
           cy.ouiaType('page-section-header')
@@ -61,13 +60,11 @@ describe('Process List Page test', () => {
                     });
                 });
             });
-          cy.ouiaType('page-section-content')
+          cy.ouiaType('process-list-page')
             .should('exist')
-            .within($content => {
+            .within($page => {
               cy.ouiaType('process-list-toolbar').should('be.visible');
-              cy.ouiaType('process-list-table')
-                .should('be.visible')
-                .ouiaSafe();
+              cy.ouiaType('process-list-table').should('be.visible');
               cy.ouiaType('load-more')
                 .scrollIntoView()
                 .should('be.visible');
@@ -77,21 +74,20 @@ describe('Process List Page test', () => {
   });
   describe('Data presentation', () => {
     it('Table Layout', () => {
-      cy.ouiaType('page-section-content').within($page => {
+      cy.ouiaType('process-list-page').within($page => {
         cy.ouiaType('process-list-table')
           .ouiaSafe()
-          .ouiaType('process-list-table-item')
+          .ouiaType('process-list-row')
           .should('have.length', 10)
-          .eq(0)
+          .ouiaId('8035b580-6ae4-4aa8-9ec0-e18e19809e0b1')
           .within($item => {
-            cy.ouiaType('datalist-expand-toggle').should('be.visible');
-            cy.ouiaType('datalist-checkbox')
-              .should('be.visible')
-              .and('be.enabled');
-            cy.ouiaType('datalist-cell').then($cells => {
-              cy.wrap($cells)
-                .ouiaId('endpoint')
-                .should('be.visible');
+            cy.ouiaType('process-list-cell').then($cells => {
+              cy.ouiaId('__toggle').should('be.visible');
+              cy.ouiaId('__select')
+                .should('be.visible')
+                .find('input')
+                .should('be.enabled');
+              cy.ouiaId('id').should('be.visible');
               cy.wrap($cells)
                 .ouiaId('status')
                 .should('be.visible')
@@ -100,69 +96,67 @@ describe('Process List Page test', () => {
                 .ouiaId('created')
                 .should('be.visible');
               cy.wrap($cells)
-                .ouiaId('updated')
+                .ouiaId('last update')
+                .should('be.visible');
+              cy.wrap($cells)
+                .ouiaId('__actions')
                 .should('be.visible');
             });
           });
       });
     });
     it('Process-list-item expanded.', () => {
-      cy.ouiaType('page-section-content').within($page => {
+      cy.ouiaType('process-list-page').within($page => {
+        cy.ouiaType('load-more')
+          .scrollIntoView()
+          .should('be.visible')
+          .ouiaType('PF4/Dropdown')
+          .click();
         cy.ouiaType('process-list-table')
           .ouiaSafe()
-          .ouiaType('process-list-table-item')
-          .ouiaId('process-8035b580-6ae4-4aa8-9ec0-e18e19809e0b')
-          .within($item => {
-            cy.ouiaType('process-list-table-item-expand').should(
-              'not.be.visible'
-            );
-            cy.ouiaType('datalist-expand-toggle')
+          .within($table => {
+            cy.ouiaId(
+              '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+              'process-list-row-expanded'
+            )
+              .scrollIntoView()
+              .should('not.be.visible');
+            cy.ouiaId(
+              '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+              'process-list-row'
+            )
               .scrollIntoView()
               .should('be.visible')
-              .click({ force: true });
-            cy.ouiaType('process-list-table-item-expand')
-              .should('be.visible')
-              .within($expanded => {
-                cy.ouiaType('process-list-table-item').should('have.length', 4);
-                cy.ouiaId(
-                  'process-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
-                  'process-list-table-item'
-                )
+              .within($row => {
+                cy.ouiaId('__toggle', 'process-list-cell')
+                  .scrollIntoView()
                   .should('be.visible')
-                  .within($it => {
-                    cy.ouiaType('datalist-expand-toggle').should('not.exist');
-                    cy.ouiaType('datalist-checkbox').should('not.be.visible');
-                    cy.ouiaId('endpoint', 'datalist-cell')
-                      .should('be.visible')
-                      .and('contain.text', 'FlightBooking');
-                    cy.ouiaId('status', 'datalist-cell')
-                      .should('be.visible')
-                      .and('contain.text', 'Completed');
-                  });
+                  .ouiaType('PF4/Button')
+                  .click();
               });
             cy.ouiaId(
-              'process-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
-              'process-list-table-item'
+              '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+              'process-list-row-expanded'
             )
+              .scrollIntoView()
               .should('be.visible')
-              .within($it => {
-                cy.ouiaType('datalist-expand-toggle').should('not.exist');
-                cy.ouiaType('datalist-checkbox').should('not.be.visible');
-                cy.ouiaId('endpoint', 'datalist-cell')
-                  .should('be.visible')
-                  .and('contain.text', 'FlightBooking test 1');
-                cy.ouiaId('status', 'datalist-cell')
-                  .should('be.visible')
-                  .and('contain.text', 'Suspended');
+              .ouiaId(
+                '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+                'process-list-child-table'
+              )
+              .should('be.visible')
+              .within($childTable => {
+                // 1 header and 4 items, better selectors would require major refactoring of process-list/ProcessListChildTable component.
+                cy.ouiaType('PF4/TableRow').should('have.length', 5);
               });
           });
       });
     });
     it('Load More', () => {
-      cy.ouiaType('page-section-content').within($page => {
+      cy.ouiaType('process-list-page').within($page => {
         cy.ouiaType('process-list-table')
           .ouiaSafe()
-          .ouiaType('process-list-table-item')
+          .ouiaType('process-list-row')
           .should('have.length', 10);
         cy.ouiaType('load-more')
           .scrollIntoView()
@@ -170,7 +164,7 @@ describe('Process List Page test', () => {
           .ouiaType('PF4/Dropdown')
           .click();
         cy.ouiaType('process-list-table')
-          .ouiaType('process-list-table-item')
+          .ouiaType('process-list-row')
           .should('have.length', 13);
       });
     });

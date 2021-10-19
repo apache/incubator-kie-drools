@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist-it/
 node/
 coverage/
 target/

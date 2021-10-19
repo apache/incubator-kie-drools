@@ -22,9 +22,6 @@
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "clean": "rimraf dist"
   },
-  "devDependencies": {
-    "@types/cypress": "^1.1.0"
-  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "yarn run format",

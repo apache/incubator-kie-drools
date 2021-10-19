@@ -32,20 +32,21 @@
     "lint": "eslint './src/**/*.ts{,x}'",
     "mock-server": "json-server api-mock/db.js --routes api-mock/routes.json --port 1336 --delay 1000 --id executionId --middlewares api-mock/filterSingular.js  api-mock/counterfactualPoll.js",
     "build:services": "./it-tests/docker-compose/build.sh",
-    "start:it": "yarn run start & yarn run mock-server",
+    "start:it": "concurrently 'yarn serve -p 9000 -c ../it-tests/serve.json ./dist/' 'yarn run mock-server'",
     "start:e2e": "./it-tests/docker-compose/start_docker.sh",
     "cypress:open:it": "yarn run cypress open --project it-tests --config-file cypress.it.json",
-    "cypress:run:it": "yarn run cypress run -b chrome --project it-tests --config-file cypress.it.json",
+    "cypress:run:it": "yarn run cypress run --project it-tests --config-file cypress.it.json",
     "cypress:open:e2e": "yarn run cypress open --project it-tests --config-file cypress.e2e.json",
     "cypress:run:e2e": "yarn run cypress run -b chrome --project it-tests --config-file cypress.e2e.json",
-    "test:it": "start-server-and-test start:it http://0.0.0.0:9000 cypress:run:it",
+    "test:it": "start-server-and-test 'yarn start:it' http://0.0.0.0:9000 'yarn cypress:run:it' && echo",
     "test:e2e": "start-server-and-test start:e2e http://0.0.0.0:1338 cypress:run:e2e"
   },
   "devDependencies": {
     "faker": "^4.1.0",
     "json-server": "^0.16.1",
     "@kogito-apps/cypress-ouia": "^1.0.0",
-    "@kogito-apps/ouia-tools": "^1.0.0"
+    "@kogito-apps/ouia-tools": "^1.0.0",
+    "serve": "^12.0.1"
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
