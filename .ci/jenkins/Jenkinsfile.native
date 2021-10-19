@@ -2,6 +2,7 @@
 
 import org.kie.jenkins.MavenCommand
 
+droolsRepo = 'drools'
 kogitoRuntimesRepo = 'kogito-runtimes'
 optaplannerRepo = 'optaplanner'
 kogitoAppsRepo = 'kogito-apps'
@@ -25,9 +26,19 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
+                    checkoutDroolsRepo()
                     checkoutKogitoRepo(kogitoRuntimesRepo)
                     checkoutOptaplannerRepo()
                     checkoutKogitoRepo(kogitoAppsRepo)
+                }
+            }
+        }
+        stage('Build Drools') {
+            steps {
+                script {
+                    getMavenCommand(droolsRepo)
+                        .withProperty('quickly')
+                        .run('clean install')
                 }
             }
         }
@@ -107,11 +118,21 @@ void checkoutOptaplannerRepo() {
     }
 }
 
+void checkoutDroolsRepo() {
+    dir(droolsRepo) {
+        checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, getDroolsTargetBranch(), false))
+    }
+}
+
 String getKogitoTargetBranch() {
     return getTargetBranch(0)
 }
 
 String getOptaplannerTargetBranch() {
+    return getTargetBranch(7)
+}
+
+String getDroolsTargetBranch() {
     return getTargetBranch(7)
 }
 
