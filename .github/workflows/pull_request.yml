@@ -88,7 +88,7 @@ jobs:
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain ${{ matrix.java-version }}. Maven ${{ matrix.maven-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.6.11
+        uses: kiegroup/github-action-build-chain@v2.6.12
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/main/.ci/pull-request-config.yaml
           starting-project: kiegroup/optaplanner
