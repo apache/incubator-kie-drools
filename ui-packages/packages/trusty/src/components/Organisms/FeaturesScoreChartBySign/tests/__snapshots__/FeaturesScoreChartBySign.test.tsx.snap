@@ -10,7 +10,7 @@ exports[`FeaturesScoreChart renders a chart for a list of feature scores grouped
         barWidth={68.33333333333333}
         height={500}
         legendColor="var(--pf-global--info-color--100)"
-        legendTitle="Positive Impact"
+        legendTitle="Positive impact"
         maxNumberOfValues={3}
         maxValue={0.9240811677386516}
         padding={
@@ -56,7 +56,7 @@ exports[`FeaturesScoreChart renders a chart for a list of feature scores grouped
         barWidth={68.33333333333333}
         height={500}
         legendColor="var(--pf-global--palette--orange-300)"
-        legendTitle="Negative Impact"
+        legendTitle="Negative impact"
         maxNumberOfValues={3}
         maxValue={0.9240811677386516}
         padding={

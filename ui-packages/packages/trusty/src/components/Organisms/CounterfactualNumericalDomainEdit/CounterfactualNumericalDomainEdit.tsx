@@ -47,7 +47,7 @@ const CounterfactualNumericalDomainEdit = (
       )}
       <Split hasGutter={true}>
         <SplitItem>
-          <FormGroup label="Minimum Value" isRequired fieldId="min">
+          <FormGroup label="Minimum value" isRequired fieldId="min">
             <TextInput
               isRequired
               type="number"
@@ -59,7 +59,7 @@ const CounterfactualNumericalDomainEdit = (
           </FormGroup>
         </SplitItem>
         <SplitItem>
-          <FormGroup label="Maximum Value" isRequired fieldId="max">
+          <FormGroup label="Maximum value" isRequired fieldId="max">
             <TextInput
               isRequired
               type="number"

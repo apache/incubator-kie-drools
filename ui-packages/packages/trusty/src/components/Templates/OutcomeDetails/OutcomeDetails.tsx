@@ -115,7 +115,7 @@ const OutcomeDetails = ({ outcomes }: OutcomeDetailsProps) => {
           <Stack hasGutter>
             <StackItem>
               <Title headingLevel="h3" size="2xl">
-                Outcome Details
+                Outcome details
               </Title>
             </StackItem>
             <StackItem>
@@ -134,7 +134,7 @@ const OutcomeDetails = ({ outcomes }: OutcomeDetailsProps) => {
                     <Card>
                       <CardBody>
                         <span className="outcome-details__outcome-not-successful">
-                          Evaluation Status
+                          Evaluation status
                         </span>
                         <EvaluationStatus
                           status={outcomeData.evaluationStatus}
@@ -169,7 +169,7 @@ const OutcomeDetails = ({ outcomes }: OutcomeDetailsProps) => {
           <Stack hasGutter>
             <StackItem>
               <Title headingLevel="h3" size="2xl">
-                <span>Outcome Influencing Inputs</span>
+                <span>Outcome influencing inputs</span>
                 <Tooltip
                   position="auto"
                   content={

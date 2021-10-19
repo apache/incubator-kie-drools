@@ -14,7 +14,7 @@ const InputData = () => {
       <Stack hasGutter>
         <StackItem>
           <Title headingLevel="h3" size="2xl">
-            Input Data
+            Input data
           </Title>
         </StackItem>
         <StackItem>

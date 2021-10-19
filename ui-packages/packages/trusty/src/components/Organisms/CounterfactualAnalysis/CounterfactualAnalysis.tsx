@@ -175,7 +175,7 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
                         <Flex spaceItems={{ default: 'spaceItemsXl' }}>
                           <FlexItem>
                             <Title headingLevel="h3" size="2xl">
-                              Counterfactual Analysis
+                              Counterfactual analysis
                             </Title>
                           </FlexItem>
                           <FlexItem>

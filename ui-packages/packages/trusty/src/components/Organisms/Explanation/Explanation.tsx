@@ -58,11 +58,11 @@ const Explanation = ({ executionId, outcomeId }: ExplanationProps) => {
               <CardHeader>
                 {topFeaturesScoresBySign.length ? (
                   <Title headingLevel="h4" size="xl">
-                    Top Features Score Chart
+                    Top features score chart
                   </Title>
                 ) : (
                   <Title headingLevel="h4" size="xl">
-                    Features Score Chart
+                    Features score chart
                   </Title>
                 )}
               </CardHeader>
@@ -96,11 +96,11 @@ const Explanation = ({ executionId, outcomeId }: ExplanationProps) => {
                           className="explanation__all-features-opener"
                           onClick={handleModalToggle}
                         >
-                          View Complete Chart
+                          View complete chart
                         </Button>
                         <Modal
                           width={'80%'}
-                          title="All Features Score Chart"
+                          title="All features score chart"
                           isOpen={isModalOpen}
                           onClose={handleModalToggle}
                           actions={[
@@ -125,7 +125,7 @@ const Explanation = ({ executionId, outcomeId }: ExplanationProps) => {
             <Card className="explanation__score-table">
               <CardHeader>
                 <Title headingLevel={'h4'} size={'lg'}>
-                  Features Weight
+                  Features weight
                 </Title>
               </CardHeader>
               <CardBody>

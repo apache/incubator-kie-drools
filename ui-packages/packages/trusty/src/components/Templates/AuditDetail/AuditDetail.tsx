@@ -58,20 +58,25 @@ const AuditDetail = () => {
         });
       } else {
         newNav.push({ url: '/outcomes', desc: 'Outcomes' });
-        newNav.push({ url: '/outcomes-details', desc: 'Outcomes Details' });
+        newNav.push({ url: '/outcomes-details', desc: 'Outcomes details' });
       }
-      newNav.push({ url: '/input-data', desc: 'Input Data' });
-      newNav.push({ url: '/model-lookup', desc: 'Model Lookup' });
+      newNav.push({ url: '/input-data', desc: 'Input data' });
+      newNav.push({ url: '/model-lookup', desc: 'Model lookup' });
       if (config.counterfactualEnabled) {
         newNav.push({
           url: '/counterfactual-analysis',
-          desc: 'Counterfactual Analysis',
+          desc: 'Counterfactual analysis',
           icon: (
             <Tooltip
               position="top"
-              content={<div>Counterfactuals are an experimental feature.</div>}
+              content={
+                <div>
+                  Counterfactuals is an experimental feature and doesn&apos;t
+                  currently support all types of models.
+                </div>
+              }
             >
-              <OutlinedQuestionCircleIcon title="An icon with a tooltip" />
+              <OutlinedQuestionCircleIcon title="Experimental feature" />
             </Tooltip>
           )
         });

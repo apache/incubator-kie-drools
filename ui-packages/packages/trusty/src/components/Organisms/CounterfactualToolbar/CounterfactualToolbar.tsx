@@ -113,7 +113,7 @@ const CounterfactualToolbar = (props: CounterfactualToolbarProps) => {
           </Button>
         ]}
       >
-        If you start a New Counterfactual analysis, or Edit the existing one,
+        If you start a new counterfactual analysis, or edit the existing one,
         any results will be cleared and cannot be retrieved.
       </Modal>
       <Toolbar id="cf-toolbar">
@@ -125,25 +125,25 @@ const CounterfactualToolbar = (props: CounterfactualToolbarProps) => {
                   content={
                     status.isDisabled ? (
                       <div>
-                        Select Inputs, provide inputs constraints and set up
-                        Outcomes to run a counterfactual analysis.
+                        Select inputs, provide inputs constraints and set up
+                        outcomes to run a counterfactual analysis.
                       </div>
                     ) : (
                       <div>
-                        Run the counterfactual analysis based on selected Inputs
-                        and Outcomes.
+                        Run the counterfactual analysis based on selected inputs
+                        and outcomes.
                       </div>
                     )
                   }
                 >
                   <Button
                     variant={ButtonVariant.primary}
-                    aria-label="Run Counterfactual Analysis"
+                    aria-label="Run counterfactual analysis"
                     onClick={handleRun}
                     isAriaDisabled={status.isDisabled}
                     id="counterfactual-run"
                   >
-                    Run Counterfactual
+                    Run counterfactual
                   </Button>
                 </Tooltip>
               </ToolbarItem>
@@ -161,7 +161,7 @@ const CounterfactualToolbar = (props: CounterfactualToolbarProps) => {
                     onClick={toggleOutcomeSelection}
                     id="counterfactual-setup-outcomes"
                   >
-                    Set Up Outcomes
+                    Set up outcomes
                   </Button>
                 </Tooltip>
               </ToolbarItem>
@@ -202,7 +202,7 @@ const CounterfactualToolbar = (props: CounterfactualToolbarProps) => {
                   <Button
                     id="counterfactual-new"
                     variant={ButtonVariant.primary}
-                    aria-label="New Counterfactual Analysis"
+                    aria-label="New counterfactual analysis"
                     onClick={handleNewCF}
                   >
                     New Counterfactual

@@ -19,15 +19,13 @@ const CounterfactualUnsupported = (props: CounterfactualUnsupportedProps) => {
   return (
     <EmptyState variant={EmptyStateVariant.full}>
       <EmptyStateIcon icon={InfoCircleIcon} />
-      <Title headingLevel="h1">Unsupported model</Title>
+      <Title headingLevel="h1">Counterfactuals cannot be generated</Title>
       <EmptyStateBody>
-        <p>The model contains elements that are unsupported.</p>
         {messages.map(message => (
           <p key={message.id} data-ouia-component-id={`${message.id}`}>
             {message.message}
           </p>
         ))}
-        <p>Consequentially Counterfactuals cannot be generated.</p>
       </EmptyStateBody>
     </EmptyState>
   );

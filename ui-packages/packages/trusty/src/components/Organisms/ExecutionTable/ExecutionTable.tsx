@@ -32,7 +32,7 @@ type ExecutionTableProps = {
 
 const ExecutionTable: React.FC<ExecutionTableProps> = props => {
   const { data } = props;
-  const columns = ['ID', 'Description', 'Executor', 'Date', 'Execution Status'];
+  const columns = ['ID', 'Description', 'Executor', 'Date', 'Execution status'];
   const [rows, setRows] = useState<IRow[]>(prepareRows(columns.length, data));
 
   useEffect(() => {

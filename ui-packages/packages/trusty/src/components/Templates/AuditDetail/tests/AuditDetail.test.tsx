@@ -180,7 +180,7 @@ describe('AuditDetail', () => {
         .find('NavItem a')
         .at(1)
         .text()
-    ).toMatch('Outcomes Details');
+    ).toMatch('Outcomes details');
     expect(wrapper.find('Switch Route')).toHaveLength(1);
     expect(wrapper.find('Switch Route').prop('path')).toMatch(
       '/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes'

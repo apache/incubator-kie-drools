@@ -69,7 +69,7 @@ describe('Traffic Violation', () => {
             .find('li>a')
             .should('have.length', 3)
             .within($items => {
-              expect($items.eq(0)).have.text('Audit Investigation');
+              expect($items.eq(0)).have.text('Audit investigation');
               expect($items.eq(1)).have.text(title);
               expect($items.eq(2)).have.text('Outcomes');
             });
@@ -91,9 +91,9 @@ describe('Traffic Violation', () => {
             .within($items => {
               expect($items.eq(0)).have.text('Outcomes');
               expect($items.eq(0)).have.class('pf-m-current');
-              expect($items.eq(1)).have.text('Outcomes Details');
-              expect($items.eq(2)).have.text('Input Data');
-              expect($items.eq(3)).have.text('Model Lookup');
+              expect($items.eq(1)).have.text('Outcomes details');
+              expect($items.eq(2)).have.text('Input data');
+              expect($items.eq(3)).have.text('Model lookup');
             });
         });
       cy.get('section.outcomes').should('be.visible');

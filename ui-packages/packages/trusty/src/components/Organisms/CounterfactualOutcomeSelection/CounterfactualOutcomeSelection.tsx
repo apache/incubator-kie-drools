@@ -92,7 +92,7 @@ const CounterfactualOutcomeSelection = (
             id="confirm-outcome-selection"
             key="confirm"
             variant="primary"
-            aria-label="Run Counterfactual Analysis"
+            aria-label="Run counterfactual analysis"
             onClick={handleApply}
           >
             Confirm
@@ -115,7 +115,7 @@ const CounterfactualOutcomeSelection = (
               id="confirm-outcome-selection"
               key="confirm"
               variant="primary"
-              aria-label="Run Counterfactual Analysis"
+              aria-label="Run counterfactual analysis"
               isAriaDisabled={!isDesiredOutcomeDefined()}
             >
               Confirm

@@ -183,7 +183,7 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}
@@ -341,7 +341,7 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}
@@ -501,7 +501,7 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}
@@ -1384,7 +1384,7 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}
@@ -2138,7 +2138,7 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}
@@ -2473,7 +2473,7 @@ exports[`Outcomes renders a skipped decision with no outcome 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}
@@ -3589,7 +3589,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}
@@ -3983,7 +3983,7 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}
@@ -4294,7 +4294,7 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                             role={null}
                             type="button"
                           >
-                            View Details 
+                            View details 
                             <LongArrowAltRightIcon
                               color="currentColor"
                               noVerticalAlign={false}

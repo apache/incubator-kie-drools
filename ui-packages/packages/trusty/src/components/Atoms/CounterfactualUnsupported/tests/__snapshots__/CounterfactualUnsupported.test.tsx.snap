@@ -10,12 +10,9 @@ exports[`CounterfactualUnsupported status renders messages 1`] = `
   <Title
     headingLevel="h1"
   >
-    Unsupported model
+    Counterfactuals cannot be generated
   </Title>
   <EmptyStateBody>
-    <p>
-      The model contains elements that are unsupported.
-    </p>
     <p
       data-ouia-component-id="msg1"
       key="msg1"
@@ -27,9 +24,6 @@ exports[`CounterfactualUnsupported status renders messages 1`] = `
       key="msg2"
     >
       message2
-    </p>
-    <p>
-      Consequentially Counterfactuals cannot be generated.
     </p>
   </EmptyStateBody>
 </EmptyState>

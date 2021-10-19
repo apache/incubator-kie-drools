@@ -48,10 +48,10 @@ const AuditDetailBreadcrumb = (props: AuditDetailBreadcrumbProps) => {
 };
 
 const routes = [
-  { path: '/audit', breadcrumb: 'Audit Investigation' },
+  { path: '/audit', breadcrumb: 'Audit investigation' },
   {
     path: '/audit/:executionType/:id/outcomes-details',
-    breadcrumb: 'Outcomes Details'
+    breadcrumb: 'Outcomes details'
   },
   // the following route is needed to display a dedicated breadcrumb path for executions with only 1 outcome
   {
@@ -60,15 +60,15 @@ const routes = [
   },
   {
     path: '/audit/:executionType/:id/model-lookup',
-    breadcrumb: 'Model Lookup'
+    breadcrumb: 'Model lookup'
   },
   {
     path: '/audit/:executionType/:id/input-data',
-    breadcrumb: 'Input Data'
+    breadcrumb: 'Input data'
   },
   {
     path: '/audit/:executionType/:id/counterfactual-analysis',
-    breadcrumb: 'Counterfactual Analysis'
+    breadcrumb: 'Counterfactual analysis'
   },
   {
     path: '/audit/:executionType/:id',

@@ -119,13 +119,13 @@ const CounterfactualInputDomainEdit = (
           <StackItem>
             <DescriptionList>
               <DescriptionListGroup>
-                <DescriptionListTerm>Data Type</DescriptionListTerm>
+                <DescriptionListTerm>Data type</DescriptionListTerm>
                 <DescriptionListDescription>
                   {input.typeRef}
                 </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
-                <DescriptionListTerm>Original Value</DescriptionListTerm>
+                <DescriptionListTerm>Original value</DescriptionListTerm>
                 <DescriptionListDescription>
                   {input.value.toString()}
                 </DescriptionListDescription>

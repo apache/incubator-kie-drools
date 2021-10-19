@@ -45,7 +45,7 @@ const CounterfactualCompletedMessage = (
             <Alert
               isInline
               variant="success"
-              title="Counterfactual Analysis completed successfully"
+              title="Counterfactual analysis completed successfully"
               actionClose={
                 <AlertActionCloseButton onClose={handleAlertClosing} />
               }
@@ -63,7 +63,7 @@ const CounterfactualCompletedMessage = (
             <Alert
               isInline
               variant="danger"
-              title="Counterfactual Analysis could not be completed"
+              title="Counterfactual analysis could not be completed"
               actionClose={
                 <AlertActionCloseButton onClose={handleAlertClosing} />
               }
@@ -86,7 +86,7 @@ const CounterfactualCompletedMessage = (
             >
               <p>
                 <span>
-                  The Counterfactual Analysis wasn&apos;t able to find
+                  The Counterfactual analysis wasn&apos;t able to find
                   counterfactual solutions for the provided combination of
                   outcomes and inputs.
                   <br /> Try changing the input settings and running the

@@ -8,7 +8,7 @@ const CounterfactualUnsupportedBanner = () => {
       className="cf-unsupported-banner"
       variant="info"
       isInline={true}
-      title="Counterfactuals is an experimental feature and does not currently support all types of model."
+      title="Counterfactuals is an experimental feature and doesn't currently support all types of models."
     />
   );
 };

@@ -50,7 +50,7 @@ describe('Counterfactual', () => {
     expect(useDecisionOutcomes).toHaveBeenCalledWith(executionId);
     expect(useInputData).toHaveBeenCalledWith(executionId);
 
-    expect(wrapper.find('Title').text()).toMatch('Counterfactual Analysis');
+    expect(wrapper.find('Title').text()).toMatch('Counterfactual analysis');
     expect(wrapper.find('CounterfactualAnalysis')).toHaveLength(0);
 
     expect(

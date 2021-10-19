@@ -39,7 +39,7 @@ describe('Breadcrumbs', () => {
         .find('li.breadcrumb-item')
         .at(0)
         .text()
-    ).toMatch('Audit Investigation');
+    ).toMatch('Audit investigation');
     expect(
       breadcrumbs
         .find('li.breadcrumb-item')

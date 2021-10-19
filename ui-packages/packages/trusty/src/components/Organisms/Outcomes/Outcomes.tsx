@@ -190,7 +190,7 @@ const OutcomeCard: React.FC<OutcomeCardProps> = ({
             }}
             ouiaId="view-detail"
           >
-            View Details <LongArrowAltRightIcon />
+            View details <LongArrowAltRightIcon />
           </Button>
         )}
       </CardFooter>

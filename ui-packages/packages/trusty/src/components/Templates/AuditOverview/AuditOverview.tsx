@@ -55,7 +55,7 @@ const AuditOverview = (props: AuditOverviewProps) => {
       <PageSection variant={PageSectionVariants.light}>
         <TextContent>
           <Title size="3xl" headingLevel="h2">
-            Audit Investigation
+            Audit investigation
           </Title>
           <Text component="p">
             Here you can retrieve all the available information about past

@@ -10,7 +10,7 @@ exports[`Audit overview renders correctly a list of executions 1`] = `
         headingLevel="h2"
         size="3xl"
       >
-        Audit Investigation
+        Audit investigation
       </Title>
       <Text
         component="p"

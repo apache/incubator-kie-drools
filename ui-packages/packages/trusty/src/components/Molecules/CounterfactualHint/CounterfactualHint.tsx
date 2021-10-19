@@ -60,7 +60,7 @@ const CounterfactualHint = (props: CounterfactualHintProps) => {
           >
             <HintTitle>Create a counterfactual</HintTitle>
             <HintBody>
-              Select a desired counterfactual Outcome; one or more Data Types,
+              Select a desired counterfactual outcome; one or more data types,
               and modify the input constraints.
             </HintBody>
           </Hint>

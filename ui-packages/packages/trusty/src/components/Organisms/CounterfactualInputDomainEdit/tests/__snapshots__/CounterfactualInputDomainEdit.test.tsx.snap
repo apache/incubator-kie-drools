@@ -146,7 +146,7 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                           <span
                             className="pf-c-description-list__text"
                           >
-                            Data Type
+                            Data type
                           </span>
                         </dt>
                       </DescriptionListTerm>
@@ -174,7 +174,7 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                           <span
                             className="pf-c-description-list__text"
                           >
-                            Original Value
+                            Original value
                           </span>
                         </dt>
                       </DescriptionListTerm>
@@ -258,7 +258,7 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                             <FormGroup
                               fieldId="min"
                               isRequired={true}
-                              label="Minimum Value"
+                              label="Minimum value"
                             >
                               <div
                                 className="pf-c-form__group"
@@ -273,7 +273,7 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                                     <span
                                       className="pf-c-form__label-text"
                                     >
-                                      Minimum Value
+                                      Minimum value
                                     </span>
                                     <span
                                       aria-hidden="true"
@@ -340,7 +340,7 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                             <FormGroup
                               fieldId="max"
                               isRequired={true}
-                              label="Maximum Value"
+                              label="Maximum value"
                             >
                               <div
                                 className="pf-c-form__group"
@@ -355,7 +355,7 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                                     <span
                                       className="pf-c-form__label-text"
                                     >
-                                      Maximum Value
+                                      Maximum value
                                     </span>
                                     <span
                                       aria-hidden="true"

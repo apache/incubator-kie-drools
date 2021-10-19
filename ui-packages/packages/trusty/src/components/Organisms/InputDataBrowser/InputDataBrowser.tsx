@@ -98,7 +98,7 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
               <Split>
                 <SplitItem>
                   <span className="input-browser__section-list__label">
-                    Browse Sections
+                    Browse sections
                   </span>
                 </SplitItem>
                 <SplitItem>
@@ -129,7 +129,7 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
                   <DataListItemCells
                     dataListCells={[
                       <DataListCell width={3} key="Input Data">
-                        <span>Input Data</span>
+                        <span>Input data</span>
                       </DataListCell>,
                       <DataListCell width={3} key="Value">
                         <span>Value</span>

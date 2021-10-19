@@ -70,22 +70,25 @@ const Counterfactual = () => {
       messages.push({
         id: 'message-outcomes',
         message:
-          'All of the model inputs are strings and cannot have search domains defined.'
+          'All of the model inputs are strings and cannot have search domains defined, which is unsupported.'
       });
     } else if (noSupportedInputs && noSupportedOutcomes) {
       messages.push({
         id: 'message-inputs-and-outcomes',
-        message: 'All of the model inputs and outcomes are unsupported types.'
+        message:
+          'All model inputs and outcomes are structured data types, which are unsupported.'
       });
     } else if (noSupportedInputs) {
       messages.push({
         id: 'message-inputs',
-        message: 'All of the model inputs are unsupported types.'
+        message:
+          'All model inputs are structured data types, which are unsupported.'
       });
     } else if (noSupportedOutcomes) {
       messages.push({
         id: 'message-outcomes',
-        message: 'All of the model outcomes are unsupported types.'
+        message:
+          'All model outcomes are structured data types, which are unsupported.'
       });
     }
     return messages;
@@ -114,7 +117,7 @@ const Counterfactual = () => {
               <Stack hasGutter={true}>
                 <StackItem>
                   <Title headingLevel="h3" size="2xl">
-                    Counterfactual Analysis
+                    Counterfactual analysis
                   </Title>
                 </StackItem>
                 <StackItem>

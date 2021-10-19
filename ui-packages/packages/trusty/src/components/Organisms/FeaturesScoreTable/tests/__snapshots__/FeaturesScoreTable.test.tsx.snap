@@ -32,7 +32,7 @@ exports[`FeaturesScoreTable renders correctly a score table 1`] = `
             },
           ]
         }
-        name="Positive Weight"
+        name="Positive weight"
       />
     </GridItem>
     <GridItem
@@ -55,7 +55,7 @@ exports[`FeaturesScoreTable renders correctly a score table 1`] = `
             },
           ]
         }
-        name="Negative Weight"
+        name="Negative neight"
       />
     </GridItem>
   </Grid>

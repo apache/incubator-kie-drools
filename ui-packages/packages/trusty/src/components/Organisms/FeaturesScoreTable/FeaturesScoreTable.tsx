@@ -31,12 +31,12 @@ const FeaturesScoreTable = (props: FeatureScoreTableProps) => {
       <Grid hasGutter={true}>
         <GridItem xl2={12} xl={6} span={6}>
           {positiveScores && (
-            <ScoreTable name="Positive Weight" featuresScore={positiveScores} />
+            <ScoreTable name="Positive weight" featuresScore={positiveScores} />
           )}
         </GridItem>
         <GridItem xl2={12} xl={6} span={6}>
           {negativeScores && (
-            <ScoreTable name="Negative Weight" featuresScore={negativeScores} />
+            <ScoreTable name="Negative neight" featuresScore={negativeScores} />
           )}
         </GridItem>
       </Grid>

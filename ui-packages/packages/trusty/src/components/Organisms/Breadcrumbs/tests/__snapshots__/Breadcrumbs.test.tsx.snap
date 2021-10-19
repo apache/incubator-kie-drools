@@ -42,7 +42,7 @@ exports[`Breadcrumbs renders outcome details breadcrumbs links 1`] = `
                   <span
                     key="/audit"
                   >
-                    Audit Investigation
+                    Audit investigation
                   </span>
                 </a>
               </LinkAnchor>

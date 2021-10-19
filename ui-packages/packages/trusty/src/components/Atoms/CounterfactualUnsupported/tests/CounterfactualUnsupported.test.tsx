@@ -15,10 +15,8 @@ describe('CounterfactualUnsupported status', () => {
     expect(wrapper).toMatchSnapshot();
 
     const items = wrapper.find('EmptyStateBody p');
-    expect(items.length).toBe(4);
-    expect(items.get(0)).not.toBeUndefined();
-    expect(items.get(1).props['data-ouia-component-id']).toBe('msg1');
-    expect(items.get(2).props['data-ouia-component-id']).toBe('msg2');
-    expect(items.get(3)).not.toBeUndefined();
+    expect(items.length).toBe(2);
+    expect(items.get(0).props['data-ouia-component-id']).toBe('msg1');
+    expect(items.get(1).props['data-ouia-component-id']).toBe('msg2');
   });
 });

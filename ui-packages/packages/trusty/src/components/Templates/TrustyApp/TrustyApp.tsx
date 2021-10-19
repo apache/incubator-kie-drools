@@ -66,7 +66,7 @@ const TrustyApp = (props: TrustyAppProps) => {
           isActive={location.pathname.startsWith('/audit')}
           ouiaId="audit-item"
         >
-          <NavLink to="/audit">Audit Investigation</NavLink>
+          <NavLink to="/audit">Audit investigation</NavLink>
         </NavItem>
       </NavList>
     </Nav>

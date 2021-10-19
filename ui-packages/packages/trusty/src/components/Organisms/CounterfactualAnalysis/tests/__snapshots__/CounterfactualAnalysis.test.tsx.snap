@@ -165,7 +165,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                           <h3
                                             className="pf-c-title pf-m-2xl"
                                           >
-                                            Counterfactual Analysis
+                                            Counterfactual analysis
                                           </h3>
                                         </Title>
                                       </div>
@@ -501,7 +501,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                         <div
                                           className="pf-c-hint__body"
                                         >
-                                          Select a desired counterfactual Outcome; one or more Data Types, and modify the input constraints.
+                                          Select a desired counterfactual outcome; one or more data types, and modify the input constraints.
                                         </div>
                                       </HintBody>
                                     </div>
@@ -672,7 +672,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                 <Tooltip
                                                   content={
                                                     <div>
-                                                      Select Inputs, provide inputs constraints and set up Outcomes to run a counterfactual analysis.
+                                                      Select inputs, provide inputs constraints and set up outcomes to run a counterfactual analysis.
                                                     </div>
                                                   }
                                                 >
@@ -718,7 +718,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                           isLeftAligned={false}
                                                         >
                                                           <div>
-                                                            Select Inputs, provide inputs constraints and set up Outcomes to run a counterfactual analysis.
+                                                            Select inputs, provide inputs constraints and set up outcomes to run a counterfactual analysis.
                                                           </div>
                                                         </TooltipContent>
                                                       </div>
@@ -734,13 +734,13 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     }
                                                     trigger={
                                                       <Button
-                                                        aria-label="Run Counterfactual Analysis"
+                                                        aria-label="Run counterfactual analysis"
                                                         id="counterfactual-run"
                                                         isAriaDisabled={true}
                                                         onClick={[Function]}
                                                         variant="primary"
                                                       >
-                                                        Run Counterfactual
+                                                        Run counterfactual
                                                       </Button>
                                                     }
                                                     zIndex={9999}
@@ -749,14 +749,14 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                       onFoundRef={[Function]}
                                                     >
                                                       <Button
-                                                        aria-label="Run Counterfactual Analysis"
+                                                        aria-label="Run counterfactual analysis"
                                                         id="counterfactual-run"
                                                         isAriaDisabled={true}
                                                         onClick={[Function]}
                                                         variant="primary"
                                                       >
                                                         <ButtonBase
-                                                          aria-label="Run Counterfactual Analysis"
+                                                          aria-label="Run counterfactual analysis"
                                                           id="counterfactual-run"
                                                           innerRef={null}
                                                           isAriaDisabled={true}
@@ -765,7 +765,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                         >
                                                           <button
                                                             aria-disabled={true}
-                                                            aria-label="Run Counterfactual Analysis"
+                                                            aria-label="Run counterfactual analysis"
                                                             className="pf-c-button pf-m-primary pf-m-aria-disabled"
                                                             data-ouia-component-id="OUIA-Generated-Button-primary-1"
                                                             data-ouia-component-type="PF4/Button"
@@ -778,7 +778,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                             tabIndex={null}
                                                             type="button"
                                                           >
-                                                            Run Counterfactual
+                                                            Run counterfactual
                                                           </button>
                                                         </ButtonBase>
                                                       </Button>
@@ -860,7 +860,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                         onClick={[Function]}
                                                         variant="secondary"
                                                       >
-                                                        Set Up Outcomes
+                                                        Set up outcomes
                                                       </Button>
                                                     }
                                                     zIndex={9999}
@@ -892,7 +892,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                             role={null}
                                                             type="button"
                                                           >
-                                                            Set Up Outcomes
+                                                            Set up outcomes
                                                           </button>
                                                         </ButtonBase>
                                                       </Button>

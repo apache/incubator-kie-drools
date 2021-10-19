@@ -56,7 +56,7 @@ const FeaturesScoreChartBySign = (props: FeaturesScoreChartBySignProps) => {
               maxValue={maxValue}
               maxNumberOfValues={scores.maxNumberOfValues}
               padding={{ ...chartPadding, right: 30, left: 90 }}
-              legendTitle="Positive Impact"
+              legendTitle="Positive impact"
               legendColor="var(--pf-global--info-color--100)"
             />
           </SplitItem>
@@ -70,7 +70,7 @@ const FeaturesScoreChartBySign = (props: FeaturesScoreChartBySignProps) => {
               maxValue={maxValue}
               maxNumberOfValues={scores.maxNumberOfValues}
               padding={{ ...chartPadding, right: 90, left: 30 }}
-              legendTitle="Negative Impact"
+              legendTitle="Negative impact"
               legendColor="var(--pf-global--palette--orange-300)"
             />
           </SplitItem>
