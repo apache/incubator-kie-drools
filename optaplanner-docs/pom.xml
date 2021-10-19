@@ -25,7 +25,11 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <source.document.name>index.adoc</source.document.name>
+    <!--
+    Antora ignores hidden files. The docs website should not incorporate this file as it brings the single-paged docs
+    duplicating the other content.
+    -->
+    <source.document.name>.index.adoc</source.document.name>
   </properties>
 
   <build>
@@ -61,6 +65,7 @@
               <sourceDocumentName>${source.document.name}</sourceDocumentName>
               <backend>html5</backend>
               <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
+              <outputFile>index.html</outputFile>
               <attributes>
                 <imagesdir>.</imagesdir>
                 <source-highlighter>highlightjs</source-highlighter>
@@ -78,6 +83,7 @@
               <sourceDocumentName>${source.document.name}</sourceDocumentName>
               <backend>pdf</backend>
               <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
+              <outputFile>index.pdf</outputFile>
               <attributes>
                 <imagesdir>${basedir}/src/modules/ROOT/images</imagesdir>
                 <source-highlighter>coderay</source-highlighter><!-- highlightjs does not work in PDF -->
