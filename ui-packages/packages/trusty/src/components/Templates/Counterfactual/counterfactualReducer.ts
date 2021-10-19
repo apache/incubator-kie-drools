@@ -248,6 +248,20 @@ export const isInputTypeSupported = (searchInput: CFSearchInput): boolean => {
   return false;
 };
 
+export const isInputConstraintSupported = (
+  searchInput: CFSearchInput
+): boolean => {
+  //Structures, Collections and Strings are not supported. Constraints selection
+  //not allowed for Booleans.
+  if (searchInput.kind === 'UNIT') {
+    switch (typeof searchInput.value) {
+      case 'number':
+        return true;
+    }
+  }
+  return false;
+};
+
 export const isOutcomeTypeSupported = (outcome: Outcome): boolean => {
   //Structures and Collections are not supported
   if (outcome.outcomeResult.kind === 'UNIT') {

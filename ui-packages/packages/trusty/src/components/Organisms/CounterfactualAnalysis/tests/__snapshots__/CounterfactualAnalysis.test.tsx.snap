@@ -1891,6 +1891,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                       data-label="Constraint"
                                                                     >
                                                                       <ConstraintCell
+                                                                        isInputConstraintSupported={[Function]}
                                                                         isInputSelectionEnabled={true}
                                                                         isInputTypeSupported={[Function]}
                                                                         onEditConstraint={[Function]}
@@ -2113,6 +2114,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                       data-label="Constraint"
                                                                     >
                                                                       <ConstraintCell
+                                                                        isInputConstraintSupported={[Function]}
                                                                         isInputSelectionEnabled={true}
                                                                         isInputTypeSupported={[Function]}
                                                                         onEditConstraint={[Function]}

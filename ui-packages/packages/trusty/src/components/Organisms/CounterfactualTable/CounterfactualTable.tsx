@@ -42,7 +42,10 @@ import {
 import { CFDispatch } from '../CounterfactualAnalysis/CounterfactualAnalysis';
 import FormattedValue from '../../Atoms/FormattedValue/FormattedValue';
 import './CounterfactualTable.scss';
-import { isInputTypeSupported } from '../../Templates/Counterfactual/counterfactualReducer';
+import {
+  isInputConstraintSupported,
+  isInputTypeSupported
+} from '../../Templates/Counterfactual/counterfactualReducer';
 
 type CounterfactualTableProps = {
   inputs: CFSearchInput[];
@@ -397,6 +400,9 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                               rowIndex={rowIndex}
                               isInputSelectionEnabled={isInputSelectionEnabled}
                               isInputTypeSupported={isInputTypeSupported}
+                              isInputConstraintSupported={
+                                isInputConstraintSupported
+                              }
                               onEditConstraint={onOpenInputDomainEdit}
                             />
                           </Td>
@@ -486,6 +492,7 @@ type ConstraintCellProps = {
   rowIndex: number;
   isInputSelectionEnabled: boolean;
   isInputTypeSupported: (input: CFSearchInput) => boolean;
+  isInputConstraintSupported: (input: CFSearchInput) => boolean;
   onEditConstraint: (row: CFSearchInput, rowIndex: number) => void;
 };
 
@@ -495,11 +502,14 @@ const ConstraintCell = (props: ConstraintCellProps) => {
     rowIndex,
     isInputSelectionEnabled,
     isInputTypeSupported,
+    isInputConstraintSupported,
     onEditConstraint
   } = props;
 
   const isTypeSupported = isInputTypeSupported(row);
-  const isConstraintEditEnabled = isInputSelectionEnabled && isTypeSupported;
+  const isConstraintSupported = isInputConstraintSupported(row);
+  const isConstraintEditEnabled =
+    isInputSelectionEnabled && isConstraintSupported;
 
   return (
     <>
