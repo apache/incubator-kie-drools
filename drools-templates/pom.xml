@@ -19,6 +19,16 @@
     <java.module.name>org.drools.templates</java.module.name>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>${version.org.hsqldb}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>

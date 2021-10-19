@@ -507,17 +507,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.deltaspike.core</groupId>
-                <artifactId>deltaspike-core-impl</artifactId>
-                <version>${version.org.apache.deltaspike.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.deltaspike.cdictrl</groupId>
-                <artifactId>deltaspike-cdictrl-api</artifactId>
-                <version>${version.org.apache.deltaspike.core}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${version.org.apache.httpcomponents.httpclient}</version>
@@ -757,39 +746,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>${version.org.hsqldb}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>${version.org.javassist}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-                <version>${version.org.jboss.arquillian.container.weld}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian.junit</groupId>
-                <artifactId>arquillian-junit-container</artifactId>
-                <version>${version.org.jboss.arquillian}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-                <version>${version.org.jboss.arquillian.container.weld}</version>
-            </dependency>
-            <dependency>
-                <!-- WARNING: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-bom must be defined BEFORE org.jboss.arquillian:arquillian-bom -->
-                <groupId>org.jboss.shrinkwrap.resolver</groupId>
-                <artifactId>shrinkwrap-resolver-bom</artifactId>
-                <version>${version.org.jboss.shrinkwrap.resolver}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
 
             <dependency>
@@ -1156,12 +1115,6 @@
                 <artifactId>jmh-generator-annprocess</artifactId>
                 <version>${version.org.openjdk.jmh}</version>
                 <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.deltaspike.cdictrl</groupId>
-                <artifactId>deltaspike-cdictrl-weld</artifactId>
-                <version>${version.org.apache.deltaspike.core}</version>
             </dependency>
 
             <dependency>
