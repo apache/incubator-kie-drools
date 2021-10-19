@@ -101,7 +101,11 @@ public class CoercedExpression {
         }
 
         if ((nonPrimitiveLeftClass == Integer.class || nonPrimitiveLeftClass == Long.class) && nonPrimitiveRightClass == Double.class) {
-            return new CoercedExpressionResult(new TypedExpression( new CastExpr( PrimitiveType.doubleType(), left.getExpression()), double.class ), right, false);
+            CastExpr castExpression = new CastExpr(PrimitiveType.doubleType(), this.left.getExpression());
+            return new CoercedExpressionResult(
+                    new TypedExpression(castExpression, double.class, left.getType()),
+                    right,
+                    false);
         }
 
         final boolean leftIsPrimitive = leftClass.isPrimitive() || Number.class.isAssignableFrom( leftClass );

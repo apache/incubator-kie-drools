@@ -608,7 +608,7 @@ public class NamedEntryPoint
         Object object = ((InternalFactHandle) handle).getObject();
         try {
             if ( dynamicFacts != null && removeFromSet ) {
-                dynamicFacts.remove( object );
+                dynamicFacts.remove( handle );
             }
 
             if ( object != null ) {
