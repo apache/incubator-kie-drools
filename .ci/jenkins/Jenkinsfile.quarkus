@@ -26,6 +26,7 @@ pipeline {
             steps {
                 script {
                     checkoutQuarkusRepo()
+                    checkoutDroolsRepo()
                     checkoutRepo('kogito-runtimes')
                     checkoutRepo('kogito-runtimes', 'integration-tests')
                     checkoutOptaplannerRepo()
@@ -52,6 +53,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Drools') {
+            steps {
+                script {
+                    getMavenCommand(droolsRepo)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+
         stage('Build kogito-runtimes') {
             steps {
                 script {
@@ -209,6 +228,22 @@ void checkoutOptaplannerRepo() {
     }
     dir('optaplanner') {
         checkout(githubscm.resolveRepository('optaplanner', params.GIT_AUTHOR, targetBranch, false))
+    }
+}
+
+void checkoutDroolsRepo() {
+    String targetBranch = params.BUILD_BRANCH_NAME
+    String [] versionSplit = targetBranch.split("\\.")
+    if (versionSplit.length == 3
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+       && versionSplit[2] == 'x') {
+        targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit[1]}.x"
+    } else {
+        echo "Cannot parse branch as release branch so going further with current value: ${targetBranch}"
+    }
+    dir('drools') {
+        checkout(githubscm.resolveRepository('drools', params.GIT_AUTHOR, targetBranch, false))
     }
 }
 

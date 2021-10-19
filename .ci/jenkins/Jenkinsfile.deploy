@@ -50,6 +50,7 @@ pipeline {
                     if (isRelease() || isCreatePr()) {
                         // Verify version is set
                         assert getProjectVersion()
+                        assert getDroolsVersion()
 
                         if (isRelease()) {
                             // Verify if on right release branch
@@ -68,6 +69,7 @@ pipeline {
                         setDeployPropertyIfNeeded('git.branch', getBuildBranch())
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
                         setDeployPropertyIfNeeded('project.version', getProjectVersion())
+                        setDeployPropertyIfNeeded('drools.version', getDroolsVersion())
                         setDeployPropertyIfNeeded('release', isRelease())
                     }
                 }
@@ -91,8 +93,8 @@ pipeline {
             }
             steps {
                 script {
-                    // Set version
                     maven.mvnVersionsSet(getMavenCommand(), getProjectVersion(), !isRelease())
+                    maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie7', getDroolsVersion())
                 }
             }
         }
@@ -100,23 +102,6 @@ pipeline {
             steps {
                 script {
                     getMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
-                }
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
-        stage('Check integration tests with persistence') {
-            steps {
-                script {
-                    sh 'cp -r kogito-runtimes integration-tests'
-
-                    getMavenCommand('integration-tests')
-                        .withProfiles(['persistence'])
-                        .skipTests(params.SKIP_TESTS)
-                        .run('clean verify')
                 }
             }
             post {
@@ -281,6 +266,10 @@ String getBuildBranch() {
 
 String getProjectVersion() {
     return params.PROJECT_VERSION
+}
+
+String getDroolsVersion() {
+    return params.DROOLS_VERSION
 }
 
 String getBotBranch() {

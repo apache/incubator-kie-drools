@@ -48,6 +48,7 @@ pipeline {
                     if (isRelease()) {
                         // Verify version is set and if on right release branch
                         assert getProjectVersion()
+                        assert getDroolsVersion()
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
                 }
@@ -77,6 +78,7 @@ pipeline {
                         prepareForPR()
 
                         maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
+                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie7', getDroolsSnapshotVersion())
 
                         commitAndCreatePR()
                     }
@@ -171,8 +173,16 @@ String getProjectVersion() {
     return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
 }
 
+String getDroolsVersion() {
+    return getParamOrDeployProperty('DROOLS_VERSION', 'drools.version')
+}
+
 String getSnapshotVersion() {
     return util.getNextVersion(getProjectVersion(), 'micro')
+}
+
+String getDroolsSnapshotVersion() {
+    return util.getNextVersion(getDroolsVersion(), 'micro')
 }
 
 String getGitTag() {

@@ -10,9 +10,7 @@ on:
       - '**.adoc'
       - '*.txt'
       - 'docsimg/**'
-      - '.github/*'
-      - 'Jenkinsfile*'
-      - '.jenkins/**'
+      - '.ci/jenkins/**'
 
 jobs:
   optaplanner-build:
