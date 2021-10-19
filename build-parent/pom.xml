@@ -1235,6 +1235,24 @@
                 </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>com.google.elemental2</groupId>
+                <artifactId>elemental2-dom</artifactId>
+                <version>${version.com.google.elemental2}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.elemental2</groupId>
+                <artifactId>elemental2-core</artifactId>
+                <version>${version.com.google.elemental2}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.elemental2</groupId>
+                <artifactId>elemental2-promise</artifactId>
+                <version>${version.com.google.elemental2}</version>
+            </dependency>
+
             <!-- GWT -->
             <dependency>
                 <groupId>com.google.gwt</groupId>
@@ -1612,6 +1630,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M2</version>
                     <dependencies>
                         <dependency>
                             <groupId>de.is24.maven.enforcer.rules</groupId>
@@ -1635,29 +1654,6 @@
                         </dependency>
                     </dependencies>
                     <executions>
-                        <execution>
-                            <id>enforce-plugin-versions</id>
-                            <goals>
-                                <goal>enforce</goal>
-                            </goals>
-                            <configuration>
-                                <rules>
-                                    <requirePluginVersions>
-                                        <message>One or more plugins do not have valid version! The version needs to be
-                                            explicitly specified, can not be a -SNAPSHOT version and can not be one of
-                                            the special (and buggy) Maven versions (LATEST, RELEASE).
-                                        </message>
-                                        <unCheckedPluginList>org.kie:kie-maven-plugin</unCheckedPluginList>
-                                    </requirePluginVersions>
-                                    <requireFilesDontExist>
-                                        <files>
-                                            <file>${project.basedir}/src/main/resources/logback-test.xml</file>
-                                            <file>${project.basedir}/src/main/filtered-resources/logback-test.xml</file>
-                                        </files>
-                                    </requireFilesDontExist>
-                                </rules>
-                            </configuration>
-                        </execution>
                         <execution>
                             <id>no-managed-deps</id>
                             <goals>
