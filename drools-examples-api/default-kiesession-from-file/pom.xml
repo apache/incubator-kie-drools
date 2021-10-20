@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>default-kiesession-from-file</artifactId>
-  <name>Drools API examples - Default KieSession From File</name>
+  <name>Drools :: API examples :: Default KieSession From File</name>
 
   <properties>
     <java.module.name>org.drools.examples.api.defaultkiesessionfromfile</java.module.name>

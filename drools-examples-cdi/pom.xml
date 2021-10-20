@@ -12,7 +12,7 @@
 
   <groupId>org.drools</groupId>
   <artifactId>drools-examples-cdi</artifactId>
-  <name>Drools CDI examples</name>
+  <name>Drools :: CDI examples</name>
 
   <packaging>pom</packaging>
   <modules>

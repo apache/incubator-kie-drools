@@ -11,7 +11,7 @@
 
   <packaging>jar</packaging>
 
-  <name>cdi-example-scopes</name>
+  <name>Drools :: CDI Examples Scopes</name>
 
   <properties>
     <java.module.name>org.drools.examples.cdi.scopes</java.module.name>

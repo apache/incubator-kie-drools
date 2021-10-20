@@ -10,6 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
   <packaging>pom</packaging>
 
+  <name>KiE :: Decision Model Notation - PMML Tests :: Parent</name>
   <artifactId>kie-dmn-pmml-tests-parent</artifactId>
 
   <modules>

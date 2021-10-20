@@ -10,6 +10,7 @@
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
+  <name>Drools :: Scenario Simulation Parent</name>
   <groupId>org.drools</groupId>
   <artifactId>drools-scenario-simulation</artifactId>
   <packaging>pom</packaging>

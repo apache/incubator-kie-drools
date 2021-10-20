@@ -9,6 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <name>KiE :: Decision Model Notation - PMML Tests</name>
   <artifactId>kie-dmn-pmml-tests</artifactId>
 
   <dependencies>

@@ -12,7 +12,7 @@
 
   <groupId>org.drools</groupId>
   <artifactId>drools-examples-api</artifactId>
-  <name>Drools API examples</name>
+  <name>Drools :: API examples</name>
 
   <packaging>pom</packaging>
 

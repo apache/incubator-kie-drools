@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>cdi-example</artifactId>
-  <name>Drools CDI Example</name>
+  <name>Drools :: CDI Example</name>
 
   <properties>
     <java.module.name>org.drools.examples.cdi.basic</java.module.name>

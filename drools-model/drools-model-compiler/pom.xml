@@ -10,6 +10,7 @@
     <version>8.13.0-SNAPSHOT</version>
   </parent>
 
+  <name>Drools :: Model :: Compiler</name>
   <artifactId>drools-model-compiler</artifactId>
 
   <properties>

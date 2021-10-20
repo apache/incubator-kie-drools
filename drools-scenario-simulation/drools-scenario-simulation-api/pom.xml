@@ -9,6 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <name>Drools :: Scenario Simulation API</name>
   <artifactId>drools-scenario-simulation-api</artifactId>
   <packaging>jar</packaging>
 

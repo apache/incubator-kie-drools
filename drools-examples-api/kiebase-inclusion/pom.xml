@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kiebase-inclusion</artifactId>
-  <name>Drools API examples - KieBase Inclusion</name>
+  <name>Drools :: API examples :: KieBase Inclusion</name>
 
   <properties>
     <java.module.name>org.drools.examples.api.kiebaseinclusion</java.module.name>

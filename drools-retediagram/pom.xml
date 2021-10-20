@@ -12,7 +12,7 @@
   <artifactId>drools-retediagram</artifactId>
   <packaging>jar</packaging>
 
-  <name>drools-retediagram</name>
+  <name>Drools :: ReteDiagram</name>
   <description>Internal utility (EXPERIMENTAL) to plot Rete diagram, similar to `ReteDumper`, using Dot language format</description>
   <url>http://drools.org</url>
 

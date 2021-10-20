@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>reactive-kiesession</artifactId>
-  <name>Drools API examples - Reactive KieSession</name>
+  <name>Drools :: API examples :: Reactive KieSession</name>
 
   <properties>
     <java.module.name>org.drools.examples.api.reactivekiesession</java.module.name>
