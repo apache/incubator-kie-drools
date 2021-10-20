@@ -5,7 +5,7 @@
 # The goal is to have the antora.yml containing correct attributes available in the release branch before
 # the optaplanner-website is refreshed.
 name: optaplanner
-title: OptaPlanner User Guide
+title: OptaPlanner User Guide ${project.version}
 version: latest
 asciidoc:
   attributes:
