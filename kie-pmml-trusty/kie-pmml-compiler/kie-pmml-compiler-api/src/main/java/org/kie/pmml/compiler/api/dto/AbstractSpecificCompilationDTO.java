@@ -176,7 +176,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     public void addFields(final List<Field<?>> toAdd) {
         if (toAdd != null) {
             toAdd.forEach(field -> {
-                fields.removeIf(e -> e.getName().equals(field.getName()));
+                fields.removeIf(e -> e.getClass().equals(field.getClass()) &&  e.getName().equals(field.getName()));
                 fields.add(field);
             });
         }
