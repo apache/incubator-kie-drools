@@ -73,9 +73,8 @@
         <!-- DROOLS-6678: only used by kie-util-maven-support and kie-util-maven-integration -->
         <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
         <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
-        <version.org.apache.maven>3.8.1</version.org.apache.maven>
-        <version.org.apache.maven-aether-provider>3.3.9</version.org.apache.maven-aether-provider>
-        <version.org.apache.maven.wagon>3.4.3</version.org.apache.maven.wagon>
+        <version.org.apache.maven>3.3.9</version.org.apache.maven>
+        <version.org.apache.maven.wagon>3.0.0</version.org.apache.maven.wagon>
         <version.org.apache.poi>4.1.2</version.org.apache.poi>
         <!-- DROOLS-6678: only used by kie-test-util -->
         <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
@@ -811,7 +810,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-aether-provider</artifactId>
-                <version>${version.org.apache.maven-aether-provider}</version>
+                <version>${version.org.apache.maven}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
