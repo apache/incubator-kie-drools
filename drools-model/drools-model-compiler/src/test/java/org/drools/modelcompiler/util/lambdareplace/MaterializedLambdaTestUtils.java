@@ -35,7 +35,7 @@ public class MaterializedLambdaTestUtils {
         try {
             MatcherAssert.assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
         } catch (AssertionError e) {
-            assertEquals(StaticJavaParser.parse(expectedResult), aClass.getCompilationUnit());
+            assertEquals(expectedResult, aClass.getContents());
         }
     }
 

@@ -86,17 +86,22 @@ abstract class MaterializedLambda {
         addImports(imports, staticImports, compilationUnit);
 
         EnumDeclaration classDeclaration = create(compilationUnit);
+        String CLASS_NAME_TEMPLATE_NAME = "{CLASS_NAME}";
+        classDeclaration.setName(CLASS_NAME_TEMPLATE_NAME);
 
         createMethodsDeclaration(classDeclaration);
 
-        String classHash = classHash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
+        String contents = MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit);
+        String classHash = classHash(contents);
         String isolatedPackageName = getIsolatedPackageName(classHash);
         String className = String.format("%s%s", getPrefix(), classHash);
 
-        classDeclaration.setName(className);
-        compilationUnit.setPackageDeclaration(new PackageDeclaration(new Name(isolatedPackageName)));
+        String renamedContents = contents.replace(CLASS_NAME_TEMPLATE_NAME, className);
+        String packageDeclaration = new PackageDeclaration(new Name(isolatedPackageName)).toString();
 
-        return new CreatedClass(compilationUnit, className, isolatedPackageName);
+        String fullContents = packageDeclaration + "\n" + renamedContents;
+
+        return new CreatedClass(fullContents, className, isolatedPackageName);
     }
 
     /*
