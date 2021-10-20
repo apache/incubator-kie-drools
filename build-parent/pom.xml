@@ -33,9 +33,9 @@
         <version.commons-codec>1.15</version.commons-codec>
         <version.commons-collections>3.2.2</version.commons-collections>
         <version.commons-logging>1.1.1</version.commons-logging>
-        <version.commons-io>2.7</version.commons-io>
+        <version.commons-io>2.11.0</version.commons-io>
         <version.common-text>1.9</version.common-text>
-        <version.com.fasterxml.jackson>2.12.1</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson>2.12.5</version.com.fasterxml.jackson>
         <version.com.fasterxml.jackson.databind>${version.com.fasterxml.jackson}</version.com.fasterxml.jackson.databind>
         <version.com.fasterxml.jackson.annotations>${version.com.fasterxml.jackson}</version.com.fasterxml.jackson.annotations>
         <!--    TODO to be removed? only used in one drools-examples -->
@@ -43,10 +43,10 @@
         <version.org.jresearch.gwt.time>2.0.3</version.org.jresearch.gwt.time>
         <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
         <!--    TODO to be removed? only used by drools-verifier and drools-examples -->
-        <version.com.google.guava>30.1-jre</version.com.google.guava>
+        <version.com.google.guava>30.1.1-jre</version.com.google.guava>
         <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
         <version.com.google.gwt>2.9.0</version.com.google.gwt>
-        <version.com.google.protobuf>3.6.1</version.com.google.protobuf>
+        <version.com.google.protobuf>3.17.3</version.com.google.protobuf>
         <version.com.h2database>1.4.197</version.com.h2database>
         <!--    TODO to be removed? only used by drools-verifier -->
         <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
@@ -57,8 +57,8 @@
         <version.com.thoughtworks.xstream>1.4.18</version.com.thoughtworks.xstream>
         <version.guru.nidi>0.18.0</version.guru.nidi>
         <version.info.picocli>4.6.1</version.info.picocli>
-        <version.io.micrometer>1.7.3</version.io.micrometer>
-        <version.io.smallrye.openapi.core>2.1.4</version.io.smallrye.openapi.core>
+        <version.io.micrometer>1.7.4</version.io.micrometer>
+        <version.io.smallrye.openapi.core>2.1.15</version.io.smallrye.openapi.core>
         <version.junit>4.13.1</version.junit>
         <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
         <version.antlr>2.7.7</version.antlr>
@@ -67,33 +67,34 @@
         <version.org.antlr4c3gwt>1.1.12</version.org.antlr4c3gwt>
         <version.org.antlr.ST4>4.0.7</version.org.antlr.ST4>
         <version.org.apache.ant>1.10.11</version.org.apache.ant>
-        <version.org.apache.commons.lang3>3.11</version.org.apache.commons.lang3>
+        <version.org.apache.commons.lang3>3.12.0</version.org.apache.commons.lang3>
         <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
 
         <!--    TODO to be removed? only used by kie-util-maven-support and kie-util-maven-integration -->
         <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
         <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
-        <version.org.apache.maven>3.3.9</version.org.apache.maven>
-        <version.org.apache.maven.wagon>3.0.0</version.org.apache.maven.wagon>
+        <version.org.apache.maven>3.8.1</version.org.apache.maven>
+        <version.org.apache.maven-aether-provider>3.3.9</version.org.apache.maven-aether-provider>
+        <version.org.apache.maven.wagon>3.4.3</version.org.apache.maven.wagon>
         <version.org.apache.poi>4.1.2</version.org.apache.poi>
         <!--    TODO to be removed? only used by kie-test-util -->
         <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
-        <version.org.assertj>3.14.0</version.org.assertj>
+        <version.org.assertj>3.20.2</version.org.assertj>
         <!--    TODO to be removed? only used by kie-util-maven-support and kie-util-maven-integration -->
-        <version.org.codehaus.plexus.plexus-classworlds>2.5.2</version.org.codehaus.plexus.plexus-classworlds>
+        <version.org.codehaus.plexus.plexus-classworlds>2.6.0</version.org.codehaus.plexus.plexus-classworlds>
         <!--    TODO to be removed? only used by kie-ci, kie-util-maven-support and kie-util-maven-integration -->
-        <version.org.codehaus.plexus.plexus-utils>3.0.22</version.org.codehaus.plexus.plexus-utils>
+        <version.org.codehaus.plexus.plexus-utils>3.2.1</version.org.codehaus.plexus.plexus-utils>
         <!--    TODO to be removed? only used by kie-ci, kie-util-maven-support and kie-util-maven-integration -->
         <version.org.eclipse.aether>1.1.0</version.org.eclipse.aether>
         <version.org.eclipse.jdt>3.18.0</version.org.eclipse.jdt>
         <!--    TODO to be removed? only used by kie-ci, kie-util-maven-support and kie-util-maven-integration -->
-        <version.org.eclipse.sisu>0.3.2</version.org.eclipse.sisu>
-        <version.org.glassfish.jaxb>2.3.2</version.org.glassfish.jaxb>
-        <version.org.hibernate>5.3.20.Final</version.org.hibernate>
+        <version.org.eclipse.sisu>0.3.4</version.org.eclipse.sisu>
+        <version.org.glassfish.jaxb>2.3.3-b02</version.org.glassfish.jaxb>
+        <version.org.hibernate>5.6.0.Final</version.org.hibernate>
         <!--This needs to be in sync with JUnit-->
         <version.org.hamcrest>1.3</version.org.hamcrest>
         <version.org.javassist>3.26.0-GA</version.org.javassist>
-        <version.org.jboss.narayana.tomcat>5.9.0.Final</version.org.jboss.narayana.tomcat>
+        <version.org.jboss.narayana.tomcat>5.12.0.Final</version.org.jboss.narayana.tomcat>
         <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
         <!--    TODO to be removed? make sure weld is used only for test -->
         <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
@@ -117,7 +118,7 @@
         <version.jakarta.jws-api>2.1.0</version.jakarta.jws-api>
         <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
         <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
-        <version.org.junit>5.5.2</version.org.junit>
+        <version.org.junit>5.8.0</version.org.junit>
         <version.org.mvel>2.4.13.Final</version.org.mvel>
         <version.org.powermock>2.0.7</version.org.powermock>
         <version.org.slf4j>1.7.30</version.org.slf4j>
@@ -132,7 +133,7 @@
         <version.org.wildfly>23.0.2.Final</version.org.wildfly>
         <version.org.wildfly.arquillian>3.0.1.Final</version.org.wildfly.arquillian>
         <version.org.wildfly.core>15.0.1.Final</version.org.wildfly.core>
-        <version.org.wildfly.common>1.5.4.Final</version.org.wildfly.common>
+        <version.org.wildfly.common>1.5.4.Final-format-001</version.org.wildfly.common>
         <version.xerces>2.12.0.SP03</version.xerces>
         <version.xmlpull>1.2.0</version.xmlpull>
         <version.xmlunit>1.3</version.xmlunit>
@@ -170,7 +171,7 @@
         <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
         <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
         <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-        <version.org.mockito>3.6.0</version.org.mockito>
+        <version.org.mockito>3.12.4</version.org.mockito>
         <!-- Version of JMH -->
         <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
@@ -190,7 +191,7 @@
         <!-- Jacoco plugin configurations -->
         <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
         <jacoco.line.coveredratio.minimum>0.9</jacoco.line.coveredratio.minimum>
-        <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
+        <version.jacoco.plugin>0.8.7</version.jacoco.plugin>
         <!-- TODO: remove this once all repositories comply to the defined checkstyle rules -->
         <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
         <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
@@ -219,11 +220,11 @@
 
         <version.net.byte-buddy>1.10.3</version.net.byte-buddy>
 
-        <version.org.postgresql>42.2.14</version.org.postgresql>
+        <version.org.postgresql>42.2.23</version.org.postgresql>
 
         <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-        <version.org.jboss.jandex>2.2.3.Final</version.org.jboss.jandex>
-        <version.org.eclipse.yasson>1.0.6</version.org.eclipse.yasson>
+        <version.org.jboss.jandex>2.4.0.Final</version.org.jboss.jandex>
+        <version.org.eclipse.yasson>1.0.9</version.org.eclipse.yasson>
 
         <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
 
@@ -232,7 +233,7 @@
         <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
         <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
 
-        <version.org.awaitility>3.0.0</version.org.awaitility>
+        <version.org.awaitility>4.1.0</version.org.awaitility>
         <version.io.github.bonigarcia>3.8.1</version.io.github.bonigarcia>
     </properties>
 
@@ -810,7 +811,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-aether-provider</artifactId>
-                <version>${version.org.apache.maven}</version>
+                <version>${version.org.apache.maven-aether-provider}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
