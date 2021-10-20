@@ -42,11 +42,13 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-jackson</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

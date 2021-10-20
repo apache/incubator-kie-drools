@@ -16,13 +16,7 @@
 package org.kie.kogito.quarkus.common.deployment;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -30,6 +24,7 @@ import javax.inject.Inject;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Indexer;
+import org.jboss.logging.Logger;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -37,6 +32,8 @@ import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.bootstrap.model.AppDependency;
+import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
@@ -48,17 +45,14 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.index.IndexingUtil;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 
-import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
-import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.compileGeneratedSources;
-import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.dumpFilesToDisk;
-import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.getHotReloadSupportSource;
-import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.kogitoBuildContext;
-import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.registerResources;
+import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.*;
 
 /**
  * Main class of the Kogito extension
  */
 public class KogitoAssetsProcessor {
+
+    private static final Logger LOGGER = Logger.getLogger(KogitoAssetsProcessor.class);
 
     @Inject
     ArchiveRootBuildItem root;
@@ -74,6 +68,7 @@ public class KogitoAssetsProcessor {
      */
     @BuildStep
     public List<KogitoGeneratedClassesBuildItem> generateModel(
+            Capabilities capabilities,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
@@ -81,6 +76,14 @@ public class KogitoAssetsProcessor {
 
         // configure the application generator
         KogitoBuildContext context = kogitoBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex(), curateOutcomeBuildItem.getEffectiveModel().getAppArtifact());
+
+        if (capabilities.isMissing(Capability.RESTEASY) &&
+                !"false".equalsIgnoreCase(
+                        context.getApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST)
+                                .orElse("true"))) {
+
+            throw new MissingRestCapabilityException();
+        }
 
         Collection<GeneratedFile> generatedFiles = generateFiles(context);
 
