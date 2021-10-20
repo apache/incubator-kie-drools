@@ -19,6 +19,7 @@ package org.optaplanner.examples.common.app;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -46,11 +47,13 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
     }
 
     private static <Solution_> AbstractSolutionImporter<Solution_> createSolutionImporter(CommonApp<Solution_> commonApp) {
-        AbstractSolutionImporter[] importers = commonApp.createSolutionImporters();
-        if (importers.length != 1) {
-            throw new IllegalStateException("The importers size (" + importers.length + ") should be 1.");
+        Set<AbstractSolutionImporter<Solution_>> importers = commonApp.createSolutionImporters();
+        if (importers.size() != 1) {
+            throw new IllegalStateException("The importers size (" + importers.size() + ") should be 1.");
         }
-        return importers[0];
+        return importers.stream()
+                .findFirst()
+                .orElseThrow();
     }
 
     @Override

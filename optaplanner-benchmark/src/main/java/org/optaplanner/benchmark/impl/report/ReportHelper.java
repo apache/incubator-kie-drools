@@ -16,8 +16,6 @@
 
 package org.optaplanner.benchmark.impl.report;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class ReportHelper {
 
     /**
@@ -45,10 +43,6 @@ public class ReportHelper {
                 .replaceAll(":", "-003A")
                 .replaceAll(";", "-003B")
                 .replaceAll("\\?", "-003F");
-    }
-
-    public static String capitalize(String s) {
-        return StringUtils.capitalize(s);
     }
 
 }

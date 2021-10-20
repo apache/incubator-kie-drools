@@ -451,7 +451,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlReader(Reader templateReader, Object model,
             ClassLoader classLoader) {
-        Configuration freemarkerConfiguration = new Configuration();
+        Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_31);
         freemarkerConfiguration.setDefaultEncoding("UTF-8");
         // Write each number according to Java language spec (as expected by XStream), so not formatted by locale
         freemarkerConfiguration.setNumberFormat("computer");

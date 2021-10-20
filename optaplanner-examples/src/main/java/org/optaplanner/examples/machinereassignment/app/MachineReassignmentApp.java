@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.machinereassignment.app;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.optaplanner.examples.common.app.CommonApp;
@@ -60,17 +60,13 @@ public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
-                new MachineReassignmentImporter()
-        };
+    protected Set<AbstractSolutionImporter<MachineReassignment>> createSolutionImporters() {
+        return Collections.singleton(new MachineReassignmentImporter());
     }
 
     @Override
-    protected Set<AbstractSolutionExporter> createSolutionExporters() {
-        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
-        exporters.add(new MachineReassignmentExporter());
-        return exporters;
+    protected Set<AbstractSolutionExporter<MachineReassignment>> createSolutionExporters() {
+        return Collections.singleton(new MachineReassignmentExporter());
     }
 
 }

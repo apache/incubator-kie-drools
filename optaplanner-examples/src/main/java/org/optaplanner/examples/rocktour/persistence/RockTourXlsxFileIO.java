@@ -53,13 +53,13 @@ import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.rocktour.app.RockTourApp;
 import org.optaplanner.examples.rocktour.domain.RockBus;
 import org.optaplanner.examples.rocktour.domain.RockLocation;
@@ -290,18 +290,18 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
             readHeaderCell("Latitude");
             readHeaderCell("");
             for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
-                readHeaderCell(latLong.getLeft());
+                readHeaderCell(latLong.getKey());
             }
             nextRow();
             readHeaderCell("");
             readHeaderCell("Longitude");
             for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
-                readHeaderCell(latLong.getRight());
+                readHeaderCell(latLong.getValue());
             }
             latLongToLocationMap.forEach((fromLatLong, fromLocationList) -> {
                 nextRow();
-                readHeaderCell(fromLatLong.getLeft());
-                readHeaderCell(fromLatLong.getRight());
+                readHeaderCell(fromLatLong.getKey());
+                readHeaderCell(fromLatLong.getValue());
                 for (RockLocation fromLocation : fromLocationList) {
                     fromLocation.setDrivingSecondsMap(new LinkedHashMap<>(fromLocationList.size()));
                 }
@@ -504,18 +504,18 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
             nextHeaderCell("Latitude");
             nextHeaderCell("");
             for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
-                nextHeaderCell(latLong.getLeft());
+                nextHeaderCell(latLong.getKey());
             }
             nextRow();
             nextHeaderCell("");
             nextHeaderCell("Longitude");
             for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
-                nextHeaderCell(latLong.getRight());
+                nextHeaderCell(latLong.getValue());
             }
             latLongToLocationMap.forEach((fromLatLong, fromLocationList) -> {
                 nextRow();
-                nextHeaderCell(fromLatLong.getLeft());
-                nextHeaderCell(fromLatLong.getRight());
+                nextHeaderCell(fromLatLong.getKey());
+                nextHeaderCell(fromLatLong.getValue());
                 latLongToLocationMap.forEach((toLatLong, toLocationList) -> {
                     long drivingTime = fromLocationList.get(0).getDrivingTimeTo(toLocationList.get(0));
                     for (RockLocation fromLocation : fromLocationList) {

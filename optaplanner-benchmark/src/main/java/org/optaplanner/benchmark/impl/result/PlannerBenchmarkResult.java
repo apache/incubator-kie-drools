@@ -33,8 +33,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -260,7 +258,7 @@ public class PlannerBenchmarkResult {
 
     public void initBenchmarkReportDirectory(File benchmarkDirectory) {
         String timestampString = startingTimestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss"));
-        if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             name = timestampString;
         }
         if (!benchmarkDirectory.mkdirs()) {
@@ -278,7 +276,7 @@ public class PlannerBenchmarkResult {
             String directoryName = timestampString + (duplicationIndex == 0 ? "" : "_" + duplicationIndex);
             duplicationIndex++;
             benchmarkReportDirectory = new File(benchmarkDirectory,
-                    BooleanUtils.isFalse(aggregation) ? directoryName : directoryName + "_aggregation");
+                    (aggregation != null && !aggregation) ? directoryName : directoryName + "_aggregation");
         } while (!benchmarkReportDirectory.mkdir());
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
             problemBenchmarkResult.makeDirs();

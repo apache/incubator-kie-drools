@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.tsp.app.TspApp;
@@ -74,7 +74,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
                 tspSolution.setName(removePrefixSuffixFromLine(firstLine, "\\s*NAME\\s*:", ""));
                 readTspLibFormat();
             } else {
-                tspSolution.setName(FilenameUtils.getBaseName(inputFile.getName()));
+                tspSolution.setName(SolutionBusiness.getBaseFileName(inputFile));
                 locationListSize = Integer.parseInt(firstLine.trim());
                 readCourseraFormat();
             }

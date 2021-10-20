@@ -18,7 +18,6 @@ package org.optaplanner.benchmark.config.statistic;
 
 import javax.xml.bind.annotation.XmlEnum;
 
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
@@ -34,11 +33,6 @@ public enum SingleStatisticType implements StatisticType {
     CONSTRAINT_MATCH_TOTAL_STEP_SCORE,
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF,
     PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
-
-    @Override
-    public String getLabel() {
-        return StringUtils.capitalize(name().replace('_', ' ').toLowerCase());
-    }
 
     public PureSubSingleStatistic buildPureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list

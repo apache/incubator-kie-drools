@@ -27,10 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -42,11 +40,6 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
 public class SelectorTestUtils {
-
-    public static <Solution_> SolutionDescriptor<Solution_> mockSolutionDescriptor() {
-        SolutionDescriptor<Solution_> solutionDescriptor = mock(SolutionDescriptor.class);
-        return solutionDescriptor;
-    }
 
     public static <Solution_> EntityDescriptor<Solution_> mockEntityDescriptor(Class<?> entityClass) {
         EntityDescriptor<Solution_> entityDescriptor = mock(EntityDescriptor.class);
@@ -95,12 +88,6 @@ public class SelectorTestUtils {
     public static <Solution_> ValueSelector<Solution_> mockValueSelector(Class<?> entityClass, String variableName,
             Object... values) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = mockVariableDescriptor(entityClass, variableName);
-        return mockValueSelector(variableDescriptor, values);
-    }
-
-    public static <Solution_> ValueSelector<Solution_> mockValueSelector(EntityDescriptor<Solution_> entityDescriptor,
-            String variableName, Object... values) {
-        GenuineVariableDescriptor<Solution_> variableDescriptor = mockVariableDescriptor(entityDescriptor, variableName);
         return mockValueSelector(variableDescriptor, values);
     }
 
@@ -200,7 +187,7 @@ public class SelectorTestUtils {
                         + "Expected: " + chainedObject + "\n"
                         + "Actual:   " + chainedEntity.getChainedObject() + "\n"
                         + "Expected chain: " + Arrays.toString(chainedObjects) + "\n"
-                        + "Actual chain:   " + Arrays.toString(ArrayUtils.subarray(chainedObjects, 0, i)) + " ... ["
+                        + "Actual chain:   " + Arrays.toString(Arrays.copyOf(chainedObjects, i)) + " ... ["
                         + chainedEntity.getChainedObject() + ", " + chainedEntity + "] ...");
             }
             chainedObject = chainedEntity;

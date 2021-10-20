@@ -20,7 +20,6 @@ import java.io.File;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -50,7 +49,13 @@ public class FileProblemProvider<Solution_> implements ProblemProvider<Solution_
 
     @Override
     public String getProblemName() {
-        return FilenameUtils.getBaseName(problemFile.getName());
+        String name = problemFile.getName();
+        int lastDotIndex = name.lastIndexOf('.');
+        if (lastDotIndex > 0) {
+            return name.substring(0, lastDotIndex);
+        } else {
+            return name;
+        }
     }
 
     @Override

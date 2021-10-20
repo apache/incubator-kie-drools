@@ -48,11 +48,6 @@
       <artifactId>drools-core</artifactId>
     </dependency>
     <!-- External dependencies -->
-    <!-- Common utils -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
     <!-- Logging -->
     <dependency>
       <groupId>ch.qos.logback</groupId>

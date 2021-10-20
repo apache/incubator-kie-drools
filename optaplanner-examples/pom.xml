@@ -81,6 +81,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>${version.org.apache.commons.text}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jdom</groupId>
         <artifactId>jdom</artifactId>
         <version>${version.org.jdom}</version>
@@ -140,6 +145,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -152,7 +158,7 @@
     <!-- Common utils -->
     <dependency>
       <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <artifactId>commons-text</artifactId>
     </dependency>
     <!-- Logging -->
     <dependency>

@@ -16,7 +16,8 @@
 
 package org.optaplanner.quarkus.drl.it.domain;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
@@ -45,7 +46,7 @@ public class TestdataQuarkusEntity {
     }
 
     public String getFullValue() {
-        return ObjectUtils.defaultIfNull(leftValue, "") + ObjectUtils.defaultIfNull(rightValue, "");
+        return Objects.requireNonNullElse(leftValue, "") + Objects.requireNonNullElse(rightValue, "");
     }
 
     @Override

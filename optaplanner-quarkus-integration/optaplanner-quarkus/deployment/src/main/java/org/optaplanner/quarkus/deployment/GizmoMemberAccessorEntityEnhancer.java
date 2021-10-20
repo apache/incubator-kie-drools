@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -48,7 +49,6 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -241,8 +241,7 @@ public class GizmoMemberAccessorEntityEnhancer {
     }
 
     private static String getMemberName(Member member) {
-        return ObjectUtils.defaultIfNull(ReflectionHelper.getGetterPropertyName(member),
-                member.getName());
+        return Objects.requireNonNullElse(ReflectionHelper.getGetterPropertyName(member), member.getName());
     }
 
     private static Optional<MethodDescriptor> getSetterDescriptor(ClassInfo classInfo, MethodInfo methodInfo, String name) {
@@ -504,7 +503,7 @@ public class GizmoMemberAccessorEntityEnhancer {
             BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
             BuildProducer<BytecodeTransformerBuildItem> transformers) {
         String generatedClassName = DROOLS_INITIALIZER_CLASS_NAME;
-        ConstraintStreamImplType constraintStreamImplType = ObjectUtils.defaultIfNull(
+        ConstraintStreamImplType constraintStreamImplType = Objects.requireNonNullElse(
                 config.getScoreDirectorFactoryConfig().getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
         try (ClassCreator classCreator = ClassCreator
                 .builder()

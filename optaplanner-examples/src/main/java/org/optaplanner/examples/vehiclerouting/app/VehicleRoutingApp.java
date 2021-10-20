@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.vehiclerouting.app;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
@@ -58,10 +61,8 @@ public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
-                new VehicleRoutingImporter()
-        };
+    protected Set<AbstractSolutionImporter<VehicleRoutingSolution>> createSolutionImporters() {
+        return Collections.singleton(new VehicleRoutingImporter());
     }
 
 }

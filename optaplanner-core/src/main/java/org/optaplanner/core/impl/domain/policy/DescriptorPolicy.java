@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -97,7 +96,7 @@ public class DescriptorPolicy {
     private String extractValueRangeProviderId(MemberAccessor memberAccessor) {
         ValueRangeProvider annotation = memberAccessor.getAnnotation(ValueRangeProvider.class);
         String id = annotation.id();
-        if (StringUtils.isEmpty(id)) {
+        if (id == null || id.isEmpty()) {
             throw new IllegalStateException("The @" + ValueRangeProvider.class.getSimpleName()
                     + " annotated member (" + memberAccessor + ")'s id (" + id + ") must not be empty.");
         }

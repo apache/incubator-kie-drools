@@ -36,7 +36,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.tsp.domain.Domicile;
@@ -62,7 +62,7 @@ public class TspWorldPanel extends JPanel {
     private Standstill dragSourceStandstill = null;
     private Standstill dragTargetStandstill = null;
 
-    private ImageIcon europaBackground;
+    private final ImageIcon europaBackground;
 
     public TspWorldPanel(TspPanel tspPanel) {
         this.tspPanel = tspPanel;
@@ -172,7 +172,7 @@ public class TspWorldPanel extends JPanel {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
             if (location.getName() != null && visitList.size() <= 500) {
-                g.drawString(StringUtils.abbreviate(location.getName(), 20), x + 3, y - 3);
+                g.drawString(WordUtils.abbreviate(location.getName(), 20, -1, "..."), x + 3, y - 3);
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);

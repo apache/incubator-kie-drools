@@ -24,10 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
@@ -158,8 +157,8 @@ public class NurseRosteringConstraintProviderTest {
     }
 
     private class BooleanContractBuilder {
-        private ContractLineType contractLineType;
-        private WeekendDefinition weekendDefinition;
+        private final ContractLineType contractLineType;
+        private final WeekendDefinition weekendDefinition;
         int weight;
         boolean enabled;
 
@@ -235,7 +234,7 @@ public class NurseRosteringConstraintProviderTest {
             return this;
         }
 
-        public ImmutablePair<PatternContractLine, Contract> build() {
+        public Pair<PatternContractLine, Contract> build() {
             PatternContractLine patternContractLine = new PatternContractLine();
             if (freeBefore2DaysWithAWorkDayPattern != null) {
                 patternContractLine.setPattern(freeBefore2DaysWithAWorkDayPattern);
@@ -266,7 +265,7 @@ public class NurseRosteringConstraintProviderTest {
             out.setCode("Contract - " + out.getId());
             out.setDescription("Pattern " + patternContractLine + " Contract");
             out.setWeekendDefinition(weekendDefinition);
-            return ImmutablePair.of(patternContractLine, out);
+            return Pair.of(patternContractLine, out);
         }
     }
 
@@ -303,7 +302,7 @@ public class NurseRosteringConstraintProviderTest {
     }
 
     private ShiftAssignment getShiftAssignment(int dayIndex, Employee employee, ShiftType shiftType) {
-        Shift shift = indexShiftTypePairToShiftMap.computeIfAbsent(ImmutablePair.of(dayIndex, shiftType), key -> {
+        Shift shift = indexShiftTypePairToShiftMap.computeIfAbsent(Pair.of(dayIndex, shiftType), key -> {
             ShiftDate shiftDate = getShiftDate(dayIndex);
 
             Shift newShift = new Shift();
@@ -958,8 +957,8 @@ public class NurseRosteringConstraintProviderTest {
         Pair<PatternContractLine, Contract> patternContractPair = new PatternContractBuilder()
                 .freeBefore2DaysWithAWorkDay(DayOfWeek.WEDNESDAY)
                 .build();
-        PatternContractLine patternContractLine = patternContractPair.getLeft();
-        Contract contract = patternContractPair.getRight();
+        PatternContractLine patternContractLine = patternContractPair.getKey();
+        Contract contract = patternContractPair.getValue();
 
         Employee employee = getEmployee(contract);
         ShiftAssignment freeShift = getShiftAssignment(4, employee);
@@ -1016,8 +1015,8 @@ public class NurseRosteringConstraintProviderTest {
                 .shiftType2DaysPattern(dayShiftType, nightShiftType)
                 .build();
 
-        PatternContractLine patternContractLine = patternContractPair.getLeft();
-        Contract contract = patternContractPair.getRight();
+        PatternContractLine patternContractLine = patternContractPair.getKey();
+        Contract contract = patternContractPair.getValue();
 
         Employee employee = getEmployee(contract);
 
@@ -1069,8 +1068,8 @@ public class NurseRosteringConstraintProviderTest {
                 .shiftType2DaysPattern(dayShiftType, null)
                 .build();
 
-        PatternContractLine patternContractLine = patternContractPair.getLeft();
-        Contract contract = patternContractPair.getRight();
+        PatternContractLine patternContractLine = patternContractPair.getKey();
+        Contract contract = patternContractPair.getValue();
 
         Employee employee = getEmployee(contract);
 
@@ -1122,8 +1121,8 @@ public class NurseRosteringConstraintProviderTest {
                 .shiftType3DaysPattern(dayShiftType, nightShiftType, nightShiftType)
                 .build();
 
-        PatternContractLine patternContractLine = patternContractPair.getLeft();
-        Contract contract = patternContractPair.getRight();
+        PatternContractLine patternContractLine = patternContractPair.getKey();
+        Contract contract = patternContractPair.getValue();
 
         Employee employee = getEmployee(contract);
 

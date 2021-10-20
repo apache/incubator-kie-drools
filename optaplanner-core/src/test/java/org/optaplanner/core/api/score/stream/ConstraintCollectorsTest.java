@@ -50,7 +50,6 @@ import java.util.SortedSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.function.QuadFunction;
@@ -59,6 +58,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.util.Pair;
 
 public class ConstraintCollectorsTest {
 

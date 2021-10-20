@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
@@ -130,7 +129,7 @@ public class ProblemBenchmarksFactory {
         problemBenchmarkResult.setWriteOutputSolutionEnabled(
                 config.getWriteOutputSolutionEnabled() == null ? false : config.getWriteOutputSolutionEnabled());
         List<ProblemStatistic> problemStatisticList;
-        if (BooleanUtils.isFalse(config.getProblemStatisticEnabled())) {
+        if (config.getProblemStatisticEnabled() != null && !config.getProblemStatisticEnabled()) {
             if (!ConfigUtils.isEmptyCollection(config.getProblemStatisticTypeList())) {
                 throw new IllegalArgumentException("The problemStatisticEnabled (" + config.getProblemStatisticEnabled()
                         + ") and problemStatisticTypeList (" + config.getProblemStatisticTypeList()

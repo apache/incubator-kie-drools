@@ -1,5 +1,5 @@
+<#ftl output_format="HTML"> <#-- So that Freemarker escapes automatically. -->
 <#-- @ftlvariable name="benchmarkReport" type="org.optaplanner.benchmark.impl.report.BenchmarkReport" -->
-<#-- @ftlvariable name="reportHelper" type="org.optaplanner.benchmark.impl.report.ReportHelper" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +56,7 @@
         <#assign scoreLevelIndex = 0>
         <#list chartFileList as chartFile>
             <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                <a href="#${idPrefix}_chart_${scoreLevelIndex}" data-toggle="tab">${reportHelper.capitalize(benchmarkReport.plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex))}</a>
+                <a href="#${idPrefix}_chart_${scoreLevelIndex}" data-toggle="tab">${benchmarkReport.plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex)?capitalize}</a>
             </li>
             <#assign scoreLevelIndex = scoreLevelIndex + 1>
         </#list>
@@ -300,7 +300,7 @@
                                         <#if !solverBenchmarkResult.averageWorstScoreDifferencePercentage??>
                                             <td></td>
                                         <#else>
-                                            <td>${solverBenchmarkResult.averageWorstScoreDifferencePercentage.toString(.locale)}</td>
+                                            <td>${solverBenchmarkResult.averageWorstScoreDifferencePercentage.toString(.locale_object)}</td>
                                         </#if>
                                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                             <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
@@ -310,7 +310,7 @@
                                                 <#if !singleBenchmarkResult.hasAllSuccess()>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmarkResult.worstScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
+                                                    <td>${singleBenchmarkResult.worstScoreDifferencePercentage.toString(.locale_object)}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
                                                 </#if>
                                             </#if>
                                         </#list>
@@ -569,13 +569,13 @@
                                 <#assign firstRow = true>
                                 <#list problemBenchmarkResult.problemStatisticList as problemStatistic>
                                     <li<#if firstRow> class="active"</#if>>
-                                        <a href="#problemStatistic_${problemStatistic.anchorId}" data-toggle="tab">${problemStatistic.problemStatisticType.label}</a>
+                                        <a href="#problemStatistic_${problemStatistic.anchorId}" data-toggle="tab">${problemStatistic.problemStatisticType.label?capitalize}</a>
                                     </li>
                                     <#assign firstRow = false>
                                 </#list>
                                 <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
                                     <li<#if firstRow> class="active"</#if>>
-                                        <a href="#singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}" data-toggle="tab">${singleStatisticType.label}</a>
+                                        <a href="#singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}" data-toggle="tab">${singleStatisticType.label?capitalize}</a>
                                     </li>
                                     <#assign firstRow = false>
                                 </#list>
@@ -596,7 +596,7 @@
                                                         <#assign scoreLevelIndex = 0>
                                                         <#list problemStatistic.graphFileList as graphFile>
                                                             <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                                <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">${reportHelper.capitalize(problemBenchmarkResult.findScoreLevelLabel(scoreLevelIndex))}</a>
+                                                                <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">${problemBenchmarkResult.findScoreLevelLabel(scoreLevelIndex)?capitalize}</a>
                                                             </li>
                                                             <#assign scoreLevelIndex = scoreLevelIndex + 1>
                                                         </#list>
@@ -643,7 +643,7 @@
                                                             <#assign scoreLevelIndex = 0>
                                                             <#list pureSubSingleStatistic.graphFileList as graphFile>
                                                                 <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                                    <a href="#subSingleStatistic_${pureSubSingleStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">${reportHelper.capitalize(problemBenchmarkResult.findScoreLevelLabel(scoreLevelIndex))}</a>
+                                                                    <a href="#subSingleStatistic_${pureSubSingleStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">${problemBenchmarkResult.findScoreLevelLabel(scoreLevelIndex)?capitalize}</a>
                                                                 </li>
                                                                 <#assign scoreLevelIndex = scoreLevelIndex + 1>
                                                             </#list>
@@ -692,8 +692,8 @@
                                 <#if singleBenchmarkResult.getSubSingleCount() gt 1 >
                                     <p>Only the median sub single run of each solver is shown in the statistics below.</p>
                                 </#if>
-                                <#if singleBenchmarkResult.getScoreExplanationSummaryAsHtmlEscaped()??>
-                                    <pre class="prettyprint">${singleBenchmarkResult.scoreExplanationSummaryAsHtmlEscaped}</pre>
+                                <#if singleBenchmarkResult.getScoreExplanationSummary()??>
+                                    <pre class="prettyprint">${singleBenchmarkResult.scoreExplanationSummary}</pre>
                                 <#else>
                                     <p>Score summary not provided.</p>
                                 </#if>
@@ -720,7 +720,7 @@
                         Show/hide Solver configuration
                     </button>
                     <div id="solverBenchmark_${solverBenchmarkResult.anchorId}_config" class="collapse in">
-                        <pre class="prettyprint lang-xml">${solverBenchmarkResult.solverConfigAsHtmlEscapedXml}</pre>
+                        <pre class="prettyprint lang-xml">${solverBenchmarkResult.solverConfigAsString}</pre>
                     </div>
                 </section>
             </#list>
@@ -817,7 +817,7 @@
                     </tr>
                     <tr>
                         <th>Report locale</th>
-                        <td>${benchmarkReport.locale!"Unknown"}</td>
+                        <td>${benchmarkReport.locale_object!"Unknown"}</td>
                     </tr>
                     <tr>
                         <th>Report timezone</th>

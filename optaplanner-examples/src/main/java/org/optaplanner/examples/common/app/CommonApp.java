@@ -154,11 +154,11 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
      */
     public abstract SolutionFileIO<Solution_> createSolutionFileIO();
 
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[0];
+    protected Set<AbstractSolutionImporter<Solution_>> createSolutionImporters() {
+        return Collections.emptySet();
     }
 
-    protected Set<AbstractSolutionExporter> createSolutionExporters() {
+    protected Set<AbstractSolutionExporter<Solution_>> createSolutionExporters() {
         return Collections.emptySet();
     }
 

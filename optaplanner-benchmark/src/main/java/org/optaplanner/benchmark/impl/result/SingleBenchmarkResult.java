@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.ScoreSubSingleBenchmarkRankingComparator;
@@ -172,10 +171,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
 
     public String getScoreExplanationSummary() {
         return scoreExplanationSummary;
-    }
-
-    public String getScoreExplanationSummaryAsHtmlEscaped() {
-        return StringEscapeUtils.escapeHtml4(scoreExplanationSummary);
     }
 
     public Score<?> getWinningScoreDifference() {

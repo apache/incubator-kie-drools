@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.pas.app;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.optaplanner.examples.common.app.CommonApp;
@@ -59,17 +59,13 @@ public class PatientAdmissionScheduleApp extends CommonApp<PatientAdmissionSched
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
-                new PatientAdmissionScheduleImporter()
-        };
+    protected Set<AbstractSolutionImporter<PatientAdmissionSchedule>> createSolutionImporters() {
+        return Collections.singleton(new PatientAdmissionScheduleImporter());
     }
 
     @Override
-    protected Set<AbstractSolutionExporter> createSolutionExporters() {
-        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
-        exporters.add(new PatientAdmissionScheduleExporter());
-        return exporters;
+    protected Set<AbstractSolutionExporter<PatientAdmissionSchedule>> createSolutionExporters() {
+        return Collections.singleton(new PatientAdmissionScheduleExporter());
     }
 
 }

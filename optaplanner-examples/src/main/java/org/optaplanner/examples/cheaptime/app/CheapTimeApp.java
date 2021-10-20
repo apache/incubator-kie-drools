@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.cheaptime.app;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
@@ -62,17 +62,13 @@ public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
-                new CheapTimeImporter()
-        };
+    protected Set<AbstractSolutionImporter<CheapTimeSolution>> createSolutionImporters() {
+        return Collections.singleton(new CheapTimeImporter());
     }
 
     @Override
-    protected Set<AbstractSolutionExporter> createSolutionExporters() {
-        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
-        exporters.add(new CheapTimeExporter());
-        return exporters;
+    protected Set<AbstractSolutionExporter<CheapTimeSolution>> createSolutionExporters() {
+        return Collections.singleton(new CheapTimeExporter());
     }
 
 }

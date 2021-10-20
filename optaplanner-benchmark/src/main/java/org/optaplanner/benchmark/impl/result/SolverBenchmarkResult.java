@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
@@ -258,13 +257,11 @@ public class SolverBenchmarkResult {
         return null;
     }
 
-    public String getSolverConfigAsHtmlEscapedXml() {
+    public String getSolverConfigAsString() {
         GenericJaxbIO<SolverConfig> xmlIO = new GenericJaxbIO<>(SolverConfig.class);
         StringWriter stringWriter = new StringWriter();
         xmlIO.write(solverConfig, stringWriter);
-        String xml = stringWriter.toString();
-        // TODO: replace the deprecated class
-        return StringEscapeUtils.escapeHtml4(xml);
+        return stringWriter.toString();
     }
 
     public EnvironmentMode getEnvironmentMode() {

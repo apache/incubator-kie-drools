@@ -16,12 +16,11 @@
 
 package org.optaplanner.core.impl.solver;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
@@ -81,7 +80,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     @Override
     public Solver<Solution_> buildSolver() {
         EnvironmentMode environmentMode_ = solverConfig.determineEnvironmentMode();
-        boolean daemon_ = defaultIfNull(solverConfig.getDaemon(), false);
+        boolean daemon_ = Objects.requireNonNullElse(solverConfig.getDaemon(), false);
 
         RandomFactory randomFactory = buildRandomFactory(environmentMode_);
         Integer moveThreadCount_ = new MoveThreadCountResolver().resolveMoveThreadCount(solverConfig.getMoveThreadCount());
@@ -180,7 +179,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             }
             randomFactory = ConfigUtils.newInstance(solverConfig, "randomFactoryClass", solverConfig.getRandomFactoryClass());
         } else {
-            RandomType randomType_ = defaultIfNull(solverConfig.getRandomType(), RandomType.JDK);
+            RandomType randomType_ = Objects.requireNonNullElse(solverConfig.getRandomType(), RandomType.JDK);
             Long randomSeed_ = solverConfig.getRandomSeed();
             if (solverConfig.getRandomSeed() == null && environmentMode_ != EnvironmentMode.NON_REPRODUCIBLE) {
                 randomSeed_ = DEFAULT_RANDOM_SEED;

@@ -31,7 +31,7 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.rocktour.domain.RockBus;
 import org.optaplanner.examples.rocktour.domain.RockLocation;
@@ -90,7 +90,7 @@ public class RockTourWorldPanel extends JPanel {
             g.setColor(TangoColorFactory.buildPercentageColor(TangoColorFactory.PLUM_3, TangoColorFactory.PLUM_1, percentage));
             g.fillRect(x - 1, y - 1, 3, 3);
             if (location.getCityName() != null && showList.size() <= 500) {
-                g.drawString(StringUtils.abbreviate(location.getCityName(), 20), x + 3, y - 3);
+                g.drawString(WordUtils.abbreviate(location.getCityName(), 20, -1, "..."), x + 3, y - 3);
             }
             if (show.getDate() != null) {
                 g.drawString(DAY_FORMATTER.format(show.getDate()), x + 3, y - 3 + LOCATION_NAME_TEXT_SIZE * 3 / 2);

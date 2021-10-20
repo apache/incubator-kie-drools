@@ -26,6 +26,8 @@ public interface StatisticType {
     /**
      * @return never null
      */
-    String getLabel();
+    default String getLabel() {
+        return name().replace('_', ' ');
+    }
 
 }

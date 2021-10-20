@@ -57,7 +57,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.examples.common.app.CommonApp;
@@ -80,8 +79,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private final ImageIcon refreshScreenDuringSolvingTrueIcon;
     private final ImageIcon refreshScreenDuringSolvingFalseIcon;
 
-    private SolutionPanel<Solution_> solutionPanel;
-    private ConstraintMatchesDialog constraintMatchesDialog;
+    private final SolutionPanel<Solution_> solutionPanel;
+    private final ConstraintMatchesDialog constraintMatchesDialog;
 
     private JList<QuickOpenAction> quickOpenUnsolvedJList;
     private JList<QuickOpenAction> quickOpenSolvedJList;
@@ -89,7 +88,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private Action saveAction;
     private Action importAction;
     private Action exportAction;
-    private Action[] extraActions;
+    private final Action[] extraActions;
     private JToggleButton refreshScreenDuringSolvingToggleButton;
     private JToggleButton indictmentHeatMapToggleButton;
     private Action solveAction;
@@ -232,7 +231,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     private class QuickOpenAction extends AbstractAction {
 
-        private File file;
+        private final File file;
 
         public QuickOpenAction(File file) {
             super(file.getName().replaceAll("\\.xml$", ""));
@@ -364,7 +363,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         }
 
         @Override
-        protected Solution_ doInBackground() throws Exception {
+        protected Solution_ doInBackground() {
             return solutionBusiness.solve(problem);
         }
 
@@ -406,7 +405,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private class OpenAction extends AbstractAction {
 
         private static final String NAME = "Open...";
-        private JFileChooser fileChooser;
+        private final JFileChooser fileChooser;
 
         public OpenAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("openAction.png")));
@@ -469,7 +468,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         public void actionPerformed(ActionEvent e) {
             final String outputFileExtension = solutionBusiness.getSolutionFileIO().getOutputFileExtension();
             fileChooser.setSelectedFile(new File(solutionBusiness.getSolvedDataDir(),
-                    FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName()) + "." + outputFileExtension));
+                    SolutionBusiness.getBaseFileName(solutionBusiness.getSolutionFileName()) + "." + outputFileExtension));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -489,7 +488,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private class ImportAction extends AbstractAction {
 
         private static final String NAME = "Import...";
-        private JFileChooser fileChooser;
+        private final JFileChooser fileChooser;
 
         public ImportAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("importAction.png")));
@@ -565,7 +564,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
                 return;
             }
             fileChooser = new JFileChooser(solutionBusiness.getExportDataDir());
-            for (AbstractSolutionExporter exporter : solutionBusiness.getExporters()) {
+            for (AbstractSolutionExporter<Solution_> exporter : solutionBusiness.getExporters()) {
                 fileChooser.addChoosableFileFilter(new ExporterFileFilter(exporter));
             }
             fileChooser.setDialogTitle(NAME);
@@ -577,12 +576,13 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
             fileChooser.addPropertyChangeListener(
                     new FileNameSetter(fileChooser,
                             solutionBusiness.getExportDataDir(),
-                            FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName())));
+                            SolutionBusiness.getBaseFileName(solutionBusiness.getSolutionFileName())));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 try {
-                    AbstractSolutionExporter exporter = ((ExporterFileFilter) fileChooser.getFileFilter()).getExporter();
+                    AbstractSolutionExporter<Solution_> exporter =
+                            ((ExporterFileFilter) fileChooser.getFileFilter()).getExporter();
                     File exportFile = fileChooser.getSelectedFile();
                     solutionBusiness.exportSolution(exporter, exportFile);
                 } finally {
@@ -735,10 +735,10 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         }
     }
 
-    private static final class ExporterFileFilter extends FileFilter {
-        private AbstractSolutionExporter exporter;
+    private final class ExporterFileFilter extends FileFilter {
+        private final AbstractSolutionExporter<Solution_> exporter;
 
-        public ExporterFileFilter(AbstractSolutionExporter exporter) {
+        public ExporterFileFilter(AbstractSolutionExporter<Solution_> exporter) {
             this.exporter = exporter;
         }
 
@@ -752,13 +752,13 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
             return "Export files (*." + exporter.getOutputFileSuffix() + ")";
         }
 
-        public AbstractSolutionExporter getExporter() {
+        public AbstractSolutionExporter<Solution_> getExporter() {
             return exporter;
         }
     }
 
     // Does the creation of the file name + setting it in the file chooser
-    private static final class FileNameSetter implements PropertyChangeListener {
+    private final class FileNameSetter implements PropertyChangeListener {
 
         private JFileChooser fileChooser;
         private File exportDataDir;
@@ -789,7 +789,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         }
 
         void setFileName() {
-            AbstractSolutionExporter exporter = ((ExporterFileFilter) fileChooser.getFileFilter()).getExporter();
+            AbstractSolutionExporter<Solution_> exporter = ((ExporterFileFilter) fileChooser.getFileFilter()).getExporter();
             fileChooser.setSelectedFile(
                     new File(this.exportDataDir, this.baseName + "." + exporter.getOutputFileSuffix()));
         }

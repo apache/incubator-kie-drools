@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import java.util.Objects;
 
 import org.optaplanner.core.config.localsearch.decider.forager.FinalistPodiumType;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
@@ -36,12 +36,12 @@ public class LocalSearchForagerFactory<Solution_> {
 
     public LocalSearchForager<Solution_> buildForager() {
         LocalSearchPickEarlyType pickEarlyType_ =
-                defaultIfNull(foragerConfig.getPickEarlyType(), LocalSearchPickEarlyType.NEVER);
-        int acceptedCountLimit_ = defaultIfNull(foragerConfig.getAcceptedCountLimit(), Integer.MAX_VALUE);
+                Objects.requireNonNullElse(foragerConfig.getPickEarlyType(), LocalSearchPickEarlyType.NEVER);
+        int acceptedCountLimit_ = Objects.requireNonNullElse(foragerConfig.getAcceptedCountLimit(), Integer.MAX_VALUE);
         FinalistPodiumType finalistPodiumType_ =
-                defaultIfNull(foragerConfig.getFinalistPodiumType(), FinalistPodiumType.HIGHEST_SCORE);
+                Objects.requireNonNullElse(foragerConfig.getFinalistPodiumType(), FinalistPodiumType.HIGHEST_SCORE);
         // Breaking ties randomly leads statistically to much better results
-        boolean breakTieRandomly_ = defaultIfNull(foragerConfig.getBreakTieRandomly(), true);
+        boolean breakTieRandomly_ = Objects.requireNonNullElse(foragerConfig.getBreakTieRandomly(), true);
         return new AcceptedLocalSearchForager<>(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_,
                 acceptedCountLimit_, breakTieRandomly_);
     }

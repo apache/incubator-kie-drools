@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.projectjobscheduling.app;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
@@ -57,10 +60,8 @@ public class ProjectJobSchedulingApp extends CommonApp<Schedule> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
-                new ProjectJobSchedulingImporter()
-        };
+    protected Set<AbstractSolutionImporter<Schedule>> createSolutionImporters() {
+        return Collections.singleton(new ProjectJobSchedulingImporter());
     }
 
 }

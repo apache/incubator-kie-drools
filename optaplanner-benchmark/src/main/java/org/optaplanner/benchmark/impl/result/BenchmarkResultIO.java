@@ -17,7 +17,6 @@
 package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -67,7 +65,7 @@ public class BenchmarkResultIO {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
                     + ") does not exist or is not a directory.");
         }
-        File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
+        File[] benchmarkReportDirectories = benchmarkDirectory.listFiles(File::isDirectory);
         if (benchmarkReportDirectories == null) {
             throw new IllegalStateException("Unable to list the subdirectories in the benchmarkDirectory ("
                     + benchmarkDirectory.getAbsolutePath() + ").");

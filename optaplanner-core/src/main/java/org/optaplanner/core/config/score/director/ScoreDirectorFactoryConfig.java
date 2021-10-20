@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -28,7 +29,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.kie.api.KieBase;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
@@ -388,7 +388,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         if (!isUsingDrools()) {
             return false;
         }
-        boolean ancEnabledValue = ObjectUtils.defaultIfNull(getDroolsAlphaNetworkCompilationEnabled(), true);
+        boolean ancEnabledValue = Objects.requireNonNullElse(getDroolsAlphaNetworkCompilationEnabled(), true);
         if (ancEnabledValue) { // ANC does not work in native images.
             return !CoreComponentsBuilder.isNativeImage();
         } else {

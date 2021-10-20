@@ -23,7 +23,6 @@ import static org.optaplanner.examples.nurserostering.optional.score.EmployeeCon
 
 import java.time.DayOfWeek;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
@@ -32,6 +31,7 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.examples.common.experimental.ExperimentalConstraintCollectors;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
@@ -282,7 +282,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         Joiners.equal((contract, date) -> contract.getContract(), ShiftAssignment::getContract))
                 .groupBy((contract, date, sa) -> contract,
                         (contract, date, sa) -> sa.getEmployee(),
-                        (contract, date, sa) -> ImmutablePair.of(sa.getShiftType(), date), // No 4-key groupBy overload
+                        (contract, date, sa) -> Pair.of(sa.getShiftType(), date), // No 4-key groupBy overload
                         ConstraintCollectors.countTri())
                 .filter((contract, employee, type, count) -> count < employee.getWeekendLength())
                 .penalize("identicalShiftTypesDuringWeekend", HardSoftScore.ONE_SOFT,

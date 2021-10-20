@@ -31,11 +31,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.generator.StringDataGenerator;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -222,7 +222,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
 
     private void writeConferenceSolution(int dayListSize, int roomListSize) {
         int labTimeslotCount = (int) timeslotOptions.stream()
-                .filter(pair -> Duration.between(pair.getLeft(), pair.getRight()).toMinutes() >= 120).count();
+                .filter(pair -> Duration.between(pair.getKey(), pair.getValue()).toMinutes() >= 120).count();
         int labRoomCount = roomListSize / 5;
         labTalkCount = (dayListSize * labTimeslotCount) * labRoomCount;
 
@@ -293,8 +293,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                 day = day.plusDays(1);
             }
             Pair<LocalTime, LocalTime> pair = timeslotOptions.get(timeslotOptionsIndex);
-            timeslot.setStartDateTime(LocalDateTime.of(day, pair.getLeft()));
-            timeslot.setEndDateTime(LocalDateTime.of(day, pair.getRight()));
+            timeslot.setStartDateTime(LocalDateTime.of(day, pair.getKey()));
+            timeslot.setEndDateTime(LocalDateTime.of(day, pair.getValue()));
             TalkType talkType = timeslot.getDurationInMinutes() >= 120 ? labTalkType : breakoutTalkType;
             talkType.getCompatibleTimeslotSet().add(timeslot);
             timeslot.setTalkTypeSet(Collections.singleton(talkType));

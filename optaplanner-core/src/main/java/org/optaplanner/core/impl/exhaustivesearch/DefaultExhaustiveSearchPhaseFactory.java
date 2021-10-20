@@ -16,11 +16,10 @@
 
 package org.optaplanner.core.impl.exhaustivesearch;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
@@ -75,7 +74,8 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;
         if (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE) {
-            nodeExplorationType_ = defaultIfNull(phaseConfig.getNodeExplorationType(), NodeExplorationType.ORIGINAL_ORDER);
+            nodeExplorationType_ = Objects.requireNonNullElse(phaseConfig.getNodeExplorationType(),
+                    NodeExplorationType.ORIGINAL_ORDER);
             if (nodeExplorationType_ != NodeExplorationType.ORIGINAL_ORDER) {
                 throw new IllegalArgumentException("The phaseConfig (" + phaseConfig
                         + ") has an nodeExplorationType (" + phaseConfig.getNodeExplorationType()
@@ -83,7 +83,8 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
                         + ").");
             }
         } else {
-            nodeExplorationType_ = defaultIfNull(phaseConfig.getNodeExplorationType(), NodeExplorationType.DEPTH_FIRST);
+            nodeExplorationType_ = Objects.requireNonNullElse(phaseConfig.getNodeExplorationType(),
+                    NodeExplorationType.DEPTH_FIRST);
         }
         phase.setNodeComparator(nodeExplorationType_.buildNodeComparator(scoreBounderEnabled));
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);

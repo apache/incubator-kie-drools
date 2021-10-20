@@ -16,9 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -42,11 +41,11 @@ public class PillarSwapMoveSelectorFactory<Solution_>
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig leftPillarSelectorConfig =
-                defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig());
+                Objects.requireNonNullElseGet(config.getPillarSelectorConfig(), PillarSelectorConfig::new);
         PillarSelector<Solution_> leftPillarSelector =
                 buildPillarSelector(leftPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
         PillarSelectorConfig rightPillarSelectorConfig =
-                defaultIfNull(config.getSecondaryPillarSelectorConfig(), leftPillarSelectorConfig);
+                Objects.requireNonNullElse(config.getSecondaryPillarSelectorConfig(), leftPillarSelectorConfig);
         PillarSelector<Solution_> rightPillarSelector =
                 buildPillarSelector(rightPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
 

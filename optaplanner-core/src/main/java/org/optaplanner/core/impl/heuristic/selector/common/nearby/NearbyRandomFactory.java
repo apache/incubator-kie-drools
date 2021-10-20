@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionDistributionType;
@@ -84,21 +84,24 @@ public class NearbyRandomFactory {
                     + ") has both parabolicDistribution and betaDistribution parameters.");
         }
         if (blockDistributionEnabled) {
-            int sizeMinimum = defaultIfNull(nearbySelectionConfig.getBlockDistributionSizeMinimum(), 1);
-            int sizeMaximum = defaultIfNull(nearbySelectionConfig.getBlockDistributionSizeMaximum(), Integer.MAX_VALUE);
-            double sizeRatio = defaultIfNull(nearbySelectionConfig.getBlockDistributionSizeRatio(), 1.0);
+            int sizeMinimum = Objects.requireNonNullElse(nearbySelectionConfig.getBlockDistributionSizeMinimum(), 1);
+            int sizeMaximum =
+                    Objects.requireNonNullElse(nearbySelectionConfig.getBlockDistributionSizeMaximum(), Integer.MAX_VALUE);
+            double sizeRatio = Objects.requireNonNullElse(nearbySelectionConfig.getBlockDistributionSizeRatio(), 1.0);
             double uniformDistributionProbability =
-                    defaultIfNull(nearbySelectionConfig.getBlockDistributionUniformDistributionProbability(), 0.0);
+                    Objects.requireNonNullElse(nearbySelectionConfig.getBlockDistributionUniformDistributionProbability(), 0.0);
             return new BlockDistributionNearbyRandom(sizeMinimum, sizeMaximum, sizeRatio, uniformDistributionProbability);
         } else if (linearDistributionEnabled) {
-            int sizeMaximum = defaultIfNull(nearbySelectionConfig.getLinearDistributionSizeMaximum(), Integer.MAX_VALUE);
+            int sizeMaximum =
+                    Objects.requireNonNullElse(nearbySelectionConfig.getLinearDistributionSizeMaximum(), Integer.MAX_VALUE);
             return new LinearDistributionNearbyRandom(sizeMaximum);
         } else if (parabolicDistributionEnabled) {
-            int sizeMaximum = defaultIfNull(nearbySelectionConfig.getParabolicDistributionSizeMaximum(), Integer.MAX_VALUE);
+            int sizeMaximum =
+                    Objects.requireNonNullElse(nearbySelectionConfig.getParabolicDistributionSizeMaximum(), Integer.MAX_VALUE);
             return new ParabolicDistributionNearbyRandom(sizeMaximum);
         } else if (betaDistributionEnabled) {
-            double alpha = defaultIfNull(nearbySelectionConfig.getBetaDistributionAlpha(), 1.0);
-            double beta = defaultIfNull(nearbySelectionConfig.getBetaDistributionBeta(), 5.0);
+            double alpha = Objects.requireNonNullElse(nearbySelectionConfig.getBetaDistributionAlpha(), 1.0);
+            double beta = Objects.requireNonNullElse(nearbySelectionConfig.getBetaDistributionBeta(), 5.0);
             return new BetaDistributionNearbyRandom(alpha, beta);
         } else {
             return new LinearDistributionNearbyRandom(Integer.MAX_VALUE);

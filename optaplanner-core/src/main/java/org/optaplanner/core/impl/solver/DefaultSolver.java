@@ -19,10 +19,10 @@ package org.optaplanner.core.impl.solver;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.ProblemFactChange;
@@ -157,7 +157,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     public void setMonitorTagMap(Map<String, String> monitorTagMap) {
-        Tags monitoringTags = ObjectUtils.defaultIfNull(monitorTagMap, Collections.<String, String> emptyMap())
+        Tags monitoringTags = Objects.requireNonNullElse(monitorTagMap, Collections.<String, String> emptyMap())
                 .entrySet().stream().map(entry -> Tags.of(entry.getKey(), entry.getValue()))
                 .reduce(Tags.empty(), Tags::and);
         solverScope.setMonitoringTags(monitoringTags);

@@ -19,15 +19,19 @@ package org.optaplanner.examples.common.business;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.io.FileUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
@@ -63,16 +67,29 @@ import org.slf4j.LoggerFactory;
  */
 public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
+    public static String getBaseFileName(File file) {
+        return getBaseFileName(file.getName());
+    }
+
+    public static String getBaseFileName(String name) {
+        int indexOfLastDot = name.lastIndexOf('.');
+        if (indexOfLastDot > 0) {
+            return name.substring(0, indexOfLastDot);
+        } else {
+            return name;
+        }
+    }
+
     private static final ProblemFileComparator FILE_COMPARATOR = new ProblemFileComparator();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SolutionBusiness.class);
 
-    private final CommonApp app;
+    private final CommonApp<Solution_> app;
     private File dataDir;
     private SolutionFileIO<Solution_> solutionFileIO;
 
-    private AbstractSolutionImporter<Solution_>[] importers;
-    private Set<AbstractSolutionExporter> exporters;
+    private Set<AbstractSolutionImporter<Solution_>> importers;
+    private Set<AbstractSolutionExporter<Solution_>> exporters;
 
     private File importDataDir;
     private File unsolvedDataDir;
@@ -87,7 +104,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
 
-    public SolutionBusiness(CommonApp app) {
+    public SolutionBusiness(CommonApp<Solution_> app) {
         this.app = app;
     }
 
@@ -119,15 +136,15 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         this.solutionFileIO = solutionFileIO;
     }
 
-    public AbstractSolutionImporter<Solution_>[] getImporters() {
+    public Set<AbstractSolutionImporter<Solution_>> getImporters() {
         return importers;
     }
 
-    public void setImporters(AbstractSolutionImporter<Solution_>[] importers) {
+    public void setImporters(Set<AbstractSolutionImporter<Solution_>> importers) {
         this.importers = importers;
     }
 
-    public void setExporters(Set<AbstractSolutionExporter> exporters) {
+    public void setExporters(Set<AbstractSolutionExporter<Solution_>> exporters) {
         if (exporters == null) {
             throw new IllegalArgumentException("Passed exporters must not be null");
         }
@@ -138,12 +155,12 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         this.exporters.add(exporter);
     }
 
-    public Set<AbstractSolutionExporter> getExporters() {
+    public Set<AbstractSolutionExporter<Solution_>> getExporters() {
         return this.exporters;
     }
 
     public boolean hasImporter() {
-        return importers.length > 0;
+        return !importers.isEmpty();
     }
 
     public boolean hasExporter() {
@@ -202,17 +219,23 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public List<File> getUnsolvedFileList() {
-        List<File> fileList = new ArrayList<>(
-                FileUtils.listFiles(unsolvedDataDir, new String[] { solutionFileIO.getInputFileExtension() }, true));
-        fileList.sort(FILE_COMPARATOR);
-        return fileList;
+        return getFileList(unsolvedDataDir, solutionFileIO.getInputFileExtension());
+    }
+
+    private List<File> getFileList(File dataDir, String extension) {
+        try (Stream<Path> paths = Files.walk(dataDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
+            return paths.filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith("." + extension))
+                    .map(Path::toFile)
+                    .sorted(FILE_COMPARATOR)
+                    .collect(toList());
+        } catch (IOException e) {
+            throw new IllegalStateException("Error while crawling data directory (" + dataDir + ").", e);
+        }
     }
 
     public List<File> getSolvedFileList() {
-        List<File> fileList = new ArrayList<>(
-                FileUtils.listFiles(solvedDataDir, new String[] { solutionFileIO.getOutputFileExtension() }, true));
-        fileList.sort(FILE_COMPARATOR);
-        return fileList;
+        return getFileList(solvedDataDir, solutionFileIO.getOutputFileExtension());
     }
 
     public Solution_ getSolution() {
@@ -296,7 +319,9 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
                 return importer;
             }
         }
-        return importers[0];
+        return importers.stream()
+                .findFirst()
+                .orElseThrow();
     }
 
     public void openSolution(File file) {

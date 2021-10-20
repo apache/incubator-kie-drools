@@ -16,9 +16,8 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -95,9 +94,10 @@ public class AcceptorFactory<Solution_> {
         if ((acceptorConfig.getAcceptorTypeList() != null
                 && acceptorConfig.getAcceptorTypeList().contains(AcceptorType.STEP_COUNTING_HILL_CLIMBING))
                 || acceptorConfig.getStepCountingHillClimbingSize() != null) {
-            int stepCountingHillClimbingSize_ = defaultIfNull(acceptorConfig.getStepCountingHillClimbingSize(), 400);
+            int stepCountingHillClimbingSize_ =
+                    Objects.requireNonNullElse(acceptorConfig.getStepCountingHillClimbingSize(), 400);
             StepCountingHillClimbingType stepCountingHillClimbingType_ =
-                    defaultIfNull(acceptorConfig.getStepCountingHillClimbingType(),
+                    Objects.requireNonNullElse(acceptorConfig.getStepCountingHillClimbingType(),
                             StepCountingHillClimbingType.STEP);
             StepCountingHillClimbingAcceptor<Solution_> acceptor = new StepCountingHillClimbingAcceptor<>(
                     stepCountingHillClimbingSize_, stepCountingHillClimbingType_);
@@ -250,7 +250,7 @@ public class AcceptorFactory<Solution_> {
                 && acceptorConfig.getAcceptorTypeList().contains(AcceptorType.LATE_ACCEPTANCE))
                 || acceptorConfig.getLateAcceptanceSize() != null) {
             LateAcceptanceAcceptor<Solution_> acceptor = new LateAcceptanceAcceptor<>();
-            acceptor.setLateAcceptanceSize(defaultIfNull(acceptorConfig.getLateAcceptanceSize(), 400));
+            acceptor.setLateAcceptanceSize(Objects.requireNonNullElse(acceptorConfig.getLateAcceptanceSize(), 400));
             return Optional.of(acceptor);
         }
         return Optional.empty();

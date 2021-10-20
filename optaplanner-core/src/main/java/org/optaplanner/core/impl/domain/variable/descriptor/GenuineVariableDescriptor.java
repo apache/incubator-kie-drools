@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -120,7 +119,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
 
     private void processValueRangeRefs(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         String[] valueRangeProviderRefs = planningVariableAnnotation.valueRangeProviderRefs();
-        if (ArrayUtils.isEmpty(valueRangeProviderRefs)) {
+        if (valueRangeProviderRefs == null || valueRangeProviderRefs.length == 0) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()

@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.tsp.app;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.optaplanner.examples.common.app.CommonApp;
@@ -63,21 +62,18 @@ public class TspApp extends CommonApp<TspSolution> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
+    protected Set<AbstractSolutionImporter<TspSolution>> createSolutionImporters() {
+        return Set.of(
                 new TspImporter(),
-                new TspImageStipplerImporter()
-        };
+                new TspImageStipplerImporter());
     }
 
     @Override
-    protected Set<AbstractSolutionExporter> createSolutionExporters() {
-        Set<AbstractSolutionExporter> exporters = new HashSet<>();
-        exporters.add(new TspExporter());
-        exporters.add(new SvgTspPathExporter());
-        exporters.add(new SvgTspLineAndCircleExporter());
-
-        return exporters;
+    protected Set<AbstractSolutionExporter<TspSolution>> createSolutionExporters() {
+        return Set.of(
+                new TspExporter(),
+                new SvgTspPathExporter(),
+                new SvgTspLineAndCircleExporter());
     }
 
 }

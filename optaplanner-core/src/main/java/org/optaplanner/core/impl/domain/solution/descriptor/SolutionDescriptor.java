@@ -38,13 +38,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
@@ -79,6 +77,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.util.MutablePair;
+import org.optaplanner.core.impl.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,8 +110,8 @@ public class SolutionDescriptor<Solution_> {
             Map<String, MemberAccessor> memberAccessorMap,
             Map<String, SolutionCloner> solutionClonerMap,
             List<Class<?>> entityClassList) {
-        memberAccessorMap = ObjectUtils.defaultIfNull(memberAccessorMap, Collections.emptyMap());
-        solutionClonerMap = ObjectUtils.defaultIfNull(solutionClonerMap, Collections.emptyMap());
+        memberAccessorMap = Objects.requireNonNullElse(memberAccessorMap, Collections.emptyMap());
+        solutionClonerMap = Objects.requireNonNullElse(solutionClonerMap, Collections.emptyMap());
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         descriptorPolicy.setDomainAccessType(domainAccessType);
         descriptorPolicy.setGeneratedMemberAccessorMap(memberAccessorMap);
@@ -547,13 +547,13 @@ public class SolutionDescriptor<Solution_> {
 
     private void determineGlobalShadowOrder() {
         // Topological sorting with Kahn's algorithm
-        List<Pair<ShadowVariableDescriptor<Solution_>, Integer>> pairList = new ArrayList<>();
-        Map<ShadowVariableDescriptor<Solution_>, Pair<ShadowVariableDescriptor<Solution_>, Integer>> shadowToPairMap =
+        List<MutablePair<ShadowVariableDescriptor<Solution_>, Integer>> pairList = new ArrayList<>();
+        Map<ShadowVariableDescriptor<Solution_>, MutablePair<ShadowVariableDescriptor<Solution_>, Integer>> shadowToPairMap =
                 new HashMap<>();
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (ShadowVariableDescriptor<Solution_> shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
                 int sourceSize = shadow.getSourceVariableDescriptorList().size();
-                Pair<ShadowVariableDescriptor<Solution_>, Integer> pair = MutablePair.of(shadow, sourceSize);
+                MutablePair<ShadowVariableDescriptor<Solution_>, Integer> pair = MutablePair.of(shadow, sourceSize);
                 pairList.add(pair);
                 shadowToPairMap.put(shadow, pair);
             }
@@ -561,7 +561,7 @@ public class SolutionDescriptor<Solution_> {
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (GenuineVariableDescriptor<Solution_> genuine : entityDescriptor.getDeclaredGenuineVariableDescriptors()) {
                 for (ShadowVariableDescriptor<Solution_> sink : genuine.getSinkVariableDescriptorList()) {
-                    Pair<ShadowVariableDescriptor<Solution_>, Integer> sinkPair = shadowToPairMap.get(sink);
+                    MutablePair<ShadowVariableDescriptor<Solution_>, Integer> sinkPair = shadowToPairMap.get(sink);
                     sinkPair.setValue(sinkPair.getValue() - 1);
                 }
             }
@@ -583,7 +583,7 @@ public class SolutionDescriptor<Solution_> {
                         + ") and also earlier than its sinks (" + shadow.getSinkVariableDescriptorList() + ").");
             }
             for (ShadowVariableDescriptor<Solution_> sink : shadow.getSinkVariableDescriptorList()) {
-                Pair<ShadowVariableDescriptor<Solution_>, Integer> sinkPair = shadowToPairMap.get(sink);
+                MutablePair<ShadowVariableDescriptor<Solution_>, Integer> sinkPair = shadowToPairMap.get(sink);
                 sinkPair.setValue(sinkPair.getValue() - 1);
             }
             shadow.setGlobalShadowOrder(globalShadowOrder);
@@ -592,8 +592,9 @@ public class SolutionDescriptor<Solution_> {
     }
 
     private void initSolutionCloner(DescriptorPolicy descriptorPolicy) {
-        solutionCloner = ObjectUtils.defaultIfNull(solutionCloner, descriptorPolicy.getGeneratedSolutionClonerMap()
-                .get(GizmoSolutionClonerFactory.getGeneratedClassName(this)));
+        solutionCloner = solutionCloner == null ? descriptorPolicy.getGeneratedSolutionClonerMap()
+                .get(GizmoSolutionClonerFactory.getGeneratedClassName(this))
+                : solutionCloner;
         if (solutionCloner == null) {
             switch (descriptorPolicy.getDomainAccessType()) {
                 case GIZMO:

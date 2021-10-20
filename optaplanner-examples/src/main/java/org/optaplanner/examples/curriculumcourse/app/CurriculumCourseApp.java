@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.curriculumcourse.app;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.optaplanner.examples.common.app.CommonApp;
@@ -60,17 +60,13 @@ public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
-                new CurriculumCourseImporter()
-        };
+    protected Set<AbstractSolutionImporter<CourseSchedule>> createSolutionImporters() {
+        return Collections.singleton(new CurriculumCourseImporter());
     }
 
     @Override
-    protected Set<AbstractSolutionExporter> createSolutionExporters() {
-        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
-        exporters.add(new CurriculumCourseExporter());
-        return exporters;
+    protected Set<AbstractSolutionExporter<CourseSchedule>> createSolutionExporters() {
+        return Collections.singleton(new CurriculumCourseExporter());
     }
 
 }

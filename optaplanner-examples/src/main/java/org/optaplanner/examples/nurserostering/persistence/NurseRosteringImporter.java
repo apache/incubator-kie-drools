@@ -29,12 +29,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;

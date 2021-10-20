@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.investment.app;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
@@ -54,10 +57,8 @@ public class InvestmentApp extends CommonApp<InvestmentSolution> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
-                new InvestmentImporter()
-        };
+    protected Set<AbstractSolutionImporter<InvestmentSolution>> createSolutionImporters() {
+        return Collections.singleton(new InvestmentImporter());
     }
 
 }

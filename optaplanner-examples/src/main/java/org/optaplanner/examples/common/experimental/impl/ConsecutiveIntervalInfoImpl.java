@@ -19,11 +19,11 @@ package org.optaplanner.examples.common.experimental.impl;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
 import org.optaplanner.examples.common.experimental.api.IntervalBreak;
 import org.optaplanner.examples.common.experimental.api.IntervalCluster;
@@ -50,8 +50,8 @@ public final class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Compara
     void addInterval(Interval<Interval_, Point_> interval) {
         NavigableMap<IntervalSplitPoint<Interval_, Point_>, IntervalClusterImpl<Interval_, Point_, Difference_>> intersectedIntervalClusterMap =
                 clusterStartSplitPointToCluster.subMap(
-                        ObjectUtils.defaultIfNull(clusterStartSplitPointToCluster.floorKey(interval.getStartSplitPoint()),
-                                interval.getStartSplitPoint()),
+                        Objects.requireNonNullElseGet(clusterStartSplitPointToCluster.floorKey(interval.getStartSplitPoint()),
+                                interval::getStartSplitPoint),
                         true, interval.getEndSplitPoint(), true);
 
         // Case: the interval cluster before this interval does not intersect this interval
@@ -146,8 +146,8 @@ public final class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Compara
     private void removeSpannedBreaksAndUpdateIntersectedBreaks(Interval<Interval_, Point_> interval,
             IntervalClusterImpl<Interval_, Point_, Difference_> intervalCluster) {
         IntervalSplitPoint<Interval_, Point_> firstBreakSplitPointBeforeInterval =
-                ObjectUtils.defaultIfNull(clusterStartSplitPointToNextBreak.floorKey(interval.getStartSplitPoint()),
-                        interval.getStartSplitPoint());
+                Objects.requireNonNullElseGet(clusterStartSplitPointToNextBreak.floorKey(interval.getStartSplitPoint()),
+                        interval::getStartSplitPoint);
         NavigableMap<IntervalSplitPoint<Interval_, Point_>, IntervalBreakImpl<Interval_, Point_, Difference_>> intersectedIntervalBreakMap =
                 clusterStartSplitPointToNextBreak.subMap(firstBreakSplitPointBeforeInterval, true, interval.getEndSplitPoint(),
                         true);

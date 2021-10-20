@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -50,12 +50,12 @@ public class SubChainSwapMoveSelectorFactory<Solution_>
                         .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType,
                                 SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         SubChainSelectorConfig rightSubChainSelectorConfig =
-                defaultIfNull(config.getSecondarySubChainSelectorConfig(), subChainSelectorConfig_);
+                Objects.requireNonNullElse(config.getSecondarySubChainSelectorConfig(), subChainSelectorConfig_);
         SubChainSelector<Solution_> rightSubChainSelector =
                 SubChainSelectorFactory.<Solution_> create(rightSubChainSelectorConfig)
                         .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType,
                                 SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new SubChainSwapMoveSelector<>(leftSubChainSelector, rightSubChainSelector, randomSelection,
-                defaultIfNull(config.getSelectReversingMoveToo(), true));
+                Objects.requireNonNullElse(config.getSelectReversingMoveToo(), true));
     }
 }

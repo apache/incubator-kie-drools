@@ -21,20 +21,19 @@ import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asMap;
-import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSet;
 
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
+import org.optaplanner.core.impl.util.Pair;
 
 public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
 
@@ -54,13 +53,13 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.from(TestdataLavishEntity.class)
                         .groupBy(e -> e.getCode().substring(0, 1), count())
-                        .groupBy(ImmutablePair::new)
-                        .filter(pair -> !pair.left.equals("G"))
-                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, ImmutablePair::getRight));
+                        .groupBy(Pair::of)
+                        .filter(pair -> !pair.getKey().equals("G"))
+                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, Pair::getValue));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
-        assertScore(scoreDirector, assertMatch(ImmutablePair.of("M", 1)));
+        assertScore(scoreDirector, assertMatch(Pair.of("M", 1)));
 
         // Incremental
         scoreDirector.beforeEntityRemoved(entity);

@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.travelingtournament.app;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.optaplanner.examples.common.app.CommonApp;
@@ -63,17 +63,13 @@ public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
-                new TravelingTournamentImporter()
-        };
+    protected Set<AbstractSolutionImporter<TravelingTournament>> createSolutionImporters() {
+        return Collections.singleton(new TravelingTournamentImporter());
     }
 
     @Override
-    protected Set<AbstractSolutionExporter> createSolutionExporters() {
-        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
-        exporters.add(new TravelingTournamentExporter());
-        return exporters;
+    protected Set<AbstractSolutionExporter<TravelingTournament>> createSolutionExporters() {
+        return Collections.singleton(new TravelingTournamentExporter());
     }
 
 }

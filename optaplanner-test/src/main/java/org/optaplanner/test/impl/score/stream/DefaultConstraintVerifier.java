@@ -17,11 +17,10 @@
 package org.optaplanner.test.impl.score.stream;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -48,7 +47,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     }
 
     public ConstraintStreamImplType getConstraintStreamImplType() {
-        return defaultIfNull(constraintStreamImplType, ConstraintStreamImplType.DROOLS);
+        return Objects.requireNonNullElse(constraintStreamImplType, ConstraintStreamImplType.DROOLS);
     }
 
     @Override
@@ -60,7 +59,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     }
 
     public boolean isDroolsAlphaNetworkCompilationEnabled() {
-        return defaultIfNull(droolsAlphaNetworkCompilationEnabled, !CoreComponentsBuilder.isNativeImage());
+        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabled, !CoreComponentsBuilder.isNativeImage());
     }
 
     @Override
@@ -99,7 +98,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
                 return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
                         isDroolsAlphaNetworkCompilationEnabled());
             case BAVET:
-                if (BooleanUtils.isTrue(droolsAlphaNetworkCompilationEnabled)) {
+                if (droolsAlphaNetworkCompilationEnabled != null && droolsAlphaNetworkCompilationEnabled) {
                     throw new IllegalArgumentException("Constraint stream implementation (" + constraintStreamImplType_ +
                             ") does not support droolsAlphaNetworkCompilationEnabled ("
                             + droolsAlphaNetworkCompilationEnabled + ").");

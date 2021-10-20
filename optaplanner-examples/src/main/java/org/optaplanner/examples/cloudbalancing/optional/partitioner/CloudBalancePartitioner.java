@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+import org.optaplanner.examples.common.util.Pair;
 
 public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance> {
 
@@ -89,13 +89,13 @@ public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance
                             + ") has a computer (" + originalProcess.getComputer()
                             + ") which doesn't exist in the originalSolution (" + originalSolution + ").");
                 }
-                if (partIndex != partIndexAndComputer.getLeft().intValue()) {
+                if (partIndex != partIndexAndComputer.getKey().intValue()) {
                     throw new IllegalStateException("The initialized process (" + originalProcess
                             + ") with partIndex (" + partIndex
                             + ") has a computer (" + originalProcess.getComputer()
-                            + ") which belongs to another partIndex (" + partIndexAndComputer.getLeft() + ").");
+                            + ") which belongs to another partIndex (" + partIndexAndComputer.getKey() + ").");
                 }
-                process.setComputer(partIndexAndComputer.getRight());
+                process.setComputer(partIndexAndComputer.getValue());
             }
             partIndex = (partIndex + 1) % partList.size();
         }

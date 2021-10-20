@@ -17,12 +17,9 @@
 package org.optaplanner.benchmark.impl.report;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-
-import org.apache.commons.io.IOUtils;
+import java.nio.file.Files;
 
 public class WebsiteResourceUtils {
 
@@ -50,13 +47,12 @@ public class WebsiteResourceUtils {
     private static void copyResource(File benchmarkReportDirectory, String websiteResource) {
         File outputFile = new File(benchmarkReportDirectory, websiteResource);
         outputFile.getParentFile().mkdirs();
-        try (InputStream in = WebsiteResourceUtils.class.getResourceAsStream(RESOURCE_NAMESPACE + websiteResource);
-                OutputStream out = new FileOutputStream(outputFile)) {
+        try (InputStream in = WebsiteResourceUtils.class.getResourceAsStream(RESOURCE_NAMESPACE + websiteResource)) {
             if (in == null) {
                 throw new IllegalStateException("The websiteResource (" + websiteResource
                         + ") does not exist.");
             }
-            IOUtils.copy(in, out);
+            Files.copy(in, outputFile.toPath());
         } catch (IOException e) {
             throw new IllegalStateException("Could not copy websiteResource (" + websiteResource
                     + ") to outputFile (" + outputFile + ").", e);

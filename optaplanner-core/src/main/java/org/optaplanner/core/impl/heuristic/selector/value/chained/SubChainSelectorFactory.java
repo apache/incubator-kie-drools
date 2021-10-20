@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -83,7 +83,7 @@ public class SubChainSelectorFactory<Solution_> {
         }
         return new DefaultSubChainSelector<>((EntityIndependentValueSelector<Solution_>) valueSelector,
                 inheritedSelectionOrder.toRandomSelectionBoolean(),
-                defaultIfNull(config.getMinimumSubChainSize(), DEFAULT_MINIMUM_SUB_CHAIN_SIZE),
-                defaultIfNull(config.getMaximumSubChainSize(), DEFAULT_MAXIMUM_SUB_CHAIN_SIZE));
+                Objects.requireNonNullElse(config.getMinimumSubChainSize(), DEFAULT_MINIMUM_SUB_CHAIN_SIZE),
+                Objects.requireNonNullElse(config.getMaximumSubChainSize(), DEFAULT_MAXIMUM_SUB_CHAIN_SIZE));
     }
 }

@@ -27,7 +27,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
@@ -92,7 +92,7 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
             RoadLocation location = bus.getLocation();
             g.setColor(bus instanceof Coach ? TangoColorFactory.ORANGE_1 : TangoColorFactory.ALUMINIUM_2);
             translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3,
-                    StringUtils.abbreviate(bus.getName(), 20));
+                    WordUtils.abbreviate(bus.getName(), 20, -1, "..."));
         }
         int colorIndex = 0;
         for (Bus bus : busList) {

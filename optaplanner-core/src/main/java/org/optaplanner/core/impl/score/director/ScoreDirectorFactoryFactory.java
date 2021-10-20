@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -226,8 +224,8 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                     "constraintProviderClass", config.getConstraintProviderClass());
             ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
                     config.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");
-            ConstraintStreamImplType constraintStreamImplType_ = defaultIfNull(config.getConstraintStreamImplType(),
-                    ConstraintStreamImplType.DROOLS);
+            ConstraintStreamImplType constraintStreamImplType_ =
+                    Objects.requireNonNullElse(config.getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
             switch (constraintStreamImplType_) {
                 case BAVET:
                     return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);

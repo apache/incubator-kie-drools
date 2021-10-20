@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.config.solver;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,6 +29,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
@@ -588,15 +587,15 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     // ************************************************************************
 
     public EnvironmentMode determineEnvironmentMode() {
-        return defaultIfNull(environmentMode, EnvironmentMode.REPRODUCIBLE);
+        return Objects.requireNonNullElse(environmentMode, EnvironmentMode.REPRODUCIBLE);
     }
 
     public DomainAccessType determineDomainAccessType() {
-        return defaultIfNull(domainAccessType, DomainAccessType.REFLECTION);
+        return Objects.requireNonNullElse(domainAccessType, DomainAccessType.REFLECTION);
     }
 
     public MonitoringConfig determineMetricConfig() {
-        return defaultIfNull(monitoringConfig,
+        return Objects.requireNonNullElse(monitoringConfig,
                 new MonitoringConfig().withSolverMetricList(Arrays.asList(SolverMetric.SOLVE_DURATION, SolverMetric.ERROR_COUNT,
                         SolverMetric.SCORE_CALCULATION_COUNT)));
     }

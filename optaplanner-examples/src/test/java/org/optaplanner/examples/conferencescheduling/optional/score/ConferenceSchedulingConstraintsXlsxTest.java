@@ -37,7 +37,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,6 +49,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;

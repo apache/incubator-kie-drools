@@ -26,7 +26,6 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
@@ -367,7 +366,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null, a stream that matches every A where a different A exists
      */
     default UniConstraintStream<A> ifExistsOther(Class<A> otherClass) {
-        return ifExists(otherClass, Joiners.filtering(ObjectUtils::notEqual));
+        return ifExists(otherClass, Joiners.filtering((a, b) -> !Objects.equals(a, b)));
     }
 
     /**
@@ -446,7 +445,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      *         are true
      */
     default UniConstraintStream<A> ifExistsOther(Class<A> otherClass, BiJoiner<A, A>... joiners) {
-        BiJoiner<A, A> otherness = Joiners.filtering(ObjectUtils::notEqual);
+        BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !Objects.equals(a, b));
         BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifExists(otherClass, allJoiners);
@@ -542,7 +541,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null, a stream that matches every A where a different A does not exist
      */
     default UniConstraintStream<A> ifNotExistsOther(Class<A> otherClass) {
-        return ifNotExists(otherClass, Joiners.filtering(ObjectUtils::notEqual));
+        return ifNotExists(otherClass, Joiners.filtering((a, b) -> !Objects.equals(a, b)));
     }
 
     /**
@@ -622,7 +621,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      *         {@link BiJoiner}s are true
      */
     default UniConstraintStream<A> ifNotExistsOther(Class<A> otherClass, BiJoiner<A, A>... joiners) {
-        BiJoiner<A, A> otherness = Joiners.filtering(ObjectUtils::notEqual);
+        BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !Objects.equals(a, b));
         BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifNotExists(otherClass, allJoiners);

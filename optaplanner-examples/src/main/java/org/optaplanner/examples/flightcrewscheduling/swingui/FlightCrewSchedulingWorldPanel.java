@@ -23,12 +23,9 @@ import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.flightcrewscheduling.domain.Airport;
 import org.optaplanner.examples.flightcrewscheduling.domain.Flight;
@@ -39,7 +36,6 @@ public class FlightCrewSchedulingWorldPanel extends JPanel {
 
     private static final int TEXT_SIZE = 12;
     private static final int LOCATION_NAME_TEXT_SIZE = 8;
-    protected static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
 
     private final FlightCrewSchedulingPanel flightCrewSchedulingPanel;
 
@@ -78,7 +74,7 @@ public class FlightCrewSchedulingWorldPanel extends JPanel {
             int x = translator.translateLongitudeToX(airport.getLongitude());
             int y = translator.translateLatitudeToY(airport.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
-            g.drawString(StringUtils.abbreviate(airport.getCode(), 20), x + 3, y - 3);
+            g.drawString(airport.getCode(), x + 3, y - 3);
         }
         g.setColor(TangoColorFactory.CHOCOLATE_1);
         for (Flight flight : solution.getFlightList()) {

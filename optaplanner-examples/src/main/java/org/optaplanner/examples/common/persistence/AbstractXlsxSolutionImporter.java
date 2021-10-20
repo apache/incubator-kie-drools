@@ -22,12 +22,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -82,7 +82,7 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         // ************************************************************************
 
         public String getInputId() {
-            return FilenameUtils.getBaseName(inputFile.getPath());
+            return SolutionBusiness.getBaseFileName(inputFile);
         }
 
         protected XSSFSheet readSheet(int index, String name) {

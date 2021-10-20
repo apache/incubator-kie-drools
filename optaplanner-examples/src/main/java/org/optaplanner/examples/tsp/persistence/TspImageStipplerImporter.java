@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractPngSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.tsp.app.TspApp;
@@ -57,7 +57,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
         public TspSolution readSolution() throws IOException {
             tspSolution = new TspSolution();
             tspSolution.setId(0L);
-            tspSolution.setName(FilenameUtils.getBaseName(inputFile.getName()));
+            tspSolution.setName(SolutionBusiness.getBaseFileName(inputFile));
             floydSteinbergDithering();
             createVisitList();
             BigInteger possibleSolutionSize = factorial(tspSolution.getLocationList().size() - 1);

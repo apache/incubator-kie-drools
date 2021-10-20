@@ -19,8 +19,8 @@ package org.optaplanner.benchmark.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
@@ -107,7 +107,7 @@ public class SolverBenchmarkFactory {
         if (config == null) {
             return out;
         }
-        for (ProblemStatisticType problemStatisticType : ObjectUtils.defaultIfNull(config.getProblemStatisticTypeList(),
+        for (ProblemStatisticType problemStatisticType : Objects.requireNonNullElse(config.getProblemStatisticTypeList(),
                 Collections.<ProblemStatisticType> emptyList())) {
             if (problemStatisticType == ProblemStatisticType.SCORE_CALCULATION_SPEED) {
                 out.add(SolverMetric.SCORE_CALCULATION_COUNT);
@@ -115,7 +115,7 @@ public class SolverBenchmarkFactory {
                 out.add(SolverMetric.valueOf(problemStatisticType.name()));
             }
         }
-        for (SingleStatisticType singleStatisticType : ObjectUtils.defaultIfNull(config.getSingleStatisticTypeList(),
+        for (SingleStatisticType singleStatisticType : Objects.requireNonNullElse(config.getSingleStatisticTypeList(),
                 Collections.<SingleStatisticType> emptyList())) {
             out.add(SolverMetric.valueOf(singleStatisticType.name()));
         }

@@ -16,10 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -45,14 +44,14 @@ public class PillarChangeMoveSelectorFactory<Solution_>
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig pillarSelectorConfig_ =
-                defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig());
+                Objects.requireNonNullElse(config.getPillarSelectorConfig(), new PillarSelectorConfig());
         List<String> variableNameIncludeList = config.getValueSelectorConfig() == null
                 || config.getValueSelectorConfig().getVariableName() == null ? null
                         : Collections.singletonList(config.getValueSelectorConfig().getVariableName());
         PillarSelector<Solution_> pillarSelector = PillarSelectorFactory.<Solution_> create(pillarSelectorConfig_)
                 .buildPillarSelector(configPolicy, config.getSubPillarType(), config.getSubPillarSequenceComparatorClass(),
                         minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
-        ValueSelectorConfig valueSelectorConfig_ = defaultIfNull(config.getValueSelectorConfig(),
+        ValueSelectorConfig valueSelectorConfig_ = Objects.requireNonNullElse(config.getValueSelectorConfig(),
                 new ValueSelectorConfig());
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)

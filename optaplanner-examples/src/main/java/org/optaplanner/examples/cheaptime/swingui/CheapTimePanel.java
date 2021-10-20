@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -56,6 +55,7 @@ import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {

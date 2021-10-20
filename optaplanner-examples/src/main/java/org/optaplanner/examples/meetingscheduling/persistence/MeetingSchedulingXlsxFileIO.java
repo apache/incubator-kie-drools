@@ -55,7 +55,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -787,7 +787,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         String endTimeString = getTimeString(
                                 solution.getTimeGrainList().get(lastTimeGrainIndex).getStartingMinuteOfDay()
                                         + TimeGrain.GRAIN_LENGTH_IN_MINUTES);
-                        meetingInfo.append(StringUtils.abbreviate(meetingAssignment.getMeeting().getTopic(), 150))
+                        meetingInfo.append(WordUtils.abbreviate(meetingAssignment.getMeeting().getTopic(), 150, -1, "..."))
                                 .append("\n  ")
                                 .append(meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName)
                                         .collect(joining(", ")))

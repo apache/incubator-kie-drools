@@ -16,12 +16,11 @@
 
 package org.optaplanner.benchmark.impl;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -82,7 +81,8 @@ public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
         plannerBenchmarkResult.setAggregation(false);
         int parallelBenchmarkCount = resolveParallelBenchmarkCount();
         plannerBenchmarkResult.setParallelBenchmarkCount(parallelBenchmarkCount);
-        plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(defaultIfNull(calculateWarmUpTimeMillisSpentLimit(), 30L));
+        plannerBenchmarkResult
+                .setWarmUpTimeMillisSpentLimit(Objects.requireNonNullElse(calculateWarmUpTimeMillisSpentLimit(), 30L));
         plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<>());
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {

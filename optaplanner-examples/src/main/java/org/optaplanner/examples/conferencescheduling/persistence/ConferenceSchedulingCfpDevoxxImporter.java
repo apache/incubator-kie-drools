@@ -38,7 +38,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;

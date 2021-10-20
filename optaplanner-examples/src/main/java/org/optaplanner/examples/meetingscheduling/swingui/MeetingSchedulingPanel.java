@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.meetingscheduling.swingui;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
@@ -29,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -42,11 +42,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
@@ -243,14 +243,15 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
 
     private class MeetingAssignmentAction extends AbstractAction {
 
-        private MeetingAssignment meetingAssignment;
+        private final MeetingAssignment meetingAssignment;
 
         public MeetingAssignmentAction(MeetingAssignment meetingAssignment) {
             super(meetingAssignment.getLabel());
             putValue(SHORT_DESCRIPTION, "<html>Topic: " + meetingAssignment.getMeeting().getTopic() + "<br/>"
-                    + "Date and time: " + defaultIfNull(meetingAssignment.getStartingDateTimeString(), "unassigned") + "<br/>"
+                    + "Date and time: "
+                    + Objects.requireNonNullElse(meetingAssignment.getStartingDateTimeString(), "unassigned") + "<br/>"
                     + "Duration: " + meetingAssignment.getMeeting().getDurationString() + "<br/>"
-                    + "Room: " + defaultIfNull(meetingAssignment.getRoom(), "unassigned")
+                    + "Room: " + Objects.requireNonNullElse(meetingAssignment.getRoom(), "unassigned")
                     + "</html>");
             this.meetingAssignment = meetingAssignment;
         }

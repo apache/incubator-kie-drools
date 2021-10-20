@@ -62,7 +62,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
@@ -428,7 +427,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String newBenchmarkResultName = benchmarkResultNameTextField.getText();
-                    if (StringUtils.isEmpty(newBenchmarkResultName)) {
+                    if (newBenchmarkResultName == null || newBenchmarkResultName.isEmpty()) {
                         JOptionPane.showMessageDialog(BenchmarkAggregatorFrame.this,
                                 "New benchmark's name cannot be empty.",
                                 "Warning", JOptionPane.WARNING_MESSAGE);

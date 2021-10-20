@@ -16,10 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -98,8 +97,8 @@ public class PillarSelectorFactory<Solution_>
     private SubPillarConfigPolicy configureSubPillars(SubPillarType pillarType,
             Class<? extends Comparator> pillarOrderComparatorClass, EntitySelector<Solution_> entitySelector,
             Integer minimumSubPillarSize, Integer maximumSubPillarSize) {
-        int actualMinimumSubPillarSize = defaultIfNull(minimumSubPillarSize, 1);
-        int actualMaximumSubPillarSize = defaultIfNull(maximumSubPillarSize, Integer.MAX_VALUE);
+        int actualMinimumSubPillarSize = Objects.requireNonNullElse(minimumSubPillarSize, 1);
+        int actualMaximumSubPillarSize = Objects.requireNonNullElse(maximumSubPillarSize, Integer.MAX_VALUE);
         if (pillarType == null) { // for backwards compatibility reasons
             return SubPillarConfigPolicy.withSubpillars(actualMinimumSubPillarSize, actualMaximumSubPillarSize);
         }

@@ -92,8 +92,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.text.WordUtils;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -105,6 +104,7 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -1350,8 +1350,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(talk -> talk.getTimeslot() != null)
                     .flatMap(talk -> talk.getThemeTrackTagSet().stream()
                             .map(tag -> Pair.of(tag, Pair.of(talk.getTimeslot(), talk))))
-                    .collect(groupingBy(Pair::getLeft,
-                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getKey,
+                            groupingBy(o -> o.getValue().getKey(), mapping(o -> o.getValue().getValue(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1378,8 +1378,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(talk -> talk.getTimeslot() != null)
                     .flatMap(talk -> talk.getSectorTagSet().stream()
                             .map(tag -> Pair.of(tag, Pair.of(talk.getTimeslot(), talk))))
-                    .collect(groupingBy(Pair::getLeft,
-                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getKey,
+                            groupingBy(o -> o.getValue().getKey(), mapping(o -> o.getValue().getValue(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1406,8 +1406,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(talk -> talk.getTimeslot() != null)
                     .flatMap(talk -> talk.getAudienceTypeSet().stream()
                             .map(audienceType -> Pair.of(audienceType, Pair.of(talk.getTimeslot(), talk))))
-                    .collect(groupingBy(Pair::getLeft,
-                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getKey,
+                            groupingBy(o -> o.getValue().getKey(), mapping(o -> o.getValue().getValue(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : audienceTypeToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1433,8 +1433,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             Map<Integer, Map<Timeslot, List<Talk>>> levelToTimeslotToTalkListMap = solution.getTalkList().stream()
                     .filter(talk -> talk.getTimeslot() != null)
                     .map(talk -> Pair.of(talk.getAudienceLevel(), Pair.of(talk.getTimeslot(), talk)))
-                    .collect(groupingBy(Pair::getLeft,
-                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getKey,
+                            groupingBy(o -> o.getValue().getKey(), mapping(o -> o.getValue().getValue(), toList()))));
             for (Map.Entry<Integer, Map<Timeslot, List<Talk>>> entry : levelToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(Integer.toString(entry.getKey()));
@@ -1461,8 +1461,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(talk -> talk.getTimeslot() != null)
                     .flatMap(talk -> talk.getContentTagSet().stream()
                             .map(tag -> Pair.of(tag, Pair.of(talk.getTimeslot(), talk))))
-                    .collect(groupingBy(Pair::getLeft,
-                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getKey,
+                            groupingBy(o -> o.getValue().getKey(), mapping(o -> o.getValue().getValue(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1493,8 +1493,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             Map<String, Map<Timeslot, List<Talk>>> languageToTimeslotToTalkListMap = solution.getTalkList().stream()
                     .filter(talk -> talk.getTimeslot() != null)
                     .map(talk -> Pair.of(talk.getLanguage(), Pair.of(talk.getTimeslot(), talk)))
-                    .collect(groupingBy(Pair::getLeft,
-                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getKey,
+                            groupingBy(o -> o.getValue().getKey(), mapping(o -> o.getValue().getValue(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : languageToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1561,9 +1561,11 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     }
                     boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
                             || disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
-                    nextTalkListCell(unavailable, talkList, talk -> StringUtils.abbreviate(talk.getTitle(), 50) + "\n"
-                            + StringUtils.abbreviate(
-                                    talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), 30),
+                    nextTalkListCell(unavailable, talkList,
+                            talk -> WordUtils.abbreviate(talk.getTitle(), 50, -1, "...") + "\n" +
+                                    WordUtils.abbreviate(
+                                            talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), 30, -1,
+                                            "..."),
                             true);
                     mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
                     mergeStart = currentRowNumber;
