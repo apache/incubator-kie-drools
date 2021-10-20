@@ -233,17 +233,17 @@ public class ModelUtils {
     /**
      * <code>DATA_TYPE</code> of the given <b>field</b>
      * @param fields
-     * @param targetFieldName
+     * @param fieldName
      * @return
      */
-    public static DATA_TYPE getDATA_TYPE(final List<Field<?>> fields, String targetFieldName) {
+    public static DATA_TYPE getDATA_TYPE(final List<Field<?>> fields, String fieldName) {
         Optional<DATA_TYPE> toReturn = fields.stream()
-                .filter(fld -> Objects.equals(targetFieldName, fld.getName().getValue()))
+                .filter(fld -> Objects.equals(fieldName, fld.getName().getValue()))
                 .findFirst()
                 .map(dataField -> DATA_TYPE.byName(dataField.getDataType().value()));
-        return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
+        return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DATA_TYPE for " +
                                                                                              "field %s",
-                                                                                     targetFieldName)));
+                                                                                     fieldName)));
     }
 
     /**
