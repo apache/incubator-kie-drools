@@ -144,6 +144,11 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
         return indictmentMap;
     }
 
+    @Override
+    public boolean requiresFlushing() {
+        return true; // Incremental may decide to keep events for delayed processing.
+    }
+
     // ************************************************************************
     // Entity/variable add/change/remove methods
     // ************************************************************************

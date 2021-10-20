@@ -136,6 +136,11 @@ public class DroolsScoreDirector<Solution_, Score_ extends Score<Score_>>
     }
 
     @Override
+    public boolean requiresFlushing() {
+        return true; // Drools propagation queue is only flushed during fireAllRules().
+    }
+
+    @Override
     public void close() {
         super.close();
         if (kieSession != null) {

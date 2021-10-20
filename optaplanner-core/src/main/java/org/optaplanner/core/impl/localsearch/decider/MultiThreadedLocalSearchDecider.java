@@ -174,9 +174,15 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         pickMove(stepScope);
         // Start doing the step on every move thread. Don't wait for the stepEnded() event.
         if (stepScope.getStep() != null) {
+            InnerScoreDirector<Solution_, ?> scoreDirector = stepScope.getScoreDirector();
+            if (scoreDirector.requiresFlushing() && stepIndex % 100 == 99) {
+                // Calculate score to process changes; otherwise they become a memory leak.
+                // We only do it occasionally, as score calculation is a performance cost we do not need to incur here.
+                scoreDirector.calculateScore();
+            }
             // Increase stepIndex by 1, because it's a preliminary action
-            ApplyStepOperation<Solution_, ?> stepOperation = new ApplyStepOperation<>(stepIndex + 1,
-                    stepScope.getStep(), (Score) stepScope.getScore());
+            ApplyStepOperation<Solution_, ?> stepOperation =
+                    new ApplyStepOperation<>(stepIndex + 1, stepScope.getStep(), (Score) stepScope.getScore());
             for (int i = 0; i < moveThreadCount; i++) {
                 operationQueue.add(stepOperation);
             }

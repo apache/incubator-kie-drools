@@ -119,6 +119,11 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     }
 
     @Override
+    public boolean requiresFlushing() {
+        return true; // Drools propagation queue is only flushed during fireAllRules().
+    }
+
+    @Override
     public void close() {
         super.close();
         session.dispose();

@@ -112,4 +112,9 @@ public class EasyScoreDirector<Solution_, Score_ extends Score<Score_>>
                 + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
     }
 
+    @Override
+    public boolean requiresFlushing() {
+        return false; // Every score calculation starts from scratch; nothing is saved.
+    }
+
 }

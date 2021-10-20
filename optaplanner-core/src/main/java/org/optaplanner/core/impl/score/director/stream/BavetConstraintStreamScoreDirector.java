@@ -99,6 +99,11 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
     }
 
     @Override
+    public boolean requiresFlushing() {
+        return true; // Tuple refresh happens during score calculation.
+    }
+
+    @Override
     public void close() {
         super.close();
         session = null;
