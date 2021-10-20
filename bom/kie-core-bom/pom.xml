@@ -13,7 +13,7 @@
   <artifactId>kie-core-bom</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE BOM (Bill Of Materials)</name>
+  <name>KIE core BOM</name>
   <description>
     Import this BOM in your dependencyManagement if you want to depend on multiple KIE artifacts.
   </description>
@@ -187,24 +187,6 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-util-xml</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-maven-plugin</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-docs-code</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-docs-code</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
