@@ -60,4 +60,16 @@ public interface KogitoRuntimeClient {
 
     CompletableFuture<String> createUserTaskInstanceAttachment(String serviceURL, UserTaskInstance userTaskInstance,
             String user, List<String> groups, String name, String uri);
+
+    CompletableFuture<String> updateUserTaskInstanceComment(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups, String commentId, String commentInfo);
+
+    CompletableFuture<String> deleteUserTaskInstanceComment(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups, String commentId);
+
+    CompletableFuture<String> updateUserTaskInstanceAttachment(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups, String attachmentId, String name, String uri);
+
+    CompletableFuture<String> deleteUserTaskInstanceAttachment(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups, String attachmentId);
 }

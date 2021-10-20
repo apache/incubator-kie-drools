@@ -297,89 +297,8 @@ public abstract class AbstractProcessDataIndexIT {
                         .body("data.UserTaskInstances[0].attachments.size()", is(0))
                         .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers")));
 
-        String commentContent = "NewTaskComment";
-        String commentCreationResult = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                .body("{ \"query\" : \"mutation{ UserTaskInstanceCommentCreate(" +
-                        "taskId: \\\"" + taskId + "\\\", " +
-                        "user: \\\"manager\\\", " +
-                        "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
-                        "comment: \\\"" + commentContent + "\\\" " +
-                        ")}\"}")
-                .when().post("/graphql")
-                .then()
-                .statusCode(200)
-                .body("errors", nullValue())
-                .extract().path("data.UserTaskInstanceCommentCreate");
-
-        await()
-                .atMost(TIMEOUT)
-                .untilAsserted(() -> given().contentType(ContentType.JSON)
-                        .when()
-                        .queryParam("user", "manager")
-                        .queryParam("group", "managers")
-                        .pathParam("id", pId2)
-                        .pathParam("taskId", taskId)
-                        .get("/approvals/{id}/firstLineApproval/{taskId}/comments")
-                        .then()
-                        .statusCode(200)
-                        .body("$.size", is(1))
-                        .body("[0].content", is(commentContent)));
-
-        String attachmentName = "NewTaskAttachmentName";
-        String attachmentCreationResult = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                .body("{ \"query\" : \"mutation{ UserTaskInstanceAttachmentCreate(" +
-                        "taskId: \\\"" + taskId + "\\\", " +
-                        "user: \\\"manager\\\", " +
-                        "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
-                        "name: \\\"" + attachmentName + "\\\", " +
-                        "uri: \\\"https://drive.google.com/file/d/1Z_Lipg2jzY9TNewTaskAttachmentUri\\\", " +
-                        ")}\"}")
-                .when().post("/graphql")
-                .then()
-                .statusCode(200)
-                .body("errors", nullValue())
-                .extract().path("data.UserTaskInstanceAttachmentCreate");
-
-        await()
-                .atMost(TIMEOUT)
-                .untilAsserted(() -> given().contentType(ContentType.JSON)
-                        .when()
-                        .queryParam("user", "manager")
-                        .queryParam("group", "managers")
-                        .pathParam("id", pId2)
-                        .pathParam("taskId", taskId)
-                        .get("/approvals/{id}/firstLineApproval/{taskId}/attachments")
-                        .then()
-                        .statusCode(200)
-                        .body("$.size", is(1))
-                        .body("[0].name", is(attachmentName)));
-
-        Map commentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + pId2 + "\\\"}}) { " +
-                        "id description priority potentialGroups comments {id content updatedBy updatedAt} } }\"}")
-                .when().post("/graphql")
-                .then()
-                .statusCode(200)
-                .body("data.UserTaskInstances[0].description", equalTo("NewDescription"))
-                .body("data.UserTaskInstances[0].priority", equalTo("low"))
-                .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers"))
-                .body("data.UserTaskInstances[0].comments.size()", is(1))
-                .extract().jsonPath().getMap("data.UserTaskInstances[0].comments[0]");
-        checkExpectedCreatedItemData(commentCreationResult, commentMap);
-
-        Map attachmentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + pId2 + "\\\"}}) { " +
-                        "id description priority potentialGroups attachments {id name content updatedBy updatedAt} } }\"}")
-                .when().post("/graphql")
-                .then()
-                .statusCode(200)
-                .body("data.UserTaskInstances[0].description", equalTo("NewDescription"))
-                .body("data.UserTaskInstances[0].priority", equalTo("low"))
-                .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers"))
-                .body("data.UserTaskInstances[0].attachments.size()", is(1))
-                .body("data.UserTaskInstances[0].attachments[0].name", equalTo(attachmentName))
-                .extract().jsonPath().getMap("data.UserTaskInstances[0].attachments[0]");
-        checkExpectedCreatedItemData(attachmentCreationResult, attachmentMap);
+        testProcessGatewayAPIComments(taskId, pId2);
+        testProcessGatewayAPIAttachments(taskId, pId2);
 
         String vars = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ ProcessInstances (where: { id: {equal: \\\"" + pId2 + "\\\"}}) { variables} }\"}")
@@ -461,6 +380,184 @@ public abstract class AbstractProcessDataIndexIT {
                 .statusCode(200)
                 .body("errors[0].message", containsString("Field 'UndefinedMutation' in type 'Mutation' is undefined"));
 
+    }
+
+    public void testProcessGatewayAPIComments(String taskId, String processInstanceId) throws IOException {
+        String commentContent = "NewTaskComment";
+        String commentCreationResult = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"mutation{ UserTaskInstanceCommentCreate(" +
+                        "taskId: \\\"" + taskId + "\\\", " +
+                        "user: \\\"manager\\\", " +
+                        "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
+                        "comment: \\\"" + commentContent + "\\\" " +
+                        ")}\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("errors", nullValue())
+                .extract().path("data.UserTaskInstanceCommentCreate");
+
+        await()
+                .atMost(TIMEOUT)
+                .untilAsserted(() -> given().contentType(ContentType.JSON)
+                        .when()
+                        .queryParam("user", "manager")
+                        .queryParam("group", "managers")
+                        .pathParam("id", processInstanceId)
+                        .pathParam("taskId", taskId)
+                        .get("/approvals/{id}/firstLineApproval/{taskId}/comments")
+                        .then()
+                        .statusCode(200)
+                        .body("$.size", is(1))
+                        .body("[0].content", is(commentContent)));
+
+        Map commentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                        "id description priority potentialGroups comments {id content updatedBy updatedAt} } }\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("data.UserTaskInstances[0].description", equalTo("NewDescription"))
+                .body("data.UserTaskInstances[0].priority", equalTo("low"))
+                .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers"))
+                .body("data.UserTaskInstances[0].comments.size()", is(1))
+                .extract().jsonPath().getMap("data.UserTaskInstances[0].comments[0]");
+        checkExpectedCreatedItemData(commentCreationResult, commentMap);
+        String newCommentContent = "newCommentContent";
+        String commentUpdateResult = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"mutation { UserTaskInstanceCommentUpdate ( " +
+                        "user: \\\"manager\\\", " +
+                        "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
+                        "commentId:  \\\"" + commentMap.get("id") + "\\\"" +
+                        "comment:  \\\"" + newCommentContent + "\\\"" +
+                        ")}\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("errors", nullValue())
+                .extract().path("data.UserTaskInstanceCommentUpdate");
+
+        Map comment2Map = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                        "comments {id content updatedBy updatedAt} } }\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("data.UserTaskInstances[0].comments.size()", is(1))
+                .extract().jsonPath().getMap("data.UserTaskInstances[0].comments[0]");
+
+        checkExpectedCreatedItemData(commentUpdateResult, comment2Map);
+
+        given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"mutation { UserTaskInstanceCommentDelete ( " +
+                        "user: \\\"manager\\\", " +
+                        "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
+                        "commentId:  \\\"" + commentMap.get("id") + "\\\"" +
+                        ")}\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("errors", nullValue());
+
+        given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                        "comments {id} } }\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("data.UserTaskInstances[0].comments.size()", is(0));
+    }
+
+    public void testProcessGatewayAPIAttachments(String taskId, String processInstanceId) throws IOException {
+        String attachmentName = "NewTaskAttachmentName";
+        String attachmentCreationResult = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"mutation{ UserTaskInstanceAttachmentCreate(" +
+                        "taskId: \\\"" + taskId + "\\\", " +
+                        "user: \\\"manager\\\", " +
+                        "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
+                        "name: \\\"" + attachmentName + "\\\", " +
+                        "uri: \\\"https://drive.google.com/file/d/1Z_Lipg2jzY9TNewTaskAttachmentUri\\\", " +
+                        ")}\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("errors", nullValue())
+                .extract().path("data.UserTaskInstanceAttachmentCreate");
+        await()
+                .atMost(TIMEOUT)
+                .untilAsserted(() -> given().contentType(ContentType.JSON)
+                        .when()
+                        .queryParam("user", "manager")
+                        .queryParam("group", "managers")
+                        .pathParam("id", processInstanceId)
+                        .pathParam("taskId", taskId)
+                        .get("/approvals/{id}/firstLineApproval/{taskId}/attachments")
+                        .then()
+                        .statusCode(200)
+                        .body("$.size", is(1))
+                        .body("[0].name", is(attachmentName)));
+
+        Map attachmentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                        "id description priority potentialGroups attachments {id name content updatedBy updatedAt} } }\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("data.UserTaskInstances[0].description", equalTo("NewDescription"))
+                .body("data.UserTaskInstances[0].priority", equalTo("low"))
+                .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers"))
+                .body("data.UserTaskInstances[0].attachments.size()", is(1))
+                .body("data.UserTaskInstances[0].attachments[0].name", equalTo(attachmentName))
+                .extract().jsonPath().getMap("data.UserTaskInstances[0].attachments[0]");
+
+        checkExpectedCreatedItemData(attachmentCreationResult, attachmentMap);
+
+        String updatedAttachmentName = "newAttachmentContent";
+        String updatedAttachmentUri = "https://drive.google.com/file/d/1Z_Lipg2jzY9TUpdatedTaskAttachmentUri";
+        String attachmentUpdateResult = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"mutation { UserTaskInstanceAttachmentUpdate ( " +
+                        "user: \\\"manager\\\", " +
+                        "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
+                        "attachmentId:  \\\"" + attachmentMap.get("id") + "\\\"" +
+                        "name:  \\\"" + updatedAttachmentName + "\\\"" +
+                        "uri:  \\\"" + updatedAttachmentUri + "\\\"" +
+                        ")}\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("errors", nullValue())
+                .extract().path("data.UserTaskInstanceAttachmentUpdate");
+
+        Map attachmentMap2 = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                        "attachments {id name content updatedBy updatedAt} } }\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("data.UserTaskInstances[0].attachments.size()", is(1))
+                .body("data.UserTaskInstances[0].attachments[0].name", equalTo(updatedAttachmentName))
+                .extract().jsonPath().getMap("data.UserTaskInstances[0].attachments[0]");
+
+        checkExpectedCreatedItemData(attachmentUpdateResult, attachmentMap2);
+
+        given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"mutation { UserTaskInstanceAttachmentDelete ( " +
+                        "user: \\\"manager\\\", " +
+                        "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
+                        "attachmentId:  \\\"" + attachmentMap.get("id") + "\\\"" +
+                        ")}\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("errors", nullValue());
+
+        given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                        "attachments {id} } }\"}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("data.UserTaskInstances[0].attachments.size()", is(0));
     }
 
     protected String createTestProcessInstance() {

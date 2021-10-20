@@ -67,7 +67,13 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     public static final String UPDATE_USER_TASK_INSTANCE_PATH = "/management/processes/%s/instances/%s/tasks/%s";
 
     public static final String CREATE_USER_TASK_INSTANCE_COMMENT_PATH = "/%s/%s/%s/%s/comments";
+    public static final String UPDATE_USER_TASK_INSTANCE_COMMENT_PATH = "/%s/%s/%s/%s/comments/%s";
+    public static final String DELETE_USER_TASK_INSTANCE_COMMENT_PATH = "/%s/%s/%s/%s/comments/%s";
+
     public static final String CREATE_USER_TASK_INSTANCE_ATTACHMENT_PATH = "/%s/%s/%s/%s/attachments";
+    public static final String UPDATE_USER_TASK_INSTANCE_ATTACHMENT_PATH = "/%s/%s/%s/%s/attachments/%s";
+    public static final String DELETE_USER_TASK_INSTANCE_ATTACHMENT_PATH = "/%s/%s/%s/%s/attachments/%s";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
     private Vertx vertx;
     private SecurityIdentity identity;
@@ -121,7 +127,7 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     @Override
     public CompletableFuture<String> updateProcessInstanceVariables(String serviceURL, ProcessInstance processInstance, String variables) {
         String requestURI = format(UPDATE_VARIABLES_PROCESS_INSTANCE_PATH, processInstance.getProcessId(), processInstance.getId());
-        return sendPutClientRequest(getWebClient(serviceURL), requestURI, "UPDATE VARIABLES of ProcessInstance with id: " + processInstance.getId(), variables);
+        return sendJSONPutClientRequest(getWebClient(serviceURL), requestURI, "UPDATE VARIABLES of ProcessInstance with id: " + processInstance.getId(), variables);
     }
 
     @Override
@@ -169,9 +175,8 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     @Override
     public CompletableFuture<String> rescheduleJob(String serviceURL, Job job, String newJobData) {
         String requestURI = format(RESCHEDULE_JOB_PATH, job.getId());
-        return sendPutClientRequest(getWebClient(serviceURL), requestURI,
+        return sendJSONPutClientRequest(getWebClient(serviceURL), requestURI,
                 "RESCHEDULED JOB with id: " + job.getId(), newJobData);
-
     }
 
     @Override
@@ -199,7 +204,25 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
                 userTaskInstance.getId()) + "?" + getUserGroupsURIParameter(user, groups);
         return sendPostWithBodyClientRequest(getWebClient(serviceURL), requestURI,
                 "Adding comment to  UserTask:" + userTaskInstance.getName() + " with id: " + userTaskInstance.getId(),
-                commentInfo, "text/plain");
+                commentInfo, MediaType.TEXT_PLAIN);
+    }
+
+    @Override
+    public CompletableFuture<String> updateUserTaskInstanceComment(String serviceURL, UserTaskInstance userTaskInstance, String user, List<String> groups, String commentId, String commentInfo) {
+        String requestURI = format(UPDATE_USER_TASK_INSTANCE_COMMENT_PATH, userTaskInstance.getProcessId(), userTaskInstance.getProcessInstanceId(), userTaskInstance.getName(),
+                userTaskInstance.getId(), commentId) + "?" + getUserGroupsURIParameter(user, groups);
+        return sendPutClientRequest(getWebClient(serviceURL),
+                requestURI,
+                "Update UserTask: " + userTaskInstance.getName() + " comment:" + commentId + "  with taskid: " + userTaskInstance.getId(),
+                commentInfo, MediaType.TEXT_PLAIN);
+    }
+
+    @Override
+    public CompletableFuture<String> deleteUserTaskInstanceComment(String serviceURL, UserTaskInstance userTaskInstance, String user, List<String> groups, String commentId) {
+        String requestURI = format(DELETE_USER_TASK_INSTANCE_COMMENT_PATH, userTaskInstance.getProcessId(), userTaskInstance.getProcessInstanceId(),
+                userTaskInstance.getName(), userTaskInstance.getId(), commentId) + "?" + getUserGroupsURIParameter(user, groups);
+        return sendDeleteClientRequest(getWebClient(serviceURL), requestURI,
+                "Delete comment : " + commentId + "of Task: " + userTaskInstance.getName() + "  with taskid: " + userTaskInstance.getId());
     }
 
     @Override
@@ -208,7 +231,27 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
                 userTaskInstance.getId()) + "?" + getUserGroupsURIParameter(user, groups);
         return sendPostWithBodyClientRequest(getWebClient(serviceURL), requestURI,
                 "Adding attachment to  UserTask:" + userTaskInstance.getName() + " with id: " + userTaskInstance.getId(),
-                "{ \"name\": \"" + name + "\", \"uri\": \"" + uri + "\" }", "application/json");
+                "{ \"name\": \"" + name + "\", \"uri\": \"" + uri + "\" }", MediaType.APPLICATION_JSON);
+    }
+
+    @Override
+    public CompletableFuture<String> updateUserTaskInstanceAttachment(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups, String attachmentId, String name, String uri) {
+        String requestURI = format(UPDATE_USER_TASK_INSTANCE_ATTACHMENT_PATH, userTaskInstance.getProcessId(), userTaskInstance.getProcessInstanceId(), userTaskInstance.getName(),
+                userTaskInstance.getId(), attachmentId) + "?" + getUserGroupsURIParameter(user, groups);
+        return sendJSONPutClientRequest(getWebClient(serviceURL),
+                requestURI,
+                "Update UserTask: " + userTaskInstance.getName() + " attachment:" + attachmentId +
+                        " with taskid: " + userTaskInstance.getId() + "with: " + name + " and info:" + uri,
+                "{ \"name\": \"" + name + "\", \"uri\": \"" + uri + "\" }");
+    }
+
+    @Override
+    public CompletableFuture<String> deleteUserTaskInstanceAttachment(String serviceURL, UserTaskInstance userTaskInstance, String user, List<String> groups, String attachmentId) {
+        String requestURI = format(DELETE_USER_TASK_INSTANCE_ATTACHMENT_PATH, userTaskInstance.getProcessId(), userTaskInstance.getProcessInstanceId(),
+                userTaskInstance.getName(), userTaskInstance.getId(), attachmentId) + "?" + getUserGroupsURIParameter(user, groups);
+        return sendDeleteClientRequest(getWebClient(serviceURL), requestURI,
+                "Delete attachment : " + attachmentId + "of Task: " + userTaskInstance.getName() + "  with taskid: " + userTaskInstance.getId());
     }
 
     private String getUserGroupsURIParameter(String user, List<String> groups) {
@@ -243,7 +286,7 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
 
     private void asyncHttpResponseTreatment(AsyncResult<HttpResponse<Buffer>> res, CompletableFuture future, String logMessage) {
         if (res.succeeded() && ((res.result().statusCode() == 200 || res.result().statusCode() == 201))) {
-            future.complete(res.result().bodyAsString());
+            future.complete(res.result().bodyAsString() != null ? res.result().bodyAsString() : "Successfully performed: " + logMessage);
         } else {
             future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result())));
         }
@@ -257,15 +300,20 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
         return future;
     }
 
-    protected CompletableFuture sendPutClientRequest(WebClient webClient, String requestURI, String logMessage, String jsonObject) {
-        return sendPutClientRequest(webClient, requestURI, logMessage, new JsonObject(jsonObject));
+    protected CompletableFuture sendJSONPutClientRequest(WebClient webClient, String requestURI, String logMessage, String jsonString) {
+        return sendPutClientRequest(webClient, requestURI, logMessage, jsonString, MediaType.APPLICATION_JSON);
     }
 
-    protected CompletableFuture sendPutClientRequest(WebClient webClient, String requestURI, String logMessage, JsonObject jsonObject) {
+    protected CompletableFuture sendPutClientRequest(WebClient webClient, String requestURI, String logMessage, String body, String contentType) {
         CompletableFuture future = new CompletableFuture<>();
-        webClient.put(requestURI)
+        HttpRequest<Buffer> request = webClient.put(requestURI)
                 .putHeader("Authorization", getAuthHeader())
-                .sendJson(jsonObject, res -> asyncHttpResponseTreatment(res, future, logMessage));
+                .putHeader("Content-Type", contentType);
+        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+            request.sendJson(new JsonObject(body), res -> asyncHttpResponseTreatment(res, future, logMessage));
+        } else {
+            request.sendBuffer(Buffer.buffer(body), res -> asyncHttpResponseTreatment(res, future, logMessage));
+        }
         return future;
     }
 
