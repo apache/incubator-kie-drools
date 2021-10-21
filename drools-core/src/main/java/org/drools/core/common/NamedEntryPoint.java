@@ -351,6 +351,11 @@ public class NamedEntryPoint
                     throw new IllegalArgumentException("Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPointId() + "' instead of '" + getEntryPointId() + "'");
                 }
 
+                if (handle.isExpired()) {
+                    // let an expired event potentially (re)enters the objectStore, but make sure that it will be clear at the end of the inference cycle
+                    ((EventFactHandle)handle).setPendingRemoveFromStore(true);
+                }
+
                 final ObjectTypeConf typeConf = changedObject ?
                         getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint, object) :
                         getObjectTypeConfigurationRegistry().getObjectTypeConf(object);
