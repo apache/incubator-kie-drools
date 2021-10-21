@@ -20,7 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public class BaseZonedDateTimeClassFieldReader extends BaseDateClassFieldReader {
 
@@ -45,8 +45,8 @@ public class BaseZonedDateTimeClassFieldReader extends BaseDateClassFieldReader 
                valueType );
     }
 
-    protected Date getDate( InternalWorkingMemory workingMemory, Object object ) {
-        ZonedDateTime zdt = ((ZonedDateTime)getValue( workingMemory, object ));
+    protected Date getDate(ReteEvaluator reteEvaluator, Object object ) {
+        ZonedDateTime zdt = ((ZonedDateTime)getValue( reteEvaluator, object ));
         return Date.from( zdt.toInstant() );
     }
 }

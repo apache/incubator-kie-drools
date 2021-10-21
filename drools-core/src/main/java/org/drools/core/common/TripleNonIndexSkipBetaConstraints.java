@@ -30,20 +30,20 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 
-public class TripleNonIndexSkipBetaConstraints 
+public class TripleNonIndexSkipBetaConstraints
     implements
     BetaConstraints {
-    
+
     private TripleBetaConstraints constraints;
-    
+
     private BetaNodeFieldConstraint constraint0;
     private BetaNodeFieldConstraint constraint1;
     private BetaNodeFieldConstraint constraint2;
-    
+
     public TripleNonIndexSkipBetaConstraints() {
 
     }
-    
+
     public TripleNonIndexSkipBetaConstraints(TripleBetaConstraints constraints) {
         this.constraints = constraints;
         BetaNodeFieldConstraint[] constraint = constraints.getConstraints();
@@ -74,7 +74,7 @@ public class TripleNonIndexSkipBetaConstraints
     public void writeExternal(ObjectOutput out) throws IOException {
         throw new UnsupportedOperationException( );
     }
-    
+
     public BetaConstraints getOriginalConstraint() {
         return this.constraints;
     }
@@ -84,17 +84,15 @@ public class TripleNonIndexSkipBetaConstraints
     }
 
     public void updateFromTuple(ContextEntry[] context,
-                                InternalWorkingMemory workingMemory,
+                                ReteEvaluator reteEvaluator,
                                 Tuple tuple) {
-        constraints.updateFromTuple(context, workingMemory, tuple);
+        constraints.updateFromTuple(context, reteEvaluator, tuple);
     }
 
     public void updateFromFactHandle(ContextEntry[] context,
-                                     InternalWorkingMemory workingMemory,
+                                     ReteEvaluator reteEvaluator,
                                      InternalFactHandle handle) {
-        constraints.updateFromFactHandle( context,
-                                          workingMemory,
-                                          handle );
+        constraints.updateFromFactHandle( context, reteEvaluator, handle );
     }
 
     public boolean isIndexed() {

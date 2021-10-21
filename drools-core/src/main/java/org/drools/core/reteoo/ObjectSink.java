@@ -17,7 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.PropagationContext;
 
 /**
@@ -32,15 +32,15 @@ public interface ObjectSink
 
     void assertObject(InternalFactHandle factHandle,
                       PropagationContext propagationContext,
-                      InternalWorkingMemory workingMemory);
+                      ReteEvaluator reteEvaluator);
 
     void modifyObject(InternalFactHandle factHandle,
                       ModifyPreviousTuples modifyPreviousTuples,
                       PropagationContext context,
-                      InternalWorkingMemory workingMemory);
+                      ReteEvaluator reteEvaluator);
     
     void byPassModifyToBetaNode (InternalFactHandle factHandle,
                                  ModifyPreviousTuples modifyPreviousTuples,
                                  PropagationContext context,
-                                 InternalWorkingMemory workingMemory);
+                                 ReteEvaluator reteEvaluator);
 }

@@ -29,10 +29,10 @@ public interface Memory extends LinkedListNode<Memory> {
     
     SegmentMemory getSegmentMemory();
 
-    default SegmentMemory getOrCreateSegmentMemory( LeftTupleSource tupleSource, InternalWorkingMemory wm ) {
+    default SegmentMemory getOrCreateSegmentMemory( LeftTupleSource tupleSource, ReteEvaluator reteEvaluator ) {
         SegmentMemory smem = getSegmentMemory();
         if (smem == null) {
-            smem = SegmentUtilities.createSegmentMemory( tupleSource, this, wm );
+            smem = SegmentUtilities.createSegmentMemory( tupleSource, this, reteEvaluator );
         }
         return smem;
     }

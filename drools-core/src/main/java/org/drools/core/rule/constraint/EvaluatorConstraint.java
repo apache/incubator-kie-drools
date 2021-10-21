@@ -17,6 +17,7 @@ package org.drools.core.rule.constraint;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
@@ -61,12 +62,12 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return declarations.length == 0;
     }
 
-    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(InternalFactHandle handle, ReteEvaluator reteEvaluator) {
         if (isLiteral()) {
-            return evaluator.evaluate(workingMemory, rightReadAccessor, handle, field);
+            return evaluator.evaluate(reteEvaluator, rightReadAccessor, handle, field);
         }
 
-        return evaluator.evaluate( workingMemory,
+        return evaluator.evaluate( reteEvaluator,
                                    rightReadAccessor,
                                    handle,
                                    declarations[0].getExtractor(),

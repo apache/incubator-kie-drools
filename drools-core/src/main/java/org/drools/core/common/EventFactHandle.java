@@ -341,10 +341,10 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         }
     }
 
-    public void unscheduleAllJobs(InternalWorkingMemory workingMemory) {
+    public void unscheduleAllJobs(ReteEvaluator reteEvaluator) {
         if (!jobs.isEmpty()) {
             synchronized (jobs) {
-                TimerService clock = workingMemory.getTimerService();
+                TimerService clock = reteEvaluator.getTimerService();
                 while ( !jobs.isEmpty() ) {
                     JobHandle job = jobs.removeFirst();
                     clock.removeJob(job);

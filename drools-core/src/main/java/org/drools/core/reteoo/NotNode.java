@@ -18,7 +18,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
@@ -58,8 +58,8 @@ public class NotNode extends BetaNode {
     }
     
     @Override
-    protected void reorderRightTuple(InternalWorkingMemory wm, RightTuple rightTuple) {
-        doExistentialUpdatesReorderChildLeftTuple(wm, this, rightTuple);
+    protected void reorderRightTuple(ReteEvaluator reteEvaluator, RightTuple rightTuple) {
+        doExistentialUpdatesReorderChildLeftTuple(reteEvaluator, this, rightTuple);
     }
 
     public boolean isEmptyBetaConstraints() {
@@ -120,8 +120,8 @@ public class NotNode extends BetaNode {
 
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext pctx,
-                              final InternalWorkingMemory wm ) {
-        final BetaMemory memory = getBetaMemoryFromRightInput(this, wm);
+                              final ReteEvaluator reteEvaluator ) {
+        final BetaMemory memory = getBetaMemoryFromRightInput(this, reteEvaluator);
 
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
@@ -139,27 +139,25 @@ public class NotNode extends BetaNode {
                 memory.setNodeDirtyWithoutNotify();
             }
             // NotNodes can only be unlinked, if they have no variable constraints
-            memory.linkNode( this, wm );
+            memory.linkNode( this, reteEvaluator );
         } else if ( stagedInsertWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.setNodeDirty(this, wm);
+            memory.setNodeDirty(this, reteEvaluator);
         }
 
-        flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
+        flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( this, reteEvaluator ), isStreamMode() );
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
                                   final PropagationContext pctx,
-                                  final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+                                  final ReteEvaluator reteEvaluator) {
+        final BetaMemory memory = (BetaMemory) reteEvaluator.getNodeMemory( this );
         rightTuple.setPropagationContext( pctx );
-        doDeleteRightTuple( rightTuple,
-                            workingMemory,
-                            memory );
+        doDeleteRightTuple( rightTuple, reteEvaluator, memory );
     }
 
     public void doDeleteRightTuple(final RightTuple rightTuple,
-                                   final InternalWorkingMemory wm,
+                                   final ReteEvaluator reteEvaluator,
                                    final BetaMemory memory) {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
@@ -169,17 +167,17 @@ public class NotNode extends BetaNode {
                 memory.setNodeDirtyWithoutNotify();
             }
             // NotNodes can only be unlinked, if they have no variable constraints
-            memory.linkNode( this, wm );
+            memory.linkNode( this, reteEvaluator );
         }  else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.setNodeDirty( this, wm );
+            memory.setNodeDirty( this, reteEvaluator );
         }
 
-        flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
+        flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( this, reteEvaluator ), isStreamMode() );
     }
 
     @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 

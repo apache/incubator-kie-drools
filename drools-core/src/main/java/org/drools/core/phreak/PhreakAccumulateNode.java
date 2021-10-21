@@ -17,13 +17,13 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AccumulateNode.BaseAccumulation;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -45,7 +45,7 @@ public class PhreakAccumulateNode {
     public void doNode(AccumulateNode accNode,
                        LeftTupleSink sink,
                        AccumulateMemory am,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
@@ -57,7 +57,7 @@ public class PhreakAccumulateNode {
         // order of left and right operations is to minimise wasted of innefficient joins.
         if (srcLeftTuples.getDeleteFirst() != null) {
             // use the real target here, as dealing direct with left tuples
-            doLeftDeletes(accNode, am, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftDeletes(accNode, am, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         // We need to collect which leftTuple where updated, so that we can
@@ -65,38 +65,38 @@ public class PhreakAccumulateNode {
         TupleSets<LeftTuple> tempLeftTuples = new TupleSetsImpl<>();
 
         if (srcRightTuples.getDeleteFirst() != null) {
-            doRightDeletes(accNode, am, wm, srcRightTuples, tempLeftTuples);
+            doRightDeletes(accNode, am, reteEvaluator, srcRightTuples, tempLeftTuples);
         }
 
         if (srcRightTuples.getUpdateFirst() != null) {
             RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm, srcRightTuples);
-            doRightUpdates(accNode, am, wm, srcRightTuples, tempLeftTuples);
+            doRightUpdates(accNode, am, reteEvaluator, srcRightTuples, tempLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null ) {
             RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
-            doLeftUpdates(accNode, am, wm, srcLeftTuples, tempLeftTuples);
+            doLeftUpdates(accNode, am, reteEvaluator, srcLeftTuples, tempLeftTuples);
         }
 
         if (!accNode.isRightInputIsRiaNode()) {
             // Non subnetworks ore process right then left. This because it's typically faster to ensure all RightTuples
             // are in place then you can iterate with the left evaluation cached.
             if (srcRightTuples.getInsertFirst() != null) {
-                doRightInserts(accNode, am, wm, srcRightTuples, tempLeftTuples);
+                doRightInserts(accNode, am, reteEvaluator, srcRightTuples, tempLeftTuples);
             }
 
             if (srcLeftTuples.getInsertFirst() != null) {
-                doLeftInserts(accNode, am, wm, srcLeftTuples, tempLeftTuples);
+                doLeftInserts(accNode, am, reteEvaluator, srcLeftTuples, tempLeftTuples);
             }
         } else {
             // subnetworks process left then right. It ensures the LTM is not empty and the acctx is initialised.
             // It then returns and all the matching can safely be done by the RightTuple
             if (srcLeftTuples.getInsertFirst() != null) {
-                doLeftInserts(accNode, am, wm, srcLeftTuples, tempLeftTuples);
+                doLeftInserts(accNode, am, reteEvaluator, srcLeftTuples, tempLeftTuples);
             }
 
             if (srcRightTuples.getInsertFirst() != null) {
-                doRightInserts(accNode, am, wm, srcRightTuples, tempLeftTuples);
+                doRightInserts(accNode, am, reteEvaluator, srcRightTuples, tempLeftTuples);
             }
         }
 
@@ -106,7 +106,7 @@ public class PhreakAccumulateNode {
         for (LeftTuple leftTuple = tempLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
             evaluateResultConstraints(accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
-                                      wm, am, (BaseAccumulation) leftTuple.getContextObject(),
+                                      reteEvaluator, am, (BaseAccumulation) leftTuple.getContextObject(),
                                       trgLeftTuples, stagedLeftTuples);
             leftTuple.clearStaged();
             leftTuple = next;
@@ -115,7 +115,7 @@ public class PhreakAccumulateNode {
         for (LeftTuple leftTuple = tempLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
             evaluateResultConstraints( accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
-                                       wm, am, (BaseAccumulation) leftTuple.getContextObject(),
+                                       reteEvaluator, am, (BaseAccumulation) leftTuple.getContextObject(),
                                        trgLeftTuples, stagedLeftTuples );
             leftTuple.clearStaged();
             leftTuple = next;
@@ -128,7 +128,7 @@ public class PhreakAccumulateNode {
 
     private void doLeftInserts(AccumulateNode accNode,
                                AccumulateMemory am,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<LeftTuple> srcLeftTuples,
                                TupleSets<LeftTuple> trgLeftTuples) {
 
@@ -150,7 +150,7 @@ public class PhreakAccumulateNode {
                 ltm.add(leftTuple);
             }
 
-            BaseAccumulation accresult = initAccumulationContext( am, wm, accumulate, leftTuple );
+            BaseAccumulation accresult = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
             if (accNode.isRightInputIsRiaNode()) {
                 // This is a subnetwork, do not process further. As all matches will processed
                 // by the right insert. This is to avoid double iteration (first right side iteration
@@ -164,7 +164,7 @@ public class PhreakAccumulateNode {
             }
 
             constraints.updateFromTuple( contextEntry,
-                                         wm,
+                                         reteEvaluator,
                                          leftTuple );
 
             FastIterator rightIt = accNode.getRightIterator(rtm);
@@ -179,7 +179,7 @@ public class PhreakAccumulateNode {
                                                     rightTuple.getFactHandleForEvaluation())) {
                     // add a match
                     addMatch(accNode, accumulate, leftTuple, rightTuple,
-                             null, null, wm, am,
+                             null, null, reteEvaluator, am,
                              accresult, useLeftMemory, true);
                 }
 
@@ -196,24 +196,24 @@ public class PhreakAccumulateNode {
         constraints.resetTuple( contextEntry );
     }
 
-    BaseAccumulation initAccumulationContext( AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple ) {
+    BaseAccumulation initAccumulationContext( AccumulateMemory am, ReteEvaluator reteEvaluator, Accumulate accumulate, LeftTuple leftTuple ) {
         AccumulateContext accContext = new AccumulateContext();
         leftTuple.setContextObject(accContext);
 
-        initContext(am.workingMemoryContext, wm, accumulate, leftTuple, accContext);
+        initContext(am.workingMemoryContext, reteEvaluator, accumulate, leftTuple, accContext);
         return accContext;
     }
 
-    public static void initContext(Object workingMemoryContext, InternalWorkingMemory wm, Accumulate accumulate, Tuple leftTuple, AccumulateContextEntry accContext) {
+    public static void initContext(Object workingMemoryContext, ReteEvaluator reteEvaluator, Accumulate accumulate, Tuple leftTuple, AccumulateContextEntry accContext) {
         // Create the function context, but allow init to override it.
         Object funcContext = accumulate.createFunctionContext();
-        funcContext = accumulate.init(workingMemoryContext, accContext, funcContext, leftTuple, wm);
+        funcContext = accumulate.init(workingMemoryContext, accContext, funcContext, leftTuple, reteEvaluator);
         accContext.setFunctionContext(funcContext);
     }
 
     private void doRightInserts(AccumulateNode accNode,
                                 AccumulateMemory am,
-                                InternalWorkingMemory wm,
+                                ReteEvaluator reteEvaluator,
                                 TupleSets<RightTuple> srcRightTuples,
                                 TupleSets<LeftTuple> trgLeftTuples) {
         Accumulate accumulate = accNode.getAccumulate();
@@ -241,7 +241,7 @@ public class PhreakAccumulateNode {
 
             if (accNode.isRightInputIsRiaNode() || (ltm != null && ltm.size() > 0)) {
                 constraints.updateFromFactHandle( contextEntry,
-                                                  wm,
+                                                  reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
                 FastIterator leftIt = accNode.getLeftIterator( ltm );
@@ -251,7 +251,7 @@ public class PhreakAccumulateNode {
                                                            leftTuple ) ) {
                         final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
                         addMatch( accNode, accumulate, leftTuple, rightTuple,
-                                  null, null, wm, am,
+                                  null, null, reteEvaluator, am,
                                   accctx, true, false );
 
                         // right inserts and updates are done first
@@ -271,7 +271,7 @@ public class PhreakAccumulateNode {
 
     private void doLeftUpdates(AccumulateNode accNode,
                                AccumulateMemory am,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<LeftTuple> srcLeftTuples,
                                TupleSets<LeftTuple> trgLeftTuples) {
         BetaMemory bm = am.getBetaMemory();
@@ -296,7 +296,7 @@ public class PhreakAccumulateNode {
             }
 
             constraints.updateFromTuple(contextEntry,
-                                        wm,
+                                        reteEvaluator,
                                         leftTuple);
 
             FastIterator rightIt = accNode.getRightIterator(rtm);
@@ -311,7 +311,7 @@ public class PhreakAccumulateNode {
             // if rightTuple is null, we assume there was a bucket change and that bucket is empty
             if (childLeftTuple != null && rtm.isIndexed() && !rightIt.isFullIterator() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory()))) {
                 // our index has changed, so delete all the previous matchings
-                removePreviousMatchesForLeftTuple(accumulate, leftTuple, wm, am, accctx, true);
+                removePreviousMatchesForLeftTuple(accumulate, leftTuple, reteEvaluator, am, accctx, true);
 
                 childLeftTuple = null; // null so the next check will attempt matches for new bucket
             }
@@ -320,7 +320,7 @@ public class PhreakAccumulateNode {
             if (rightTuple != null) {
                 doLeftUpdatesProcessChildren(accNode,
                                              am,
-                                             wm,
+                                             reteEvaluator,
                                              bm,
                                              accumulate,
                                              constraints,
@@ -341,7 +341,7 @@ public class PhreakAccumulateNode {
 
     private void doLeftUpdatesProcessChildren(AccumulateNode accNode,
                                               AccumulateMemory am,
-                                              InternalWorkingMemory wm,
+                                              ReteEvaluator reteEvaluator,
                                               BetaMemory bm,
                                               Accumulate accumulate,
                                               BetaConstraints constraints,
@@ -358,7 +358,7 @@ public class PhreakAccumulateNode {
                                                     rightTuple.getFactHandleForEvaluation())) {
                     // add a new match
                     addMatch(accNode, accumulate, leftTuple, rightTuple,
-                             null, null, wm, am,
+                             null, null, reteEvaluator, am,
                              accctx, true, true);
                 }
             }
@@ -371,7 +371,7 @@ public class PhreakAccumulateNode {
                     if (match == null || match.getRightParent() != rightTuple) {
                         // add a new match
                         addMatch(accNode, accumulate, leftTuple, rightTuple,
-                                 match, null, wm, am,
+                                 match, null, reteEvaluator, am,
                                  accctx, true, true);
                     } else {
                         // we must re-add this to ensure deterministic iteration
@@ -384,7 +384,7 @@ public class PhreakAccumulateNode {
                     LeftTuple temp = match.getHandleNext();
                     // remove the match
                     boolean reversed = removeMatch(accNode, accumulate, rightTuple, match,
-                                                   wm, am, accctx, false);
+                                                   reteEvaluator, am, accctx, false);
                     match = temp;
                     // the next line means that when a match is removed from the current leftTuple
                     // and the accumulate does not support the reverse operation, then the whole
@@ -400,7 +400,7 @@ public class PhreakAccumulateNode {
                                          leftTuple,
                                          null,
                                          null,
-                                         wm,
+                                         reteEvaluator,
                                          am,
                                          accctx,
                                          true);
@@ -410,7 +410,7 @@ public class PhreakAccumulateNode {
 
     private void doRightUpdates(AccumulateNode accNode,
                                 AccumulateMemory am,
-                                InternalWorkingMemory wm,
+                                ReteEvaluator reteEvaluator,
                                 TupleSets<RightTuple> srcRightTuples,
                                 TupleSets<LeftTuple> trgLeftTuples) {
         BetaMemory bm = am.getBetaMemory();
@@ -429,7 +429,7 @@ public class PhreakAccumulateNode {
                 LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, leftIt );
 
                 constraints.updateFromFactHandle( contextEntry,
-                                                  wm,
+                                                  reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
                 // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
@@ -439,7 +439,7 @@ public class PhreakAccumulateNode {
                     removePreviousMatchesForRightTuple( accNode,
                                                         accumulate,
                                                         rightTuple,
-                                                        wm,
+                                                        reteEvaluator,
                                                         am,
                                                         childLeftTuple,
                                                         trgLeftTuples );
@@ -450,7 +450,7 @@ public class PhreakAccumulateNode {
                 if ( leftTuple != null ) {
                     doRightUpdatesProcessChildren( accNode,
                                                    am,
-                                                   wm,
+                                                   reteEvaluator,
                                                    bm,
                                                    constraints,
                                                    accumulate,
@@ -469,7 +469,7 @@ public class PhreakAccumulateNode {
 
     private void doRightUpdatesProcessChildren(AccumulateNode accNode,
                                                AccumulateMemory am,
-                                               InternalWorkingMemory wm,
+                                               ReteEvaluator reteEvaluator,
                                                BetaMemory bm,
                                                BetaConstraints constraints,
                                                Accumulate accumulate,
@@ -490,7 +490,7 @@ public class PhreakAccumulateNode {
                     final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
                     // add a new match
                     addMatch(accNode, accumulate, leftTuple, rightTuple,
-                             null, null, wm, am,
+                             null, null, reteEvaluator, am,
                              accctx, true, false);
                 }
             }
@@ -512,7 +512,7 @@ public class PhreakAccumulateNode {
                                     accumulate,
                                     rightTuple,
                                     childLeftTuple,
-                                    wm,
+                                    reteEvaluator,
                                     am,
                                     accctx,
                                     true);
@@ -520,7 +520,7 @@ public class PhreakAccumulateNode {
                     }
                     // add a new match
                     addMatch(accNode, accumulate, leftTuple, rightTuple,
-                             null, childLeftTuple, wm, am,
+                             null, childLeftTuple, reteEvaluator, am,
                              accctx, true, false);
                 } else if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                     if (leftTuple.getStagedType() == LeftTuple.NONE) {
@@ -535,7 +535,7 @@ public class PhreakAccumulateNode {
                                 accumulate,
                                 rightTuple,
                                 childLeftTuple,
-                                wm,
+                                reteEvaluator,
                                 am,
                                 accctx,
                                 true);
@@ -550,7 +550,7 @@ public class PhreakAccumulateNode {
 
     private void doLeftDeletes(AccumulateNode accNode,
                                AccumulateMemory am,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<LeftTuple> srcLeftTuples,
                                TupleSets<LeftTuple> trgLeftTuples,
                                TupleSets<LeftTuple> stagedLeftTuples) {
@@ -567,7 +567,7 @@ public class PhreakAccumulateNode {
                 BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
                 leftTuple.setContextObject( null );
 
-                removePreviousMatchesForLeftTuple(accumulate, leftTuple, wm, am, accctx, false);
+                removePreviousMatchesForLeftTuple(accumulate, leftTuple, reteEvaluator, am, accctx, false);
 
                 propagateDelete( trgLeftTuples, stagedLeftTuples, accctx );
             }
@@ -587,7 +587,7 @@ public class PhreakAccumulateNode {
 
     private void doRightDeletes(AccumulateNode accNode,
                                 AccumulateMemory am,
-                                InternalWorkingMemory wm,
+                                ReteEvaluator reteEvaluator,
                                 TupleSets<RightTuple> srcRightTuples,
                                 TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory rtm = am.getBetaMemory().getRightTupleMemory();
@@ -608,7 +608,7 @@ public class PhreakAccumulateNode {
                         LeftTuple leftTuple = match.getLeftParent();
                         final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
                         // FIXME This will be really slow, if it re-accumulates on the same LeftTuple (MDP)
-                        removeMatch(accNode, accumulate, rightTuple, match, wm, am, accctx, true);
+                        removeMatch(accNode, accumulate, rightTuple, match, reteEvaluator, am, accctx, true);
 
                         if (leftTuple.getStagedType() == LeftTuple.NONE) {
                             trgLeftTuples.addUpdate(leftTuple);
@@ -628,7 +628,7 @@ public class PhreakAccumulateNode {
                                             final Accumulate accumulate,
                                             final LeftTuple leftTuple,
                                             final PropagationContext context,
-                                            final InternalWorkingMemory workingMemory,
+                                            final ReteEvaluator reteEvaluator,
                                             final AccumulateMemory memory,
                                             final BaseAccumulation accctx,
                                             final TupleSets<LeftTuple> trgLeftTuples,
@@ -637,13 +637,13 @@ public class PhreakAccumulateNode {
         PropagationContext propagationContext = accctx.getPropagationContext();
         accctx.setPropagationContext( null );
 
-        Object result = accumulate.getResult(memory.workingMemoryContext, accctx, leftTuple, workingMemory);
-        propagateResult( accNode, sink, leftTuple, context, workingMemory, memory, trgLeftTuples, stagedLeftTuples,
-                         null, result, (AccumulateContextEntry) accctx, propagationContext, workingMemory.getSessionConfiguration().isAccumulateNullPropagation());
+        Object result = accumulate.getResult(memory.workingMemoryContext, accctx, leftTuple, reteEvaluator);
+        propagateResult( accNode, sink, leftTuple, context, reteEvaluator, memory, trgLeftTuples, stagedLeftTuples,
+                         null, result, (AccumulateContextEntry) accctx, propagationContext, reteEvaluator.getSessionConfiguration().isAccumulateNullPropagation());
     }
 
     protected final void propagateResult(AccumulateNode accNode, LeftTupleSink sink, LeftTuple leftTuple, PropagationContext context,
-                                         InternalWorkingMemory workingMemory, AccumulateMemory memory, TupleSets<LeftTuple> trgLeftTuples,
+                                         ReteEvaluator reteEvaluator, AccumulateMemory memory, TupleSets<LeftTuple> trgLeftTuples,
                                          TupleSets<LeftTuple> stagedLeftTuples, Object key, Object result,
                                          AccumulateContextEntry accPropCtx, PropagationContext propagationContext, boolean allowNullPropagation) {
         if ( !allowNullPropagation && result == null) {
@@ -656,7 +656,7 @@ public class PhreakAccumulateNode {
         }
 
         if ( accPropCtx.getResultFactHandle() == null) {
-            InternalFactHandle handle = accNode.createResultFactHandle(context, workingMemory, leftTuple, createResult(accNode, key, result ));
+            InternalFactHandle handle = accNode.createResultFactHandle(context, reteEvaluator, leftTuple, createResult(accNode, key, result ));
             accPropCtx.setResultFactHandle(handle);
             accPropCtx.setResultLeftTuple( sink.createLeftTuple(handle, leftTuple, sink ));
         } else {
@@ -668,13 +668,13 @@ public class PhreakAccumulateNode {
         BetaConstraints resultBinder = accNode.getResultBinder();
         boolean isAllowed = true;
         for ( AlphaNodeFieldConstraint resultConstraint : resultConstraints ) {
-            if ( !resultConstraint.isAllowed( accPropCtx.getResultFactHandle(), workingMemory ) ) {
+            if ( !resultConstraint.isAllowed( accPropCtx.getResultFactHandle(), reteEvaluator ) ) {
                 isAllowed = false;
                 break;
             }
         }
         if (isAllowed) {
-            resultBinder.updateFromTuple( memory.resultsContext, workingMemory, leftTuple );
+            resultBinder.updateFromTuple( memory.resultsContext, reteEvaluator, leftTuple );
             if (!resultBinder.isAllowedCachedLeft( memory.resultsContext, accPropCtx.getResultFactHandle())) {
                 isAllowed = false;
             }
@@ -713,7 +713,7 @@ public class PhreakAccumulateNode {
                           final RightTuple rightTuple,
                           final LeftTuple currentLeftChild,
                           final LeftTuple currentRightChild,
-                          final InternalWorkingMemory wm,
+                          final ReteEvaluator reteEvaluator,
                           final AccumulateMemory am,
                           final BaseAccumulation accctx,
                           final boolean useLeftMemory,
@@ -735,7 +735,7 @@ public class PhreakAccumulateNode {
 
         Object value = accumulate.accumulate(am.workingMemoryContext,
                                              accctx, tuple,
-                                             handle, wm);
+                                             handle, reteEvaluator);
 
         // in sequential mode, we don't need to keep record of matched tuples
         if (useLeftMemory) {
@@ -761,7 +761,7 @@ public class PhreakAccumulateNode {
                                 final Accumulate accumulate,
                                 final RightTuple rightTuple,
                                 final LeftTuple match,
-                                final InternalWorkingMemory wm,
+                                final ReteEvaluator reteEvaluator,
                                 final AccumulateMemory am,
                                 final BaseAccumulation accctx,
                                 final boolean reaccumulate) {
@@ -788,7 +788,7 @@ public class PhreakAccumulateNode {
                                                  handle,
                                                  rightParent,
                                                  match,
-                                                 wm);
+                                                 reteEvaluator);
         if (!reversed) {
             // otherwise need to recalculate all matches for the given leftTuple
             reaccumulateForLeftTuple(accNode,
@@ -796,7 +796,7 @@ public class PhreakAccumulateNode {
                                      leftParent,
                                      rightParent,
                                      match,
-                                     wm,
+                                     reteEvaluator,
                                      am,
                                      accctx,
                                      reaccumulate);
@@ -811,12 +811,12 @@ public class PhreakAccumulateNode {
                                             final LeftTuple leftParent,
                                             final RightTuple unused1,
                                             final LeftTuple unused2,
-                                            final InternalWorkingMemory wm,
+                                            final ReteEvaluator reteEvaluator,
                                             final AccumulateMemory am,
                                             final BaseAccumulation accctx,
                                             final boolean reaccumulate) {
         if (reaccumulate) {
-            reinit(accumulate, leftParent, wm, am, accctx);
+            reinit(accumulate, leftParent, reteEvaluator, am, accctx);
 
             for (LeftTuple childMatch = leftParent.getFirstChild(); childMatch != null; childMatch = childMatch.getHandleNext()) {
                 RightTuple         rightTuple  = childMatch.getRightParent();
@@ -828,7 +828,7 @@ public class PhreakAccumulateNode {
                     childHandle = rightTuple.getFactHandleForEvaluation();
                 }
 
-                Object value = accumulate.accumulate(am.workingMemoryContext, accctx, tuple, childHandle, wm);
+                Object value = accumulate.accumulate(am.workingMemoryContext, accctx, tuple, childHandle, reteEvaluator);
                 postAccumulate(accNode, accctx, childMatch);
                 childMatch.setContextObject(value);
             }
@@ -838,7 +838,7 @@ public class PhreakAccumulateNode {
     private void removePreviousMatchesForRightTuple(final AccumulateNode accNode,
                                                     final Accumulate accumulate,
                                                     final RightTuple rightTuple,
-                                                    final InternalWorkingMemory workingMemory,
+                                                    final ReteEvaluator reteEvaluator,
                                                     final AccumulateMemory memory,
                                                     final LeftTuple firstChild,
                                                     final TupleSets<LeftTuple> trgLeftTuples) {
@@ -851,7 +851,7 @@ public class PhreakAccumulateNode {
                         accumulate,
                         rightTuple,
                         match,
-                        workingMemory,
+                        reteEvaluator,
                         memory,
                         accctx,
                         true);
@@ -866,7 +866,7 @@ public class PhreakAccumulateNode {
 
     private static void removePreviousMatchesForLeftTuple(final Accumulate accumulate,
                                                           final LeftTuple leftTuple,
-                                                          final InternalWorkingMemory workingMemory,
+                                                          final ReteEvaluator reteEvaluator,
                                                           final AccumulateMemory memory,
                                                           final BaseAccumulation accctx,
                                                           boolean reInit) {
@@ -878,14 +878,14 @@ public class PhreakAccumulateNode {
         }
 
         if (reInit) {
-            reinit(accumulate, leftTuple, workingMemory, memory, accctx);
+            reinit(accumulate, leftTuple, reteEvaluator, memory, accctx);
         }
     }
 
-    private static void reinit(Accumulate accumulate, LeftTuple leftTuple, InternalWorkingMemory workingMemory, AccumulateMemory memory, BaseAccumulation accctx) {
+    private static void reinit(Accumulate accumulate, LeftTuple leftTuple, ReteEvaluator reteEvaluator, AccumulateMemory memory, BaseAccumulation accctx) {
         // Create the function context, but allow init to override it.
         Object funcContext = ((AccumulateContextEntry) accctx).getFunctionContext();
-        funcContext = accumulate.init(memory.workingMemoryContext, accctx, funcContext, leftTuple, workingMemory);
+        funcContext = accumulate.init(memory.workingMemoryContext, accctx, funcContext, leftTuple, reteEvaluator);
         ((AccumulateContextEntry) accctx).setFunctionContext(funcContext);
     }
 }

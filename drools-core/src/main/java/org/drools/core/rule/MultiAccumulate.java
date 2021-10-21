@@ -21,8 +21,8 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
@@ -94,7 +94,7 @@ public class MultiAccumulate extends Accumulate {
                        final Object accContext,
                        Object funcContext,
                        final Tuple leftTuple,
-                       final WorkingMemory workingMemory) {
+                       final ReteEvaluator reteEvaluator) {
         Object[] functionContext = (Object[]) funcContext;
 
         for ( int i = 0; i < this.accumulators.length; i++ ) {
@@ -102,7 +102,7 @@ public class MultiAccumulate extends Accumulate {
                                                             functionContext[i],
                                                             leftTuple,
                                                             this.requiredDeclarations,
-                                                            workingMemory );
+                                                            reteEvaluator );
         }
         return funcContext;
     }
@@ -111,7 +111,7 @@ public class MultiAccumulate extends Accumulate {
                              final Object context,
                              final Tuple match,
                              final InternalFactHandle handle,
-                             final WorkingMemory workingMemory) {
+                             final ReteEvaluator reteEvaluator) {
         Object[] values = new Object[accumulators.length];
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
@@ -121,14 +121,14 @@ public class MultiAccumulate extends Accumulate {
                                                          handle,
                                                          this.requiredDeclarations,
                                                          getInnerDeclarationCache(),
-                                                         workingMemory );
+                                                         reteEvaluator );
         }
         return values;
     }
 
     @Override
     public Object accumulate(Object workingMemoryContext, Tuple match, InternalFactHandle childHandle,
-                             GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, WorkingMemory wm) {
+                             GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException("This should never be called, it's for LambdaGroupByAccumulate only.");
     }
 
@@ -139,7 +139,7 @@ public class MultiAccumulate extends Accumulate {
                               final InternalFactHandle handle,
                               final RightTuple rightParent,
                               final LeftTuple match,
-                              final WorkingMemory workingMemory) {
+                              final ReteEvaluator reteEvaluator) {
         Object[] values = (Object[]) match.getContextObject();
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
@@ -150,7 +150,7 @@ public class MultiAccumulate extends Accumulate {
                                                                 values[i],
                                                                 this.requiredDeclarations,
                                                                 getInnerDeclarationCache(),
-                                                                workingMemory );
+                                                                reteEvaluator );
             if (!reversed) {
                 return false;
             }
@@ -170,7 +170,7 @@ public class MultiAccumulate extends Accumulate {
     public Object[] getResult(final Object workingMemoryContext,
                               final Object context,
                               final Tuple leftTuple,
-                              final WorkingMemory workingMemory) {
+                              final ReteEvaluator reteEvaluator) {
         Object[] results = new Object[arraySize];
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
@@ -178,7 +178,7 @@ public class MultiAccumulate extends Accumulate {
                                                          functionContext[i],
                                                          leftTuple,
                                                          this.requiredDeclarations,
-                                                         workingMemory );
+                                                         reteEvaluator );
         }
         return results;
     }

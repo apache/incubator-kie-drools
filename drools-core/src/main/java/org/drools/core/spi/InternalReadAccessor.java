@@ -19,37 +19,37 @@ package org.drools.core.spi;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public interface InternalReadAccessor
     extends
     ReadAccessor {
 
-    Object getValue(InternalWorkingMemory workingMemory, Object object);
+    Object getValue(ReteEvaluator reteEvaluator, Object object);
 
-    BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory, Object object);
+    BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator, Object object);
 
-    BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory, Object object);
+    BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator, Object object);
 
-    char getCharValue(InternalWorkingMemory workingMemory, Object object);
+    char getCharValue(ReteEvaluator reteEvaluator, Object object);
 
-    int getIntValue(InternalWorkingMemory workingMemory, Object object);
+    int getIntValue(ReteEvaluator reteEvaluator, Object object);
 
-    byte getByteValue(InternalWorkingMemory workingMemory, Object object);
+    byte getByteValue(ReteEvaluator reteEvaluator, Object object);
 
-    short getShortValue(InternalWorkingMemory workingMemory, Object object);
+    short getShortValue(ReteEvaluator reteEvaluator, Object object);
 
-    long getLongValue(InternalWorkingMemory workingMemory, Object object);
+    long getLongValue(ReteEvaluator reteEvaluator, Object object);
 
-    float getFloatValue(InternalWorkingMemory workingMemory, Object object);
+    float getFloatValue(ReteEvaluator reteEvaluator, Object object);
 
-    double getDoubleValue(InternalWorkingMemory workingMemory, Object object);
+    double getDoubleValue(ReteEvaluator reteEvaluator, Object object);
 
-    boolean getBooleanValue(InternalWorkingMemory workingMemory, Object object);
+    boolean getBooleanValue(ReteEvaluator reteEvaluator, Object object);
 
-    boolean isNullValue(InternalWorkingMemory workingMemory, Object object);
+    boolean isNullValue(ReteEvaluator reteEvaluator, Object object);
 
-    int getHashCode(InternalWorkingMemory workingMemory, Object object);
+    int getHashCode(ReteEvaluator reteEvaluator, Object object);
     
     boolean isGlobal();
     

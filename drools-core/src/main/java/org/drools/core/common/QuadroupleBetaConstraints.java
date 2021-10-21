@@ -69,15 +69,15 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
-                                final InternalWorkingMemory workingMemory,
+                                final ReteEvaluator reteEvaluator,
                                 final Tuple tuple) {
-        context[0].updateFromTuple(workingMemory,
+        context[0].updateFromTuple(reteEvaluator,
                 tuple);
-        context[1].updateFromTuple(workingMemory,
+        context[1].updateFromTuple(reteEvaluator,
                 tuple);
-        context[2].updateFromTuple(workingMemory,
+        context[2].updateFromTuple(reteEvaluator,
                 tuple);
-        context[3].updateFromTuple(workingMemory,
+        context[3].updateFromTuple(reteEvaluator,
                 tuple);
     }
 
@@ -85,15 +85,15 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
      * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
-                                     final InternalWorkingMemory workingMemory,
+                                     final ReteEvaluator reteEvaluator,
                                      final InternalFactHandle handle) {
-        context[0].updateFromFactHandle(workingMemory,
+        context[0].updateFromFactHandle(reteEvaluator,
                 handle);
-        context[1].updateFromFactHandle(workingMemory,
+        context[1].updateFromFactHandle(reteEvaluator,
                 handle);
-        context[2].updateFromFactHandle(workingMemory,
+        context[2].updateFromFactHandle(reteEvaluator,
                 handle);
-        context[3].updateFromFactHandle(workingMemory,
+        context[3].updateFromFactHandle(reteEvaluator,
                 handle);
     }
 

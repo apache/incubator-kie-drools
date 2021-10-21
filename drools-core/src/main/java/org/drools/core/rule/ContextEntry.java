@@ -16,28 +16,26 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.Tuple;
-
 import java.io.Externalizable;
+
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.spi.Tuple;
 
 public interface ContextEntry
     extends
     Externalizable {
 
-    public ContextEntry getNext();
+    ContextEntry getNext();
 
-    public void setNext(ContextEntry entry);
+    void setNext(ContextEntry entry);
 
-    public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                Tuple tuple);
+    void updateFromTuple(ReteEvaluator reteEvaluator, Tuple tuple);
 
-    public void updateFromFactHandle(InternalWorkingMemory workingMemory,
-                                     InternalFactHandle handle);
+    void updateFromFactHandle(ReteEvaluator reteEvaluator, InternalFactHandle handle);
 
-    public void resetTuple();
+    void resetTuple();
 
-    public void resetFactHandle();
+    void resetFactHandle();
 
 }

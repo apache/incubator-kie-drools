@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 
@@ -170,12 +170,12 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
     }
 
     @Override
-    public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
+    public void retractTuple( PropagationContext context, ReteEvaluator reteEvaluator ) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setExpired( InternalWorkingMemory workingMemory, PropagationContext pctx ) {
+    public void setExpired( ReteEvaluator reteEvaluator, PropagationContext pctx ) {
         super.setExpired();
     }
 

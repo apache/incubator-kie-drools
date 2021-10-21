@@ -23,6 +23,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AccumulateNode;
@@ -101,8 +102,8 @@ public class RuleNetworkEvaluator {
 
     private RuleNetworkEvaluator() { }
 
-    public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, InternalWorkingMemory wm) {
-        evaluateNetwork( pmem, executor, pmem.getActualAgenda(wm) );
+    public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, InternalWorkingMemory reteEvaluator) {
+        evaluateNetwork( pmem, executor, pmem.getActualAgenda(reteEvaluator) );
     }
 
     public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, InternalAgenda agenda) {
@@ -279,7 +280,7 @@ public class RuleNetworkEvaluator {
                         // this is needed for subnetworks that feed into a parent network that has no right inputs,
                         // and may not yet be initialized
                         if ( smem.isEmpty() && !NodeTypeEnums.isTerminalNode(smem.getTipNode()) ) {
-                            SegmentUtilities.createChildSegments( agenda.getWorkingMemory(), smem, ((LeftTupleSource)smem.getTipNode()).getSinkPropagator() );
+                            SegmentUtilities.createChildSegments( agenda.getWorkingMemory(), smem, smem.getTipNode().getSinkPropagator() );
                         }
                         
                         smem = smems[i];
@@ -907,15 +908,15 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static void doExistentialUpdatesReorderChildLeftTuple(InternalWorkingMemory wm, NotNode notNode, RightTuple rightTuple) {
-        BetaMemory bm = getBetaMemory(notNode, wm);
+    public static void doExistentialUpdatesReorderChildLeftTuple(ReteEvaluator reteEvaluator, NotNode notNode, RightTuple rightTuple) {
+        BetaMemory bm = getBetaMemory(notNode, reteEvaluator);
         TupleMemory rtm = bm.getRightTupleMemory();
 
         boolean resumeFromCurrent = !(notNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison());
         doRemoveExistentialRightMemoryForReorder(rtm, resumeFromCurrent, rightTuple);
         doAddExistentialRightMemoryForReorder(rtm, resumeFromCurrent, rightTuple);
 
-        updateBlockersAndPropagate(notNode, rightTuple, wm, rtm, bm.getContext(), notNode.getRawConstraints(), !resumeFromCurrent, null, null, null);;
+        updateBlockersAndPropagate(notNode, rightTuple, reteEvaluator, rtm, bm.getContext(), notNode.getRawConstraints(), !resumeFromCurrent, null, null, null);;
     }
 
     private static void doAddExistentialRightMemoryForReorder(TupleMemory rtm, boolean resumeFromCurrent, RightTuple rightTuple) {

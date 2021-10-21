@@ -22,8 +22,8 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.kie.internal.security.KiePolicyHelper;
 
@@ -59,14 +59,14 @@ public interface Accumulator
      * 
      * @param leftTuple tuple causing the rule fire
      * @param declarations previous declarations
-     * @param workingMemory
+     * @param reteEvaluator
      * @throws Exception
      */
     Object init(Object workingMemoryContext,
                 Object context,
                 Tuple leftTuple,
                 Declaration[] declarations,
-                WorkingMemory workingMemory);
+                ReteEvaluator reteEvaluator);
 
     /**
      * Executes the accumulate (action) code for the given fact handle
@@ -75,7 +75,7 @@ public interface Accumulator
      * @param handle
      * @param declarations
      * @param innerDeclarations
-     * @param workingMemory
+     * @param reteEvaluator
      * @throws Exception
      */
     Object accumulate(Object workingMemoryContext,
@@ -84,7 +84,7 @@ public interface Accumulator
                       InternalFactHandle handle,
                       Declaration[] declarations,
                       Declaration[] innerDeclarations,
-                      WorkingMemory workingMemory);
+                      ReteEvaluator reteEvaluator);
     
     /**
      * Returns true if this accumulator supports operation reversal
@@ -101,7 +101,7 @@ public interface Accumulator
      * @param handle
      * @param declarations
      * @param innerDeclarations
-     * @param workingMemory
+     * @param reteEvaluator
      * @throws Exception
      */
     boolean tryReverse(Object workingMemoryContext,
@@ -111,14 +111,14 @@ public interface Accumulator
                        Object value,
                        Declaration[] declarations,
                        Declaration[] innerDeclarations,
-                       WorkingMemory workingMemory);
+                       ReteEvaluator reteEvaluator);
 
     /**
      * Gets the result of the accummulation
      * 
      * @param leftTuple
      * @param declarations
-     * @param workingMemory
+     * @param reteEvaluator
      * @return
      * @throws Exception
      */
@@ -126,7 +126,7 @@ public interface Accumulator
                      Object context,
                      Tuple leftTuple,
                      Declaration[] declarations,
-                     WorkingMemory workingMemory);
+                     ReteEvaluator reteEvaluator);
 
     /**
      * This class is used as a wrapper delegate when a security 
@@ -163,12 +163,12 @@ public interface Accumulator
                            final Object context,
                            final Tuple leftTuple,
                            final Declaration[] declarations,
-                           final WorkingMemory workingMemory) {
+                           final ReteEvaluator reteEvaluator) {
             try {
                 return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                     @Override
                     public Object run() throws Exception {
-                        return delegate.init(workingMemoryContext, context, leftTuple, declarations, workingMemory);
+                        return delegate.init(workingMemoryContext, context, leftTuple, declarations, reteEvaluator);
                     }
                 }, KiePolicyHelper.getAccessContext());
             } catch (PrivilegedActionException e) {
@@ -182,12 +182,12 @@ public interface Accumulator
                 final InternalFactHandle handle, 
                 final Declaration[] declarations, 
                 final Declaration[] innerDeclarations, 
-                final WorkingMemory workingMemory) {
+                final ReteEvaluator reteEvaluator) {
             try {
                 AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                     @Override
                     public Object run() throws Exception {
-                        return delegate.accumulate(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
+                        return delegate.accumulate(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, reteEvaluator);
                     }
                 }, KiePolicyHelper.getAccessContext());
             } catch (PrivilegedActionException e) {
@@ -213,13 +213,13 @@ public interface Accumulator
                 final Object value,
                 final Declaration[] declarations, 
                 final Declaration[] innerDeclarations, 
-                final WorkingMemory workingMemory) {
+                final ReteEvaluator reteEvaluator) {
             try {
                 return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
                     @Override
                     public Boolean run() throws Exception {
                         return delegate.tryReverse(workingMemoryContext, context, leftTuple, handle, value,
-                                         declarations, innerDeclarations, workingMemory);
+                                         declarations, innerDeclarations, reteEvaluator);
                     }
                 }, KiePolicyHelper.getAccessContext());
             } catch (PrivilegedActionException e) {
@@ -231,12 +231,12 @@ public interface Accumulator
                 final Object context, 
                 final Tuple leftTuple, 
                 final Declaration[] declarations, 
-                final WorkingMemory workingMemory) {
+                final ReteEvaluator reteEvaluator) {
             try {
                 return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                     @Override
                     public Object run() throws Exception {
-                        return delegate.getResult(workingMemoryContext, context, leftTuple, declarations, workingMemory);
+                        return delegate.getResult(workingMemoryContext, context, leftTuple, declarations, reteEvaluator);
                     }
                 }, KiePolicyHelper.getAccessContext());
             } catch (PrivilegedActionException e) {

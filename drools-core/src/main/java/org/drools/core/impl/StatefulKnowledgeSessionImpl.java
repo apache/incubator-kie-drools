@@ -1405,13 +1405,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     /**
-     * @see org.drools.core.WorkingMemory
-     */
-    public FactHandle getFactHandleByIdentity(final Object object) {
-        return getObjectStore().getHandleForObjectIdentity(object);
-    }
-
-    /**
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */

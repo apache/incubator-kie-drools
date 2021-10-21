@@ -26,11 +26,11 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.SingleNonIndexSkipBetaConstraints;
@@ -249,10 +249,9 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public void assertObject( final InternalFactHandle factHandle,
-                              final PropagationContext pctx,
-                              final InternalWorkingMemory wm ) {
-        final BetaMemory memory = getBetaMemoryFromRightInput(this, wm);
+    @Override
+    public void assertObject( InternalFactHandle factHandle, PropagationContext pctx, ReteEvaluator reteEvaluator ) {
+        final BetaMemory memory = getBetaMemoryFromRightInput(this, reteEvaluator);
 
         RightTuple rightTuple = createRightTuple( factHandle, this, pctx );
 
@@ -266,17 +265,17 @@ public abstract class BetaNode extends LeftTupleSource
             if ( stagedInsertWasEmpty ) {
                 memory.setNodeDirtyWithoutNotify();
             }
-            shouldFlush = memory.linkNode( this, wm, !rightInputIsPassive ) | shouldFlush;
+            shouldFlush = memory.linkNode( this, reteEvaluator, !rightInputIsPassive ) | shouldFlush;
         } else if ( stagedInsertWasEmpty ) {
-            shouldFlush = memory.setNodeDirty( this, wm, !rightInputIsPassive ) | shouldFlush;
+            shouldFlush = memory.setNodeDirty( this, reteEvaluator, !rightInputIsPassive ) | shouldFlush;
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
+            flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( this, reteEvaluator ), isStreamMode() );
         }
     }
 
-    public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm) {
+    public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
@@ -285,8 +284,8 @@ public abstract class BetaNode extends LeftTupleSource
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            BetaMemory bm  = getBetaMemory( rightTuple.getTupleSink(), wm );
-            (( BetaNode ) rightTuple.getTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
+            BetaMemory bm  = getBetaMemory( rightTuple.getTupleSink(), reteEvaluator );
+            (( BetaNode ) rightTuple.getTupleSink()).doDeleteRightTuple( rightTuple, reteEvaluator, bm );
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
 
@@ -297,29 +296,27 @@ public abstract class BetaNode extends LeftTupleSource
                 // RightTuple previously existed, so continue as modify
                 rightTuple.setPropagationContext( context );  // only update, if the mask intersects
 
-                BetaMemory bm = getBetaMemory( this, wm );
+                BetaMemory bm = getBetaMemory( this, reteEvaluator );
                 rightTuple.setPropagationContext( context );
-                doUpdateRightTuple(rightTuple, wm, bm);
+                doUpdateRightTuple(rightTuple, reteEvaluator, bm);
             } else if (rightTuple.getMemory() != null) {
-                reorderRightTuple(wm, rightTuple);
+                reorderRightTuple(reteEvaluator, rightTuple);
             }
         } else {
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
                 // RightTuple does not exist for this node, so create and continue as assert
-                assertObject( factHandle,
-                              context,
-                              wm );
+                assertObject( factHandle, context, reteEvaluator );
             }
         }
     }
 
-    protected void reorderRightTuple(InternalWorkingMemory wm, RightTuple rightTuple) {
-        getBetaMemory( this, wm).getRightTupleMemory().removeAdd(rightTuple);
+    protected void reorderRightTuple(ReteEvaluator reteEvaluator, RightTuple rightTuple) {
+        getBetaMemory(this, reteEvaluator).getRightTupleMemory().removeAdd(rightTuple);
         doUpdatesReorderChildLeftTuple(rightTuple);
     }
 
     public void doDeleteRightTuple(final RightTuple rightTuple,
-                                   final InternalWorkingMemory wm,
+                                   final ReteEvaluator reteEvaluator,
                                    final BetaMemory memory) {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
 
@@ -330,19 +327,19 @@ public abstract class BetaNode extends LeftTupleSource
             if ( stagedDeleteWasEmpty ) {
                 memory.setNodeDirtyWithoutNotify();
             }
-            shouldFlush = memory.unlinkNode(wm) | shouldFlush;
+            shouldFlush = memory.unlinkNode(reteEvaluator) | shouldFlush;
         } else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            shouldFlush = memory.setNodeDirty( this, wm ) | shouldFlush;
+            shouldFlush = memory.setNodeDirty( this, reteEvaluator ) | shouldFlush;
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
+            flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( this, reteEvaluator ), isStreamMode() );
         }
     }
 
     public void doUpdateRightTuple(final RightTuple rightTuple,
-                                    final InternalWorkingMemory wm,
+                                    final ReteEvaluator reteEvaluator,
                                     final BetaMemory memory) {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
 
@@ -350,11 +347,11 @@ public abstract class BetaNode extends LeftTupleSource
 
         boolean shouldFlush = isStreamMode();
         if ( stagedUpdateWasEmpty  ) {
-            shouldFlush = memory.setNodeDirty( this, wm ) | shouldFlush;
+            shouldFlush = memory.setNodeDirty( this, reteEvaluator ) | shouldFlush;
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
+            flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( this, reteEvaluator ), isStreamMode() );
         }
     }
 
@@ -528,17 +525,17 @@ public abstract class BetaNode extends LeftTupleSource
     public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
                                         final ModifyPreviousTuples modifyPreviousTuples,
                                         final PropagationContext context,
-                                        final InternalWorkingMemory workingMemory) {
-        modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+                                        final ReteEvaluator reteEvaluator) {
+        modifyObject( factHandle, modifyPreviousTuples, context, reteEvaluator );
     }
 
 
-    public static BetaMemory getBetaMemory(BetaNode node, InternalWorkingMemory wm) {
+    public static BetaMemory getBetaMemory(BetaNode node, ReteEvaluator reteEvaluator) {
         BetaMemory bm;
         if ( node.getType() == NodeTypeEnums.AccumulateNode ) {
-            bm = ((AccumulateMemory)wm.getNodeMemory(node)).getBetaMemory();
+            bm = ((AccumulateMemory)reteEvaluator.getNodeMemory(node)).getBetaMemory();
         } else {
-            bm = ((BetaMemory)wm.getNodeMemory(  node ));
+            bm = ((BetaMemory)reteEvaluator.getNodeMemory(  node ));
         }
         return bm;
     }
@@ -556,7 +553,7 @@ public abstract class BetaNode extends LeftTupleSource
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return constraints.createBetaMemory(config, getType());
     }
 
@@ -564,8 +561,8 @@ public abstract class BetaNode extends LeftTupleSource
         return "[ " + this.getClass().getSimpleName() + "(" + this.id + ") ]";
     }
 
-    public void dumpMemory(final InternalWorkingMemory workingMemory) {
-        final MemoryVisitor visitor = new MemoryVisitor( workingMemory );
+    public void dumpMemory(final ReteEvaluator reteEvaluator) {
+        final MemoryVisitor visitor = new MemoryVisitor( reteEvaluator );
         visitor.visit( this );
     }
 
@@ -680,10 +677,10 @@ public abstract class BetaNode extends LeftTupleSource
         return rightTuple;
     }
     
-    public static BetaMemory getBetaMemoryFromRightInput( final BetaNode betaNode, final InternalWorkingMemory workingMemory ) {
+    public static BetaMemory getBetaMemoryFromRightInput( BetaNode betaNode, ReteEvaluator reteEvaluator ) {
         return NodeTypeEnums.AccumulateNode == betaNode.getType() ?
-                            ((AccumulateMemory)workingMemory.getNodeMemory( betaNode )).getBetaMemory() :
-                            (BetaMemory) workingMemory.getNodeMemory( betaNode );
+                            ((AccumulateMemory)reteEvaluator.getNodeMemory( betaNode )).getBetaMemory() :
+                            (BetaMemory) reteEvaluator.getNodeMemory( betaNode );
     }
     
     public BitMask getRightDeclaredMask() {

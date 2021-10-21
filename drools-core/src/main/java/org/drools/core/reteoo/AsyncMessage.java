@@ -16,20 +16,20 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public class AsyncMessage {
 
-    private final InternalWorkingMemory workingMemory;
+    private final ReteEvaluator reteEvaluator;
     private final Object object;
 
-    public AsyncMessage( InternalWorkingMemory workingMemory, Object object ) {
-        this.workingMemory = workingMemory;
+    public AsyncMessage(ReteEvaluator reteEvaluator, Object object ) {
+        this.reteEvaluator = reteEvaluator;
         this.object = object;
     }
 
-    public InternalWorkingMemory getWorkingMemory() {
-        return workingMemory;
+    public ReteEvaluator getReteEvaluator() {
+        return reteEvaluator;
     }
 
     public Object getObject() {

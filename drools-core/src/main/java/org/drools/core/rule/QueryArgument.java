@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.kie.api.runtime.rule.Variable;
 
@@ -30,15 +30,15 @@ public interface QueryArgument extends Externalizable {
 
     QueryArgument normalize(ClassLoader classLoader);
 
-    Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple);
+    Object getValue(ReteEvaluator reteEvaluator, LeftTuple leftTuple);
 
-    static Object evaluateDeclaration( InternalWorkingMemory wm, LeftTuple leftTuple, Declaration declaration ) {
+    static Object evaluateDeclaration( ReteEvaluator reteEvaluator, LeftTuple leftTuple, Declaration declaration ) {
         Object tupleObject = leftTuple.get( declaration ).getObject();
         if ( tupleObject instanceof DroolsQuery && declaration.getExtractor().getIndex() >= 0 &&
                 ( (DroolsQuery) tupleObject ).getVariables()[declaration.getExtractor().getIndex()] != null ) {
             return Variable.v;
         }
-        return declaration.getValue( wm, tupleObject );
+        return declaration.getValue( reteEvaluator, tupleObject );
     }
 
     class Declr implements QueryArgument {
@@ -51,8 +51,8 @@ public interface QueryArgument extends Externalizable {
         }
 
         @Override
-        public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple ) {
-            return QueryArgument.evaluateDeclaration( wm, leftTuple, declaration );
+        public Object getValue( ReteEvaluator reteEvaluator, LeftTuple leftTuple ) {
+            return QueryArgument.evaluateDeclaration( reteEvaluator, leftTuple, declaration );
         }
 
         @Override
@@ -89,7 +89,7 @@ public interface QueryArgument extends Externalizable {
         }
 
         @Override
-        public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple) {
+        public Object getValue( ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
             return value;
         }
 
@@ -117,7 +117,7 @@ public interface QueryArgument extends Externalizable {
     class Var implements QueryArgument {
 
         @Override
-        public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple) {
+        public Object getValue( ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
             return Variable.v;
         }
 
@@ -137,7 +137,7 @@ public interface QueryArgument extends Externalizable {
     class Null implements QueryArgument {
 
         @Override
-        public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple) {
+        public Object getValue( ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
             return null;
         }
 

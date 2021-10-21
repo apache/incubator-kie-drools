@@ -30,16 +30,19 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.TimerService;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
+
+import static org.drools.core.base.DefaultKnowledgeHelper.getFactHandleFromWM;
 
 public interface InternalWorkingMemory
     extends WorkingMemory, WorkingMemoryEntryPoint, EventSupport {
@@ -70,22 +73,20 @@ public interface InternalWorkingMemory
     void queueWorkingMemoryAction(final WorkingMemoryAction action);
 
     FactHandleFactory getFactHandleFactory();
-    
+
+    default InternalFactHandle createFactHandle(Object object, ObjectTypeConf conf, WorkingMemoryEntryPoint wmEntryPoint ) {
+        return getFactHandleFactory().newFactHandle( object, conf, this, wmEntryPoint );
+    }
+
+    default InternalFactHandle getFactHandle(Object object) {
+        return getFactHandleFromWM(this, object);
+    }
+
     EntryPointId getEntryPoint();
     
     EntryPointNode getEntryPointNode();
 
     EntryPoint getEntryPoint(String name);
-
-    /**
-     * Looks for the fact handle associated to the given object
-     * by looking up the object IDENTITY (==), even if rule base
-     * is configured to AssertBehavior.EQUALITY.
-     * 
-     * @param object
-     * @return null if fact handle not found
-     */
-    FactHandle getFactHandleByIdentity(final Object object);
 
     Lock getLock();
 
@@ -220,5 +221,13 @@ public interface InternalWorkingMemory
 
     default KnowledgeHelper createKnowledgeHelper(Activation activation) {
         return new DefaultKnowledgeHelper<>( activation, this );
+    }
+
+    default boolean isThreadSafe() {
+        return getSessionConfiguration().isThreadSafe();
+    }
+
+    default boolean filterForceEagerActivation(Rule rule) {
+        return getSessionConfiguration().getForceEagerActivationFilter().accept(rule);
     }
 }

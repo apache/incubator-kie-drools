@@ -17,6 +17,7 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -370,7 +371,7 @@ public class PhreakNotNode {
         constraints.resetTuple(contextEntry);
     }
 
-    public static boolean updateBlockersAndPropagate(NotNode notNode, RightTuple rightTuple, InternalWorkingMemory wm, TupleMemory rtm, ContextEntry[] contextEntry,
+    public static boolean updateBlockersAndPropagate(NotNode notNode, RightTuple rightTuple, ReteEvaluator reteEvaluator, TupleMemory rtm, ContextEntry[] contextEntry,
                                                      BetaConstraints constraints, boolean iterateFromStart, LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, TupleMemory ltm) {
         LeftTuple firstBlocked = rightTuple.getTempBlocked();
         if ( firstBlocked != null ) {
@@ -397,9 +398,7 @@ public class PhreakNotNode {
                     continue;
                 }
 
-                constraints.updateFromTuple(contextEntry,
-                        wm,
-                                             leftTuple );
+                constraints.updateFromTuple(contextEntry, reteEvaluator, leftTuple );
 
                 if (iterateFromStart) {
                     rootBlocker = notNode.getFirstRightTuple( leftTuple, rtm, null, rightIt );

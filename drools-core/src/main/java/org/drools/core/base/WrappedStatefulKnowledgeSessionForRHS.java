@@ -515,10 +515,6 @@ public class WrappedStatefulKnowledgeSessionForRHS
         delegate.setGlobalResolver(globalResolver);
     }
 
-    public FactHandle getFactHandleByIdentity(Object object) {
-        return delegate.getFactHandleByIdentity(object);
-    }
-
     public GlobalResolver getGlobalResolver() {
         return delegate.getGlobalResolver();
     }

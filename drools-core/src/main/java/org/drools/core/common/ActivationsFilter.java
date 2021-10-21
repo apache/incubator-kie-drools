@@ -32,7 +32,7 @@ public interface ActivationsFilter {
      * or false otherwise
      */
     boolean accept(Activation activation,
-                   InternalWorkingMemory workingMemory,
+                   ReteEvaluator reteEvaluator,
                    TerminalNode rtn );
 
     Map<ActivationKey, Tuple> getTuplesCache();

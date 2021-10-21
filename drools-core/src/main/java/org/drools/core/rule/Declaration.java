@@ -26,6 +26,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
@@ -244,62 +245,62 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
     }
 
     @Override
-    public Object getValue(InternalWorkingMemory workingMemory, Tuple tuple) {
-        return getValue( workingMemory, tuple.get( this ) );
+    public Object getValue(ReteEvaluator reteEvaluator, Tuple tuple) {
+        return getValue( reteEvaluator, tuple.get( this ) );
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory, InternalFactHandle fh) {
-        return getValue( workingMemory, fh.getObject() );
+    public Object getValue(ReteEvaluator reteEvaluator, InternalFactHandle fh) {
+        return getValue( reteEvaluator, fh.getObject() );
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory,
+    public Object getValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return this.readAccessor.getValue( workingMemory, object );
+        return this.readAccessor.getValue( reteEvaluator, object );
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory,
+    public char getCharValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return this.readAccessor.getCharValue(workingMemory, object);
+        return this.readAccessor.getCharValue(reteEvaluator, object);
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory,
+    public int getIntValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return this.readAccessor.getIntValue(workingMemory, object);
+        return this.readAccessor.getIntValue(reteEvaluator, object);
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory,
+    public byte getByteValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return this.readAccessor.getByteValue(workingMemory, object);
+        return this.readAccessor.getByteValue(reteEvaluator, object);
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory,
+    public short getShortValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        return this.readAccessor.getShortValue(workingMemory, object);
+        return this.readAccessor.getShortValue(reteEvaluator, object);
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory,
+    public long getLongValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return this.readAccessor.getLongValue(workingMemory, object);
+        return this.readAccessor.getLongValue(reteEvaluator, object);
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory,
+    public float getFloatValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        return this.readAccessor.getFloatValue(workingMemory, object);
+        return this.readAccessor.getFloatValue(reteEvaluator, object);
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory,
+    public double getDoubleValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
-        return this.readAccessor.getDoubleValue(workingMemory, object);
+        return this.readAccessor.getDoubleValue(reteEvaluator, object);
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
-        return this.readAccessor.getBooleanValue(workingMemory, object);
+        return this.readAccessor.getBooleanValue(reteEvaluator, object);
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory,
+    public int getHashCode(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return this.readAccessor.getHashCode(workingMemory, object);
+        return this.readAccessor.getHashCode(reteEvaluator, object);
     }
 
     public boolean isGlobal() {
@@ -314,7 +315,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
             // return getValue to avoid null pointers, so rest of drl can attempt to build
             try {
                 return this.getClass().getDeclaredMethod( "getValue",
-                                                          new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                          new Class[]{ReteEvaluator.class, Object.class} );
             } catch ( final Exception e ) {
                 throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                             e );

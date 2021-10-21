@@ -110,20 +110,18 @@ public class SingleBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
-                                final InternalWorkingMemory workingMemory,
+                                final ReteEvaluator reteEvaluator,
                                 final Tuple tuple) {
-        context[0].updateFromTuple(workingMemory,
-                                   tuple);
+        context[0].updateFromTuple(reteEvaluator, tuple);
     }
 
     /* (non-Javadoc)
      * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
-                                     final InternalWorkingMemory workingMemory,
+                                     final ReteEvaluator reteEvaluator,
                                      final InternalFactHandle handle) {
-        context[0].updateFromFactHandle(workingMemory,
-                                        handle);
+        context[0].updateFromFactHandle(reteEvaluator, handle);
     }
 
     /* (non-Javadoc)

@@ -153,11 +153,6 @@ public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPo
     }
 
     @Override
-    public FactHandle getFactHandleByIdentity( Object object ) {
-        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
-    }
-
-    @Override
     public void reset() {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }

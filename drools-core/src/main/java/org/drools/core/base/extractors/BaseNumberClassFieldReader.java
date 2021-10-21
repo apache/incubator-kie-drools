@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public abstract class BaseNumberClassFieldReader extends BaseClassFieldReader {
 
@@ -38,75 +38,75 @@ public abstract class BaseNumberClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
-    public abstract Object getValue(InternalWorkingMemory workingMemory,
+    public abstract Object getValue(ReteEvaluator reteEvaluator,
                                     Object object);
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
         throw new RuntimeException( "Conversion to boolean not supported from Number" );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory,
+    public byte getByteValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         
         return ((Number) value).byteValue();
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory,
+    public char getCharValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         
         return ((Character) value).charValue();
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory,
+    public double getDoubleValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         
         return ((Number) value).doubleValue();
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory,
+    public float getFloatValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         
         return ((Number) value).floatValue();
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory,
+    public int getIntValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         
         return ((Number) value).intValue();
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory,
+    public long getLongValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         
         return ((Number) value).longValue();
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory,
+    public short getShortValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         return ((Number) value).shortValue();
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory,
+    public boolean isNullValue(ReteEvaluator reteEvaluator,
                                final Object object) {
         if ( object == null ) {
             return true;
         } else {
-            return getValue( workingMemory,
+            return getValue( reteEvaluator,
                              object ) == null;
         }
     }
@@ -114,7 +114,7 @@ public abstract class BaseNumberClassFieldReader extends BaseClassFieldReader {
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getMethod( getNativeReadMethodName(),
-                                              new Class[]{InternalWorkingMemory.class, Object.class} );
+                                              new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
@@ -129,9 +129,9 @@ public abstract class BaseNumberClassFieldReader extends BaseClassFieldReader {
         return "get" + type.getName().substring(0, 1).toUpperCase() + type.getName().substring(1) + "Value";
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory,
+    public int getHashCode(ReteEvaluator reteEvaluator,
                            final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         return (value != null) ? value.hashCode() : 0;
     }

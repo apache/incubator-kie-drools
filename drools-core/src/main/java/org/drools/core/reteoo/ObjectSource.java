@@ -213,9 +213,7 @@ public abstract class ObjectSource extends BaseNode {
         this.sink = this.sink.removeObjectSink( objectSink );
     }
 
-    public abstract void updateSink(ObjectSink sink,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory);
+    public abstract void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory);
 
     public void networkUpdated(UpdateContext updateContext) {
         this.source.networkUpdated(updateContext);

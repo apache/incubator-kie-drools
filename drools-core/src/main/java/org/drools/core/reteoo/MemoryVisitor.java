@@ -16,7 +16,13 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalWorkingMemory;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Field;
+
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable;
@@ -29,19 +35,13 @@ import org.drools.core.util.index.TupleList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Field;
-
 public class MemoryVisitor extends ReflectiveVisitor
     implements
     Externalizable {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(MemoryVisitor.class);
 
-    private InternalWorkingMemory workingMemory;
+    private ReteEvaluator reteEvaluator;
     private int                   indent = 0;
 
     /**
@@ -50,18 +50,18 @@ public class MemoryVisitor extends ReflectiveVisitor
     public MemoryVisitor() {
     }
 
-    public MemoryVisitor(final InternalWorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
+    public MemoryVisitor(final ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        workingMemory = (InternalWorkingMemory) in.readObject();
+        reteEvaluator = (ReteEvaluator) in.readObject();
         indent = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( workingMemory );
+        out.writeObject( reteEvaluator );
         out.writeInt( indent );
     }
 
@@ -139,7 +139,7 @@ public class MemoryVisitor extends ReflectiveVisitor
         logger.info( indent() + node );
 
         try {
-            final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( node );
+            final BetaMemory memory = (BetaMemory) this.reteEvaluator.getNodeMemory( node );
             checkObjectHashTable( memory.getRightTupleMemory() );
             checkLeftTupleMemory( memory.getLeftTupleMemory() );
         } catch ( final Exception e ) {
@@ -164,7 +164,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     public void visitNotNode(final NotNode node) {
         logger.info( indent() + node );
         try {
-            final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( node );
+            final BetaMemory memory = (BetaMemory) this.reteEvaluator.getNodeMemory( node );
             checkObjectHashTable( memory.getRightTupleMemory() );
             checkLeftTupleMemory( memory.getLeftTupleMemory() );
         } catch ( final Exception e ) {

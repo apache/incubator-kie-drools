@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo;
+package org.drools.core.common;
 
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.spi.Activation;
 
-public interface RightTupleSink extends Sink {
+public interface ActivationsManager {
+    ReteEvaluator getReteEvaluator();
 
-    void retractRightTuple(final RightTuple rightTuple,
-                           final PropagationContext context,
-                           final ReteEvaluator reteEvaluator);
-    
-    void modifyRightTuple(final RightTuple rightTuple,
-                          final PropagationContext context,
-                          final ReteEvaluator reteEvaluator);
+    void cancelActivation(Activation activation);
 
-    ObjectTypeNode.Id getRightInputOtnId();
+    ActivationsFilter getActivationsFilter();
+
+    void addQueryAgendaItem(RuleAgendaItem agendaItem);
+
+    void addEagerRuleAgendaItem(RuleAgendaItem agendaItem);
+
+    RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn);
 }

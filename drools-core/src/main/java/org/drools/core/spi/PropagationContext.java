@@ -19,7 +19,7 @@ package org.drools.core.spi;
 import java.io.Externalizable;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
@@ -67,7 +67,7 @@ public interface PropagationContext extends Externalizable {
     EntryPointId getEntryPoint();
     
     BitMask getModificationMask();
-    PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory);
+    PropagationContext adaptModificationMaskForObjectType(ObjectType type, ReteEvaluator reteEvaluator);
     void setModificationMask(BitMask mask);
 
     MarshallerReaderContext getReaderContext();

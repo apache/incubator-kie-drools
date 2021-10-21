@@ -16,12 +16,12 @@
 
 package org.drools.core.spi;
 
+import java.io.Externalizable;
+
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
-
-import java.io.Externalizable;
 
 public interface Restriction
     extends
@@ -31,7 +31,7 @@ public interface Restriction
 
     public boolean isAllowed(InternalReadAccessor extractor,
                              InternalFactHandle handle,
-                             InternalWorkingMemory workingMemory,
+                             ReteEvaluator reteEvaluator,
                              ContextEntry context );
 
     public boolean isAllowedCachedLeft(ContextEntry context,

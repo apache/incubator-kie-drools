@@ -25,13 +25,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MathUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MathUtils;
+import org.drools.core.util.StringUtils;
 
 public class ArrayElementReader
     implements
@@ -84,51 +84,51 @@ public class ArrayElementReader
         return ClassUtils.canonicalName( type );
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                    Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return ((Boolean) array[this.index]).booleanValue();
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory,
+    public byte getByteValue(ReteEvaluator reteEvaluator,
                              Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return ((Number) array[this.index]).byteValue();
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory,
+    public char getCharValue(ReteEvaluator reteEvaluator,
                              Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return ((Character) array[this.index]).charValue();
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory,
+    public double getDoubleValue(ReteEvaluator reteEvaluator,
                                  Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return ((Number) array[this.index]).doubleValue();
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory,
+    public float getFloatValue(ReteEvaluator reteEvaluator,
                                Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return ((Number) array[this.index]).floatValue();
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory,
+    public int getIntValue(ReteEvaluator reteEvaluator,
                            Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return ((Number) array[this.index]).intValue();
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory,
+    public long getLongValue(ReteEvaluator reteEvaluator,
                              Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return ((Number) array[this.index]).longValue();
     }
@@ -136,7 +136,7 @@ public class ArrayElementReader
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( getNativeReadMethodName(),
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                      new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
@@ -150,30 +150,30 @@ public class ArrayElementReader
         return "get" + method + "Value";
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory,
+    public short getShortValue(ReteEvaluator reteEvaluator,
                                Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return ((Number) array[this.index]).shortValue();
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory,
+    public Object getValue(ReteEvaluator reteEvaluator,
                            Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return array[this.index];
     }
 
-    public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+    public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator,
                                          Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return MathUtils.getBigDecimal( array[this.index] );
     }
 
-    public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+    public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator,
                                          Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return MathUtils.getBigInteger( array[this.index] );
     }
@@ -182,16 +182,16 @@ public class ArrayElementReader
         return ValueType.OBJECT_TYPE;
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory,
+    public boolean isNullValue(ReteEvaluator reteEvaluator,
                                Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         return array[this.index] == null;
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory,
+    public int getHashCode(ReteEvaluator reteEvaluator,
                            Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
+        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
                                                                      object );
         
         Object value = array[this.index];

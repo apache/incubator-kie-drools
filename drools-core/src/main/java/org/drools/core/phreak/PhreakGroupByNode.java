@@ -15,7 +15,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
@@ -31,7 +31,7 @@ import org.drools.core.util.index.TupleList;
 public class PhreakGroupByNode extends PhreakAccumulateNode {
 
     @Override
-    AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple) {
+    AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, ReteEvaluator reteEvaluator, Accumulate accumulate, LeftTuple leftTuple) {
         GroupByContext accContext = new GroupByContext();
         leftTuple.setContextObject( accContext );
         // A lot less is done here, compared to super, as it needs to be done on demand during the Group creation.
@@ -56,7 +56,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                                              final Accumulate accumulate,
                                              final LeftTuple leftTuple,
                                              final PropagationContext context,
-                                             final InternalWorkingMemory workingMemory,
+                                             final ReteEvaluator reteEvaluator,
                                              final AccumulateMemory memory,
                                              final AccumulateNode.BaseAccumulation accctx,
                                              final TupleSets<LeftTuple> trgLeftTuples,
@@ -70,9 +70,9 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
         for (TupleList<AccumulateContextEntry> tupleList = groupByContext.takeToPropagateList(); tupleList != null; tupleList = tupleList.getNext()) {
             AccumulateContextEntry contextEntry = tupleList.getContext();
 
-            Object result = accumulate.getResult(memory.workingMemoryContext, contextEntry, leftTuple, workingMemory);
+            Object result = accumulate.getResult(memory.workingMemoryContext, contextEntry, leftTuple, reteEvaluator);
 
-            propagateResult( accNode, sink, leftTuple, context, workingMemory, memory, trgLeftTuples, stagedLeftTuples,
+            propagateResult( accNode, sink, leftTuple, context, reteEvaluator, memory, trgLeftTuples, stagedLeftTuples,
                              contextEntry.getKey(), result, contextEntry, propagationContext, false ); // don't want to propagate null
 
             contextEntry.setToPropagate(false);
@@ -85,7 +85,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                                             final LeftTuple leftTuple,
                                             final RightTuple rightParent,
                                             final LeftTuple match,
-                                            final InternalWorkingMemory wm,
+                                            final ReteEvaluator reteEvaluator,
                                             final AccumulateMemory am,
                                             final AccumulateNode.BaseAccumulation accctx,
                                             final boolean reaccumulate) {
@@ -112,7 +112,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                     }
 
                     Object value = accumulate.accumulate(am.workingMemoryContext, tuple, childHandle,
-                                                         groupByContext, tupleList, wm);
+                                                         groupByContext, tupleList, reteEvaluator);
 
                     match.setContextObject(value);
                 }
@@ -125,7 +125,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                                      leftTuple,
                                      null,
                                      null,
-                                     wm,
+                                     reteEvaluator,
                                      am,
                                      accctx,
                                      true);

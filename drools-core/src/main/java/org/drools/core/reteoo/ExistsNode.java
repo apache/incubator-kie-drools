@@ -18,7 +18,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 
@@ -108,16 +108,14 @@ public class ExistsNode extends BetaNode {
 
     public void retractRightTuple(final RightTuple rightTuple,
                                   final PropagationContext pctx,
-                                  final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+                                  final ReteEvaluator reteEvaluator) {
+        final BetaMemory memory = (BetaMemory) reteEvaluator.getNodeMemory( this );
         rightTuple.setPropagationContext( pctx );
-        doDeleteRightTuple( rightTuple,
-                            workingMemory,
-                            memory );
+        doDeleteRightTuple( rightTuple, reteEvaluator, memory );
     }
 
     @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 

@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.spi.PropagationContext;
 
@@ -66,7 +66,7 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
 
     public void propagateAssertObject(final InternalFactHandle factHandle,
                                       final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
+                                      final ReteEvaluator reteEvaluator) {
         this.sink.assertObject( factHandle,
                                 context,
                                 workingMemory );
@@ -75,7 +75,7 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
     public void propagateModifyObject(InternalFactHandle factHandle,
                                             ModifyPreviousTuples modifyPreviousTuples,
                                             PropagationContext context,
-                                            InternalWorkingMemory workingMemory) {
+                                            ReteEvaluator reteEvaluator) {
         this.sink.modifyObject( factHandle,
                                        modifyPreviousTuples,
                                        context,
@@ -85,15 +85,15 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
     public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
                                         final ModifyPreviousTuples modifyPreviousTuples,
                                         final PropagationContext context,
-                                        final InternalWorkingMemory workingMemory) {
+                                        final ReteEvaluator reteEvaluator) {
         sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
     }
     
-    public void  doLinkRiaNode(InternalWorkingMemory wm) {
+    public void  doLinkRiaNode(ReteEvaluator reteEvaluator) {
         staticDoLinkRiaNode( sink, wm );
     }
     
-    public static void staticDoLinkRiaNode(ObjectSink sink, InternalWorkingMemory wm) {
+    public static void staticDoLinkRiaNode(ObjectSink sink, ReteEvaluator reteEvaluator) {
         BetaMemory bm;
         if ( sink.getType() == NodeTypeEnums.AccumulateNode ) {
             AccumulateNode accnode = ( AccumulateNode ) sink;
@@ -115,11 +115,11 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
         }
     }
     
-    public void  doUnlinkRiaNode( InternalWorkingMemory wm) {
+    public void  doUnlinkRiaNode( ReteEvaluator reteEvaluator) {
         staticDoUnlinkRiaNode( sink, wm );
     }   
     
-    public static void staticDoUnlinkRiaNode(ObjectSink sink,  InternalWorkingMemory wm) {
+    public static void staticDoUnlinkRiaNode(ObjectSink sink,  ReteEvaluator reteEvaluator) {
         BetaMemory bm;
         if ( sink.getType() == NodeTypeEnums.AccumulateNode ) {
             AccumulateNode accnode = ( AccumulateNode ) sink;

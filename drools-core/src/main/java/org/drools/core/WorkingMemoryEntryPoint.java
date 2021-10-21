@@ -86,8 +86,6 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
     EntryPointId getEntryPoint();
     InternalWorkingMemory getInternalWorkingMemory();
 
-    FactHandle getFactHandleByIdentity(Object object);
-
     void reset();
 
     ObjectStore getObjectStore();

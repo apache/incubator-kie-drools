@@ -33,6 +33,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.ReactiveObject;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
@@ -126,7 +127,7 @@ public class XpathConstraint extends MutableTypeConstraint {
     }
 
     @Override
-    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(InternalFactHandle handle, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 

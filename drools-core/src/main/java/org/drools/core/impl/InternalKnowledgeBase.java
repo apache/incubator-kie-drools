@@ -27,6 +27,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -112,7 +113,7 @@ public interface InternalKnowledgeBase extends KieBase {
 
     boolean hasSegmentPrototypes();
     void invalidateSegmentPrototype(LeftTupleNode rootNode);
-    SegmentMemory createSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource);
+    SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluatorm, LeftTupleSource tupleSource);
     SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment);
 
     void processAllTypesDeclaration( Collection<InternalKnowledgePackage> pkgs );

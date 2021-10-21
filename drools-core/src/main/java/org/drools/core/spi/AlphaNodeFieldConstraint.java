@@ -17,13 +17,13 @@
 package org.drools.core.spi;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public interface AlphaNodeFieldConstraint
     extends
     Constraint {
     
-    boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory);
+    boolean isAllowed(InternalFactHandle handle, ReteEvaluator reteEvaluator);
 
     /**
      * Clone this constraints only if it is already used by a different node, otherwise returns this

@@ -16,16 +16,13 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Arrays;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
@@ -150,7 +147,7 @@ public class TimerNode extends LeftTupleSource
                this.timer.equals(other.timer);
     }
 
-    public TimerNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public TimerNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return new TimerNodeMemory();
     }
 

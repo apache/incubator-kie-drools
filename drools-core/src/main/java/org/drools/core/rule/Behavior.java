@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.time.JobHandle;
@@ -73,7 +73,7 @@ public interface Behavior extends RuleComponent, Cloneable {
      * 
      * @param context The behavior context object
      * @param fact The new fact entering behavior's scope
-     * @param workingMemory The working memory session reference
+     * @param reteEvaluator The working memory session reference
      * 
      * @return true if the propagation should continue, false otherwise. I.e., 
      *         the behaviour has veto power over the fact propagation, and prevents
@@ -82,26 +82,26 @@ public interface Behavior extends RuleComponent, Cloneable {
     boolean assertFact(Object context,
                               InternalFactHandle fact,
                               PropagationContext pctx,
-                              InternalWorkingMemory workingMemory);
+                              ReteEvaluator reteEvaluator);
 
     /**
      * Removes a right tuple from the behavior's scope
      * 
      * @param context The behavior context object
      * @param fact The fact leaving the behavior's scope
-     * @param workingMemory The working memory session reference
+     * @param reteEvaluator The working memory session reference
      */
     void retractFact(Object context,
                             InternalFactHandle fact,
                             PropagationContext pctx,
-                            InternalWorkingMemory workingMemory);
+                            ReteEvaluator reteEvaluator);
 
     /**
      * A callback method that allows behaviors to expire facts
      */
     void expireFacts(Object context,
                             PropagationContext pctx,
-                            InternalWorkingMemory workingMemory);
+                            ReteEvaluator reteEvaluator);
 
     /**
      * Some behaviors might change the expiration offset for the 

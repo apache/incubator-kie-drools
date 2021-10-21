@@ -14,9 +14,10 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
@@ -35,12 +36,12 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     }
 
     @Override
-    public void assertObject( InternalFactHandle factHandle, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
-        InternalAgenda agenda = workingMemory.getAgenda();
+    public void assertObject( InternalFactHandle factHandle, PropagationContext propagationContext, ReteEvaluator reteEvaluator ) {
+        ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         Sink[] sinks = getSinks();
         for (int i = 0; i < sinks.length; i++) {
             TerminalNode rtn = ( TerminalNode ) getSinks()[i];
-            RuleAgendaItem agendaItem = getRuleAgendaItem( workingMemory, agenda, rtn, true );
+            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, agenda, rtn, true );
             LeftTuple leftTuple = rtn.createLeftTuple( factHandle, true );
             leftTuple.setPropagationContext( propagationContext );
 
@@ -53,16 +54,16 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     }
 
     @Override
-    public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
-        InternalAgenda agenda = workingMemory.getAgenda();
+    public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
+        ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         Sink[] sinks = getSinks();
 
         for (int i = 0; i < sinks.length; i++) {
             TerminalNode rtn = ( TerminalNode ) getSinks()[i];
             ObjectTypeNode.Id otnId = rtn.getLeftInputOtnId();
-            LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, workingMemory, otnId);
+            LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
 
-            RuleAgendaItem agendaItem = getRuleAgendaItem( workingMemory, agenda, rtn, true );
+            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, agenda, rtn, true );
             RuleExecutor executor = agendaItem.getRuleExecutor();
 
             if ( leftTuple != null && leftTuple.getInputOtnId().equals( otnId ) ) {
@@ -86,17 +87,17 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     }
 
     @Override
-    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        InternalAgenda agenda = workingMemory.getAgenda();
+    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
+        ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         leftTuple.setPropagationContext( context );
         TerminalNode rtn = ( TerminalNode ) leftTuple.getTupleSink();
-        PhreakRuleTerminalNode.doLeftDelete( agenda, getRuleAgendaItem( workingMemory, agenda, rtn, false ).getRuleExecutor(), leftTuple );
+        PhreakRuleTerminalNode.doLeftDelete( agenda, getRuleAgendaItem( reteEvaluator, agenda, rtn, false ).getRuleExecutor(), leftTuple );
     }
 
-    public static RuleAgendaItem getRuleAgendaItem( InternalWorkingMemory workingMemory, InternalAgenda agenda, TerminalNode rtn, boolean linkPmem ) {
-        PathMemory pathMemory = workingMemory.getNodeMemory( rtn );
+    public static RuleAgendaItem getRuleAgendaItem(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, TerminalNode rtn, boolean linkPmem ) {
+        PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
         if (linkPmem) {
-            pathMemory.doLinkRule( agenda );
+            pathMemory.doLinkRule( activationsManager );
         }
         return pathMemory.getRuleAgendaItem();
     }

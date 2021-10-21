@@ -21,9 +21,9 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
@@ -67,18 +67,18 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+    public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, ReteEvaluator reteEvaluator) {
         context = accumulateFunction.initContext( (Serializable) context );
         return context;
     }
 
     @Override
-    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
-        final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
+    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
+        final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, reteEvaluator);
         return accumulateFunction.accumulateValue( (Serializable) context, accumulatedObject);
     }
 
-    protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm );
+    protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator );
 
     @Override
     public boolean supportsReverse() {
@@ -87,7 +87,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value,
-                              Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+                              Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
         if (value == null) {
             throw new IllegalStateException("Reversing a not existing accumulated object for fact " + handle);
         }
@@ -95,7 +95,7 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+    public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, ReteEvaluator reteEvaluator) {
         try {
             return accumulateFunction.getResult( (Serializable) context );
         } catch (Exception e) {
@@ -114,7 +114,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
 
         @Override
-        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
+        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) {
             Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple ) {
                 Declaration[] bindingDeclarations = binding.getDeclarations();
@@ -139,7 +139,7 @@ public abstract class LambdaAccumulator implements Accumulator {
                 }
                 return binding.evaluate(args);
             } else {
-                return binding.evaluate(handle, tuple, wm, declarations, innerDeclarations);
+                return binding.evaluate(handle, tuple, reteEvaluator, declarations, innerDeclarations);
             }
         }
 
@@ -171,7 +171,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
 
         @Override
-        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
+        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) {
             Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple && declarations.length > 0) {
                 return declarations[0].getValue( ( SubnetworkTuple ) accumulateObject );
@@ -191,7 +191,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
 
         @Override
-        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
+        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) {
             return value;
         }
     }

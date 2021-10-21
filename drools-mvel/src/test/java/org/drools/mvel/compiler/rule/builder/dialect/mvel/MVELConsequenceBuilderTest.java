@@ -44,6 +44,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -498,7 +499,7 @@ public class MVELConsequenceBuilderTest {
         }
 
         @Override
-        public void modifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
+        public void modifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
         }
 
         public void retractRightTuple(final RightTuple rightTuple,
@@ -546,8 +547,8 @@ public class MVELConsequenceBuilderTest {
                                          boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
         }
-        public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
-            return super.createMemory( config, wm);
+        public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+            return super.createMemory( config, reteEvaluator);
         }
 
         @Override

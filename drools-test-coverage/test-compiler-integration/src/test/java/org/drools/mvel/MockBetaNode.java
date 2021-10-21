@@ -5,6 +5,7 @@ import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -56,7 +57,7 @@ public class MockBetaNode extends BetaNode {
     }
 
     @Override
-    public void modifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
+    public void modifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
@@ -104,7 +105,7 @@ public class MockBetaNode extends BetaNode {
                                      boolean leftTupleMemoryEnabled) {
         return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
-    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return super.createMemory( config, wm);
     }
 

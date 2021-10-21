@@ -46,6 +46,7 @@ import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
@@ -814,7 +815,7 @@ public class ProtobufInputMarshaller {
 
         @Override
         public boolean accept(Activation activation,
-                              InternalWorkingMemory workingMemory,
+                              ReteEvaluator reteEvaluator,
                               TerminalNode rtn) {
             if ( activation.isRuleAgendaItem() ) {
                 ActivationKey key = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple() );

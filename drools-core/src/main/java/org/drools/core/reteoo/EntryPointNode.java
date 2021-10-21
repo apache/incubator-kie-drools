@@ -28,6 +28,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -140,33 +141,33 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
     public void assertActivation(final InternalFactHandle factHandle,
                             final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                            final ReteEvaluator reteEvaluator) {
         if ( activationNode == null ) {
             this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
         }
 
         if ( activationNode != null ) {
             // There may be no queries defined
-            this.activationNode.propagateAssert(factHandle, context, workingMemory);
+            this.activationNode.propagateAssert(factHandle, context, reteEvaluator);
         }
     }
 
     public void retractActivation(final InternalFactHandle factHandle,
                             final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                            final ReteEvaluator reteEvaluator) {
         if ( activationNode == null ) {
             this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
         }
 
         if ( activationNode != null ) {
             // There may be no queries defined
-            this.activationNode.retractObject(factHandle, context, workingMemory);
+            this.activationNode.retractObject(factHandle, context, reteEvaluator);
         }
     }
 
     public void modifyActivation(final InternalFactHandle factHandle,
                             final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                            final ReteEvaluator reteEvaluator) {
          if ( activationNode == null ) {
              this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
          }
@@ -175,8 +176,8 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
              ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( factHandle.detachLinkedTuples() );
 
              // There may be no queries defined
-             this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
-             modifyPreviousTuples.retractTuples(context, workingMemory);
+             this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, reteEvaluator );
+             modifyPreviousTuples.retractTuples(context, reteEvaluator);
          }
 
      }
@@ -184,18 +185,18 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final ObjectTypeConf objectTypeConf,
-                             final InternalWorkingMemory workingMemory) {
+                             final ReteEvaluator reteEvaluator) {
         if ( log.isTraceEnabled() ) {
             log.trace("Insert {}", handle.toString());
         }
 
-        if ( partitionsEnabled || !workingMemory.getSessionConfiguration().isThreadSafe() ) {
+        if ( partitionsEnabled || !reteEvaluator.isThreadSafe() ) {
             // In case of multithreaded evaluation the CompositePartitionAwareObjectSinkAdapter
             // used by the OTNs will take care of enqueueing this inseretion on the propagation queues
             // of the different agendas
-            PropagationEntry.Insert.execute( handle, context, workingMemory, objectTypeConf );
+            PropagationEntry.Insert.execute( handle, context, reteEvaluator, objectTypeConf );
         } else {
-            workingMemory.addPropagation( new PropagationEntry.Insert( handle, context, workingMemory, objectTypeConf ) );
+            reteEvaluator.addPropagation( new PropagationEntry.Insert( handle, context, reteEvaluator, objectTypeConf ) );
         }
     }
 
@@ -203,26 +204,26 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
     public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext pctx,
                              final ObjectTypeConf objectTypeConf,
-                             final InternalWorkingMemory workingMemory) {
+                             final ReteEvaluator reteEvaluator) {
         if ( log.isTraceEnabled() ) {
             log.trace( "Update {}", handle.toString()  );
         }
 
-        if (workingMemory.getSessionConfiguration().isThreadSafe()) {
-            workingMemory.addPropagation( new PropagationEntry.Update( handle, pctx, objectTypeConf ) );
+        if (reteEvaluator.isThreadSafe()) {
+            reteEvaluator.addPropagation( new PropagationEntry.Update( handle, pctx, objectTypeConf ) );
         } else {
-            PropagationEntry.Update.execute( handle, pctx, objectTypeConf, workingMemory );
+            PropagationEntry.Update.execute( handle, pctx, objectTypeConf, reteEvaluator );
         }
     }
 
-    public static void removeRightTuplesMatchingOTN( PropagationContext pctx, InternalWorkingMemory wm, ModifyPreviousTuples modifyPreviousTuples, ObjectTypeNode node, int partition ) {
+    public static void removeRightTuplesMatchingOTN( PropagationContext pctx, ReteEvaluator reteEvaluator, ModifyPreviousTuples modifyPreviousTuples, ObjectTypeNode node, int partition ) {
         // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partition);
         while ( rightTuple != null &&
                 ((BaseNode) rightTuple.getTupleSink()).getObjectTypeNode() == node ) {
             modifyPreviousTuples.removeRightTuple(partition);
 
-            modifyPreviousTuples.doRightDelete(pctx, wm, rightTuple);
+            modifyPreviousTuples.doRightDelete(pctx, reteEvaluator, rightTuple);
 
             rightTuple = modifyPreviousTuples.peekRightTuple(partition);
         }
@@ -242,7 +243,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
             if ( otn == node ) {
                 modifyPreviousTuples.removeLeftTuple(partition);
-                modifyPreviousTuples.doDeleteObject( pctx, wm, leftTuple );
+                modifyPreviousTuples.doDeleteObject( pctx, reteEvaluator, leftTuple );
             } else {
                 break;
             }
@@ -252,7 +253,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
     public void modifyObject(InternalFactHandle factHandle,
                                    ModifyPreviousTuples modifyPreviousTuples,
                                    PropagationContext context,
-                                   InternalWorkingMemory workingMemory) {
+                                   ReteEvaluator reteEvaluator) {
         // this method was silently failing, so I am now throwing an exception to make
         // sure no one calls it by mistake
         throw new UnsupportedOperationException( "This method should NEVER EVER be called" );
@@ -267,12 +268,12 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
      *            The FactHandle of the fact to assert
      * @param context
      *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
-     * @param workingMemory
+     * @param reteEvaluator
      *            The working memory session.
      */
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                             final ReteEvaluator reteEvaluator) {
         // this method was silently failing, so I am now throwing an exception to make
         // sure no one calls it by mistake
         throw new UnsupportedOperationException( "This method should NEVER EVER be called" );
@@ -284,21 +285,21 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
      *
      * @param handle
      *            The handle of the fact to retract.
-     * @param workingMemory
+     * @param reteEvaluator
      *            The working memory session.
      */
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final ObjectTypeConf objectTypeConf,
-                              final InternalWorkingMemory workingMemory) {
+                              final ReteEvaluator reteEvaluator) {
         if ( log.isTraceEnabled() ) {
             log.trace( "Delete {}", handle.toString()  );
         }
 
-        workingMemory.addPropagation(new PropagationEntry.Delete(this, handle, context, objectTypeConf));
+        reteEvaluator.addPropagation(new PropagationEntry.Delete(this, handle, context, objectTypeConf));
     }
 
-    public void propagateRetract(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, InternalWorkingMemory workingMemory) {
+    public void propagateRetract(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, ReteEvaluator reteEvaluator) {
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {
@@ -309,11 +310,11 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         for ( ObjectTypeNode cachedNode : cachedNodes ) {
             cachedNode.retractObject( handle,
                                       context,
-                                      workingMemory );
+                                      reteEvaluator );
         }
 
         if (handle.isEvent()) {
-            ((EventFactHandle) handle).unscheduleAllJobs(workingMemory);
+            ((EventFactHandle) handle).unscheduleAllJobs(reteEvaluator);
         }
     }
 
@@ -381,8 +382,6 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        // @todo
-        // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
         final ObjectTypeNode node = (ObjectTypeNode) sink;
 
         final ObjectType newObjectType = node.getObjectType();
@@ -395,9 +394,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
                 Iterator<InternalFactHandle> it = workingMemory.getNodeMemory( sourceNode ).iterator();
                 while ( it.hasNext() ) {
-                    sink.assertObject( it.next(),
-                                       context,
-                                       workingMemory );
+                    sink.assertObject( it.next(), context, workingMemory );
                 }
             }
         }
@@ -410,7 +407,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
     public void byPassModifyToBetaNode(InternalFactHandle factHandle,
                                        ModifyPreviousTuples modifyPreviousTuples,
                                        PropagationContext context,
-                                       InternalWorkingMemory workingMemory) {
+                                       ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 

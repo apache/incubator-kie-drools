@@ -15,6 +15,7 @@
 
 package org.drools.core.phreak;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
@@ -225,11 +226,11 @@ public class PhreakRuleTerminalNode {
         }
     }
 
-    public static void doLeftDelete(InternalAgenda agenda, RuleExecutor executor, Tuple leftTuple) {
+    public static void doLeftDelete(ActivationsManager activationsManager, RuleExecutor executor, Tuple leftTuple) {
         RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
         rtnLt.setMatched( false );
 
-        agenda.cancelActivation( rtnLt );
+        activationsManager.cancelActivation( rtnLt );
 
         if ( leftTuple.getMemory() != null ) {
             // Expiration propagations should not be removed from the list, as they still need to fire
