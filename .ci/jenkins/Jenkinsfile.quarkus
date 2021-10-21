@@ -57,7 +57,7 @@ pipeline {
         stage('Build Drools') {
             steps {
                 script {
-                    getMavenCommand(droolsRepo)
+                    getMavenCommand('drools')
                         .withProperty('quickly')
                         .run('clean install')
                 }
