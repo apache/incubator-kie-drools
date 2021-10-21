@@ -46,6 +46,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected List<MiningField> miningFields = new ArrayList<>();
     protected List<OutputField> outputFields = new ArrayList<>();
+    protected List<KiePMMLMiningField> kiePMMLMiningFields = new ArrayList<>();
     protected List<KiePMMLOutputField> kiePMMLOutputFields = new ArrayList<>();
     protected List<KiePMMLTarget> kiePMMLTargets = new ArrayList<>();
     protected KiePMMLTransformationDictionary transformationDictionary;
@@ -110,6 +111,11 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public void setKiePMMLTargets(List<KiePMMLTarget> kiePMMLTargets) {
         this.kiePMMLTargets = Collections.unmodifiableList(kiePMMLTargets);
+    }
+
+    public List<KiePMMLMiningField> getKiePMMLMiningFields() {
+        return kiePMMLMiningFields != null ? Collections.unmodifiableList(kiePMMLMiningFields) :
+                Collections.emptyList();
     }
 
     public List<KiePMMLOutputField> getKiePMMLOutputFields() {

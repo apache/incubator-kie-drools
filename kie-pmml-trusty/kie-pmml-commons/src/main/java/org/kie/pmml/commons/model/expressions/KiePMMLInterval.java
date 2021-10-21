@@ -35,6 +35,17 @@ public class KiePMMLInterval implements Serializable {
         this.closure = closure;
     }
 
+    public Number getLeftMargin() {
+        return leftMargin;
+    }
+
+    public Number getRightMargin() {
+        return rightMargin;
+    }
+
+    public CLOSURE getClosure() {
+        return closure;
+    }
 
     public boolean isIn(Number toEvaluate) {
         switch (closure) {

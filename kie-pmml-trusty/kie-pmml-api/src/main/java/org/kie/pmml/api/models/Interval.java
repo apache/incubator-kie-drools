@@ -18,7 +18,7 @@ package org.kie.pmml.api.models;
 import java.io.Serializable;
 
 /**
- * KiePMML representation of an <b>OutputField</b>
+ * User-friendly representation of an <b>Interval</b>
  */
 public class Interval implements Serializable {
 
