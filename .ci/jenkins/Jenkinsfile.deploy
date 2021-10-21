@@ -210,7 +210,7 @@ void commitAndCreatePR() {
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
         emailext body: "**Deploy job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
-             subject: "[${getBuildBranch()}] Kogito Runtimes",
+             subject: "[${getBuildBranch()}] Drools",
              to: env.KOGITO_CI_EMAIL_TO
     } else {
         echo 'No notification sent per configuration'
@@ -218,7 +218,7 @@ void sendNotification() {
 }
 
 boolean shouldStageArtifacts() {
-    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
+    return isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
 }
 
 boolean shouldDeployToRepository() {
