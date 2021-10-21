@@ -37,7 +37,9 @@ import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.GET_CREATED_KIEPMMLMININGFIELDS;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.GET_CREATED_KIEPMMLOUTPUTFIELDS;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addGetCreatedKiePMMLMiningFieldsMethod;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addGetCreatedKiePMMLOutputFieldsMethod;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
@@ -95,6 +97,13 @@ public class KiePMMLModelCodegenUtils {
         CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", pmmlMODELExpression);
         CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", miningFunctionExpression);
         CommonCodegenUtils.setAssignExpressionValue(body, "targetField", targetFieldExpression);
+
+        addGetCreatedKiePMMLMiningFieldsMethod(modelTemplate, compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
+        MethodCallExpr getCreatedKiePMMLMiningFieldsExpr = new MethodCallExpr();
+        getCreatedKiePMMLMiningFieldsExpr.setScope(new ThisExpr());
+        getCreatedKiePMMLMiningFieldsExpr.setName(GET_CREATED_KIEPMMLMININGFIELDS);
+        CommonCodegenUtils.setAssignExpressionValue(body, "kiePMMLMiningFields", getCreatedKiePMMLMiningFieldsExpr);
+
         if (compilationDTO.getOutput() != null) {
             addGetCreatedKiePMMLOutputFieldsMethod(modelTemplate, compilationDTO.getOutput().getOutputFields());
             MethodCallExpr getCreatedKiePMMLOutputFieldsExpr = new MethodCallExpr();
