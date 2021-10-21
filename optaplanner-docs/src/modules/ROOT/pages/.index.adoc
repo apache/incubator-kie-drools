@@ -11,7 +11,6 @@ The OptaPlanner Team <https://www.optaplanner.org/community/team.html>
 :sectnumlevels: 5
 :icons: font
 :docinfo:
-:experimental:
 
 
 // PDF uses :title-logo-image: on first page, no need to repeat image later on

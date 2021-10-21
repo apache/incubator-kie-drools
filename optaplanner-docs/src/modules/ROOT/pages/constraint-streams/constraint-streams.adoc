@@ -5,7 +5,6 @@
 :sectnums:
 :toc: left
 :icons: font
-:experimental:
 
 
 Constraint streams are a Functional Programming form of incremental score calculation in plain Java that is easy to

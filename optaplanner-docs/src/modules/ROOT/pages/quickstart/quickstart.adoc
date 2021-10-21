@@ -5,7 +5,6 @@
 :sectnums:
 :toc: left
 :icons: font
-:experimental:
 
 include::overview/overview-quickstarts.adoc[leveloffset=+1]
 

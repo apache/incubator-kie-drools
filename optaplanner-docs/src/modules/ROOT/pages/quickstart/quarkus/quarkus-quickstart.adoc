@@ -5,7 +5,6 @@
 :sectnums:
 :toc: left
 :icons: font
-:experimental:
 :quickstartsCloneUrl: https://github.com/kiegroup/optaplanner-quickstarts
 :quickstartsArchiveUrl: https://www.optaplanner.org/download/download.html
 :quarkusQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/school-timetabling
