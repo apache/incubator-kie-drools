@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.kogito.explainability.Config;
@@ -58,14 +59,15 @@ import static org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryInter
 class PmmlRegressionCategoricalLimeExplainerTest {
 
     private static PMMLRuntime categoricalVariableRegressionRuntime;
-    private static final String[] CATEGORY_ONE = new String[] { "red", "blue", "green", "yellow", "grey", "pink", "white", "black" };
-    private static final String[] CATEGORY_TWO = new String[] { "classA", "classB", "classC", "NA" };
+    private static final String[] CATEGORY_ONE = new String[] { "red", "blue", "green", "yellow", "orange" };
+    private static final String[] CATEGORY_TWO = new String[] { "classA", "classB", "classC" };
 
     @BeforeAll
     static void setUpBefore() throws URISyntaxException {
         categoricalVariableRegressionRuntime = getPMMLRuntime(ResourceReaderUtils.getResourceAsFile("categoricalvariablesregression/categoricalVariablesRegression.pmml"));
     }
 
+    @Disabled("See KOGITO-6154")
     @Test
     void testPMMLRegressionCategorical() throws Exception {
 
@@ -105,6 +107,7 @@ class PmmlRegressionCategoricalLimeExplainerTest {
         AssertionsForClassTypes.assertThat(f1).isBetween(0d, 1d);
     }
 
+    @Disabled("See KOGITO-6154")
     @Test
     void testExplanationStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
@@ -132,6 +135,7 @@ class PmmlRegressionCategoricalLimeExplainerTest {
                 0.6, 0.6));
     }
 
+    @Disabled("See KOGITO-6154")
     @Test
     void testExplanationImpactScoreWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
@@ -150,6 +154,7 @@ class PmmlRegressionCategoricalLimeExplainerTest {
         assertThat(optimizedConfig).isNotSameAs(initialConfig);
     }
 
+    @Disabled("See KOGITO-6154")
     @Test
     void testExplanationWeightedStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
