@@ -1,7 +1,6 @@
 [[plannerIntroduction]]
 = OptaPlanner Introduction
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

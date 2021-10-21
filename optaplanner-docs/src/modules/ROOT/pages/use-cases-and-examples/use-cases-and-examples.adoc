@@ -1,7 +1,6 @@
 [[useCasesAndExamples]]
 = Use cases and examples
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

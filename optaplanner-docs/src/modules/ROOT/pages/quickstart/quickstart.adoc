@@ -1,7 +1,6 @@
 [[quickStart]]
 = Quick start
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

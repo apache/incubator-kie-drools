@@ -1,7 +1,6 @@
 [[hyperheuristics]]
 = Hyperheuristics
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

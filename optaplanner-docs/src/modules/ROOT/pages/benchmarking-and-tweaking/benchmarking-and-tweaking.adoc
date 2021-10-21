@@ -1,7 +1,6 @@
 [[benchmarker]]
 = Benchmarking and tweaking
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

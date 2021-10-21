@@ -1,7 +1,6 @@
 [[partitionedSearch]]
 = Partitioned search
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

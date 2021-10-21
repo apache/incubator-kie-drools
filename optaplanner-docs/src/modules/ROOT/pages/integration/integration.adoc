@@ -1,7 +1,6 @@
 [[integration]]
 = Integration
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

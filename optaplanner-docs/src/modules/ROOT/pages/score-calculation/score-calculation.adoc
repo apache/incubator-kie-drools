@@ -1,7 +1,6 @@
 [[scoreCalculation]]
 = Score calculation
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

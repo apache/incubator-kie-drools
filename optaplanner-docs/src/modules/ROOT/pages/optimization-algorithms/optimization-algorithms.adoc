@@ -1,7 +1,6 @@
 [[optimizationAlgorithms]]
 = Optimization algorithms
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

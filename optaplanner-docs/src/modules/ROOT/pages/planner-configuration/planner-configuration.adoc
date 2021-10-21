@@ -1,7 +1,6 @@
 [[plannerConfiguration]]
 = OptaPlanner configuration
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

@@ -1,7 +1,6 @@
 [[moveAndNeighborhoodSelection]]
 = Move and neighborhood selection
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

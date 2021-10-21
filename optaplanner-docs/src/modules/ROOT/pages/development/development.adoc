@@ -1,7 +1,6 @@
 [[development]]
 = Development
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

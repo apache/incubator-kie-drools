@@ -1,7 +1,6 @@
 [[shadowVariable]]
 = Shadow variable
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

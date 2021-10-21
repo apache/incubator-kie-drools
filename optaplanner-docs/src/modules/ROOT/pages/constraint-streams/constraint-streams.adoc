@@ -1,7 +1,6 @@
 [[constraintStreams]]
 = Constraint streams score calculation
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

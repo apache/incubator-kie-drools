@@ -1,7 +1,6 @@
 [[repeatedPlanning]]
 = Repeated planning
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

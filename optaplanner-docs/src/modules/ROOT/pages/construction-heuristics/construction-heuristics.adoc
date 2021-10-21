@@ -1,7 +1,6 @@
 [[constructionHeuristics]]
 = Construction heuristics
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 

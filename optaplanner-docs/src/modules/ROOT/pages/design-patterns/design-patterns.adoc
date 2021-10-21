@@ -1,7 +1,6 @@
 [[designPatterns]]
 = Design patterns
 :doctype: book
-:imagesdir: ..
 :sectnums:
 :icons: font
 
