@@ -19,6 +19,7 @@
   <properties>
     <java.module.name>org.drools.retediagram</java.module.name>
     <sonar.exclusions>**/*</sonar.exclusions>
+    <sonar.skip>true</sonar.skip>
   </properties>
 
   <dependencies>
