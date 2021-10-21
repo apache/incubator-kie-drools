@@ -24,10 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -41,6 +39,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.pmml.CommonTestUtility.getKiePMMLModelInternal;
 
 class PredictionContainerGeneratorTest {
 
@@ -88,16 +87,6 @@ class PredictionContainerGeneratorTest {
         List<KiePMMLModel> kiePmmlModels =
                 IntStream.range(0, 3).mapToObj(i -> getKiePMMLModelInternal(resourceName + "_Model-" + i)).collect(Collectors.toList());
         return new PMMLResource(kiePmmlModels, path, modelPath);
-    }
-
-    private static KiePMMLModel getKiePMMLModelInternal(String modelName) {
-        return new KiePMMLModel(modelName, Collections.emptyList()) {
-
-            @Override
-            public Object evaluate(Object o, Map<String, Object> map) {
-                return null;
-            }
-        };
     }
 
     private static Path getPath() {

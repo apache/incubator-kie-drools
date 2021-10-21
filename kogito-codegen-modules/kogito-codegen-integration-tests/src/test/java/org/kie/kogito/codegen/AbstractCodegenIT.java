@@ -49,6 +49,7 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.resources.KiePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,12 +248,12 @@ public class AbstractCodegenIT {
 
         private final Map<String, byte[]> extraClassDefs;
 
-        public TestClassLoader(ClassLoader parent, Map<String, byte[]> extraClassDefs) {
+        public TestClassLoader(ClassLoader parent, Map<KiePath, byte[]> extraClassDefs) {
             super(new URL[0], parent);
             this.extraClassDefs = new HashMap<>();
 
-            for (Entry<String, byte[]> entry : extraClassDefs.entrySet()) {
-                this.extraClassDefs.put(entry.getKey().replaceAll("/", ".").replaceFirst("\\.class", ""), entry.getValue());
+            for (Entry<KiePath, byte[]> entry : extraClassDefs.entrySet()) {
+                this.extraClassDefs.put(entry.getKey().asString().replace('/', '.').replaceFirst("\\.class", ""), entry.getValue());
             }
         }
 

@@ -48,6 +48,7 @@ import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.resources.KiePath;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 
@@ -145,9 +146,9 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 throw new MojoFailureException(Arrays.toString(result.getErrors()));
             }
 
-            for (String fileName : trgMfs.getFileNames()) {
-                byte[] data = trgMfs.getBytes(fileName);
-                writeGeneratedFile(new GeneratedFile(GeneratedFileType.COMPILED_CLASS, fileName, data));
+            for (KiePath path : trgMfs.getFilePaths()) {
+                byte[] data = trgMfs.getBytes(path);
+                writeGeneratedFile(new GeneratedFile(GeneratedFileType.COMPILED_CLASS, path.asString(), data));
             }
         }
     }

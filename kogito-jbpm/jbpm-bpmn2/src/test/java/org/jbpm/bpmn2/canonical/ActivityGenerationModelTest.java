@@ -58,6 +58,7 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.resources.KiePath;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -514,12 +515,12 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
     private static class TestClassLoader extends URLClassLoader {
         private final Map<String, byte[]> extraClassDefs;
 
-        public TestClassLoader(ClassLoader parent, Map<String, byte[]> extraClassDefs) {
+        public TestClassLoader(ClassLoader parent, Map<KiePath, byte[]> extraClassDefs) {
             super(new URL[0], parent);
-            this.extraClassDefs = new HashMap<String, byte[]>();
+            this.extraClassDefs = new HashMap<>();
 
-            for (Entry<String, byte[]> entry : extraClassDefs.entrySet()) {
-                this.extraClassDefs.put(entry.getKey().replaceAll("/", ".").replaceFirst("\\.class", ""), entry.getValue());
+            for (Entry<KiePath, byte[]> entry : extraClassDefs.entrySet()) {
+                this.extraClassDefs.put(entry.getKey().asString().replace('/', '.').replaceFirst("\\.class", ""), entry.getValue());
             }
         }
 

@@ -41,6 +41,12 @@
     <!-- test -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-pmml</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-codegen-api</artifactId>
       <type>test-jar</type>
       <scope>test</scope>

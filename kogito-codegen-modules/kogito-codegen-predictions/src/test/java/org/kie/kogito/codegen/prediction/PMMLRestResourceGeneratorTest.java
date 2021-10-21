@@ -16,8 +16,6 @@
 package org.kie.kogito.codegen.prediction;
 
 import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -52,6 +50,7 @@ import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.SCHEMA
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.SPRING_API_RESPONSE;
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.SPRING_REQUEST_BODY;
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.SPRING_SCHEMA;
+import static org.kie.kogito.pmml.CommonTestUtility.getKiePMMLModelInternal;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 class PMMLRestResourceGeneratorTest {
@@ -71,17 +70,6 @@ class PMMLRestResourceGeneratorTest {
         context = QuarkusKogitoBuildContext.builder().build();
         pmmlRestResourceGenerator = new PMMLRestResourceGenerator(context, KIE_PMML_MODEL, APP_CANONICAL_NAME);
         assertNotNull(pmmlRestResourceGenerator);
-    }
-
-    private static KiePMMLModel getKiePMMLModelInternal() {
-        String modelName = "MODEL_NAME";
-        return new KiePMMLModel(modelName, Collections.emptyList()) {
-
-            @Override
-            public Object evaluate(Object o, Map<String, Object> map) {
-                return null;
-            }
-        };
     }
 
     private static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration(KogitoBuildContext context) {

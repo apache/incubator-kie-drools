@@ -21,8 +21,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.drools.mvel.MVELSafeHelper;
+import org.drools.mvel.util.MVELEvaluator;
 import org.kie.kogito.internal.RuntimeEnvironment;
-import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.ErrorDetail;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;

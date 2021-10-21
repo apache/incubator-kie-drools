@@ -10,14 +10,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kogito-kie7-bom</artifactId>
+    <artifactId>kogito-kie-bom</artifactId>
     <packaging>pom</packaging>
     <name>Kogito :: Kie7 BOM</name>
     <description>Internal utility BOM used in Kogito to group kie7 artifact without add them to Kogito dependencyManagement section or kogito-bom.
         This is to prevent misleading situation where both org.drools:drools-core and org.kie.kogito:drools-core as managed dependency</description>
 
     <properties>
-        <version.org.kie7>7.59.0.Final</version.org.kie7>
+        <version.org.kie>8.13.0-SNAPSHOT</version.org.kie>
     </properties>
 
     <dependencyManagement>
@@ -28,125 +28,125 @@
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-api</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-internal</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-test-util</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
 
             <!-- DROOLS -->
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-compiler</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-core</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-core-dynamic</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-core-reflective</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-canonical-model</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-mvel</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-decisiontables</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-model-compiler</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-alphanetwork-compiler</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
 
             <!-- DMN -->
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-api</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-feel</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-core</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-validation</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-openapi</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
 
             <!-- PMML -->
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-pmml-dependencies</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-pmml-evaluator-api</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-pmml-api</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-pmml-commons</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
 
             <!-- Scenario Simulation -->
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-scenario-simulation-api</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-scenario-simulation-backend</artifactId>
-                <version>${version.org.kie7}</version>
+                <version>${version.org.kie}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
