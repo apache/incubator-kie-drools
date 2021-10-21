@@ -24,6 +24,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
@@ -82,9 +83,9 @@ public class KiePMMLTestingModel extends KiePMMLModel {
             return this;
         }
 
-        public Builder withMiningFields(final List<MiningField> miningFields) {
-            if (miningFields != null) {
-                toBuild.miningFields = miningFields;
+        public Builder withKiePMMLMiningFields(final List<KiePMMLMiningField> kiePMMLMiningFields) {
+            if (kiePMMLMiningFields != null) {
+                toBuild.kiePMMLMiningFields = kiePMMLMiningFields;
             }
             return this;
         }
