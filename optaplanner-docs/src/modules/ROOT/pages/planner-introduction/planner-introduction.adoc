@@ -1,5 +1,7 @@
 [[plannerIntroduction]]
 = OptaPlanner Introduction
+// Redirect to this page from .../docs/optaplanner/latest.
+:page-aliases: ../index.adoc
 :doctype: book
 :sectnums:
 :icons: font
