@@ -3,7 +3,6 @@
 :doctype: book
 :imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
 
 include::overview/overview-quickstarts.adoc[leveloffset=+1]
