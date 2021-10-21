@@ -22,6 +22,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 import org.kie.kogito.Model;
 import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
@@ -33,18 +35,22 @@ import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.MarshallerContextName;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
 import static java.util.Collections.singletonMap;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID;
-import static org.kie.kogito.mongodb.utils.DocumentUtils.getCollection;
+import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID_INDEX;
 import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 public class MongoDBProcessInstances<T extends Model> implements MutableProcessInstances<T> {
@@ -61,7 +67,7 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
         this.collection = getCollection(mongoClient, process.id(), dbName);
         this.marshaller = ProcessInstanceMarshallerService.newBuilder()
                 .withDefaultObjectMarshallerStrategies()
-                .withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, "json"))
+                .withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, MarshallerContextName.MARSHALLER_FORMAT_JSON))
                 .build();
         this.transactionManager = transactionManager;
         this.lock = lock;
@@ -205,5 +211,19 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     @Override
     public boolean lock() {
         return this.lock;
+    }
+
+    protected MongoCollection<Document> getCollection() {
+        return collection;
+    }
+
+    private MongoCollection<Document> getCollection(MongoClient mongoClient, String processId, String dbName) {
+        CodecRegistry registry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
+        MongoDatabase mongoDatabase = mongoClient.getDatabase(dbName).withCodecRegistry(registry);
+        MongoCollection<Document> collection = mongoDatabase.getCollection(processId, Document.class).withCodecRegistry(registry);
+        //Index creation (if the index already exists it is a no-op)
+        collection.createIndex(Indexes.ascending(PROCESS_INSTANCE_ID),
+                new IndexOptions().unique(true).name(PROCESS_INSTANCE_ID_INDEX).background(true));
+        return collection;
     }
 }

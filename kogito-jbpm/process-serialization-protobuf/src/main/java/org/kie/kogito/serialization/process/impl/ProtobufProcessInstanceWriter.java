@@ -82,6 +82,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.util.JsonFormat;
 
 import static org.kie.kogito.serialization.process.MarshallerContextName.MARSHALLER_FORMAT;
+import static org.kie.kogito.serialization.process.MarshallerContextName.MARSHALLER_FORMAT_JSON;
 import static org.kie.kogito.serialization.process.protobuf.ProtobufTypeRegistryFactory.protobufTypeRegistryFactoryInstance;
 
 public class ProtobufProcessInstanceWriter {
@@ -147,8 +148,8 @@ public class ProtobufProcessInstanceWriter {
 
         KogitoProcessInstanceProtobuf.ProcessInstance piProtobuf = instance.build();
 
-        String format = (String) this.context.get(MARSHALLER_FORMAT);
-        if (format != null && "json".equals(format)) {
+        String format = this.context.get(MARSHALLER_FORMAT);
+        if (format != null && MARSHALLER_FORMAT_JSON.equals(format)) {
             os.write(JsonFormat.printer().usingTypeRegistry(protobufTypeRegistryFactoryInstance().create()).print(piProtobuf).getBytes());
         } else {
             piProtobuf.writeTo(os);

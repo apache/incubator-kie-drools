@@ -38,7 +38,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class DocumentProcessInstanceMarshallerTest {
 
     ProcessInstanceMarshallerService marshaller =
-            ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, "json")).build();
+            ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies()
+                    .withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, MarshallerContextName.MARSHALLER_FORMAT_JSON)).build();
 
     static BpmnProcess process;
     static Document doc;

@@ -24,6 +24,8 @@ public final class MarshallerContextName<T> {
     public static final MarshallerContextName<Process<?>> MARSHALLER_PROCESS = new MarshallerContextName<>("PROCESS");
     public static final MarshallerContextName<Boolean> MARSHALLER_INSTANCE_READ_ONLY = new MarshallerContextName<>("READ_ONLY");
 
+    public static final String MARSHALLER_FORMAT_JSON = "json";
+
     private String name;
 
     private MarshallerContextName(String name) {

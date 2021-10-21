@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import org.bson.Document;
 import org.drools.core.io.impl.ClassPathResource;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.utils.DocumentConstants;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
@@ -118,6 +120,9 @@ class MongoDBProcessInstancesIT {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(mongoClient, transactionManager));
         process.configure();
+
+        testIndexCreation(process);
+
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("test", "test");
         parameters.put("integerVar", 10);
@@ -169,6 +174,16 @@ class MongoDBProcessInstancesIT {
         processInstance.completeWorkItem(workItem.getId(), null, securityPolicy);
         assertEquals(STATE_COMPLETED, processInstance.status());
         assertThat(process.instances().size()).isZero();
+    }
+
+    private void testIndexCreation(BpmnProcess process) {
+        assertThat(process.instances()).isInstanceOf(MongoDBProcessInstances.class);
+        MongoDBProcessInstances mongoDBProcessInstances = (MongoDBProcessInstances) process.instances();
+        assertThat(mongoDBProcessInstances.getCollection()).isNotNull();
+        assertThat(StreamSupport.stream(mongoDBProcessInstances.getCollection().listIndexes().spliterator(), false)
+                .map(Document.class::cast)
+                .filter(index -> ((Document) index).get("name").equals(DocumentConstants.PROCESS_INSTANCE_ID_INDEX))
+                .findFirst()).isPresent();
     }
 
     @Test

@@ -102,7 +102,7 @@ public class ProtobufProcessInstanceReader {
         KogitoProcessInstanceProtobuf.ProcessInstance processInstanceProtobuf;
 
         String format = this.context.get(MarshallerContextName.MARSHALLER_FORMAT);
-        if (format != null && "json".equals(format)) {
+        if (format != null && MarshallerContextName.MARSHALLER_FORMAT_JSON.equals(format)) {
             KogitoProcessInstanceProtobuf.ProcessInstance.Builder builder = KogitoProcessInstanceProtobuf.ProcessInstance.newBuilder();
             JsonFormat.parser().usingTypeRegistry(protobufTypeRegistryFactoryInstance().create()).ignoringUnknownFields().merge(new InputStreamReader(input), builder);
             processInstanceProtobuf = builder.build();
