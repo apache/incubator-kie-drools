@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -26,6 +27,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.test.testcategory.TurtleTestCategory;
 
+@Ignore("RHDM-1837 : The test can run independently")
 @RunWith(Parameterized.class)
 @Category(TurtleTestCategory.class)
 public class ConstraintWithAndOrJittingConcurrencyTest extends BaseConcurrencyTest {
