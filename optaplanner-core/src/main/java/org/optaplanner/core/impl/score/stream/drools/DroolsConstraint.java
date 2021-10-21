@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleBuilder;
 
-public class DroolsConstraint<Solution_>
+public final class DroolsConstraint<Solution_>
         extends AbstractConstraint<Solution_, DroolsConstraint<Solution_>, DroolsConstraintFactory<Solution_>> {
 
     private final RuleBuilder<Solution_> ruleBuilder;

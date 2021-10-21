@@ -21,17 +21,19 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 public abstract class AbstractConstraint<Solution_, Constraint_ extends AbstractConstraint<Solution_, Constraint_, ConstraintFactory_>, ConstraintFactory_ extends InnerConstraintFactory<Solution_, Constraint_>>
         implements Constraint {
 
-    protected final ConstraintFactory_ constraintFactory;
-    protected final String constraintPackage;
-    protected final String constraintName;
+    private final ConstraintFactory_ constraintFactory;
+    private final String constraintPackage;
+    private final String constraintName;
+    private final String constraintId;
     private final Function<Solution_, Score<?>> constraintWeightExtractor;
-    protected final ScoreImpactType scoreImpactType;
+    private final ScoreImpactType scoreImpactType;
     private final boolean isConstraintWeightConfigurable;
 
     protected AbstractConstraint(ConstraintFactory_ constraintFactory, String constraintPackage, String constraintName,
@@ -40,6 +42,7 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
         this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
+        this.constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
         this.constraintWeightExtractor = constraintWeightExtractor;
         this.scoreImpactType = scoreImpactType;
         this.isConstraintWeightConfigurable = isConstraintWeightConfigurable;
@@ -70,15 +73,15 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
         }
     }
 
-    public void assertCorrectImpact(int impact) {
+    public final void assertCorrectImpact(int impact) {
         assertCorrectImpact(impact, () -> impact < 0);
     }
 
-    public void assertCorrectImpact(long impact) {
+    public final void assertCorrectImpact(long impact) {
         assertCorrectImpact(impact, () -> impact < 0L);
     }
 
-    public void assertCorrectImpact(BigDecimal impact) {
+    public final void assertCorrectImpact(BigDecimal impact) {
         assertCorrectImpact(impact, () -> impact.signum() < 0);
     }
 
@@ -100,21 +103,26 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
     }
 
     @Override
-    public ConstraintFactory_ getConstraintFactory() {
+    public final ConstraintFactory_ getConstraintFactory() {
         return constraintFactory;
     }
 
     @Override
-    public String getConstraintPackage() {
+    public final String getConstraintPackage() {
         return constraintPackage;
     }
 
     @Override
-    public String getConstraintName() {
+    public final String getConstraintName() {
         return constraintName;
     }
 
-    public ScoreImpactType getScoreImpactType() {
+    @Override
+    public final String getConstraintId() { // Overridden in order to cache the string concatenation.
+        return constraintId;
+    }
+
+    public final ScoreImpactType getScoreImpactType() {
         return scoreImpactType;
     }
 

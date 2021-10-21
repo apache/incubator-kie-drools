@@ -32,8 +32,10 @@ public interface Constraint {
     /**
      * The {@link ConstraintFactory} that build this.
      *
+     * @deprecated for removal as it is not necessary on the public API.
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     ConstraintFactory getConstraintFactory();
 
     /**
