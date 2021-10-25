@@ -260,17 +260,8 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
 void setupOptaPlannerTurtleTestsJob() {
     def jobParams = getJobParams('optaplanner-turtle-tests', FolderUtils.getOtherFolder(this), "${JENKINS_PATH}/Jenkinsfile.turtle",
             'Run OptaPlanner turtle tests on a weekly basis.')
+    jobParams.triggers = [ cron : 'H H * * 5' ] // Run every Friday.
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
-        properties {
-            pipelineTriggers {
-                triggers {
-                    cron {
-                        spec('H H * * 5') // Run every Friday.
-                    }
-                }
-            }
-        }
-
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or an organization.')
