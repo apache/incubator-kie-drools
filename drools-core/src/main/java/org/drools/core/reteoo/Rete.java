@@ -55,10 +55,8 @@ import org.drools.core.util.bitmask.BitMask;
  *
  * @see ObjectTypeNode
  */
-public class Rete extends ObjectSource
-    implements
-    Externalizable,
-    ObjectSink {
+public class Rete extends ObjectSource implements ObjectSink {
+
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -219,24 +217,6 @@ public class Rete extends ObjectSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         // nothing to do, since Rete object itself holds no facts to propagate.
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( entryPoints );
-        super.writeExternal( out );
-    }
-
-    @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        entryPoints = (Map<EntryPointId, EntryPointNode>) in.readObject();
-        kBase = ((DroolsObjectInputStream)in).getKnowledgeBase();
-        for (Map.Entry<EntryPointId, EntryPointNode> entry : entryPoints.entrySet()) {
-            EntryPointNode node = entry.getValue();
-            if (node.getEntryPoint() == null) node.setEntryPoint(entry.getKey());
-            kBase.registerAddedEntryNodeCache(node);
-        }
-        super.readExternal( in );
     }
 
     public Map<EntryPointId,EntryPointNode> getEntryPointNodes() {

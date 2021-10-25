@@ -16,10 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,10 +49,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ObjectTypeNode
  */
-public class EntryPointNode extends ObjectSource
-    implements
-    Externalizable,
-    ObjectSink {
+public class EntryPointNode extends ObjectSource implements ObjectSink {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -122,22 +115,6 @@ public class EntryPointNode extends ObjectSource
 
     public ObjectTypeConfigurationRegistry getTypeConfReg() {
         return typeConfReg;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        entryPoint = (EntryPointId) in.readObject();
-        objectTypeNodes = (Map<ObjectType, ObjectTypeNode>) in.readObject();
-        typeConfReg = (ObjectTypeConfigurationRegistry) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject( entryPoint );
-        out.writeObject( objectTypeNodes );
-        out.writeObject( typeConfReg );
     }
 
     public short getType() {

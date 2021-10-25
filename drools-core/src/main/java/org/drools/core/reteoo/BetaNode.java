@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -228,42 +225,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     public ObjectSource unwrapRightInput() {
         return rightInput.getType() == NodeTypeEnums.PropagationQueuingNode ? rightInput.getParentObjectSource() : rightInput;
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        constraints = (BetaConstraints) in.readObject();
-        objectMemory = in.readBoolean();
-        tupleMemoryEnabled = in.readBoolean();
-        rightDeclaredMask = (BitMask) in.readObject();
-        rightInferredMask = (BitMask) in.readObject();
-        rightNegativeMask = (BitMask) in.readObject();
-        leftListenedProperties = (Collection) in.readObject();
-        rightListenedProperties = (Collection) in.readObject();
-        rightInputIsPassive = in.readBoolean();
-        setUnificationJoin();
-        super.readExternal( in );
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
-        if ( betaCconstraints.length > 0 ) {
-            BetaNodeFieldConstraint c = betaCconstraints[0];
-            if ( IndexUtil.isIndexable(c, getType(), RuleBaseConfiguration.getDefaultInstance()) && ((IndexableConstraint) c).isUnification() ) {
-                setConstraints( this.constraints.getOriginalConstraint() );
-            }
-        }
-
-        out.writeObject( constraints );
-        out.writeBoolean( objectMemory );
-        out.writeBoolean( tupleMemoryEnabled );
-        out.writeObject(rightDeclaredMask);
-        out.writeObject(rightInferredMask);
-        out.writeObject(rightNegativeMask);
-        out.writeObject(leftListenedProperties);
-        out.writeObject(rightListenedProperties);
-        out.writeBoolean(rightInputIsPassive);
-        super.writeExternal( out );
     }
 
     private void setUnificationJoin() {

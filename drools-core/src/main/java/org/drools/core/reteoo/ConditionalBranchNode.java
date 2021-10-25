@@ -60,21 +60,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         hashcode = calculateHashCode();
     }
 
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        tupleMemoryEnabled = in.readBoolean();
-        branchEvaluator = (ConditionalBranchEvaluator) in.readObject();
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeBoolean(tupleMemoryEnabled);
-        out.writeObject(branchEvaluator);
-    }
-    
-
     public ConditionalBranchEvaluator getBranchEvaluator() {
         return branchEvaluator;
     }

@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,12 +110,6 @@ public class MockObjectSink
 
     public RuleBasePartitionId getPartitionId() {
         return null;
-    }
-
-    public void writeExternal( ObjectOutput out ) throws IOException {
-    }
-
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
     }
 
     public short getType() {

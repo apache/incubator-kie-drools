@@ -16,10 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
@@ -117,21 +113,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return isPropertyReactive( context, objectClass ) ?
                pattern.getPositiveWatchMask( pattern.getAccessibleProperties( context.getKnowledgeBase() ) ) :
                AllSetBitMask.get();
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
-        super.readExternal(in);
-        objectSource = (ObjectSource) in.readObject();
-        leftTupleMemoryEnabled = in.readBoolean();
-        sinkMask = (BitMask) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(objectSource);
-        out.writeBoolean(leftTupleMemoryEnabled);
-        out.writeObject(sinkMask);
     }
 
     public ObjectSource getObjectSource() {
@@ -625,17 +606,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         public RuleBasePartitionId getPartitionId() {
             return sink.getPartitionId();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            // this is a short living adapter class used only during an update operation, and
-            // as so, no need for serialization code
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                        ClassNotFoundException {
-            // this is a short living adapter class used only during an update operation, and
-            // as so, no need for serialization code
         }
 
         public void byPassModifyToBetaNode(InternalFactHandle factHandle,

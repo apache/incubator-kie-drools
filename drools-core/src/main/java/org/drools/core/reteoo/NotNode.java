@@ -16,10 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -61,16 +57,6 @@ public class NotNode extends BetaNode {
         emptyBetaConstraints = joinNodeBinder.getConstraints().length == 0 || context.isEmptyForAllBetaConstraints();
     }
     
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        emptyBetaConstraints = in.readBoolean();
-    }
-    
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeBoolean( emptyBetaConstraints );
-    }
-
     @Override
     protected void reorderRightTuple(InternalWorkingMemory wm, RightTuple rightTuple) {
         doExistentialUpdatesReorderChildLeftTuple(wm, this, rightTuple);

@@ -45,6 +45,8 @@ public class EventAccessorRestoreTest extends CommonTestMethodBase {
 
     private File kbaseFile = null;
 
+    private KieBase kbase;
+
     @Before
     public void setUp() {
         String str =
@@ -69,7 +71,7 @@ public class EventAccessorRestoreTest extends CommonTestMethodBase {
                 "end\n" +
                 "";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        kbase = loadKnowledgeBaseFromString( str );
 
         KieSession ksession = kbase.newKieSession();
 
@@ -86,14 +88,13 @@ public class EventAccessorRestoreTest extends CommonTestMethodBase {
 
     public void saveSession( FileOutputStream output, KieSession ksession ) throws IOException {
         DroolsObjectOutputStream droolsOut = new DroolsObjectOutputStream( output );
-        droolsOut.writeObject( ksession.getKieBase() );
-        Marshaller mas = createMarshaller( ksession.getKieBase() );
+        Marshaller mas = createMarshaller(  );
         mas.marshall( droolsOut, ksession );
         droolsOut.flush();
         droolsOut.close();
     }
 
-    private Marshaller createMarshaller( KieBase kbase ) {
+    private Marshaller createMarshaller( ) {
         ObjectMarshallingStrategyAcceptor acceptor = MarshallerFactory.newClassFilterAcceptor( new String[]{ "*.*" } );
         ObjectMarshallingStrategy strategy = MarshallerFactory.newSerializeMarshallingStrategy( acceptor );
         return MarshallerFactory.newMarshaller( kbase, new ObjectMarshallingStrategy[] { strategy } );
@@ -103,8 +104,7 @@ public class EventAccessorRestoreTest extends CommonTestMethodBase {
         KieSession ksession = null;
         DroolsObjectInputStream droolsIn = new DroolsObjectInputStream( input, this.getClass().getClassLoader() );
         try {
-            KieBase kbase = (KieBase) droolsIn.readObject();
-            Marshaller mas = createMarshaller( kbase );
+            Marshaller mas = createMarshaller();
             ksession = mas.unmarshall(droolsIn);
         } catch ( EOFException e ) {
             e.printStackTrace();

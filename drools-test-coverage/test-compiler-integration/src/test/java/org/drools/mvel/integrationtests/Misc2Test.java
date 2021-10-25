@@ -72,7 +72,6 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.ReteComparator;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
@@ -100,7 +99,6 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -126,6 +124,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
@@ -235,30 +234,6 @@ public class Misc2Test {
 
         assertEquals( 0, fired );
         ksession.dispose();
-    }
-
-    @Test
-    public void testClassNotFoundAfterDeserialization() throws Exception {
-        // kbase serialization is not supported. But leave it for standard-drl.
-        // JBRULES-3670
-        String drl =
-                "package completely.other.deal;\n" +
-                "\n" +
-                "declare Person\n" +
-                "   firstName : String\n" +
-                "   lastName : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"now use it B\"\n" +
-                "   when\n" +
-                "       Person( $christianName, $surname; )\n" +
-                "   then\n" +
-                "       insert( new Person( $christianName, null ) );\n" +
-                "end";
-
-        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
-        assertTrue( ReteComparator.areEqual( kbase1, kbase2 ) );
     }
 
     @Test
@@ -7729,39 +7704,6 @@ public class Misc2Test {
     }
 
     @Test
-    public void testKieBaseSerialization() throws Exception {
-        // kbase serialization is not supported. But leave it for standard-drl
-        // DROOLS-944
-        String drl =
-                "import " + Container.class.getCanonicalName() + ";" +
-                "rule R1 when\n" +
-                "    Container($offer : objects[\"1-CZ26IQW\"] != null)\n" +
-                "then\n" +
-                "end\n" +
-                "\n" +
-                "rule R2 when\n" +
-                "    Container($offer : objects[\"1-CZ26IR8\"] != null)\n" +
-                "then\n" +
-                "end\n";
-
-        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
-        assertTrue( ReteComparator.areEqual( kbase1, kbase2 ) );
-    }
-
-    public static class Container {
-        private Map<String, Object> objects = new HashMap<>();
-
-        public Map<String, Object> getObjects() {
-            return objects;
-        }
-
-        public void setObjects( Map<String, Object> objects ) {
-            this.objects = objects;
-        }
-    }
-
-    @Test
     public void testPatternMatchingWithFakeImplicitCast() {
         // DROOLS-966
         String drl =
@@ -8205,33 +8147,6 @@ public class Misc2Test {
 
         kieSession.insert( 1 );
         assertEquals( 1, kieSession.fireAllRules() );
-    }
-
-    @Test
-    public void testCCEAfterDeserialization() throws Exception {
-     // kbase serialization is not supported. But leave it for standard-drl.
-        // DROOLS-1155
-        String drl =
-                "function boolean checkLength(int length) { return true; }\n" +
-                "rule R dialect \"mvel\" when\n" +
-                "    Boolean()" +
-                "    String( $length : length )\n" +
-                "    eval( checkLength($length) )\n" +
-                "    ( Integer( ) or eval( true ) )\n" +
-                "then\n" +
-                "end";
-
-        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieSession ksession1 = kbase1.newKieSession();
-        ksession1.insert( true );
-        ksession1.insert( "test" );
-        assertEquals(1, ksession1.fireAllRules());
-
-        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
-        KieSession ksession2 = kbase2.newKieSession();
-        ksession2.insert( true );
-        ksession2.insert( "test" );
-        assertEquals(1, ksession2.fireAllRules());
     }
 
     @Test
