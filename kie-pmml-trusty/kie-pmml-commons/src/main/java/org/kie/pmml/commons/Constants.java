@@ -53,6 +53,9 @@ public class Constants {
     public static final String EMPTY_LIST = "emptyList";
     public static final String AS_LIST = "asList";
 
+    //
+    public static final String DUMP_KIE_PMML_SOURCES = "dumpKiePmmlSources";
+
     private Constants() {
         // Avoid instantiation
     }
