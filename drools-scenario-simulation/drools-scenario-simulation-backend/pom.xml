@@ -9,6 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <name>Drools :: Scenario Simulation Backend</name>
   <artifactId>drools-scenario-simulation-backend</artifactId>
   <packaging>jar</packaging>
 
@@ -81,6 +82,11 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -89,7 +95,7 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

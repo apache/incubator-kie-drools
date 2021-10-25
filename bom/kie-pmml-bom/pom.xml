@@ -68,366 +68,366 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-commons</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Compiler -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-commons</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Evaluator -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-assembler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Kie dep -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-kie-internal</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Drools -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-common</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Regression -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Tree -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Scorecard -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Mining -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-mining-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-mining-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-mining-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Tree - CODEGEN -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Scorecard - CODEGEN -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-scorecard-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-scorecard-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-scorecard-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Clustering -->
       <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-clustering-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-clustering-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-clustering-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- SOURCES -->
       <!-- PMML -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-commons</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Compiler -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-commons</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Evaluator -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-assembler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Kie dep -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-kie-internal</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Drools -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-common</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Regression -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Tree -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Scorecard -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Mining -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-mining-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-mining-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-mining-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Tree - CODEGEN -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Clustering -->
       <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-clustering-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-clustering-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-clustering-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- Scorecard - CODEGEN -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-scorecard-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-scorecard-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-scorecard-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <!-- EXTERNAL -->
@@ -437,19 +437,19 @@
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-commons</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Compiler -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-api</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -458,91 +458,91 @@
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-commons</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Evaluator -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-core</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Tests -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tests</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Regression -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-compiler</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-evaluator</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Tree Codegen -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-compiler</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-evaluator</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Drools -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-common</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Tree -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Scorecard -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Scorecard codegen -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-scorecard-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-scorecard-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
       <!-- Mining -->
@@ -550,38 +550,38 @@
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-mining-compiler</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-mining-evaluator</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Clustering -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-clustering-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-clustering-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
       <!-- EXTERNAL -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-test-util</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-test-util</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

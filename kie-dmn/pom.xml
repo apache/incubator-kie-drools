@@ -5,8 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
+    <artifactId>drools-build-parent</artifactId>
     <version>8.13.0-SNAPSHOT</version>
+    <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>kie-dmn</artifactId>
@@ -38,7 +39,7 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

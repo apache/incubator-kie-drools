@@ -27,6 +27,11 @@
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>

@@ -83,151 +83,151 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-engine</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-engine</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-engine</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-engine-classic</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-engine-classic</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-engine-classic</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-ecj</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-ecj</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-ecj</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-mvel</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-mvel</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-mvel</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-legacy-test-util</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-serialization-protobuf</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-serialization-protobuf</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-serialization-protobuf</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core-reflective</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core-reflective</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core-reflective</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core-dynamic</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core-dynamic</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core-dynamic</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -235,76 +235,76 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-mvel-parser</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-mvel-parser</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-mvel-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-mvel-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-canonical-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-canonical-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-canonical-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-model-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-model-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-model-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-alphanetwork-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-alphanetwork-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-alphanetwork-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -312,77 +312,77 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools.testcoverage</groupId>
         <artifactId>drools-test-suite</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-cdi</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-cdi</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-cdi</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-verifier-drl</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-verifier-drl</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-verifier-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-verifier-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-verifier-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-verifier-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
@@ -390,12 +390,12 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-traits</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-traits</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
@@ -403,163 +403,163 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-impact-analysis-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-impact-analysis-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-impact-analysis-parser</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-impact-analysis-parser</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-impact-analysis-graph-common</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-impact-analysis-graph-common</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-metric</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-metric</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-persistence-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-persistence-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-persistence-api</artifactId>
         <type>test-jar</type>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-persistence-jpa</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-persistence-jpa</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-persistence-jpa</artifactId>
         <type>test-jar</type>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-templates</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-templates</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-decisiontables</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-decisiontables</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-beliefs</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-beliefs</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>named-kiesession</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>default-kiesession</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>cdi-example</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>multiple-kbases</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <!-- Does this belong in the kie-bom or in the drools-bom ? -->
         <artifactId>kie-test-util</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-test-util</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-test-util</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -568,18 +568,18 @@
         <groupId>org.kie</groupId>
         <!-- Does this belong in the kie-bom or in the drools-bom ? -->
         <artifactId>kie-ci</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-ci</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-ci</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -587,47 +587,47 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-scorecards</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-scorecards</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-examples</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-examples</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-docs</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>zip</type>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-distribution</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>zip</type>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-memory-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-memory-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
@@ -635,23 +635,23 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-scenario-simulation-backend</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-scenario-simulation-backend</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-scenario-simulation-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-scenario-simulation-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
     </dependencies>

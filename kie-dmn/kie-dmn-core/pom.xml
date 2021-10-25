@@ -24,21 +24,21 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-bom</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-feel</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>tests</classifier>
         <scope>test</scope>
       </dependency>
@@ -181,6 +181,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -4,19 +4,16 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <!-- Keep in sync with the parent version in ../pom.xml (kie-parent)  -->
-    <version>36</version>
-    <relativePath/>
+    <groupId>org.kie</groupId>
+    <artifactId>drools-parent</artifactId>
+    <version>8.13.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
 
-  <groupId>org.kie</groupId>
   <artifactId>kie-core-bom</artifactId>
-  <version>8.13.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>KIE BOM (Bill Of Materials)</name>
+  <name>KIE core BOM</name>
   <description>
     Import this BOM in your dependencyManagement if you want to depend on multiple KIE artifacts.
   </description>
@@ -37,7 +34,6 @@
   </licenses>
 
   <properties>
-    <version.org.kie>${project.version}</version.org.kie>
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
   </properties>
@@ -127,89 +123,71 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-api</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-internal</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-internal</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-internal</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-util-maven-support</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-util-maven-support</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-util-maven-integration</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-util-maven-integration</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-util-xml</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-util-xml</artifactId>
-        <version>${version.org.kie}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-maven-plugin</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-docs-code</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-docs-code</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 

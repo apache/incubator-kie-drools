@@ -63,7 +63,7 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

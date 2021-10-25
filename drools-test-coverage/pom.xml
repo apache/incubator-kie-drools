@@ -6,8 +6,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
+    <artifactId>drools-build-parent</artifactId>
     <version>8.13.0-SNAPSHOT</version>
+    <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
   <groupId>org.drools.testcoverage</groupId>
@@ -20,6 +21,7 @@
     <module>standalone</module>
     <module>test-suite</module>
     <module>test-compiler-integration</module>
+    <module>test-integration-nomvel</module>
   </modules>
 
 </project>

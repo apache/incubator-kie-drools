@@ -68,7 +68,7 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-bom</artifactId>
         <type>pom</type>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <scope>import</scope>
       </dependency>
       <!--
@@ -85,129 +85,129 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-model</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-model</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-feel-gwt</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-feel-gwt</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-feel-gwt-functions</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-feel-gwt-functions</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-backend</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-backend</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-validation</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-validation</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-signavio</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-signavio</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core-osgi</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core-osgi</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-openapi</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-openapi</artifactId>
-      <version>${version.org.kie}</version>
+      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     

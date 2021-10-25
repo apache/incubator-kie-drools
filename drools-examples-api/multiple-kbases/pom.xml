@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>multiple-kbases</artifactId>
-  <name>Drools API examples - Multiple KieBases</name>
+  <name>Drools :: API examples :: Multiple KieBases</name>
 
   <properties>
     <java.module.name>org.drools.examples.api.multiplekbases</java.module.name>
@@ -24,6 +24,11 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
