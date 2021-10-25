@@ -25,6 +25,7 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.dumpSources;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMap;
@@ -60,6 +62,7 @@ public class KiePMMLMiningModelFactory {
                                                                                  nestedModels);
         try {
             Class<?> kiePMMLMiningModel = compilationDTO.compileAndLoadClass(sourcesMap);
+            dumpSources(sourcesMap, PMML_MODEL.MINING_MODEL);
             return (KiePMMLMiningModel) kiePMMLMiningModel.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
