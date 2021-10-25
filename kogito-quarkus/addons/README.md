@@ -13,6 +13,7 @@ In this module you will find all the add-ons supported by the community for Quar
 | Explainability       | kogito-addons-quarkus-explainability | 0.15.0 |
 | Jobs Management      | kogito-addons-quarkus-jobs-management | 0.6.0 |
 | Knative Eventing     | kogito-addons-quarkus-knative-eventing | 1.10.0 |
+| Kubernetes           | kogito-addons-quarkus-kubernetes | 1.13.0 |
 | Mail                 | kogito-addons-quarkus-mail | 1.6.0 |
 | Messaging            | kogito-addons-quarkus-messaging  | 1.0.0 |
 | Monitoring Elastic   | kogito-addons-quarkus-monitoring-elastic | 1.2.0 |

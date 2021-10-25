@@ -37,6 +37,7 @@
         <module>persistence</module>
         <module>tracing</module>
         <module>knative</module>
+        <module>kubernetes</module>
       </modules>
     </profile>
 

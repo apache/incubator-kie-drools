@@ -3,7 +3,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-adons-knative-parent</artifactId>
+    <artifactId>kogito-addons-knative-parent</artifactId>
     <groupId>org.kie.kogito</groupId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>

@@ -1,10 +1,10 @@
-# Kogito Knative Addons
+# Kogito Knative Add-Ons
 
 Provides the capability to integrate Kogito projects with [Knative](https://knative.dev/).
 
-## Kogito Quarkus Knative Eventing Addon
+## Kogito Quarkus Knative Eventing Add-On
 
-If your project leverage Knative Eventing as messaging platform, consider using this addon.
+If your project leverage Knative Eventing as messaging platform, consider using this add-on.
 
 The [Kogito Knative Eventing](../../../quarkus/addons/knative/eventing) addon guarantees that the Kogito project can
 connect to a given [sink](https://knative.dev/docs/developer/eventing/sinks/). It process

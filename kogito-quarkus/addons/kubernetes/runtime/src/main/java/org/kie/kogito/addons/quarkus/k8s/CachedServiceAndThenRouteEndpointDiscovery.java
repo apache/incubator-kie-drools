@@ -1,0 +1,53 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.kogito.addons.quarkus.k8s;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.kie.kogito.addons.k8s.CacheNames;
+import org.kie.kogito.addons.k8s.Endpoint;
+import org.kie.kogito.addons.k8s.KnativeRouteEndpointDiscovery;
+import org.kie.kogito.addons.k8s.KubernetesServiceEndpointDiscovery;
+import org.kie.kogito.addons.k8s.ServiceAndThenRouteEndpointDiscovery;
+
+import io.quarkus.cache.CacheResult;
+
+/**
+ * Cached version of the discovery service.
+ * Each cache can be individually configured in the users' application.
+ *
+ * @see <a href="https://quarkus.io/guides/cache">Quarkus Cache Guide</a>
+ */
+public class CachedServiceAndThenRouteEndpointDiscovery extends ServiceAndThenRouteEndpointDiscovery {
+
+    public CachedServiceAndThenRouteEndpointDiscovery(KubernetesServiceEndpointDiscovery kubeDiscovery, KnativeRouteEndpointDiscovery knativeDiscovery) {
+        super(kubeDiscovery, knativeDiscovery);
+    }
+
+    @Override
+    @CacheResult(cacheName = CacheNames.CACHE_BY_LABELS)
+    public List<Endpoint> findEndpoint(String namespace, Map<String, String> labels) {
+        return super.findEndpoint(namespace, labels);
+    }
+
+    @Override
+    @CacheResult(cacheName = CacheNames.CACHE_BY_NAME)
+    public Optional<Endpoint> findEndpoint(String namespace, String name) {
+        return super.findEndpoint(namespace, name);
+    }
+}

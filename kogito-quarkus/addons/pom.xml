@@ -34,6 +34,7 @@
         <module>explainability</module>
         <module>jobs</module>
         <module>knative</module>
+        <module>kubernetes</module>
         <module>mail</module>
         <module>persistence</module>
         <module>task-notification</module>

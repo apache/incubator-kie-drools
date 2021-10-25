@@ -12,6 +12,7 @@ In this module you will find all the add-ons supported by the community for Spri
 | Events Rules         | kogito-addons-springboot-events-rules | 1.12.0 |
 | Explainability       | kogito-addons-springboot-explainability | 0.15.0 |
 | Jobs Management      | kogito-addons-springboot-jobs-management | 0.6.0 |
+| Kubernetes           | kogito-addons-springboot-kubernetes | 1.13.0 |
 | Mail                 | kogito-addons-springboot-mail | 1.6.0 |
 | Messaging            | kogito-addons-springboot-messaging | 1.0.0 |
 | Monitoring Elastic   | kogito-addons-springboot-monitoring-elastic | 1.2.0 |

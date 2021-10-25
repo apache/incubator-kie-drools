@@ -1,0 +1,10 @@
+name: Kogito Add-On Kubernetes
+description: Adds support for Kubernetes integrations within Kogito engine.
+metadata:
+  keywords:
+    - kogito
+    - kubernetes
+    - knative
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"
