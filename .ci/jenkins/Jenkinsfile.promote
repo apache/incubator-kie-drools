@@ -78,7 +78,7 @@ pipeline {
                         prepareForPR()
 
                         maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
-                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie7', getDroolsSnapshotVersion())
+                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie', getDroolsSnapshotVersion())
 
                         commitAndCreatePR()
                     }

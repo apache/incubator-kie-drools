@@ -94,7 +94,7 @@ pipeline {
             steps {
                 script {
                     maven.mvnVersionsSet(getMavenCommand(), getProjectVersion(), !isRelease())
-                    maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie7', getDroolsVersion())
+                    maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie', getDroolsVersion())
                 }
             }
         }
