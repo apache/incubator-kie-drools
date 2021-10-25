@@ -31,8 +31,6 @@ public interface ReteEvaluator {
 
     InternalKnowledgeBase getKnowledgeBase();
 
-    InternalAgenda getAgenda();
-
     ActivationsManager getActivationsManager();
 
     GlobalResolver getGlobalResolver();
