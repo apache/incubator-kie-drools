@@ -39,10 +39,9 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
     private final BavetIndexFactory indexFactory;
 
     public BavetJoinBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            boolean isLeftBridge,
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent, boolean isLeftBridge,
             BiFunction<A, B, Object[]> mapping, BavetIndexFactory indexFactory) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.isLeftBridge = isLeftBridge;
         this.mapping = mapping;

@@ -56,21 +56,21 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint startTimeLimitsFrom(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> taskAssignment.getStartPeriod() < taskAssignment.getTask().getStartPeriodRangeFrom())
                 .penalizeLong("Task starts too early", HardMediumSoftLongScore.ONE_HARD,
                         taskAssignment -> taskAssignment.getTask().getStartPeriodRangeFrom() - taskAssignment.getStartPeriod());
     }
 
     protected Constraint startTimeLimitsTo(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> taskAssignment.getStartPeriod() >= taskAssignment.getTask().getStartPeriodRangeTo())
                 .penalizeLong("Task starts too late", HardMediumSoftLongScore.ONE_HARD,
                         taskAssignment -> taskAssignment.getStartPeriod() - taskAssignment.getTask().getStartPeriodRangeTo());
     }
 
     protected Constraint maximumCapacity(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .join(Resource.class,
                         filtering((taskAssignment, resource) -> taskAssignment.getTask().getUsage(resource) > 0))
                 .join(Period.class,
@@ -86,7 +86,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint activeMachinePowerCost(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Period.class)
+        return constraintFactory.forEach(Period.class)
                 .join(Machine.class)
                 .ifExists(TaskAssignment.class,
                         equal((period, machine) -> machine, TaskAssignment::getMachine),
@@ -98,7 +98,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint activeMachineSpinUpAndDownCost(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Machine.class)
+        return constraintFactory.forEach(Machine.class)
                 .ifExists(TaskAssignment.class,
                         equal(Function.identity(), TaskAssignment::getMachine))
                 .penalizeLong("Active machine spin up and down cost", HardMediumSoftLongScore.ONE_MEDIUM,
@@ -106,7 +106,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint idleCosts(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .groupBy(TaskAssignment::getMachine,
                         consecutiveIntervals(TaskAssignment::getStartPeriod, TaskAssignment::getEndPeriod, (a, b) -> b - a))
                 .flattenLast(ConsecutiveIntervalInfo::getBreaks)
@@ -125,7 +125,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint taskPowerCost(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .join(Period.class,
                         lessThanOrEqual(TaskAssignment::getStartPeriod, Period::getIndex),
                         greaterThan(TaskAssignment::getEndPeriod, Period::getIndex))
@@ -135,7 +135,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint startEarly(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .penalize("Prefer early task start", HardMediumSoftLongScore.ONE_SOFT,
                         TaskAssignment::getStartPeriod);
     }

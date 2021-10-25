@@ -20,6 +20,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 public final class DroolsConstraintFactory<Solution_>
@@ -42,9 +43,15 @@ public final class DroolsConstraintFactory<Solution_>
     }
 
     @Override
+    public <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> sourceClass) {
+        assertValidFromType(sourceClass);
+        return new DroolsFromUniConstraintStream<>(this, sourceClass, RetrievalSemantics.STANDARD);
+    }
+
+    @Override
     public <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass) {
         assertValidFromType(fromClass);
-        return new DroolsFromUniConstraintStream<>(this, fromClass);
+        return new DroolsFromUniConstraintStream<>(this, fromClass, RetrievalSemantics.LEGACY);
     }
 
     // ************************************************************************

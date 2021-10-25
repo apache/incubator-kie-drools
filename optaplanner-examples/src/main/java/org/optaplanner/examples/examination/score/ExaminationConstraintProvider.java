@@ -64,7 +64,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint conflictingExamsInSamePeriod(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TopicConflict.class)
+        return constraintFactory.forEach(TopicConflict.class)
                 .join(Exam.class,
                         equal(TopicConflict::getLeftTopic, Exam::getTopic),
                         filtering((topicConflict, leftExam) -> leftExam.getPeriod() != null))
@@ -76,13 +76,13 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint periodDurationTooShort(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Exam.class)
+        return constraintFactory.forEach(Exam.class)
                 .filter(exam -> exam.getTopicDuration() > exam.getPeriodDuration())
                 .penalizeConfigurable("periodDurationTooShort", Exam::getTopicStudentSize);
     }
 
     protected Constraint roomCapacityTooSmall(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Exam.class)
+        return constraintFactory.forEach(Exam.class)
                 //  Period is genuine planning variable on LeadingExam, shadow var on FollowingExam, nothing on Exam.
                 .filter(exam -> exam.getPeriod() != null)
                 .groupBy(Exam::getRoom, Exam::getPeriod, sum(Exam::getTopicStudentSize))
@@ -92,7 +92,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint periodPenaltyExamCoincidence(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(PeriodPenalty.class)
+        return constraintFactory.forEach(PeriodPenalty.class)
                 .filter(periodPenalty -> periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.EXAM_COINCIDENCE)
                 .join(Exam.class,
                         equal(PeriodPenalty::getLeftTopic, Exam::getTopic),
@@ -107,7 +107,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint periodPenaltyExclusion(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(PeriodPenalty.class)
+        return constraintFactory.forEach(PeriodPenalty.class)
                 .filter(periodPenalty -> periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.EXCLUSION)
                 .join(Exam.class,
                         equal(PeriodPenalty::getLeftTopic, Exam::getTopic),
@@ -121,7 +121,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint periodPenaltyAfter(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(PeriodPenalty.class)
+        return constraintFactory.forEach(PeriodPenalty.class)
                 .filter(periodPenalty -> periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.AFTER)
                 .join(Exam.class,
                         equal(PeriodPenalty::getLeftTopic, Exam::getTopic),
@@ -135,7 +135,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint roomPenaltyExclusive(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(RoomPenalty.class)
+        return constraintFactory.forEach(RoomPenalty.class)
                 .filter(roomPenalty -> roomPenalty.getRoomPenaltyType() == RoomPenaltyType.ROOM_EXCLUSIVE)
                 .join(Exam.class,
                         equal(RoomPenalty::getTopic, Exam::getTopic),
@@ -150,7 +150,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint twoExamsInARow(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TopicConflict.class)
+        return constraintFactory.forEach(TopicConflict.class)
                 .join(Exam.class,
                         equal(TopicConflict::getLeftTopic, Exam::getTopic),
                         filtering((topicConflict, leftExam) -> leftExam.getPeriod() != null))
@@ -163,7 +163,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint twoExamsInADay(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TopicConflict.class)
+        return constraintFactory.forEach(TopicConflict.class)
                 .join(Exam.class,
                         equal(TopicConflict::getLeftTopic, Exam::getTopic),
                         filtering((topicConflict, leftExam) -> leftExam.getPeriod() != null))
@@ -177,7 +177,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint periodSpread(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(ExaminationConstraintConfiguration.class)
+        return constraintFactory.forEach(ExaminationConstraintConfiguration.class)
                 .join(TopicConflict.class)
                 .join(Exam.class,
                         equal((config, topicConflict) -> topicConflict.getLeftTopic(), Exam::getTopic),
@@ -194,7 +194,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
 
     protected Constraint mixedDurations(ConstraintFactory constraintFactory) {
         // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalties (for 100&150 and 100&200).
-        return constraintFactory.from(Exam.class)
+        return constraintFactory.forEach(Exam.class)
                 //  Period is genuine planning variable on LeadingExam, shadow var on FollowingExam, nothing on Exam.
                 .filter(leftExam -> leftExam.getPeriod() != null)
                 .ifNotExistsOther(Exam.class,
@@ -215,13 +215,13 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint frontLoad(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Exam.class)
+        return constraintFactory.forEach(Exam.class)
                 .filter(exam -> exam.isTopicFrontLoadLarge() && exam.isPeriodFrontLoadLast())
                 .penalizeConfigurable("frontLoad");
     }
 
     protected Constraint periodPenalty(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Period.class)
+        return constraintFactory.forEach(Period.class)
                 .filter(period -> period.getPenalty() != 0)
                 .join(Exam.class,
                         equal(Function.identity(), Exam::getPeriod))
@@ -229,7 +229,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint roomPenalty(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Room.class)
+        return constraintFactory.forEach(Room.class)
                 .filter(room -> room.getPenalty() != 0)
                 .join(Exam.class,
                         equal(Function.identity(), Exam::getRoom))

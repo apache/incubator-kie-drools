@@ -33,11 +33,11 @@ import org.optaplanner.core.api.solver.ProblemFactChange;
  * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Collection} of problem facts.
  * A problem fact must not change during solving (except through a {@link ProblemFactChange} event).
  * <p>
- * The constraints in a {@link ConstraintProvider} rely on problem facts for {@link ConstraintFactory#from(Class)}.
+ * The constraints in a {@link ConstraintProvider} rely on problem facts for {@link ConstraintFactory#forEach(Class)}.
  * Alternatively, scoreDRL relies on problem facts too.
  * <p>
  * Do not annotate {@link PlanningEntity planning entities} as problem facts:
- * they are automatically available as facts for {@link ConstraintFactory#from(Class)} or DRL.
+ * they are automatically available as facts for {@link ConstraintFactory#forEach(Class)} or DRL.
  *
  * @see ProblemFactProperty
  */

@@ -34,25 +34,25 @@ public final class DroolsMappingUniConstraintStream<Solution_, NewA>
 
     public <A> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> mapping) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andMap(mapping);
     }
 
     public <A, B> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> mapping) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andMap(mapping);
     }
 
     public <A, B, C> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> mapping) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andMap(mapping);
     }
 
     public <A, B, C, D> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadFunction<A, B, C, D, NewA> mapping) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andMap(mapping);
     }
 

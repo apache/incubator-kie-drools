@@ -44,7 +44,7 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint requiredSkill(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(FlightAssignment.class)
+        return constraintFactory.forEach(FlightAssignment.class)
                 .filter(flightAssignment -> {
                     Skill requiredSkill = flightAssignment.getRequiredSkill();
                     return !flightAssignment.getEmployee().hasSkill(requiredSkill);
@@ -53,20 +53,20 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint flightConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUniquePair(FlightAssignment.class, equal(FlightAssignment::getEmployee),
+        return constraintFactory.forEachUniquePair(FlightAssignment.class, equal(FlightAssignment::getEmployee),
                 overlapping(fa -> fa.getFlight().getDepartureUTCDateTime(),
                         fa -> fa.getFlight().getArrivalUTCDateTime()))
                 .penalize("Flight conflict", HardSoftLongScore.ofHard(10));
     }
 
     private Constraint transferBetweenTwoFlights(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Employee.class)
+        return constraintFactory.forEach(Employee.class)
                 .filter(employee -> employee.countInvalidConnections() > 0)
                 .penalizeLong("Transfer between two flights", HardSoftLongScore.ofHard(1), Employee::countInvalidConnections);
     }
 
     private Constraint employeeUnavailability(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(FlightAssignment.class)
+        return constraintFactory.forEach(FlightAssignment.class)
                 .filter(flightAssignment -> {
                     LocalDate departureUTCDate = flightAssignment.getFlight().getDepartureUTCDate();
                     return !flightAssignment.getEmployee().isAvailable(departureUTCDate);
@@ -75,13 +75,13 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint firstAssignmentDepartingFromHome(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Employee.class)
+        return constraintFactory.forEach(Employee.class)
                 .filter(employee -> !employee.isFirstAssignmentDepartingFromHome())
                 .penalize("First assignment departing from home", HardSoftLongScore.ofSoft(1_000_000));
     }
 
     private Constraint lastAssignmentArrivingAtHome(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Employee.class)
+        return constraintFactory.forEach(Employee.class)
                 .filter(employee -> !employee.isLastAssignmentArrivingAtHome())
                 .penalize("Last assignment arriving at home", HardSoftLongScore.ofSoft(1_000_000));
     }

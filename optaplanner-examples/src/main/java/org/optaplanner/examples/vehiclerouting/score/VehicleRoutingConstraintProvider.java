@@ -42,7 +42,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint vehicleCapacity(ConstraintFactory factory) {
-        return factory.from(Customer.class)
+        return factory.forEach(Customer.class)
                 .groupBy(Customer::getVehicle, sum(Customer::getDemand))
                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
                 .penalizeLong("vehicleCapacity",
@@ -55,14 +55,14 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
-        return factory.from(Customer.class)
+        return factory.forEach(Customer.class)
                 .penalizeLong("distanceToPreviousStandstill",
                         HardSoftLongScore.ONE_SOFT,
                         Customer::getDistanceFromPreviousStandstill);
     }
 
     protected Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
-        return factory.from(Customer.class)
+        return factory.forEach(Customer.class)
                 .filter(customer -> customer.getNextCustomer() == null)
                 .penalizeLong("distanceFromLastCustomerToDepot",
                         HardSoftLongScore.ONE_SOFT,
@@ -74,7 +74,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint arrivalAfterDueTime(ConstraintFactory factory) {
-        return factory.from(TimeWindowedCustomer.class)
+        return factory.forEach(TimeWindowedCustomer.class)
                 .filter(customer -> customer.getArrivalTime() > customer.getDueTime())
                 .penalizeLong("arrivalAfterDueTime",
                         HardSoftLongScore.ONE_HARD,

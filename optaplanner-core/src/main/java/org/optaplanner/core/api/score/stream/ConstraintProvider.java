@@ -28,7 +28,7 @@ public interface ConstraintProvider {
 
     /**
      * This method is called once to create the constraints.
-     * To create a {@link Constraint}, start with {@link ConstraintFactory#from(Class)}.
+     * To create a {@link Constraint}, start with {@link ConstraintFactory#forEach(Class)}.
      *
      * @param constraintFactory never null
      * @return an array of all {@link Constraint constraints} that could apply.

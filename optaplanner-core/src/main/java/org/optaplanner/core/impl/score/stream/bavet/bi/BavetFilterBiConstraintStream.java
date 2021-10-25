@@ -32,7 +32,7 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
     public BavetFilterBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent,
             BiPredicate<A, B> predicate) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.predicate = predicate;
         if (predicate == null) {

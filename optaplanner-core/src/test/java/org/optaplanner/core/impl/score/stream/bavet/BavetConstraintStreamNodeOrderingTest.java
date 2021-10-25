@@ -49,7 +49,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValu
 public class BavetConstraintStreamNodeOrderingTest {
 
     private final Function<ConstraintFactory, Constraint> constraintProvider =
-            factory -> factory.fromUniquePair(TestdataLavishEntity.class,
+            factory -> factory.forEachUniquePair(TestdataLavishEntity.class,
                     equal(TestdataLavishEntity::getEntityGroup))
                     .groupBy((a, b) -> a, ConstraintCollectors.countBi())
                     .filter((a, count) -> count > 0)
@@ -69,7 +69,7 @@ public class BavetConstraintStreamNodeOrderingTest {
     @Test
     void correctNumberOfFromNodes() {
         List<BavetFromUniNode<Object>> lavishEntityFromNodeList = session.findFromNodeList(TestdataLavishEntity.class);
-        assertThat(lavishEntityFromNodeList).hasSize(1); // fromUniquePair() uses just one fromNode.
+        assertThat(lavishEntityFromNodeList).hasSize(1); // forEachUniquePair() uses just one fromNode.
         List<BavetFromUniNode<Object>> lavishValueGroupFromNodeList =
                 session.findFromNodeList(TestdataLavishValueGroup.class);
         assertThat(lavishValueGroupFromNodeList).hasSize(1); // join uses just one fromNode.

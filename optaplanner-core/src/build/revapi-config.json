@@ -28,92 +28,263 @@
       "_comment": "Changes between 8.5.0.Final and the current branch. These changes are desired and thus ignored.",
       "ignore": [
         {
-           "code": "java.method.numberOfParametersChanged",
-           "old": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<Score_> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::buildScoreInliner(boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
-           "new": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<Score_> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::buildScoreInliner(java.util.Map<org.optaplanner.core.api.score.stream.Constraint, Score_>, boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
-           "package": "org.optaplanner.core.api.domain.solution",
-           "classSimpleName": "NullScoreDefinition",
-           "methodName": "buildScoreInliner",
-           "elementKind": "method",
-           "justification": "ScoreInliner was refactored. Not really public API."
-         },
-         {
-           "code": "java.method.addedToInterface",
-           "new": "method <ResultB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, ResultB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::flattenLast(java.util.function.Function<B, java.lang.Iterable<ResultB_>>)",
-           "package": "org.optaplanner.core.api.score.stream.bi",
-           "classSimpleName": "BiConstraintStream",
-           "methodName": "flattenLast",
-           "elementKind": "method",
-           "justification": "Constraint Streams API receives flattening support."
-         },
-         {
-           "code": "java.method.addedToInterface",
-           "new": "method <ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::flattenLast(java.util.function.Function<D, java.lang.Iterable<ResultD_>>)",
-           "package": "org.optaplanner.core.api.score.stream.quad",
-           "classSimpleName": "QuadConstraintStream",
-           "methodName": "flattenLast",
-           "elementKind": "method",
-           "justification": "Constraint Streams API receives flattening support."
-         },
-         {
-           "code": "java.method.addedToInterface",
-           "new": "method <ResultC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, ResultC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::flattenLast(java.util.function.Function<C, java.lang.Iterable<ResultC_>>)",
-           "package": "org.optaplanner.core.api.score.stream.tri",
-           "classSimpleName": "TriConstraintStream",
-           "methodName": "flattenLast",
-           "elementKind": "method",
-           "justification": "Constraint Streams API receives flattening support."
-         },
-         {
-           "code": "java.method.addedToInterface",
-           "new": "method <ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::flattenLast(java.util.function.Function<A, java.lang.Iterable<ResultA_>>)",
-           "package": "org.optaplanner.core.api.score.stream.uni",
-           "classSimpleName": "UniConstraintStream",
-           "methodName": "flattenLast",
-           "elementKind": "method",
-           "justification": "Constraint Streams API receives flattening support."
-         },
-         {
-           "code": "java.annotation.attributeValueChanged",
-           "old": "class org.optaplanner.core.config.solver.SolverConfig",
-           "new": "class org.optaplanner.core.config.solver.SolverConfig",
-           "annotationType": "javax.xml.bind.annotation.XmlType",
-           "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"solverMetricList\"})",
-           "attribute": "propOrder",
-           "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
-           "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"solverMetricList\"}",
-           "package": "org.optaplanner.core.config.solver",
-           "classSimpleName": "SolverConfig",
-           "elementKind": "class",
-           "justification": "Allow enabling metrics via SolverConfig"
-         },
-         {
-            "code": "java.annotation.attributeValueChanged",
-            "old": "class org.optaplanner.core.config.solver.SolverConfig",
-            "new": "class org.optaplanner.core.config.solver.SolverConfig",
-            "annotationType": "javax.xml.bind.annotation.XmlType",
-            "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"metricConfig\"})",
-            "attribute": "propOrder",
-            "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
-            "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"metricConfig\"}",
-            "package": "org.optaplanner.core.config.solver",
-            "classSimpleName": "SolverConfig",
-            "elementKind": "class",
-            "justification": "Allow adding custom tags to metrics via SolverConfig"
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<Score_> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::buildScoreInliner(boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "new": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<Score_> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::buildScoreInliner(java.util.Map<org.optaplanner.core.api.score.stream.Constraint, Score_>, boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "package": "org.optaplanner.core.api.domain.solution",
+          "classSimpleName": "NullScoreDefinition",
+          "methodName": "buildScoreInliner",
+          "elementKind": "method",
+          "justification": "ScoreInliner was refactored. Not really public API."
         },
         {
-            "code": "java.annotation.attributeValueChanged",
-            "old": "class org.optaplanner.core.config.solver.SolverConfig",
-            "new": "class org.optaplanner.core.config.solver.SolverConfig",
-            "annotationType": "javax.xml.bind.annotation.XmlType",
-            "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"monitoringConfig\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"})",
-            "attribute": "propOrder",
-            "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
-            "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"monitoringConfig\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
-            "package": "org.optaplanner.core.config.solver",
-            "classSimpleName": "SolverConfig",
-            "elementKind": "class",
-            "justification": "Add MonitoringConfig to XML"
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, ResultB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::flattenLast(java.util.function.Function<B, java.lang.Iterable<ResultB_>>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "flattenLast",
+          "elementKind": "method",
+          "justification": "Constraint Streams API receives flattening support."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::flattenLast(java.util.function.Function<D, java.lang.Iterable<ResultD_>>)",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "flattenLast",
+          "elementKind": "method",
+          "justification": "Constraint Streams API receives flattening support."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, ResultC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::flattenLast(java.util.function.Function<C, java.lang.Iterable<ResultC_>>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "flattenLast",
+          "elementKind": "method",
+          "justification": "Constraint Streams API receives flattening support."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::flattenLast(java.util.function.Function<A, java.lang.Iterable<ResultA_>>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "flattenLast",
+          "elementKind": "method",
+          "justification": "Constraint Streams API receives flattening support."
+        },
+        {
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"solverMetricList\"})",
+          "attribute": "propOrder",
+          "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
+          "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"solverMetricList\"}",
+          "package": "org.optaplanner.core.config.solver",
+          "classSimpleName": "SolverConfig",
+          "elementKind": "class",
+          "justification": "Allow enabling metrics via SolverConfig"
+        },
+        {
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"metricConfig\"})",
+          "attribute": "propOrder",
+          "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
+          "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"metricConfig\"}",
+          "package": "org.optaplanner.core.config.solver",
+          "classSimpleName": "SolverConfig",
+          "elementKind": "class",
+          "justification": "Allow adding custom tags to metrics via SolverConfig"
+        },
+        {
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"monitoringConfig\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"})",
+          "attribute": "propOrder",
+          "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
+          "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"monitoringConfig\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
+          "package": "org.optaplanner.core.config.solver",
+          "classSimpleName": "SolverConfig",
+          "elementKind": "class",
+          "justification": "Add MonitoringConfig to XML"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.ConstraintFactory::forEach(java.lang.Class<A>)",
+          "package": "org.optaplanner.core.api.score.stream",
+          "classSimpleName": "ConstraintFactory",
+          "methodName": "forEach",
+          "elementKind": "method",
+          "justification": "from() deprecated and replaced by forEach()."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.ConstraintFactory::forEachIncludingNullVars(java.lang.Class<A>)",
+          "package": "org.optaplanner.core.api.score.stream",
+          "classSimpleName": "ConstraintFactory",
+          "methodName": "forEachIncludingNullVars",
+          "elementKind": "method",
+          "justification": "fromUnfiltered() deprecated and replaced by forEachIncludingNullVars()."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <A> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, A> org.optaplanner.core.api.score.stream.ConstraintFactory::forEachUniquePair(java.lang.Class<A>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, A>)",
+          "package": "org.optaplanner.core.api.score.stream",
+          "classSimpleName": "ConstraintFactory",
+          "methodName": "forEachUniquePair",
+          "elementKind": "method",
+          "justification": "fromUniquePair() deprecated and replaced by forEachUniquePair()."
+        },
+        {
+          "code": "java.method.noLongerDefault",
+          "old": "method <C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::join(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "new": "method <C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::join(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "The method is now implemented later."
+        },
+        {
+          "code": "java.method.nowAbstract",
+          "old": "method <C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::join(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "new": "method <C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::join(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "The method is now implemented later."
+        },
+        {
+          "code": "java.method.noLongerDefault",
+          "old": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "new": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "The method is now implemented later."
+        },
+        {
+          "code": "java.method.nowAbstract",
+          "old": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "new": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "The method is now implemented later."
+        },
+        {
+          "code": "java.method.noLongerDefault",
+          "old": "method <B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::join(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "new": "method <B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::join(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "The method is now implemented later."
+        },
+        {
+          "code": "java.method.nowAbstract",
+          "old": "method <B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::join(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "new": "method <B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::join(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "The method is now implemented later."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::ifExistsIncludingNullVars(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "ifExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::ifNotExistsIncludingNullVars(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "ifNotExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <E> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::ifExistsIncludingNullVars(java.lang.Class<E>, org.optaplanner.core.api.score.stream.penta.PentaJoiner<A, B, C, D, E>[])",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "ifExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <E> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::ifNotExistsIncludingNullVars(java.lang.Class<E>, org.optaplanner.core.api.score.stream.penta.PentaJoiner<A, B, C, D, E>[])",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "ifNotExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::ifExistsIncludingNullVars(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "ifExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::ifNotExistsIncludingNullVars(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "ifNotExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::ifExistsIncludingNullVars(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "ifExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::ifNotExistsIncludingNullVars(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "ifNotExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
         }
       ]
     }

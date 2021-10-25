@@ -126,10 +126,14 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         return new UniLeftHandSide<>(patternVariable.filter(predicate), variableFactory);
     }
 
-    private <B> UniLeftHandSide<A> applyJoiners(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner,
-            BiPredicate<A, B> predicate, boolean shouldExist) {
+    private <B> UniLeftHandSide<A> applyJoiners(Class<B> otherFactType, Predicate<B> nullityFilter,
+            AbstractBiJoiner<A, B> joiner, BiPredicate<A, B> predicate, boolean shouldExist) {
         Variable<B> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<B> existencePattern = pattern(toExist);
+        if (nullityFilter != null) {
+            existencePattern = existencePattern.expr("Exclude nulls using " + nullityFilter,
+                    nullityFilter::test);
+        }
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
         }
@@ -159,7 +163,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         return new UniLeftHandSide<>(patternVariable.addDependentExpression(existenceExpression), variableFactory);
     }
 
-    private <B> UniLeftHandSide<A> existsOrNot(Class<B> bClass, BiJoiner<A, B>[] joiners, boolean shouldExist) {
+    private <B> UniLeftHandSide<A> existsOrNot(Class<B> bClass, BiJoiner<A, B>[] joiners, Predicate<B> nullityFilter,
+            boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern.
         AbstractBiJoiner<A, B> finalJoiner = null;
@@ -185,15 +190,15 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 finalFilter = finalFilter == null ? biJoiner.getFilter() : finalFilter.and(biJoiner.getFilter());
             }
         }
-        return applyJoiners(bClass, finalJoiner, finalFilter, shouldExist);
+        return applyJoiners(bClass, nullityFilter, finalJoiner, finalFilter, shouldExist);
     }
 
-    public <B> UniLeftHandSide<A> andExists(Class<B> bClass, BiJoiner<A, B>[] joiners) {
-        return existsOrNot(bClass, joiners, true);
+    public <B> UniLeftHandSide<A> andExists(Class<B> bClass, BiJoiner<A, B>[] joiners, Predicate<B> nullityFilter) {
+        return existsOrNot(bClass, joiners, nullityFilter, true);
     }
 
-    public <B> UniLeftHandSide<A> andNotExists(Class<B> bClass, BiJoiner<A, B>[] joiners) {
-        return existsOrNot(bClass, joiners, false);
+    public <B> UniLeftHandSide<A> andNotExists(Class<B> bClass, BiJoiner<A, B>[] joiners, Predicate<B> nullityFilter) {
+        return existsOrNot(bClass, joiners, nullityFilter, false);
     }
 
     public <B> BiLeftHandSide<A, B> andJoin(UniLeftHandSide<B> right, BiJoiner<A, B> joiner) {

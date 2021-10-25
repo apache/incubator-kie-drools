@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
  * This represents a single constraint in the {@link ConstraintStream} API
  * that impacts the {@link Score}.
  * It is defined in {@link ConstraintProvider#defineConstraints(ConstraintFactory)}
- * by calling {@link ConstraintFactory#from(Class)}.
+ * by calling {@link ConstraintFactory#forEach(Class)}.
  */
 public interface Constraint {
 

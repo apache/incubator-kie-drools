@@ -34,7 +34,7 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
     public BavetGroupBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractConstraintStream<Solution_> parent,
             Function<ResultContainer_, Result_> finisher) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.finisher = finisher;
     }

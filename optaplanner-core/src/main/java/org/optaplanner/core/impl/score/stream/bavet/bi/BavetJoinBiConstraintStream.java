@@ -38,7 +38,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     public BavetJoinBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> leftParent,
             BavetAbstractUniConstraintStream<Solution_, B> rightParent) {
-        super(constraintFactory);
+        super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;
     }

@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 
@@ -45,8 +46,9 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     protected final List<BavetAbstractTriConstraintStream<Solution_, A, B, C>> childStreamList = new ArrayList<>(2);
 
-    public BavetAbstractTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public BavetAbstractTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
     }
 
     // ************************************************************************
@@ -78,6 +80,15 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return join(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return join(constraintFactory.from(otherClass), joiners);
+        }
+    }
+
     // ************************************************************************
     // If (not) exists
     // ************************************************************************
@@ -90,7 +101,21 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @SafeVarargs
     @Override
+    public final <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SafeVarargs
+    @Override
     public final <D> TriConstraintStream<A, B, C> ifNotExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners) {
         throw new UnsupportedOperationException();
     }
 

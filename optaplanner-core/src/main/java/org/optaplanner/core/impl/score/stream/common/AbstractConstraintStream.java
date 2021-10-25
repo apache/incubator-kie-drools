@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.common;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
@@ -30,6 +31,16 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 public abstract class AbstractConstraintStream<Solution_> implements ConstraintStream {
+
+    private final RetrievalSemantics retrievalSemantics;
+
+    protected AbstractConstraintStream(RetrievalSemantics retrievalSemantics) {
+        this.retrievalSemantics = Objects.requireNonNull(retrievalSemantics);
+    }
+
+    public RetrievalSemantics getRetrievalSemantics() {
+        return retrievalSemantics;
+    }
 
     // ************************************************************************
     // Penalize/reward

@@ -28,7 +28,7 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
     }
 
     private Constraint assetsDeviationGreaterThanMaximumPenalty(ConstraintFactory cf) {
-        return cf.from(AssetClassAllocation.class)
+        return cf.forEach(AssetClassAllocation.class)
                 .join(AssetClassAllocation.class)
                 .groupBy(ConstraintCollectors.sumLong(AssetClassAllocation::calculateSquaredStandardDeviationFemtosFromTo))
                 .join(InvestmentParametrization.class)
@@ -39,7 +39,7 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
     }
 
     private Constraint regionQuantityGreaterThanMaximumPenalty(ConstraintFactory cf) {
-        return cf.from(Region.class)
+        return cf.forEach(Region.class)
                 .join(AssetClassAllocation.class, Joiners.equal(Function.identity(), AssetClassAllocation::getRegion))
                 .groupBy((region, asset) -> region, ConstraintCollectors.sumLong((region, asset) -> asset.getQuantityMillis()))
                 .filter((region, totalQuantity) -> totalQuantity > region.getQuantityMillisMaximum())
@@ -48,7 +48,7 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
     }
 
     private Constraint sectorQuantityGreaterThanMaximumPenalty(ConstraintFactory cf) {
-        return cf.from(Sector.class)
+        return cf.forEach(Sector.class)
                 .join(AssetClassAllocation.class, Joiners.equal(Function.identity(), AssetClassAllocation::getSector))
                 .groupBy((sector, asset) -> sector, ConstraintCollectors.sumLong((sector, asset) -> asset.getQuantityMillis()))
                 .filter((sector, totalQuantity) -> totalQuantity > sector.getQuantityMillisMaximum())
@@ -57,7 +57,7 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
     }
 
     private Constraint assetExpectedReturnReward(ConstraintFactory cf) {
-        return cf.from(AssetClassAllocation.class)
+        return cf.forEach(AssetClassAllocation.class)
                 .rewardLong(CONSTRAINT_PACKAGE, "Maximize expected return", HardSoftLongScore.ONE_SOFT,
                         AssetClassAllocation::getQuantifiedExpectedReturnMicros);
     }

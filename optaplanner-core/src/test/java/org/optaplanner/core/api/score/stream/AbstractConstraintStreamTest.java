@@ -90,20 +90,20 @@ public abstract class AbstractConstraintStreamTest {
         }
     }
 
-    protected <Score_ extends Score<Score_>> void assertScore(
-            InnerScoreDirector<TestdataLavishSolution, Score_> scoreDirector, AssertableMatch... assertableMatches) {
+    protected <Solution_> void assertScore(InnerScoreDirector<Solution_, SimpleScore> scoreDirector,
+            AssertableMatch... assertableMatches) {
         scoreDirector.triggerVariableListeners();
-        SimpleScore score = (SimpleScore) scoreDirector.calculateScore();
+        SimpleScore score = scoreDirector.calculateScore();
         int scoreTotal = Arrays.stream(assertableMatches)
                 .mapToInt(assertableMatch -> assertableMatch.score)
                 .sum();
         if (constraintMatchEnabled) {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             for (AssertableMatch assertableMatch : assertableMatches) {
-                Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
+                Map<String, ConstraintMatchTotal<SimpleScore>> constraintMatchTotals =
                         scoreDirector.getConstraintMatchTotalMap();
                 String constraintId = composeConstraintId(constraintPackage, assertableMatch.constraintName);
-                ConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotals.get(constraintId);
+                ConstraintMatchTotal<SimpleScore> constraintMatchTotal = constraintMatchTotals.get(constraintId);
                 if (constraintMatchTotal == null) {
                     throw new IllegalStateException("Requested constraint matches for unknown constraint (" +
                             constraintId + ").");
@@ -114,10 +114,10 @@ public abstract class AbstractConstraintStreamTest {
                             + constraintMatchTotal.getConstraintMatchSet() + ").");
                 }
             }
-            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap =
+            Map<String, ConstraintMatchTotal<SimpleScore>> constraintMatchTotalMap =
                     scoreDirector.getConstraintMatchTotalMap();
-            for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
-                for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+            for (ConstraintMatchTotal<SimpleScore> constraintMatchTotal : constraintMatchTotalMap.values()) {
+                for (ConstraintMatch<SimpleScore> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                     if (Arrays.stream(assertableMatches)
                             .filter(assertableMatch -> assertableMatch.constraintName
                                     .equals(constraintMatch.getConstraintName()))

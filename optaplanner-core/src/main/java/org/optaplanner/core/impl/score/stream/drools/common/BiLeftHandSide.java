@@ -30,6 +30,7 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Stream;
@@ -117,10 +118,14 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 patternVariableB.filter(predicate, patternVariableA.getPrimaryVariable()), variableFactory);
     }
 
-    private <C> BiLeftHandSide<A, B> applyJoiners(Class<C> otherFactType, AbstractTriJoiner<A, B, C> joiner,
-            TriPredicate<A, B, C> predicate, boolean shouldExist) {
+    private <C> BiLeftHandSide<A, B> applyJoiners(Class<C> otherFactType, Predicate<C> nullityFilter,
+            AbstractTriJoiner<A, B, C> joiner, TriPredicate<A, B, C> predicate, boolean shouldExist) {
         Variable<C> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<C> existencePattern = pattern(toExist);
+        if (nullityFilter != null) {
+            existencePattern = existencePattern.expr("Exclude nulls using " + nullityFilter,
+                    nullityFilter::test);
+        }
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
         }
@@ -152,7 +157,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 variableFactory);
     }
 
-    private <C> BiLeftHandSide<A, B> existsOrNot(Class<C> cClass, TriJoiner<A, B, C>[] joiners, boolean shouldExist) {
+    private <C> BiLeftHandSide<A, B> existsOrNot(Class<C> cClass, TriJoiner<A, B, C>[] joiners,
+            Predicate<C> nullityFilter, boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractTriJoiner<A, B, C> finalJoiner = null;
@@ -178,15 +184,15 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
             }
         }
-        return applyJoiners(cClass, finalJoiner, finalFilter, shouldExist);
+        return applyJoiners(cClass, nullityFilter, finalJoiner, finalFilter, shouldExist);
     }
 
-    public <C> BiLeftHandSide<A, B> andExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners) {
-        return existsOrNot(cClass, joiners, true);
+    public <C> BiLeftHandSide<A, B> andExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners, Predicate<C> nullityFilter) {
+        return existsOrNot(cClass, joiners, nullityFilter, true);
     }
 
-    public <C> BiLeftHandSide<A, B> andNotExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners) {
-        return existsOrNot(cClass, joiners, false);
+    public <C> BiLeftHandSide<A, B> andNotExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners, Predicate<C> nullityFilter) {
+        return existsOrNot(cClass, joiners, nullityFilter, false);
     }
 
     public <C> TriLeftHandSide<A, B, C> andJoin(UniLeftHandSide<C> right, TriJoiner<A, B, C> joiner) {

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import static org.optaplanner.core.impl.score.stream.common.RetrievalSemantics.*;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
@@ -32,6 +34,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
@@ -47,13 +50,10 @@ import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
         implements InnerUniConstraintStream<A> {
 
-    public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
     }
-
-    // ************************************************************************
-    // Filter
-    // ************************************************************************
 
     @Override
     public UniConstraintStream<A> filter(Predicate<A> predicate) {
@@ -62,10 +62,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Join
-    // ************************************************************************
 
     @Override
     public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
@@ -82,35 +78,49 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return stream;
     }
 
-    // ************************************************************************
-    // If (not) exists
-    // ************************************************************************
+    @Override
+    public <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        if (getRetrievalSemantics() == STANDARD) {
+            return join(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return join(constraintFactory.from(otherClass), joiners);
+        }
+    }
 
     @SafeVarargs
     @Override
     public final <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        return ifExistsOrNot(true, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() != STANDARD, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    @Override
+    public final <B> UniConstraintStream<A> ifExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        return ifExistsOrNot(true, true, otherClass, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        return ifExistsOrNot(false, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() != STANDARD,
+                otherClass, joiners);
     }
 
     @SafeVarargs
-    private final <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, Class<B> otherClass,
-            BiJoiner<A, B>... joiners) {
+    @Override
+    public final <B> UniConstraintStream<A> ifNotExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        return ifExistsOrNot(false, true, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, boolean shouldIncludeNullVars,
+            Class<B> otherClass, BiJoiner<A, B>... joiners) {
         getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsUniConstraintStream<Solution_, A> stream = new DroolsExistsUniConstraintStream<>(constraintFactory, this,
-                shouldExist, otherClass, joiners);
+                shouldExist, shouldIncludeNullVars, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Group by
-    // ************************************************************************
 
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
@@ -265,10 +275,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return stream;
     }
 
-    // ************************************************************************
-    // Operations with duplicate tuple possibility
-    // ************************************************************************
-
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
@@ -284,10 +290,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Penalize/reward
-    // ************************************************************************
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
@@ -344,10 +346,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
-
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
 
     public abstract UniLeftHandSide<A> getLeftHandSide();
 

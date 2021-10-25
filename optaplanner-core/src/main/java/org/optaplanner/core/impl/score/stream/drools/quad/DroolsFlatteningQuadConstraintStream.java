@@ -28,7 +28,7 @@ public final class DroolsFlatteningQuadConstraintStream<Solution_, A, B, C, NewD
 
     public <D> DroolsFlatteningQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, Function<D, Iterable<NewD>> quadMapping) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andFlattenLast(quadMapping);
     }
 

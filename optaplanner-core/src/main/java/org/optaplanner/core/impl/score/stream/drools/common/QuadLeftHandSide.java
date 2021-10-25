@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.drools.model.BetaIndex4;
@@ -101,10 +102,14 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 variableFactory);
     }
 
-    private <E> QuadLeftHandSide<A, B, C, D> applyJoiners(Class<E> otherFactType,
+    private <E> QuadLeftHandSide<A, B, C, D> applyJoiners(Class<E> otherFactType, Predicate<E> nullityFilter,
             AbstractPentaJoiner<A, B, C, D, E> joiner, PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
         Variable<E> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<E> existencePattern = pattern(toExist);
+        if (nullityFilter != null) {
+            existencePattern = existencePattern.expr("Exclude nulls using " + nullityFilter,
+                    nullityFilter::test);
+        }
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
         }
@@ -139,7 +144,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     }
 
     private <E> QuadLeftHandSide<A, B, C, D> existsOrNot(Class<E> dClass, PentaJoiner<A, B, C, D, E>[] joiners,
-            boolean shouldExist) {
+            Predicate<E> nullityFilter, boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractPentaJoiner<A, B, C, D, E> finalJoiner = null;
@@ -165,15 +170,17 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
             }
         }
-        return applyJoiners(dClass, finalJoiner, finalFilter, shouldExist);
+        return applyJoiners(dClass, nullityFilter, finalJoiner, finalFilter, shouldExist);
     }
 
-    public <E> QuadLeftHandSide<A, B, C, D> andExists(Class<E> dClass, PentaJoiner<A, B, C, D, E>[] joiners) {
-        return existsOrNot(dClass, joiners, true);
+    public <E> QuadLeftHandSide<A, B, C, D> andExists(Class<E> dClass, PentaJoiner<A, B, C, D, E>[] joiners,
+            Predicate<E> nullityFilter) {
+        return existsOrNot(dClass, joiners, nullityFilter, true);
     }
 
-    public <E> QuadLeftHandSide<A, B, C, D> andNotExists(Class<E> dClass, PentaJoiner<A, B, C, D, E>[] joiners) {
-        return existsOrNot(dClass, joiners, false);
+    public <E> QuadLeftHandSide<A, B, C, D> andNotExists(Class<E> dClass, PentaJoiner<A, B, C, D, E>[] joiners,
+            Predicate<E> nullityFilter) {
+        return existsOrNot(dClass, joiners, nullityFilter, false);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(QuadConstraintCollector<A, B, C, D, ?, NewA> collector) {

@@ -28,7 +28,7 @@ public final class DroolsFlatteningTriConstraintStream<Solution_, A, B, NewC>
 
     public <C> DroolsFlatteningTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, Function<C, Iterable<NewC>> triMapping) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andFlattenLast(triMapping);
     }
 

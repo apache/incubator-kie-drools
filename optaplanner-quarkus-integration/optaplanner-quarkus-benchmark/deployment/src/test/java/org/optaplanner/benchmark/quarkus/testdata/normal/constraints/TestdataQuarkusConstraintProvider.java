@@ -28,7 +28,7 @@ public class TestdataQuarkusConstraintProvider implements ConstraintProvider {
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
-                factory.from(TestdataQuarkusEntity.class)
+                factory.forEach(TestdataQuarkusEntity.class)
                         .join(TestdataQuarkusEntity.class, Joiners.equal(TestdataQuarkusEntity::getValue))
                         .filter((a, b) -> a != b)
                         .penalize("Don't assign 2 entities the same value.", SimpleScore.ONE)

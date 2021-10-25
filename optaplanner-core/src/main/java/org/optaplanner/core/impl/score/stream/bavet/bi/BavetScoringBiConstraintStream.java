@@ -81,7 +81,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
             BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
             ToIntBiFunction<A, B> intMatchWeigher, ToLongBiFunction<A, B> longMatchWeigher,
             BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;

@@ -69,7 +69,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
     }
 
     Constraint oneAssignmentPerDatePerTeam(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TeamAssignment.class)
+        return constraintFactory.forEach(TeamAssignment.class)
                 .join(TeamAssignment.class,
                         equal(TeamAssignment::getTeam),
                         equal(TeamAssignment::getDay),
@@ -78,7 +78,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
     }
 
     Constraint unavailabilityPenalty(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(UnavailabilityPenalty.class)
+        return constraintFactory.forEach(UnavailabilityPenalty.class)
                 .ifExists(TeamAssignment.class,
                         equal(UnavailabilityPenalty::getTeam, TeamAssignment::getTeam),
                         equal(UnavailabilityPenalty::getDay, TeamAssignment::getDay))
@@ -86,14 +86,14 @@ public final class TennisConstraintProvider implements ConstraintProvider {
     }
 
     Constraint fairAssignmentCountPerTeam(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TeamAssignment.class)
+        return constraintFactory.forEach(TeamAssignment.class)
                 .groupBy(loadBalance(TeamAssignment::getTeam))
                 .penalize("fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
                         result -> (int) result.getZeroDeviationSquaredSumRootMillis());
     }
 
     Constraint evenlyConfrontationCount(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TeamAssignment.class)
+        return constraintFactory.forEach(TeamAssignment.class)
                 .join(TeamAssignment.class,
                         equal(TeamAssignment::getDay),
                         lessThan(assignment -> assignment.getTeam().getId()))

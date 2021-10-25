@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.score;
+package org.optaplanner.examples.tsp.optional.score;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;

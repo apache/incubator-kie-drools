@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
+import static org.optaplanner.core.impl.score.stream.common.RetrievalSemantics.*;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
@@ -32,6 +34,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
@@ -46,8 +49,9 @@ import org.optaplanner.core.impl.score.stream.quad.InnerQuadConstraintStream;
 public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerQuadConstraintStream<A, B, C, D> {
 
-    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
     }
 
     @Override
@@ -58,37 +62,43 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         return stream;
     }
 
-    // ************************************************************************
-    // If (not) exists
-    // ************************************************************************
-
     @SafeVarargs
     @Override
     public final <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        return ifExistsOrNot(true, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() != STANDARD, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    @Override
+    public final <E> QuadConstraintStream<A, B, C, D> ifExistsIncludingNullVars(Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return ifExistsOrNot(true, true, otherClass, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        return ifExistsOrNot(false, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs
-    private final <E> QuadConstraintStream<A, B, C, D> ifExistsOrNot(boolean shouldExist, Class<E> otherClass,
+    @Override
+    public final <E> QuadConstraintStream<A, B, C, D> ifNotExistsIncludingNullVars(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
+        return ifExistsOrNot(false, true, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private final <E> QuadConstraintStream<A, B, C, D> ifExistsOrNot(boolean shouldExist, boolean shouldIncludeNullVars,
+            Class<E> otherClass, PentaJoiner<A, B, C, D, E>... joiners) {
         getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsExistsQuadConstraintStream<>(
-                constraintFactory, this, shouldExist, otherClass, joiners);
+                constraintFactory, this, shouldExist, shouldIncludeNullVars, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Group by
-    // ************************************************************************
 
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
@@ -252,10 +262,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         return stream;
     }
 
-    // ************************************************************************
-    // Operations with duplicate tuple possibility
-    // ************************************************************************
-
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(QuadFunction<A, B, C, D, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
@@ -271,10 +277,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Penalize/reward
-    // ************************************************************************
 
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
@@ -331,10 +333,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
-
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
 
     public abstract QuadLeftHandSide<A, B, C, D> getLeftHandSide();
 

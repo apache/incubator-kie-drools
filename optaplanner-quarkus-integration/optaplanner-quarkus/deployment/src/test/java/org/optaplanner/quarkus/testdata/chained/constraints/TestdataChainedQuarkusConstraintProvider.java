@@ -29,7 +29,7 @@ public class TestdataChainedQuarkusConstraintProvider implements ConstraintProvi
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
-                factory.from(TestdataChainedQuarkusAnchor.class)
+                factory.forEach(TestdataChainedQuarkusAnchor.class)
                         .ifNotExists(TestdataChainedQuarkusEntity.class,
                                 Joiners.equal((anchor) -> anchor, TestdataChainedQuarkusEntity::getPrevious))
                         .penalize("Assign at least one entity to each anchor.", SimpleScore.ONE)

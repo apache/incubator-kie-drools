@@ -47,7 +47,7 @@ This is an example of the same code, using the Constraint Streams API:
 [source,java,options="nowrap"]
 ----
     private Constraint doNotAssignAnn(ConstraintFactory factory) {
-        return factory.from(Shift.class)
+        return factory.forEach(Shift.class)
                 .filter(Shift::isEmployeeAnn)
                 .penalize("Don't assign Ann", HardSoftScore.ONE_SOFT);
     }
@@ -91,7 +91,7 @@ to the following example.
         }
 
         private Constraint penalizeEveryShift(ConstraintFactory factory) {
-            return factory.from(Shift.class)
+            return factory.forEach(Shift.class)
                 .penalize("Penalize a shift", HardSoftScore.ONE_SOFT);
         }
 
@@ -128,7 +128,7 @@ Therefore, it is called a `UniConstraintStream`:
 [source,java,options="nowrap"]
 ----
     private Constraint doNotAssignAnn(ConstraintFactory factory) {
-        return factory.from(Shift.class) // Returns UniStream<Shift>.
+        return factory.forEach(Shift.class) // Returns UniStream<Shift>.
                 ...
     }
 ----
@@ -139,10 +139,10 @@ Some constraint stream <<constraintStreamsBuildingBlocks, building blocks>> can 
 [source,java,options="nowrap"]
 ----
     private Constraint doNotAssignAnn(ConstraintFactory factory) {
-        return factory.from(Shift.class) // Returns Uni<Shift>.
-                .join(Employee.class)    // Returns Bi<Shift, Employee>.
-                .join(DayOff.class)      // Returns Tri<Shift, Employee, DayOff>.
-                .join(Country.class)     // Returns Quad<Shift, Employee, DayOff, Country>.
+        return factory.forEach(Shift.class) // Returns Uni<Shift>.
+                .join(Employee.class)       // Returns Bi<Shift, Employee>.
+                .join(DayOff.class)         // Returns Tri<Shift, Employee, DayOff>.
+                .join(Country.class)        // Returns Quad<Shift, Employee, DayOff, Country>.
                 ...
     }
 ----
@@ -152,8 +152,8 @@ The latter can also decrease stream cardinality:
 [source,java,options="nowrap"]
 ----
     private Constraint doNotAssignAnn(ConstraintFactory factory) {
-        return factory.from(Shift.class) // Returns UniStream<Shift>.
-                .join(Employee.class) // Returns BiStream<Shift, Employee>.
+        return factory.forEach(Shift.class)             // Returns UniStream<Shift>.
+                .join(Employee.class)                   // Returns BiStream<Shift, Employee>.
                 .groupBy((shift, employee) -> employee) // Returns UniStream<Employee>.
                 ...
     }
@@ -178,13 +178,13 @@ However, with <<constraintStreamsMappingTuples,tuple mapping>> effectively infin
 [source,java,options="nowrap"]
 ----
     private Constraint pentaStreamExample(ConstraintFactory factory) {
-        return factory.from(Shift.class) // UniConstraintStream<Shift>
-                .join(Shift.class)       // BiConstraintStream<Shift, Shift>
-                .join(Shift.class)       // TriConstraintStream<Shift, Shift, Shift>
-                .join(Shift.class)       // QuadConstraintStream<Shift, Shift, Shift, Shift>
-                .map(Tuple::of)          // UniConstraintStream<Tuple<Shift, Shift, Shift, Shift>>
-                .join(Shift.class)       // BiConstraintStream<Tuple<Shift, Shift, Shift, Shift>, Shift>
-                ...                      // This BiConstraintStream carries 5 Shift elements.
+        return factory.forEach(Shift.class) // UniConstraintStream<Shift>
+                .join(Shift.class)          // BiConstraintStream<Shift, Shift>
+                .join(Shift.class)          // TriConstraintStream<Shift, Shift, Shift>
+                .join(Shift.class)          // QuadConstraintStream<Shift, Shift, Shift, Shift>
+                .map(Tuple::of)             // UniConstraintStream<Tuple<Shift, Shift, Shift, Shift>>
+                .join(Shift.class)          // BiConstraintStream<Tuple<Shift, Shift, Shift, Shift>, Shift>
+                ...                         // This BiConstraintStream carries 5 Shift elements.
     }
 ----
 
@@ -199,13 +199,13 @@ Should a custom implementation be necessary, see <<constraintStreamsDesigningMap
 == Building blocks
 
 Constraint streams are chains of different operations, called building blocks.
-Each constraint stream starts with a `from(...)` building block and is terminated by either a penalty or a reward.
+Each constraint stream starts with a `forEach(...)` building block and is terminated by either a penalty or a reward.
 The following example shows the simplest possible constraint stream:
 
 [source,java,options="nowrap"]
 ----
     private Constraint penalizeInitializedShifts(ConstraintFactory factory) {
-        return factory.from(Shift.class)
+        return factory.forEach(Shift.class)
                 .penalize("Initialized shift", HardSoftScore.ONE_SOFT);
     }
 ----
@@ -213,25 +213,35 @@ The following example shows the simplest possible constraint stream:
 This constraint stream penalizes each known and initialized instance of `Shift`.
 
 [[constraintStreamsFrom]]
-=== From
+[[constraintStreamsForEach]]
+=== ForEach
 
-The `.from(T)` building block selects every `T` instance that
+The `.forEach(T)` building block selects every `T` instance that
 is in a xref:planner-configuration/planner-configuration.adoc#problemFacts[problem fact collection]
 or a xref:planner-configuration/planner-configuration.adoc#planningEntitiesOfASolution[planning entity collection]
-and has no `null` planning variables.
+and has no `null` genuine planning variables.
 
-To include instances with a `null` planning variable,
-especially if you use xref:planner-configuration/planner-configuration.adoc#nullablePlanningVariable[nullable] variables,
-replace the `from()` building block by `fromUnfiltered()`:
+To include instances with a `null` genuine planning variable,
+replace the `forEach()` building block by `forEachIncludingNullVars()`:
 
 [source,java,options="nowrap"]
 ----
     private Constraint penalizeAllShifts(ConstraintFactory factory) {
-        return factory.fromUnfiltered(Shift.class)
+        return factory.forEachIncludingNullVars(Shift.class)
                 .penalize("A shift", HardSoftScore.ONE_SOFT);
     }
 ----
 
+[NOTE]
+====
+The `forEach()` building block has a legacy counterpart, `from()`.
+This alternative approach included instances based on the initialization status of their genuine planning variables.
+As an unwanted consequence,
+`from()` behaves unexpectedly for xref:planner-configuration/planner-configuration.adoc#nullablePlanningVariable[nullable variables].
+These are considered initialized even when `null`,
+and therefore this legacy method could still return entities with `null` variables.
+`from()`, `fromUnfiltered()` and `fromUniquePair()` are now deprecated and will be removed in a future major version of OptaPlanner.
+====
 
 [[constraintStreamsPenaltiesRewards]]
 === Penalties and rewards
@@ -285,7 +295,7 @@ The following constraint stream removes all of Beth's shifts from all `Shift` ma
 [source,java,options="nowrap"]
 ----
     private Constraint penalizeAnnShifts(ConstraintFactory factory) {
-        return factory.from(Shift.class)
+        return factory.forEach(Shift.class)
                 .filter(shift -> shift.getEmployeeName().equals("Ann"))
                 .penalize("Ann's shift", SimpleScore.ONE);
     }
@@ -297,7 +307,7 @@ of `Shift` and `DayOff`:
 [source,java,options="nowrap"]
 ----
     private Constraint penalizeShiftsOnOffDays(ConstraintFactory factory) {
-        return factory.from(Shift.class)
+        return factory.forEach(Shift.class)
                 .join(DayOff.class)
                 .filter((shift, dayOff) -> shift.date == dayOff.date && shift.employee == dayOff.employee)
                 .penalize("Shift on an off-day", SimpleScore.ONE);
@@ -352,7 +362,7 @@ For example:
     ...
 
     private Constraint shiftOnDayOff(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Shift.class)
+        return constraintFactory.forEach(Shift.class)
                 .join(DayOff.class,
                     equal(Shift::getDate, DayOff::getDate),
                     equal(Shift::getEmployee, DayOff::getEmployee))
@@ -401,7 +411,7 @@ every computer whose processes consume more power than is available.
     ...
 
     private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class)
+        return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
                 .penalize("requiredCpuPowerTotal",
@@ -443,7 +453,7 @@ don't.
 [source,java,options="nowrap"]
 ----
     private Constraint speakerAvailability(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .groupBy(Talk::hasAnyUnavailableSpeaker, count())
                 .penalize("speakerAvailability",
                         HardSoftScore.ONE_HARD,
@@ -467,7 +477,7 @@ occurs. For example, the following use of the collector gives a number of talks 
 [source,java,options="nowrap"]
 ----
     private Constraint roomCount(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .groupBy(Talk::getRoom, countDistinct())
                 .penalize("roomCount",
                         HardSoftScore.ONE_SOFT,
@@ -490,7 +500,7 @@ required by the processes on that computer using the `ConstraintCollectors.sum(.
 [source,java,options="nowrap"]
 ----
     private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class)
+        return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .penalize("requiredCpuPowerTotal",
                         HardSoftScore.ONE_SOFT,
@@ -519,7 +529,7 @@ required by the processes on that computer using the `ConstraintCollectors.avera
 [source,java,options="nowrap"]
 ----
     private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class)
+        return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, average(CloudProcess::getRequiredCpuPower))
                 .penalize("averageCpuPower",
                         HardSoftScore.ONE_SOFT,
@@ -550,7 +560,7 @@ The following example finds a computer which runs the most power-demanding proce
 [source,java,options="nowrap"]
 ----
     private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class)
+        return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, max(CloudProcess::getRequiredCpuPower))
                 .penalize("computerWithBiggestProcess",
                         HardSoftScore.ONE_HARD,
@@ -576,7 +586,7 @@ The following example retrieves all processes running on a computer in a `List`:
 [source,java,options="nowrap"]
 ----
     private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class)
+        return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, toList())
                 .penalize("computerAndItsProcesses",
                         HardSoftScore.ONE_HARD,
@@ -612,7 +622,7 @@ excluding processes which are not long-running:
 [source,java,options="nowrap"]
 ----
     private Constraint computerWithLongRunningProcesses(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class)
+        return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, conditionally(
                         CloudProcess::isLongRunning,
                         count()
@@ -688,7 +698,7 @@ The following example penalizes computers which have at least one process runnin
 [source,java,options="nowrap"]
 ----
     private Constraint runningComputer(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudComputer.class)
+        return constraintFactory.forEach(CloudComputer.class)
                 .ifExists(CloudProcess.class, Joiners.equal(Function.identity(), CloudProcess::getComputer))
                 .penalize("runningComputer",
                         HardSoftScore.ONE_SOFT,
@@ -698,7 +708,7 @@ The following example penalizes computers which have at least one process runnin
 
 Note the use of the `ifExists()` building block.
 On `UniConstraintStream`, the `ifExistsOther()` building block is also available which is useful in situations where the
-`from()` constraint match type is the same as the `ifExists()` type.
+`forEach()` constraint match type is the same as the `ifExists()` type.
 
 Conversely, if the `ifNotExists()` building block is used (as well as the `ifNotExistsOther()` building block on
 `UniConstraintStream`) you can achieve the opposite effect:
@@ -706,7 +716,7 @@ Conversely, if the `ifNotExists()` building block is used (as well as the `ifNot
 [source,java,options="nowrap"]
 ----
     private Constraint unusedComputer(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudComputer.class)
+        return constraintFactory.forEach(CloudComputer.class)
                 .ifNotExists(CloudProcess.class, Joiners.equal(Function.identity(), CloudProcess::getComputer))
                 .penalize("unusedComputer",
                         HardSoftScore.ONE_HARD,
@@ -740,7 +750,7 @@ The result of such mapping is `UniConstraintStream` of the mapped tuples.
 [source,java,options="nowrap"]
 ----
     private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class) // UniConstraintStream<CloudProcess>
+        return constraintFactory.forEach(CloudProcess.class) // UniConstraintStream<CloudProcess>
                 .map(CloudProcess::getComputer)           // UniConstraintStream<CloudComputer>
                 ...
     }
@@ -784,7 +794,7 @@ to have the duplicate copies eliminated.
 [source,java,options="nowrap"]
 ----
     private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class) // UniConstraintStream<CloudProcess>
+        return constraintFactory.forEach(CloudProcess.class) // UniConstraintStream<CloudProcess>
                 .map(CloudProcess::getComputer)           // UniConstraintStream<CloudComputer>
                 .distinct()                               // The same, each CloudComputer just once.
                 ...
@@ -809,7 +819,7 @@ This is done by applying a mapping function to the final element in the source t
 [source,java,options="nowrap"]
 ----
     private Constraint requiredJobRoles(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Person.class)                 // UniConstraintStream<Person>
+        return constraintFactory.forEach(Person.class)              // UniConstraintStream<Person>
                 .join(Job.class,
                     equal(Function.identity(), Job::getAssignee))   // BiConstraintStream<Person, Job>
                 .flattenLast(Job::getRequiredRoles)                 // BiConstraintStream<Person, Role>
@@ -844,7 +854,7 @@ Consider the following constraint stream:
 ----
     protected Constraint horizontalConflict(ConstraintFactory factory) {
         return factory
-                .fromUniquePair(Queen.class, equal(Queen::getRowIndex))
+                .forEachUniquePair(Queen.class, equal(Queen::getRowIndex))
                 .penalize("Horizontal conflict", SimpleScore.ONE);
     }
 ----

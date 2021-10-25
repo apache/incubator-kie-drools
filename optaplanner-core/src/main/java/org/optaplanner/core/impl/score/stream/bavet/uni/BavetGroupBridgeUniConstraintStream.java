@@ -35,9 +35,9 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     private BavetGroupBiConstraintStream<Solution_, NewA, ResultContainer_, NewB> groupStream;
 
     public BavetGroupBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent,
-            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector) {
-        super(constraintFactory);
+            BavetAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
+            UniConstraintCollector<A, ResultContainer_, NewB> collector) {
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;

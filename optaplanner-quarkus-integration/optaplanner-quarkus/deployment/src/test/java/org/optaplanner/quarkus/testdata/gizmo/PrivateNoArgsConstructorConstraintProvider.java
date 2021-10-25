@@ -30,7 +30,7 @@ public class PrivateNoArgsConstructorConstraintProvider implements ConstraintPro
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[] {
-                constraintFactory.fromUniquePair(PrivateNoArgsConstructorEntity.class,
+                constraintFactory.forEachUniquePair(PrivateNoArgsConstructorEntity.class,
                         Joiners.equal(p -> p.value))
                         .penalize("Same value", SimpleScore.ONE)
         };

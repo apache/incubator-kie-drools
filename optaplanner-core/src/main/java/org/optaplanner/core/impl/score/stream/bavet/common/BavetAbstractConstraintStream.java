@@ -24,13 +24,17 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
+    // TODO make private
     protected final BavetConstraintFactory<Solution_> constraintFactory;
 
-    public BavetAbstractConstraintStream(BavetConstraintFactory<Solution_> constraintFactory) {
+    public BavetAbstractConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(retrievalSemantics);
         this.constraintFactory = constraintFactory;
     }
 

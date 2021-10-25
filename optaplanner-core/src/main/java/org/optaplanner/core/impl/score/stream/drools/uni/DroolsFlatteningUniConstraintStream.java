@@ -28,7 +28,7 @@ public final class DroolsFlatteningUniConstraintStream<Solution_, NewA>
 
     public <A> DroolsFlatteningUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, Iterable<NewA>> mapping) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andFlattenLast(mapping);
     }
 

@@ -29,7 +29,7 @@ public final class DroolsFilterBiConstraintStream<Solution_, A, B>
 
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.leftHandSide = parent.getLeftHandSide().andFilter(biPredicate);
     }

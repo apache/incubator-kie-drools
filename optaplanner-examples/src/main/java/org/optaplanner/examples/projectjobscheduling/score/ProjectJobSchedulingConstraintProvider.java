@@ -42,7 +42,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
     }
 
     protected Constraint nonRenewableResourceCapacity(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(ResourceRequirement.class)
+        return constraintFactory.forEach(ResourceRequirement.class)
                 .filter(resource -> !resource.isResourceRenewable())
                 .join(Allocation.class,
                         Joiners.equal(ResourceRequirement::getExecutionMode, Allocation::getExecutionMode))
@@ -55,7 +55,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
     }
 
     protected Constraint renewableResourceCapacity(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(ResourceRequirement.class)
+        return constraintFactory.forEach(ResourceRequirement.class)
                 .filter(ResourceRequirement::isResourceRenewable)
                 .join(Allocation.class,
                         Joiners.equal(ResourceRequirement::getExecutionMode, Allocation::getExecutionMode))
@@ -72,7 +72,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
     }
 
     protected Constraint totalProjectDelay(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Allocation.class)
+        return constraintFactory.forEach(Allocation.class)
                 .filter(allocation -> allocation.getEndDate() != null)
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
                 .impact("Total project delay",
@@ -81,7 +81,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
     }
 
     protected Constraint totalMakespan(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Allocation.class)
+        return constraintFactory.forEach(Allocation.class)
                 .filter(allocation -> allocation.getEndDate() != null)
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
                 .groupBy(ConstraintCollectors.max(Allocation::getEndDate))

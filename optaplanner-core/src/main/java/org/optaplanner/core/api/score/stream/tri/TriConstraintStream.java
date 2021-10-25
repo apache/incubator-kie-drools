@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -107,6 +108,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
 
     /**
      * As defined by {@link #join(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherStream never null
      * @param joiner1 never null
@@ -122,6 +124,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
 
     /**
      * As defined by {@link #join(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherStream never null
      * @param joiner1 never null
@@ -138,6 +141,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
 
     /**
      * As defined by {@link #join(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherStream never null
      * @param joiner1 never null
@@ -156,6 +160,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
 
     /**
      * As defined by {@link #join(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -181,6 +186,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of [A, B, C] and D.
      * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different range of D may be selected.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
+     * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
      *
      * @param otherClass never null
@@ -200,6 +210,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of [A, B, C] and D.
      * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different range of D may be selected.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
+     * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, QuadJoiner)}.
      * <p>
      * This method has overloaded methods with multiple {@link QuadJoiner} parameters.
@@ -211,11 +226,12 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      *         is true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner) {
-        return join(getConstraintFactory().from(otherClass), joiner);
+        return join(otherClass, new QuadJoiner[] { joiner });
     }
 
     /**
      * As defined by {@link #join(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -226,11 +242,12 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2);
+        return join(otherClass, new QuadJoiner[] { joiner1, joiner2 });
     }
 
     /**
      * As defined by {@link #join(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -242,11 +259,12 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3);
+        return join(otherClass, new QuadJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
      * As defined by {@link #join(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -259,11 +277,12 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3, QuadJoiner<A, B, C, D> joiner4) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3, joiner4);
+        return join(otherClass, new QuadJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
      * As defined by {@link #join(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -275,9 +294,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @return never null, a stream that matches every combination of [A, B, C] and D for which all the
      *         {@link QuadJoiner joiners} are true
      */
-    default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return join(getConstraintFactory().from(otherClass), joiners);
-    }
+    <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners);
 
     // ************************************************************************
     // If (not) exists
@@ -288,6 +305,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * {@link QuadJoiner} is true (for the properties it extracts from the facts).
      * <p>
      * This method has overloaded methods with multiple {@link QuadJoiner} parameters.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -300,8 +322,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, QuadJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExists(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -316,8 +338,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, QuadJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExists(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -333,8 +355,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, QuadJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExists(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -351,8 +373,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, QuadJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExists(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -367,10 +389,102 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     <D> TriConstraintStream<A, B, C> ifExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners);
 
     /**
+     * Create a new {@link BiConstraintStream} for every tuple of A, B and C where D exists for which the
+     * {@link QuadJoiner} is true (for the properties it extracts from the facts).
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method also includes instances with null variables.
+     * <p>
+     * This method has overloaded methods with multiple {@link QuadJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiner never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D exists for which the
+     *         {@link QuadJoiner} is true
+     */
+    default <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D> joiner) {
+        return ifExistsIncludingNullVars(otherClass, new QuadJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D exists for which the
+     *         {@link QuadJoiner}s are true
+     */
+    default <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D> joiner1, QuadJoiner<A, B, C, D> joiner2) {
+        return ifExistsIncludingNullVars(otherClass, new QuadJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D exists for which the
+     *         {@link QuadJoiner}s are true
+     */
+    default <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D> joiner1, QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3) {
+        return ifExistsIncludingNullVars(otherClass, new QuadJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D exists for which the
+     *         {@link QuadJoiner}s are true
+     */
+    default <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D> joiner1, QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3,
+            QuadJoiner<A, B, C, D> joiner4) {
+        return ifExistsIncludingNullVars(otherClass, new QuadJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link QuadJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiners never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D exists for which the
+     *         {@link QuadJoiner}s are true
+     */
+    <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners);
+
+    /**
      * Create a new {@link BiConstraintStream} for every tuple of A, B and C where D does not exist for which the
      * {@link QuadJoiner} is true (for the properties it extracts from the facts).
      * <p>
      * This method has overloaded methods with multiple {@link QuadJoiner} parameters.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -383,8 +497,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, QuadJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -399,8 +513,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, QuadJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -416,8 +530,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, QuadJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -434,8 +548,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, QuadJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -448,6 +562,94 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      *         {@link QuadJoiner}s are true
      */
     <D> TriConstraintStream<A, B, C> ifNotExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners);
+
+    /**
+     * Create a new {@link BiConstraintStream} for every tuple of A, B and C where D does not exist for which the
+     * {@link QuadJoiner} is true (for the properties it extracts from the facts).
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method also includes instances with null variables.
+     * <p>
+     * This method has overloaded methods with multiple {@link QuadJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiner never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D does not exist for which the
+     *         {@link QuadJoiner} is true
+     */
+    default <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D> joiner) {
+        return ifNotExistsIncludingNullVars(otherClass, new QuadJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D does not exist for which the
+     *         {@link QuadJoiner}s are true
+     */
+    default <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D> joiner1, QuadJoiner<A, B, C, D> joiner2) {
+        return ifNotExistsIncludingNullVars(otherClass, new QuadJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D does not exist for which the
+     *         {@link QuadJoiner}s are true
+     */
+    default <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D> joiner1, QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3) {
+        return ifNotExistsIncludingNullVars(otherClass, new QuadJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <D> the type of the fourth matched fact
+     * @return never null, a stream that matches every tuple of A, B and C where D does not exist for which the
+     *         {@link QuadJoiner}s are true
+     */
+    default <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D> joiner1, QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3,
+            QuadJoiner<A, B, C, D> joiner4) {
+        return ifNotExistsIncludingNullVars(otherClass, new QuadJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, QuadJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link QuadJoiner} parameters.
+     *
+     * @param <D> the type of the fourth matched fact
+     * @param otherClass never null
+     * @param joiners never null
+     * @return never null, a stream that matches every tuple of A, B and C where D does not exist for which the
+     *         {@link QuadJoiner}s are true
+     */
+    <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners);
 
     // ************************************************************************
     // Group by

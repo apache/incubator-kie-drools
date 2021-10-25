@@ -259,7 +259,7 @@ public class DefaultSolverTest {
         @Override
         public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
             return new Constraint[] {
-                    constraintFactory.from(TestdataEntity.class)
+                    constraintFactory.forEach(TestdataEntity.class)
                             .filter(entity -> entity.getValue().getCode().startsWith("reward"))
                             .reward("rewarding value", HardSoftScore.ONE_SOFT)
             };
@@ -350,7 +350,7 @@ public class DefaultSolverTest {
         @Override
         public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
             return new Constraint[] {
-                    constraintFactory.from(TestdataEntity.class)
+                    constraintFactory.forEach(TestdataEntity.class)
                             .filter(e -> {
                                 throw new IllegalStateException("Thrown exception in constraint provider");
                             })

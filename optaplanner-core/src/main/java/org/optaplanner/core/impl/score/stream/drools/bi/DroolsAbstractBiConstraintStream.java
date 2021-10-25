@@ -15,6 +15,8 @@
  */
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import static org.optaplanner.core.impl.score.stream.common.RetrievalSemantics.*;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -32,6 +34,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.InnerBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
@@ -50,8 +53,9 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractConstraintStream<Solution_>
         implements InnerBiConstraintStream<A, B> {
 
-    public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
     }
 
     @Override
@@ -75,35 +79,48 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         return stream;
     }
 
-    // ************************************************************************
-    // If (Not) Exists
-    // ************************************************************************
+    @Override
+    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        if (getRetrievalSemantics() == STANDARD) {
+            return join(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return join(constraintFactory.from(otherClass), joiners);
+        }
+    }
 
     @SafeVarargs
     @Override
     public final <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return ifExistsOrNot(true, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() != STANDARD, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    @Override
+    public final <C> BiConstraintStream<A, B> ifExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        return ifExistsOrNot(true, true, otherClass, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return ifExistsOrNot(false, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs
-    private final <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, Class<C> otherClass,
-            TriJoiner<A, B, C>... joiners) {
+    @Override
+    public final <C> BiConstraintStream<A, B> ifNotExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        return ifExistsOrNot(false, true, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, boolean shouldIncludeNullVars,
+            Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsBiConstraintStream<Solution_, A, B> stream = new DroolsExistsBiConstraintStream<>(constraintFactory, this,
-                shouldExist, otherClass, joiners);
+                shouldExist, shouldIncludeNullVars, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Group by
-    // ************************************************************************
 
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
@@ -259,10 +276,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         return stream;
     }
 
-    // ************************************************************************
-    // Operations with duplicate tuple possibility
-    // ************************************************************************
-
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(BiFunction<A, B, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
@@ -278,10 +291,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Penalize/reward
-    // ************************************************************************
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
@@ -338,10 +347,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
-
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
 
     public abstract BiLeftHandSide<A, B> getLeftHandSide();
 

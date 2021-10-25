@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 
@@ -24,8 +25,9 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     private final Class<A> fromClass;
     private final UniLeftHandSide<A> leftHandSide;
 
-    public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
-        super(constraintFactory);
+    public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
         this.fromClass = fromClass;
         this.leftHandSide = new UniLeftHandSide<>(fromClass, constraintFactory.getVariableFactory());
     }

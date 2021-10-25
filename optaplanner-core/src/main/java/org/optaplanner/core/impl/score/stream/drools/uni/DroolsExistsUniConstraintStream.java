@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.util.function.Predicate;
+
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
@@ -27,13 +29,14 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
     private final String streamName;
 
     public <B> DroolsExistsUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean shouldExist, Class<B> otherClass,
-            BiJoiner<A, B>... joiners) {
-        super(constraintFactory);
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean shouldExist, boolean shouldIncludeNullVars,
+            Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
+        Predicate<B> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
         this.leftHandSide = shouldExist
-                ? parent.getLeftHandSide().andExists(otherClass, joiners)
-                : parent.getLeftHandSide().andNotExists(otherClass, joiners);
+                ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
     }
 
@@ -55,5 +58,4 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
     public String toString() {
         return streamName + " with " + getChildStreams().size() + " children";
     }
-
 }

@@ -33,7 +33,7 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
     public BavetFilterTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
             TriPredicate<A, B, C> predicate) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.predicate = predicate;
         if (predicate == null) {

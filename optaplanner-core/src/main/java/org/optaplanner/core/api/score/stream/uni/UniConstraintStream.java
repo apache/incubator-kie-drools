@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -177,6 +178,16 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of A and B.
      * <p>
+     * Important: This is faster and more scalable than a {@link #join(Class) join}
+     * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
+     * because it applies hashing and/or indexing on the properties,
+     * so it doesn't create nor checks every combination of A and B.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different range of B may be selected.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
+     * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
      *
      * @param otherClass never null
@@ -196,6 +207,11 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of A and B.
      * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different range of B may be selected.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
+     * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
@@ -206,12 +222,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null, a stream that matches every combination of A and B for which the {@link BiJoiner} is true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner) {
-        return join(getConstraintFactory().from(otherClass), joiner);
+        return join(otherClass, new BiJoiner[] { joiner });
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
-     * filtering joiners.
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -221,12 +237,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      *         are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2);
+        return join(otherClass, new BiJoiner[] { joiner1, joiner2 });
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
-     * filtering joiners.
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -238,12 +254,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3);
+        return join(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
-     * filtering joiners.
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -256,12 +272,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3, joiner4);
+        return join(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner)}. If multiple {@link BiJoiner}s are provided, for performance
-     * reasons, the indexing joiners must be placed before filtering joiners.
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * For performance reasons, the indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -273,9 +289,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null, a stream that matches every combination of A and B for which all the {@link BiJoiner joiners}
      *         are true
      */
-    default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        return join(getConstraintFactory().from(otherClass), joiners);
-    }
+    <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners);
 
     // ************************************************************************
     // If (not) exists
@@ -286,6 +300,11 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -344,8 +363,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
-     * filtering joiners.
+     * As defined by {@link #ifExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -359,8 +378,95 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners);
 
     /**
+     * Create a new {@link UniConstraintStream} for every A where B exists for which the {@link BiJoiner} is true
+     * (for the properties it extracts from both facts).
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method also includes instances with null variables.
+     * <p>
+     * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiner never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B exists for which the {@link BiJoiner} is true
+     */
+    default <B> UniConstraintStream<A> ifExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B> joiner) {
+        return ifExistsIncludingNullVars(otherClass, new BiJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B exists for which all the {@link BiJoiner}s are true
+     */
+    default <B> UniConstraintStream<A> ifExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B> joiner1,
+            BiJoiner<A, B> joiner2) {
+        return ifExistsIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B exists for which all the {@link BiJoiner}s are true
+     */
+    default <B> UniConstraintStream<A> ifExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B> joiner1,
+            BiJoiner<A, B> joiner2,
+            BiJoiner<A, B> joiner3) {
+        return ifExistsIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B exists for which all the {@link BiJoiner}s are true
+     */
+    default <B> UniConstraintStream<A> ifExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B> joiner1,
+            BiJoiner<A, B> joiner2,
+            BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
+        return ifExistsIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiners never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B exists for which all the {@link BiJoiner}s are true
+     */
+    <B> UniConstraintStream<A> ifExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B>... joiners);
+
+    /**
      * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
      * the first.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A exists
@@ -374,6 +480,11 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -385,8 +496,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -399,8 +510,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -415,8 +526,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -432,8 +543,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. If multiple {@link BiJoiner}s are provided,
-     * for performance reasons, the indexing joiners must be placed before filtering joiners.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}.
+     * For performance reasons, the indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -452,10 +563,114 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
+     * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
+     * the first.
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method also includes instances with null variables.
+     *
+     * @param otherClass never null
+     * @return never null, a stream that matches every A where a different A exists
+     */
+    default UniConstraintStream<A> ifExistsOtherIncludingNullVars(Class<A> otherClass) {
+        return ifExistsOtherIncludingNullVars(otherClass, new BiJoiner[0]);
+    }
+
+    /**
+     * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
+     * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method also includes instances with null variables.
+     * <p>
+     * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiner never null
+     * @return never null, a stream that matches every A where a different A exists for which the {@link BiJoiner} is
+     *         true
+     */
+    default UniConstraintStream<A> ifExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A> joiner) {
+        return ifExistsOtherIncludingNullVars(otherClass, new BiJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
+     * before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @return never null, a stream that matches every A where a different A exists for which all the {@link BiJoiner}s
+     *         are true
+     */
+    default UniConstraintStream<A> ifExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A> joiner1,
+            BiJoiner<A, A> joiner2) {
+        return ifExistsOtherIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsOtherIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @return never null, a stream that matches every A where a different A exists for which all the {@link BiJoiner}s
+     *         are true
+     */
+    default UniConstraintStream<A> ifExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A> joiner1,
+            BiJoiner<A, A> joiner2, BiJoiner<A, A> joiner3) {
+        return ifExistsOtherIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsOtherIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @return never null, a stream that matches every A where a different A exists for which all the {@link BiJoiner}s
+     *         are true
+     */
+    default UniConstraintStream<A> ifExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A> joiner1,
+            BiJoiner<A, A> joiner2, BiJoiner<A, A> joiner3, BiJoiner<A, A> joiner4) {
+        return ifExistsOtherIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsOtherIncludingNullVars(Class, BiJoiner)}.
+     * If multiple {@link BiJoiner}s are provided, for performance reasons,
+     * the indexing joiners must be placed before filtering joiners.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiners never null
+     * @return never null, a stream that matches every A where a different A exists for which all the {@link BiJoiner}s
+     *         are true
+     */
+    default UniConstraintStream<A> ifExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A>... joiners) {
+        BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !Objects.equals(a, b));
+        BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
+                .toArray(BiJoiner[]::new);
+        return ifExistsIncludingNullVars(otherClass, allJoiners);
+    }
+
+    /**
      * Create a new {@link UniConstraintStream} for every A where B does not exist for which the {@link BiJoiner} is
      * true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -467,8 +682,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -483,8 +698,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -500,8 +715,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -518,8 +733,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -534,8 +749,97 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners);
 
     /**
+     * Create a new {@link UniConstraintStream} for every A where B does not exist for which the {@link BiJoiner} is
+     * true (for the properties it extracts from both facts).
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method also includes instances with null variables.
+     * <p>
+     * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiner never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B does not exist for which the {@link BiJoiner} is true
+     */
+    default <B> UniConstraintStream<A> ifNotExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B> joiner) {
+        return ifNotExistsIncludingNullVars(otherClass, new BiJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B does not exist for which all the {@link BiJoiner}s are
+     *         true
+     */
+    default <B> UniConstraintStream<A> ifNotExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B> joiner1,
+            BiJoiner<A, B> joiner2) {
+        return ifNotExistsIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B does not exist for which all the {@link BiJoiner}s are
+     *         true
+     */
+    default <B> UniConstraintStream<A> ifNotExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B> joiner1,
+            BiJoiner<A, B> joiner2, BiJoiner<A, B> joiner3) {
+        return ifNotExistsIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B does not exist for which all the {@link BiJoiner}s are
+     *         true
+     */
+    default <B> UniConstraintStream<A> ifNotExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B> joiner1,
+            BiJoiner<A, B> joiner2, BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
+        return ifNotExistsIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiners never null
+     * @param <B> the type of the second matched fact
+     * @return never null, a stream that matches every A where B does not exist for which all the {@link BiJoiner}s are
+     *         true
+     */
+    <B> UniConstraintStream<A> ifNotExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B>... joiners);
+
+    /**
      * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
      * the first.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A does not exist
@@ -549,6 +853,11 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -560,8 +869,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
-     * placed before filtering joiners.
+     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -575,8 +884,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
-     * placed before filtering joiners.
+     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -591,8 +900,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
-     * placed before filtering joiners.
+     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -608,8 +917,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. If multiple {@link BiJoiner}s are provided, for
-     * performance reasons, the indexing joiners must be placed before filtering joiners.
+     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}.
+     * For performance reasons, the indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -625,6 +934,105 @@ public interface UniConstraintStream<A> extends ConstraintStream {
         BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifNotExists(otherClass, allJoiners);
+    }
+
+    /**
+     * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
+     * the first.
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method also includes instances with null variables.
+     *
+     * @param otherClass never null
+     * @return never null, a stream that matches every A where a different A does not exist
+     */
+    default UniConstraintStream<A> ifNotExistsOtherIncludingNullVars(Class<A> otherClass) {
+        return ifNotExistsOtherIncludingNullVars(otherClass, new BiJoiner[0]);
+    }
+
+    /**
+     * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
+     * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method also includes instances with null variables.
+     * <p>
+     * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiner never null
+     * @return never null, a stream that matches every A where a different A does not exist for which the
+     *         {@link BiJoiner} is true
+     */
+    default UniConstraintStream<A> ifNotExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A> joiner) {
+        return ifNotExistsOtherIncludingNullVars(otherClass, new BiJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsOtherIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @return never null, a stream that matches every A where a different A does not exist for which all the
+     *         {@link BiJoiner}s are true
+     */
+    default UniConstraintStream<A> ifNotExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A> joiner1,
+            BiJoiner<A, A> joiner2) {
+        return ifNotExistsOtherIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsOtherIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @return never null, a stream that matches every A where a different A does not exist for which all the
+     *         {@link BiJoiner}s are true
+     */
+    default UniConstraintStream<A> ifNotExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A> joiner1,
+            BiJoiner<A, A> joiner2, BiJoiner<A, A> joiner3) {
+        return ifNotExistsOtherIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsOtherIncludingNullVars(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @return never null, a stream that matches every A where a different A does not exist for which all the
+     *         {@link BiJoiner}s are true
+     */
+    default UniConstraintStream<A> ifNotExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A> joiner1,
+            BiJoiner<A, A> joiner2, BiJoiner<A, A> joiner3, BiJoiner<A, A> joiner4) {
+        return ifNotExistsOtherIncludingNullVars(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsOtherIncludingNullVars(Class, BiJoiner)}.
+     * If multiple {@link BiJoiner}s are provided, for performance reasons,
+     * the indexing joiners must be placed before filtering joiners.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiners never null
+     * @return never null, a stream that matches every A where a different A does not exist for which all the
+     *         {@link BiJoiner}s are true
+     */
+    default UniConstraintStream<A> ifNotExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A>... joiners) {
+        BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !Objects.equals(a, b));
+        BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
+                .toArray(BiJoiner[]::new);
+        return ifNotExistsIncludingNullVars(otherClass, allJoiners);
     }
 
     // ************************************************************************

@@ -81,7 +81,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
             BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
             ToIntTriFunction<A, B, C> intMatchWeigher, ToLongTriFunction<A, B, C> longMatchWeigher,
             TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;

@@ -29,8 +29,7 @@ public final class DroolsJoinBiConstraintStream<Solution_, A, B>
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
             DroolsAbstractUniConstraintStream<Solution_, B> otherStream, BiJoiner<A, B> biJoiner) {
-        super(constraintFactory);
-
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andJoin(otherStream.getLeftHandSide(), biJoiner);
         this.guaranteesDistinct = parent.guaranteesDistinct() && otherStream.guaranteesDistinct();
     }

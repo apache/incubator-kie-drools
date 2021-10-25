@@ -83,10 +83,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // A nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
     Constraint oneShiftPerDay(ConstraintFactory constraintFactory) {
-        return constraintFactory
-                .fromUniquePair(ShiftAssignment.class,
-                        Joiners.equal(ShiftAssignment::getEmployee),
-                        Joiners.equal(ShiftAssignment::getShiftDate))
+        return constraintFactory.forEachUniquePair(ShiftAssignment.class,
+                Joiners.equal(ShiftAssignment::getEmployee),
+                Joiners.equal(ShiftAssignment::getShiftDate))
                 .penalize("oneShiftPerDay", HardSoftScore.ONE_HARD);
     }
 
@@ -94,10 +93,10 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     // Soft constraints
     // ############################################################################
     Constraint minimumAndMaximumNumberOfAssignments(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(MinMaxContractLine.class)
+        return constraintFactory.forEach(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine.getContractLineType() == ContractLineType.TOTAL_ASSIGNMENTS &&
                         minMaxContractLine.isEnabled())
-                .join(constraintFactory.from(ShiftAssignment.class)
+                .join(constraintFactory.forEach(ShiftAssignment.class)
                         .filter(shift -> shift.getEmployee() != null),
                         Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
                 .groupBy((line, shift) -> shift.getEmployee(),
@@ -109,7 +108,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     }
 
     Constraint minimumNumberOfAssignmentsNoAssignments(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(MinMaxContractLine.class)
+        return constraintFactory.forEach(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine.getContractLineType() == ContractLineType.TOTAL_ASSIGNMENTS &&
                         minMaxContractLine.isEnabled())
                 .join(Employee.class,
@@ -123,7 +122,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Min/Max consecutive working days
     Constraint consecutiveWorkingDays(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(MinMaxContractLine.class)
+        return constraintFactory.forEach(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_WORKING_DAYS &&
                         minMaxContractLine.isEnabled())
@@ -141,7 +140,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Min/Max consecutive free days
     Constraint consecutiveFreeDays(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(MinMaxContractLine.class)
+        return constraintFactory.forEach(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
                         minMaxContractLine.isEnabled())
@@ -194,7 +193,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     }
 
     Constraint maximumConsecutiveFreeDaysNoAssignments(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(MinMaxContractLine.class)
+        return constraintFactory.forEach(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
                         minMaxContractLine.isMaximumEnabled())
@@ -212,11 +211,11 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Min/Max consecutive working weekends
     Constraint consecutiveWorkingWeekends(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(MinMaxContractLine.class)
+        return constraintFactory.forEach(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS &&
                         minMaxContractLine.isEnabled())
-                .join(constraintFactory.from(ShiftAssignment.class)
+                .join(constraintFactory.forEach(ShiftAssignment.class)
                         .filter(ShiftAssignment::isWeekend),
                         Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
                 .groupBy((contract, shift) -> shift.getEmployee(),
@@ -231,7 +230,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Complete Weekends
     Constraint startOnNotFirstDayOfWeekend(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(BooleanContractLine.class)
+        return constraintFactory.forEach(BooleanContractLine.class)
                 .filter(booleanContractLine -> booleanContractLine.getContractLineType() == ContractLineType.COMPLETE_WEEKENDS
                         && booleanContractLine.isEnabled())
                 .join(ShiftAssignment.class,
@@ -250,7 +249,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     }
 
     Constraint endOnNotLastDayOfWeekend(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(BooleanContractLine.class)
+        return constraintFactory.forEach(BooleanContractLine.class)
                 .filter(booleanContractLine -> booleanContractLine
                         .getContractLineType() == ContractLineType.COMPLETE_WEEKENDS &&
                         booleanContractLine.isEnabled())
@@ -266,18 +265,18 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .penalize("endOnNotLastDayOfWeekend", HardSoftScore.ONE_SOFT,
                         (employee, contract, shiftList) -> getDistanceToLastDayOfWeekend(employee, shiftList.getLastItem())
                                 * contract.getWeight());
-
     }
 
     // Identical shiftTypes during a weekend
     Constraint identicalShiftTypesDuringWeekend(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(BooleanContractLine.class)
+        return constraintFactory.forEach(BooleanContractLine.class)
                 .filter(booleanContractLine -> booleanContractLine
                         .getContractLineType() == ContractLineType.IDENTICAL_SHIFT_TYPES_DURING_WEEKEND &&
                         booleanContractLine.isEnabled())
-                .join(constraintFactory.from(ShiftDate.class)
+                .join(constraintFactory.forEach(ShiftDate.class)
                         .filter(date -> date.getDayOfWeek() == DayOfWeek.SUNDAY))
-                .join(constraintFactory.from(ShiftAssignment.class).filter(ShiftAssignment::isWeekend),
+                .join(constraintFactory.forEach(ShiftAssignment.class)
+                        .filter(ShiftAssignment::isWeekend),
                         Joiners.equal((contract, date) -> date.getWeekendSundayIndex(), ShiftAssignment::getWeekendSundayIndex),
                         Joiners.equal((contract, date) -> contract.getContract(), ShiftAssignment::getContract))
                 .groupBy((contract, date, sa) -> contract,
@@ -291,7 +290,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Requested day on/off
     Constraint dayOffRequest(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(DayOffRequest.class)
+        return constraintFactory.forEach(DayOffRequest.class)
                 .join(ShiftAssignment.class, Joiners.equal(DayOffRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(DayOffRequest::getShiftDate, ShiftAssignment::getShiftDate))
                 .penalize("dayOffRequest", HardSoftScore.ONE_SOFT,
@@ -299,7 +298,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     }
 
     Constraint dayOnRequest(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(DayOnRequest.class)
+        return constraintFactory.forEach(DayOnRequest.class)
                 .ifNotExists(ShiftAssignment.class, Joiners.equal(DayOnRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(DayOnRequest::getShiftDate, ShiftAssignment::getShiftDate))
                 .penalize("dayOnRequest", HardSoftScore.ONE_SOFT,
@@ -308,7 +307,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Requested shift on/off
     Constraint shiftOffRequest(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(ShiftOffRequest.class)
+        return constraintFactory.forEach(ShiftOffRequest.class)
                 .join(ShiftAssignment.class, Joiners.equal(ShiftOffRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(ShiftOffRequest::getShift, ShiftAssignment::getShift))
                 .penalize("shiftOffRequest", HardSoftScore.ONE_SOFT,
@@ -316,7 +315,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     }
 
     Constraint shiftOnRequest(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(ShiftOnRequest.class)
+        return constraintFactory.forEach(ShiftOnRequest.class)
                 .ifNotExists(ShiftAssignment.class, Joiners.equal(ShiftOnRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(ShiftOnRequest::getShift, ShiftAssignment::getShift))
                 .penalize("shiftOnRequest", HardSoftScore.ONE_SOFT,
@@ -325,7 +324,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Alternative skill
     Constraint alternativeSkill(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(BooleanContractLine.class)
+        return constraintFactory.forEach(BooleanContractLine.class)
                 .filter(booleanContractLine -> booleanContractLine.getContractLineType()
                         .equals(ContractLineType.ALTERNATIVE_SKILL_CATEGORY))
                 .join(ShiftAssignment.class, Joiners.equal(BooleanContractLine::getContract, ShiftAssignment::getContract))
@@ -343,7 +342,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Unwanted patterns
     Constraint unwantedPatternFreeBefore2DaysWithAWorkDayPattern(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(PatternContractLine.class)
+        return constraintFactory.forEach(PatternContractLine.class)
                 .filter(patternContractLine -> patternContractLine.getPattern() instanceof FreeBefore2DaysWithAWorkDayPattern)
                 .join(ShiftDate.class,
                         Joiners.equal(
@@ -366,7 +365,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     }
 
     Constraint unwantedPatternShiftType2DaysPattern(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(PatternContractLine.class)
+        return constraintFactory.forEach(PatternContractLine.class)
                 .filter(patternContractLine -> patternContractLine.getPattern() instanceof ShiftType2DaysPattern)
                 .join(ShiftAssignment.class,
                         Joiners.equal(
@@ -387,7 +386,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     }
 
     Constraint unwantedPatternShiftType3DaysPattern(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(PatternContractLine.class) // ShiftType3DaysPattern
+        return constraintFactory.forEach(PatternContractLine.class) // ShiftType3DaysPattern
                 .filter(patternContractLine -> patternContractLine.getPattern() instanceof ShiftType3DaysPattern)
                 .join(ShiftAssignment.class,
                         Joiners.equal(

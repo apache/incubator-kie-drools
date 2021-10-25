@@ -43,6 +43,7 @@ import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFacto
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 
@@ -51,8 +52,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     protected final List<BavetAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
 
-    public BavetAbstractUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public BavetAbstractUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
     }
 
     // ************************************************************************
@@ -125,6 +127,15 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return joinStream;
     }
 
+    @Override
+    public <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return join(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return join(constraintFactory.from(otherClass), joiners);
+        }
+    }
+
     // ************************************************************************
     // If (not) exists
     // ************************************************************************
@@ -137,7 +148,19 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @SafeVarargs
     @Override
+    public final <B> UniConstraintStream<A> ifExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SafeVarargs
+    @Override
     public final <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <B> UniConstraintStream<A> ifNotExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B>... joiners) {
         throw new UnsupportedOperationException();
     }
 

@@ -57,7 +57,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint roomConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(MeetingAssignment.class)
+        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(leftAssignment -> leftAssignment.getRoom() != null)
                 .join(MeetingAssignment.class,
                         equal(MeetingAssignment::getRoom),
@@ -70,7 +70,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint avoidOvertime(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(MeetingAssignment.class)
+        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
                 .ifNotExists(TimeGrain.class,
                         equal(MeetingAssignment::getLastTimeGrainIndex, TimeGrain::getGrainIndex))
@@ -78,7 +78,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint requiredAttendanceConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUniquePair(RequiredAttendance.class,
+        return constraintFactory.forEachUniquePair(RequiredAttendance.class,
                 equal(RequiredAttendance::getPerson))
                 .join(MeetingAssignment.class,
                         equal((leftRequiredAttendance, rightRequiredAttendance) -> leftRequiredAttendance.getMeeting(),
@@ -101,14 +101,14 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint requiredRoomCapacity(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(MeetingAssignment.class)
+        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getRequiredCapacity() > meetingAssignment.getRoomCapacity())
                 .penalizeConfigurable("Required room capacity",
                         meetingAssignment -> meetingAssignment.getRequiredCapacity() - meetingAssignment.getRoomCapacity());
     }
 
     protected Constraint startAndEndOnSameDay(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(MeetingAssignment.class)
+        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
                 .join(TimeGrain.class,
                         equal(MeetingAssignment::getLastTimeGrainIndex, TimeGrain::getGrainIndex),
@@ -122,7 +122,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint requiredAndPreferredAttendanceConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(RequiredAttendance.class)
+        return constraintFactory.forEach(RequiredAttendance.class)
                 .join(PreferredAttendance.class,
                         equal(RequiredAttendance::getPerson, PreferredAttendance::getPerson))
                 .join(MeetingAssignment.class,
@@ -143,7 +143,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint preferredAttendanceConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUniquePair(PreferredAttendance.class,
+        return constraintFactory.forEachUniquePair(PreferredAttendance.class,
                 equal(PreferredAttendance::getPerson))
                 .join(MeetingAssignment.class,
                         equal((leftAttendance, rightAttendance) -> leftAttendance.getMeeting(),
@@ -167,14 +167,14 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint doMeetingsAsSoonAsPossible(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(MeetingAssignment.class)
+        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
                 .penalizeConfigurable("Do all meetings as soon as possible",
                         MeetingAssignment::getLastTimeGrainIndex);
     }
 
     protected Constraint oneBreakBetweenConsecutiveMeetings(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(MeetingAssignment.class)
+        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
                 .join(MeetingAssignment.class,
                         equal(MeetingAssignment::getLastTimeGrainIndex,
@@ -184,9 +184,9 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint overlappingMeetings(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(MeetingAssignment.class)
+        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
-                .join(constraintFactory.fromUnfiltered(MeetingAssignment.class)
+                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                         .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null),
                         greaterThan((leftAssignment) -> leftAssignment.getMeeting().getId(),
                                 (rightAssignment) -> rightAssignment.getMeeting().getId()),
@@ -198,7 +198,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
 
     // TODO: Unspecified bug marked in DRL
     protected Constraint assignLargerRoomsFirst(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(MeetingAssignment.class)
+        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getRoom() != null)
                 .join(Room.class,
                         lessThan(MeetingAssignment::getRoomCapacity, Room::getCapacity))
@@ -207,7 +207,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint roomStability(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Attendance.class)
+        return constraintFactory.forEach(Attendance.class)
                 .join(Attendance.class,
                         equal(Attendance::getPerson),
                         filtering((leftAttendance,

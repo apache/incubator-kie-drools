@@ -40,7 +40,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
     public BavetJoinTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> leftParent,
             BavetAbstractUniConstraintStream<Solution_, C> rightParent) {
-        super(constraintFactory);
+        super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;
     }

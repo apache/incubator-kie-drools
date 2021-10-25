@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.drools.model.BetaIndex3;
@@ -95,10 +96,14 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable()), variableFactory);
     }
 
-    private <D> TriLeftHandSide<A, B, C> applyJoiners(Class<D> otherFactType, AbstractQuadJoiner<A, B, C, D> joiner,
-            QuadPredicate<A, B, C, D> predicate, boolean shouldExist) {
+    private <D> TriLeftHandSide<A, B, C> applyJoiners(Class<D> otherFactType, Predicate<D> nullityFilter,
+            AbstractQuadJoiner<A, B, C, D> joiner, QuadPredicate<A, B, C, D> predicate, boolean shouldExist) {
         Variable<D> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<D> existencePattern = pattern(toExist);
+        if (nullityFilter != null) {
+            existencePattern = existencePattern.expr("Exclude nulls using " + nullityFilter,
+                    nullityFilter::test);
+        }
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
         }
@@ -133,7 +138,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     private <D> TriLeftHandSide<A, B, C> existsOrNot(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners,
-            boolean shouldExist) {
+            Predicate<D> nullityFilter, boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractQuadJoiner<A, B, C, D> finalJoiner = null;
@@ -159,15 +164,17 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
             }
         }
-        return applyJoiners(dClass, finalJoiner, finalFilter, shouldExist);
+        return applyJoiners(dClass, nullityFilter, finalJoiner, finalFilter, shouldExist);
     }
 
-    public <D> TriLeftHandSide<A, B, C> andExists(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners) {
-        return existsOrNot(dClass, joiners, true);
+    public <D> TriLeftHandSide<A, B, C> andExists(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners,
+            Predicate<D> nullityFilter) {
+        return existsOrNot(dClass, joiners, nullityFilter, true);
     }
 
-    public <D> TriLeftHandSide<A, B, C> andNotExists(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners) {
-        return existsOrNot(dClass, joiners, false);
+    public <D> TriLeftHandSide<A, B, C> andNotExists(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners,
+            Predicate<D> nullityFilter) {
+        return existsOrNot(dClass, joiners, nullityFilter, false);
     }
 
     public <D> QuadLeftHandSide<A, B, C, D> andJoin(UniLeftHandSide<D> right, QuadJoiner<A, B, C, D> joiner) {

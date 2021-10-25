@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.optional.score;
+package org.optaplanner.examples.tsp.score;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -35,15 +35,16 @@ public final class TspConstraintProvider implements ConstraintProvider {
     }
 
     private Constraint distanceToPreviousStandstill(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Visit.class)
+        return constraintFactory.forEach(Visit.class)
                 .penalizeLong("Distance to previous standstill",
                         SimpleLongScore.ONE,
                         Visit::getDistanceFromPreviousStandstill);
     }
 
     private Constraint distanceFromLastVisitToDomicile(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Visit.class)
-                .ifNotExists(Visit.class, Joiners.equal(visit -> visit, Visit::getPreviousStandstill))
+        return constraintFactory.forEach(Visit.class)
+                .ifNotExists(Visit.class,
+                        Joiners.equal(visit -> visit, Visit::getPreviousStandstill))
                 .join(Domicile.class)
                 .penalizeLong("Distance from last visit to domicile",
                         SimpleLongScore.ONE,

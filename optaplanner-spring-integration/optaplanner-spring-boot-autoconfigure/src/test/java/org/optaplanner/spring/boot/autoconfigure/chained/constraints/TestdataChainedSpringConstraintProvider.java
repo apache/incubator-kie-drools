@@ -29,7 +29,7 @@ public class TestdataChainedSpringConstraintProvider implements ConstraintProvid
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
-                factory.from(TestdataChainedSpringAnchor.class)
+                factory.forEach(TestdataChainedSpringAnchor.class)
                         .ifNotExists(TestdataChainedSpringEntity.class,
                                 Joiners.equal((anchor) -> anchor, TestdataChainedSpringEntity::getPrevious))
                         .penalize("Assign at least one entity to each anchor.", SimpleScore.ONE)

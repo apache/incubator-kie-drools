@@ -62,7 +62,7 @@ class FactChangePropagationTest {
         }
 
         private Constraint anchorCannotBeNull(ConstraintFactory constraintFactory) {
-            return constraintFactory.from(TestdataShadowingChainedEntity.class)
+            return constraintFactory.forEach(TestdataShadowingChainedEntity.class)
                     /*
                      * The getCode() is here just to trigger NPE if the filter's predicate has been called before
                      * the AnchorVariableListener has updated the anchor.

@@ -28,7 +28,7 @@ public final class DroolsFlatteningBiConstraintStream<Solution_, A, NewB>
 
     public <B> DroolsFlatteningBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, Function<B, Iterable<NewB>> biMapping) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.leftHandSide = parent.getLeftHandSide().andFlattenLast(biMapping);
     }
 

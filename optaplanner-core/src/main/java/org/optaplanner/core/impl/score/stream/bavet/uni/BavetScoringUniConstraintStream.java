@@ -75,11 +75,10 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
     }
 
     private BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent,
-            BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
-            ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
+            BavetAbstractUniConstraintStream<Solution_, A> parent, BavetConstraint<Solution_> constraint,
+            boolean noMatchWeigher, ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
             Function<A, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;

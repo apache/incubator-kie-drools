@@ -122,26 +122,26 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     // ************************************************************************
 
     protected Constraint roomUnavailableTimeslot(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(Talk::hasUnavailableRoom)
                 .penalizeConfigurable(ROOM_UNAVAILABLE_TIMESLOT, Talk::getDurationInMinutes);
     }
 
     protected Constraint roomConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 equal(Talk::getRoom),
                 overlapping(t -> t.getTimeslot().getStartDateTime(), t -> t.getTimeslot().getEndDateTime()))
                 .penalizeConfigurable(ROOM_CONFLICT, Talk::overlappingDurationInMinutes);
     }
 
     protected Constraint speakerUnavailableTimeslot(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(Talk::hasAnyUnavailableSpeaker)
                 .penalizeConfigurable(SPEAKER_UNAVAILABLE_TIMESLOT, Talk::getDurationInMinutes);
     }
 
     protected Constraint speakerConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 overlapping(t -> t.getTimeslot().getStartDateTime(), t -> t.getTimeslot().getEndDateTime()))
                 .join(Speaker.class,
                         filtering((talk1, talk2, speaker) -> talk1.hasSpeaker(speaker) && talk2.hasSpeaker(speaker)))
@@ -150,7 +150,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint talkPrerequisiteTalks(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .join(Talk.class,
                         greaterThan(t -> t.getTimeslot().getEndDateTime(), t -> t.getTimeslot().getStartDateTime()),
                         filtering((talk1, talk2) -> talk2.getPrerequisiteTalkSet().contains(talk1)))
@@ -158,7 +158,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint talkMutuallyExclusiveTalksTags(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 overlapping(t -> t.getTimeslot().getStartDateTime(), t -> t.getTimeslot().getEndDateTime()),
                 filtering((talk1, talk2) -> talk2.overlappingMutuallyExclusiveTalksTagCount(talk1) > 0))
                 .penalizeConfigurable(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS,
@@ -167,7 +167,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint consecutiveTalksPause(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 filtering((talk1, talk2) -> talk2.hasMutualSpeaker(talk1)))
                 .ifExists(ConferenceConstraintConfiguration.class,
                         filtering((talk1, talk2, config) -> !talk1.getTimeslot().pauseExists(talk2.getTimeslot(),
@@ -176,7 +176,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint crowdControl(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.getCrowdControlRisk() > 0)
                 .join(Talk.class,
                         equal(Talk::getTimeslot))
@@ -187,56 +187,56 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint speakerRequiredTimeslotTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerRequiredTimeslotTagCount() > 0)
                 .penalizeConfigurable(SPEAKER_REQUIRED_TIMESLOT_TAGS,
                         talk -> talk.missingSpeakerRequiredTimeslotTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint speakerProhibitedTimeslotTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingSpeakerProhibitedTimeslotTagCount() > 0)
                 .penalizeConfigurable(SPEAKER_PROHIBITED_TIMESLOT_TAGS,
                         talk -> talk.prevailingSpeakerProhibitedTimeslotTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint talkRequiredTimeslotTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingRequiredTimeslotTagCount() > 0)
                 .penalizeConfigurable(TALK_REQUIRED_TIMESLOT_TAGS,
                         talk -> talk.missingRequiredTimeslotTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint talkProhibitedTimeslotTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingProhibitedTimeslotTagCount() > 0)
                 .penalizeConfigurable(TALK_PROHIBITED_TIMESLOT_TAGS,
                         talk -> talk.prevailingProhibitedTimeslotTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint speakerRequiredRoomTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerRequiredRoomTagCount() > 0)
                 .penalizeConfigurable(SPEAKER_REQUIRED_ROOM_TAGS,
                         talk -> talk.missingSpeakerRequiredRoomTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint speakerProhibitedRoomTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingSpeakerProhibitedRoomTagCount() > 0)
                 .penalizeConfigurable(SPEAKER_PROHIBITED_ROOM_TAGS,
                         talk -> talk.prevailingSpeakerProhibitedRoomTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint talkRequiredRoomTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingRequiredRoomTagCount() > 0)
                 .penalizeConfigurable(TALK_REQUIRED_ROOM_TAGS,
                         talk -> talk.missingRequiredRoomTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint talkProhibitedRoomTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingProhibitedRoomTagCount() > 0)
                 .penalizeConfigurable(TALK_PROHIBITED_ROOM_TAGS,
                         talk -> talk.prevailingProhibitedRoomTagCount() * talk.getDurationInMinutes());
@@ -247,7 +247,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     // ************************************************************************
 
     protected Constraint publishedTimeslot(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.getPublishedTimeslot() != null
                         && talk.getTimeslot() != talk.getPublishedTimeslot())
                 .penalizeConfigurable(PUBLISHED_TIMESLOT);
@@ -258,13 +258,13 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     // ************************************************************************
 
     protected Constraint publishedRoom(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.getPublishedRoom() != null && talk.getRoom() != talk.getPublishedRoom())
                 .penalizeConfigurable(PUBLISHED_ROOM);
     }
 
     protected Constraint themeTrackConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 overlapping(t -> t.getTimeslot().getStartDateTime(), t -> t.getTimeslot().getEndDateTime()),
                 filtering((talk1, talk2) -> talk2.overlappingThemeTrackCount(talk1) > 0))
                 .penalizeConfigurable(THEME_TRACK_CONFLICT,
@@ -273,7 +273,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint themeTrackRoomStability(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 equal(talk -> talk.getTimeslot().getStartDateTime().toLocalDate()),
                 filtering((talk1, talk2) -> talk2.overlappingThemeTrackCount(talk1) > 0))
                 .filter((talk1, talk2) -> talk1.getRoom() != talk2.getRoom())
@@ -283,7 +283,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint sectorConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 overlapping(t -> t.getTimeslot().getStartDateTime(), t -> t.getTimeslot().getEndDateTime()),
                 filtering((talk1, talk2) -> talk2.overlappingSectorCount(talk1) > 0))
                 .penalizeConfigurable(SECTOR_CONFLICT,
@@ -292,7 +292,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint audienceTypeDiversity(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 equal(Talk::getTimeslot),
                 filtering((talk1, talk2) -> talk2.overlappingAudienceTypeCount(talk1) > 0))
                 .rewardConfigurable(AUDIENCE_TYPE_DIVERSITY,
@@ -301,7 +301,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint audienceTypeThemeTrackConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 overlapping(t -> t.getTimeslot().getStartDateTime(), t -> t.getTimeslot().getEndDateTime()),
                 filtering((talk1, talk2) -> talk2.overlappingThemeTrackCount(talk1) > 0),
                 filtering((talk1, talk2) -> talk2.overlappingAudienceTypeCount(talk1) > 0))
@@ -312,7 +312,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint audienceLevelDiversity(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 equal(Talk::getTimeslot))
                 .filter((talk1, talk2) -> talk1.getAudienceLevel() != talk2.getAudienceLevel())
                 .rewardConfigurable(AUDIENCE_LEVEL_DIVERSITY,
@@ -320,7 +320,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint contentAudienceLevelFlowViolation(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .join(Talk.class,
                         lessThan(Talk::getAudienceLevel),
                         greaterThan(talk1 -> talk1.getTimeslot().getEndDateTime(),
@@ -332,7 +332,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint contentConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 overlapping(t -> t.getTimeslot().getStartDateTime(), t -> t.getTimeslot().getEndDateTime()),
                 filtering((talk1, talk2) -> talk2.overlappingContentCount(talk1) > 0))
                 .penalizeConfigurable(CONTENT_CONFLICT,
@@ -341,7 +341,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint languageDiversity(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class,
+        return factory.forEachUniquePair(Talk.class,
                 equal(Talk::getTimeslot))
                 .filter((talk1, talk2) -> !talk1.getLanguage().equals(talk2.getLanguage()))
                 .rewardConfigurable(LANGUAGE_DIVERSITY,
@@ -349,7 +349,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint sameDayTalks(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class)
+        return factory.forEachUniquePair(Talk.class)
                 .filter((talk1,
                         talk2) -> (talk1.overlappingContentCount(talk2) > 0 || talk1.overlappingThemeTrackCount(talk2) > 0)
                                 && !talk1.getTimeslot().isOnSameDayAs(talk2.getTimeslot()))
@@ -359,7 +359,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint popularTalks(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .join(Talk.class,
                         lessThan(Talk::getFavoriteCount),
                         greaterThan(talk -> talk.getRoom().getCapacity()))
@@ -367,56 +367,56 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint speakerPreferredTimeslotTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerPreferredTimeslotTagCount() > 0)
                 .penalizeConfigurable(SPEAKER_PREFERRED_TIMESLOT_TAGS,
                         talk -> talk.missingSpeakerPreferredTimeslotTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint speakerUndesiredTimeslotTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingSpeakerUndesiredTimeslotTagCount() > 0)
                 .penalizeConfigurable(SPEAKER_UNDESIRED_TIMESLOT_TAGS,
                         talk -> talk.prevailingSpeakerUndesiredTimeslotTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint talkPreferredTimeslotTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingPreferredTimeslotTagCount() > 0)
                 .penalizeConfigurable(TALK_PREFERRED_TIMESLOT_TAGS,
                         talk -> talk.missingPreferredTimeslotTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint talkUndesiredTimeslotTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingUndesiredTimeslotTagCount() > 0)
                 .penalizeConfigurable(TALK_UNDESIRED_TIMESLOT_TAGS,
                         talk -> talk.prevailingUndesiredTimeslotTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint speakerPreferredRoomTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerPreferredRoomTagCount() > 0)
                 .penalizeConfigurable(SPEAKER_PREFERRED_ROOM_TAGS,
                         talk -> talk.missingSpeakerPreferredRoomTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint speakerUndesiredRoomTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingSpeakerUndesiredRoomTagCount() > 0)
                 .penalizeConfigurable(SPEAKER_UNDESIRED_ROOM_TAGS,
                         talk -> talk.prevailingSpeakerUndesiredRoomTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint talkPreferredRoomTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingPreferredRoomTagCount() > 0)
                 .penalizeConfigurable(TALK_PREFERRED_ROOM_TAGS,
                         talk -> talk.missingPreferredRoomTagCount() * talk.getDurationInMinutes());
     }
 
     protected Constraint talkUndesiredRoomTags(ConstraintFactory factory) {
-        return factory.from(Talk.class)
+        return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingUndesiredRoomTagCount() > 0)
                 .penalizeConfigurable(TALK_UNDESIRED_ROOM_TAGS,
                         talk -> talk.prevailingUndesiredRoomTagCount() * talk.getDurationInMinutes());

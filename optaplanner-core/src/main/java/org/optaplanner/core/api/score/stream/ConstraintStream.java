@@ -40,7 +40,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
  * An object that passes through constraint streams is called a fact.
  * It's either a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}.
  * <p>
- * A constraint stream is typically created with {@link ConstraintFactory#from(Class)}
+ * A constraint stream is typically created with {@link ConstraintFactory#forEach(Class)}
  * or {@link UniConstraintStream#join(UniConstraintStream, BiJoiner)} by joining another constraint stream}.
  * Constraint streams form a directed, non-cyclic graph, with multiple start nodes (which listen to fact changes)
  * and one end node per {@link Constraint} (which affect the {@link Score}).
@@ -49,7 +49,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
  *
  * <dl>
  * <dt>Constraint Stream</dt>
- * <dd>A chain of different operations, originated by {@link ConstraintFactory#from(Class)} (or similar
+ * <dd>A chain of different operations, originated by {@link ConstraintFactory#forEach(Class)} (or similar
  * methods) and terminated by a penalization or reward operation.</dd>
  * <dt>Operation</dt>
  * <dd>Operations (implementations of {@link ConstraintStream}) are parts of a constraint stream which mutate

@@ -40,24 +40,17 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint horizontalConflict(ConstraintFactory factory) {
-        return factory
-                .fromUniquePair(Queen.class, equal(Queen::getRowIndex))
+        return factory.forEachUniquePair(Queen.class, equal(Queen::getRowIndex))
                 .penalize("Horizontal conflict", SimpleScore.ONE);
-        // fromUniquePair() is syntactic sugar for from().join(..., lessThan(getId())
-        //        return factory.from(Queen.class)
-        //                .join(Queen.class,
-        //                        equal(Queen::getRowIndex),
-        //                        lessThan(Queen::getId))
-        //                .penalize("Horizontal conflict", SimpleScore.ONE);
     }
 
     protected Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
+        return factory.forEachUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
                 .penalize("Ascending diagonal conflict", SimpleScore.ONE);
     }
 
     protected Constraint descendingDiagonalConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Queen.class, equal(Queen::getDescendingDiagonalIndex))
+        return factory.forEachUniquePair(Queen.class, equal(Queen::getDescendingDiagonalIndex))
                 .penalize("Descending diagonal conflict", SimpleScore.ONE);
     }
 

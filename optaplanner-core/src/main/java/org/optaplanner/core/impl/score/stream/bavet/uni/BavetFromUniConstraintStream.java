@@ -22,13 +22,15 @@ import java.util.List;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 
 public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
     private final Class<A> fromClass;
 
-    public BavetFromUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
-        super(constraintFactory);
+    public BavetFromUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, Class<A> fromClass,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
         this.fromClass = fromClass;
         if (fromClass == null) {
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
