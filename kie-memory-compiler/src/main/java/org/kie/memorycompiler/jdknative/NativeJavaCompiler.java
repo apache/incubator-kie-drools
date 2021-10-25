@@ -14,6 +14,19 @@
 
 package org.kie.memorycompiler.jdknative;
 
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.NestingKind;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.FileObject;
+import javax.tools.ForwardingJavaFileManager;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,18 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.NestingKind;
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.FileObject;
-import javax.tools.ForwardingJavaFileManager;
-import javax.tools.JavaFileManager;
-import javax.tools.JavaFileObject;
-import javax.tools.SimpleJavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
 
 import org.kie.memorycompiler.AbstractJavaCompiler;
 import org.kie.memorycompiler.CompilationProblem;
@@ -71,10 +72,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       ClassLoader pClassLoader,
                                       JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-        javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        if (compiler == null) {
-            throw new KieMemoryCompilerException("Cannot find the System's Java compiler. Please use JDK instead of JRE or add drools-ecj dependency to use in memory Eclipse compiler");
-        }
+        JavaCompiler compiler = NativeJavaCompiler.getJavaCompiler();
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             try {
@@ -109,6 +107,26 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             return new CompilationResult( result );
         } catch (IOException e) {
             throw new RuntimeException( e );
+        }
+    }
+
+    private static JavaCompiler getJavaCompiler() {
+        JavaCompiler compiler = null;
+        Throwable cause = null;
+        try {
+            compiler = ToolProvider.getSystemJavaCompiler();
+        } catch (Throwable ex) {
+            cause = ex;
+        }
+        if (compiler != null) {
+            return compiler;
+        }
+        String message = "Cannot find the System's Java compiler. " +
+                "Please use JDK instead of JRE or add drools-ecj dependency to use in memory Eclipse compiler";
+        if (cause == null) {
+            throw new KieMemoryCompilerException(message);
+        } else {
+            throw new KieMemoryCompilerException(message, cause);
         }
     }
 
