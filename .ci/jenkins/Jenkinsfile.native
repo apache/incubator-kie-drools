@@ -26,6 +26,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
+                    checkoutDroolsRepo()
                     checkoutRuntimesRepo()
                     checkoutOptaplannerRepo()
                     checkoutOptaplannerQuickstartsRepo()
