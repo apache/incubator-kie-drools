@@ -163,7 +163,7 @@ public class ConstraintParser {
     }
 
     private void addDeclaration(DrlxExpression drlx, SingleDrlxParseSuccess singleResult, String bindId) {
-        DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprRawClass() );
+        DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprTypeBeforeCoercion() );
         if (drlx.getExpr() instanceof NameExpr) {
             decl.setBoundVariable( drlx.getExpr().toString() );
         }
@@ -541,11 +541,11 @@ public class ConstraintParser {
         TypedExpression left = optLeft.get();
         List<String> usedDeclarationsOnLeft = hasBind ? new ArrayList<>( expressionTyperContext.getUsedDeclarations() ) : null;
 
-        List<Expression> leftPrefixExpresssions = new ArrayList<>();
+        List<Expression> leftPrefixExpressions = new ArrayList<>();
         if (isOrBinary) {
-            leftPrefixExpresssions.addAll(expressionTyperContext.getNullSafeExpressions());
+            leftPrefixExpressions.addAll(expressionTyperContext.getNullSafeExpressions());
             expressionTyperContext.getNullSafeExpressions().clear();
-            leftPrefixExpresssions.addAll(expressionTyperContext.getPrefixExpresssions());
+            leftPrefixExpressions.addAll(expressionTyperContext.getPrefixExpresssions());
             expressionTyperContext.getPrefixExpresssions().clear();
         }
 
@@ -607,7 +607,7 @@ public class ConstraintParser {
         }
 
         if (isOrBinary) {
-            combo = combineExpressions( leftPrefixExpresssions, rightPrefixExpresssions, combo ); // NullSafeExpressions are combined here because the order is complex
+            combo = combineExpressions( leftPrefixExpressions, rightPrefixExpresssions, combo ); // NullSafeExpressions are combined here because the order is complex
         } else {
             combo = combineExpressions( leftTypedExpressionResult, combo ); // NullSafeExpressions will be added later by PatternDSL.addNullSafeExpr() which will be separated AlphaNodes
         }

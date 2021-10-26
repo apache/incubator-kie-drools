@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getDottedTypeDataField;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getTypeDataField;
 

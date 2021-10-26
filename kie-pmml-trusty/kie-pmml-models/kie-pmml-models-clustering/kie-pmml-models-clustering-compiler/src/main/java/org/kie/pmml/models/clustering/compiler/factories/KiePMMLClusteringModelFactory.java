@@ -17,7 +17,6 @@ package org.kie.pmml.models.clustering.compiler.factories;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -33,15 +32,13 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.ComparisonMeasure;
-import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.clustering.Cluster;
 import org.dmg.pmml.clustering.ClusteringField;
 import org.dmg.pmml.clustering.ClusteringModel;
 import org.dmg.pmml.clustering.MissingValueWeights;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.clustering.model.KiePMMLCluster;
@@ -53,7 +50,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.assignExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.methodCallExprFrom;
@@ -74,59 +70,44 @@ public class KiePMMLClusteringModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLClusteringModel getKiePMMLClusteringModel(final List<Field<?>> fields,
-                                                                   final TransformationDictionary transformationDictionary,
-                                                                   final ClusteringModel model,
-                                                                   final String packageName,
-                                                                   final HasClassLoader hasClassLoader) {
-        logger.trace("getKiePMMLClusteringModel {} {}", fields, model);
+    public static KiePMMLClusteringModel getKiePMMLClusteringModel(final CompilationDTO<ClusteringModel> compilationDTO) {
+        logger.trace("getKiePMMLClusteringModel {}", compilationDTO);
 
-        String canonicalClassName = packageName + "." + getSanitizedClassName(model.getModelName());
-
-        Map<String, String> sourcesMap = getKiePMMLClusteringModelSourcesMap(fields, transformationDictionary
-                , model, packageName);
+        Map<String, String> sourcesMap = getKiePMMLClusteringModelSourcesMap(compilationDTO);
         try {
-            Class<?> clusteringModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, canonicalClassName);
+            Class<?> clusteringModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
             return (KiePMMLClusteringModel) clusteringModelClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
     }
 
-    public static Map<String, String> getKiePMMLClusteringModelSourcesMap(final List<Field<?>> fields,
-                                                                          final TransformationDictionary transformationDictionary,
-                                                                          final ClusteringModel model,
-                                                                          final String packageName) {
+    public static Map<String, String> getKiePMMLClusteringModelSourcesMap(final CompilationDTO<ClusteringModel> compilationDTO) {
 
-        logger.trace("getKiePMMLClusteringModelSourcesMap {} {} {}", fields, model, packageName);
+        logger.trace("getKiePMMLClusteringModelSourcesMap {}", compilationDTO);
 
-        String simpleClassName = getSanitizedClassName(model.getModelName());
+        String simpleClassName = compilationDTO.getSimpleClassName();
 
-        CompilationUnit compilationUnit = JavaParserUtils.getKiePMMLModelCompilationUnit(simpleClassName, packageName
-                , KIE_PMML_CLUSTERING_MODEL_TEMPLATE_JAVA, KIE_PMML_CLUSTERING_MODEL_TEMPLATE);
+        CompilationUnit compilationUnit = JavaParserUtils.getKiePMMLModelCompilationUnit(simpleClassName,
+                                                                                         compilationDTO.getPackageName(),
+                                                                                         KIE_PMML_CLUSTERING_MODEL_TEMPLATE_JAVA,
+                                                                                         KIE_PMML_CLUSTERING_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = compilationUnit.getClassByName(simpleClassName)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + simpleClassName));
-        setConstructor(model,
-                       fields,
-                       transformationDictionary,
-                       modelTemplate);
+        setConstructor(compilationDTO, modelTemplate);
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(getFullClassName(compilationUnit), compilationUnit.toString());
 
         return sourcesMap;
     }
 
-    static void setConstructor(final ClusteringModel clusteringModel,
-                               final List<Field<?>> fields,
-                               final TransformationDictionary transformationDictionary,
+    static void setConstructor(final CompilationDTO<ClusteringModel> compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate) {
-        KiePMMLModelCodegenUtils.init(modelTemplate,
-                                      fields,
-                                      transformationDictionary,
-                                      clusteringModel);
+        KiePMMLModelCodegenUtils.init(compilationDTO, modelTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();
+        ClusteringModel clusteringModel = compilationDTO.getModel();
         body.addStatement(assignExprFrom("modelClass", modelClassFrom(clusteringModel.getModelClass())));
 
         clusteringModel.getClusters().stream()

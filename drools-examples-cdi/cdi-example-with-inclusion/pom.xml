@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>cdi-example-with-inclusion</artifactId>
-  <name>Drools CDI Example With Inclusion</name>
+  <name>Drools :: CDI Example With Inclusion</name>
 
   <properties>
     <java.module.name>org.drools.examples.cdi.inclusion</java.module.name>
@@ -42,6 +42,11 @@
       <artifactId>kie-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

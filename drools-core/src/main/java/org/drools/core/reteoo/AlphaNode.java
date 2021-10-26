@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
@@ -82,21 +79,6 @@ public class AlphaNode extends ObjectSource
 
         initDeclaredMask(context);
         hashcode = calculateHashCode();
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        super.readExternal(in);
-        constraint = (AlphaNodeFieldConstraint) in.readObject();
-        declaredMask = (BitMask) in.readObject();
-        inferredMask = (BitMask) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(constraint);
-        out.writeObject(declaredMask);
-        out.writeObject(inferredMask);
     }
 
     /**
@@ -269,15 +251,6 @@ public class AlphaNode extends ObjectSource
 
         public RuleBasePartitionId getPartitionId() {
             return this.sink.getPartitionId();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            // this is a short living adapter class, so no need for serialization
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
-            // this is a short living adapter class, so no need for serialization
         }
 
         public void modifyObject(final InternalFactHandle factHandle,

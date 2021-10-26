@@ -61,13 +61,13 @@
       <dependency>
         <groupId>${groupId}</groupId>
         <artifactId>kie-pmml-models-drools-${artifactModelName}-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-${artifactModelName}-compiler</artifactId>
         <scope>test</scope>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -37,10 +37,9 @@ import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.HasClassLoader;
-import org.kie.pmml.commons.utils.KiePMMLModelUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristic;
 import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristics;
 import org.slf4j.Logger;
@@ -65,35 +64,33 @@ public class KiePMMLCharacteristicsFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLCharacteristics getKiePMMLCharacteristics(final Characteristics characteristics,
-                                                                   final List<Field<?>> fields,
-                                                                   final String packageName,
-                                                                   final HasClassLoader hasClassLoader) {
-        logger.trace("getKiePMMLCharacteristics {} {}", packageName, characteristics);
-        String className = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
-        String fullClassName = packageName + "." + className;
-        final Map<String, String> sourcesMap = getKiePMMLCharacteristicsSourcesMap(characteristics,
-                                                                                   fields,
-                                                                                   className, packageName);
+    public static KiePMMLCharacteristics getKiePMMLCharacteristics(final ScorecardCompilationDTO compilationDTO) {
+        logger.trace("getKiePMMLCharacteristics {} {}", compilationDTO.getPackageName(),
+                     compilationDTO.getCharacteristics());
+        final Map<String, String> sourcesMap = getKiePMMLCharacteristicsSourcesMap(compilationDTO);
         try {
-            Class<?> kiePMMLCharacteristicsClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+            Class<?> kiePMMLCharacteristicsClass = compilationDTO.compileAndLoadCharacteristicsClass(sourcesMap);
             return (KiePMMLCharacteristics) kiePMMLCharacteristicsClass.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
     }
 
-    static Map<String, String> getKiePMMLCharacteristicsSourcesMap(final Characteristics characteristics,
-                                                                   final List<Field<?>> fields,
-                                                                   final String characteristicsClassName,
-                                                                   final String packageName) {
+    static Map<String, String> getKiePMMLCharacteristicsSourcesMap(
+            final ScorecardCompilationDTO compilationDTO) {
+
+        final String characteristicsClassName = compilationDTO.getCharacteristicsClassName();
+        final Characteristics characteristics = compilationDTO.getCharacteristics();
+        final List<Field<?>> fields = compilationDTO.getFields();
+        final String packageName = compilationDTO.getPackageName();
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(characteristicsClassName,
                                                                                  packageName,
                                                                                  KIE_PMML_CHARACTERISTICS_TEMPLATE_JAVA, KIE_PMML_CHARACTERISTICS_TEMPLATE);
         final ClassOrInterfaceDeclaration characteristicsTemplate =
                 cloneCU.getClassByName(characteristicsClassName)
                         .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + KIE_PMML_CHARACTERISTICS_TEMPLATE));
-        setCharacteristicsVariableDeclaration(characteristicsClassName, characteristics, fields, characteristicsTemplate);
+        setCharacteristicsVariableDeclaration(characteristicsClassName, characteristics, fields,
+                                              characteristicsTemplate);
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + characteristicsClassName;
         toReturn.put(fullClassName, cloneCU.toString());

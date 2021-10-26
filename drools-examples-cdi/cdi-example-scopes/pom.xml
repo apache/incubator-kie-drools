@@ -11,11 +11,60 @@
 
   <packaging>jar</packaging>
 
-  <name>cdi-example-scopes</name>
+  <name>Drools :: CDI Examples Scopes</name>
 
   <properties>
     <java.module.name>org.drools.examples.cdi.scopes</java.module.name>
   </properties>
+
+  <dependencyManagement>
+
+    <dependencies>
+      <dependency>
+        <!-- WARNING: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-bom must be defined BEFORE org.jboss.arquillian:arquillian-bom -->
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-bom</artifactId>
+        <version>${version.org.jboss.shrinkwrap.resolver}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${version.org.jboss.arquillian}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.deltaspike.cdictrl</groupId>
+        <artifactId>deltaspike-cdictrl-weld</artifactId>
+        <version>${version.org.apache.deltaspike.core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.core</groupId>
+        <artifactId>deltaspike-core-impl</artifactId>
+        <version>${version.org.apache.deltaspike.core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.cdictrl</groupId>
+        <artifactId>deltaspike-cdictrl-api</artifactId>
+        <version>${version.org.apache.deltaspike.core}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+        <version>${version.org.jboss.arquillian.container.weld}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+        <version>${version.org.jboss.arquillian.container.weld}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>

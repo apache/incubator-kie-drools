@@ -40,8 +40,9 @@ public class Constants {
     public static final String MISSING_METHOD_REFERENCE_TEMPLATE = "Missing method reference '%s' in %s";
     public static final String PACKAGE_CLASS_TEMPLATE = "%s.%s";
     public static final String WRONG_EXPRESSION_TEMPLATE = "Retrieved %s (%s) while a %s was expected from \n%s";
-
+    public static final String EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE = "Expecting HasKnowledgeBuilder, received %s";
     //
+    public static final String PACKAGE_NAME = "PACKAGE_NAME";
     public static final String EVALUATE_PREDICATE = "evaluatePredicate";
     public static final String PREDICATE_FUNCTION = "predicateFunction";
     public static final String STRING_OBJECT_MAP = "stringObjectMap";

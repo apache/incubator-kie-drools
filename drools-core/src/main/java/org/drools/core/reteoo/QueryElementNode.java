@@ -49,10 +49,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 
-public class QueryElementNode extends LeftTupleSource
-    implements
-    LeftTupleSinkNode,
-    MemoryFactory<QueryElementNode.QueryElementNodeMemory> {
+public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNode, MemoryFactory<QueryElementNode.QueryElementNodeMemory> {
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
@@ -98,27 +95,6 @@ public class QueryElementNode extends LeftTupleSource
             args[i] = originalArgs[i] == null ? QueryArgument.NULL : originalArgs[i].normalize( classLoader );
         }
         return args;
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );        
-        queryElement = (QueryElement) in.readObject();
-        tupleMemoryEnabled = in.readBoolean();
-        openQuery = in.readBoolean();
-        dataDriven = in.readBoolean();
-        this.argsTemplate = (QueryArgument[]) in.readObject();
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( queryElement );
-        out.writeBoolean( tupleMemoryEnabled );
-        out.writeBoolean( openQuery );
-        out.writeBoolean( dataDriven );
-        out.writeObject( argsTemplate );
     }
 
     @Override

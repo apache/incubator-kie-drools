@@ -25,27 +25,28 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getOpType;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFields;
 
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Regression</b>
  */
-public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel, KiePMMLRegressionModel> {
+public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel,
+        KiePMMLRegressionModel> {
 
     private static final Logger logger = LoggerFactory.getLogger(RegressionModelImplementationProvider.class.getName());
     private static final String INVALID_NORMALIZATION_METHOD = "Invalid Normalization Method ";
@@ -57,30 +58,31 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModel(final String packageName,
-                                                  final List<Field<?>> fields,
-                                                  final TransformationDictionary transformationDictionary,
-                                                  final RegressionModel model,
-                                                  final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModel {} {} {} {}", packageName, fields, model, hasClassloader);
-        validate(fields, model);
+    public KiePMMLRegressionModel getKiePMMLModel(final CompilationDTO<RegressionModel> compilationDTO) {
+        logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
+                     compilationDTO.getFields(),
+                     compilationDTO.getModel(),
+                     compilationDTO.getHasClassloader());
+        validate(compilationDTO.getFields(), compilationDTO.getModel());
         try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(fields, transformationDictionary, model, packageName, hasClassloader);
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         } catch (IOException | IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModelWithSources(final String packageName,
-                                                             final List<Field<?>> fields,
-                                                             final TransformationDictionary transformationDictionary,
-                                                             final RegressionModel model,
-                                                             final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, fields, model, hasClassloader);
+    public KiePMMLRegressionModel getKiePMMLModelWithSources(final CompilationDTO<RegressionModel> compilationDTO) {
+        logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
+                     compilationDTO.getFields(),
+                     compilationDTO.getModel(),
+                     compilationDTO.getHasClassloader());
         try {
-            final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(fields, transformationDictionary, model, packageName);
-            return new KiePMMLRegressionModelWithSources(model.getModelName(), packageName, sourcesMap);
+            final Map<String, String> sourcesMap =
+                    KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
+            return new KiePMMLRegressionModelWithSources(compilationDTO.getModelName(),
+                                                         compilationDTO.getPackageName(),
+                                                         sourcesMap);
         } catch (IOException e) {
             throw new KiePMMLException(e);
         }
@@ -137,7 +139,8 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateClassificationCategorical(final List<Field<?>> fields, final RegressionModel toValidate, final String categoricalFieldName) {
+    private void validateClassificationCategorical(final List<Field<?>> fields, final RegressionModel toValidate,
+                                                   final String categoricalFieldName) {
         if (isBinary(fields, categoricalFieldName)) {
             validateClassificationCategoricalBinary(toValidate);
         } else {
@@ -197,12 +200,15 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateRegressionTargetField(final List<KiePMMLNameOpType> targetFields, final RegressionModel toValidate) {
+    private void validateRegressionTargetField(final List<KiePMMLNameOpType> targetFields,
+                                               final RegressionModel toValidate) {
         if (targetFields.size() != 1) {
             throw new KiePMMLException("Expected one target field, retrieved " + targetFields.size());
         }
-        if (toValidate.getTargetField() != null && !(Objects.equals(toValidate.getTargetField().getValue(), targetFields.get(0).getName()))) {
-            throw new KiePMMLException(String.format("Not-matching target fields: %s %s", toValidate.getTargetField(), targetFields.get(0).getName()));
+        if (toValidate.getTargetField() != null && !(Objects.equals(toValidate.getTargetField().getValue(),
+                                                                    targetFields.get(0).getName()))) {
+            throw new KiePMMLException(String.format("Not-matching target fields: %s %s", toValidate.getTargetField()
+                    , targetFields.get(0).getName()));
         }
     }
 
@@ -224,9 +230,11 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
                 .filter(dataField -> OpType.CATEGORICAL.equals(dataField.getOpType()))
                 .map(dataField -> dataField.getName().getValue())
                 .collect(Collectors.toList());
-        final List<KiePMMLNameOpType> categoricalNameTypes = targetFields.stream().filter(targetField -> categoricalFields.contains(targetField.getName())).collect(Collectors.toList());
+        final List<KiePMMLNameOpType> categoricalNameTypes =
+                targetFields.stream().filter(targetField -> categoricalFields.contains(targetField.getName())).collect(Collectors.toList());
         if (categoricalNameTypes.size() != 1) {
-            throw new KiePMMLException(String.format("Expected exactly one categorical targets, found %s", categoricalNameTypes.size()));
+            throw new KiePMMLException(String.format("Expected exactly one categorical targets, found %s",
+                                                     categoricalNameTypes.size()));
         }
         return categoricalNameTypes.get(0).getName();
     }

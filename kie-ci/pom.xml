@@ -5,8 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
+    <artifactId>drools-build-parent</artifactId>
     <version>8.13.0-SNAPSHOT</version>
+    <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>kie-ci</artifactId>
@@ -194,6 +195,12 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-legacy-test-util</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

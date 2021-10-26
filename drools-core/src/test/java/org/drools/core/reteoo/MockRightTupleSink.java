@@ -16,16 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MockRightTupleSink
     implements
@@ -50,12 +47,6 @@ public class MockRightTupleSink
 
     public RuleBasePartitionId getPartitionId() {
         return null;
-    }
-
-    public void writeExternal( ObjectOutput out ) throws IOException {
-    }
-
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
     }
 
     public short getType() {

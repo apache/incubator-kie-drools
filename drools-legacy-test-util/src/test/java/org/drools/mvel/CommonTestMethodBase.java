@@ -160,11 +160,6 @@ public class CommonTestMethodBase {
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
         kbase.addPackages(knowledgePackages);
-        try {
-            kbase = SerializationHelper.serializeObject(kbase);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return kbase;
     }
 
@@ -180,11 +175,6 @@ public class CommonTestMethodBase {
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
         kbase.addPackages(knowledgePackages);
-        try {
-            kbase = SerializationHelper.serializeObject(kbase);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return kbase;
     }
 
@@ -274,13 +264,7 @@ public class CommonTestMethodBase {
     }
 
     protected KieBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
-        try {
-            kbase = SerializationHelper.serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return kbase;
+        return KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
     }
 
     protected KieBase loadKnowledgeBase(String... classPathResources) {

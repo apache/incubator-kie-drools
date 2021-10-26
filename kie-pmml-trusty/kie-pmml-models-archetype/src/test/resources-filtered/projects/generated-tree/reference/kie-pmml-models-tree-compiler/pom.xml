@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-drools-tree</artifactId>
-    <version>${version.org.kie}</version>
+    <version>${project.version}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -59,13 +59,13 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-commons</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

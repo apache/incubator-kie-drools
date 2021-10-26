@@ -39,19 +39,28 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.FieldName;
+import org.dmg.pmml.MiningField;
+import org.dmg.pmml.MiningSchema;
+import org.dmg.pmml.OpType;
+import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
-import org.dmg.pmml.regression.RegressionTable;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.junit.Assert.assertEquals;
@@ -59,6 +68,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.KIE_PMML_EVALUATE_METHOD_TEMPLATE;
@@ -70,6 +80,7 @@ import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMMLRegressionTableRegressionFactoryTest {
 
+    private static final String PACKAGE_NAME = "packagename";
     private static final String TEST_01_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_01.txt";
     private static final String TEST_02_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_02.txt";
     private static final String TEST_03_SOURCE = "KiePMMLRegressionTableRegressionFactoryTest_03.txt";
@@ -101,13 +112,37 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
     @Test
     public void getRegressionTableTest() {
         regressionTable = getRegressionTable(3.5, "professional");
-        List<RegressionTable> regressionTables = Collections.singletonList(regressionTable);
+        RegressionModel regressionModel = new RegressionModel();
+        regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
+        regressionModel.addRegressionTables(regressionTable);
+        regressionModel.setModelName(getGeneratedClassName("RegressionModel"));
+        String targetField = "targetField";
+        DataField dataField = new DataField();
+        dataField.setName(FieldName.create(targetField));
+        dataField.setOpType(OpType.CATEGORICAL);
+        DataDictionary dataDictionary = new DataDictionary();
+        dataDictionary.addDataFields(dataField);
+        MiningField miningField = new MiningField();
+        miningField.setUsageType(MiningField.UsageType.TARGET);
+        miningField.setName(dataField.getName());
+        MiningSchema miningSchema = new MiningSchema();
+        miningSchema.addMiningFields(miningField);
+        regressionModel.setMiningSchema(miningSchema);
+        PMML pmml = new PMML();
+        pmml.setDataDictionary(dataDictionary);
+        pmml.addModels(regressionModel);
+        final CommonCompilationDTO<RegressionModel> source =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock());
+        final RegressionCompilationDTO compilationDTO =
+                RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
+                                                                                                  new ArrayList<>(),
+                                                                                                  regressionModel.getNormalizationMethod());
+
         Map<String, KiePMMLTableSourceCategory> retrieved =
-                KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables,
-                                                                            RegressionModel.NormalizationMethod.CAUCHIT,
-                                                                            Collections.emptyList(),
-                                                                            "targetField",
-                                                                            "packageName");
+                KiePMMLRegressionTableRegressionFactory.getRegressionTables(compilationDTO);
         assertNotNull(retrieved);
         retrieved.values().forEach(kiePMMLTableSourceCategory -> commonValidateKiePMMLRegressionTable(kiePMMLTableSourceCategory.getSource()));
     }

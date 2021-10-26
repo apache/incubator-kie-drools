@@ -19,19 +19,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.Field;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
+import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModelWithSources;
 
+import static org.kie.pmml.commons.Constants.EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory.getKiePMMLMiningModel;
 import static org.kie.pmml.models.mining.model.KiePMMLMiningModel.PMML_MODEL_TYPE;
 
@@ -46,34 +46,25 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     }
 
     @Override
-    public KiePMMLMiningModel getKiePMMLModel(final String packageName,
-                                              final List<Field<?>> fields,
-                                              final TransformationDictionary transformationDictionary,
-                                              final MiningModel model,
-                                              final HasClassLoader hasClassloader) {
-        if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
-            throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s", hasClassloader.getClass().getName()));
+    public KiePMMLMiningModel getKiePMMLModel(final CompilationDTO<MiningModel> compilationDTO) {
+        if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
+            throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,
+                                                     compilationDTO.getHasClassloader().getClass().getName()));
         }
-        return getKiePMMLMiningModel(fields, transformationDictionary, model, packageName, hasClassloader);
+        return getKiePMMLMiningModel(MiningModelCompilationDTO.fromCompilationDTO(compilationDTO));
     }
 
     @Override
-    public KiePMMLMiningModel getKiePMMLModelWithSources(final String packageName,
-                                                         final List<Field<?>> fields,
-                                                         final TransformationDictionary transformationDictionary,
-                                                         final MiningModel model,
-                                                         final HasClassLoader hasClassloader) {
-        if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
-            throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s",
-                                                     hasClassloader.getClass().getName()));
+    public KiePMMLMiningModel getKiePMMLModelWithSources(final CompilationDTO<MiningModel> compilationDTO) {
+        if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
+            throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,
+                                                     compilationDTO.getHasClassloader().getClass().getName()));
         }
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final Map<String, String> sourcesMap =
-                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(fields,
-                                                                          transformationDictionary,
-                                                                          model, packageName,
-                                                                          hasClassloader,
+                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(MiningModelCompilationDTO.fromCompilationDTO(compilationDTO),
                                                                           nestedModels);
-        return new KiePMMLMiningModelWithSources(model.getModelName(), packageName, sourcesMap, nestedModels);
+        return new KiePMMLMiningModelWithSources(compilationDTO.getModelName(), compilationDTO.getPackageName(),
+                                                 sourcesMap, nestedModels);
     }
 }

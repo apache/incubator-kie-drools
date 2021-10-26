@@ -98,7 +98,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
-import static org.drools.serialization.protobuf.SerializationHelper.serializeObject;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -5949,12 +5948,6 @@ public class TraitTest extends CommonTraitTest {
                      "";
 
         KieBase kbase = getKieBaseFromString( drl );
-
-        try {
-            kbase = serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader() );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
         List list = new ArrayList(  );
         TraitFactoryImpl.setMode(mode, kbase );

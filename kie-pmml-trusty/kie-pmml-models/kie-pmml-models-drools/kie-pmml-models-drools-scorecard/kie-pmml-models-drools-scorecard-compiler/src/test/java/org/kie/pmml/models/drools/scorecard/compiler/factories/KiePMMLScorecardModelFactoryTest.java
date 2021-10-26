@@ -29,21 +29,25 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.compiler.testutils.TestUtils;
+import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
+import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
+import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelFactory.KIE_PMML_SCORECARD_MODEL_TEMPLATE;
@@ -54,7 +58,6 @@ public class KiePMMLScorecardModelFactoryTest {
 
     private static final String SOURCE_1 = "ScorecardSample.pmml";
     private static final String TARGET_FIELD = "overallScore";
-    private static final String PACKAGE_NAME = "packagename";
     private static PMML pmml;
     private static Scorecard scorecardModel;
     private static ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
@@ -78,32 +81,42 @@ public class KiePMMLScorecardModelFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(dataDictionary,
                                                                                            pmml.getTransformationDictionary(),
                                                                                            scorecardModel.getLocalTransformations());
-        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(getFieldsFromDataDictionary(dataDictionary),
-                                                                                                pmml.getTransformationDictionary(),
-                                                                                                scorecardModel,
-                                                                                                fieldTypeMap,
-                                                                                                PACKAGE_NAME,
-                                                                                                new HasClassLoaderMock());
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecardModel,
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final DroolsCompilationDTO<Scorecard> droolsCompilationDTO =
+                DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
+                                                        fieldTypeMap);
+        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(droolsCompilationDTO);
         assertNotNull(retrieved);
         assertEquals(scorecardModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
     }
 
     @Test
-    public void getKiePMMLScorecardModelSourcesMap()  {
+    public void getKiePMMLScorecardModelSourcesMap() {
         final DataDictionary dataDictionary = pmml.getDataDictionary();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(dataDictionary,
                                                                                            pmml.getTransformationDictionary(),
                                                                                            scorecardModel.getLocalTransformations());
-        Map<String, String> retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(getFieldsFromDataDictionary(dataDictionary),
-                                                                                                        pmml.getTransformationDictionary(),
-                                                                                                        scorecardModel,
-                                                                                                        fieldTypeMap,
-                                                                                                        PACKAGE_NAME);
+
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecardModel,
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final DroolsCompilationDTO<Scorecard> droolsCompilationDTO =
+                DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
+                                                        fieldTypeMap);
+        Map<String, String> retrieved =
+                KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(droolsCompilationDTO);
         assertNotNull(retrieved);
         assertEquals(1, retrieved.size());
     }
-
 
     @Test
     public void getKiePMMLDroolsAST() {
@@ -111,7 +124,9 @@ public class KiePMMLScorecardModelFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(dataDictionary,
                                                                                            pmml.getTransformationDictionary(),
                                                                                            scorecardModel.getLocalTransformations());
-        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(dataDictionary), scorecardModel, fieldTypeMap, Collections.emptyList());
+        KiePMMLDroolsAST retrieved =
+                KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(dataDictionary),
+                                                                 scorecardModel, fieldTypeMap, Collections.emptyList());
         assertNotNull(retrieved);
     }
 
@@ -119,9 +134,16 @@ public class KiePMMLScorecardModelFactoryTest {
     public void setConstructor() {
         final String targetField = "overallScore";
         final ClassOrInterfaceDeclaration modelTemplate = classOrInterfaceDeclaration.clone();
-        KiePMMLScorecardModelFactory.setConstructor(scorecardModel,
-                                                    getFieldsFromDataDictionary(pmml.getDataDictionary()),
-                                                    pmml.getTransformationDictionary(),
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                                                                       pmml,
+                                                                       scorecardModel,
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final DroolsCompilationDTO<Scorecard> droolsCompilationDTO =
+                DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
+                                                        new HashMap<>());
+        KiePMMLScorecardModelFactory.setConstructor(droolsCompilationDTO,
                                                     modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", scorecardModel.getModelName())));
@@ -133,6 +155,8 @@ public class KiePMMLScorecardModelFactoryTest {
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(scorecardModel.getModelName()), superInvocationExpressionsMap, assignExpressionMap));
+        assertTrue(commonEvaluateConstructor(constructorDeclaration,
+                                             getSanitizedClassName(scorecardModel.getModelName()),
+                                             superInvocationExpressionsMap, assignExpressionMap));
     }
 }

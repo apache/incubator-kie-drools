@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kiemodulemodel-example</artifactId>
-  <name>Drools API examples - KieModuleModel Example</name>
+  <name>Drools :: API examples :: KieModuleModel Example</name>
 
   <properties>
     <java.module.name>org.drools.examples.api.kiemodulemodel</java.module.name>
@@ -32,6 +32,12 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <!-- Needed by the example as it uses these kjars -->

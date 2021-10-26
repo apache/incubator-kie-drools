@@ -64,23 +64,23 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-naivebayes-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-naivebayes-compiler</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-naivebayes-evaluator</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-commons</artifactId>
         <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

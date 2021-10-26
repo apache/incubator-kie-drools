@@ -64,11 +64,7 @@ import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
  *
  * @see Rete
  */
-public class ObjectTypeNode extends ObjectSource
-        implements
-        ObjectSink,
-        Externalizable,
-        MemoryFactory<ObjectTypeNode.ObjectTypeNodeMemory> {
+public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFactory<ObjectTypeNode.ObjectTypeNodeMemory> {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -192,34 +188,6 @@ public class ObjectTypeNode extends ObjectSource
         public int getId() {
             return id;
         }
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
-        super.readExternal(in);
-        objectType = (ObjectType) in.readObject();
-
-        // this is here as not all objectTypeNodes used ClassObjectTypes in packages (i.e. rules with those nodes did not exist yet)
-        // and thus have no wiring targets
-        if (objectType instanceof ClassObjectType) {
-            objectType = ((DroolsObjectInputStream) in).getKnowledgeBase().getClassFieldAccessorCache().getClassObjectType((ClassObjectType) objectType, true);
-        }
-
-        objectMemoryEnabled = in.readBoolean();
-        expirationOffset = in.readLong();
-        queryNode = in.readBoolean();
-        dirty = true;
-        idGenerator = new IdGenerator(id);
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(objectType);
-        out.writeBoolean(objectMemoryEnabled);
-        out.writeLong(expirationOffset);
-        out.writeBoolean(queryNode);
     }
 
     @Override

@@ -7,6 +7,7 @@
     <version>8.13.0-SNAPSHOT</version>
   </parent>
 
+  <name>Drools :: MVEL Parser</name>
   <artifactId>drools-mvel-parser</artifactId>
 
   <properties>
@@ -24,6 +25,11 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

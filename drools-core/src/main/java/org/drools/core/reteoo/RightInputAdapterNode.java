@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,25 +86,6 @@ public class RightInputAdapterNode extends ObjectSource
 
         hashcode = calculateHashCode();
         initMemoryId( context );
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        tupleMemoryEnabled = in.readBoolean();
-        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        startTupleSource = ( LeftTupleSource ) in.readObject();
-        pathEndNodes = ( PathEndNode[] ) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeBoolean( tupleMemoryEnabled );
-        out.writeObject( previousTupleSinkNode );
-        out.writeObject( nextTupleSinkNode );
-        out.writeObject( startTupleSource );
-        out.writeObject( pathEndNodes );
     }
 
     @Override

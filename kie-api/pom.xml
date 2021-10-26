@@ -5,8 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
+    <artifactId>drools-build-parent</artifactId>
     <version>8.13.0-SNAPSHOT</version>
+    <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>kie-api</artifactId>
@@ -116,10 +117,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.revapi</groupId>
-        <artifactId>revapi-maven-plugin</artifactId>
-      </plugin>
     </plugins>
   </build>
 
@@ -140,11 +137,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>jakarta.jms</groupId>
-      <artifactId>jakarta.jms-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
@@ -152,6 +144,11 @@
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

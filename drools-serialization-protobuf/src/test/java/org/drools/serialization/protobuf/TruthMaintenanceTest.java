@@ -47,7 +47,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.drools.serialization.protobuf.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.drools.serialization.protobuf.SerializationHelper.serializeObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -106,7 +105,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             }
             Collection<KiePackage> kpkgs2 = kbuilder.getKnowledgePackages();
             kbase.addPackages( kpkgs2 );
-            kbase = serializeObject(kbase);
 
             ksession.fireAllRules();
 
@@ -207,7 +205,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             kbase.removeRule( test2.getName(),
                               test2.getRules().iterator().next().getName() );
-            kbase = serializeObject(kbase);
 
             // different JVMs return the package list in different order
             for( KiePackage kpkg : kbase.getKiePackages() ) {
@@ -242,7 +239,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kpkgs );
-        kbase = serializeObject(kbase);
         KieSession session = createKnowledgeSession(kbase);
         try {
             final List list = new ArrayList();
@@ -299,7 +295,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kpkgs );
-        kbase = serializeObject(kbase);
         KieSession session = createKnowledgeSession(kbase);
         try {
             final Cheese cheese1 = new Cheese( "c",
@@ -741,7 +736,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     public void testLogicalInsertionsAccumulatorPattern() throws Exception {
         // JBRULES-449
         KieBase kbase = loadKnowledgeBase( "test_LogicalInsertionsAccumulatorPattern.drl" );
-        kbase = serializeObject(kbase);
         KieSession ksession = kbase.newKieSession();
         try {
             ksession.setGlobal( "ga",
@@ -802,7 +796,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
         kbase.addPackages( pkgs );
-        kbase = serializeObject(kbase);
         KieSession session = createKnowledgeSession(kbase);
         try {
             Sensor sensor1 = new Sensor( 100,

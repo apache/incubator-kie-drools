@@ -126,26 +126,6 @@ def DBProfilesConfig = """
 </profile>
 
 <profile>
-  <id>mysql</id>
-  <activation>
-    <property>
-      <name>mysql</name>
-    </property>
-  </activation>
-  <dependencies>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-</profile>
-
-<profile>
   <id>postgres</id>
   <activation>
     <property>

@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -86,25 +83,6 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         initMasks(context, tupleSource);
 
         hashcode = calculateHashCode();
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        dataProvider = (DataProvider) in.readObject();
-        alphaConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
-        betaConstraints = (BetaConstraints) in.readObject();
-        tupleMemoryEnabled = in.readBoolean();
-        send = (AsyncSend) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( dataProvider );
-        out.writeObject( alphaConstraints );
-        out.writeObject( betaConstraints );
-        out.writeBoolean( tupleMemoryEnabled );
-        out.writeObject( send );
     }
 
     private int calculateHashCode() {

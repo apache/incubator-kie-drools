@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
@@ -97,21 +94,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        query = (QueryImpl) in.readObject();
-        subrule = (GroupElement) in.readObject();
-        subruleIndex = in.readInt();
-        initDeclarations();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( query );
-        out.writeObject( subrule );
-        out.writeInt(subruleIndex);
-    }
 
     public QueryImpl getQuery() {
         return query;

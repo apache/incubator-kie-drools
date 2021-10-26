@@ -16,10 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
@@ -50,9 +46,8 @@ import static org.drools.core.reteoo.PropertySpecificUtil.getAccessiblePropertie
  * @see ObjectSource
  * @see DefaultFactHandle
  */
-public abstract class ObjectSource extends BaseNode
-    implements
-    Externalizable {
+public abstract class ObjectSource extends BaseNode {
+
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -109,23 +104,7 @@ public abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        sink = (ObjectSinkPropagator) in.readObject();
-        alphaNodeHashingThreshold = in.readInt();
-        alphaNodeRangeIndexThreshold = in.readInt();
-        source = ( ObjectSource ) in.readObject();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( sink );
-        out.writeInt( alphaNodeHashingThreshold );
-        out.writeInt( alphaNodeRangeIndexThreshold );
-        out.writeObject( source );
-    }
-    
     public ObjectSource getParentObjectSource() {
         return this.source;
     }

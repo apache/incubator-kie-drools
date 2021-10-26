@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -98,22 +95,6 @@ public class WindowNode extends ObjectSource
         }
         hashcode = calculateHashCode();
         initMemoryId( context );
-    }
-
-    @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        super.readExternal(in);
-        constraints = (List<AlphaNodeFieldConstraint>) in.readObject();
-        behavior = (BehaviorManager) in.readObject();
-        entryPoint = (EntryPointId) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(constraints);
-        out.writeObject(behavior);
-        out.writeObject(entryPoint);
     }
 
     public short getType() {

@@ -96,7 +96,7 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQuery() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("simple_query_test.drl"));
+        KieBase kbase = loadKnowledgeBase("simple_query_test.drl");
         KieSession session = createKieSession( kbase );
 
         final Cheese stilton = new Cheese( "stinky",
@@ -121,7 +121,7 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQueryRemoval() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("simple_query_test.drl"));
+        KieBase kbase = loadKnowledgeBase("simple_query_test.drl");
         KieSession session = createKieSession( kbase );
 
         final Cheese stilton = new Cheese( "stinky",

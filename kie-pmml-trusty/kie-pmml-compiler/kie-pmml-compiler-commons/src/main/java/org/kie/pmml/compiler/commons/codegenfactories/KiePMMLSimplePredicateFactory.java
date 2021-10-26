@@ -40,7 +40,7 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedM
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDataType;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getDataType;
 
 /**
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLSimplePredicate</code> code-generators
