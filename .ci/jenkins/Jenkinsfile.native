@@ -93,7 +93,7 @@ void checkoutKogitoRuntimesRepo() {
 }
 
 void checkoutDroolsRepo() {
-    dir(optaplannerRepo) {
+    dir(droolsRepo) {
         checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, getDroolsTargetBranch(), false))
     }
 }
