@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
-import { FormArgs } from './FormDisplayerEnvelopeApi';
+import {
+  FormDisplayerInitArgs,
+  FormSubmitContext,
+  FormSubmitResponse
+} from './types';
+
 export interface FormDisplayerApi {
-  formDisplayer__notify: (formContent: FormArgs) => Promise<void>;
+  init: (args: FormDisplayerInitArgs) => void;
+
+  startSubmit: (context: FormSubmitContext) => Promise<any>;
+
+  notifySubmitResult: (result: FormSubmitResponse) => void;
 }

@@ -14,16 +14,31 @@
  * limitations under the License.
  */
 
-import React, { useImperativeHandle, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState
+} from 'react';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { TaskFormChannelApi } from '../api';
-import '@patternfly/patternfly/patternfly.css';
-import TaskForm from './components/TaskForm/TaskForm';
+import { TaskFormChannelApi, TaskFormInitArgs, User } from '../api';
+import { Bullseye } from '@patternfly/react-core';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  KogitoEmptyState,
+  KogitoEmptyStateType,
+  KogitoSpinner
+} from '@kogito-apps/components-common';
+import { CustomForm, TaskFormSchema } from '../types';
 import { TaskFormEnvelopeViewDriver } from './TaskFormEnvelopeViewDriver';
+import CustomTaskFormDisplayer from './components/CustomTaskFormDisplayer/CustomTaskFormDisplayer';
+import TaskForm from './components/TaskForm/TaskForm';
+
+import '@patternfly/patternfly/patternfly.css';
 
 export interface TaskFormEnvelopeViewApi {
-  initialize: (userTask: UserTaskInstance) => void;
+  initialize: (initArgs: TaskFormInitArgs) => void;
 }
 
 interface Props {
@@ -32,29 +47,127 @@ interface Props {
 
 export const TaskFormEnvelopeView = React.forwardRef<
   TaskFormEnvelopeViewApi,
-  Props
->((props, forwardedRef) => {
+  Props & OUIAProps
+>(({ channelApi, ouiaId, ouiaSafe }, forwardedRef) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [
     isEnvelopeConnectedToChannel,
     setEnvelopeConnectedToChannel
   ] = useState<boolean>(false);
   const [userTask, setUserTask] = useState<UserTaskInstance>();
+  const [user, setUser] = useState<User>();
+  const [taskFormSchema, setTaskFormSchema] = useState<TaskFormSchema>(null);
+  const [customForm, setCustomForm] = useState<CustomForm>(null);
+
+  const [driver] = useState<TaskFormEnvelopeViewDriver>(
+    new TaskFormEnvelopeViewDriver(channelApi)
+  );
+
   useImperativeHandle(
     forwardedRef,
     () => ({
-      initialize: (task: UserTaskInstance) => {
+      initialize: (initArgs: TaskFormInitArgs) => {
         setEnvelopeConnectedToChannel(true);
-        setUserTask(task);
+        setUserTask(initArgs.userTask);
+        setUser(initArgs.user);
       }
     }),
     []
   );
 
+  useEffect(() => {
+    if (isEnvelopeConnectedToChannel) {
+      loadForm();
+    }
+  }, [isEnvelopeConnectedToChannel]);
+
+  const loadForm = useCallback(async () => {
+    if (!isEnvelopeConnectedToChannel) {
+      setIsLoading(true);
+    }
+
+    const customFormPromise: Promise<void> = new Promise<void>(resolve => {
+      driver
+        .getCustomForm()
+        .then(customForm => {
+          setCustomForm(customForm);
+          resolve();
+        })
+        .catch(error => resolve());
+    });
+
+    const schemaPromise: Promise<void> = new Promise<void>(resolve => {
+      driver
+        .getTaskFormSchema()
+        .then(schema => {
+          setTaskFormSchema(schema);
+          resolve();
+        })
+        .catch(error => resolve());
+    });
+
+    Promise.all([customFormPromise, schemaPromise]).then(values => {
+      setIsLoading(false);
+    });
+  }, [isEnvelopeConnectedToChannel]);
+
+  if (isLoading) {
+    return (
+      <Bullseye
+        {...componentOuiaProps(
+          (ouiaId ? ouiaId : 'task-form-envelope-view') + '-loading-spinner',
+          'task-form',
+          true
+        )}
+      >
+        <KogitoSpinner spinnerText={`Loading task form...`} />
+      </Bullseye>
+    );
+  }
+
+  if (taskFormSchema) {
+    if (customForm) {
+      return (
+        <CustomTaskFormDisplayer
+          {...componentOuiaProps(
+            (ouiaId ? ouiaId : 'task-form-envelope-view') + '-custom-task-form',
+            'custom-task-form',
+            ouiaSafe
+          )}
+          userTask={userTask}
+          schema={taskFormSchema}
+          customForm={customForm}
+          user={user}
+          driver={driver}
+        />
+      );
+    }
+    return (
+      <TaskForm
+        {...componentOuiaProps(
+          (ouiaId ? ouiaId : 'task-form-envelope-view') + '-task-form',
+          'task-form',
+          ouiaSafe
+        )}
+        userTask={userTask}
+        schema={taskFormSchema}
+        driver={driver}
+      />
+    );
+  }
+
   return (
-    <TaskForm
-      isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-      userTask={userTask}
-      driver={new TaskFormEnvelopeViewDriver(props.channelApi)}
+    <KogitoEmptyState
+      type={KogitoEmptyStateType.Info}
+      title="No form to show"
+      body={`Cannot find form for task  ${
+        userTask.referenceName
+      } (${userTask.id.substring(0, 5)})`}
+      {...componentOuiaProps(
+        (ouiaId ? ouiaId : 'task-form-envelope-view') + '-no-form',
+        'empty-task-form',
+        ouiaSafe
+      )}
     />
   );
 });

@@ -20,6 +20,11 @@ import TaskFormContainer from '../TaskFormContainer';
 import { TaskFormGatewayApi } from '../../../../../../channel/forms';
 import * as TaskFormContext from '../../../../../../channel/forms/TaskFormContext';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
+import {
+  DefaultUser,
+  User,
+  KogitoAppContextProvider
+} from '@kogito-apps/consoles-common';
 
 const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -50,6 +55,7 @@ const testUserTask: UserTaskInstance = {
 
 const MockTaskFormGatewayApi = jest.fn<TaskFormGatewayApi, []>(() => ({
   getTaskFormSchema: jest.fn(),
+  getCustomForm: jest.fn(),
   doSubmit: jest.fn()
 }));
 
@@ -57,22 +63,31 @@ jest
   .spyOn(TaskFormContext, 'useTaskFormGatewayApi')
   .mockImplementation(() => new MockTaskFormGatewayApi());
 
+const user: User = new DefaultUser('jon', []);
+
 describe('TaskFormContainer tests', () => {
   it('Snapshot', () => {
     const onSubmit = jest.fn();
     const onFailure = jest.fn();
     const wrapper = mount(
-      <TaskFormContainer
-        userTask={testUserTask}
-        onSubmitSuccess={onSubmit}
-        onSubmitError={onFailure}
-      />
+      <KogitoAppContextProvider
+        userContext={{
+          getCurrentUser: () => user
+        }}
+      >
+        <TaskFormContainer
+          userTask={testUserTask}
+          onSubmitSuccess={onSubmit}
+          onSubmitError={onFailure}
+        />
+      </KogitoAppContextProvider>
     ).find('TaskFormContainer');
 
     expect(wrapper).toMatchSnapshot();
 
     const forwardRef = wrapper.childAt(0);
     expect(forwardRef.props().driver).not.toBeNull();
+    expect(forwardRef.props().user).toStrictEqual(user);
     expect(forwardRef.props().targetOrigin).toBe('http://localhost');
   });
 });

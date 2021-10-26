@@ -4,51 +4,102 @@ exports[`FormDisplayerContainer render embeded formdisplayer 1`] = `
 <FormDisplayerContainer
   formContent={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
         "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true},\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true}}}",
       },
-      "name": "form1",
-      "source": Object {
-        "source-content": "<div><div class=\\"form-check\\"> <input type=\\"checkbox\\" id=\\"uniforms-0001-0001\\" name=\\"approve\\" class=\\"form-check-input\\" /> <label class=\\"form-check-label\\" for=\\"uniforms-0001-0001\\">Approve</label> </div> <fieldset disabled> <legend>Candidate</legend> <div> <div class=\\"form-group\\"> <label for=\\"uniforms-0001-0004\\">Email</label> <input type=\\"text\\" id=\\"uniforms-0001-0004\\" name=\\"candidate.email\\" class=\\"form-control\\" disabled value=\\"\\" /> </div> <div class=\\"form-group\\"> <label for=\\"uniforms-0001-0005\\">Name</label> <input type=\\"text\\" id=\\"uniforms-0001-0005\\" name=\\"candidate.name\\" class=\\"form-control\\" disabled value=\\"\\" /> </div> <div class=\\"form-group\\"> <label for=\\"uniforms-0001-0007\\">Salary</label> <input type=\\"number\\" class=\\"form-control\\" id=\\"uniforms-0001-0007\\" name=\\"candidate.salary\\" disabled step=\\"1\\" value=\\"\\" /> </div> <div class=\\"form-group\\"> <label for=\\"uniforms-0001-0008\\">Skills</label> <input type=\\"text\\" id=\\"uniforms-0001-0008\\" name=\\"candidate.skills\\" class=\\"form-control\\" disabled value=\\"\\" /> </div> </div> </fieldset> </div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
-    }
-  }
-  formData={
-    Object {
-      "lastModified": 2020-07-11T18:30:00.000Z,
-      "name": "form1",
-      "type": "HTML",
+      "source": "html source code",
     }
   }
 >
   <ForwardRef
+    context={
+      Object {
+        "phases": Array [
+          "abort",
+          "claim",
+          "complete",
+          "skip",
+        ],
+        "schema": Object {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "properties": Object {
+            "approve": Object {
+              "output": true,
+              "type": "boolean",
+            },
+            "candidate": Object {
+              "input": true,
+              "properties": Object {
+                "email": Object {
+                  "type": "string",
+                },
+                "name": Object {
+                  "type": "string",
+                },
+                "salary": Object {
+                  "type": "integer",
+                },
+                "skills": Object {
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+          },
+          "type": "object",
+        },
+        "task": Object {
+          "completed": null,
+          "description": "task description",
+          "id": "testId",
+          "lastUpdate": 1592000000000,
+          "name": "TaskName",
+          "priority": "1",
+          "processId": "process",
+          "processInstanceId": "testId",
+          "referenceName": "Task Name",
+          "rootProcessId": null,
+          "rootProcessInstanceId": null,
+          "started": 1592000000000,
+          "state": "Ready",
+        },
+        "user": Object {
+          "groups": Array [
+            "group1",
+            "group2",
+          ],
+          "id": "test",
+        },
+      }
+    }
     envelopePath="resources/form-displayer.html"
     formContent={
       Object {
-        "formConfiguration": Object {
+        "configuration": Object {
           "resources": Object {
             "scripts": Object {},
             "styles": Object {},
           },
           "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true},\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true}}}",
         },
-        "name": "form1",
-        "source": Object {
-          "source-content": "<div><div class=\\"form-check\\"> <input type=\\"checkbox\\" id=\\"uniforms-0001-0001\\" name=\\"approve\\" class=\\"form-check-input\\" /> <label class=\\"form-check-label\\" for=\\"uniforms-0001-0001\\">Approve</label> </div> <fieldset disabled> <legend>Candidate</legend> <div> <div class=\\"form-group\\"> <label for=\\"uniforms-0001-0004\\">Email</label> <input type=\\"text\\" id=\\"uniforms-0001-0004\\" name=\\"candidate.email\\" class=\\"form-control\\" disabled value=\\"\\" /> </div> <div class=\\"form-group\\"> <label for=\\"uniforms-0001-0005\\">Name</label> <input type=\\"text\\" id=\\"uniforms-0001-0005\\" name=\\"candidate.name\\" class=\\"form-control\\" disabled value=\\"\\" /> </div> <div class=\\"form-group\\"> <label for=\\"uniforms-0001-0007\\">Salary</label> <input type=\\"number\\" class=\\"form-control\\" id=\\"uniforms-0001-0007\\" name=\\"candidate.salary\\" disabled step=\\"1\\" value=\\"\\" /> </div> <div class=\\"form-group\\"> <label for=\\"uniforms-0001-0008\\">Skills</label> <input type=\\"text\\" id=\\"uniforms-0001-0008\\" name=\\"candidate.skills\\" class=\\"form-control\\" disabled value=\\"\\" /> </div> </div> </fieldset> </div>",
+        "formInfo": Object {
+          "lastModified": 2020-07-11T18:30:00.000Z,
+          "name": "form1",
+          "type": "HTML",
         },
+        "source": "html source code",
       }
     }
-    formData={
-      Object {
-        "lastModified": 2020-07-11T18:30:00.000Z,
-        "name": "form1",
-        "type": "HTML",
-      }
-    }
+    key="testId"
     targetOrigin="http://localhost"
   >
     <ForwardRef>

@@ -21,8 +21,7 @@ import {
   KogitoSpinner
 } from '@kogito-apps/components-common';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
-import { FormInfo } from '../../../api/FormsListEnvelopeApi';
-import { FormsListDriver } from 'packages/forms-list/src/api';
+import { FormInfo, FormsListDriver } from '../../../api';
 import {
   getFormNameColumn,
   getDateColumn,

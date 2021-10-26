@@ -9,6 +9,7 @@ exports[`FormDetailsEnvelopeView tests Snapshot 2`] = `
       "notifications": [MockFunction],
       "requests": Object {
         "formDetails__getFormContent": [MockFunction],
+        "formDetails__saveFormContent": [MockFunction],
       },
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
@@ -23,6 +24,7 @@ exports[`FormDetailsEnvelopeView tests Snapshot 2`] = `
             "notifications": [MockFunction],
             "requests": Object {
               "formDetails__getFormContent": [MockFunction],
+              "formDetails__saveFormContent": [MockFunction],
             },
             "subscribe": [MockFunction],
             "unsubscribe": [MockFunction],

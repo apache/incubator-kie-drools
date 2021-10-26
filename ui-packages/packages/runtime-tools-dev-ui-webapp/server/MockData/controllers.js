@@ -5,11 +5,16 @@ const _ = require('lodash');
 const fs = require('fs');
 const confirmTravelForm = require('./forms/ConfirmTravel');
 const applyForVisaForm = require('./forms/ApplyForVisa');
+const hrInterviewForm = require('./forms/HRInterview');
+const itInterviewForm = require('./forms/ITInterview');
 const emptyForm = require('./forms/EmptyForm');
 const formData = require('../MockData/forms/formData');
+
 const tasksUnableToTransition = [
   '047ec38d-5d57-4330-8c8d-9bd67b53a529',
-  '841b9dba-3d91-4725-9de3-f9f4853b417e'
+  '841b9dba-3d91-4725-9de3-f9f4853b417e',
+  '5fe852de-8d00-4197-9936-3842c648fe12345',
+  '5fe852de-8d00-4197-9936-3842c648fe123422'
 ];
 
 const taskWithoutForm = [
@@ -22,6 +27,10 @@ const taskWithEmptyForm = [
   '809aae9e-f0bf-4892-b0c9-4be80664d2aa'
 ];
 
+const formsUnableToSave = [
+  'html_hiring_ITInterview',
+  'react_hiring_ITInterview'
+];
 
 const processSvg = ['8035b580-6ae4-4aa8-9ec0-e18e19809e0b', '8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop', '2d962eef-45b8-48a9-ad4e-9cde0ad6af88', 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e']
 module.exports = controller = {
@@ -223,12 +232,8 @@ module.exports = controller = {
   },
   callCompleteTask: (req, res) => {
     console.log(
-      `......ProcessId:${req.params.processId} --piId:${req.params.processId} --taskId:${req.params.taskId}`
+      `......Transition task: --taskId:${req.params.taskId}`
     );
-
-    const processId = restData.process.filter(data => {
-      return data.processId === req.params.processId;
-    });
 
     const task = graphData.UserTaskInstances.find(userTask => {
       return userTask.id === req.params.taskId;
@@ -250,7 +255,7 @@ module.exports = controller = {
 
   getTaskForm: (req, res) => {
     console.log(
-      `......ProcessId:${req.params.processId} --piId:${req.params.processInstanceId} --taskId:${req.params.taskId}`
+      `......Get Task Form Schema: --processId:${req.params.processId} --piId:${req.params.processInstanceId} --taskId:${req.params.taskId}`
     );
 
     const task = graphData.UserTaskInstances.find(userTask => {
@@ -278,7 +283,7 @@ module.exports = controller = {
 
   getTaskDefinitionForm: (req, res) => {
     console.log(
-      `......ProcessId:${req.params.processId} --TaskName:${req.params.taskName}`
+      `......Get Task Definition Form Schema: --processId:${req.params.processId} --TaskName:${req.params.taskName}`
     );
 
     res.send(JSON.stringify(getTaskSchema(req.params.taskName, true)));
@@ -302,9 +307,18 @@ module.exports = controller = {
   },
 
   getFormContent: (req, res) => {
-    let sourceString;
+    console.log(
+      `......Get Custom Form Content: --formName:${req.params.formName}`
+    );
     const formName = req.params.formName;
     const formInfo = formData.filter((datum) => datum.name === formName);
+
+    if(formInfo.length === 0) {
+      res.status(500).send('Cannot find form');
+      return;
+    }
+    let sourceString;
+
     const configString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.config`),'utf8');
     if (formInfo[0].type.toLowerCase() === 'html') {
       sourceString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.html`),'utf8');
@@ -312,16 +326,24 @@ module.exports = controller = {
       sourceString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.tsx`),'utf8');
     }
     const response ={
-      Form:{
-        name:formName,
-        source:{
-          'source-content':sourceString
-        },
-        formConfiguration:JSON.parse(configString)
-      }
+      formInfo: formInfo[0],
+      source: sourceString,
+      configuration:JSON.parse(configString)
     }
+
     res.send(response);
-  }
+  },
+
+  saveFormContent: (req, res) => {
+    console.log(
+      `......Save Form Content: --formName:${req.params.formName}`
+    );
+    if (formsUnableToSave.includes(req.params.formName)) {
+      res.status(500).send('Unexpected failure saving form!');
+    } else {
+      res.send('Saved!');
+    }
+  },
 };
 
 
@@ -339,6 +361,15 @@ function getTaskSchema(taskName, clearPhases) {
     }
     case 'VisaApplication': {
       schema = _.cloneDeep(applyForVisaForm);
+      break;
+    }
+    case 'HRInterview': {
+      schema = _.cloneDeep(hrInterviewForm);
+      break;
+    }
+
+    case 'ITInterview': {
+      schema = _.cloneDeep(itInterviewForm);
       break;
     }
   }

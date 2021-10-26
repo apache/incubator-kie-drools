@@ -15,7 +15,12 @@
  */
 
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
-import { Form, FormDetailsChannelApi, FormDetailsDriver } from '../api';
+import {
+  Form,
+  FormContent,
+  FormDetailsChannelApi,
+  FormDetailsDriver
+} from '../api';
 
 /**
  * Implementation of FormDetailsDriver that delegates calls to the channel Api
@@ -28,5 +33,12 @@ export default class FormDetailsEnvelopeViewDriver
   ) {}
   getFormContent(formName: string): Promise<Form> {
     return this.channelApi.requests.formDetails__getFormContent(formName);
+  }
+
+  saveFormContent(formName: string, content: FormContent) {
+    return this.channelApi.requests.formDetails__saveFormContent(
+      formName,
+      content
+    );
   }
 }

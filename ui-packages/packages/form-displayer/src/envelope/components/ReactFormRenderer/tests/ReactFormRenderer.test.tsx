@@ -17,6 +17,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import ReactFormRenderer from '../ReactFormRenderer';
+import ResourcesContainer from '../../ResourcesContainer/ResourcesContainer';
+
+jest.mock('../../ResourcesContainer/ResourcesContainer');
 
 describe('ReactFormRenderer component tests', () => {
   beforeAll(() => {
@@ -24,6 +27,7 @@ describe('ReactFormRenderer component tests', () => {
     div.setAttribute('id', 'formContainer');
     document.body.appendChild(div);
   });
+
   it('Snapshot test with default props', () => {
     const props = {
       source:
@@ -46,8 +50,12 @@ describe('ReactFormRenderer component tests', () => {
     const wrapper = mount(<ReactFormRenderer {...props} />, {
       attachTo: document.getElementById('formContainer')
     });
+
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('div')).toBeTruthy();
+
+    const resources = wrapper.find(ResourcesContainer);
+    expect(resources.exists()).toBeTruthy();
   });
 });

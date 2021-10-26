@@ -14,53 +14,19 @@
  * limitations under the License.
  */
 
+import {
+  Association,
+  FormDisplayerInitArgs,
+  FormSubmitContext,
+  FormSubmitResponse
+} from './types';
+
 export interface FormDisplayerEnvelopeApi {
   formDisplayer__init(
     association: Association,
     initArgs: FormDisplayerInitArgs
   ): Promise<void>;
-  formDisplayer__notify(formContent: FormArgs): Promise<void>;
-}
-
-export interface Association {
-  origin: string;
-  envelopeServerId: string;
-}
-
-export interface FormDisplayerInitArgs {
-  formContent: FormArgs;
-  formData: FormInfo;
-}
-
-export interface FormResources {
-  scripts: {
-    [key: string]: string;
-  };
-  styles: {
-    [key: string]: string;
-  };
-}
-interface FormConfiguration {
-  schema: string;
-  resources: FormResources;
-}
-
-export interface sourceArgs {
-  'source-content': string;
-}
-export interface FormArgs {
-  source: sourceArgs;
-  name: string;
-  formConfiguration: FormConfiguration;
-}
-
-export enum FormType {
-  HTML = 'HTML',
-  TSX = 'TSX'
-}
-
-export interface FormInfo {
-  name: string;
-  type: FormType;
-  lastModified: Date;
+  formDisplayer__startSubmit(context: FormSubmitContext): Promise<any>;
+  formDisplayer__notifySubmitResponse(result: FormSubmitResponse): void;
+  formDisplayer__notifyInit(initArgs: FormDisplayerInitArgs): void;
 }

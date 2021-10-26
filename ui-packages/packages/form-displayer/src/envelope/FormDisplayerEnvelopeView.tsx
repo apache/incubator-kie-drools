@@ -15,15 +15,25 @@
  */
 
 import * as React from 'react';
-import { useImperativeHandle, useState } from 'react';
+import { useImperativeHandle, useRef, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
-import { FormDisplayerChannelApi, FormArgs, FormInfo } from '../api';
+import {
+  FormDisplayerChannelApi,
+  Form,
+  FormSubmitContext,
+  FormSubmitResponse,
+  FormDisplayerInitArgs,
+  FormOpened
+} from '../api';
+import { EmbeddedFormApi } from './components/FormDisplayer/apis';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
 import FormDisplayer from './components/FormDisplayer/FormDisplayer';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 export interface FormDisplayerEnvelopeViewApi {
-  setFormContent: (formContent: FormArgs, formData: FormInfo) => void;
-  notify: (userName: FormArgs) => Promise<void>;
+  initForm: (args: FormDisplayerInitArgs) => void;
+  startSubmit: (context: FormSubmitContext) => Promise<any>;
+  notifySubmitResponse: (response: FormSubmitResponse) => void;
 }
 
 interface Props {
@@ -34,40 +44,61 @@ export const FormDisplayerEnvelopeView = React.forwardRef<
   FormDisplayerEnvelopeViewApi,
   Props
 >((props, forwardedRef) => {
-  const [content, setContent] = useState<FormArgs>();
-  const [config, setConfig] = useState<FormInfo>();
+  const [content, setContent] = useState<Form>();
+  const [data, setData] = useState<any>();
+  const [context, setContext] = useState<Record<string, any>>();
   const [
     isEnvelopeConnectedToChannel,
     setEnvelopeConnectedToChannel
   ] = useState<boolean>(false);
 
+  const formDisplayerApiRef = useRef<EmbeddedFormApi>();
+
   useImperativeHandle(
     forwardedRef,
     () => {
       return {
-        setFormContent: (formContent: FormArgs, formData: FormInfo) => {
-          setContent(formContent);
-          setConfig(formData);
-          setEnvelopeConnectedToChannel(true);
+        startSubmit: (context: FormSubmitContext): Promise<any> => {
+          return new Promise<any>((resolve, reject) => {
+            try {
+              formDisplayerApiRef.current.beforeSubmit(context);
+              resolve(formDisplayerApiRef.current.getFormData());
+            } catch (err) {
+              reject(err.message);
+            }
+          });
         },
-        notify: (formContent: FormArgs) => {
-          if (!isEmpty(formContent)) {
+        notifySubmitResponse: (response: FormSubmitResponse) => {
+          formDisplayerApiRef.current.afterSubmit(response);
+        },
+        initForm: (args: FormDisplayerInitArgs) => {
+          if (!isEmpty(args.form)) {
             setEnvelopeConnectedToChannel(false);
-            setContent(formContent);
+            setContent(args.form);
+            setData(args.data ?? {});
+            setContext(args.context ?? {});
             setEnvelopeConnectedToChannel(true);
           }
-          return Promise.resolve();
         }
       };
     },
     []
   );
 
+  const onOpen = (opened: FormOpened) => {
+    props.channelApi.notifications.notifyOnOpenForm(opened);
+  };
+
   return (
-    <FormDisplayer
-      isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-      content={content}
-      config={config}
-    />
+    <ErrorBoundary notifyOnError={onOpen}>
+      <FormDisplayer
+        isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
+        content={content}
+        data={data}
+        context={context}
+        onOpenForm={onOpen}
+        ref={formDisplayerApiRef}
+      />
+    </ErrorBoundary>
   );
 });

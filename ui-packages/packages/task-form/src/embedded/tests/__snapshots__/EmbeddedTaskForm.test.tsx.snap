@@ -5,10 +5,20 @@ exports[`EmbeddedTaskForm tests Snapshot 1`] = `
   driver={
     Object {
       "doSubmit": [MockFunction],
+      "getCustomForm": [MockFunction],
       "getTaskFormSchema": [MockFunction],
     }
   }
   targetOrigin="origin"
+  user={
+    Object {
+      "groups": Array [
+        "group1",
+        "group2",
+      ],
+      "id": "test",
+    }
+  }
   userTask={
     Object {
       "actualOwner": null,

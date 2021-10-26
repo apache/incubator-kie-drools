@@ -7,7 +7,8 @@ const BG_IMAGES_DIRNAME = 'bgimages';
 
 module.exports = {
   entry: {
-    app: path.resolve(__dirname, 'src', 'index.tsx')
+    app: path.resolve(__dirname, 'src', 'index.tsx'),
+    'resources/form-displayer': './src/resources/form-displayer.ts'
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -59,6 +60,9 @@ module.exports = {
           ),
           path.resolve(
               '../../node_modules/@kogito-apps/consoles-common/dist/src/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/task-form/dist/static'
@@ -119,6 +123,9 @@ module.exports = {
           ),
           path.resolve(
               '../../node_modules/@kogito-apps/consoles-common/dist/src/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/task-form/dist/static'

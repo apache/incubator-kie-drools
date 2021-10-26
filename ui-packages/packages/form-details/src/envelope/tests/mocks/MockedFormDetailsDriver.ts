@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-import { Form, FormDetailsDriver } from '../../../api';
+import { Form, FormContent, FormDetailsDriver } from '../../../api';
 
 export const formContent: Form = {
-  source: {
-    'source-content':
-      '<div><div class="form-check"> <input type="checkbox" id="uniforms-0001-0001" name="approve" class="form-check-input" /> <label class="form-check-label" for="uniforms-0001-0001">Approve</label> </div> <fieldset disabled> <legend>Candidate</legend> <div> <div class="form-group"> <label for="uniforms-0001-0004">Email</label> <input type="text" id="uniforms-0001-0004" name="candidate.email" class="form-control" disabled value="" /> </div> <div class="form-group"> <label for="uniforms-0001-0005">Name</label> <input type="text" id="uniforms-0001-0005" name="candidate.name" class="form-control" disabled value="" /> </div> <div class="form-group"> <label for="uniforms-0001-0007">Salary</label> <input type="number" class="form-control" id="uniforms-0001-0007" name="candidate.salary" disabled step="1" value="" /> </div> <div class="form-group"> <label for="uniforms-0001-0008">Skills</label> <input type="text" id="uniforms-0001-0008" name="candidate.skills" class="form-control" disabled value="" /> </div> </div> </fieldset> </div>'
+  formInfo: {
+    name: 'form1',
+    type: 'HTML' as any,
+    lastModified: new Date('2020-07-11T18:30:00.000Z')
   },
-  name: 'form1',
-  formConfiguration: {
+  configuration: {
     schema:
       '{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"approve":{"type":"boolean","output":true},"candidate":{"type":"object","properties":{"email":{"type":"string"},"name":{"type":"string"},"salary":{"type":"integer"},"skills":{"type":"string"}},"input":true}}}',
     resources: {
       scripts: {},
       styles: {}
     }
-  }
+  },
+  source: 'html source code'
 };
 export class MockedFormDetailsDriver implements FormDetailsDriver {
   getFormContent(): Promise<Form> {
     return Promise.resolve(formContent);
+  }
+
+  saveFormContent(formName: string, content: FormContent) {
+    return;
   }
 }

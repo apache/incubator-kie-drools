@@ -24,9 +24,9 @@ public class FormInfo {
         HTML("html"),
         TSX("tsx");
 
-        private String value;
+        private final String value;
 
-        private FormType(String value) {
+        FormType(String value) {
             this.value = value;
         }
 
@@ -68,20 +68,20 @@ public class FormInfo {
 
         FormInfo that = (FormInfo) o;
 
-        if (!Objects.equals(name, that.name)) {
+        if (!Objects.equals(getName(), that.getName())) {
             return false;
         }
-        if (type != that.type) {
+        if (getType() != that.getType()) {
             return false;
         }
-        return Objects.equals(lastModified, that.lastModified);
+        return Objects.equals(getLastModified(), that.getLastModified());
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
+        int result = getName() != null ? getName().hashCode() : 0;
+        result = 31 * result + (getType() != null ? getType().hashCode() : 0);
+        result = 31 * result + (getLastModified() != null ? getLastModified().hashCode() : 0);
         return result;
     }
 }

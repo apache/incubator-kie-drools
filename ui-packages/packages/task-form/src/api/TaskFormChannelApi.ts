@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { TaskFormSchema } from '../types';
+import { TaskFormSchema, CustomForm } from '../types';
 
 export interface TaskFormChannelApi {
   taskForm__getTaskFormSchema(): Promise<TaskFormSchema>;
+  taskForm__getCustomForm(): Promise<CustomForm>;
   taskForm__doSubmit(phase?: string, payload?: any): Promise<any>;
 }

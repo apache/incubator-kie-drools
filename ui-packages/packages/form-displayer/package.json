@@ -30,6 +30,8 @@
   "dependencies": {
     "@kogito-apps/components-common": "^1.0.0",
     "@kogito-apps/ouia-tools": "^1.0.0",
+    "dangerously-set-html-content": "^1.0.9",
+    "react-helmet": "^6.1.0",
     "react-pure-loaders": "^3.0.1"
   },
   "devDependencies": {

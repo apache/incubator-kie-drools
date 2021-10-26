@@ -15,7 +15,7 @@
  */
 
 import { TaskFormChannelApi, TaskFormDriver } from '../api';
-import { TaskFormSchema } from '../types';
+import { TaskFormSchema, CustomForm } from '../types';
 
 export class EmbeddedTaskFormChannelApiImpl implements TaskFormChannelApi {
   constructor(private readonly driver: TaskFormDriver) {}
@@ -26,5 +26,9 @@ export class EmbeddedTaskFormChannelApiImpl implements TaskFormChannelApi {
 
   taskForm__getTaskFormSchema(): Promise<TaskFormSchema> {
     return this.driver.getTaskFormSchema();
+  }
+
+  taskForm__getCustomForm(): Promise<CustomForm> {
+    return this.driver.getCustomForm();
   }
 }

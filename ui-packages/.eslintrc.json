@@ -31,7 +31,7 @@
     "**/coverage/**/*.js",
     "**/webpack.*.js",
     "**/jest.config.js",
-    "**/server/**/*.js",
+    "**/server/**/*.*",
     "**/api-mock/**/*.js"
   ],
   "settings": {

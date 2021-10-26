@@ -22,7 +22,8 @@ import {
   TaskFormApi,
   TaskFormChannelApi,
   TaskFormDriver,
-  TaskFormEnvelopeApi
+  TaskFormEnvelopeApi,
+  User
 } from '../api';
 import { EmbeddedTaskFormChannelApiImpl } from './EmbeddedTaskFormChannelApiImpl';
 import { init } from '../envelope';
@@ -32,6 +33,7 @@ export interface EmbeddedTaskFormProps {
   targetOrigin: string;
   userTask: UserTaskInstance;
   driver: TaskFormDriver;
+  user: User;
 }
 
 export const EmbeddedTaskForm = React.forwardRef<
@@ -60,7 +62,7 @@ export const EmbeddedTaskForm = React.forwardRef<
           origin: envelopeServer.origin,
           envelopeServerId: envelopeServer.id
         },
-        { userTask: props.userTask }
+        { userTask: props.userTask, user: props.user }
       );
     },
     []

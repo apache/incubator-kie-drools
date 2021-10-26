@@ -18,8 +18,13 @@ import React from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { GraphQL } from '@kogito-apps/consoles-common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
-import { EmbeddedTaskForm, TaskFormSchema } from '@kogito-apps/task-form';
+import {
+  EmbeddedTaskForm,
+  TaskFormSchema,
+  CustomForm
+} from '@kogito-apps/task-form';
 import { useTaskFormGatewayApi } from '../../../channel/TaskForms/TaskFormContext';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface Props {
   userTask: UserTaskInstance;
@@ -35,25 +40,36 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
   ouiaSafe
 }) => {
   const gatewayApi = useTaskFormGatewayApi();
+  const context = useDevUIAppContext();
 
   return (
     <EmbeddedTaskForm
       {...componentOuiaProps(ouiaId, 'task-form-container', ouiaSafe)}
       userTask={userTask}
+      user={context.getCurrentUser()}
       driver={{
         doSubmit(phase?: string, payload?: any): Promise<any> {
-          return gatewayApi
-            .doSubmit(userTask, phase, payload)
-            .then(result => onSubmitSuccess(phase))
-            .catch(error => {
-              const message = error.response
-                ? error.response.data
-                : error.message;
-              onSubmitError(phase, message);
-            });
+          return new Promise<any>((resolve, reject) => {
+            gatewayApi
+              .doSubmit(userTask, phase, payload)
+              .then(response => {
+                onSubmitSuccess(phase);
+                resolve(response);
+              })
+              .catch(error => {
+                const message = error.response
+                  ? error.response.data
+                  : error.message;
+                onSubmitError(phase, message);
+                reject(error);
+              });
+          });
         },
         getTaskFormSchema(): Promise<TaskFormSchema> {
           return gatewayApi.getTaskFormSchema(userTask);
+        },
+        getCustomForm(): Promise<CustomForm> {
+          return gatewayApi.getCustomForm(userTask);
         }
       }}
       targetOrigin={'*'}

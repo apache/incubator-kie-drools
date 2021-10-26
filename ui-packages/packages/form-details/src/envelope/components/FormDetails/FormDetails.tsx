@@ -78,11 +78,23 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
       setError(error);
     }
   };
+
+  const saveForm = async (form: Form): Promise<void> => {
+    try {
+      setFormContent(form);
+      await driver.saveFormContent(formData.name, {
+        configuration: form.configuration,
+        source: form.source
+      });
+    } catch (error) {
+      setError(error);
+    }
+  };
+
   const panelContent: JSX.Element = (
     <DrawerPanelContent
       isResizable
       defaultSize={'800px'}
-      minSize={'700px'}
       onResize={() => {
         editorResize?.current.doResize();
       }}
@@ -90,10 +102,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
       <DrawerHead style={{ height: '100%' }}>
         {formContent && Object.keys(formContent)[0].length > 0 && (
           <span>
-            <FormDisplayerContainer
-              formContent={formContent}
-              formData={formData}
-            />
+            <FormDisplayerContainer formContent={formContent} />
           </span>
         )}
       </DrawerHead>
@@ -107,7 +116,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   const getSource = (): string => {
     /* istanbul ignore else */
     if (!isEmpty(formContent)) {
-      return formContent.source['source-content'];
+      return formContent.source;
     }
   };
   const getType = (): string => {
@@ -119,7 +128,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   const getConfig = (): string => {
     /* istanbul ignore else */
     if (!isEmpty(formContent)) {
-      return JSON.stringify(formContent.formConfiguration.resources, null, 2);
+      return JSON.stringify(formContent.configuration.resources, null, 2);
     }
   };
   if (error) {
@@ -150,6 +159,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                       setFormContent={setFormContent}
                       contentChange={contentChange}
                       setContentChange={setContentChange}
+                      saveFormContent={saveForm}
                       isSource
                       formType={getType()}
                       ref={editorResize}
@@ -176,6 +186,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                       setFormContent={setFormContent}
                       contentChange={contentChange}
                       setContentChange={setContentChange}
+                      saveFormContent={saveForm}
                       isConfig
                       ref={editorResize}
                     />

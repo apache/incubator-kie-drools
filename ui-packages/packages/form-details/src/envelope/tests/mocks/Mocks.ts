@@ -26,7 +26,8 @@ export const MockedApiRequests = jest.fn<
   Pick<FormDetailsChannelApi, RequestPropertyNames<FormDetailsChannelApi>>,
   []
 >(() => ({
-  formDetails__getFormContent: jest.fn()
+  formDetails__getFormContent: jest.fn(),
+  formDetails__saveFormContent: jest.fn()
 }));
 
 export const MockedMessageBusClientApi = jest.fn<

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import _ from 'lodash';
+import get from 'lodash/get';
+import merge from 'lodash/merge';
+import unset from 'lodash/unset';
+import set from 'lodash/set';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormSchema } from '../../../types';
 
@@ -24,7 +27,8 @@ export interface TaskDataAssignments {
 }
 
 export function readSchemaAssignments(
-  formSchema: TaskFormSchema
+  formSchema: TaskFormSchema,
+  isUniforms = true
 ): TaskDataAssignments {
   const assignments: TaskDataAssignments = {
     inputs: [],
@@ -37,19 +41,23 @@ export function readSchemaAssignments(
 
   for (const key of Object.keys(formSchema.properties)) {
     const property = formSchema.properties[key];
-    if (_.get(property, 'input', false)) {
+    if (get(property, 'input', false)) {
       assignments.inputs.push(key);
-      _.unset(property, 'input');
+      if (isUniforms) {
+        unset(property, 'input');
+      }
     }
-    if (_.get(property, 'output', false)) {
+    if (get(property, 'output', false)) {
       assignments.outputs.push(key);
-      _.unset(property, 'output');
+      if (isUniforms) {
+        unset(property, 'output');
+      }
     }
 
-    if (!assignments.outputs.includes(key)) {
-      const uniforms = _.get(property, 'uniforms', {});
+    if (isUniforms && !assignments.outputs.includes(key)) {
+      const uniforms = get(property, 'uniforms', {});
       uniforms.disabled = true;
-      _.set(property, 'uniforms', uniforms);
+      set(property, 'uniforms', uniforms);
     }
   }
 
@@ -76,5 +84,5 @@ export function generateFormData(userTask: UserTaskInstance): any {
 
   const taskOutputs = toJSON(userTask.outputs);
 
-  return _.merge(taskInputs, taskOutputs);
+  return merge(taskInputs, taskOutputs);
 }

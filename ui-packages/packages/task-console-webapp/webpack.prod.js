@@ -20,6 +20,7 @@ const common = require('./webpack.common.js');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = merge(common, {
   mode: 'production',
@@ -34,7 +35,8 @@ module.exports = merge(common, {
     }),
     new webpack.EnvironmentPlugin({
       KOGITO_ENV_MODE: 'PROD'
-    })
+    }),
+    new CopyPlugin({ patterns: [{ from: "./resources", to: "./resources" }]}),
   ],
   module: {
     rules: [
@@ -65,6 +67,9 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/task-console-shared/dist/envelope/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/envelope/components/styles.css'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/task-form/dist/envelope/styles.css'

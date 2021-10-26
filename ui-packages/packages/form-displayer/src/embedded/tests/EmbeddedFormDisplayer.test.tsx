@@ -24,25 +24,20 @@ describe('EmbeddedFormDisplayer tests', () => {
     const props = {
       targetOrigin: 'origin',
       envelopePath: '/resources/form-displayer.html',
-      formData: {
-        lastModified: new Date('2021-08-23T13:26:02.130Z'),
-        name: 'react_hiring_HRInterview',
-        type: FormType.TSX
-      },
       formContent: {
-        name: 'react_hiring_HRInterview',
-        formConfiguration: {
+        formInfo: {
+          name: 'react_hiring_HRInterview',
+          lastModified: new Date('2021-08-23T13:26:02.130Z'),
+          type: FormType.TSX
+        },
+        configuration: {
           resources: {
             scripts: {},
             styles: {}
           },
-          schema:
-            '{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"candidate":{"type":"object","properties":{"email":{"type":"string"},"name":{"type":"string"},"salary":{"type":"integer"},"skills":{"type":"string"}},"input":true},"approve":{"type":"boolean","output":true}}}'
+          schema: 'json schema'
         },
-        source: {
-          'source-content':
-            "import React, { useState } from 'react';\nimport {\n  Card,\n  CardBody,\n  TextInput,\n  FormGroup,\n  Checkbox\n} from '@patternfly/react-core';\n\nconst Form__hiring_HRInterview: React.FC<any> = (props: any) => {\n  const [candidate__email, set__candidate__email] = useState<string>();\n  const [candidate__name, set__candidate__name] = useState<string>();\n  const [candidate__salary, set__candidate__salary] = useState<string>();\n  const [candidate__skills, set__candidate__skills] = useState<string>();\n  const [approve, set__approve] = useState<boolean>();\n\n  return (\n    <div className={'pf-c-form'}>\n      <Card>\n        <CardBody className=\"pf-c-form\">\n          <label>\n            <b>Candidate</b>\n          </label>\n          <FormGroup\n            fieldId={'uniforms-0000-0002'}\n            label={'Email'}\n            isRequired={false}\n          >\n            <TextInput\n              name={'candidate.email'}\n              id={'uniforms-0000-0002'}\n              isDisabled={true}\n              placeholder={''}\n              type={'text'}\n              value={candidate__email}\n              onChange={set__candidate__email}\n            />\n          </FormGroup>\n          <FormGroup\n            fieldId={'uniforms-0000-0003'}\n            label={'Name'}\n            isRequired={false}\n          >\n            <TextInput\n              name={'candidate.name'}\n              id={'uniforms-0000-0003'}\n              isDisabled={true}\n              placeholder={''}\n              type={'text'}\n              value={candidate__name}\n              onChange={set__candidate__name}\n            />\n          </FormGroup>\n          <FormGroup\n            fieldId={'uniforms-0000-0005'}\n            label={'Salary'}\n            isRequired={false}\n          >\n            <TextInput\n              type={'number'}\n              name={'candidate.salary'}\n              isDisabled={true}\n              id={'uniforms-0000-0005'}\n              placeholder={''}\n              step={1}\n              value={candidate__salary}\n              onChange={set__candidate__salary}\n            />\n          </FormGroup>\n          <FormGroup\n            fieldId={'uniforms-0000-0006'}\n            label={'Skills'}\n            isRequired={false}\n          >\n            <TextInput\n              name={'candidate.skills'}\n              id={'uniforms-0000-0006'}\n              isDisabled={true}\n              placeholder={''}\n              type={'text'}\n              value={candidate__skills}\n              onChange={set__candidate__skills}\n            />\n          </FormGroup>\n        </CardBody>\n      </Card>\n      <FormGroup fieldId=\"uniforms-0000-0008\">\n        <Checkbox\n          isChecked={approve}\n          isDisabled={false}\n          id={'uniforms-0000-0008'}\n          name={'approve'}\n          label={'Approve'}\n          onChange={set__approve}\n        />\n      </FormGroup>\n    </div>\n  );\n};\n\nexport default Form__hiring_HRInterview;\n"
-        }
+        source: 'react source code'
       }
     };
 
@@ -50,7 +45,6 @@ describe('EmbeddedFormDisplayer tests', () => {
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
-    expect(wrapper.props().formData).toStrictEqual(props.formData);
     const contentIframe = wrapper.find('iframe');
 
     expect(contentIframe.exists()).toBeTruthy();

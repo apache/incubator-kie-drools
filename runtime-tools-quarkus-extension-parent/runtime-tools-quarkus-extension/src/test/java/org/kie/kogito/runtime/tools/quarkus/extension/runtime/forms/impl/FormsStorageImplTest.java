@@ -16,38 +16,54 @@
 
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.impl;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.FormsStorage;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.Form;
+import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormConfiguration;
+import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormContent;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormFilter;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormInfo;
+import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormResources;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.impl.FormsStorageImpl.PROJECT_FORM_STORAGE_PROP;
 
+@QuarkusTest
+@TestProfile(FormsTestProfile.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FormsStorageImplTest {
 
-    FormsStorage formsStorage;
+    private static final String TEST_FORM_CONTENT = "<div></div>";
+    private static final String STYLE1 = "style1";
+    private static final String SCRIPT1 = "script1";
+
     private static final String FORM_NAME = "hiring_HRInterview";
     private static final String PARTIAL_FORM_NAME = "hiring";
     private static final String FORM_NAME_WITH_OUT_CONFIG = "hiring_HRInterviewWithoutConfig";
 
+    private FormsStorage formsStorage;
+
     @BeforeAll
     public void init() {
         URL formsFolder = Thread.currentThread().getContextClassLoader().getResource("forms");
-        formsStorage = new FormsStorageImpl();
-        ((FormsStorageImpl) formsStorage).initForTestCase(formsFolder);
+
+        formsStorage = new FormsStorageImpl(formsFolder);
     }
 
     @Test
@@ -82,12 +98,53 @@ public class FormsStorageImplTest {
     public void testGetFormContent() throws IOException {
         Form formContent = formsStorage.getFormContent(FORM_NAME);
         assertNotNull(formContent);
-        assertEquals(FORM_NAME, formContent.getName());
+        FormInfo formInfo = formContent.getFormInfo();
+        assertEquals(FORM_NAME, formInfo.getName());
     }
 
     @Test
     public void testGetFormContentWithoutConfig() {
-        assertThrows(FileNotFoundException.class, () -> formsStorage.getFormContent(FORM_NAME_WITH_OUT_CONFIG));
-        assertThrows(FileNotFoundException.class, () -> formsStorage.getFormContent("ERROR"));
+        assertThrows(RuntimeException.class, () -> formsStorage.getFormContent(FORM_NAME_WITH_OUT_CONFIG));
+        assertThrows(RuntimeException.class, () -> formsStorage.getFormContent("ERROR"));
+    }
+
+    @Test
+    public void testUpdateFormContentInvalidForms() {
+        assertThrows(RuntimeException.class, () -> formsStorage.updateFormContent(FORM_NAME_WITH_OUT_CONFIG, new FormContent()));
+        assertThrows(RuntimeException.class, () -> formsStorage.updateFormContent(FORM_NAME, null));
+    }
+
+    @Test
+    public void testUpdateValidForms() throws IOException {
+        File storage = new File(System.getProperties().getProperty(PROJECT_FORM_STORAGE_PROP));
+
+        File sourceFile = new File(storage.toURI().resolve(FORM_NAME + ".html"));
+        File configFile = new File(storage.toURI().resolve(FORM_NAME + ".config"));
+
+        sourceFile.createNewFile();
+        configFile.createNewFile();
+
+        FileUtils.write(sourceFile, "", StandardCharsets.UTF_8);
+        FileUtils.write(configFile, "", StandardCharsets.UTF_8);
+
+        Form form = formsStorage.getFormContent(FORM_NAME);
+        FormResources resources = new FormResources();
+
+        resources.getStyles().put(STYLE1, STYLE1);
+        resources.getScripts().put(SCRIPT1, SCRIPT1);
+
+        FormContent content = new FormContent(TEST_FORM_CONTENT, new FormConfiguration(form.getConfiguration().getSchema(), resources));
+
+        formsStorage.updateFormContent(FORM_NAME, content);
+
+        Form newForm = formsStorage.getFormContent(FORM_NAME);
+
+        assertEquals(TEST_FORM_CONTENT, newForm.getSource());
+        assertEquals(form.getConfiguration().getSchema(), newForm.getConfiguration().getSchema());
+        assertEquals(STYLE1, newForm.getConfiguration().getResources().getStyles().get(STYLE1));
+        assertEquals(SCRIPT1, newForm.getConfiguration().getResources().getScripts().get(SCRIPT1));
+
+        FileUtils.deleteQuietly(sourceFile);
+        FileUtils.deleteQuietly(configFile);
     }
 }

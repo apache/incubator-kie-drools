@@ -57,6 +57,9 @@ module.exports = {
           path.resolve(
             '../../node_modules/@patternfly/patternfly/assets/pficon'
           ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/static'
+          ),
           path.resolve('./src/static')
         ],
         use: {

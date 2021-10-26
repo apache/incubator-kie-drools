@@ -24,6 +24,10 @@ describe('EmbeddedTaskForm tests', () => {
     const props: EmbeddedTaskFormProps = {
       driver: new MockedTaskFormDriver(),
       userTask: testUserTask,
+      user: {
+        id: 'test',
+        groups: ['group1', 'group2']
+      },
       targetOrigin: 'origin'
     };
 

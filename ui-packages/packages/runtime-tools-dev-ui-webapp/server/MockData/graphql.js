@@ -4033,6 +4033,110 @@ UserTaskInstances: [
     lastUpdate: '2020-07-30T13:23:26.824Z',
     endpoint:
       'http://localhost:4000/travels/b4096227-2c8a-463f-a7a9-776027f77bf4/ConfirmTravel/5fe852de-8d00-4197-9936-3842c648fee134'
+  },
+  {
+    id: '5fe852de-8d00-4197-9936-3842c648fe1234',
+    name: 'HRInterview',
+    referenceName: 'Human Resources Interview (HTML)',
+    description: null,
+    priority: '1',
+    processInstanceId: 'b4096227-2c8a-463f-a7a9-776027f71234',
+    processId: 'html_hiring',
+    rootProcessInstanceId: null,
+    rootProcessId: null,
+    state: 'Ready',
+    actualOwner: null,
+    adminGroups: [],
+    adminUsers: [],
+    completed: null,
+    started: '2020-07-30T13:08:20.509Z',
+    excludedUsers: [],
+    potentialGroups: ['employees', 'interns', 'managers'],
+    potentialUsers: [],
+    inputs:
+      '{"candidate": {"name": "Harry Potter", "email": "harrypotter@example.com", "salary": 30000,"skills": "Java, Kogito", "birthday": "2019-12-10T00:00:00.000+02:00"}}',
+    outputs: '{}',
+    lastUpdate: '2020-07-30T13:23:26.824Z',
+    endpoint:
+      'http://localhost:4000/hiring/b4096227-2c8a-463f-a7a9-776027f71234/HRInterview/5fe852de-8d00-4197-9936-3842c648fe1234'
+  },
+  {
+    id: '5fe852de-8d00-4197-9936-3842c648fe12345',
+    name: 'HRInterview',
+    referenceName: 'Human Resources Interview (HTML - submit failure)',
+    description: null,
+    priority: '1',
+    processInstanceId: 'b4096227-2c8a-463f-a7a9-776027f712345',
+    processId: 'html_hiring',
+    rootProcessInstanceId: null,
+    rootProcessId: null,
+    state: 'Ready',
+    actualOwner: null,
+    adminGroups: [],
+    adminUsers: [],
+    completed: null,
+    started: '2020-07-30T13:08:20.509Z',
+    excludedUsers: [],
+    potentialGroups: ['employees', 'interns', 'managers'],
+    potentialUsers: [],
+    inputs:
+      '{"candidate": {"name": "Harry Potter", "email": "harrypotter@example.com", "salary": 30000,"skills": "Java, Kogito", "birthday": "2019-12-10T00:00:00.000+02:00"}}',
+    outputs: '{}',
+    lastUpdate: '2020-07-30T13:23:26.824Z',
+    endpoint:
+      'http://localhost:4000/hiring/b4096227-2c8a-463f-a7a9-776027f712345/HRInterview/5fe852de-8d00-4197-9936-3842c648fe12345'
+  },
+  {
+    id: '5fe852de-8d00-4197-9936-3842c648fe12342',
+    name: 'HRInterview',
+    referenceName: 'Human Resources Interview (React)',
+    description: null,
+    priority: '1',
+    processInstanceId: 'b4096227-2c8a-463f-a7a9-776027f712342',
+    processId: 'react_hiring',
+    rootProcessInstanceId: null,
+    rootProcessId: null,
+    state: 'Ready',
+    actualOwner: null,
+    adminGroups: [],
+    adminUsers: [],
+    completed: null,
+    started: '2020-07-30T13:08:20.509Z',
+    excludedUsers: [],
+    potentialGroups: ['employees', 'interns', 'managers'],
+    potentialUsers: [],
+    inputs:
+      '{"candidate": {"name": "Harry Potter", "email": "harrypotter@example.com", "salary": 30000,"skills": "Java, Kogito", "birthday": "2019-12-10T00:00:00.000+02:00"}}',
+    outputs: '{}',
+    lastUpdate: '2020-07-30T13:23:26.824Z',
+    endpoint:
+      'http://localhost:4000/hiring/b4096227-2c8a-463f-a7a9-776027f712342/HRInterview/5fe852de-8d00-4197-9936-3842c648fe12342'
+  },
+  {
+    id: '5fe852de-8d00-4197-9936-3842c648fe123422',
+    name: 'HRInterview',
+    referenceName: 'Human Resources Interview (React - submit failure)',
+    description: null,
+    priority: '1',
+    processInstanceId: 'b4096227-2c8a-463f-a7a9-776027f7123422',
+    processId: 'react_hiring',
+    rootProcessInstanceId: null,
+    rootProcessId: null,
+    state: 'Ready',
+    actualOwner: null,
+    adminGroups: [],
+    adminUsers: [],
+    completed: null,
+    started: '2020-07-30T13:08:20.509Z',
+    excludedUsers: [],
+    potentialGroups: ['employees', 'interns', 'managers'],
+    potentialUsers: [],
+    inputs:
+      '{"candidate": {"name": "Harry Potter", "email": "harrypotter@example.com", "salary": 30000,"skills": "Java, Kogito", "birthday": "2019-12-10T00:00:00.000+02:00"}}',
+    outputs: '{}',
+    lastUpdate: '2020-07-30T13:23:26.824Z',
+    endpoint:
+      'http://localhost:4000/hiring/b4096227-2c8a-463f-a7a9-776027f7123422/HRInterview/5fe852de-8d00-4197-9936-3842c648fe123422'
   }
 ]
 }

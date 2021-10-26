@@ -16,65 +16,32 @@
 
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model;
 
-import io.vertx.core.json.JsonObject;
+public class FormConfiguration {
 
-public class FormConfiguration extends JsonObject {
-
-    private static String RESOURCES_KEY = "resources";
-    private static String SCHEMA_KEY = "schema";
-
-    private static String SCRIPTS_KEY = "scripts";
-    private static String STYLES_KEY = "styles";
+    private String schema;
+    private FormResources resources;
 
     public FormConfiguration() {
     }
 
-    public FormConfiguration(String content) {
-        super(content);
-    }
-
-    public FormConfiguration(String schema, JsonObject resources) {
-        this.put(SCHEMA_KEY, schema);
-        this.put(RESOURCES_KEY, resources);
-    }
-
-    public void setSchema(String schema) {
-        this.put(SCHEMA_KEY, schema);
-    }
-
-    public void setResources(JsonObject resources) {
-        this.put(RESOURCES_KEY, resources);
+    public FormConfiguration(String schema, FormResources resources) {
+        this.schema = schema;
+        this.resources = resources;
     }
 
     public String getSchema() {
-        return this.getString(SCHEMA_KEY);
+        return schema;
     }
 
-    public JsonObject getResources() {
-        return this.getJsonObject(RESOURCES_KEY);
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
-    public JsonObject getScripts() {
-        return getResources().getJsonObject(SCRIPTS_KEY);
+    public FormResources getResources() {
+        return resources;
     }
 
-    public JsonObject getStyles() {
-        return getResources().getJsonObject(STYLES_KEY);
-    }
-
-    public String popScripts(String key) {
-        return getScripts().getString(key);
-    }
-
-    public String popStyles(String key) {
-        return getStyles().getString(key);
-    }
-
-    public void putScripts(String key, String scripts) {
-        getScripts().put(key, scripts);
-    }
-
-    public void putStyles(String key, String styles) {
-        getStyles().put(key, styles);
+    public void setResources(FormResources resources) {
+        this.resources = resources;
     }
 }

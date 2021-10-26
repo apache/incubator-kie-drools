@@ -38,10 +38,10 @@ import {
   setTitle,
   TriggerableNode
 } from '@kogito-apps/management-console-shared';
-import { ProcessDetailsDriver } from 'packages/process-details/src/api';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal/ProcessDetailsErrorModal';
 import '../styles.css';
+import { ProcessDetailsDriver } from '../../../api';
 interface ProcessDetailsNodeTriggerProps {
   processInstanceData: ProcessInstance;
   driver: ProcessDetailsDriver;

@@ -23,6 +23,7 @@ import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelop
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormChannelApi, TaskFormEnvelopeApi } from '../../../api';
 import { TaskFormEnvelopeViewApi } from '../../TaskFormEnvelopeView';
+import { CustomForm, FormType } from '../../../types';
 
 export const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -51,12 +52,33 @@ export const testUserTask: UserTaskInstance = {
     'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };
 
+export const customForm: CustomForm = {
+  formInfo: {
+    type: FormType.HTML,
+    name: 'travels_VisaApplication',
+    lastModified: new Date('2021-10-07T04:58:18.311Z')
+  },
+  source: '<div></div>',
+  configuration: {
+    schema: '',
+    resources: {
+      styles: {},
+      scripts: {}
+    }
+  }
+};
+
+export const taskForm__getTaskFormSchemaMock = jest.fn();
+export const taskForm__getCustomFormMock = jest.fn();
+export const taskForm__doSubmitMock = jest.fn();
+
 export const MockedApiRequests = jest.fn<
   Pick<TaskFormChannelApi, RequestPropertyNames<TaskFormChannelApi>>,
   []
 >(() => ({
-  taskForm__doSubmit: jest.fn(),
-  taskForm__getTaskFormSchema: jest.fn()
+  taskForm__doSubmit: taskForm__doSubmitMock,
+  taskForm__getTaskFormSchema: taskForm__getTaskFormSchemaMock,
+  taskForm__getCustomForm: taskForm__getCustomFormMock
 }));
 
 export const MockedApiNotifications = jest.fn<

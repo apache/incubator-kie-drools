@@ -20,7 +20,11 @@ import {
   MockedTaskFormEnvelopeViewApi,
   testUserTask
 } from './mocks/Mocks';
-import { TaskFormChannelApi, TaskFormEnvelopeApi } from '../../api';
+import {
+  TaskFormChannelApi,
+  TaskFormEnvelopeApi,
+  TaskFormInitArgs
+} from '../../api';
 import { TaskFormEnvelopeViewApi } from '../TaskFormEnvelopeView';
 import { TaskFormEnvelopeContext } from '../TaskFormEnvelopeContext';
 import { TaskFormEnvelopeApiImpl } from '../TaskFormEnvelopeApiImpl';
@@ -42,14 +46,20 @@ describe('TaskFormEnvelopeApiImpl tests', () => {
 
     const envelopeApi = new TaskFormEnvelopeApiImpl(args);
 
+    const initArgs: TaskFormInitArgs = {
+      userTask: testUserTask,
+      user: {
+        id: 'test',
+        groups: ['group1']
+      }
+    };
+
     envelopeApi.taskForm__init(
       {
         envelopeServerId: 'envelopeServerId',
         origin: 'origin'
       },
-      {
-        userTask: testUserTask
-      }
+      initArgs
     );
 
     expect(envelopeBusController.associate).toHaveBeenCalledWith(
@@ -57,6 +67,6 @@ describe('TaskFormEnvelopeApiImpl tests', () => {
       'envelopeServerId'
     );
 
-    expect(view.initialize).toHaveBeenCalledWith(testUserTask);
+    expect(view.initialize).toHaveBeenCalledWith(initArgs);
   });
 });

@@ -17,6 +17,20 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import HtmlFormRenderer from '../HtmlFormRenderer';
+import ResourcesContainer from '../../ResourcesContainer/ResourcesContainer';
+import InnerHTML from 'dangerously-set-html-content';
+
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+
+jest.mock('dangerously-set-html-content', () => ({
+  __esModule: true,
+  default: 'InnerHTML',
+  InnerHTML: () => <MockedComponent />
+}));
+
+jest.mock('../../ResourcesContainer/ResourcesContainer');
 
 describe('HtmlFormRenderer test cases', () => {
   beforeAll(() => {
@@ -26,8 +40,7 @@ describe('HtmlFormRenderer test cases', () => {
   });
   it('Snapshot test with default props', () => {
     const props = {
-      source:
-        '<div>\n  <fieldset disabled>\n    <legend>Candidate</legend>\n    <div>\n      <div class="form-group">\n        <label for="uniforms-0000-0002">Email</label>\n        <input type="text" id="uniforms-0000-0002" name="candidate.email" class="form-control" disabled value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0003">Name</label>\n        <input type="text" id="uniforms-0000-0003" name="candidate.name" class="form-control" disabled value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0005">Salary</label>\n        <input type="number" class="form-control" id="uniforms-0000-0005" name="candidate.salary" disabled step="1" value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0006">Skills</label>\n        <input type="text" id="uniforms-0000-0006" name="candidate.skills" class="form-control" disabled value="" />\n      </div>\n    </div>\n  </fieldset>\n\n  <div class="form-check">\n    <input type="checkbox" id="uniforms-0000-0008" name="approve" class="form-check-input" />\n    <label class="form-check-label" for="uniforms-0000-0008">Approve</label>\n  </div>\n</div>\n',
+      source: '<div></div>',
       resources: {
         scripts: {
           'bootstrap.min.js':
@@ -49,7 +62,7 @@ describe('HtmlFormRenderer test cases', () => {
   it('Test source with script tags', () => {
     const props = {
       source:
-        '<script src=\'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js\'></script><div>\n  <fieldset disabled>\n    <legend>Candidate</legend>\n    <div>\n      <div class="form-group">\n        <label for="uniforms-0000-0002">Email</label>\n        <input type="text" id="uniforms-0000-0002" name="candidate.email" class="form-control" disabled value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0003">Name</label>\n        <input type="text" id="uniforms-0000-0003" name="candidate.name" class="form-control" disabled value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0005">Salary</label>\n        <input type="number" class="form-control" id="uniforms-0000-0005" name="candidate.salary" disabled step="1" value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0006">Skills</label>\n        <input type="text" id="uniforms-0000-0006" name="candidate.skills" class="form-control" disabled value="" />\n      </div>\n    </div>\n  </fieldset>\n\n  <div class="form-check">\n    <input type="checkbox" id="uniforms-0000-0008" name="approve" class="form-check-input" />\n    <label class="form-check-label" for="uniforms-0000-0008">Approve</label>\n  </div>\n</div>\n',
+        '<script src=\'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js\'></script><div>  <fieldset disabled>    <legend>Candidate</legend>    <div>      <div class="form-group">        <label for="uniforms-0000-0002">Email</label>        <input type="text" id="uniforms-0000-0002" name="candidate.email" class="form-control" disabled value="" />      </div>      <div class="form-group">        <label for="uniforms-0000-0003">Name</label>        <input type="text" id="uniforms-0000-0003" name="candidate.name" class="form-control" disabled value="" />      </div>      <div class="form-group">        <label for="uniforms-0000-0005">Salary</label>        <input type="number" class="form-control" id="uniforms-0000-0005" name="candidate.salary" disabled step="1" value="" />      </div>      <div class="form-group">        <label for="uniforms-0000-0006">Skills</label>        <input type="text" id="uniforms-0000-0006" name="candidate.skills" class="form-control" disabled value="" />      </div>    </div>  </fieldset>  <div class="form-check">    <input type="checkbox" id="uniforms-0000-0008" name="approve" class="form-check-input" />    <label class="form-check-label" for="uniforms-0000-0008">Approve</label>  </div></div>',
       resources: {
         scripts: {
           'bootstrap.min.js':
@@ -66,5 +79,11 @@ describe('HtmlFormRenderer test cases', () => {
     };
     const wrapper = mount(<HtmlFormRenderer {...props} />);
     expect(wrapper.find('div')).toBeTruthy();
+
+    const resources = wrapper.find(ResourcesContainer);
+    expect(resources.exists()).toBeTruthy();
+
+    const innerHTML = wrapper.find(InnerHTML);
+    expect(innerHTML.exists()).toBeTruthy();
   });
 });

@@ -14,33 +14,28 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
+import React, { useState } from 'react';
+import get from 'lodash/get';
+import has from 'lodash/has';
+import isEmpty from 'lodash/isEmpty';
+import set from 'lodash/set';
 import { Bullseye } from '@patternfly/react-core';
-import {
-  KogitoEmptyState,
-  KogitoEmptyStateType,
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+import { KogitoSpinner } from '@kogito-apps/components-common';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormDriver } from '../../../api';
 import { TaskFormSchema } from '../../../types';
 import EmptyTaskForm from '../EmptyTaskForm/EmptyTaskForm';
 import TaskFormRenderer from '../TaskFormRenderer/TaskFormRenderer';
-import {
-  readSchemaAssignments,
-  TaskDataAssignments
-} from '../utils/TaskFormDataUtils';
+import { readSchemaAssignments } from '../utils/TaskFormDataUtils';
 
 export interface TaskFormProps {
   userTask: UserTaskInstance;
+  schema: TaskFormSchema;
   driver: TaskFormDriver;
-  isEnvelopeConnectedToChannel: boolean;
 }
 
 enum State {
-  LOADING,
   READY,
   SUBMITTING,
   SUBMITTED
@@ -48,88 +43,67 @@ enum State {
 
 const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
   userTask,
+  schema,
   driver,
-  isEnvelopeConnectedToChannel,
   ouiaId,
   ouiaSafe
 }) => {
   const [formData, setFormData] = useState<any>(null);
-  const [taskFormSchema, setTaskFormSchema] = useState<TaskFormSchema>(null);
-  const [taskFormAssignments, setTaskFormAssignments] = useState<
-    TaskDataAssignments
-  >();
-  const [formState, setFormState] = useState<State>(State.LOADING);
+  const [formState, setFormState] = useState<State>(State.READY);
 
-  useEffect(() => {
-    if (isEnvelopeConnectedToChannel) {
-      loadForm();
-    }
-  }, [isEnvelopeConnectedToChannel]);
-
-  const loadForm = async () => {
-    try {
-      const schema = await driver.getTaskFormSchema();
-      setTaskFormAssignments(readSchemaAssignments(schema));
-      setTaskFormSchema(schema);
-      setFormState(State.READY);
-    } catch (err) {
-      setFormState(State.READY);
-    }
-  };
-
-  if (formState === State.LOADING) {
+  if (formState === State.SUBMITTING) {
     return (
       <Bullseye
         {...componentOuiaProps(
-          (ouiaId ? ouiaId : 'task-form') + '-loading-spinner',
+          (ouiaId ? ouiaId : 'task-form') + '-submit-spinner',
           'task-form',
           true
         )}
       >
-        <KogitoSpinner spinnerText={`Loading task form...`} />
+        <KogitoSpinner
+          spinnerText={`Submitting for task ${
+            userTask.referenceName
+          } (${userTask.id.substring(0, 5)})`}
+        />
       </Bullseye>
     );
   }
 
-  if (taskFormSchema) {
-    if (formState == State.SUBMITTING) {
-      return (
-        <Bullseye
-          {...componentOuiaProps(
-            (ouiaId ? ouiaId : 'task-form') + '-submit-spinner',
-            'task-form',
-            true
-          )}
-        >
-          <KogitoSpinner
-            spinnerText={`Submitting for task ${
-              userTask.referenceName
-            } (${userTask.id.substring(0, 5)})`}
-          />
-        </Bullseye>
-      );
-    }
-
-    const doSubmit = async (phase: string, data: any) => {
+  if (formState === State.READY || formState === State.SUBMITTED) {
+    const doSubmit = async (
+      phase: string,
+      data: any,
+      onSuccess?: (response: any) => void,
+      onFailure?: (response: any) => void
+    ) => {
       try {
         setFormState(State.SUBMITTING);
         setFormData(data);
 
         const payload = {};
 
+        const taskFormAssignments = readSchemaAssignments(schema);
+
         taskFormAssignments.outputs.forEach(output => {
-          if (_.has(data, output)) {
-            _.set(payload, output, _.get(data, output));
+          if (has(data, output)) {
+            set(payload, output, get(data, output));
           }
         });
 
-        await driver.doSubmit(phase, payload);
+        const result = await driver.doSubmit(phase, payload);
+        if (onSuccess) {
+          onSuccess(result);
+        }
+      } catch (err) {
+        if (onFailure) {
+          onFailure(err);
+        }
       } finally {
         setFormState(State.SUBMITTED);
       }
     };
 
-    if (_.isEmpty(taskFormSchema.properties)) {
+    if (isEmpty(schema.properties)) {
       return (
         <EmptyTaskForm
           {...componentOuiaProps(
@@ -139,7 +113,7 @@ const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
           )}
           userTask={userTask}
           enabled={formState == State.READY}
-          formSchema={taskFormSchema}
+          formSchema={schema}
           submit={phase => doSubmit(phase, {})}
         />
       );
@@ -153,28 +127,13 @@ const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
           ouiaSafe
         )}
         userTask={userTask}
-        formSchema={taskFormSchema}
+        formSchema={schema}
         formData={formData}
         enabled={formState == State.READY}
         submit={doSubmit}
       />
     );
   }
-
-  return (
-    <KogitoEmptyState
-      type={KogitoEmptyStateType.Info}
-      title="No form to show"
-      body={`Cannot find form for task  ${
-        userTask.referenceName
-      } (${userTask.id.substring(0, 5)})`}
-      {...componentOuiaProps(
-        (ouiaId ? ouiaId : 'task-form') + '-no-form',
-        'empty-task-form',
-        ouiaSafe
-      )}
-    />
-  );
 };
 
 export default TaskForm;

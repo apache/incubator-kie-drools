@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormErrorsWrapper tests Snapshot 1`] = `
+<FormErrorsWrapper
+  error={[Error: Test error]}
+>
+  <Bullseye
+    data-ouia-component-type="form-errors-wrapper"
+    data-ouia-safe={true}
+  >
+    <div
+      className="pf-l-bullseye"
+      data-ouia-component-type="form-errors-wrapper"
+      data-ouia-safe={true}
+    >
+      <EmptyState
+        variant="full"
+      >
+        <div
+          className="pf-c-empty-state"
+        >
+          <div
+            className="pf-c-empty-state__content"
+          >
+            <EmptyStateIcon
+              icon={[Function]}
+            >
+              <MockedComponent />
+            </EmptyStateIcon>
+            <Title
+              headingLevel="h4"
+              size="lg"
+            >
+              <h4
+                className="pf-c-title pf-m-lg"
+              >
+                Error displaying form:
+              </h4>
+            </Title>
+            <EmptyStateBody>
+              <div
+                className="pf-c-empty-state__body"
+              >
+                Error: Test error
+                .
+                 
+                <Button
+                  isInline={true}
+                  onClick={[Function]}
+                  variant="link"
+                >
+                  <MockedComponent />
+                </Button>
+              </div>
+            </EmptyStateBody>
+          </div>
+        </div>
+      </EmptyState>
+    </div>
+  </Bullseye>
+</FormErrorsWrapper>
+`;
+
+exports[`FormErrorsWrapper tests Snapshot 2`] = `
+<FormErrorsWrapper
+  error={[Error: Test error]}
+>
+  <Bullseye
+    data-ouia-component-type="form-errors-wrapper"
+    data-ouia-safe={true}
+  >
+    <div
+      className="pf-l-bullseye"
+      data-ouia-component-type="form-errors-wrapper"
+      data-ouia-safe={true}
+    >
+      <EmptyState
+        variant="full"
+      >
+        <div
+          className="pf-c-empty-state"
+        >
+          <div
+            className="pf-c-empty-state__content"
+          >
+            <EmptyStateIcon
+              icon={[Function]}
+            >
+              <MockedComponent />
+            </EmptyStateIcon>
+            <Title
+              headingLevel="h4"
+              size="lg"
+            >
+              <h4
+                className="pf-c-title pf-m-lg"
+              >
+                Error displaying form:
+              </h4>
+            </Title>
+            <EmptyStateBody>
+              <div
+                className="pf-c-empty-state__body"
+              >
+                Error: Test error
+                .
+                 
+                <Button
+                  isInline={true}
+                  onClick={[Function]}
+                  variant="link"
+                >
+                  <MockedComponent />
+                </Button>
+              </div>
+            </EmptyStateBody>
+            <EmptyStateBody>
+              <div
+                className="pf-c-empty-state__body"
+              >
+                <ClipboardCopy
+                  isCode={true}
+                  isExpanded={true}
+                  variant="expansion"
+                >
+                  <MockedComponent />
+                </ClipboardCopy>
+              </div>
+            </EmptyStateBody>
+          </div>
+        </div>
+      </EmptyState>
+    </div>
+  </Bullseye>
+</FormErrorsWrapper>
+`;

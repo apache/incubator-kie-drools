@@ -16,9 +16,13 @@
 
 import React from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import { GraphQL } from '@kogito-apps/consoles-common';
+import { GraphQL, useKogitoAppContext } from '@kogito-apps/consoles-common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
-import { EmbeddedTaskForm, TaskFormSchema } from '@kogito-apps/task-form';
+import {
+  CustomForm,
+  EmbeddedTaskForm,
+  TaskFormSchema
+} from '@kogito-apps/task-form';
 import { useTaskFormGatewayApi } from '../../../../../channel/forms/TaskFormContext';
 
 interface Props {
@@ -35,11 +39,13 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
   ouiaSafe
 }) => {
   const gatewayApi = useTaskFormGatewayApi();
+  const kogitoAppContext = useKogitoAppContext();
 
   return (
     <EmbeddedTaskForm
       {...componentOuiaProps(ouiaId, 'task-form-container', ouiaSafe)}
       userTask={userTask}
+      user={kogitoAppContext.getCurrentUser()}
       driver={{
         doSubmit(phase?: string, payload?: any): Promise<any> {
           return gatewayApi
@@ -54,6 +60,9 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
         },
         getTaskFormSchema(): Promise<TaskFormSchema> {
           return gatewayApi.getTaskFormSchema(userTask);
+        },
+        getCustomForm(): Promise<CustomForm> {
+          return gatewayApi.getCustomForm(userTask);
         }
       }}
       targetOrigin={window.location.origin}

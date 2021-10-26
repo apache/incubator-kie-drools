@@ -17,44 +17,64 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import FormDisplayer from '../FormDisplayer';
-import { FormType, FormArgs, FormInfo } from '../../../../api';
+import { FormType, Form } from '../../../../api';
+import HtmlFormRenderer from '../../HtmlFormRenderer/HtmlFormRenderer';
+import ReactFormRenderer from '../../ReactFormRenderer/ReactFormRenderer';
+import { Bullseye } from '@patternfly/react-core';
+
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+
+jest.mock('@patternfly/react-core', () => ({
+  ...jest.requireActual('@patternfly/react-core'),
+  Bullseye: () => <MockedComponent />
+}));
 
 jest.mock('../../ReactFormRenderer/ReactFormRenderer');
 jest.mock('../../HtmlFormRenderer/HtmlFormRenderer');
+
 describe('FormDisplayer component tests', () => {
   it('Snapshot test with default props - TSX renderer', () => {
     const props = {
       isEnvelopeConnectedToChannel: true,
       content: {
-        name: 'react_hiring_HRInterview',
-        formConfiguration: {
+        formInfo: {
+          lastModified: new Date('2021-08-23T13:26:02.130Z'),
+          name: 'react_hiring_HRInterview',
+          type: FormType.TSX
+        },
+        configuration: {
           resources: {
             scripts: {},
             styles: {}
           },
-          schema:
-            '{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"candidate":{"type":"object","properties":{"email":{"type":"string"},"name":{"type":"string"},"salary":{"type":"integer"},"skills":{"type":"string"}},"input":true},"approve":{"type":"boolean","output":true}}}'
+          schema: 'json schema'
         },
-        source: {
-          'source-content':
-            "import React, { useState } from 'react';\nimport {\n  Card,\n  CardBody,\n  TextInput,\n  FormGroup,\n  Checkbox\n} from '@patternfly/react-core';\n\nconst Form__hiring_HRInterview: React.FC<any> = (props: any) => {\n  const [candidate__email, set__candidate__email] = useState<string>();\n  const [candidate__name, set__candidate__name] = useState<string>();\n  const [candidate__salary, set__candidate__salary] = useState<string>();\n  const [candidate__skills, set__candidate__skills] = useState<string>();\n  const [approve, set__approve] = useState<boolean>();\n\n  return (\n    <div className={'pf-c-form'}>\n      <Card>\n        <CardBody className=\"pf-c-form\">\n          <label>\n            <b>Candidate</b>\n          </label>\n          <FormGroup\n            fieldId={'uniforms-0000-0002'}\n            label={'Email'}\n            isRequired={false}\n          >\n            <TextInput\n              name={'candidate.email'}\n              id={'uniforms-0000-0002'}\n              isDisabled={true}\n              placeholder={''}\n              type={'text'}\n              value={candidate__email}\n              onChange={set__candidate__email}\n            />\n          </FormGroup>\n          <FormGroup\n            fieldId={'uniforms-0000-0003'}\n            label={'Name'}\n            isRequired={false}\n          >\n            <TextInput\n              name={'candidate.name'}\n              id={'uniforms-0000-0003'}\n              isDisabled={true}\n              placeholder={''}\n              type={'text'}\n              value={candidate__name}\n              onChange={set__candidate__name}\n            />\n          </FormGroup>\n          <FormGroup\n            fieldId={'uniforms-0000-0005'}\n            label={'Salary'}\n            isRequired={false}\n          >\n            <TextInput\n              type={'number'}\n              name={'candidate.salary'}\n              isDisabled={true}\n              id={'uniforms-0000-0005'}\n              placeholder={''}\n              step={1}\n              value={candidate__salary}\n              onChange={set__candidate__salary}\n            />\n          </FormGroup>\n          <FormGroup\n            fieldId={'uniforms-0000-0006'}\n            label={'Skills'}\n            isRequired={false}\n          >\n            <TextInput\n              name={'candidate.skills'}\n              id={'uniforms-0000-0006'}\n              isDisabled={true}\n              placeholder={''}\n              type={'text'}\n              value={candidate__skills}\n              onChange={set__candidate__skills}\n            />\n          </FormGroup>\n        </CardBody>\n      </Card>\n      <FormGroup fieldId=\"uniforms-0000-0008\">\n        <Checkbox\n          isChecked={approve}\n          isDisabled={false}\n          id={'uniforms-0000-0008'}\n          name={'approve'}\n          label={'Approve'}\n          onChange={set__approve}\n        />\n      </FormGroup>\n    </div>\n  );\n};\n\nexport default Form__hiring_HRInterview;\n"
-        }
+        source: 'react source code'
       },
-      config: {
-        lastModified: new Date('2021-08-23T13:26:02.130Z'),
-        name: 'react_hiring_HRInterview',
-        type: FormType.TSX
-      }
+      onOpenForm: jest.fn(),
+      data: {},
+      context: {}
     };
+
     const wrapper = mount(<FormDisplayer {...props} />);
     expect(wrapper).toMatchSnapshot();
+
+    const react = wrapper.find(ReactFormRenderer);
+    expect(react.exists()).toBeTruthy();
   });
+
   it('Snapshot test with default props - HTML renderer', () => {
     const props = {
       isEnvelopeConnectedToChannel: true,
       content: {
-        name: 'html_hiring_HRInterview',
-        formConfiguration: {
+        formInfo: {
+          lastModified: new Date('2021-08-23T13:26:02.130Z'),
+          name: 'html_hiring_HRInterview',
+          type: FormType.HTML
+        },
+        configuration: {
           resources: {
             scripts: {
               'bootstrap.min.js':
@@ -68,30 +88,33 @@ describe('FormDisplayer component tests', () => {
                 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'
             }
           },
-          schema:
-            '{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"candidate":{"type":"object","properties":{"email":{"type":"string"},"name":{"type":"string"},"salary":{"type":"integer"},"skills":{"type":"string"}},"input":true},"approve":{"type":"boolean","output":true}}}'
+          schema: 'json schema'
         },
-        source: {
-          'source-content':
-            '<div>\n  <fieldset disabled>\n    <legend>Candidate</legend>\n    <div>\n      <div class="form-group">\n        <label for="uniforms-0000-0002">Email</label>\n        <input type="text" id="uniforms-0000-0002" name="candidate.email" class="form-control" disabled value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0003">Name</label>\n        <input type="text" id="uniforms-0000-0003" name="candidate.name" class="form-control" disabled value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0005">Salary</label>\n        <input type="number" class="form-control" id="uniforms-0000-0005" name="candidate.salary" disabled step="1" value="" />\n      </div>\n\n      <div class="form-group">\n        <label for="uniforms-0000-0006">Skills</label>\n        <input type="text" id="uniforms-0000-0006" name="candidate.skills" class="form-control" disabled value="" />\n      </div>\n    </div>\n  </fieldset>\n\n  <div class="form-check">\n    <input type="checkbox" id="uniforms-0000-0008" name="approve" class="form-check-input" />\n    <label class="form-check-label" for="uniforms-0000-0008">Approve</label>\n  </div>\n</div>\n'
-        }
+        source: 'html source code'
       },
-      config: {
-        lastModified: new Date('2021-08-23T13:26:02.130Z'),
-        name: 'html_hiring_HRInterview',
-        type: FormType.HTML
-      }
+      onOpenForm: jest.fn(),
+      data: {},
+      context: {}
     };
     const wrapper = mount(<FormDisplayer {...props} />);
     expect(wrapper).toMatchSnapshot();
+
+    const html = wrapper.find(HtmlFormRenderer);
+    expect(html.exists()).toBeTruthy();
   });
+
   it('Test beats spinner', () => {
     const props = {
       isEnvelopeConnectedToChannel: false,
-      content: {} as FormArgs,
-      config: {} as FormInfo
+      content: {} as Form,
+      onOpenForm: jest.fn(),
+      data: {},
+      context: {}
     };
     const wrapper = mount(<FormDisplayer {...props} />);
     expect(wrapper).toMatchSnapshot();
+
+    const bullseye = wrapper.find(Bullseye);
+    expect(bullseye.exists()).toBeTruthy();
   });
 });

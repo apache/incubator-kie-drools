@@ -30,7 +30,7 @@ import {
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import { FormFilter } from 'packages/forms-list/src/api';
+import { FormFilter } from '../../../api';
 
 interface FormsListToolbarProps {
   filterFormNames: string[];

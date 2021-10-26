@@ -34,6 +34,12 @@ describe('EmbeddedTaskFormChannelApiImpl tests', () => {
     expect(driver.getTaskFormSchema).toHaveBeenCalled();
   });
 
+  it('taskForm__getCustomForm', () => {
+    api.taskForm__getCustomForm();
+
+    expect(driver.getCustomForm).toHaveBeenCalled();
+  });
+
   it('taskForm__doSubmit', () => {
     api.taskForm__doSubmit('complete', {});
 

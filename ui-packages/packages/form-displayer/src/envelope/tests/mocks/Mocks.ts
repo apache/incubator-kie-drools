@@ -16,7 +16,8 @@
 
 import {
   MessageBusClientApi,
-  RequestPropertyNames
+  RequestPropertyNames,
+  NotificationPropertyNames
 } from '@kogito-tooling/envelope-bus/dist/api';
 import {
   FormDisplayerChannelApi,
@@ -30,12 +31,22 @@ export const MockedApiRequests = jest.fn<
   []
 >(() => ({}));
 
+export const MockedApiNotifications = jest.fn<
+  Pick<
+    FormDisplayerChannelApi,
+    NotificationPropertyNames<FormDisplayerChannelApi>
+  >,
+  []
+>(() => ({
+  notifyOnOpenForm: jest.fn()
+}));
+
 export const MockedMessageBusClientApi = jest.fn<
   MessageBusClientApi<FormDisplayerChannelApi>,
   []
 >(() => ({
   requests: new MockedApiRequests(),
-  notifications: jest.fn(),
+  notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
   unsubscribe: jest.fn()
 }));
@@ -59,6 +70,7 @@ export const MockedFormDisplayerEnvelopeViewApi = jest.fn<
   FormDisplayerEnvelopeViewApi,
   []
 >(() => ({
-  setFormContent: jest.fn(),
-  notify: jest.fn()
+  initForm: jest.fn(),
+  startSubmit: jest.fn(),
+  notifySubmitResponse: jest.fn()
 }));

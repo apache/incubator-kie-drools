@@ -17,10 +17,13 @@
 import axios from 'axios';
 import { User } from '@kogito-apps/consoles-common';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { TaskFormSchema } from '@kogito-apps/task-form';
+import { CustomForm, TaskFormSchema } from '@kogito-apps/task-form';
 
 export interface TaskFormGatewayApi {
   getTaskFormSchema(userTask: UserTaskInstance): Promise<TaskFormSchema>;
+
+  getCustomForm(userTask: UserTaskInstance): Promise<CustomForm>;
+
   doSubmit(
     userTask: UserTaskInstance,
     phase: string,
@@ -30,6 +33,7 @@ export interface TaskFormGatewayApi {
 
 export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   private getCurrentUser: () => User;
+
   constructor(getCurrentUser: () => User) {
     this.getCurrentUser = getCurrentUser;
   }
@@ -81,6 +85,28 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
         .catch(error => reject(error));
     });
   }
+
+  getCustomForm(userTask: UserTaskInstance): Promise<CustomForm> {
+    return new Promise<CustomForm>((resolve, reject) => {
+      const endpoint = getCustomFormEndpoint(userTask);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          }
+        })
+        .then(responseObj => {
+          if (responseObj.status == 200) {
+            resolve(responseObj.data);
+          } else {
+            reject(responseObj);
+          }
+        })
+        .catch(err => reject(err));
+    });
+  }
 }
 
 function getTaskSchemaEndPoint(task: UserTaskInstance, user: User): string {
@@ -105,4 +131,14 @@ function getTaskEndpointSecurityParams(user: User): string {
     groups = `&group=${user.groups.join('&group=')}`;
   }
   return `user=${user.id}${groups}`;
+}
+
+function getCustomFormEndpoint(task: UserTaskInstance): string {
+  const suffix = `/${task.processId}/${task.processInstanceId}/${task.name}/${task.id}`;
+  const endPoint = task.endpoint.substring(
+    0,
+    task.endpoint.lastIndexOf(suffix)
+  );
+
+  return `${endPoint}/forms/${task.processId}_${task.name}`;
 }

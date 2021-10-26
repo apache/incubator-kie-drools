@@ -30,4 +30,10 @@ export interface Association {
 
 export interface TaskFormInitArgs {
   userTask: UserTaskInstance;
+  user: User;
+}
+
+export interface User {
+  id: string;
+  groups: string[];
 }

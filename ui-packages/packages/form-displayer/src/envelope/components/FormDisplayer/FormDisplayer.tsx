@@ -14,54 +14,117 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { Bullseye } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { BallBeat } from 'react-pure-loaders';
-import { FormArgs, FormInfo } from '../../../api';
+import { Form, FormOpened, FormOpenedState } from '../../../api';
 import ReactFormRenderer from '../ReactFormRenderer/ReactFormRenderer';
 import HtmlFormRenderer from '../HtmlFormRenderer/HtmlFormRenderer';
 import '../styles.css';
+import {
+  FormConfig,
+  EmbeddedFormApi,
+  InternalFormDisplayerApi,
+  InternalFormDisplayerApiImpl
+} from './apis';
 
 interface FormDisplayerProps {
   isEnvelopeConnectedToChannel: boolean;
-  content: FormArgs;
-  config: FormInfo;
+  content: Form;
+  data: any;
+  onOpenForm: (opened: FormOpened) => void;
+  context: Record<string, string>;
 }
 
-const FormDisplayer: React.FC<FormDisplayerProps & OUIAProps> = ({
-  isEnvelopeConnectedToChannel,
-  content,
-  config,
-  ouiaId,
-  ouiaSafe
-}) => {
-  const [isExecuting, setIsExecuting] = useState<boolean>(false);
+export const FormDisplayer = React.forwardRef<
+  EmbeddedFormApi,
+  FormDisplayerProps & OUIAProps
+>(
+  (
+    {
+      isEnvelopeConnectedToChannel,
+      content,
+      data,
+      context,
+      onOpenForm,
+      ouiaId,
+      ouiaSafe
+    },
+    forwardedRef
+  ) => {
+    const [source, setSource] = useState<string>();
+    const [resources, setResources] = useState<any>();
+    const [formData, setFormData] = useState<string>();
+    const [formApi, setFormApi] = useState<InternalFormDisplayerApi>(null);
+    const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
-  return (
-    <div {...componentOuiaProps(ouiaId, 'form-displayer', ouiaSafe)}>
-      {isEnvelopeConnectedToChannel && !isExecuting ? (
-        <>
-          {config && config.type === 'TSX' ? (
-            <ReactFormRenderer
-              source={content.source['source-content']}
-              resources={content.formConfiguration['resources']}
-              setIsExecuting={setIsExecuting}
+    const doOpenForm = (config: FormConfig): EmbeddedFormApi => {
+      const api: EmbeddedFormApi = {};
+      setFormApi(new InternalFormDisplayerApiImpl(api, config.onOpen));
+      return api;
+    };
+
+    useEffect(() => {
+      window.Form = {
+        openForm: doOpenForm
+      };
+    }, []);
+
+    useEffect(() => {
+      /* istanbul ignore else */
+      if (isEnvelopeConnectedToChannel) {
+        setSource(content.source);
+        setResources(content.configuration.resources);
+        setFormData(data);
+      }
+    }, [isEnvelopeConnectedToChannel, content, data]);
+
+    useEffect(() => {
+      if (isEnvelopeConnectedToChannel && formApi) {
+        formApi.onOpen({
+          data: formData,
+          context: context
+        });
+        setTimeout(() => {
+          onOpenForm({
+            state: FormOpenedState.OPENED,
+            size: {
+              height: document.body.scrollHeight,
+              width: document.body.scrollWidth
+            }
+          });
+        }, 500);
+      }
+    }, [formApi]);
+
+    useImperativeHandle(forwardedRef, () => formApi, [formApi]);
+
+    return (
+      <div {...componentOuiaProps(ouiaId, 'form-displayer', ouiaSafe)}>
+        {isEnvelopeConnectedToChannel && !isExecuting ? (
+          <div id={'inner-form-container'}>
+            {content.formInfo && content.formInfo.type === 'TSX' ? (
+              <ReactFormRenderer
+                source={source}
+                resources={resources}
+                setIsExecuting={setIsExecuting}
+              />
+            ) : (
+              <HtmlFormRenderer source={source} resources={resources} />
+            )}
+          </div>
+        ) : (
+          <Bullseye className="kogito-form-displayer__ball-beats">
+            <BallBeat
+              color={'#000000'}
+              loading={!isEnvelopeConnectedToChannel}
             />
-          ) : (
-            <HtmlFormRenderer
-              source={content.source['source-content']}
-              resources={content.formConfiguration['resources']}
-            />
-          )}
-        </>
-      ) : (
-        <Bullseye className="kogito-form-displayer__ball-beats">
-          <BallBeat color={'#000000'} loading={!isEnvelopeConnectedToChannel} />
-        </Bullseye>
-      )}
-    </div>
-  );
-};
+          </Bullseye>
+        )}
+      </div>
+    );
+  }
+);
 
 export default FormDisplayer;

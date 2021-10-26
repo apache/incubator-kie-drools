@@ -48,9 +48,12 @@ interface FormConfiguration {
   resources: FormResources;
 }
 export interface Form {
-  source: {
-    'source-content': string;
-  };
-  name: string;
-  formConfiguration: FormConfiguration;
+  formInfo: FormInfo;
+  source: string;
+  configuration: FormConfiguration;
+}
+
+export interface FormContent {
+  source: string;
+  configuration: FormConfiguration;
 }

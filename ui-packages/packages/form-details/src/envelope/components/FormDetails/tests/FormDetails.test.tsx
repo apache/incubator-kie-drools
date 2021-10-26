@@ -19,8 +19,10 @@ import { mount } from 'enzyme';
 import FormDetails from '../FormDetails';
 import { MockedFormDetailsDriver } from '../../../tests/mocks/MockedFormDetailsDriver';
 import { act } from 'react-dom/test-utils';
+
 jest.mock('../../FormEditor/FormEditor');
 jest.mock('../../../containers/FormDisplayerContainer/FormDisplayerContainer');
+
 describe('form details tests', () => {
   const driver = new MockedFormDetailsDriver();
 

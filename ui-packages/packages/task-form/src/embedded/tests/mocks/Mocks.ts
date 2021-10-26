@@ -45,6 +45,7 @@ export const testUserTask: UserTaskInstance = {
 };
 
 export const MockedTaskFormDriver = jest.fn<TaskFormDriver, []>(() => ({
+  getCustomForm: jest.fn(),
   getTaskFormSchema: jest.fn(),
   doSubmit: jest.fn()
 }));

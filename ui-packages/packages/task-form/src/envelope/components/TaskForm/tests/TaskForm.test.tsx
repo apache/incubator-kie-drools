@@ -19,12 +19,7 @@ import { act } from 'react-dom/test-utils';
 import _ from 'lodash';
 import wait from 'waait';
 import TaskForm, { TaskFormProps } from '../TaskForm';
-import { TaskFormSchema } from '../../../../types';
 import { TaskFormDriver } from '../../../../api';
-import {
-  KogitoEmptyState,
-  KogitoSpinner
-} from '@kogito-apps/components-common';
 import { mount } from 'enzyme';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
 import TaskFormRenderer from '../../TaskFormRenderer/TaskFormRenderer';
@@ -43,32 +38,17 @@ const MockedComponent = (): React.ReactElement => {
 
 jest.mock('@kogito-apps/components-common', () => ({
   ...jest.requireActual('@kogito-apps/components-common'),
-  KogitoEmptyState: () => {
-    return <MockedComponent />;
-  },
   KogitoSpinner: () => {
     return <MockedComponent />;
   }
 }));
 
 let props: TaskFormProps;
-let driverGetTaskFormSchemaSpy;
 let driverDoSubmitSpy;
 
-const getTaskFormDriver = (schema?: TaskFormSchema): TaskFormDriver => {
+const getTaskFormDriver = (): TaskFormDriver => {
   const driver = new MockedTaskFormDriver();
-  driverGetTaskFormSchemaSpy = jest.spyOn(driver, 'getTaskFormSchema');
-  driverGetTaskFormSchemaSpy.mockReturnValue(
-    new Promise<TaskFormSchema>((resolve, reject) => {
-      if (schema) {
-        resolve(schema);
-      } else {
-        reject('cannot load form');
-      }
-    })
-  );
   driverDoSubmitSpy = jest.spyOn(driver, 'doSubmit');
-  props.driver = driver;
   return driver;
 };
 
@@ -80,42 +60,14 @@ describe('TaskForm Test', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     props = {
-      isEnvelopeConnectedToChannel: true,
-      driver: null,
-      userTask: _.cloneDeep(testUserTask)
+      driver: getTaskFormDriver(),
+      userTask: _.cloneDeep(testUserTask),
+      schema: _.cloneDeep(ApplyForVisaForm)
     };
   });
 
-  it('Envelope not connected', () => {
-    const driver = getTaskFormDriver(_.cloneDeep(ApplyForVisaForm));
-
-    props.isEnvelopeConnectedToChannel = false;
-
-    const wrapper = getTaskFormWrapper();
-
-    expect(wrapper).toMatchSnapshot();
-
-    expect(driver.getTaskFormSchema).not.toHaveBeenCalled();
-
-    const spinner = wrapper.find(KogitoSpinner);
-    expect(spinner.exists()).toBeTruthy();
-
-    const renderer = wrapper.find(TaskFormRenderer);
-    expect(renderer.exists()).toBeFalsy();
-
-    const emptyForm = wrapper.find(EmptyTaskForm);
-    expect(emptyForm.exists()).toBeFalsy();
-
-    const emptyState = wrapper.find(KogitoEmptyState);
-    expect(emptyState.exists()).toBeFalsy();
-  });
-
   it('Empty Task Form rendering', async () => {
-    const schema = _.cloneDeep(ApplyForVisaForm);
-
-    _.unset(schema, 'properties');
-
-    const driver = getTaskFormDriver(schema);
+    _.unset(props.schema, 'properties');
 
     let wrapper;
 
@@ -128,13 +80,14 @@ describe('TaskForm Test', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    expect(driver.getTaskFormSchema).toHaveBeenCalled();
+    expect(props.driver.getTaskFormSchema).not.toHaveBeenCalled();
+    expect(props.driver.getCustomForm).not.toHaveBeenCalled();
 
     let emptyForm = wrapper.find(EmptyTaskForm);
     expect(emptyForm.exists()).toBeTruthy();
 
     expect(emptyForm.props().enabled).toBeTruthy();
-    expect(emptyForm.props().formSchema).toStrictEqual(schema);
+    expect(emptyForm.props().formSchema).toStrictEqual(props.schema);
     expect(emptyForm.props().userTask).toStrictEqual(props.userTask);
 
     await act(async () => {
@@ -151,10 +104,6 @@ describe('TaskForm Test', () => {
   });
 
   it('Task Form rendering', async () => {
-    const schema = _.cloneDeep(ApplyForVisaForm);
-
-    const driver = getTaskFormDriver(schema);
-
     let wrapper;
 
     await act(async () => {
@@ -166,14 +115,15 @@ describe('TaskForm Test', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    expect(driver.getTaskFormSchema).toHaveBeenCalled();
+    expect(props.driver.getTaskFormSchema).not.toHaveBeenCalled();
+    expect(props.driver.getCustomForm).not.toHaveBeenCalled();
 
     let taskFormRenderer = wrapper.find(TaskFormRenderer);
     expect(taskFormRenderer.exists()).toBeTruthy();
 
     expect(taskFormRenderer.props().enabled).toBeTruthy();
     expect(taskFormRenderer.props().userTask).toStrictEqual(props.userTask);
-    expect(taskFormRenderer.props().formSchema).toStrictEqual(schema);
+    expect(taskFormRenderer.props().formSchema).toStrictEqual(props.schema);
     expect(taskFormRenderer.props().formData).toBeNull();
 
     const formData = JSON.parse(props.userTask.inputs);
@@ -194,25 +144,5 @@ describe('TaskForm Test', () => {
     expect(taskFormRenderer.exists()).toBeTruthy();
     expect(taskFormRenderer.props().enabled).toBeFalsy();
     expect(taskFormRenderer.props().formData).toStrictEqual(formData);
-  });
-
-  it('Empty state', async () => {
-    const driver = getTaskFormDriver();
-
-    let wrapper;
-
-    await act(async () => {
-      wrapper = getTaskFormWrapper();
-      wait();
-    });
-
-    wrapper = wrapper.update().find(TaskForm);
-
-    expect(wrapper).toMatchSnapshot();
-
-    expect(driver.getTaskFormSchema).toHaveBeenCalled();
-
-    const emptyState = wrapper.find(KogitoEmptyState);
-    expect(emptyState.exists()).toBeTruthy();
   });
 });

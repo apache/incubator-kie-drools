@@ -5,6 +5,7 @@ exports[`EmbeddedFormDetails tests Snapshot 1`] = `
   driver={
     Object {
       "getFormContent": [MockFunction],
+      "saveFormContent": [MockFunction],
     }
   }
   envelopePath="path"

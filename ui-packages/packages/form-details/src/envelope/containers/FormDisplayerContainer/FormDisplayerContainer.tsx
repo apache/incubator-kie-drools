@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import uuidv4 from 'uuid';
 import {
   EmbeddedFormDisplayer,
   FormDisplayerApi
 } from '@kogito-apps/form-displayer';
 import { Form } from '../../../api';
-import { FormInfo } from '@kogito-apps/forms-list';
 import { useFormDetailsContext } from '../../components/contexts/FormDetailsContext';
+import { buildTestContext } from './utils/utils';
 
 interface FormDisplayerContainerProps {
   formContent: Form;
-  formData: FormInfo;
 }
 
 const FormDisplayerContainer: React.FC<FormDisplayerContainerProps> = ({
-  formContent,
-  formData
+  formContent
 }) => {
+  const [displayerKey, setDisplayerKey] = useState<string>(uuidv4());
   const appContext = useFormDetailsContext();
   const formDisplayerApiRef = React.useRef<FormDisplayerApi>();
 
   useEffect(() => {
     const unsubscribeUserChange = appContext.onUpdateContent({
       onUpdateContent(formContent) {
-        formDisplayerApiRef.current.formDisplayer__notify(formContent);
+        setDisplayerKey(uuidv4());
       }
     });
     return () => {
@@ -51,8 +51,9 @@ const FormDisplayerContainer: React.FC<FormDisplayerContainerProps> = ({
       targetOrigin={window.location.origin}
       envelopePath={'resources/form-displayer.html'}
       formContent={formContent}
-      formData={formData}
+      context={buildTestContext(formContent)}
       ref={formDisplayerApiRef}
+      key={displayerKey}
     />
   );
 };

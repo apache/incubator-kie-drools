@@ -14,4 +14,8 @@
  * limitations under the License.
  */
 
-export interface FormDisplayerChannelApi {}
+import { FormOpened } from './types';
+
+export interface FormDisplayerChannelApi {
+  notifyOnOpenForm: (opened: FormOpened) => void;
+}

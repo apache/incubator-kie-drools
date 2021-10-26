@@ -36,7 +36,7 @@ exports[`FormDetailsPage tests Snapshot 1`] = `
               <Label
                 variant="outline"
               >
-                html
+                HTML
               </Label>
             }
             title="form1"
@@ -91,7 +91,7 @@ exports[`FormDetailsPage tests Snapshot 1`] = `
                         <span
                           className="pf-c-label__content"
                         >
-                          html
+                          HTML
                         </span>
                       </span>
                     </Label>
@@ -179,6 +179,8 @@ exports[`FormDetailsPage tests Snapshot 1`] = `
                     "type": "html",
                   }
                 }
+                onError={[Function]}
+                onSuccess={[Function]}
               />
             </article>
           </Card>

@@ -24,7 +24,7 @@ import {
 } from '@kogito-apps/management-console-shared';
 import { FormInfo } from '@kogito-apps/forms-list';
 import axios from 'axios';
-import { Form } from '@kogito-apps/form-details';
+import { Form, FormContent } from '@kogito-apps/form-details';
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
@@ -311,9 +311,23 @@ export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
 export const getFormContent = (formName: string): Promise<Form> => {
   return new Promise((resolve, reject) => {
     axios
-      .get(`/forms/formName/${formName}`)
+      .get(`/forms/${formName}`)
       .then(result => {
-        resolve(result.data.Form);
+        resolve(result.data);
+      })
+      .catch(error => reject(error));
+  });
+};
+
+export const saveFormContent = (
+  formName: string,
+  content: FormContent
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`/forms/${formName}`, content)
+      .then(result => {
+        resolve();
       })
       .catch(error => reject(error));
   });

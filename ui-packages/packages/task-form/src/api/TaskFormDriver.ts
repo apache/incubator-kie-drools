@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { TaskFormSchema } from '../types';
+import { TaskFormSchema, CustomForm } from '../types';
 
 /**
  * Interface that defines a Driver for TaskForm views.
  */
 export interface TaskFormDriver {
   getTaskFormSchema(): Promise<TaskFormSchema>;
+  getCustomForm(): Promise<CustomForm>;
   doSubmit(phase?: string, payload?: any): Promise<any>;
 }

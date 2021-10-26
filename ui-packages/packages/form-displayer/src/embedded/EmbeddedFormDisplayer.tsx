@@ -19,8 +19,9 @@ import {
   FormDisplayerApi,
   FormDisplayerChannelApi,
   FormDisplayerEnvelopeApi,
-  FormArgs,
-  FormInfo
+  Form,
+  FormDisplayerInitArgs,
+  FormOpened
 } from '../api';
 import { ContainerType } from '@kogito-tooling/envelope/dist/api';
 import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
@@ -28,9 +29,11 @@ import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded'
 
 export type Props = {
   targetOrigin: string;
-  formContent: FormArgs;
-  formData: FormInfo;
+  formContent: Form;
+  data?: any;
+  context?: Record<string, any>;
   envelopePath: string;
+  onOpenForm?: (opened: FormOpened) => void;
 };
 
 export const EmbeddedFormDisplayer = React.forwardRef<FormDisplayerApi, Props>(
@@ -40,8 +43,7 @@ export const EmbeddedFormDisplayer = React.forwardRef<FormDisplayerApi, Props>(
       envelopeServer: EnvelopeServer<
         FormDisplayerChannelApi,
         FormDisplayerEnvelopeApi
-      >,
-      container: () => HTMLElement
+      >
     ) => {
       return envelopeServer.envelopeApi.requests.formDisplayer__init(
         {
@@ -49,8 +51,9 @@ export const EmbeddedFormDisplayer = React.forwardRef<FormDisplayerApi, Props>(
           envelopeServerId: envelopeServer.id
         },
         {
-          formContent: props.formContent,
-          formData: props.formData
+          form: props.formContent,
+          data: props.data ?? {},
+          context: props.context ?? {}
         }
       );
     }, []);
@@ -62,15 +65,34 @@ export const EmbeddedFormDisplayer = React.forwardRef<FormDisplayerApi, Props>(
           FormDisplayerEnvelopeApi
         >
       ): FormDisplayerApi => ({
-        formDisplayer__notify: formContent =>
-          envelopeServer.envelopeApi.requests.formDisplayer__notify(formContent)
+        startSubmit: context => {
+          return envelopeServer.envelopeApi.requests.formDisplayer__startSubmit(
+            context
+          );
+        },
+        notifySubmitResult: response => {
+          envelopeServer.envelopeApi.notifications.formDisplayer__notifySubmitResponse(
+            response
+          );
+        },
+        init: (args: FormDisplayerInitArgs) => {
+          envelopeServer.envelopeApi.notifications.formDisplayer__notifyInit(
+            args
+          );
+        }
       }),
       []
     );
 
     const EmbeddedEnvelope = useMemo(() => {
       return EmbeddedEnvelopeFactory({
-        api: props,
+        api: {
+          notifyOnOpenForm: opened => {
+            if (props.onOpenForm) {
+              props.onOpenForm(opened);
+            }
+          }
+        },
         origin: props.targetOrigin,
         refDelegate,
         pollInit,

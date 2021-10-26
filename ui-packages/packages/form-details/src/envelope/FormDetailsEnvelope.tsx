@@ -57,6 +57,7 @@ export function init(args: {
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<FormDetailsEnvelopeViewApi>();
     return new Promise<() => FormDetailsEnvelopeViewApi>(res => {
+      args.container.className = 'kogito-form-details-container';
       ReactDOM.render(
         <FormDetailsEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
         args.container,

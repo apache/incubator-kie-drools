@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import InnerHTML from 'dangerously-set-html-content';
 import { FormResources } from '../../../api';
-import { renderResources } from '../../../utils';
+import ResourcesContainer from '../ResourcesContainer/ResourcesContainer';
 
 interface HtmlFormRendererProps {
-  source: any;
+  source: string;
   resources: FormResources;
 }
 
@@ -27,15 +28,10 @@ const HtmlFormRenderer: React.FC<HtmlFormRendererProps> = ({
   source,
   resources
 }) => {
-  useEffect(() => {
-    if (source && resources) {
-      renderResources('formContainer', resources);
-    }
-  }, [resources]);
-
   return (
     <div id="formContainer">
-      <div dangerouslySetInnerHTML={{ __html: source }} />
+      <ResourcesContainer resources={resources} />
+      <InnerHTML html={source} />
     </div>
   );
 };

@@ -18,14 +18,19 @@ import React from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { FormDetailsGatewayApi } from '../../../channel/FormDetails';
 import { useFormDetailsGatewayApi } from '../../../channel/FormDetails/FormDetailsContext';
-import { EmbeddedFormDetails } from '@kogito-apps/form-details';
+import { EmbeddedFormDetails, FormContent } from '@kogito-apps/form-details';
 import { FormInfo } from '@kogito-apps/forms-list';
+import { Form } from '@kogito-apps/form-displayer';
 
-interface FormDetailSContainerProps {
+interface FormDetailsContainerProps {
   formData: FormInfo;
+  onSuccess: () => void;
+  onError: (details?: string) => void;
 }
-const FormDetailsContainer: React.FC<FormDetailSContainerProps & OUIAProps> = ({
+const FormDetailsContainer: React.FC<FormDetailsContainerProps & OUIAProps> = ({
   formData,
+  onSuccess,
+  onError,
   ouiaId,
   ouiaSafe
 }) => {
@@ -34,7 +39,22 @@ const FormDetailsContainer: React.FC<FormDetailSContainerProps & OUIAProps> = ({
   return (
     <EmbeddedFormDetails
       {...componentOuiaProps(ouiaId, 'form-details-container', ouiaSafe)}
-      driver={gatewayApi}
+      driver={{
+        getFormContent: function(formName: string): Promise<Form> {
+          return gatewayApi.getFormContent(formName);
+        },
+        saveFormContent(formName: string, content: FormContent): void {
+          gatewayApi
+            .saveFormContent(formName, content)
+            .then(value => onSuccess())
+            .catch(error => {
+              const message = error.response
+                ? error.response.data
+                : error.message;
+              onError(message);
+            });
+        }
+      }}
       targetOrigin={'*'}
       formData={formData}
     />

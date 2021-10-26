@@ -17,14 +17,16 @@
 import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
 import {
   Association,
-  FormArgs,
   FormDisplayerChannelApi,
   FormDisplayerEnvelopeApi,
-  FormDisplayerInitArgs
+  FormDisplayerInitArgs,
+  FormSubmitContext,
+  FormSubmitResponse
 } from '../api';
 import { FormDisplayerEnvelopeViewApi } from './FormDisplayerEnvelopeView';
 import { FormDisplayerEnvelopeContext } from './FormDisplayerEnvelopeContext';
-import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
+
 export class FormDisplayerEnvelopeApiImpl implements FormDisplayerEnvelopeApi {
   private capturedInitRequestYet = false;
   constructor(
@@ -52,7 +54,6 @@ export class FormDisplayerEnvelopeApiImpl implements FormDisplayerEnvelopeApi {
       association.origin,
       association.envelopeServerId
     );
-    let tempContent = {};
 
     if (this.hasCapturedInitRequestYet()) {
       return;
@@ -60,13 +61,19 @@ export class FormDisplayerEnvelopeApiImpl implements FormDisplayerEnvelopeApi {
 
     this.ackCapturedInitRequest();
 
-    if (!isEqual(tempContent, initArgs.formContent)) {
-      tempContent = initArgs.formContent;
-      this.args.view().setFormContent(initArgs.formContent, initArgs.formData);
+    if (!isEmpty(initArgs.form)) {
+      this.args.view().initForm(initArgs);
     }
   }
-  formDisplayer__notify = (formContent: FormArgs): Promise<void> => {
-    this.args.view().notify(formContent);
-    return Promise.resolve();
+  formDisplayer__notifyInit = (initArgs: FormDisplayerInitArgs): void => {
+    this.args.view().initForm(initArgs);
   };
+
+  formDisplayer__startSubmit(context: FormSubmitContext): Promise<any> {
+    return this.args.view().startSubmit(context);
+  }
+
+  formDisplayer__notifySubmitResponse(response: FormSubmitResponse) {
+    this.args.view().notifySubmitResponse(response);
+  }
 }

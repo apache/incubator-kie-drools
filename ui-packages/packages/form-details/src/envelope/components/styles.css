@@ -17,3 +17,7 @@
 .pf-c-code-editor__controls > button:nth-child(2) {
     color: #06c !important;
 }
+
+.kogito-form-details-container {
+    height: 100%;
+}

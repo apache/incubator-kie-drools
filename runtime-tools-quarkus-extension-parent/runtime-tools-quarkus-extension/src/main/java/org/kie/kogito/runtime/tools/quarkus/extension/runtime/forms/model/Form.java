@@ -16,56 +16,27 @@
 
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model;
 
-import io.vertx.core.json.JsonObject;
-
 public class Form {
 
-    public static String SOURCE_KEY = "source-content";
+    private final FormInfo formInfo;
+    private final String source;
+    private final FormConfiguration configuration;
 
-    private String name;
-    private JsonObject source = new JsonObject();
-    private FormConfiguration formConfiguration;
-
-    public Form() {
+    public Form(FormInfo formInfo, String source, FormConfiguration configuration) {
+        this.formInfo = formInfo;
+        this.source = source;
+        this.configuration = configuration;
     }
 
-    public Form(String source, FormConfiguration formConfiguration, String name) {
-        this.name = name;
-        this.source.put(SOURCE_KEY, source);
-        this.formConfiguration = formConfiguration;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public FormInfo getFormInfo() {
+        return formInfo;
     }
 
     public String getSource() {
-        return this.source.getString(SOURCE_KEY);
+        return source;
     }
 
-    public void setSource(String source) {
-        this.source.put(SOURCE_KEY, source);
-    }
-
-    public JsonObject getFormConfiguration() {
-        return formConfiguration;
-    }
-
-    public void setFormConfiguration(FormConfiguration formConfiguration) {
-        this.formConfiguration = formConfiguration;
-    }
-
-    @Override
-    public String toString() {
-        return "{ \"Form\": {" +
-                "\"name\": \"" + name + "\"," +
-                "\"source\": " + source + "," +
-                "\"formConfiguration\": " + formConfiguration.toString() +
-                "}" +
-                "}";
+    public FormConfiguration getConfiguration() {
+        return configuration;
     }
 }

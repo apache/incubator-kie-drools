@@ -37,10 +37,17 @@ exports[`TaskFormContainer tests Snapshot 1`] = `
     driver={
       Object {
         "doSubmit": [Function],
+        "getCustomForm": [Function],
         "getTaskFormSchema": [Function],
       }
     }
     targetOrigin="http://localhost"
+    user={
+      DefaultUser {
+        "groups": Array [],
+        "id": "jon",
+      }
+    }
     userTask={
       Object {
         "actualOwner": null,

@@ -53,25 +53,25 @@ exports[`TaskDetailsPage tests Empty state 1`] = `
       data-ouia-safe={true}
     >
       <Grid
-        className="kogito-task-console__full-size"
+        className="Dev-ui__card-size"
         hasGutter={true}
         md={1}
       >
         <div
-          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter kogito-task-console__full-size"
+          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter Dev-ui__card-size"
         >
           <GridItem
-            className="kogito-task-console__full-size"
+            className="Dev-ui__card-size"
             span={12}
           >
             <div
-              className="pf-l-grid__item pf-m-12-col kogito-task-console__full-size"
+              className="pf-l-grid__item pf-m-12-col Dev-ui__card-size"
             >
               <Card
-                className="kogito-task-console__full-size"
+                className="Dev-ui__card-size"
               >
                 <article
-                  className="pf-c-card kogito-task-console__full-size"
+                  className="pf-c-card Dev-ui__card-size"
                   data-ouia-component-id="OUIA-Generated-Card-2"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -255,7 +255,7 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
           <DrawerContent
             panelContent={
               <DrawerPanelContent
-                className="kogito-task-console__full-size"
+                className="Dev-ui__card-size"
               >
                 <DrawerHead>
                   <span
@@ -320,25 +320,25 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
                       className="pf-c-drawer__body"
                     >
                       <Grid
-                        className="kogito-task-console__full-size"
+                        className="Dev-ui__card-size"
                         hasGutter={true}
                         md={1}
                       >
                         <div
-                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter kogito-task-console__full-size"
+                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter Dev-ui__card-size"
                         >
                           <GridItem
-                            className="kogito-task-console__full-size"
+                            className="Dev-ui__card-size"
                             span={12}
                           >
                             <div
-                              className="pf-l-grid__item pf-m-12-col kogito-task-console__full-size"
+                              className="pf-l-grid__item pf-m-12-col Dev-ui__card-size"
                             >
                               <Card
-                                className="kogito-task-console__full-size"
+                                className="Dev-ui__card-size"
                               >
                                 <article
-                                  className="pf-c-card kogito-task-console__full-size"
+                                  className="pf-c-card Dev-ui__card-size"
                                   data-ouia-component-id="OUIA-Generated-Card-12"
                                   data-ouia-component-type="PF4/Card"
                                   data-ouia-safe={true}
@@ -392,10 +392,10 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
                   </DrawerContentBody>
                 </div>
                 <DrawerPanelContent
-                  className="kogito-task-console__full-size"
+                  className="Dev-ui__card-size"
                 >
                   <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
+                    className="pf-c-drawer__panel Dev-ui__card-size"
                     hidden={true}
                     onTransitionEnd={[Function]}
                   />
@@ -552,7 +552,7 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
           <DrawerContent
             panelContent={
               <DrawerPanelContent
-                className="kogito-task-console__full-size"
+                className="Dev-ui__card-size"
               >
                 <DrawerHead>
                   <span
@@ -617,25 +617,25 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
                       className="pf-c-drawer__body"
                     >
                       <Grid
-                        className="kogito-task-console__full-size"
+                        className="Dev-ui__card-size"
                         hasGutter={true}
                         md={1}
                       >
                         <div
-                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter kogito-task-console__full-size"
+                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter Dev-ui__card-size"
                         >
                           <GridItem
-                            className="kogito-task-console__full-size"
+                            className="Dev-ui__card-size"
                             span={12}
                           >
                             <div
-                              className="pf-l-grid__item pf-m-12-col kogito-task-console__full-size"
+                              className="pf-l-grid__item pf-m-12-col Dev-ui__card-size"
                             >
                               <Card
-                                className="kogito-task-console__full-size"
+                                className="Dev-ui__card-size"
                               >
                                 <article
-                                  className="pf-c-card kogito-task-console__full-size"
+                                  className="pf-c-card Dev-ui__card-size"
                                   data-ouia-component-id="OUIA-Generated-Card-12"
                                   data-ouia-component-type="PF4/Card"
                                   data-ouia-safe={true}
@@ -689,10 +689,10 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
                   </DrawerContentBody>
                 </div>
                 <DrawerPanelContent
-                  className="kogito-task-console__full-size"
+                  className="Dev-ui__card-size"
                 >
                   <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
+                    className="pf-c-drawer__panel Dev-ui__card-size"
                     hidden={true}
                     onTransitionEnd={[Function]}
                   />
@@ -760,25 +760,25 @@ exports[`TaskDetailsPage tests Error state 1`] = `
       data-ouia-safe={true}
     >
       <Grid
-        className="kogito-task-console__full-size"
+        className="Dev-ui__card-size"
         hasGutter={true}
         md={1}
       >
         <div
-          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter kogito-task-console__full-size"
+          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter Dev-ui__card-size"
         >
           <GridItem
-            className="kogito-task-console__full-size"
+            className="Dev-ui__card-size"
             span={12}
           >
             <div
-              className="pf-l-grid__item pf-m-12-col kogito-task-console__full-size"
+              className="pf-l-grid__item pf-m-12-col Dev-ui__card-size"
             >
               <Card
-                className="kogito-task-console__full-size"
+                className="Dev-ui__card-size"
               >
                 <article
-                  className="pf-c-card kogito-task-console__full-size"
+                  className="pf-c-card Dev-ui__card-size"
                   data-ouia-component-id="OUIA-Generated-Card-4"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -943,7 +943,7 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
           <DrawerContent
             panelContent={
               <DrawerPanelContent
-                className="kogito-task-console__full-size"
+                className="Dev-ui__card-size"
               >
                 <DrawerHead>
                   <span
@@ -1008,25 +1008,25 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
                       className="pf-c-drawer__body"
                     >
                       <Grid
-                        className="kogito-task-console__full-size"
+                        className="Dev-ui__card-size"
                         hasGutter={true}
                         md={1}
                       >
                         <div
-                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter kogito-task-console__full-size"
+                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter Dev-ui__card-size"
                         >
                           <GridItem
-                            className="kogito-task-console__full-size"
+                            className="Dev-ui__card-size"
                             span={12}
                           >
                             <div
-                              className="pf-l-grid__item pf-m-12-col kogito-task-console__full-size"
+                              className="pf-l-grid__item pf-m-12-col Dev-ui__card-size"
                             >
                               <Card
-                                className="kogito-task-console__full-size"
+                                className="Dev-ui__card-size"
                               >
                                 <article
-                                  className="pf-c-card kogito-task-console__full-size"
+                                  className="pf-c-card Dev-ui__card-size"
                                   data-ouia-component-id="OUIA-Generated-Card-6"
                                   data-ouia-component-type="PF4/Card"
                                   data-ouia-safe={true}
@@ -1080,10 +1080,10 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
                   </DrawerContentBody>
                 </div>
                 <DrawerPanelContent
-                  className="kogito-task-console__full-size"
+                  className="Dev-ui__card-size"
                 >
                   <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
+                    className="pf-c-drawer__panel Dev-ui__card-size"
                     hidden={true}
                     onTransitionEnd={[Function]}
                   />
@@ -1258,7 +1258,7 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
           <DrawerContent
             panelContent={
               <DrawerPanelContent
-                className="kogito-task-console__full-size"
+                className="Dev-ui__card-size"
               >
                 <DrawerHead>
                   <span
@@ -1323,25 +1323,25 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
                       className="pf-c-drawer__body"
                     >
                       <Grid
-                        className="kogito-task-console__full-size"
+                        className="Dev-ui__card-size"
                         hasGutter={true}
                         md={1}
                       >
                         <div
-                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter kogito-task-console__full-size"
+                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter Dev-ui__card-size"
                         >
                           <GridItem
-                            className="kogito-task-console__full-size"
+                            className="Dev-ui__card-size"
                             span={12}
                           >
                             <div
-                              className="pf-l-grid__item pf-m-12-col kogito-task-console__full-size"
+                              className="pf-l-grid__item pf-m-12-col Dev-ui__card-size"
                             >
                               <Card
-                                className="kogito-task-console__full-size"
+                                className="Dev-ui__card-size"
                               >
                                 <article
-                                  className="pf-c-card kogito-task-console__full-size"
+                                  className="pf-c-card Dev-ui__card-size"
                                   data-ouia-component-id="OUIA-Generated-Card-8"
                                   data-ouia-component-type="PF4/Card"
                                   data-ouia-safe={true}
@@ -1395,10 +1395,10 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
                   </DrawerContentBody>
                 </div>
                 <DrawerPanelContent
-                  className="kogito-task-console__full-size"
+                  className="Dev-ui__card-size"
                 >
                   <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
+                    className="pf-c-drawer__panel Dev-ui__card-size"
                     hidden={true}
                     onTransitionEnd={[Function]}
                   />
@@ -1555,7 +1555,7 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
           <DrawerContent
             panelContent={
               <DrawerPanelContent
-                className="kogito-task-console__full-size"
+                className="Dev-ui__card-size"
               >
                 <DrawerHead>
                   <span
@@ -1620,25 +1620,25 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
                       className="pf-c-drawer__body"
                     >
                       <Grid
-                        className="kogito-task-console__full-size"
+                        className="Dev-ui__card-size"
                         hasGutter={true}
                         md={1}
                       >
                         <div
-                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter kogito-task-console__full-size"
+                          className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter Dev-ui__card-size"
                         >
                           <GridItem
-                            className="kogito-task-console__full-size"
+                            className="Dev-ui__card-size"
                             span={12}
                           >
                             <div
-                              className="pf-l-grid__item pf-m-12-col kogito-task-console__full-size"
+                              className="pf-l-grid__item pf-m-12-col Dev-ui__card-size"
                             >
                               <Card
-                                className="kogito-task-console__full-size"
+                                className="Dev-ui__card-size"
                               >
                                 <article
-                                  className="pf-c-card kogito-task-console__full-size"
+                                  className="pf-c-card Dev-ui__card-size"
                                   data-ouia-component-id="OUIA-Generated-Card-8"
                                   data-ouia-component-type="PF4/Card"
                                   data-ouia-safe={true}
@@ -1692,10 +1692,10 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
                   </DrawerContentBody>
                 </div>
                 <DrawerPanelContent
-                  className="kogito-task-console__full-size"
+                  className="Dev-ui__card-size"
                 >
                   <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
+                    className="pf-c-drawer__panel Dev-ui__card-size"
                     hidden={true}
                     onTransitionEnd={[Function]}
                   />

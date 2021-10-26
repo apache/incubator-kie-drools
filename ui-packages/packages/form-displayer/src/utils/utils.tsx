@@ -14,45 +14,6 @@
  * limitations under the License.
  */
 
-const renderTags = (container, resources): void => {
-  for (const key in resources.scripts) {
-    const script: HTMLScriptElement = document.createElement('script');
-
-    script.src = resources.scripts[key];
-    container.appendChild(script);
-  }
-
-  for (const key in resources.styles) {
-    const link: HTMLLinkElement = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = resources.styles[key];
-    container.appendChild(link);
-  }
-};
-
-export const renderResources = (containerId, resources): void => {
-  const container: HTMLElement = document.getElementById(containerId);
-  const scripts: HTMLCollectionOf<HTMLScriptElement> = container.getElementsByTagName(
-    'script'
-  );
-  const styles: HTMLCollectionOf<HTMLLinkElement> = container.getElementsByTagName(
-    'link'
-  );
-  if (scripts.length > 0 || styles.length > 0) {
-    let scriptIndex: number = scripts.length;
-    let styleIndex: number = styles.length;
-    while (scriptIndex--) {
-      container.removeChild(scripts[scriptIndex]);
-    }
-    while (styleIndex--) {
-      container.removeChild(styles[styleIndex]);
-    }
-    renderTags(container, resources);
-  } else {
-    renderTags(container, resources);
-  }
-};
-
 export const sourceHandler = source => {
   const reactReg = /import React, {[^}]*}.*(?='react').*/gim;
   const patternflyReg = /import {[^}]*}.*(?='@patternfly\/react-core').*/gim;
@@ -70,8 +31,8 @@ export const sourceHandler = source => {
     .split(patternflyReg)
     .join('')
     .trim();
-  const tempSource = trimmedSource;
-  const formName = tempSource.split(':')[0].split('const ')[1];
+
+  const formName = trimmedSource.split(':')[0].split('const ')[1];
 
   return { reactElements, patternflyElements, formName, trimmedSource };
 };

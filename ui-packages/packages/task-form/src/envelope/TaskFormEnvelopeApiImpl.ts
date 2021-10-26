@@ -60,6 +60,6 @@ export class TaskFormEnvelopeApiImpl implements TaskFormEnvelopeApi {
     }
 
     this.ackCapturedInitRequest();
-    this.args.view().initialize(initArgs.userTask);
+    this.args.view().initialize(initArgs);
   };
 }

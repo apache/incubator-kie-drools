@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
-import isEmpty from 'lodash/isEmpty';
+import React, { useEffect } from 'react';
 import uuidv4 from 'uuid';
 import * as Babel from '@babel/standalone';
 import ReactDOM from 'react-dom';
 import * as Patternfly from '@patternfly/react-core';
 import { FormResources } from '../../../api';
-import { renderResources, sourceHandler } from '../../../utils';
-import Text = Patternfly.Text;
-import TextContent = Patternfly.TextContent;
-import TextVariants = Patternfly.TextVariants;
+import { sourceHandler } from '../../../utils';
+import ResourcesContainer from '../ResourcesContainer/ResourcesContainer';
+
 import '@patternfly/patternfly/patternfly.css';
+
 interface ReactFormRendererProps {
   source: string;
   resources: FormResources;
@@ -37,8 +36,6 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
   resources,
   setIsExecuting
 }) => {
-  const [errorMessage, setErrorMessage] = useState<any>(null);
-
   useEffect(() => {
     /* istanbul ignore else */
     if (source) {
@@ -59,12 +56,12 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
 
         const container: HTMLElement = document.getElementById('formContainer');
         container.innerHTML = '';
-        const id = uuidv4();
+        const containerId = uuidv4();
         const formContainer: HTMLElement = document.createElement('div');
-        formContainer.id = id;
+        formContainer.id = containerId;
 
         container.appendChild(formContainer);
-        renderResources('formContainer', resources);
+
         const {
           reactElements,
           patternflyElements,
@@ -72,25 +69,16 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
           trimmedSource
         } = sourceHandler(source);
 
-        const scriptElement: HTMLScriptElement = document.createElement(
-          'script'
-        );
-
-        // @ts-ignore
-        window.PatternFly = window.PatternFlyReact;
-
-        scriptElement.type = 'module';
-
         const content = `
         const {${reactElements}} = React;
         const {${patternflyElements}} = PatternFlyReact;
         ${trimmedSource}
-        const target = document.getElementById("${id}");
+        const target = document.getElementById("${containerId}");
         const element = window.React.createElement(${formName}, {});
         window.ReactDOM.render(element, target);
         `;
 
-        const react = Babel.transform(content.trim(), {
+        const reactCode = Babel.transform(content.trim(), {
           presets: [
             'react',
             [
@@ -102,12 +90,14 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
             ]
           ]
         }).code;
-        scriptElement.text = react;
 
+        const scriptElement: HTMLScriptElement = document.createElement(
+          'script'
+        );
+        scriptElement.type = 'module';
+        scriptElement.text = reactCode;
         container.appendChild(scriptElement);
-        setIsExecuting(false);
-      } catch (e) {
-        setErrorMessage(e);
+      } finally {
         setIsExecuting(false);
       }
     }
@@ -115,7 +105,8 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
 
   return (
     <>
-      {isEmpty(errorMessage) ? (
+      <div>
+        <ResourcesContainer resources={resources} />
         <div
           style={{
             height: '100%'
@@ -124,23 +115,7 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
         >
           {}
         </div>
-      ) : (
-        <>
-          <TextContent>
-            <Text component={TextVariants.h2} className="pf-u-danger-color-100">
-              {errorMessage.name}
-            </Text>
-          </TextContent>
-          <TextContent>
-            <Text
-              component={TextVariants.blockquote}
-              className="pf-u-danger-color-100"
-            >
-              {errorMessage.message}
-            </Text>
-          </TextContent>
-        </>
-      )}
+      </div>
     </>
   );
 };

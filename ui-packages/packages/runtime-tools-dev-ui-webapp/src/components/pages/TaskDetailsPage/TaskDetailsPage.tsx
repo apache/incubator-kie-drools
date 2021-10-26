@@ -163,9 +163,9 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
           ouiaSafe
         )}
       >
-        <Grid hasGutter md={1} className={'kogito-task-console__full-size'}>
-          <GridItem span={12} className={'kogito-task-console__full-size'}>
-            <Card className={'kogito-task-console__full-size'}>
+        <Grid hasGutter md={1} className={'Dev-ui__card-size'}>
+          <GridItem span={12} className={'Dev-ui__card-size'}>
+            <Card className={'Dev-ui__card-size'}>
               <ServerErrors error={error} variant="large">
                 <Button variant="primary" onClick={() => goToInbox()}>
                   Go to Inbox
@@ -187,9 +187,9 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
           ouiaSafe
         )}
       >
-        <Grid hasGutter md={1} className={'kogito-task-console__full-size'}>
-          <GridItem span={12} className={'kogito-task-console__full-size'}>
-            <Card className={'kogito-task-console__full-size'}>
+        <Grid hasGutter md={1} className={'Dev-ui__card-size'}>
+          <GridItem span={12} className={'Dev-ui__card-size'}>
+            <Card className={'Dev-ui__card-size'}>
               <KogitoEmptyState
                 type={KogitoEmptyStateType.Info}
                 title={'Cannot find task'}
@@ -211,7 +211,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
   };
 
   const panelContent = (
-    <DrawerPanelContent className={'kogito-task-console__full-size'}>
+    <DrawerPanelContent className={'Dev-ui__card-size'}>
       <DrawerHead>
         <span tabIndex={isDetailsExpanded ? 0 : -1}>
           <Title headingLevel="h3" size="xl">
@@ -274,16 +274,9 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
         <Drawer isExpanded={isDetailsExpanded}>
           <DrawerContent panelContent={panelContent}>
             <DrawerContentBody>
-              <Grid
-                hasGutter
-                md={1}
-                className={'kogito-task-console__full-size'}
-              >
-                <GridItem
-                  span={12}
-                  className={'kogito-task-console__full-size'}
-                >
-                  <Card className={'kogito-task-console__full-size'}>
+              <Grid hasGutter md={1} className={'Dev-ui__card-size'}>
+                <GridItem span={12} className={'Dev-ui__card-size'}>
+                  <Card className={'Dev-ui__card-size'}>
                     <CardBody className="pf-u-h-100">
                       <TaskFormContainer
                         userTask={userTask}

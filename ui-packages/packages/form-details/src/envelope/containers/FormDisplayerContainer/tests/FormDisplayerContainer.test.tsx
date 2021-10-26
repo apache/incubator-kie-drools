@@ -21,14 +21,16 @@ import { formContent } from '../../../tests/mocks/MockedFormDetailsDriver';
 import RuntimeToolsFormDetailsContext, {
   FormDetailsContextImpl
 } from '../../../components/contexts/FormDetailsContext';
+
+jest.mock('uuid', () => {
+  return () => 'testId';
+});
+
+Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
+
 describe('FormDisplayerContainer', () => {
   const props = {
-    formContent: formContent,
-    formData: {
-      name: 'form1',
-      type: 'HTML' as any,
-      lastModified: new Date('2020-07-11T18:30:00.000Z')
-    }
+    formContent: formContent
   };
   it('render embeded formdisplayer', () => {
     const wrapper = mount(

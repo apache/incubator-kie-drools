@@ -20,7 +20,8 @@ import TaskFormContainer from '../TaskFormContainer';
 import { TaskFormGatewayApi } from '../../../../channel/TaskForms';
 import * as TaskFormContext from '../../../../channel/TaskForms/TaskFormContext';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { DefaultUser } from '@kogito-apps/consoles-common';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
 
 const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -52,6 +53,7 @@ const testUserTask: UserTaskInstance = {
 const mockFunc = () => new DefaultUser('jon snow', ['hero']);
 
 const MockTaskFormGatewayApi = jest.fn<TaskFormGatewayApi, []>(() => ({
+  getCustomForm: jest.fn(),
   getTaskFormSchema: jest.fn(),
   doSubmit: jest.fn()
 }));
@@ -60,22 +62,27 @@ jest
   .spyOn(TaskFormContext, 'useTaskFormGatewayApi')
   .mockImplementation(() => new MockTaskFormGatewayApi(mockFunc));
 
+const user: User = new DefaultUser('jon', []);
+
 describe('TaskFormContainer tests', () => {
   it('Snapshot', () => {
     const onSubmit = jest.fn();
     const onFailure = jest.fn();
     const wrapper = mount(
-      <TaskFormContainer
-        userTask={testUserTask}
-        onSubmitSuccess={onSubmit}
-        onSubmitError={onFailure}
-      />
-    );
+      <DevUIAppContextProvider users={[user]}>
+        <TaskFormContainer
+          userTask={testUserTask}
+          onSubmitSuccess={onSubmit}
+          onSubmitError={onFailure}
+        />
+      </DevUIAppContextProvider>
+    ).find(TaskFormContainer);
 
     expect(wrapper).toMatchSnapshot();
 
     const forwardRef = wrapper.childAt(0);
     expect(forwardRef.props().driver).not.toBeNull();
+    expect(forwardRef.props().user).toStrictEqual(user);
     expect(forwardRef.props().targetOrigin).toBe('*');
   });
 });

@@ -5,35 +5,40 @@ exports[`FormEditor test call refresh 1`] = `
   code="{\\"1\\":\\"1\\",\\"2\\":\\"2\\"}"
   contentChange={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "from1",
-      "source": Object {
-        "source-content": "<div><span>1</span><span>2</span></div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
+      "source": "<div><span>1</span><span>2</span></div>",
     }
   }
   formContent={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "from1",
-      "source": Object {
-        "source-content": "<div><span>1</span></div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
+      "source": "<div><span>1</span></div>",
     }
   }
   isConfig={true}
+  saveFormContent={[MockFunction]}
   setContentChange={[MockFunction]}
   setFormContent={[MockFunction]}
 >
@@ -46,7 +51,20 @@ exports[`FormEditor test call refresh 1`] = `
       customControls={
         <React.Fragment>
           <CodeEditorControl
-            aria-label="Execute code"
+            aria-label="Save form"
+            icon={
+              <SaveIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Save form"
+          />
+          <CodeEditorControl
+            aria-label="Execute form"
             icon={
               <PlayIcon
                 className="pf-global--primary-color--100"
@@ -57,7 +75,7 @@ exports[`FormEditor test call refresh 1`] = `
             }
             isVisible={true}
             onClick={[Function]}
-            toolTipText="Execute code"
+            toolTipText="Execute form"
           />
           <CodeEditorControl
             aria-label="Undo changes"
@@ -89,7 +107,7 @@ exports[`FormEditor test call refresh 1`] = `
           />
         </React.Fragment>
       }
-      height="800px"
+      height="600px"
       isCopyEnabled={true}
       isDarkTheme={false}
       isLanguageLabelVisible={true}
@@ -111,35 +129,40 @@ exports[`FormEditor test render config 1`] = `
   code="{\\"1\\":\\"1\\",\\"2\\":\\"2\\"}"
   contentChange={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "from1",
-      "source": Object {
-        "source-content": "<div><span>1</span><span>2</span></div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
+      "source": "<div><span>1</span><span>2</span></div>",
     }
   }
   formContent={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "from1",
-      "source": Object {
-        "source-content": "<div><span>1</span></div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
+      "source": "<div><span>1</span></div>",
     }
   }
   isConfig={true}
+  saveFormContent={[MockFunction]}
   setContentChange={[MockFunction]}
   setFormContent={[MockFunction]}
 >
@@ -152,7 +175,20 @@ exports[`FormEditor test render config 1`] = `
       customControls={
         <React.Fragment>
           <CodeEditorControl
-            aria-label="Execute code"
+            aria-label="Save form"
+            icon={
+              <SaveIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Save form"
+          />
+          <CodeEditorControl
+            aria-label="Execute form"
             icon={
               <PlayIcon
                 className="pf-global--primary-color--100"
@@ -163,7 +199,7 @@ exports[`FormEditor test render config 1`] = `
             }
             isVisible={true}
             onClick={[Function]}
-            toolTipText="Execute code"
+            toolTipText="Execute form"
           />
           <CodeEditorControl
             aria-label="Undo changes"
@@ -195,7 +231,7 @@ exports[`FormEditor test render config 1`] = `
           />
         </React.Fragment>
       }
-      height="800px"
+      height="600px"
       isCopyEnabled={true}
       isDarkTheme={false}
       isLanguageLabelVisible={true}
@@ -217,36 +253,41 @@ exports[`FormEditor test render source - html 1`] = `
   code="<div><span>1</span></div>"
   contentChange={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "from1",
-      "source": Object {
-        "source-content": "<div><span>1</span><span>2</span></div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
+      "source": "<div><span>1</span><span>2</span></div>",
     }
   }
   formContent={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "from1",
-      "source": Object {
-        "source-content": "<div><span>1</span></div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
+      "source": "<div><span>1</span></div>",
     }
   }
   formType="html"
   isSource={true}
+  saveFormContent={[MockFunction]}
   setContentChange={[MockFunction]}
   setFormContent={[MockFunction]}
 >
@@ -259,7 +300,20 @@ exports[`FormEditor test render source - html 1`] = `
       customControls={
         <React.Fragment>
           <CodeEditorControl
-            aria-label="Execute code"
+            aria-label="Save form"
+            icon={
+              <SaveIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Save form"
+          />
+          <CodeEditorControl
+            aria-label="Execute form"
             icon={
               <PlayIcon
                 className="pf-global--primary-color--100"
@@ -270,7 +324,7 @@ exports[`FormEditor test render source - html 1`] = `
             }
             isVisible={true}
             onClick={[Function]}
-            toolTipText="Execute code"
+            toolTipText="Execute form"
           />
           <CodeEditorControl
             aria-label="Undo changes"
@@ -302,7 +356,7 @@ exports[`FormEditor test render source - html 1`] = `
           />
         </React.Fragment>
       }
-      height="800px"
+      height="600px"
       isCopyEnabled={true}
       isDarkTheme={false}
       isLanguageLabelVisible={true}
@@ -324,36 +378,41 @@ exports[`FormEditor test render source - tsx 1`] = `
   code="<React.FC><div><span>1</span></div></React.FC>"
   contentChange={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "from1",
-      "source": Object {
-        "source-content": "<div><span>1</span><span>2</span></div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
+      "source": "<div><span>1</span><span>2</span></div>",
     }
   }
   formContent={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "from1",
-      "source": Object {
-        "source-content": "<div><span>1</span></div>",
+      "formInfo": Object {
+        "lastModified": 2020-07-11T18:30:00.000Z,
+        "name": "form1",
+        "type": "HTML",
       },
+      "source": "<div><span>1</span></div>",
     }
   }
   formType="tsx"
   isSource={true}
+  saveFormContent={[MockFunction]}
   setContentChange={[MockFunction]}
   setFormContent={[MockFunction]}
 >
@@ -366,7 +425,20 @@ exports[`FormEditor test render source - tsx 1`] = `
       customControls={
         <React.Fragment>
           <CodeEditorControl
-            aria-label="Execute code"
+            aria-label="Save form"
+            icon={
+              <SaveIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Save form"
+          />
+          <CodeEditorControl
+            aria-label="Execute form"
             icon={
               <PlayIcon
                 className="pf-global--primary-color--100"
@@ -377,7 +449,7 @@ exports[`FormEditor test render source - tsx 1`] = `
             }
             isVisible={true}
             onClick={[Function]}
-            toolTipText="Execute code"
+            toolTipText="Execute form"
           />
           <CodeEditorControl
             aria-label="Undo changes"
@@ -409,7 +481,7 @@ exports[`FormEditor test render source - tsx 1`] = `
           />
         </React.Fragment>
       }
-      height="800px"
+      height="600px"
       isCopyEnabled={true}
       isDarkTheme={false}
       isLanguageLabelVisible={true}

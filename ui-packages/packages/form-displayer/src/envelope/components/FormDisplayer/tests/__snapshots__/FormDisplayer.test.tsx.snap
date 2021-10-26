@@ -1,17 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FormDisplayer component tests Snapshot test with default props - HTML renderer 1`] = `
-<FormDisplayer
-  config={
-    Object {
-      "lastModified": 2021-08-23T13:26:02.130Z,
-      "name": "html_hiring_HRInterview",
-      "type": "HTML",
-    }
-  }
+<ForwardRef
   content={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {
             "bootstrap.min.js": "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js",
@@ -22,352 +15,101 @@ exports[`FormDisplayer component tests Snapshot test with default props - HTML r
             "bootstrap.min.css": "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
           },
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "html_hiring_HRInterview",
-      "source": Object {
-        "source-content": "<div>
-  <fieldset disabled>
-    <legend>Candidate</legend>
-    <div>
-      <div class=\\"form-group\\">
-        <label for=\\"uniforms-0000-0002\\">Email</label>
-        <input type=\\"text\\" id=\\"uniforms-0000-0002\\" name=\\"candidate.email\\" class=\\"form-control\\" disabled value=\\"\\" />
-      </div>
-
-      <div class=\\"form-group\\">
-        <label for=\\"uniforms-0000-0003\\">Name</label>
-        <input type=\\"text\\" id=\\"uniforms-0000-0003\\" name=\\"candidate.name\\" class=\\"form-control\\" disabled value=\\"\\" />
-      </div>
-
-      <div class=\\"form-group\\">
-        <label for=\\"uniforms-0000-0005\\">Salary</label>
-        <input type=\\"number\\" class=\\"form-control\\" id=\\"uniforms-0000-0005\\" name=\\"candidate.salary\\" disabled step=\\"1\\" value=\\"\\" />
-      </div>
-
-      <div class=\\"form-group\\">
-        <label for=\\"uniforms-0000-0006\\">Skills</label>
-        <input type=\\"text\\" id=\\"uniforms-0000-0006\\" name=\\"candidate.skills\\" class=\\"form-control\\" disabled value=\\"\\" />
-      </div>
-    </div>
-  </fieldset>
-
-  <div class=\\"form-check\\">
-    <input type=\\"checkbox\\" id=\\"uniforms-0000-0008\\" name=\\"approve\\" class=\\"form-check-input\\" />
-    <label class=\\"form-check-label\\" for=\\"uniforms-0000-0008\\">Approve</label>
-  </div>
-</div>
-",
+      "formInfo": Object {
+        "lastModified": 2021-08-23T13:26:02.130Z,
+        "name": "html_hiring_HRInterview",
+        "type": "HTML",
       },
+      "source": "html source code",
     }
   }
+  context={Object {}}
+  data={Object {}}
   isEnvelopeConnectedToChannel={true}
+  onOpenForm={[MockFunction]}
 >
   <div
     data-ouia-component-type="form-displayer"
     data-ouia-safe={true}
   >
-    <HtmlFormRenderer
-      resources={
-        Object {
-          "scripts": Object {
-            "bootstrap.min.js": "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js",
-            "jquery.js": "https://code.jquery.com/jquery-3.2.1.slim.min.js",
-            "popper.js": "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js",
-          },
-          "styles": Object {
-            "bootstrap.min.css": "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
-          },
+    <div
+      id="inner-form-container"
+    >
+      <HtmlFormRenderer
+        resources={
+          Object {
+            "scripts": Object {
+              "bootstrap.min.js": "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js",
+              "jquery.js": "https://code.jquery.com/jquery-3.2.1.slim.min.js",
+              "popper.js": "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js",
+            },
+            "styles": Object {
+              "bootstrap.min.css": "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
+            },
+          }
         }
-      }
-      source="<div>
-  <fieldset disabled>
-    <legend>Candidate</legend>
-    <div>
-      <div class=\\"form-group\\">
-        <label for=\\"uniforms-0000-0002\\">Email</label>
-        <input type=\\"text\\" id=\\"uniforms-0000-0002\\" name=\\"candidate.email\\" class=\\"form-control\\" disabled value=\\"\\" />
-      </div>
-
-      <div class=\\"form-group\\">
-        <label for=\\"uniforms-0000-0003\\">Name</label>
-        <input type=\\"text\\" id=\\"uniforms-0000-0003\\" name=\\"candidate.name\\" class=\\"form-control\\" disabled value=\\"\\" />
-      </div>
-
-      <div class=\\"form-group\\">
-        <label for=\\"uniforms-0000-0005\\">Salary</label>
-        <input type=\\"number\\" class=\\"form-control\\" id=\\"uniforms-0000-0005\\" name=\\"candidate.salary\\" disabled step=\\"1\\" value=\\"\\" />
-      </div>
-
-      <div class=\\"form-group\\">
-        <label for=\\"uniforms-0000-0006\\">Skills</label>
-        <input type=\\"text\\" id=\\"uniforms-0000-0006\\" name=\\"candidate.skills\\" class=\\"form-control\\" disabled value=\\"\\" />
-      </div>
+        source="html source code"
+      />
     </div>
-  </fieldset>
-
-  <div class=\\"form-check\\">
-    <input type=\\"checkbox\\" id=\\"uniforms-0000-0008\\" name=\\"approve\\" class=\\"form-check-input\\" />
-    <label class=\\"form-check-label\\" for=\\"uniforms-0000-0008\\">Approve</label>
   </div>
-</div>
-"
-    />
-  </div>
-</FormDisplayer>
+</ForwardRef>
 `;
 
 exports[`FormDisplayer component tests Snapshot test with default props - TSX renderer 1`] = `
-<FormDisplayer
-  config={
-    Object {
-      "lastModified": 2021-08-23T13:26:02.130Z,
-      "name": "react_hiring_HRInterview",
-      "type": "TSX",
-    }
-  }
+<ForwardRef
   content={
     Object {
-      "formConfiguration": Object {
+      "configuration": Object {
         "resources": Object {
           "scripts": Object {},
           "styles": Object {},
         },
-        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+        "schema": "json schema",
       },
-      "name": "react_hiring_HRInterview",
-      "source": Object {
-        "source-content": "import React, { useState } from 'react';
-import {
-  Card,
-  CardBody,
-  TextInput,
-  FormGroup,
-  Checkbox
-} from '@patternfly/react-core';
-
-const Form__hiring_HRInterview: React.FC<any> = (props: any) => {
-  const [candidate__email, set__candidate__email] = useState<string>();
-  const [candidate__name, set__candidate__name] = useState<string>();
-  const [candidate__salary, set__candidate__salary] = useState<string>();
-  const [candidate__skills, set__candidate__skills] = useState<string>();
-  const [approve, set__approve] = useState<boolean>();
-
-  return (
-    <div className={'pf-c-form'}>
-      <Card>
-        <CardBody className=\\"pf-c-form\\">
-          <label>
-            <b>Candidate</b>
-          </label>
-          <FormGroup
-            fieldId={'uniforms-0000-0002'}
-            label={'Email'}
-            isRequired={false}
-          >
-            <TextInput
-              name={'candidate.email'}
-              id={'uniforms-0000-0002'}
-              isDisabled={true}
-              placeholder={''}
-              type={'text'}
-              value={candidate__email}
-              onChange={set__candidate__email}
-            />
-          </FormGroup>
-          <FormGroup
-            fieldId={'uniforms-0000-0003'}
-            label={'Name'}
-            isRequired={false}
-          >
-            <TextInput
-              name={'candidate.name'}
-              id={'uniforms-0000-0003'}
-              isDisabled={true}
-              placeholder={''}
-              type={'text'}
-              value={candidate__name}
-              onChange={set__candidate__name}
-            />
-          </FormGroup>
-          <FormGroup
-            fieldId={'uniforms-0000-0005'}
-            label={'Salary'}
-            isRequired={false}
-          >
-            <TextInput
-              type={'number'}
-              name={'candidate.salary'}
-              isDisabled={true}
-              id={'uniforms-0000-0005'}
-              placeholder={''}
-              step={1}
-              value={candidate__salary}
-              onChange={set__candidate__salary}
-            />
-          </FormGroup>
-          <FormGroup
-            fieldId={'uniforms-0000-0006'}
-            label={'Skills'}
-            isRequired={false}
-          >
-            <TextInput
-              name={'candidate.skills'}
-              id={'uniforms-0000-0006'}
-              isDisabled={true}
-              placeholder={''}
-              type={'text'}
-              value={candidate__skills}
-              onChange={set__candidate__skills}
-            />
-          </FormGroup>
-        </CardBody>
-      </Card>
-      <FormGroup fieldId=\\"uniforms-0000-0008\\">
-        <Checkbox
-          isChecked={approve}
-          isDisabled={false}
-          id={'uniforms-0000-0008'}
-          name={'approve'}
-          label={'Approve'}
-          onChange={set__approve}
-        />
-      </FormGroup>
-    </div>
-  );
-};
-
-export default Form__hiring_HRInterview;
-",
+      "formInfo": Object {
+        "lastModified": 2021-08-23T13:26:02.130Z,
+        "name": "react_hiring_HRInterview",
+        "type": "TSX",
       },
+      "source": "react source code",
     }
   }
+  context={Object {}}
+  data={Object {}}
   isEnvelopeConnectedToChannel={true}
+  onOpenForm={[MockFunction]}
 >
   <div
     data-ouia-component-type="form-displayer"
     data-ouia-safe={true}
   >
-    <ReactFormRenderer
-      resources={
-        Object {
-          "scripts": Object {},
-          "styles": Object {},
+    <div
+      id="inner-form-container"
+    >
+      <ReactFormRenderer
+        resources={
+          Object {
+            "scripts": Object {},
+            "styles": Object {},
+          }
         }
-      }
-      setIsExecuting={[Function]}
-      source="import React, { useState } from 'react';
-import {
-  Card,
-  CardBody,
-  TextInput,
-  FormGroup,
-  Checkbox
-} from '@patternfly/react-core';
-
-const Form__hiring_HRInterview: React.FC<any> = (props: any) => {
-  const [candidate__email, set__candidate__email] = useState<string>();
-  const [candidate__name, set__candidate__name] = useState<string>();
-  const [candidate__salary, set__candidate__salary] = useState<string>();
-  const [candidate__skills, set__candidate__skills] = useState<string>();
-  const [approve, set__approve] = useState<boolean>();
-
-  return (
-    <div className={'pf-c-form'}>
-      <Card>
-        <CardBody className=\\"pf-c-form\\">
-          <label>
-            <b>Candidate</b>
-          </label>
-          <FormGroup
-            fieldId={'uniforms-0000-0002'}
-            label={'Email'}
-            isRequired={false}
-          >
-            <TextInput
-              name={'candidate.email'}
-              id={'uniforms-0000-0002'}
-              isDisabled={true}
-              placeholder={''}
-              type={'text'}
-              value={candidate__email}
-              onChange={set__candidate__email}
-            />
-          </FormGroup>
-          <FormGroup
-            fieldId={'uniforms-0000-0003'}
-            label={'Name'}
-            isRequired={false}
-          >
-            <TextInput
-              name={'candidate.name'}
-              id={'uniforms-0000-0003'}
-              isDisabled={true}
-              placeholder={''}
-              type={'text'}
-              value={candidate__name}
-              onChange={set__candidate__name}
-            />
-          </FormGroup>
-          <FormGroup
-            fieldId={'uniforms-0000-0005'}
-            label={'Salary'}
-            isRequired={false}
-          >
-            <TextInput
-              type={'number'}
-              name={'candidate.salary'}
-              isDisabled={true}
-              id={'uniforms-0000-0005'}
-              placeholder={''}
-              step={1}
-              value={candidate__salary}
-              onChange={set__candidate__salary}
-            />
-          </FormGroup>
-          <FormGroup
-            fieldId={'uniforms-0000-0006'}
-            label={'Skills'}
-            isRequired={false}
-          >
-            <TextInput
-              name={'candidate.skills'}
-              id={'uniforms-0000-0006'}
-              isDisabled={true}
-              placeholder={''}
-              type={'text'}
-              value={candidate__skills}
-              onChange={set__candidate__skills}
-            />
-          </FormGroup>
-        </CardBody>
-      </Card>
-      <FormGroup fieldId=\\"uniforms-0000-0008\\">
-        <Checkbox
-          isChecked={approve}
-          isDisabled={false}
-          id={'uniforms-0000-0008'}
-          name={'approve'}
-          label={'Approve'}
-          onChange={set__approve}
-        />
-      </FormGroup>
+        setIsExecuting={[Function]}
+        source="react source code"
+      />
     </div>
-  );
-};
-
-export default Form__hiring_HRInterview;
-"
-    />
   </div>
-</FormDisplayer>
+</ForwardRef>
 `;
 
 exports[`FormDisplayer component tests Test beats spinner 1`] = `
-<FormDisplayer
-  config={Object {}}
+<ForwardRef
   content={Object {}}
+  context={Object {}}
+  data={Object {}}
   isEnvelopeConnectedToChannel={false}
+  onOpenForm={[MockFunction]}
 >
   <div
     data-ouia-component-type="form-displayer"
@@ -376,45 +118,8 @@ exports[`FormDisplayer component tests Test beats spinner 1`] = `
     <Bullseye
       className="kogito-form-displayer__ball-beats"
     >
-      <div
-        className="pf-l-bullseye kogito-form-displayer__ball-beats"
-      >
-        <BallBeat
-          color="#000000"
-          loading={true}
-        >
-          <EmotionCssPropInternal
-            __EMOTION_LABEL_PLEASE_DO_NOT_USE__="Component"
-            __EMOTION_TYPE_PLEASE_DO_NOT_USE__="div"
-            css={
-              Object {
-                " > div": Object {
-                  "&:nth-of-type(2n-1)": Object {
-                    "animationDelay": "-0.35s !important",
-                  },
-                  "animation": "_EMO_animation-o8qkpw_@keyframes animation-o8qkpw{100%{opacity:1;transform:scale(1);}50%{opacity:0.2;transform:scale(0.75);}}_EMO_ 0.7s 0s infinite linear",
-                  "animationFillMode": "both",
-                  "backgroundColor": "#000000",
-                  "borderRadius": "100%",
-                  "display": "inline-block",
-                  "height": "15px",
-                  "margin": "2px",
-                  "width": "15px",
-                },
-              }
-            }
-          >
-            <div
-              className="css-1rg7usp-Component"
-            >
-              <div />
-              <div />
-              <div />
-            </div>
-          </EmotionCssPropInternal>
-        </BallBeat>
-      </div>
+      <MockedComponent />
     </Bullseye>
   </div>
-</FormDisplayer>
+</ForwardRef>
 `;
