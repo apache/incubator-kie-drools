@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.user.UserInfoSupplier;
 
-import io.quarkus.bootstrap.model.AppArtifact;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -34,6 +33,7 @@ import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.util.WebJarUtil;
 import io.quarkus.devconsole.spi.DevConsoleRouteBuildItem;
 import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
+import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
 import io.quarkus.vertx.http.runtime.devmode.DevConsoleRecorder;
 
@@ -56,7 +56,7 @@ public class DevConsoleProcessor {
             final LaunchModeBuildItem launchMode,
             final ShutdownContextBuildItem shutdownContext,
             final BuildProducer<RouteBuildItem> routeBuildItemBuildProducer) throws IOException {
-        AppArtifact devConsoleResourcesArtifact = WebJarUtil.getAppArtifact(curateOutcomeBuildItem,
+        ResolvedDependency devConsoleResourcesArtifact = WebJarUtil.getAppArtifact(curateOutcomeBuildItem,
                 "org.kie.kogito",
                 "runtime-tools-quarkus-extension-deployment");
 

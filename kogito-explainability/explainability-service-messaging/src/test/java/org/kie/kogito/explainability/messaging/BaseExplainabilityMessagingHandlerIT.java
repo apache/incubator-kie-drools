@@ -96,7 +96,7 @@ abstract class BaseExplainabilityMessagingHandlerIT {
 
         kafkaClient.produce(ExplainabilityCloudEventBuilder.buildCloudEventJsonString(request), TOPIC_REQUEST);
 
-        verify(explanationService, timeout(1000).times(1)).explainAsync(any(BaseExplainabilityRequest.class), any());
+        verify(explanationService, timeout(2000).times(1)).explainAsync(any(BaseExplainabilityRequest.class), any());
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -136,7 +136,7 @@ abstract class BaseExplainabilityMessagingHandlerIT {
 
         kafkaClient.produce(ExplainabilityCloudEventBuilder.buildCloudEventJsonString(request), TOPIC_REQUEST);
 
-        verify(explanationService, timeout(1000).times(1)).explainAsync(any(BaseExplainabilityRequest.class), any());
+        verify(explanationService, timeout(2000).times(1)).explainAsync(any(BaseExplainabilityRequest.class), any());
 
         final CountDownLatch countDownLatch = new CountDownLatch(getTotalExpectedEventCountWithIntermediateResults());
 
