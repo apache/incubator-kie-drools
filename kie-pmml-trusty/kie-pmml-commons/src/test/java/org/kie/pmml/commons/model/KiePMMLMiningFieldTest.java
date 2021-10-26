@@ -99,7 +99,7 @@ public class KiePMMLMiningFieldTest {
                 .range(0, 3)
                 .mapToObj(i -> {
                     final int leftMargin = rnd.nextInt(10);
-                    final int rightMargin = leftMargin + rnd.nextInt(10);
+                    final int rightMargin = leftMargin + (rnd.nextInt(10) + 10);
                     final CLOSURE closure = CLOSURE.values()[rnd.nextInt(CLOSURE.values().length)];
                     return new KiePMMLInterval(leftMargin,
                                                rightMargin,
