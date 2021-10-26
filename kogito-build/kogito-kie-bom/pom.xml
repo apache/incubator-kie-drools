@@ -17,7 +17,7 @@
         This is to prevent misleading situation where both org.drools:drools-core and org.kie.kogito:drools-core as managed dependency</description>
 
     <properties>
-        <version.org.kie>8.13.0-SNAPSHOT</version.org.kie>
+        <version.org.kie>8.14.0-SNAPSHOT</version.org.kie>
     </properties>
 
     <dependencyManagement>
