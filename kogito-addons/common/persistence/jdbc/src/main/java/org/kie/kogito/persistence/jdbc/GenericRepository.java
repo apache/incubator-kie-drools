@@ -117,7 +117,7 @@ public class GenericRepository extends Repository {
             statement.setString(1, id.toString());
             statement.setBytes(2, payload);
             statement.setString(3, processId);
-            statement.setLong(4, 1L);
+            statement.setLong(4, 0L);
             statement.executeUpdate();
         } catch (Exception e) {
             throw uncheckedException(e, "Error inserting process instance %s", id);

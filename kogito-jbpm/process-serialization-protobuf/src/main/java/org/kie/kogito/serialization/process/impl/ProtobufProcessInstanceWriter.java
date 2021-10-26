@@ -102,9 +102,11 @@ public class ProtobufProcessInstanceWriter {
                 .setProcessId(workFlow.getProcessId())
                 .setState(workFlow.getState())
                 .setProcessType(workFlow.getProcess().getType())
-                .setSignalCompletion(workFlow.isSignalCompletion())
-                .setStartDate(workFlow.getStartDate().getTime());
+                .setSignalCompletion(workFlow.isSignalCompletion());
 
+        if (workFlow.getStartDate() != null) {
+            instance.setStartDate(workFlow.getStartDate().getTime());
+        }
         if (workFlow.getDescription() != null) {
             instance.setDescription(workFlow.getDescription());
         }

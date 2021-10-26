@@ -239,6 +239,6 @@ public interface ProcessInstance<T> {
      */
     Collection<AdHocFragment> adHocFragments();
 
-    Long version();
+    long version();
 
 }

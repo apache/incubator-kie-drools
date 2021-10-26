@@ -90,7 +90,6 @@ public class PostgreProcessInstances implements MutableProcessInstances {
             return;
         }
         insertInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
-        disconnect(instance);
     }
 
     @SuppressWarnings("unchecked")
@@ -167,7 +166,7 @@ public class PostgreProcessInstances implements MutableProcessInstances {
         try {
             final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
             client.preparedQuery("INSERT INTO process_instances (id, payload, process_id, version) VALUES ($1, $2, $3, $4)")
-                    .execute(Tuple.of(id, Buffer.buffer(payload), process.id(), 1L), getAsyncResultHandler(future));
+                    .execute(Tuple.of(id, Buffer.buffer(payload), process.id(), 0L), getAsyncResultHandler(future));
             return getExecutedResult(future);
         } catch (Exception e) {
             throw uncheckedException(e, "Error inserting process instance %s", id);

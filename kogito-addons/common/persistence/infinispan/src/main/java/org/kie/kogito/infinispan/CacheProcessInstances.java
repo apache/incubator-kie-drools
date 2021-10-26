@@ -88,6 +88,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
     @Override
     public void update(String id, ProcessInstance instance) {
         updateStorage(id, instance, false);
+        disconnect(id, instance);
     }
 
     @Override
@@ -136,7 +137,6 @@ public class CacheProcessInstances implements MutableProcessInstances {
                     cache.put(id, data);
                 }
             }
-            disconnect(id, instance);
         }
     }
 

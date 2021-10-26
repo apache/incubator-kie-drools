@@ -85,7 +85,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected CompletionEventListener completionEventListener;
 
-    protected Long version;
+    protected long version;
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this(process, variables, null, rt);
@@ -228,9 +228,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         getProcessRuntime().getProcessInstanceManager().addProcessInstance(this.processInstance);
         this.id = processInstance.getStringId();
         addCompletionEventListener();
-        KogitoProcessInstance processInstance = getProcessRuntime().getKogitoProcessRuntime().startProcessInstance(this.id, trigger);
-        addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).create(pi.id(), pi));
-        unbind(variables, processInstance.getVariables());
+        ((MutableProcessInstances<T>) process.instances()).create(id, this);
+        KogitoProcessInstance kogitoProcessInstance = getProcessRuntime().getKogitoProcessRuntime().startProcessInstance(this.id, trigger);
+        if (kogitoProcessInstance.getState() != STATE_ABORTED && kogitoProcessInstance.getState() != STATE_COMPLETED) {
+            addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
+        }
+        unbind(variables, kogitoProcessInstance.getVariables());
         if (this.processInstance != null) {
             this.status = this.processInstance.getState();
         }
@@ -303,11 +306,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public Long version() {
+    public long version() {
         return this.version;
     }
 
-    public void setVersion(Long version) {
+    public void setVersion(long version) {
         this.version = version;
     }
 

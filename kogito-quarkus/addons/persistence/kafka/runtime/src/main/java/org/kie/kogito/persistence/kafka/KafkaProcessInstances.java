@@ -109,7 +109,6 @@ public class KafkaProcessInstances implements MutableProcessInstances {
             byte[] data = marshaller.marshallProcessInstance(instance);
             try {
                 producer.send(new ProducerRecord<>(topic, id, data)).get();
-                disconnect(instance);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to persist process instance id: " + id, e);
             }

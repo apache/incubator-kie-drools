@@ -221,9 +221,7 @@ public class KafkaProcessInstancesTest {
         assertThat(kafkaCaptor.getValue().topic()).isEqualTo(topicName(process.id()));
 
         ArgumentCaptor<Consumer> supplierCaptor = ArgumentCaptor.forClass(Consumer.class);
-        verify(instance).internalRemoveProcessInstance(any());
         verify(store).get(id);
-        verify(marshaller).createdReloadFunction(any());
     }
 
     @Test

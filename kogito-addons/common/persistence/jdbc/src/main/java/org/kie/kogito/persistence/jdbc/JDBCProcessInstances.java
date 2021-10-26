@@ -86,7 +86,6 @@ public class JDBCProcessInstances implements MutableProcessInstances {
         if (isActive(instance)) {
             repository.insertInternal(dataSource, process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance));
         }
-        disconnect(instance);
     }
 
     @SuppressWarnings("unchecked")

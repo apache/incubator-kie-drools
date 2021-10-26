@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -78,7 +77,7 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
         Document piDoc = find(id);
         if (piDoc != null) {
             ProcessInstance<T> instance = unmarshall(piDoc, mode);
-            ((AbstractProcessInstance<?>) instance).setVersion(piDoc.getLong(VERSION));
+            setVersion(instance, piDoc.getLong(VERSION));
             return Optional.of(instance);
         }
         return Optional.empty();
@@ -110,7 +109,10 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     @Override
     public void update(String id, ProcessInstance<T> instance) {
-        updateStorage(id, instance, false);
+        if (isActive(instance)) {
+            updateStorage(id, instance, false);
+        }
+        reloadProcessInstance(instance, id);
     }
 
     private RuntimeException uncheckedException(Exception ex, String message, Object... param) {
@@ -118,11 +120,6 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     }
 
     protected void updateStorage(String id, ProcessInstance<T> instance, boolean checkDuplicates) {
-        if (!isActive(instance)) {
-            reloadProcessInstance(instance, id);
-            return;
-        }
-
         ClientSession clientSession = transactionManager.getClientSession();
         Document doc = Document.parse(new String(marshaller.marshallProcessInstance(instance)));
         if (checkDuplicates) {
@@ -130,14 +127,13 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
         } else {
             updateInternal(id, instance, clientSession, doc);
         }
-        reloadProcessInstance(instance, id);
     }
 
     private void createInternal(String id, ClientSession clientSession, Document doc) {
         if (exists(id)) {
             throw new ProcessInstanceDuplicatedException(id);
         } else {
-            doc.put(VERSION, 1L);
+            doc.put(VERSION, 0L);
             if (clientSession != null) {
                 collection.insertOne(clientSession, doc);
             } else {
@@ -164,6 +160,10 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     }
 
     private Document find(String id) {
+        if (transactionManager == null || collection == null) {
+            throw new IllegalArgumentException("Transaction manager is null");
+        }
+
         return Optional.ofNullable(transactionManager.getClientSession())
                 .map(r -> collection.find(r, Filters.eq(PROCESS_INSTANCE_ID, id)).first())
                 .orElseGet(() -> collection.find(Filters.eq(PROCESS_INSTANCE_ID, id)).first());
@@ -189,16 +189,19 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     }
 
     private void reloadProcessInstance(ProcessInstance<T> instance, String id) {
-        Supplier<byte[]> supplier = () -> {
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> {
             Document reloaded = find(id);
             if (reloaded != null) {
-                ((AbstractProcessInstance<?>) instance).setVersion(reloaded.getLong(VERSION));
+                setVersion(instance, reloaded.getLong(VERSION));
                 return reloaded.toJson().getBytes();
             } else {
                 throw new IllegalArgumentException("process instance id " + id + " does not exists in mongodb");
             }
-        };
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+        }));
+    }
+
+    private static void setVersion(ProcessInstance<?> instance, Long version) {
+        ((AbstractProcessInstance<?>) instance).setVersion(version == null ? 0L : version);
     }
 
     @Override

@@ -218,8 +218,6 @@ public class SignalEventIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        // since unit of work is not ended yet there are no instance added
-        assertThat(p.instances().size()).isZero();
         uow.end();
         // after the unit of work is ended process instance shows up in the list
         assertThat(p.instances().size()).isEqualTo(1);

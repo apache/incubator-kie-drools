@@ -127,6 +127,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
             Path processInstanceStorage = Paths.get(storage.toString(), id);
             if (Files.exists(processInstanceStorage)) {
                 storeProcessInstance(processInstanceStorage, instance);
+                disconnect(processInstanceStorage, instance);
             }
         }
     }
@@ -148,7 +149,6 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
             setMetadata(processInstanceStorage, PI_DESCRIPTION, instance.description());
             setMetadata(processInstanceStorage, PI_STATUS, String.valueOf(instance.status()));
 
-            disconnect(processInstanceStorage, instance);
         } catch (IOException e) {
             throw new RuntimeException("Unable to store process instance with id " + instance.id(), e);
         }

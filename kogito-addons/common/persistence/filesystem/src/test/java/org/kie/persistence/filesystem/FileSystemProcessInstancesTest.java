@@ -137,8 +137,8 @@ class FileSystemProcessInstancesTest {
         assertThat(fileSystemBasedStorage.size()).isOne();
         assertThat(fileSystemBasedStorage.exists(processInstance.id())).isTrue();
         verify(fileSystemBasedStorage).create(any(), any());
-        verify(fileSystemBasedStorage).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
-        verify(fileSystemBasedStorage).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
+        verify(fileSystemBasedStorage, times(2)).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
+        verify(fileSystemBasedStorage, times(2)).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
@@ -208,8 +208,8 @@ class FileSystemProcessInstancesTest {
         FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
         assertThat(fileSystemBasedStorage.exists(processInstance.id())).isTrue();
         verify(fileSystemBasedStorage).create(processInstance.id(), processInstance);
-        verify(fileSystemBasedStorage).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
-        verify(fileSystemBasedStorage).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
+        verify(fileSystemBasedStorage, times(2)).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
+        verify(fileSystemBasedStorage, times(2)).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");

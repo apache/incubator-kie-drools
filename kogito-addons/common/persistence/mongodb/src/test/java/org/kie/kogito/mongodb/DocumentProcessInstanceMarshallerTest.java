@@ -32,7 +32,6 @@ import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DocumentProcessInstanceMarshallerTest {
@@ -88,12 +87,6 @@ class DocumentProcessInstanceMarshallerTest {
         assertNotNull(processInstanceReadOnly, "Unmarshalled value should not be null");
         ProcessInstance<BpmnVariables> pi = (ProcessInstance<BpmnVariables>) marshaller.unmarshallReadOnlyProcessInstance(doc.toJson().getBytes(), process);
         assertNotNull(pi, "Unmarshalled value should not be null");
-    }
-
-    @Test
-    void testDocumentMarshallingException() {
-        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "testValue")));
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> marshaller.marshallProcessInstance(processInstance));
     }
 
 }
