@@ -28,6 +28,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -254,6 +255,10 @@ public abstract class AbstractExpressionBuilder {
                 String expressionString = stringValue(expression);
                 final BigInteger bigInteger = new BigDecimal(expressionString).toBigInteger();
                 return toNewExpr(BigInteger.class, toStringLiteral(bigInteger.toString()));
+            }
+
+            if (leftType.equals(float.class)) {
+                return new DoubleLiteralExpr(expression + "f");
             }
 
         }
