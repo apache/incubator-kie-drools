@@ -1,0 +1,14 @@
+name: kogito-dmn-codestart
+ref: kogito-dmn
+type: code
+tags: extension-codestart
+metadata:
+  title: Kogito DMN codestart
+  description: This is an example Kogito DMN Quarkus codestart, it contains a sample DMN model for REST code generation based on the model definition.
+  related-guide-section: https://quarkus.io/guides/kogito-dmn
+language:
+  base:
+    dependencies:
+      - org.kie.kogito:kogito-quarkus-decisions
+    test-dependencies:
+      - io.rest-assured:rest-assured

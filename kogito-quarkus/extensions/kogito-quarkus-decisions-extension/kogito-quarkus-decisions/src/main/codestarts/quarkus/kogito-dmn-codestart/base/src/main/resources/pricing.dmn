@@ -1,0 +1,91 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="ns1" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_61F8FB8F-F906-44E6-9F2A-CEEEAF434C87" name="pricing" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="ns1">
+  <dmn:extensionElements/>
+  <dmn:inputData id="_3D76D863-9817-412A-ABC3-BEA66DCF03D1" name="Age">
+    <dmn:extensionElements/>
+    <dmn:variable id="_17B57DB5-1176-4261-A7F4-23AC2E4A75B8" name="Age" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:inputData id="_E05602D1-1C40-4C7B-9461-CA7D21047BFC" name="Previous incidents?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_86C63CC2-5B15-461E-BCC9-5F7261F1DD04" name="Previous incidents?" typeRef="boolean"/>
+  </dmn:inputData>
+  <dmn:decision id="_72DFBC92-82CB-4544-A25F-E2CED29497B6" name="Base price">
+    <dmn:extensionElements/>
+    <dmn:variable id="_E056EA21-897B-43D6-B592-E612A96D91A9" name="Base price" typeRef="number"/>
+    <dmn:informationRequirement id="_EFDAA06B-EBB1-4D76-8D78-526C9685688D">
+      <dmn:requiredInput href="#_E05602D1-1C40-4C7B-9461-CA7D21047BFC"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_2FB1ED71-90F4-4FAC-A53A-826576A5A0CB">
+      <dmn:requiredInput href="#_3D76D863-9817-412A-ABC3-BEA66DCF03D1"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_4D44AFAE-5B82-4A8D-933C-A8C1D8407F20" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_D7EA9E51-5412-4EB5-A7FF-28F9AC3297A9">
+        <dmn:inputExpression id="_43CDF013-DD18-4AE0-A855-839487C20C13" typeRef="number">
+          <dmn:text>Age</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_0D2391DF-5CCC-4815-A8A3-11AF4060588C">
+        <dmn:inputExpression id="_618C83B8-D5BF-4FD4-B5A3-10B35561D5E3" typeRef="boolean">
+          <dmn:text>Previous incidents?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_9FB09304-6F24-4151-90DF-BF674341ED69"/>
+      <dmn:annotation name="comments"/>
+      <dmn:rule id="_6B750674-C470-4FA0-8A48-45731745E2EF">
+        <dmn:inputEntry id="_A840CFB7-37B7-4292-B1EC-200C078A97C5">
+          <dmn:text>&lt;21</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_32A3BDA6-253C-4FD4-B69A-5761AD9BEEB8">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_51475535-6CFE-430B-9C43-1FEF9694C563">
+          <dmn:text>800</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_DA15172F-C9DB-4710-AF35-E2D70E854C8D">
+        <dmn:inputEntry id="_63B8BCEE-0BF1-41A3-ACF3-0BFCDE143DAA">
+          <dmn:text>&lt;21</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_89E2CCFC-092B-4363-9C93-15150DB901FA">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_9C88EC01-ADF1-47A6-A55F-87E5ABD7D674">
+          <dmn:text>1000</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_4EC2A526-DD15-4CB7-ABA7-A171D7A5A8E3">
+        <dmn:inputEntry id="_2B458AA9-3420-4AE1-A623-6702CD9B2CEB">
+          <dmn:text>&gt;=21</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_118126A6-779E-4CC4-B6C3-8A819C22801E">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_64FFDD44-4AAA-4640-B987-0B8D4B3A0104">
+          <dmn:text>500</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_E59C18CC-F23F-4C90-9B8D-BE161C604796">
+        <dmn:inputEntry id="_35025AAD-9549-4554-99BE-AC19F210CAAF">
+          <dmn:text>&gt;=21</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_1FF66211-1347-47DB-8A83-C6C33E7E4C8A">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_76A4D9B3-D2E6-4EBB-B7A1-558898FF9CAA">
+          <dmn:text>600</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+</dmn:definitions>
