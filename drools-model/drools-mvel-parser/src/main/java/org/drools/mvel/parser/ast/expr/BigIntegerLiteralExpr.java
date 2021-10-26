@@ -62,18 +62,19 @@ public final class BigIntegerLiteralExpr extends LiteralStringValueExpr {
 
     @Override
     public <R, A> R accept(GenericVisitor<R, A> v, A arg) {
-        return ((DrlGenericVisitor<R, A>)v).visit(this, arg);
+        return ((DrlGenericVisitor<R, A>) v).visit(this, arg);
     }
 
     @Override
     public <A> void accept(VoidVisitor<A> v, A arg) {
-        ((DrlVoidVisitor<A>)v).visit(this, arg);
+        ((DrlVoidVisitor<A>) v).visit(this, arg);
     }
 
     @Override
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.remove(node);
     }
 
@@ -81,12 +82,17 @@ public final class BigIntegerLiteralExpr extends LiteralStringValueExpr {
      * @return the literal value as an long while respecting different number representations
      */
     public BigInteger asBigInteger() {
+        return new BigInteger(getValue());
+    }
+
+    @Override
+    public String getValue() {
         String result = value.replaceAll("_", "");
         char lastChar = result.charAt(result.length() - 1);
         if (lastChar == 'I') {
             result = result.substring(0, result.length() - 1);
         }
-        return new BigInteger(result);
+        return result;
     }
 
     public BigIntegerLiteralExpr setLong(long value) {
