@@ -24,21 +24,18 @@ import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
-import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInputDataException;
-import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.pmml.api.utils.ConverterTypeUtil.convert;
 
 /**
  * Class meant to provide static methods related to <b>pre-process</b> manipulation
@@ -58,8 +55,8 @@ public class PreProcess {
      * @return
      */
     public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLContext context) {
-        final List<MiningField> notTargetMiningFields = model.getMiningFields() != null ?
-                model.getMiningFields().stream().filter(miningField -> !isTarget(miningField))
+        final List<KiePMMLMiningField> notTargetMiningFields = model.getMiningFields() != null ?
+                model.getKiePMMLMiningFields().stream().filter(miningField -> !miningField.isTarget())
                         .collect(Collectors.toList())
                 : Collections.emptyList();
         final PMMLRequestData requestData = context.getRequestData();
@@ -77,7 +74,8 @@ public class PreProcess {
      * @param notTargetMiningFields
      * @param requestData
      */
-    static void convertInputData(final List<MiningField> notTargetMiningFields, final PMMLRequestData requestData) {
+    static void convertInputData(final List<KiePMMLMiningField> notTargetMiningFields,
+                                 final PMMLRequestData requestData) {
         logger.debug("convertInputData {} {}", notTargetMiningFields, requestData);
         Collection<ParameterInfo> requestParams = requestData.getRequestParams();
         notTargetMiningFields.forEach(miningField -> {
@@ -115,7 +113,7 @@ public class PreProcess {
      * @see
      * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_INVALID-VALUE-TREATMENT-METHOD">INVALID-VALUE-TREATMENT-METHOD</a>
      */
-    static void verifyFixInvalidValues(final List<MiningField> notTargetMiningFields,
+    static void verifyFixInvalidValues(final List<KiePMMLMiningField> notTargetMiningFields,
                                        final PMMLRequestData requestData) {
         logger.debug("verifyInvalidValues {} {}", notTargetMiningFields, requestData);
         final Collection<ParameterInfo> requestParams = requestData.getRequestParams();
@@ -148,7 +146,7 @@ public class PreProcess {
      * @see
      * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
      */
-    static void verifyAddMissingValues(final List<MiningField> notTargetMiningFields,
+    static void verifyAddMissingValues(final List<KiePMMLMiningField> notTargetMiningFields,
                                        final PMMLRequestData requestData) {
         logger.debug("verifyMissingValues {} {}", notTargetMiningFields, requestData);
         Collection<ParameterInfo> requestParams = requestData.getRequestParams();
@@ -207,7 +205,7 @@ public class PreProcess {
      * @param parameterInfo
      * @param toRemove
      */
-    static void manageInvalidValues(final MiningField miningField, final ParameterInfo parameterInfo,
+    static void manageInvalidValues(final KiePMMLMiningField miningField, final ParameterInfo parameterInfo,
                                     final List<ParameterInfo> toRemove) {
         INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod =
                 miningField.getInvalidValueTreatmentMethod() != null ?
@@ -244,7 +242,7 @@ public class PreProcess {
      * @param miningField
      * @param requestData
      */
-    static void manageMissingValues(final MiningField miningField, final PMMLRequestData requestData) {
+    static void manageMissingValues(final KiePMMLMiningField miningField, final PMMLRequestData requestData) {
         MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod =
                 miningField.getMissingValueTreatmentMethod() != null ?
                         miningField.getMissingValueTreatmentMethod()
@@ -275,27 +273,8 @@ public class PreProcess {
      * @param miningField
      * @return
      */
-    static boolean isMatching(final ParameterInfo parameterInfo, final MiningField miningField) {
-        boolean toReturn = true;
+    static boolean isMatching(final ParameterInfo parameterInfo, final KiePMMLMiningField miningField) {
         Object originalValue = parameterInfo.getValue();
-        if (miningField.getAllowedValues() != null && !miningField.getAllowedValues().isEmpty()) {
-            toReturn = miningField.getAllowedValues().stream()
-                    .anyMatch(allowedValue -> {
-                        Object allowedObject = convert(originalValue.getClass(), allowedValue);
-                        return originalValue.equals(allowedObject);
-                    });
-        } else if (miningField.getIntervals() != null && !miningField.getIntervals().isEmpty()) {
-            double originalValueNumber = ((Number) originalValue).doubleValue();
-            toReturn = miningField.getIntervals().stream()
-                    .anyMatch(interval -> originalValueNumber >= interval.getLeftMargin().doubleValue() &&
-                            originalValueNumber <= interval.getRightMargin().doubleValue());
-        }
-        return toReturn;
-    }
-
-    private static boolean isTarget(MiningField miningField) {
-        FIELD_USAGE_TYPE fieldUsageType = miningField.getUsageType() != null ?
-                miningField.getUsageType() : FIELD_USAGE_TYPE.ACTIVE;
-        return fieldUsageType == FIELD_USAGE_TYPE.TARGET || fieldUsageType == FIELD_USAGE_TYPE.PREDICTED;
+        return miningField.isMatching(originalValue);
     }
 }
