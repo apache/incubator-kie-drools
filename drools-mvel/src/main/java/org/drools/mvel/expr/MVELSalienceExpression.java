@@ -21,15 +21,13 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.Salience;
 import org.drools.core.time.TimeUtils;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -83,17 +81,17 @@ public class MVELSalienceExpression
         evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
-    public int getValue(final KnowledgeHelper khelper,
+    public int getValue(final Activation activation,
                         final Rule rule,
-                        final WorkingMemory workingMemory) {
-        VariableResolverFactory factory = unit.getFactory( khelper,
-                                                           khelper != null ? (( AgendaItem ) khelper.getMatch()).getTerminalNode().getSalienceDeclarations() : null,
-                                                           rule, null, 
-                                                           khelper != null ? (LeftTuple) khelper.getMatch().getTuple() : null, 
-                                                           null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver() );
+                        final ReteEvaluator reteEvaluator) {
+        VariableResolverFactory factory = unit.getFactory( reteEvaluator,
+                                                           reteEvaluator != null ? (( AgendaItem ) activation).getTerminalNode().getSalienceDeclarations() : null,
+                                                           rule, null,
+                                                           reteEvaluator != null ? activation.getTuple() : null,
+                                                           null, reteEvaluator, reteEvaluator.getGlobalResolver() );
         
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( "MAIN" );
+        InternalKnowledgePackage pkg = reteEvaluator.getKnowledgeBase().getPackage( "MAIN" );
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );

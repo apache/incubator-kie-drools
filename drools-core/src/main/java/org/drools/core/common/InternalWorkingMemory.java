@@ -30,7 +30,6 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
@@ -74,10 +73,6 @@ public interface InternalWorkingMemory
 
     FactHandleFactory getFactHandleFactory();
 
-    default InternalFactHandle createFactHandle(Object object, ObjectTypeConf conf, WorkingMemoryEntryPoint wmEntryPoint ) {
-        return getFactHandleFactory().newFactHandle( object, conf, this, wmEntryPoint );
-    }
-
     default InternalFactHandle getFactHandle(Object object) {
         return getFactHandleFromWM(this, object);
     }
@@ -86,7 +81,7 @@ public interface InternalWorkingMemory
     
     EntryPointNode getEntryPointNode();
 
-    EntryPoint getEntryPoint(String name);
+    WorkingMemoryEntryPoint getEntryPoint(String name);
 
     Lock getLock();
 

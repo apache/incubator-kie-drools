@@ -20,6 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
@@ -84,12 +85,12 @@ public class MVELObjectExpression implements MVELCompileable, TimerExpression, E
     @Override
     public Object getValue(final Tuple leftTuple,
                            final Declaration[] declrs,
-                           final InternalWorkingMemory wm) {
+                           final ReteEvaluator reteEvaluator) {
         VariableResolverFactory factory = unit.getFactory( null, declrs,
-                                                           null, null, leftTuple, null, wm, wm.getGlobalResolver() );
+                                                           null, null, leftTuple, null, reteEvaluator, reteEvaluator.getGlobalResolver() );
         
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = wm.getKnowledgeBase().getPackage( "MAIN" );
+        InternalKnowledgePackage pkg = reteEvaluator.getKnowledgeBase().getPackage( "MAIN" );
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );

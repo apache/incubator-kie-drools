@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
@@ -117,16 +118,12 @@ public class EvalCondition extends ConditionalElement
     }
 
     public boolean isAllowed(final Tuple tuple,
-                             final WorkingMemory workingMemory,
+                             final ReteEvaluator reteEvaluator,
                              final Object context) {
         try {
-            return this.expression.evaluate( tuple,
-                                             this.requiredDeclarations,
-                                             workingMemory,
-                                             context );
+            return this.expression.evaluate( tuple, this.requiredDeclarations, reteEvaluator, context );
         } catch ( final Exception e ) {
-            throw new RuntimeException( this.getEvalExpression() + " : " + e,
-                                        e );
+            throw new RuntimeException( this.getEvalExpression() + " : " + e, e );
         }
     }
 

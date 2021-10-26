@@ -59,6 +59,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
@@ -73,6 +74,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
 import org.drools.mvel.builder.MVELDialectConfiguration;
@@ -6348,11 +6350,11 @@ public class Misc2Test {
         for ( Rule r : session.getKieBase().getKiePackage( "org.drools.test" ).getRules() ) {
             ( (RuleImpl) r ).setSalience( new Salience() {
                 @Override
-                public int getValue( KnowledgeHelper khelper, Rule rule, WorkingMemory workingMemory ) {
-                    if ( khelper == null ) {
+                public int getValue(Activation activation, Rule rule, ReteEvaluator reteEvaluator) {
+                    if ( activation == null ) {
                         return 0;
                     }
-                    InternalFactHandle h = (InternalFactHandle) khelper.getMatch().getFactHandles().get( 0 );
+                    InternalFactHandle h = (InternalFactHandle) activation.getFactHandles().get( 0 );
                     return ( (Person) h.getObject() ).getAge();
                 }
 

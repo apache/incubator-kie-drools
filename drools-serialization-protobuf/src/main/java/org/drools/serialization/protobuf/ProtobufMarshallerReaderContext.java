@@ -28,6 +28,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallingHelper;
@@ -327,7 +328,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public QueryElementFactHandle createQueryResultHandle( Tuple leftTuple, InternalWorkingMemory workingMemory, Object[] objects, int nodeId ) {
+    public QueryElementFactHandle createQueryResultHandle(Tuple leftTuple, Object[] objects, int nodeId ) {
         ProtobufMessages.FactHandle handle = null;
         Map<TupleKey, ProtobufInputMarshaller.QueryElementContext> map = (Map<TupleKey, ProtobufInputMarshaller.QueryElementContext>) getNodeMemories().get( nodeId );
         if( map != null ) {

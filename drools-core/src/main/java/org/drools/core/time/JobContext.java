@@ -17,10 +17,7 @@
 package org.drools.core.time;
 
 import java.io.Serializable;
-import java.util.Optional;
 
-import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 
 public interface JobContext extends Serializable {
@@ -32,8 +29,4 @@ public interface JobContext extends Serializable {
     JobHandle getJobHandle();
 
     ReteEvaluator getReteEvaluator();
-
-    default Optional<InternalKnowledgeRuntime> getInternalKnowledgeRuntime() {
-        return getReteEvaluator() != null ? Optional.ofNullable(getReteEvaluator().getKnowledgeRuntime()) : Optional.empty();
-    }
 }

@@ -36,6 +36,7 @@ import java.util.Map;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.drools.core.rule.Declaration;
@@ -46,10 +47,10 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.LogicTransformer;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.Enabled;
-import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
@@ -888,10 +889,10 @@ public class RuleImpl implements Externalizable,
         }
 
         @Override
-        public int getValue(final KnowledgeHelper khelper,
+        public int getValue(final Activation activation,
                             final org.kie.api.definition.rule.Rule rule,
-                            final WorkingMemory workingMemory) {
-            return AccessController.doPrivileged((PrivilegedAction<Integer>) () -> delegate.getValue(khelper, rule, workingMemory), KiePolicyHelper.getAccessContext());
+                            final ReteEvaluator reteEvaluator) {
+            return AccessController.doPrivileged((PrivilegedAction<Integer>) () -> delegate.getValue(activation, rule, reteEvaluator), KiePolicyHelper.getAccessContext());
         }
 
         @Override

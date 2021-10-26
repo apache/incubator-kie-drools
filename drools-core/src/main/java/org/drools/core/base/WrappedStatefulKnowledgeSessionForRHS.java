@@ -499,7 +499,7 @@ public class WrappedStatefulKnowledgeSessionForRHS
         return delegate.getEntryPointNode();
     }
 
-    public EntryPoint getEntryPoint(String name) {
+    public WorkingMemoryEntryPoint getEntryPoint(String name) {
         return delegate.getEntryPoint(name);
     }
 

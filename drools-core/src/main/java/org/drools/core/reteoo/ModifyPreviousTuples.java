@@ -76,7 +76,7 @@ public class ModifyPreviousTuples {
         if (sm != null) {
             LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, sm, reteEvaluator, liaNode, true, lm );
         } else {
-            ActivationsManager activationsManager = reteEvaluator.getActivationsManager()
+            ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
             TerminalNode rtn = leftTuple.getTupleSink();
             PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
             PhreakRuleTerminalNode.doLeftDelete(activationsManager, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);

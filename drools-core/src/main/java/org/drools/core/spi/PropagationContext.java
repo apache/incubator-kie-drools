@@ -34,7 +34,6 @@ public interface PropagationContext extends Externalizable {
 
     long getPropagationNumber();
 
-
     Type getType();
 
     RuleImpl getRuleOrigin();

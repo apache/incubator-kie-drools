@@ -16,21 +16,43 @@
 
 package org.drools.core.common;
 
+import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 
 public interface ActivationsManager {
     ReteEvaluator getReteEvaluator();
 
-    void cancelActivation(Activation activation);
+    AgendaGroupsManager getAgendaGroupsManager();
+
+    AgendaEventSupport getAgendaEventSupport();
 
     ActivationsFilter getActivationsFilter();
 
-    void addQueryAgendaItem(RuleAgendaItem agendaItem);
+    void addEagerRuleAgendaItem(RuleAgendaItem item);
 
-    void addEagerRuleAgendaItem(RuleAgendaItem agendaItem);
+    void removeEagerRuleAgendaItem(RuleAgendaItem item);
+
+    void addQueryAgendaItem(final RuleAgendaItem item);
+
+    void removeQueryAgendaItem(final RuleAgendaItem item);
 
     RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn);
+
+    AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
+                                int salience,
+                                PropagationContext context,
+                                RuleAgendaItem ruleAgendaItem,
+                                InternalAgendaGroup agendaGroup);
+
+    void cancelActivation(final Activation activation);
+
+    void modifyActivation(final AgendaItem activation, boolean previouslyActive);
+
+    void insertAndStageActivation(AgendaItem activation);
+    void addItemToActivationGroup(AgendaItem activation);
 }

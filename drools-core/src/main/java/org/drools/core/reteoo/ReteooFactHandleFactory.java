@@ -54,15 +54,13 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp;
             if ( type != null && type.getTimestampExtractor() != null ) {
-                timestamp = type.getTimestampExtractor().getLongValue( reteEvaluator,
-                                                                       object );
+                timestamp = type.getTimestampExtractor().getLongValue( reteEvaluator, object );
             } else {
                 timestamp = reteEvaluator.getTimerService().getCurrentTime();
             }
             long duration = 0;
             if ( type != null && type.getDurationExtractor() != null ) {
-                duration = type.getDurationExtractor().getLongValue( reteEvaluator,
-                                                                     object );
+                duration = type.getDurationExtractor().getLongValue( reteEvaluator, object );
             }
             return new EventFactHandle( id,
                                         object,

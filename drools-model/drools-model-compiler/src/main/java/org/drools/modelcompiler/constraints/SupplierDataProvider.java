@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
@@ -49,7 +50,7 @@ public class SupplierDataProvider implements DataProvider {
     }
 
     @Override
-    public Iterator getResults( Tuple tuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext ) {
+    public Iterator getResults(Tuple tuple, ReteEvaluator reteEvaluator, PropagationContext ctx, Object providerContext ) {
         Object result = null;
         if (supplierFunction != null) {
             result = supplierFunction.apply();

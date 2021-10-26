@@ -262,9 +262,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         }
 
         @Override
-        public void rowAdded(final RuleImpl rule,
-                             LeftTuple resultLeftTuple,
-                             InternalWorkingMemory workingMemory) {
+        public void rowAdded(RuleImpl rule, LeftTuple resultLeftTuple, ReteEvaluator reteEvaluator) {
 
             QueryTerminalNode queryTerminalNode = resultLeftTuple.getTupleSink();
             QueryImpl query = queryTerminalNode.getQuery();
@@ -275,17 +273,18 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             Declaration decl;
             for (int variable : this.variables) {
                 decl = decls[variable];
-                objects[variable] = decl.getValue(workingMemory, resultLeftTuple);
+                objects[variable] = decl.getValue(reteEvaluator, resultLeftTuple);
             }
 
             QueryElementFactHandle resultHandle = createQueryResultHandle(leftTuple.findMostRecentPropagationContext(),
-                                                                          workingMemory,
+                                                                          reteEvaluator,
                                                                           objects);
             
             RightTuple rightTuple = createResultRightTuple(resultHandle, resultLeftTuple, dquery.isOpen());
 
             boolean pass = true;
-            if ( query.isAbductive() ) {
+            if ( reteEvaluator instanceof InternalWorkingMemory && query.isAbductive() ) {
+                InternalWorkingMemory workingMemory = (InternalWorkingMemory) reteEvaluator;
                 AbductiveQuery aq = (( AbductiveQuery) query );
                 int numArgs = aq.getAbducibleArgs().length;
                 Object[] constructorArgs = new Object[ aq.getAbducibleArgs().length ];
@@ -362,18 +361,16 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         }
 
         @SuppressWarnings("unchecked")
-        protected QueryElementFactHandle createQueryResultHandle(PropagationContext context,
-                                                                 InternalWorkingMemory workingMemory,
-                                                                 Object[] objects) {
+        protected QueryElementFactHandle createQueryResultHandle(PropagationContext context, ReteEvaluator reteEvaluator, Object[] objects) {
             QueryElementFactHandle handle = null;
             if (context.getReaderContext() != null ) {
-                handle = context.getReaderContext().createQueryResultHandle( leftTuple, workingMemory, objects, node.getId() );
+                handle = context.getReaderContext().createQueryResultHandle( leftTuple, objects, node.getId() );
             }
 
             if (handle == null) {
                 handle = new QueryElementFactHandle( objects,
-                        workingMemory.getFactHandleFactory().getNextId(),
-                        workingMemory.getFactHandleFactory().getNextRecency() );
+                        reteEvaluator.getFactHandleFactory().getNextId(),
+                        reteEvaluator.getFactHandleFactory().getNextRecency() );
             }
 
             return handle;
@@ -382,7 +379,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         @Override
         public void rowRemoved(final RuleImpl rule,
                                final LeftTuple resultLeftTuple,
-                               final InternalWorkingMemory workingMemory) {
+                               final ReteEvaluator reteEvaluator) {
             RightTuple rightTuple = (RightTuple) resultLeftTuple.getContextObject();
             rightTuple.setBlocked( null );
             resultLeftTuple.setContextObject( null );
@@ -409,7 +406,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         @Override
         public void rowUpdated(final RuleImpl rule,
                                final LeftTuple resultLeftTuple,
-                               final InternalWorkingMemory workingMemory) {
+                               final ReteEvaluator reteEvaluator) {
             RightTuple rightTuple = (RightTuple) resultLeftTuple.getContextObject();
             if ( rightTuple.getMemory() != null ) {
                 // Already sheduled as an insert
@@ -430,12 +427,12 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             Declaration decl;
             for (int variable : this.variables) {
                 decl = decls[variable];
-                objects[variable] = decl.getValue(workingMemory, resultLeftTuple);
+                objects[variable] = decl.getValue(reteEvaluator, resultLeftTuple);
             }
 
             QueryElementFactHandle handle = (QueryElementFactHandle) rightTuple.getFactHandle();
 
-            handle.setRecency(workingMemory.getFactHandleFactory().getNextRecency());
+            handle.setRecency(reteEvaluator.getFactHandleFactory().getNextRecency());
             handle.setObject( objects );
 
             if ( dquery.isOpen() ) {

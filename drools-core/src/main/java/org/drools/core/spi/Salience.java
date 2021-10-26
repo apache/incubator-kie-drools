@@ -19,7 +19,7 @@ package org.drools.core.spi;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.kie.api.definition.rule.Rule;
 
@@ -27,9 +27,9 @@ public interface Salience extends Serializable {
 
     int DEFAULT_SALIENCE_VALUE = 0;
 
-    int getValue(final KnowledgeHelper khelper,
+    int getValue(final Activation activation,
                  final Rule rule,
-                 final WorkingMemory workingMemory);
+                 final ReteEvaluator reteEvaluator);
 
     int getValue();
 

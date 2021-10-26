@@ -17,7 +17,7 @@ package org.drools.core.phreak;
 
 import java.util.Iterator;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -30,7 +30,7 @@ import static org.drools.core.phreak.AddRemoveRule.forceFlushWhenRiaNode;
 
 public class SegmentPropagator {
 
-    public static void propagate(SegmentMemory sourceSegment, TupleSets<LeftTuple> leftTuples, InternalWorkingMemory wm) {
+    public static void propagate(SegmentMemory sourceSegment, TupleSets<LeftTuple> leftTuples, ReteEvaluator reteEvaluator) {
         if (leftTuples.isEmpty()) {
             return;
         }
@@ -38,10 +38,10 @@ public class SegmentPropagator {
         LeftTupleSource source = ( LeftTupleSource )  sourceSegment.getTipNode();
         
         if ( sourceSegment.isEmpty() ) {
-            SegmentUtilities.createChildSegments( wm, sourceSegment, source.getSinkPropagator() );
+            SegmentUtilities.createChildSegments( reteEvaluator, sourceSegment, source.getSinkPropagator() );
         }
                 
-        processPeers(sourceSegment, leftTuples, wm);
+        processPeers(sourceSegment, leftTuples);
 
         Iterator<SegmentMemory> peersIterator = sourceSegment.getPeersWithDataDrivenPathMemoriesIterator();
         while (peersIterator.hasNext()) {
@@ -53,17 +53,17 @@ public class SegmentPropagator {
                     // skip flushing segments that have only inserts staged and the path is not linked
                     continue;
                 }
-                forceFlushLeftTuple(dataDrivenPmem, smem, wm, smem.getStagedLeftTuples());
-                forceFlushWhenRiaNode(wm, dataDrivenPmem);
+                forceFlushLeftTuple(dataDrivenPmem, smem, reteEvaluator, smem.getStagedLeftTuples());
+                forceFlushWhenRiaNode(reteEvaluator, dataDrivenPmem);
             }
         }
     }
 
-    private static void processPeers(SegmentMemory sourceSegment, TupleSets<LeftTuple> leftTuples, InternalWorkingMemory wm) {
+    private static void processPeers(SegmentMemory sourceSegment, TupleSets<LeftTuple> leftTuples) {
         SegmentMemory firstSmem = sourceSegment.getFirst();
 
-        processPeerDeletes( leftTuples, leftTuples.getDeleteFirst(), firstSmem, wm );
-        processPeerDeletes( leftTuples, leftTuples.getNormalizedDeleteFirst(), firstSmem, wm );
+        processPeerDeletes( leftTuples, leftTuples.getDeleteFirst(), firstSmem );
+        processPeerDeletes( leftTuples, leftTuples.getNormalizedDeleteFirst(), firstSmem );
         processPeerUpdates( leftTuples, firstSmem );
         processPeerInserts( leftTuples, firstSmem );
 
@@ -131,7 +131,7 @@ public class SegmentPropagator {
         trgLeftTuples.addInsert( childLeftTuple );
     }
 
-    private static void processPeerDeletes( TupleSets<LeftTuple> leftTuples, LeftTuple leftTuple, SegmentMemory firstSmem, InternalWorkingMemory wm ) {
+    private static void processPeerDeletes( TupleSets<LeftTuple> leftTuples, LeftTuple leftTuple, SegmentMemory firstSmem ) {
         for (; leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {

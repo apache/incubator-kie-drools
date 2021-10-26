@@ -18,15 +18,20 @@ package org.drools.core.common;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.time.TimerService;
-import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.Calendars;
 
 public interface ReteEvaluator {
+
+    WorkingMemoryEntryPoint getEntryPoint(String name);
+
     <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
 
     InternalKnowledgeBase getKnowledgeBase();
@@ -35,7 +40,11 @@ public interface ReteEvaluator {
 
     GlobalResolver getGlobalResolver();
 
-    InternalFactHandle createFactHandle(Object object, ObjectTypeConf conf, WorkingMemoryEntryPoint wmEntryPoint );
+    default InternalFactHandle createFactHandle(Object object, ObjectTypeConf conf, WorkingMemoryEntryPoint wmEntryPoint ) {
+        return getFactHandleFactory().newFactHandle( object, conf, this, wmEntryPoint );
+    }
+
+    FactHandleFactory getFactHandleFactory();
 
     InternalFactHandle getFactHandle(Object object);
 
@@ -51,13 +60,15 @@ public interface ReteEvaluator {
         return false;
     }
 
-    default boolean filterForceEagerActivation(Rule rule) {
-        return false;
-    }
-
     FactHandleClassStore getStoreForClass(Class<?> classType);
 
     WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String entryPointId);
 
     SessionConfiguration getSessionConfiguration();
+
+    RuleEventListenerSupport getRuleEventSupport();
+
+    Calendars getCalendars();
+
+    TimerService getSessionClock();
 }

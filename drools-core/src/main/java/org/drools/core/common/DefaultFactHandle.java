@@ -371,17 +371,18 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return traitType != TraitTypeEnum.NON_TRAIT;
     }
 
-    public InternalWorkingMemory getWorkingMemory() {
-        return wmEntryPoint.getInternalWorkingMemory();
+    public ReteEvaluator getReteEvaluator() {
+        return wmEntryPoint.getReteEvaluator();
     }
 
     public EntryPointId getEntryPointId() {
         return entryPointId;
     }
 
-    public WorkingMemoryEntryPoint getEntryPoint(InternalWorkingMemory wm) {
+    @Override
+    public WorkingMemoryEntryPoint getEntryPoint(ReteEvaluator reteEvaluator) {
         if (wmEntryPoint == null) {
-            wmEntryPoint = (WorkingMemoryEntryPoint) wm.getEntryPoint( entryPointId.getEntryPointId() );
+            wmEntryPoint = reteEvaluator.getEntryPoint( entryPointId.getEntryPointId() );
         }
         return wmEntryPoint;
     }

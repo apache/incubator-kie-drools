@@ -16,11 +16,9 @@
 
 package org.drools.core.common;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
@@ -29,7 +27,6 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
@@ -37,9 +34,7 @@ import org.drools.core.spi.RuleFlowGroup;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 
-public interface InternalAgenda
-    extends
-    Agenda {
+public interface InternalAgenda extends Agenda {
 
     /**
      * Returns the WorkignMemory for this Agenda
@@ -47,6 +42,8 @@ public interface InternalAgenda
      *      The WorkingMemory
      */
     InternalWorkingMemory getWorkingMemory();
+
+    AgendaGroupsManager getAgendaGroupsManager();
 
     /**
      * Sets the Agenda's focus to the specified AgendaGroup
@@ -70,32 +67,6 @@ public interface InternalAgenda
      * in which this <code>RuleFlowGroup</code> is used.
      */
     void activateRuleFlowGroup(String name, long processInstanceId, String nodeInstanceId);
-
-    /**
-     * Deactivates the <code>RuleFlowGroup</code> with the given name.
-     * All activations in the given <code>RuleFlowGroup</code> are removed from the agenda.
-     * As long as the <code>RuleFlowGroup</code> remains deactive,
-     * its activations are not added to the agenda
-     */
-    void deactivateRuleFlowGroup(String name);
-
-    AgendaGroup[] getAgendaGroups();
-
-    /**
-     * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s
-     * @return
-     *      total number of <code>Activation</code>s on the focus stack
-     */
-    int focusStackSize();
-
-    /**
-     * Iterates all the modules in the focus stack returning the total number of <code>Activation</code>s
-     * @return
-     *      total number of activations on the focus stack
-     */
-    int agendaSize();
-
-    Activation[] getActivations();
 
     /**
      * Clears all Activations from the Agenda
@@ -201,12 +172,6 @@ public interface InternalAgenda
 
     void reset();
 
-    AgendaGroup getAgendaGroup(String name);
-    void removeAgendaGroup(String name);
-
-    AgendaGroup getAgendaGroup(final String name,
-                                      InternalKnowledgeBase kBase);
-
     InternalActivationGroup getActivationGroup(String name);
 
     RuleFlowGroup getRuleFlowGroup(String name);
@@ -226,8 +191,6 @@ public interface InternalAgenda
                                                final PathMemory rs,
                                                final TerminalNode rtn );
 
-    RuleAgendaItem peekNextRule();
-
     boolean isFiring();
     void executeTask( ExecutableEntry executable );
     void executeFlush();
@@ -237,6 +200,7 @@ public interface InternalAgenda
     boolean tryDeactivate();
 
     void insertAndStageActivation(AgendaItem activation);
+    void addItemToActivationGroup(AgendaItem activation);
 
     void addEagerRuleAgendaItem(RuleAgendaItem item);
     void removeEagerRuleAgendaItem(RuleAgendaItem item);
@@ -244,26 +208,13 @@ public interface InternalAgenda
     void addQueryAgendaItem(final RuleAgendaItem item);
     void removeQueryAgendaItem(final RuleAgendaItem item);
 
-    boolean setFocus(AgendaGroup agendaGroup);
-
     void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified);
-
-    Map<String, InternalAgendaGroup> getAgendaGroupsMap();
-    void putOnAgendaGroupsMap(String name, InternalAgendaGroup group);
-
-    void addAgendaGroupOnStack(AgendaGroup agendaGroup);
 
     void evaluateEagerList();
 
     Map<String,InternalActivationGroup> getActivationGroupsMap();
 
-    InternalAgendaGroup getNextFocus();
-
-    Collection<String> getGroupsName();
-
     int sizeOfRuleFlowGroup(String s);
-
-    void addItemToActivationGroup(AgendaItem item);
 
     boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
 

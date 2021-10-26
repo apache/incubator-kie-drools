@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.FromNode;
@@ -44,7 +44,7 @@ public class PhreakFromNode {
     public void doNode(FromNode fromNode,
                        FromMemory fm,
                        LeftTupleSink sink,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
@@ -54,11 +54,11 @@ public class PhreakFromNode {
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftUpdates(fromNode, fm, sink, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples);
+            doLeftInserts(fromNode, fm, sink, reteEvaluator, srcLeftTuples, trgLeftTuples);
         }
 
         srcLeftTuples.resetAll();
@@ -67,7 +67,7 @@ public class PhreakFromNode {
     public void doLeftInserts(FromNode fromNode,
                               FromMemory fm,
                               LeftTupleSink sink,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples) {
 
@@ -92,12 +92,9 @@ public class PhreakFromNode {
                 leftTuple.setContextObject( matches );
             }
 
-            betaConstraints.updateFromTuple(context,
-                                            wm,
-                                            leftTuple);
+            betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
-            for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple,
-                                                                          wm,
+            for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple, reteEvaluator,
                                                                           propagationContext,
                                                                           fm.providerContext); it.hasNext(); ) {
                 final Object object = it.next();
@@ -105,12 +102,9 @@ public class PhreakFromNode {
                     continue; // skip anything if it not assignable
                 }
 
-                RightTuple rightTuple = fromNode.createRightTuple(leftTuple,
-                                                                  propagationContext,
-                                                                  wm,
-                                                                  object);
+                RightTuple rightTuple = fromNode.createRightTuple(leftTuple, propagationContext, reteEvaluator, object);
 
-                if ( isAllowed( rightTuple.getFactHandle(), alphaConstraints, wm, fm ) ) {
+                if ( isAllowed( rightTuple.getFactHandle(), alphaConstraints, reteEvaluator, fm ) ) {
                     propagate( sink, leftTuple, rightTuple, betaConstraints, propagationContext, context, useLeftMemory, trgLeftTuples, null );
                 }
 
@@ -129,7 +123,7 @@ public class PhreakFromNode {
     public void doLeftUpdates(FromNode fromNode,
                               FromMemory fm,
                               LeftTupleSink sink,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples,
                               TupleSets<LeftTuple> stagedLeftTuples) {
@@ -149,15 +143,10 @@ public class PhreakFromNode {
             final Map<Object, RightTuple> newMatches = new HashMap<Object, RightTuple>();
             leftTuple.setContextObject( newMatches );
 
-            betaConstraints.updateFromTuple(context,
-                                            wm,
-                                            leftTuple);
+            betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
             FastIterator rightIt = LinkedList.fastIterator;
-            for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple,
-                                                                          wm,
-                                                                          propagationContext,
-                                                                          fm.providerContext); it.hasNext(); ) {
+            for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple, reteEvaluator, propagationContext, fm.providerContext); it.hasNext(); ) {
                 final Object object = it.next();
                 if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {
                     continue; // skip anything if it not assignable
@@ -167,10 +156,7 @@ public class PhreakFromNode {
 
                 if (rightTuple == null) {
                     // new match, propagate assert
-                    rightTuple = fromNode.createRightTuple(leftTuple,
-                                                           propagationContext,
-                                                           wm,
-                                                           object);
+                    rightTuple = fromNode.createRightTuple(leftTuple, propagationContext, reteEvaluator, object);
                 } else {
                     // previous match, so reevaluate and propagate modify
                     if (rightIt.next(rightTuple) != null) {
@@ -181,7 +167,7 @@ public class PhreakFromNode {
                     }
                 }
 
-                if ( isAllowed( rightTuple.getFactHandle(), alphaConstraints, wm, fm ) ) {
+                if ( isAllowed( rightTuple.getFactHandle(), alphaConstraints, reteEvaluator, fm ) ) {
                     propagate( sink, leftTuple, rightTuple, betaConstraints, propagationContext, context, true, trgLeftTuples, stagedLeftTuples );
                     fromNode.addToCreatedHandlesMap(newMatches, rightTuple);
                 } else {
@@ -252,11 +238,11 @@ public class PhreakFromNode {
 
     public static boolean isAllowed( InternalFactHandle factHandle,
                                      AlphaNodeFieldConstraint[] alphaConstraints,
-                                     InternalWorkingMemory wm,
+                                     ReteEvaluator reteEvaluator,
                                      FromMemory fm ) {
         if (alphaConstraints != null) {
             for (int i = 0, length = alphaConstraints.length; i < length; i++) {
-                if (!alphaConstraints[i].isAllowed(factHandle, wm)) {
+                if (!alphaConstraints[i].isAllowed(factHandle, reteEvaluator)) {
                     return false;
                 }
             }

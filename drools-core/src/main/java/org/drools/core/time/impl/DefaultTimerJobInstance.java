@@ -62,7 +62,7 @@ public class DefaultTimerJobInstance
 
     public Void call() throws Exception {
         try {
-            this.trigger.initialize(this.getJobContext().getInternalKnowledgeRuntime().orElse(null));
+            this.trigger.initialize(this.getJobContext().getReteEvaluator());
             this.trigger.nextFireTime(); // need to pop
             if ( handle.isCancel() ) {
                 return null;

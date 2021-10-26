@@ -58,6 +58,6 @@ public interface MarshallerReaderContext extends ObjectInput {
 
     InternalFactHandle createAccumulateHandle( EntryPointId entryPointId, InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object result, int nodeId);
     InternalFactHandle createAsyncNodeHandle( Tuple leftTuple, InternalWorkingMemory workingMemory, Object object, int nodeId, ObjectTypeConf objectTypeConf );
-    QueryElementFactHandle createQueryResultHandle( Tuple leftTuple, InternalWorkingMemory workingMemory, Object[] objects, int nodeId );
+    QueryElementFactHandle createQueryResultHandle( Tuple leftTuple, Object[] objects, int nodeId );
     InternalFactHandle createQueryHandle(Tuple leftTuple, InternalWorkingMemory workingMemory, int nodeId );
 }

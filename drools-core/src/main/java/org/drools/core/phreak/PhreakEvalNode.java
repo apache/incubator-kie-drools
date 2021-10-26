@@ -15,10 +15,7 @@
 
 package org.drools.core.phreak;
 
-import java.util.Arrays;
-
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
@@ -42,7 +39,7 @@ public class PhreakEvalNode {
     public void doNode(EvalConditionNode evalNode,
                        EvalMemory em,
                        LeftTupleSink sink,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
@@ -52,11 +49,11 @@ public class PhreakEvalNode {
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(evalNode, em, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftUpdates(evalNode, em, sink, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(evalNode, em, sink, wm, srcLeftTuples, trgLeftTuples);
+            doLeftInserts(evalNode, em, sink, reteEvaluator, srcLeftTuples, trgLeftTuples);
         }
 
         srcLeftTuples.resetAll();
@@ -65,16 +62,14 @@ public class PhreakEvalNode {
     public void doLeftInserts(EvalConditionNode evalNode,
                               EvalMemory em,
                               LeftTupleSink sink,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples) {
         EvalCondition condition = evalNode.getCondition();
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            final boolean allowed = condition.isAllowed(leftTuple,
-                                                        wm,
-                                                        em.context);
+            final boolean allowed = condition.isAllowed(leftTuple, reteEvaluator, em.context);
 
             if (allowed) {
                 boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(evalNode, leftTuple);
@@ -92,7 +87,7 @@ public class PhreakEvalNode {
     public void doLeftUpdates(EvalConditionNode evalNode,
                               EvalMemory em,
                               LeftTupleSink sink,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples,
                               TupleSets<LeftTuple> stagedLeftTuples) {
@@ -102,9 +97,7 @@ public class PhreakEvalNode {
 
             boolean wasPropagated = leftTuple.getFirstChild() != null && leftTuple.getContextObject() != EVAL_LEFT_TUPLE_DELETED;
 
-            boolean allowed = condition.isAllowed(leftTuple,
-                                                  wm,
-                                                  em.context);
+            boolean allowed = condition.isAllowed(leftTuple, reteEvaluator, em.context);
             if (allowed) {
                 leftTuple.setContextObject( null );
 

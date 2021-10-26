@@ -286,27 +286,22 @@ public class DefaultAgenda
         }
     }
 
-    /**
-     * If the item belongs to an activation group, add it
-     *
-     * @param item
-     */
     @Override
-    public void addItemToActivationGroup(final AgendaItem item) {
-        if ( item.isRuleAgendaItem() ) {
+    public void addItemToActivationGroup(final AgendaItem activation) {
+        if ( activation.isRuleAgendaItem() ) {
             throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
         }
-        String group = item.getRule().getActivationGroup();
+        String group = activation.getRule().getActivationGroup();
         if ( group != null && group.length() > 0 ) {
             InternalActivationGroup actgroup = getActivationGroup( group );
 
             // Don't allow lazy activations to activate, from before it's last trigger point
             if ( actgroup.getTriggeredForRecency() != 0 &&
-                 actgroup.getTriggeredForRecency() >= item.getPropagationContext().getFactHandle().getRecency() ) {
+                 actgroup.getTriggeredForRecency() >= activation.getPropagationContext().getFactHandle().getRecency() ) {
                 return;
             }
 
-            actgroup.addActivation( item );
+            actgroup.addActivation( activation );
         }
     }
 
@@ -381,21 +376,6 @@ public class DefaultAgenda
         TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, ( Tuple ) activation, activation.getRule() );
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#setFocus(org.kie.spi.AgendaGroup)
-     */
-    @Override
-    public boolean setFocus(final AgendaGroup agendaGroup) {
-        return this.agendaGroupsManager.setFocus((InternalAgendaGroup) agendaGroup);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#setFocus(java.lang.String)
-     */
     @Override
     public void setFocus(final String name) {
         setFocus( null, name );
@@ -409,53 +389,8 @@ public class DefaultAgenda
     }
 
     @Override
-    public InternalAgendaGroup getNextFocus() {
-        return agendaGroupsManager.getNextFocus();
-    }
-
-    @Override
-    public RuleAgendaItem peekNextRule() {
-        return agendaGroupsManager.peekNextRule();
-    }
-
-    @Override
-    public AgendaGroup getAgendaGroup(final String name) {
-        return agendaGroupsManager.getAgendaGroup( name );
-    }
-
-    @Override
-    public void removeAgendaGroup(final String name) {
-        agendaGroupsManager.removeGroup( agendaGroupsManager.getAgendaGroup( name ) );
-    }
-
-    @Override
-    public AgendaGroup getAgendaGroup(String name, InternalKnowledgeBase kBase) {
-        return agendaGroupsManager.getAgendaGroup(name, kBase);
-    }
-
-    @Override
-    public AgendaGroup[] getAgendaGroups() {
-        return agendaGroupsManager.getAgendaGroups();
-    }
-
-    @Override
-    public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
-        return agendaGroupsManager.getAgendaGroupsMap();
-    }
-
-    @Override
-    public void putOnAgendaGroupsMap(String name, InternalAgendaGroup group) {
-        agendaGroupsManager.putOnAgendaGroupsMap(name, group);
-    }
-
-    @Override
-    public Collection<String> getGroupsName() {
-        return agendaGroupsManager.getGroupsName();
-    }
-
-    @Override
-    public void addAgendaGroupOnStack(AgendaGroup agendaGroup) {
-        agendaGroupsManager.addAgendaGroupOnStack((InternalAgendaGroup) agendaGroup);
+    public AgendaGroupsManager getAgendaGroupsManager() {
+        return agendaGroupsManager;
     }
 
     @Override
@@ -498,41 +433,6 @@ public class DefaultAgenda
         group.setFocus();
         this.workingMemory.getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group, this.workingMemory );
         propagationList.notifyWaitOnRest();
-    }
-
-    @Override
-    public void deactivateRuleFlowGroup(final String name) {
-        agendaGroupsManager.deactivateRuleFlowGroup(name);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#focusStackSize()
-     */
-    @Override
-    public int focusStackSize() {
-        return agendaGroupsManager.focusStackSize();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#agendaSize()
-     */
-    @Override
-    public int agendaSize() {
-        return agendaGroupsManager.agendaSize();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#getActivations()
-     */
-    @Override
-    public Activation[] getActivations() {
-        return agendaGroupsManager.getActivations();
     }
 
     @Override

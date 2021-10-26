@@ -16,11 +16,11 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.Declaration;
-
 import java.io.Serializable;
 import java.util.Iterator;
+
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.rule.Declaration;
 
 public interface DataProvider
     extends
@@ -32,7 +32,7 @@ public interface DataProvider
     Object createContext();
 
     Iterator getResults(Tuple tuple,
-                        InternalWorkingMemory wm,
+                        ReteEvaluator reteEvaluator,
                         PropagationContext ctx,
                         Object providerContext);
 

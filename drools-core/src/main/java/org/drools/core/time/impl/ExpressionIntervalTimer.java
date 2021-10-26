@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
@@ -111,7 +112,7 @@ public class ExpressionIntervalTimer  extends BaseTimer
                                  String[] calendarNames,
                                  Calendars calendars,
                                  Declaration[][] declrs,
-                                 InternalWorkingMemory wm) {
+                                 ReteEvaluator reteEvaluator) {
         long timeSinceLastFire = 0;
 
         Declaration[] delayDeclarations = declrs[0];
@@ -129,12 +130,12 @@ public class ExpressionIntervalTimer  extends BaseTimer
             createdTime = preTrig.getCreatedTime();
             if (lastFireTime != null) {
                 // it is already fired calculate the new delay using the period instead of the delay
-                newDelay = evalTimeExpression(this.period, leftTuple, delayDeclarations, wm) - timestamp + lastFireTime.getTime();
+                newDelay = evalTimeExpression(this.period, leftTuple, delayDeclarations, reteEvaluator) - timestamp + lastFireTime.getTime();
             } else {
-                newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, wm) - timestamp + createdTime.getTime();
+                newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, reteEvaluator) - timestamp + createdTime.getTime();
             }
         } else {
-            newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, wm);
+            newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, reteEvaluator);
         }
 
         if (newDelay < 0) {
@@ -142,11 +143,11 @@ public class ExpressionIntervalTimer  extends BaseTimer
         }
 
         return new IntervalTrigger(timestamp,
-                                   evalDateExpression( this.startTime, leftTuple, startDeclarations, wm ),
-                                   evalDateExpression( this.endTime, leftTuple, startDeclarations, wm ),
+                                   evalDateExpression( this.startTime, leftTuple, startDeclarations, reteEvaluator ),
+                                   evalDateExpression( this.endTime, leftTuple, startDeclarations, reteEvaluator ),
                                    this.repeatLimit,
                                    newDelay,
-                                   period != null ? evalTimeExpression(this.period, leftTuple, periodDeclarations, wm) : 0,
+                                   period != null ? evalTimeExpression(this.period, leftTuple, periodDeclarations, reteEvaluator) : 0,
                                    calendarNames,
                                    calendars,
                                    createdTime,

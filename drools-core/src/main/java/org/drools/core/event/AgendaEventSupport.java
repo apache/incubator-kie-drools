@@ -40,7 +40,7 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
     public AgendaEventSupport() { }
 
     private InternalKnowledgeRuntime getKRuntime(WorkingMemory workingMemory) {
-        return ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime();
+        return workingMemory == null ? null : ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime();
     }
 
     public void fireActivationCreated(final Activation activation,

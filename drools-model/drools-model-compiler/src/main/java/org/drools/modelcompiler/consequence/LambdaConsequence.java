@@ -24,6 +24,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
@@ -75,11 +76,11 @@ public class LambdaConsequence implements Consequence {
         consequence.getBlock().execute( fetchFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory ) );
     }
 
-    public static Object[] declarationsToFacts( WorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars ) {
-        return declarationsToFacts( null, ( InternalWorkingMemory ) workingMemory, tuple, declarations, vars, false );
+    public static Object[] declarationsToFacts(ReteEvaluator reteEvaluator, Tuple tuple, Declaration[] declarations, Variable[] vars ) {
+        return declarationsToFacts( null, reteEvaluator, tuple, declarations, vars, false );
     }
 
-    private static Object[] declarationsToFacts( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars, boolean useDrools ) {
+    private static Object[] declarationsToFacts( KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator, Tuple tuple, Declaration[] declarations, Variable[] vars, boolean useDrools ) {
         Object[] objects;
         FactHandleLookup fhLookup = useDrools ? new FactHandleLookup.Multi() : null;
 
@@ -87,7 +88,7 @@ public class LambdaConsequence implements Consequence {
         if ( useDrools ) {
             index++;
             objects = new Object[vars.length + 1];
-            objects[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+            objects[0] = new DroolsImpl( knowledgeHelper, reteEvaluator, fhLookup );
         } else {
             objects = new Object[vars.length];
         }
@@ -100,9 +101,9 @@ public class LambdaConsequence implements Consequence {
                 if ( useDrools ) {
                     fhLookup.put( fh.getObject(), fh );
                 }
-                objects[index++] = declaration.getValue( workingMemory, fh );
+                objects[index++] = declaration.getValue( reteEvaluator, fh );
             } else {
-                objects[index++] = workingMemory.getGlobal( var.getName() );
+                objects[index++] = reteEvaluator.getGlobal( var.getName() );
             }
         }
         return objects;

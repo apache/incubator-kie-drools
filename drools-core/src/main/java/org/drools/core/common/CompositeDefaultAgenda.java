@@ -358,31 +358,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void deactivateRuleFlowGroup( String name ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.deactivateRuleFlowGroup -> TODO" );
-    }
-
-    @Override
-    public AgendaGroup[] getAgendaGroups() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getAgendaGroups -> TODO" );
-    }
-
-    @Override
-    public int focusStackSize() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.focusStackSize -> TODO" );
-    }
-
-    @Override
-    public int agendaSize() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.agendaSize -> TODO" );
-    }
-
-    @Override
-    public Activation[] getActivations() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getActivations -> TODO" );
-    }
-
-    @Override
     public void clearAndCancel() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.clearAndCancel -> TODO" );
     }
@@ -443,29 +418,10 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void removeAgendaGroup(String name) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.removeAgendaGroup -> TODO" );
-    }
-
-    @Override
-    public AgendaGroup getAgendaGroup( String name, InternalKnowledgeBase kBase ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getAgendaGroup -> TODO" );
-    }
-
-    @Override
     public void setFocus( String name ) {
         for ( int i = 0; i < agendas.length; i++ ) {
             agendas[i].setFocus( name );
         }
-    }
-
-    @Override
-    public boolean setFocus( AgendaGroup agendaGroup ) {
-        boolean result = true;
-        for ( int i = 0; i < agendas.length; i++ ) {
-            result = agendas[i].setFocus( agendaGroup ) || result;
-        }
-        return result;
     }
 
     @Override
@@ -486,11 +442,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public ActivationsFilter getActivationsFilter() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getActivationsFilter -> TODO" );
-    }
-
-    @Override
-    public RuleAgendaItem peekNextRule() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.peekNextRule -> TODO" );
     }
 
     @Override

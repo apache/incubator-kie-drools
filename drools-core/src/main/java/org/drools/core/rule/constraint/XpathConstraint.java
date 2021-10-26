@@ -32,7 +32,6 @@ import java.util.List;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.ReactiveObject;
 import org.drools.core.rule.ContextEntry;
@@ -176,7 +175,7 @@ public class XpathConstraint extends MutableTypeConstraint {
     }
 
     private interface XpathEvaluator {
-        Iterable<?> evaluate(InternalWorkingMemory workingMemory, Tuple leftTuple, Object object);
+        Iterable<?> evaluate(ReteEvaluator reteEvaluator, Tuple leftTuple, Object object);
     }
 
     @Override
@@ -191,11 +190,11 @@ public class XpathConstraint extends MutableTypeConstraint {
             this.chunk = chunk;
         }
 
-        public Iterable<?> evaluate(InternalWorkingMemory workingMemory, Tuple leftTuple, Object object) {
-            return evaluateObject(workingMemory, leftTuple, chunk, new ArrayList<Object>(), object);
+        public Iterable<?> evaluate(ReteEvaluator reteEvaluator, Tuple leftTuple, Object object) {
+            return evaluateObject(reteEvaluator, leftTuple, chunk, new ArrayList<Object>(), object);
         }
 
-        private List<Object> evaluateObject(InternalWorkingMemory workingMemory, Tuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
+        private List<Object> evaluateObject(ReteEvaluator reteEvaluator, Tuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
             Object result = chunk.evaluate(object);
             if (!chunk.lazy && result instanceof ReactiveObject) {
                 ((ReactiveObject) result).addLeftTuple(leftTuple);
@@ -511,7 +510,7 @@ public class XpathConstraint extends MutableTypeConstraint {
         }
 
         @Override
-        public Iterator getResults(Tuple leftTuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext) {
+        public Iterator getResults(Tuple leftTuple, ReteEvaluator reteEvaluator, PropagationContext ctx, Object providerContext) {
             InternalFactHandle fh = leftTuple.getFactHandle();
             Object obj = fh.getObject();
 
@@ -519,7 +518,7 @@ public class XpathConstraint extends MutableTypeConstraint {
                 obj = declaration.getValue(null, obj);
             }
 
-            return xpathEvaluator.evaluate(wm, leftTuple, obj).iterator();
+            return xpathEvaluator.evaluate(reteEvaluator, leftTuple, obj).iterator();
         }
 
         @Override
