@@ -58,7 +58,7 @@ Map getMultijobPRConfig() {
                 id: 'optaplanner-quickstarts',
                 repository: 'optaplanner-quickstarts',
                 env : [
-                    BUILD_MVN_OPTS: '-Dfull'
+                    OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull'
                 ]
             ]
         ],

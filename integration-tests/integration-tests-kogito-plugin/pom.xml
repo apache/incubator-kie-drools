@@ -17,6 +17,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-kie-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -69,6 +76,26 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-core-bom</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-bom</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-bom</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-bom</artifactId>
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

@@ -24,6 +24,32 @@
         <dependencies>
             <!-- This bom can only import dependencies from the groupIds org.kie and org.drools. -->
 
+            <!-- KIE boms -->
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-core-bom</artifactId>
+                <version>${version.org.kie}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-dmn-bom</artifactId>
+                <version>${version.org.kie}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-pmml-bom</artifactId>
+                <version>${version.org.kie}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-bom</artifactId>
+                <version>${version.org.kie}</version>
+                <type>pom</type>
+            </dependency>
+
             <!-- KIE -->
             <dependency>
                 <groupId>org.kie</groupId>

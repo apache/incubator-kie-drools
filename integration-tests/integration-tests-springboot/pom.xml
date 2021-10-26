@@ -8,6 +8,18 @@
   <artifactId>integration-tests-springboot</artifactId>
   <name>Kogito :: Integration Tests :: Spring Boot</name>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-kie-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- All the dependency of this module are here just to make Maven reactor aware that invoker tests need them -->
     <!-- NOTE: don't change their scope because otherwise maven-invoker-plugin is not going to install them in localRepositoryPath  -->
@@ -62,6 +74,27 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-springboot-monitoring-prometheus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-core-bom</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-bom</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-bom</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-bom</artifactId>
+      <type>pom</type>
     </dependency>
 
   </dependencies>
