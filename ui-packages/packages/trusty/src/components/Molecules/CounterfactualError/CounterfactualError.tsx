@@ -9,7 +9,7 @@ const CounterfactualError = () => {
   return (
     <Modal
       isOpen={isModalOpen}
-      title="Counterfactual error"
+      title="Cannot collect analysis data"
       titleIconVariant="warning"
       showClose={true}
       onClose={modalToggle}
@@ -21,7 +21,8 @@ const CounterfactualError = () => {
       ]}
     >
       <span>
-        Something went wrong while running the Counterfactual analysis.
+        Something went wrong while running the counterfactual analysis. Try
+        again later or contact Customer Support for help.
       </span>
     </Modal>
   );

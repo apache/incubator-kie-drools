@@ -163,10 +163,11 @@ const loadingError = (colSpan: number) => {
               <EmptyState>
                 <EmptyStateIcon icon={ExclamationCircleIcon} color="#C9190B" />
                 <Title headingLevel="h5" size="lg">
-                  Loading Error
+                  Cannot load data
                 </Title>
                 <EmptyStateBody>
-                  We are unable to load data right now. Try again later.
+                  Try refreshing the page after a few minutes. If the problem
+                  persists, contact Customer Support.
                 </EmptyStateBody>
               </EmptyState>
             </Bullseye>

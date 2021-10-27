@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   EmptyState,
+  EmptyStateBody,
   EmptyStateIcon,
   EmptyStatePrimary,
   PageSection,
@@ -25,12 +26,14 @@ const ApplicationError = () => {
         <EmptyState variant={'xl'}>
           <EmptyStateIcon icon={WarningTriangleIcon} />
           <Title size="2xl" headingLevel="h4">
-            Something went wrong
+            Server Error
           </Title>
+          <EmptyStateBody>
+            Something went wrong with your server. Reach out to your IT team for
+            help.
+          </EmptyStateBody>
           <EmptyStatePrimary>
-            <NavLink to="/">
-              Go back to the &quot;Audit investigation&quot; home page
-            </NavLink>
+            <NavLink to="/">Return to home page</NavLink>
           </EmptyStatePrimary>
         </EmptyState>
       </PageSection>

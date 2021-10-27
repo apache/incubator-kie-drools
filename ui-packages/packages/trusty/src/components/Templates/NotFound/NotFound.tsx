@@ -17,7 +17,7 @@ const NotFound = () => {
       <PageSection variant={PageSectionVariants.light}>
         <TextContent>
           <Title size="3xl" headingLevel="h2">
-            Not Found
+            Page not found
           </Title>
         </TextContent>
       </PageSection>
@@ -25,12 +25,10 @@ const NotFound = () => {
         <EmptyState variant={'xl'}>
           <EmptyStateIcon icon={WarningTriangleIcon} />
           <Title size="2xl" headingLevel="h4">
-            The page you are looking for does not exist
+            The page you’re looking for doesn’t exist
           </Title>
           <EmptyStatePrimary>
-            <NavLink to="/">
-              Go back to the &quot;Audit investigation&quot; home page
-            </NavLink>
+            <NavLink to="/">Return to home page</NavLink>
           </EmptyStatePrimary>
         </EmptyState>
       </PageSection>

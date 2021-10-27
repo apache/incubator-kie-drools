@@ -10,7 +10,7 @@ exports[`NotFound renders correctly 1`] = `
         headingLevel="h2"
         size="3xl"
       >
-        Not Found
+        Page not found
       </Title>
     </TextContent>
   </PageSection>
@@ -27,13 +27,13 @@ exports[`NotFound renders correctly 1`] = `
         headingLevel="h4"
         size="2xl"
       >
-        The page you are looking for does not exist
+        The page you’re looking for doesn’t exist
       </Title>
       <EmptyStatePrimary>
         <NavLink
           to="/"
         >
-          Go back to the "Audit investigation" home page
+          Return to home page
         </NavLink>
       </EmptyStatePrimary>
     </EmptyState>
