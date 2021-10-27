@@ -226,7 +226,7 @@ public interface InternalAgenda extends Agenda {
     Iterator<PropagationEntry> getActionsIterator();
     boolean hasPendingPropagations();
 
-    void handleException(InternalWorkingMemory wm, Activation activation, Exception e);
+    void handleException(Activation activation, Exception e);
 
     boolean isParallelAgenda();
 

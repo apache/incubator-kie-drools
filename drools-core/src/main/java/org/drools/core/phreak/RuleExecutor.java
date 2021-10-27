@@ -23,9 +23,7 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -335,7 +333,7 @@ public class RuleExecutor {
                 queue.dequeue(rtnLt);
             }
 
-            es.getAgendaEventSupport().fireActivationCancelled(rtnLt, reteEvaluator, MatchCancelledCause.CLEAR);
+            es.getAgendaEventSupport().fireActivationCancelled(rtnLt, null, MatchCancelledCause.CLEAR);
         }
     }
 
@@ -396,7 +394,7 @@ public class RuleExecutor {
                 // so lets remove the information now, before the consequence fires
                 final InternalActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
                 activationGroup.removeActivation( activation );
-                activationsManager.clearAndCancelActivationGroup( activationGroup);
+                activationsManager.clearAndCancelActivationGroup( activationGroup );
             }
             activation.setQueued(false);
 
@@ -435,11 +433,11 @@ public class RuleExecutor {
     }
 
     private void fireActivationEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation, Consequence consequence) throws ConsequenceException {
-        wm.startOperation();
+        reteEvaluator.startOperation();
         try {
             innerFireActivation( reteEvaluator, activationsManager, activation, consequence );
         } finally {
-            wm.endOperation();
+            reteEvaluator.endOperation();
         }
     }
 
@@ -461,12 +459,12 @@ public class RuleExecutor {
             knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
-            activationsManager.handleException( reteEvaluator, activation, e );
+            activationsManager.handleException( activation, e );
         } finally {
             if ( activation.getActivationFactHandle() != null ) {
                 // update the Activation in the WM
                 InternalFactHandle factHandle = activation.getActivationFactHandle();
-                reteEvaluator.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), wm );
+                reteEvaluator.getDefaultEntryPoint().getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), reteEvaluator );
             }
         }
     }

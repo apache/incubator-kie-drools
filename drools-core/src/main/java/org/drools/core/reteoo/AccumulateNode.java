@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -385,11 +384,11 @@ public class AccumulateNode extends BetaNode {
         }
 
         public TupleList<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, Tuple leftTuple,
-                                                          Object key, WorkingMemory wm) {
+                                                          Object key, ReteEvaluator reteEvaluator) {
             return groupsMap.computeIfAbsent(key, k -> {
                 AccumulateContextEntry entry = new AccumulateContextEntry(key);
-                entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, wm) );
-                PhreakAccumulateNode.initContext(workingMemoryContext, (InternalWorkingMemory) wm, accumulate, leftTuple, entry);
+                entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, reteEvaluator) );
+                PhreakAccumulateNode.initContext(workingMemoryContext, reteEvaluator, accumulate, leftTuple, entry);
                 return new TupleList<>(entry);
             });
         }

@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -104,7 +103,7 @@ public class AsyncReceiveNode extends LeftTupleSource
     public ObjectTypeConf getObjectTypeConf( ReteEvaluator reteEvaluator ) {
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
-            objectTypeConf = new ClassObjectTypeConf( reteEvaluator.getEntryPoint(), getResultClass(), reteEvaluator.getKnowledgeBase() );
+            objectTypeConf = new ClassObjectTypeConf( reteEvaluator.getDefaultEntryPointId(), getResultClass(), reteEvaluator.getKnowledgeBase() );
         }
         return objectTypeConf;
     }
@@ -130,8 +129,7 @@ public class AsyncReceiveNode extends LeftTupleSource
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }
-                InternalAgenda agenda = pmem.getActualAgenda( reteEvaluator );
-                pmem.doLinkRule( agenda );
+                pmem.doLinkRule( reteEvaluator );
             }
         }
     }

@@ -67,6 +67,7 @@ import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -1495,10 +1496,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                              final RuleImpl rule,
                              final TerminalNode terminalNode) {
         checkAlive();
-        return this.defaultEntryPoint.insert(object,
-                                             dynamic,
-                                             rule,
-                                             terminalNode);
+        return this.defaultEntryPoint.insert(object, dynamic, rule, terminalNode);
     }
 
     public void retract(FactHandle handle) {
@@ -1571,10 +1569,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       activation);
     }
 
-    public void executeQueuedActions() {
-        flushPropagations();
-    }
-
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
         try {
             startOperation();
@@ -1623,10 +1617,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.propagationIdCounter.incrementAndGet();
     }
 
-    public long getPropagationIdCounter() {
-        return this.propagationIdCounter.get();
-    }
-
     public Lock getLock() {
         return this.lock;
     }
@@ -1662,14 +1652,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
         }
 
-        public void execute(InternalWorkingMemory workingMemory) {
-            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+        public void execute(ReteEvaluator reteEvaluator) {
+            PropagationContextFactory pctxFactory = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
-            final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
+            final PropagationContext context = pctxFactory.createPropagationContext(reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                     this.ruleOrigin, this.tuple != null ? this.tuple.getTupleSink() : null, this.factHandle);
-            workingMemory.getKnowledgeBase().getRete().assertObject(this.factHandle,
-                                                                    context,
-                                                                    workingMemory);
+            reteEvaluator.getKnowledgeBase().getRete().assertObject(this.factHandle, context, reteEvaluator);
         }
     }
 
@@ -1715,21 +1703,21 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.node = (ObjectTypeNode) context.getSinks().get(nodeId);
         }
 
-        public void execute(InternalWorkingMemory workingMemory) {
+        public void execute(ReteEvaluator reteEvaluator) {
             if (!factHandle.isValid()) {
                 return;
             }
 
-            PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.Type.EXPIRATION );
-            workingMemory.getAgenda().registerExpiration( context );
+            PropagationContext context = createPropagationContextForFact( reteEvaluator, factHandle, PropagationContext.Type.EXPIRATION );
+            reteEvaluator.getAgenda().registerExpiration( context );
 
             factHandle.forEachLeftTuple( ObjectTypeNode::expireLeftTuple );
             factHandle.forEachRightTuple( rt -> {
-                rt.setExpired(workingMemory, context);
+                rt.setExpired(reteEvaluator, context);
                 ObjectTypeNode.expireRightTuple(rt);
             } );
 
-            expireFactHandle( workingMemory, factHandle );
+            expireFactHandle( reteEvaluator, factHandle );
         }
 
         private static void expireFactHandle( InternalWorkingMemory workingMemory, EventFactHandle factHandle ) {

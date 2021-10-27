@@ -15,7 +15,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
@@ -41,15 +40,15 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         Sink[] sinks = getSinks();
         for (int i = 0; i < sinks.length; i++) {
             TerminalNode rtn = ( TerminalNode ) getSinks()[i];
-            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, agenda, rtn, true );
+            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
             LeftTuple leftTuple = rtn.createLeftTuple( factHandle, true );
             leftTuple.setPropagationContext( propagationContext );
 
             if ( rtn.getRule().getAutoFocus() && !agendaItem.getAgendaGroup().isActive() ) {
-                agenda.setFocus( agendaItem.getAgendaGroup() );
+                activationsManager.getAgendaGroupsManager().setFocus( agendaItem.getAgendaGroup() );
             }
 
-            PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), agenda, agendaItem, leftTuple );
+            PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), activationsManager, agendaItem, leftTuple );
         }
     }
 
@@ -63,7 +62,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
             ObjectTypeNode.Id otnId = rtn.getLeftInputOtnId();
             LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
 
-            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, agenda, rtn, true );
+            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
             RuleExecutor executor = agendaItem.getRuleExecutor();
 
             if ( leftTuple != null && leftTuple.getInputOtnId().equals( otnId ) ) {
@@ -71,7 +70,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 leftTuple.reAdd();
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, agenda, leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, leftTuple );
                     if (leftTuple instanceof Activation ) {
                         ((Activation) leftTuple).setActive( true );
                     }
@@ -80,7 +79,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple = rtn.createLeftTuple( factHandle, true );
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, agenda, agendaItem, leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, agendaItem, leftTuple );
                 }
             }
         }
@@ -91,7 +90,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         leftTuple.setPropagationContext( context );
         TerminalNode rtn = ( TerminalNode ) leftTuple.getTupleSink();
-        PhreakRuleTerminalNode.doLeftDelete( agenda, getRuleAgendaItem( reteEvaluator, agenda, rtn, false ).getRuleExecutor(), leftTuple );
+        PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, activationsManager, rtn, false ).getRuleExecutor(), leftTuple );
     }
 
     public static RuleAgendaItem getRuleAgendaItem(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, TerminalNode rtn, boolean linkPmem ) {

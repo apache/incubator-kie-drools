@@ -16,7 +16,6 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
@@ -35,13 +34,13 @@ public class PhreakNotNode {
     public void doNode(NotNode notNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
         if (!notNode.isRightInputIsRiaNode()) {
-            doNormalNode(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doNormalNode(notNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         } else {
             PhreakSubnetworkNotExistsNode.doSubNetworkNode(notNode, sink, bm,
                                                            srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -51,7 +50,7 @@ public class PhreakNotNode {
     public void doNormalNode(NotNode notNode,
                              LeftTupleSink sink,
                              BetaMemory bm,
-                             InternalWorkingMemory wm,
+                             ReteEvaluator reteEvaluator,
                              TupleSets<LeftTuple> srcLeftTuples,
                              TupleSets<LeftTuple> trgLeftTuples,
                              TupleSets<LeftTuple> stagedLeftTuples) {
@@ -78,27 +77,27 @@ public class PhreakNotNode {
 
         if (srcRightTuples.getInsertFirst() != null) {
             // must come before right updates and inserts, as they might cause insert propagation, while this causes delete propagations, resulting in staging clash.
-            doRightInserts(notNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            doRightInserts(notNode, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
         }
 
 
 
         if (srcRightTuples.getUpdateFirst() != null) {
             // must come after rightInserts and before rightDeletes, to avoid staging clash
-            doRightUpdates(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            doRightUpdates(notNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcRightTuples.getDeleteFirst() != null) {
             // must come after rightUpdates, to avoid staging clash
-            doRightDeletes(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+            doRightDeletes(notNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftUpdates(notNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
+            doLeftInserts(notNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples);
         }
 
         srcRightTuples.resetAll();
@@ -108,7 +107,7 @@ public class PhreakNotNode {
     public void doLeftInserts(NotNode notNode,
                               LeftTupleSink sink,
                               BetaMemory bm,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
@@ -122,7 +121,7 @@ public class PhreakNotNode {
             boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(notNode, leftTuple);
 
             constraints.updateFromTuple( contextEntry,
-                                         wm,
+                                         reteEvaluator,
                                          leftTuple );
 
             // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
@@ -139,7 +138,7 @@ public class PhreakNotNode {
 
     public void doRightInserts(NotNode notNode,
                                BetaMemory bm,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples,
                                TupleSets<LeftTuple> stagedLeftTuples ) {
@@ -152,7 +151,7 @@ public class PhreakNotNode {
         // this must be processed here, rather than initial insert, as we need to link the blocker
         unlinkNotNodeOnRightInsert(notNode,
                                    bm,
-                                   wm);
+                                   reteEvaluator);
 
         for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
@@ -162,7 +161,7 @@ public class PhreakNotNode {
                 FastIterator it = notNode.getLeftIterator( ltm );
 
                 constraints.updateFromFactHandle( contextEntry,
-                                                  wm,
+                                                  reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
                 for ( LeftTuple leftTuple = notNode.getFirstLeftTuple( rightTuple, ltm, it ); leftTuple != null; ) {
                     // preserve next now, in case we remove this leftTuple
@@ -204,18 +203,18 @@ public class PhreakNotNode {
 
     public static void unlinkNotNodeOnRightInsert(NotNode notNode,
                                                   BetaMemory bm,
-                                                  InternalWorkingMemory wm) {
+                                                  ReteEvaluator reteEvaluator) {
         if (bm.getSegmentMemory().isSegmentLinked() && notNode.isEmptyBetaConstraints()) {
             // this must be processed here, rather than initial insert, as we need to link the blocker
             // @TODO this could be more efficient, as it means the entire StagedLeftTuples for all previous nodes where evaluated, needlessly.
-            bm.unlinkNode(wm);
+            bm.unlinkNode(reteEvaluator);
         }
     }
 
     public void doLeftUpdates(NotNode notNode,
                               LeftTupleSink sink,
                               BetaMemory bm,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples,
                               TupleSets<LeftTuple> stagedLeftTuples) {
@@ -249,7 +248,7 @@ public class PhreakNotNode {
             }
 
             constraints.updateFromTuple(contextEntry,
-                                        wm,
+                                        reteEvaluator,
                                         leftTuple);
 
             if ( !leftUpdateOptimizationAllowed && blocker != null ) {
@@ -308,7 +307,7 @@ public class PhreakNotNode {
     public void doRightUpdates(NotNode notNode,
                                LeftTupleSink sink,
                                BetaMemory bm,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples,
                                TupleSets<LeftTuple> stagedLeftTuples) {
@@ -324,7 +323,7 @@ public class PhreakNotNode {
 
             if ( ltm != null && ltm.size() > 0 ) {
                 constraints.updateFromFactHandle( contextEntry,
-                                                  wm,
+                                                  reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
                 FastIterator leftIt = notNode.getLeftIterator( ltm );
@@ -362,7 +361,7 @@ public class PhreakNotNode {
                 }
             }
 
-            iterateFromStart = updateBlockersAndPropagate(notNode, rightTuple, wm, rtm, contextEntry, constraints, iterateFromStart, sink, trgLeftTuples, ltm);
+            iterateFromStart = updateBlockersAndPropagate(notNode, rightTuple, reteEvaluator, rtm, contextEntry, constraints, iterateFromStart, sink, trgLeftTuples, ltm);
             rightTuple.clearStaged();
             rightTuple = next;
         }
@@ -460,7 +459,7 @@ public class PhreakNotNode {
     public void doRightDeletes(NotNode notNode,
                                LeftTupleSink sink,
                                BetaMemory bm,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
@@ -495,7 +494,7 @@ public class PhreakNotNode {
                     }
 
                     constraints.updateFromTuple(contextEntry,
-                                                wm,
+                                                reteEvaluator,
                                                 leftTuple);
 
                     if (useComparisonIndex) {

@@ -17,11 +17,14 @@
 package org.drools.core.common;
 
 import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.InternalActivationGroup;
+import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 
 public interface ActivationsManager {
@@ -34,12 +37,12 @@ public interface ActivationsManager {
     ActivationsFilter getActivationsFilter();
 
     void addEagerRuleAgendaItem(RuleAgendaItem item);
-
     void removeEagerRuleAgendaItem(RuleAgendaItem item);
 
     void addQueryAgendaItem(final RuleAgendaItem item);
-
     void removeQueryAgendaItem(final RuleAgendaItem item);
+
+    void clearAndCancelActivationGroup(InternalActivationGroup activationGroup);
 
     RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn);
 
@@ -55,4 +58,21 @@ public interface ActivationsManager {
 
     void insertAndStageActivation(AgendaItem activation);
     void addItemToActivationGroup(AgendaItem activation);
+
+    RuleAgendaItem peekNextRule();
+
+    void flushPropagations();
+
+    boolean isFiring();
+
+    void evaluateEagerList();
+    void evaluateQueriesForRule(RuleAgendaItem item);
+
+    KnowledgeHelper getKnowledgeHelper();
+
+    default void handleException(Activation activation, Exception e) {
+        throw new RuntimeException(e);
+    }
+
+    void executeTask(ExecutableEntry executableEntry);
 }

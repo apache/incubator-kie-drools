@@ -25,7 +25,7 @@ import java.util.Collections;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.PropagationContext;
 
@@ -101,14 +101,14 @@ public class SlidingLengthWindow
     public boolean assertFact(final Object context,
                               final InternalFactHandle handle,
                               final PropagationContext pctx,
-                              final InternalWorkingMemory workingMemory) {
+                              final ReteEvaluator reteEvaluator) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
         window.pos = (window.pos + 1) % window.handles.length;
         if ( window.handles[window.pos] != null ) {
             final EventFactHandle previous = window.handles[window.pos];
             // retract previous
-            final PropagationContext expiresPctx = createPropagationContextForFact( workingMemory, previous, PropagationContext.Type.EXPIRATION );
-            ObjectTypeNode.doRetractObject( previous, expiresPctx, workingMemory);
+            final PropagationContext expiresPctx = createPropagationContextForFact( reteEvaluator, previous, PropagationContext.Type.EXPIRATION );
+            ObjectTypeNode.doRetractObject( previous, expiresPctx, reteEvaluator);
         }
         window.handles[window.pos] = (EventFactHandle) handle;
         return true;
@@ -117,7 +117,7 @@ public class SlidingLengthWindow
     public void retractFact(final Object context,
                             final InternalFactHandle handle,
                             final PropagationContext pctx,
-                            final InternalWorkingMemory workingMemory) {
+                            final ReteEvaluator reteEvaluator) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
         final int last = (window.pos == 0) ? window.handles.length - 1 : window.pos - 1;
         // we start the loop on current pos because the most common scenario is to retract the
@@ -133,7 +133,7 @@ public class SlidingLengthWindow
 
     public void expireFacts(final Object context,
                             final PropagationContext pctx,
-                            final InternalWorkingMemory workingMemory) {
+                            final ReteEvaluator reteEvaluator) {
         // do nothing?
     }
 

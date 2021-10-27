@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -26,6 +25,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -79,7 +79,7 @@ import org.kie.internal.process.CorrelationKey;
 /**
  * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
-public class WrappedStatefulKnowledgeSessionForRHS
+public class ReteEvaluatorForRHS
         implements KieSession,
                    InternalWorkingMemoryActions,
                    EventSupport,
@@ -88,15 +88,15 @@ public class WrappedStatefulKnowledgeSessionForRHS
 
     protected StatefulKnowledgeSessionImpl delegate;
 
-    public WrappedStatefulKnowledgeSessionForRHS(WorkingMemory workingMemory) {
+    public ReteEvaluatorForRHS(ReteEvaluator reteEvaluator) {
         super();
-        this.delegate = (StatefulKnowledgeSessionImpl) workingMemory;
+        this.delegate = (StatefulKnowledgeSessionImpl) reteEvaluator;
     }
 
     /**
      * This should be used just by deserialization. Please avoid using this empty constructor in your code.
      */
-    public WrappedStatefulKnowledgeSessionForRHS() {
+    public ReteEvaluatorForRHS() {
     }
 
     @Override
@@ -216,10 +216,6 @@ public class WrappedStatefulKnowledgeSessionForRHS
         delegate.fireUntilHalt(agendaFilter);
     }
 
-    public void executeQueuedActions() {
-        delegate.executeQueuedActions();
-    }
-
     public RuleRuntimeEventSupport getRuleRuntimeEventSupport() {
         return delegate.getRuleRuntimeEventSupport();
     }
@@ -231,10 +227,6 @@ public class WrappedStatefulKnowledgeSessionForRHS
 
     public AgendaEventSupport getAgendaEventSupport() {
         return delegate.getAgendaEventSupport();
-    }
-
-    public long getPropagationIdCounter() {
-        return delegate.getPropagationIdCounter();
     }
 
     public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {

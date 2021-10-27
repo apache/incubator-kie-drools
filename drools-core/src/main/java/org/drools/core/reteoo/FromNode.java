@@ -212,7 +212,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
-            objectTypeConf = new ClassObjectTypeConf( reteEvaluator.getEntryPoint(), getResultClass(), reteEvaluator.getKnowledgeBase() );
+            objectTypeConf = new ClassObjectTypeConf( reteEvaluator.getDefaultEntryPointId(), getResultClass(), reteEvaluator.getKnowledgeBase() );
         }
 
         return reteEvaluator.createFactHandle(object, objectTypeConf, null );

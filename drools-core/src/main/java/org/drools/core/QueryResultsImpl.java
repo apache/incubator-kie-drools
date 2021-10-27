@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.drools.core.base.QueryRowWithSubruleIndex;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
@@ -40,17 +41,17 @@ public class QueryResultsImpl
     private Map<String, Declaration>[]        declarations;
 
     protected List<QueryRowWithSubruleIndex>  results;
-    protected WorkingMemory                   workingMemory;
+    protected ReteEvaluator                   reteEvaluator;
     protected Declaration[] parameters;
 
     private String[] identifiers;
 
     public QueryResultsImpl(final List<QueryRowWithSubruleIndex> results,
                             final Map<String, Declaration>[] declarations,
-                            final WorkingMemory workingMemory,
+                            final ReteEvaluator reteEvaluator,
                             final Declaration[] parameters) {
         this.results = results;
-        this.workingMemory = workingMemory;
+        this.reteEvaluator = reteEvaluator;
         this.declarations = declarations;
         this.parameters = parameters;
 
@@ -77,7 +78,7 @@ public class QueryResultsImpl
             throw new NoSuchElementException();
         }
         return new QueryResultsRowImpl( this.results.get( i ),
-                                this.workingMemory,
+                                this.reteEvaluator,
                                 this );
     }
 
@@ -125,7 +126,7 @@ public class QueryResultsImpl
 
         public QueryResultsRow next() {
             return new QueryResultsRowImpl( this.iterator.next(),
-                                    QueryResultsImpl.this.workingMemory,
+                                    QueryResultsImpl.this.reteEvaluator,
                                     QueryResultsImpl.this );
         }
 

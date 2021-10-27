@@ -17,24 +17,24 @@ package org.drools.core.phreak;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public class SynchronizedBypassPropagationList extends SynchronizedPropagationList {
 
     private AtomicBoolean executing = new AtomicBoolean( false );
 
-    public SynchronizedBypassPropagationList(InternalWorkingMemory workingMemory) {
-        super(workingMemory);
+    public SynchronizedBypassPropagationList(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
     }
 
     @Override
     public void addEntry(final PropagationEntry propagationEntry) {
-        workingMemory.getAgenda().executeTask( new ExecutableEntry() {
+        reteEvaluator.getActivationsManager().executeTask( new ExecutableEntry() {
            @Override
            public void execute() {
                if (executing.compareAndSet( false, true )) {
                    try {
-                       propagationEntry.execute( workingMemory );
+                       propagationEntry.execute( reteEvaluator );
                    } finally {
                        executing.set( false );
                        flush();

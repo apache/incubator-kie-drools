@@ -40,6 +40,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.CoreWrapper;
@@ -83,7 +84,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     protected Activation                                activation;
     protected Tuple                                     tuple;
-    protected WrappedStatefulKnowledgeSessionForRHS   workingMemory;
+    protected ReteEvaluatorForRHS workingMemory;
 
     private LinkedList<LogicalDependency<T>>          previousJustified;
 
@@ -93,24 +94,24 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     }
 
-    public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
-        this.workingMemory = createWrappedSession( workingMemory );
+    public DefaultKnowledgeHelper(ReteEvaluator reteEvaluator) {
+        this.workingMemory = createWrappedSession( reteEvaluator );
     }
 
-    public DefaultKnowledgeHelper(Activation activation, final WorkingMemory workingMemory) {
-        this.workingMemory = createWrappedSession( workingMemory );
+    public DefaultKnowledgeHelper(Activation activation, ReteEvaluator reteEvaluator) {
+        this.workingMemory = createWrappedSession( reteEvaluator );
         this.activation = activation;
     }
 
-    protected WrappedStatefulKnowledgeSessionForRHS createWrappedSession( WorkingMemory workingMemory ) {
-        return new WrappedStatefulKnowledgeSessionForRHS( workingMemory );
+    protected ReteEvaluatorForRHS createWrappedSession(ReteEvaluator reteEvaluator) {
+        return new ReteEvaluatorForRHS( reteEvaluator );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         activation = (Activation) in.readObject();
         tuple = (LeftTuple) in.readObject();
-        workingMemory = (WrappedStatefulKnowledgeSessionForRHS) in.readObject();
+        workingMemory = (ReteEvaluatorForRHS) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

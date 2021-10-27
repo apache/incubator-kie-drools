@@ -301,7 +301,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public WorkingMemoryEntryPoint getEntryPoint( InternalWorkingMemory wm ) {
+        public WorkingMemoryEntryPoint getEntryPoint( ReteEvaluator reteEvaluator ) {
             throw new UnsupportedOperationException();
         }
 

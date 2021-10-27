@@ -71,11 +71,11 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
         return new PhreakPropagationContext(number, type, rule, terminalNode, factHandle);
     }
 
-    public static PropagationContext createPropagationContextForFact( InternalWorkingMemory workingMemory, InternalFactHandle factHandle, PropagationContext.Type propagationType ) {
-        PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+    public static PropagationContext createPropagationContextForFact( ReteEvaluator reteEvaluator, InternalFactHandle factHandle, PropagationContext.Type propagationType ) {
+        PropagationContextFactory pctxFactory = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
         // if the fact is still in the working memory (since it may have been previously retracted already
-        return pctxFactory.createPropagationContext( workingMemory.getNextPropagationIdCounter(), propagationType,
+        return pctxFactory.createPropagationContext( reteEvaluator.getNextPropagationIdCounter(), propagationType,
                                                      null, null, factHandle );
     }
 }

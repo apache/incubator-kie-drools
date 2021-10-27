@@ -18,8 +18,7 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 
@@ -54,8 +53,8 @@ public class RiaPathMemory extends PathMemory {
     }
 
     @Override
-    public void doLinkRule(InternalAgenda agenda ) {
-        doLinkRule(agenda.getWorkingMemory());
+    public void doLinkRule(ActivationsManager activationsManager ) {
+        doLinkRule(activationsManager.getReteEvaluator());
     }
 
     @Override

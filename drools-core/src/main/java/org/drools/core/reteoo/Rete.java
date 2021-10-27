@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
@@ -204,7 +204,7 @@ public class Rete extends ObjectSource implements ObjectSink {
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
-                           final ReteEvaluator reteEvaluator) {
+                           final InternalWorkingMemory wm) {
         // nothing to do, since Rete object itself holds no facts to propagate.
     }
 

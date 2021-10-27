@@ -18,27 +18,39 @@ package org.drools.core.common;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
+import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.TimerService;
 import org.kie.api.runtime.Calendars;
 
 public interface ReteEvaluator {
 
-    WorkingMemoryEntryPoint getEntryPoint(String name);
-
-    <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
+    ActivationsManager getActivationsManager();
 
     InternalKnowledgeBase getKnowledgeBase();
 
-    ActivationsManager getActivationsManager();
+    WorkingMemoryEntryPoint getEntryPoint(String name);
+    default EntryPointId getDefaultEntryPointId() {
+        return EntryPointId.DEFAULT;
+    }
+    default WorkingMemoryEntryPoint getDefaultEntryPoint() {
+        return getEntryPoint(getDefaultEntryPointId().getEntryPointId());
+    }
+
+    <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
 
     GlobalResolver getGlobalResolver();
+    default Object getGlobal(String identifier) {
+        return getGlobalResolver().resolveGlobal( identifier );
+    }
 
     default InternalFactHandle createFactHandle(Object object, ObjectTypeConf conf, WorkingMemoryEntryPoint wmEntryPoint ) {
         return getFactHandleFactory().newFactHandle( object, conf, this, wmEntryPoint );
@@ -48,13 +60,11 @@ public interface ReteEvaluator {
 
     InternalFactHandle getFactHandle(Object object);
 
-    default EntryPointId getEntryPoint() {
-        return EntryPointId.DEFAULT;
-    }
-
     TimerService getTimerService();
 
     void addPropagation(PropagationEntry propagationEntry);
+
+    long getNextPropagationIdCounter();
 
     default boolean isThreadSafe() {
         return false;
@@ -71,4 +81,22 @@ public interface ReteEvaluator {
     Calendars getCalendars();
 
     TimerService getSessionClock();
+
+    default boolean isSequential() {
+        return getKnowledgeBase().getConfiguration().isSequential();
+    }
+
+    default void startOperation() { }
+    default void endOperation() { }
+
+    default KnowledgeHelper createKnowledgeHelper() {
+        return new DefaultKnowledgeHelper( this );
+    }
+
+    default KnowledgeHelper createKnowledgeHelper(Activation activation) {
+        return new DefaultKnowledgeHelper( activation, this );
+    }
+
+    void onSuspend();
+    void onResume();
 }

@@ -949,11 +949,11 @@ public class DefaultAgenda
     }
 
     @Override
-    public void handleException(InternalWorkingMemory wm, Activation activation, Exception e) {
+    public void handleException(Activation activation, Exception e) {
         if ( this.legacyConsequenceExceptionHandler != null ) {
-            this.legacyConsequenceExceptionHandler.handleException( activation, wm, e );
+            this.legacyConsequenceExceptionHandler.handleException( activation, getWorkingMemory(), e );
         } else if ( this.consequenceExceptionHandler != null ) {
-            this.consequenceExceptionHandler.handleException( activation, wm.getKnowledgeRuntime(), e );
+            this.consequenceExceptionHandler.handleException( activation, getWorkingMemory().getKnowledgeRuntime(), e );
         } else {
             throw new RuntimeException( e );
         }

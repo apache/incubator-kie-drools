@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -102,6 +101,11 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public InternalWorkingMemory getWorkingMemory() {
         return agendas[0].getWorkingMemory();
+    }
+
+    @Override
+    public AgendaGroupsManager getAgendaGroupsManager() {
+        return null;
     }
 
     @Override
@@ -294,8 +298,8 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
         return false;
     }
 
-    public void handleException(InternalWorkingMemory wm, Activation activation, Exception e) {
-        agendas[0].handleException( wm, activation, e );
+    public void handleException(Activation activation, Exception e) {
+        agendas[0].handleException( activation, e );
     }
 
     @Override
@@ -475,21 +479,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getAgendaGroupsMap -> TODO" );
-    }
-
-    @Override
-    public void putOnAgendaGroupsMap(String name, InternalAgendaGroup group) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getAgendaGroupsMap -> TODO" );
-    }
-
-    @Override
-    public void addAgendaGroupOnStack( AgendaGroup agendaGroup ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addAgendaGroupOnStack -> TODO" );
-    }
-
-    @Override
     public void evaluateEagerList() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.evaluateEagerList -> TODO" );
     }
@@ -497,16 +486,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public Map<String, InternalActivationGroup> getActivationGroupsMap() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getActivationGroupsMap -> TODO" );
-    }
-
-    @Override
-    public InternalAgendaGroup getNextFocus() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getNextFocus -> TODO" );
-    }
-
-    @Override
-    public Collection<String> getGroupsName() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getStackList -> TODO" );
     }
 
     @Override

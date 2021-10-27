@@ -24,6 +24,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -111,7 +112,7 @@ public class RuleBaseEventSupportTest {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
-                                 final WorkingMemory workingMemory) throws Exception {
+                                 final ReteEvaluator reteEvaluator) throws Exception {
             }
 
             public void readExternal(ObjectInput in) throws IOException,
@@ -142,7 +143,7 @@ public class RuleBaseEventSupportTest {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
-                                 final WorkingMemory workingMemory) throws Exception {
+                                 final ReteEvaluator reteEvaluator) throws Exception {
             }
 
             public void readExternal(ObjectInput in) throws IOException,

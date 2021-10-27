@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.ReteEvaluator;
@@ -420,18 +419,18 @@ public class RuleImpl implements Externalizable,
      */
     public boolean isEffective(Tuple tuple,
                                RuleTerminalNode rtn,
-                               WorkingMemory workingMemory) {
+                               ReteEvaluator reteEvaluator) {
         if ( !this.enabled.getValue( tuple,
                                      rtn.getEnabledDeclarations(),
                                      this,
-                                     workingMemory ) ) {
+                                     reteEvaluator ) ) {
             return false;
         }
         if ( this.dateEffective == null && this.dateExpires == null ) {
             return true;
         } else {
             Calendar now = Calendar.getInstance();
-            now.setTimeInMillis( workingMemory.getSessionClock().getCurrentTime() );
+            now.setTimeInMillis( reteEvaluator.getSessionClock().getCurrentTime() );
 
             if ( this.dateEffective != null && this.dateExpires != null ) {
                 return (now.after( this.dateEffective ) && now.before( this.dateExpires ));
@@ -780,11 +779,8 @@ public class RuleImpl implements Externalizable,
 
     public boolean isEnabled(Tuple tuple,
                              RuleTerminalNode rtn,
-                             WorkingMemory workingMemory) {
-        return this.enabled.getValue( tuple,
-                                      rtn.getEnabledDeclarations(),
-                                      this,
-                                      workingMemory );
+                             ReteEvaluator reteEvaluator) {
+        return this.enabled.getValue( tuple, rtn.getEnabledDeclarations(), this, reteEvaluator );
     }
 
     public void addMetaAttribute(String key,
@@ -919,8 +915,8 @@ public class RuleImpl implements Externalizable,
         public boolean getValue(final Tuple tuple,
                                 final Declaration[] declarations,
                                 final RuleImpl rule,
-                                final WorkingMemory workingMemory) {
-            return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> delegate.getValue(tuple, declarations, rule, workingMemory), KiePolicyHelper.getAccessContext());
+                                final ReteEvaluator reteEvaluator) {
+            return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> delegate.getValue(tuple, declarations, rule, reteEvaluator), KiePolicyHelper.getAccessContext());
         }
 
     }

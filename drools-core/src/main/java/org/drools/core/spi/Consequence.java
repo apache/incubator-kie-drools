@@ -20,13 +20,11 @@ import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
-import org.drools.core.WorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * Consequence to be fired upon successful match of a <code>Rule</code>.
- * 
- * @see org.kie.rule.Rule
  */
 public interface Consequence
     extends
@@ -38,14 +36,14 @@ public interface Consequence
      * Execute the consequence for the supplied matching <code>Tuple</code>.
      * 
      * @param knowledgeHelper
-     * @param workingMemory
+     * @param reteEvaluator
      *            The working memory session.
      * @throws ConsequenceException
      *             If an error occurs while attempting to invoke the
      *             consequence.
      */
     void evaluate(KnowledgeHelper knowledgeHelper,
-                  WorkingMemory workingMemory) throws Exception;
+                  ReteEvaluator reteEvaluator) throws Exception;
 
     static boolean isCompiledInvoker(final Consequence consequence) {
         return (consequence instanceof CompiledInvoker)
@@ -65,9 +63,9 @@ public interface Consequence
         }
 
         @Override
-        public void evaluate(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory) throws Exception {
+        public void evaluate(final KnowledgeHelper knowledgeHelper, final ReteEvaluator reteEvaluator) throws Exception {
             AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-                delegate.evaluate(knowledgeHelper, workingMemory);
+                delegate.evaluate(knowledgeHelper, reteEvaluator);
                 return null;
             }, KiePolicyHelper.getAccessContext());
         }

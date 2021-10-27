@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Before;
@@ -69,7 +70,7 @@ public class ReteooRuleBuilderTest {
 
         final Consequence consequence = new Consequence() {
             public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) throws Exception {
+                                 ReteEvaluator reteEvaluator) throws Exception {
                 System.out.println( "Consequence!" );
             }
 

@@ -17,7 +17,7 @@ package org.drools.core.phreak;
 
 import java.util.Iterator;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,7 @@ public class SynchronizedPropagationList implements PropagationList {
 
     protected static final transient Logger log                = LoggerFactory.getLogger( SynchronizedPropagationList.class );
 
-    protected final InternalWorkingMemory workingMemory;
+    protected final ReteEvaluator reteEvaluator;
 
     protected volatile PropagationEntry head;
     protected volatile PropagationEntry tail;
@@ -36,23 +36,23 @@ public class SynchronizedPropagationList implements PropagationList {
 
     private volatile boolean firingUntilHalt = false;
 
-    public SynchronizedPropagationList(InternalWorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
+    public SynchronizedPropagationList(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
     }
 
     @Override
     public void addEntry(final PropagationEntry entry) {
         if (entry.requiresImmediateFlushing()) {
         	if (entry.isCalledFromRHS()) {
-        		entry.execute(workingMemory);
+        		entry.execute(reteEvaluator);
         	} else {
-        		workingMemory.getAgenda().executeTask( new ExecutableEntry() {
+        		reteEvaluator.getActivationsManager().executeTask( new ExecutableEntry() {
         			@Override
                     public void execute() {
                         if (entry instanceof PhreakTimerNode.TimerAction) {
-                            ( (PhreakTimerNode.TimerAction) entry ).execute( workingMemory, true );
+                            ( (PhreakTimerNode.TimerAction) entry ).execute( reteEvaluator, true );
                         } else {
-                            entry.execute( workingMemory );
+                            entry.execute( reteEvaluator );
                         }
                     }
 
@@ -87,17 +87,17 @@ public class SynchronizedPropagationList implements PropagationList {
 
     @Override
     public void flush() {
-        flush( workingMemory, takeAll() );
+        flush( reteEvaluator, takeAll() );
     }
 
     @Override
     public void flush(PropagationEntry currentHead) {
-        flush( workingMemory, currentHead );
+        flush( reteEvaluator, currentHead );
     }
 
-    private void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
+    private void flush( ReteEvaluator reteEvaluator, PropagationEntry currentHead ) {
         for (PropagationEntry entry = currentHead; !disposed && entry != null; entry = entry.getNext()) {
-            entry.execute(workingMemory);
+            entry.execute(reteEvaluator);
         }
     }
 
@@ -127,7 +127,7 @@ public class SynchronizedPropagationList implements PropagationList {
     }
 
     public synchronized void waitOnRest() {
-        workingMemory.onSuspend();
+        reteEvaluator.onSuspend();
         try {
             wait();
         } catch (InterruptedException e) {
@@ -139,7 +139,7 @@ public class SynchronizedPropagationList implements PropagationList {
     @Override
     public synchronized void notifyWaitOnRest() {
         notifyAll();
-        workingMemory.onResume();
+        reteEvaluator.onResume();
     }
 
     @Override

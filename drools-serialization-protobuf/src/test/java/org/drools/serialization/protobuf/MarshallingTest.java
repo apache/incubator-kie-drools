@@ -41,6 +41,7 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
@@ -2221,7 +2222,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         rule.setConsequence( new Consequence() {
             public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) throws Exception {
+                                 ReteEvaluator reteEvaluator) throws Exception {
                 fired.add( "a" );
             }
 
