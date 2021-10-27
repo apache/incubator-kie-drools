@@ -407,6 +407,15 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testSetterBigIntegerLiteral() {
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+             },
+             "{ $p.ageAsInteger = 10000I; }",
+             "{ $p.setAgeAsInteger(new java.math.BigInteger(\"10000\")); }");
+    }
+
+    @Test
     public void testSetterPublicField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.nickName = \"Luca\"; } ",
