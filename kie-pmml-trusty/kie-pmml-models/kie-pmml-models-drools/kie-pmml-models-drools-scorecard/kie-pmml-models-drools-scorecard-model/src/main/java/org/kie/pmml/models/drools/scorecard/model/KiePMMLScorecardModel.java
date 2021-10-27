@@ -32,7 +32,8 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
         super(modelName, extensions);
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+    public static Builder builder(String name, List<KiePMMLExtension> extensions,
+                                  MINING_FUNCTION miningFunction) {
         return new Builder(name, extensions, miningFunction);
     }
 
@@ -47,7 +48,8 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
 
     public static class Builder extends KiePMMLDroolsModel.Builder<KiePMMLScorecardModel> {
 
-        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+        private Builder(String name, List<KiePMMLExtension> extensions,
+                        MINING_FUNCTION miningFunction) {
             super("Scorecard-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLScorecardModel(name, extensions));
         }
     }

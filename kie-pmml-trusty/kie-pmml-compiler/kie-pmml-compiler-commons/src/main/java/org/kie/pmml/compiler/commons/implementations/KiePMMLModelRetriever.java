@@ -59,7 +59,7 @@ public class KiePMMLModelRetriever {
                                                                      compilationDTO.getMiningSchema(),
                                                                      compilationDTO.getOutput()))
                 // Additional cast necessary to make it compile with JDK8
-                .map(kiePMMLModel -> getPopulatedWithKiePMMLTargets((KiePMMLModel) kiePMMLModel, compilationDTO.getTargets()))
+                .map(kiePMMLModel -> getPopulatedWithKiePMMLTargets(kiePMMLModel, compilationDTO.getTargets()))
                 .findFirst();
     }
 

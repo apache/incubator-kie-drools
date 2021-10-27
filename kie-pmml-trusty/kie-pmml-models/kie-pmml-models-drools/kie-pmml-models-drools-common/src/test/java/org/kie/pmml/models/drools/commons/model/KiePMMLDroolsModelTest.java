@@ -34,12 +34,13 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 public class KiePMMLDroolsModelTest {
 
     private final static String MODEL_NAME = "MODELNAME";
+    private final static String KMODULE_PACKAGE_NAME = getSanitizedPackageName(MODEL_NAME);
     private final static List<KiePMMLExtension> EXTENSIONS = new ArrayList<>();
     private KiePMMLDroolsModel kiePMMLDroolsModel;
 
     @Before
     public void setup() {
-        kiePMMLDroolsModel = new KiePMMLDroolsModelFake(MODEL_NAME, EXTENSIONS);
+        kiePMMLDroolsModel = new KiePMMLDroolsModelFake(MODEL_NAME, KMODULE_PACKAGE_NAME, EXTENSIONS);
     }
 
     @Test
@@ -56,8 +57,11 @@ public class KiePMMLDroolsModelTest {
 
     private final class KiePMMLDroolsModelFake extends KiePMMLDroolsModel {
 
-        protected KiePMMLDroolsModelFake(String modelName, List<KiePMMLExtension> extensions) {
+        protected KiePMMLDroolsModelFake(String modelName,
+                                         String kModulePackageName,
+                                         List<KiePMMLExtension> extensions) {
             super(modelName, extensions);
+            this.kModulePackageName = kModulePackageName;
         }
 
         @Override

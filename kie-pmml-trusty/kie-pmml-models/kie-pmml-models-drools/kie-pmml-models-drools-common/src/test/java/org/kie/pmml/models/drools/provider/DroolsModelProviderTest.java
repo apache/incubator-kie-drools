@@ -354,6 +354,7 @@ public class DroolsModelProviderTest {
             this.transformationDictionary = transformationDictionary;
             this.model = model;
             this.fieldTypeMap = fieldTypeMap;
+            this.kModulePackageName = getSanitizedPackageName(PACKAGE_NAME);
         }
 
         @Override
