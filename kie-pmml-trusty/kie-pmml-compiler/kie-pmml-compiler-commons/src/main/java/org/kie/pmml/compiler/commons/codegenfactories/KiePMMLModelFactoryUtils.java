@@ -63,7 +63,7 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTransformati
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListFromList;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue;
 
 /**
@@ -122,8 +122,8 @@ public class KiePMMLModelFactoryUtils {
         final MethodDeclaration methodDeclaration = modelTemplate.addMethod(GET_CREATED_KIEPMMLOUTPUTFIELDS,
                                                                             Modifier.Keyword.PRIVATE);
         final ClassOrInterfaceType returnedType =
-                getTypedClassOrInterfaceType(List.class.getSimpleName(),
-                                             Collections.singletonList(KiePMMLOutputField.class.getSimpleName()));
+                getTypedClassOrInterfaceTypeByTypeNames(List.class.getSimpleName(),
+                                                        Collections.singletonList(KiePMMLOutputField.class.getSimpleName()));
         methodDeclaration.setType(returnedType);
         BlockStmt body = new BlockStmt();
         methodDeclaration.setBody(body);

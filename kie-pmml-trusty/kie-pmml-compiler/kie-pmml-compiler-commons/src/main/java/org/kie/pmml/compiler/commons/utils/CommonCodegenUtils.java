@@ -171,8 +171,8 @@ public class CommonCodegenUtils {
         initializer.setScope(initializerScope);
         // Optional<KiePMMLNameValue> kiePMMLNameValue
         VariableDeclarator variableDeclarator =
-                new VariableDeclarator(getTypedClassOrInterfaceType(Optional.class.getName(),
-                                                                    Collections.singletonList(KiePMMLNameValue.class.getName())),
+                new VariableDeclarator(getTypedClassOrInterfaceTypeByTypeNames(Optional.class.getName(),
+                                                                               Collections.singletonList(KiePMMLNameValue.class.getName())),
                                        OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME);
         // Optional<KiePMMLNameValue> kiePMMLNameValue = kiePMMLNameValueListParam.stream().filter((KiePMMLNameValue
         // kpmmlnv)  -> Objects.equals(fieldNameToRef, kpmmlnv.getName())).findFirst()
@@ -375,11 +375,31 @@ public class CommonCodegenUtils {
      * @param typesName
      * @return
      */
-    public static ClassOrInterfaceType getTypedClassOrInterfaceType(final String className,
-                                                                    final List<String> typesName) {
-        ClassOrInterfaceType toReturn = parseClassOrInterfaceType(className);
+    public static ClassOrInterfaceType getTypedClassOrInterfaceTypeByTypeNames(final String className,
+                                                                               final List<String> typesName) {
         List<Type> types = typesName.stream()
                 .map(StaticJavaParser::parseClassOrInterfaceType).collect(Collectors.toList());
+        return getTypedClassOrInterfaceTypeByTypes(className, types);
+    }
+
+    /**
+     * Returns
+     * <pre>
+     *     (<i>className</i>)<(<i>comma-separated list of types</i>)>
+     * </pre>
+     * <p>
+     * e.g
+     * <pre>
+     *     CLASS_NAME<TypeA, TypeB>
+     * </pre>
+     * a <b>typed</b> <code>ClassOrInterfaceType</code>
+     * @param className
+     * @param types
+     * @return
+     */
+    public static ClassOrInterfaceType getTypedClassOrInterfaceTypeByTypes(final String className,
+                                                                           final List<Type> types) {
+        ClassOrInterfaceType toReturn = parseClassOrInterfaceType(className);
         toReturn.setTypeArguments(NodeList.nodeList(types));
         return toReturn;
     }

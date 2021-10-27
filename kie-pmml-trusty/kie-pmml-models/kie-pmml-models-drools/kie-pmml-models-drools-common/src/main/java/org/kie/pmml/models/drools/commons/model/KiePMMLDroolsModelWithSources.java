@@ -30,7 +30,6 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
     private static final long serialVersionUID = -168095076511604775L;
     protected Map<String, String> sourcesMap;
     protected Map<String, String> rulesSourceMap;
-    private final String kmodulePackageName;
     private final String pkgUUID;
 
     public KiePMMLDroolsModelWithSources(String name,
@@ -40,9 +39,9 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
                                          Map<String, String> rulesSourceMap) {
         super(name, Collections.emptyList());
         this.sourcesMap = sourcesMap;
-        this.kmodulePackageName = kmodulePackageName;
         this.pkgUUID = pkgUUID;
         this.rulesSourceMap = rulesSourceMap;
+        this.kModulePackageName = kmodulePackageName;
     }
 
     @Override
@@ -68,11 +67,6 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
     @Override
     public void addSourceMap(String key, String value) {
         sourcesMap.put(key, value);
-    }
-
-    @Override
-    public String getKModulePackageName() {
-        return kmodulePackageName;
     }
 
     @Override

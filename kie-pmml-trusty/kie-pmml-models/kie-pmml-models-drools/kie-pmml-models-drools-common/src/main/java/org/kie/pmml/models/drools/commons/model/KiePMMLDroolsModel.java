@@ -38,7 +38,6 @@ import org.kie.pmml.models.drools.utils.KiePMMLSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAgendaEventListener;
 
 /**
@@ -50,6 +49,8 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
 
     private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
     private static final long serialVersionUID = 5471400949048174357L;
+
+    protected String kModulePackageName;
 
     /**
      * Map between the original field name and the generated type.
@@ -92,7 +93,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
 
     @Override
     public String getKModulePackageName() {
-        return getSanitizedPackageName(name);
+        return kModulePackageName;
     }
 
     @Override
