@@ -1,0 +1,14 @@
+[id="proc-kogito-migrate-external-application-REST_{context}"]
+= Migrating external applications to REST endpoints specific to DMN models
+
+[role="_abstract"]
+To migrate a DMN project to a {KOGITO} deployment, first you can migrate external applications that use specific DMN REST endpoints to interact with decision services on the {KIE_SERVER}.
+
+.Procedure
+. If you are using the REST endpoints in your external application, retrieve the Swagger or OAS specification file of the KJAR using `GET /server/containers/{containerId}/dmn/openapi.json (|.yaml)` endpoint.
++
+For more information about REST endpoints for specific DMN models, see {URL_DEVELOPING_DECISION_SERVICES}#ref-rest-api-dmn-endpoints_dmn-models[_REST endpoints for specific DMN models_].
+
+. In your external application, select the Java or JDK library to interact with the decision services. You can interact with the decision services using the REST endpoint for the specific KJAR.
+
+NOTE: The {KIE_SERVER} Client Java API is not supported in the migration to a {KOGITO} deployment.

@@ -1,0 +1,65 @@
+[id="con-migrate-dmn-to-kogito-overview_{context}"]
+= Migration of a DMN service to a {KOGITO} microservice
+
+[role="_abstract"]
+You can migrate DMN-based decision services to {KOGITO} microservices by moving the DMN resources from KJAR artifacts to the respective {KOGITO} project. In the {KOGITO} microservices, some of the KIE v7 features are no longer required.
+
+
+[id="ref-migrate-dmn-to-kogito-considerations_{context}"]
+== Major changes and migration considerations
+
+The following table describes the major changes and features that affect migration from the {KIE_SERVER} API and KJAR to {KOGITO} deployments:
+
+.DMN migration considerations
+[cols="30%,35%,35%" options="header"]
+|===
+|Feature
+|In {KIE_SERVER} API
+|In {KOGITO} artifact
+
+|DMN models
+|stored in `src/main/resources` of KJAR.
+|copy as is to `src/main/resources`.
+
+|Object models (POJOs) required for {KIE_SERVER} generic marshalling
+|managed using Data Model object editor in {CENTRAL}.
+|object model editing is no longer required.
+
+|`DMNRuntimeListener`
+|configured using a system property or `kmodule.xml` file.
+|must be configured using CDI, by annotating the `DMNRuntimeEventListener` with CDI’s `@ApplicationScope` annotation.
+
+|Other configuration options
+|configured using system property or `kmodule.xml` file.
+|except `DMNRuntimeEventListener`, only default values are considered and no override of configuration is supported.
+
+|{KIE_SERVER} Client API
+|used in conjunction with object models to interact with a KJAR that is deployed on the {KIE_SERVER}.
+a|for object models, this feature is no longer required.
+
+NOTE: You can select your own choice of REST library.
+
+|REST API
+|when a KJAR is deployed on {KIE_SERVER}, the applications interacting with specific DMN model endpoint, use the same API on {KOGITO} deployment.
+|advanced support for specific DMN model generation. For more information, see {URL_DEVELOPING_DECISION_SERVICES}#dmn-execution-con_dmn-models[_DMN model execution_].
+
+|Test scenarios
+|run with a JUnit activator.
+|analogous JUnit activator is available on {KOGITO}.
+
+|===
+
+NOTE: The features that are not mentioned in the previous table are either not supported or not required in a cloud-native {KOGITO} deployment.
+
+[id="con-migration-dmn-strategy_{context}"]
+== Migration strategy
+
+[role="_abstract"]
+When migrating a DMN project to a {KOGITO} project, first you can migrate external applications that are interacting with decision services on the {KIE_SERVER}. You can use the REST endpoints that are specific to DMN models. After using the REST endpoints, you can migrate the external applications from the {KIE_SERVER} to a {KOGITO} deployment. For more information about specific REST endpoints to DMN models, see {URL_DEVELOPING_DECISION_SERVICES}#ref-rest-api-dmn-endpoints_dmn-models[_REST endpoints for specific DMN models_].
+
+The migration strategy includes the following steps:
+
+. Migrate existing external applications from the generic {KIE_SERVER} API to a specific DMN REST endpoint using the {KIE_SERVER}.
+. Migrate a KJAR that is deployed on the {KIE_SERVER} to a {KOGITO} microservice.
+. Deploy the {KOGITO} microservice using {OPENSHIFT}.
+. Reconnect the external application and migrate the REST API consumption from the specific DMN REST endpoint to the {KOGITO} deployment.
