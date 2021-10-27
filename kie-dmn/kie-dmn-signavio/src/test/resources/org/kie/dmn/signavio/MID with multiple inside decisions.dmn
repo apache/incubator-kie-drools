@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dmn:definitions namespace="http://www.signavio.com/dmn/1.2/diagram/82a693a210f7406badefe75039618c58.xml" exporterVersion="15.6.1" name="SumLenghtOfNames(times 2)" id="id-d8c6fb578a084ba9961f040d1f203af5" sigExt:revisionNumber="4" sigExt:revisionId="79bb8f6738ed4b16ad76ab36887090b2" xmlns="http://www.signavio.com/dmn/1.2/diagram/82a693a210f7406badefe75039618c58.xml" xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.2/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/">
+    <dmn:itemDefinition typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" isCollection="false" name="double_" id="id-4b2e9b0d06e19d9ab15d24f547b383c3" label="double">
+        <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemDefinition>
+    <dmn:itemDefinition typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" isCollection="false" name="names" id="id-0d30532a2bc62a866fbded592e9b2164" label="names">
+        <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemDefinition>
+    <dmn:itemDefinition typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" isCollection="false" name="toNumber" id="id-2cede6eb22b34a1a3b306efce91fd02b" label="toNumber">
+        <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemDefinition>
+    <dmn:itemDefinition typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" isCollection="false" name="overallage" id="id-0fbbc207284e19ec921876f1339a49cb" label="overall_age">
+        <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemDefinition>
+    <dmn:itemDefinition typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" isCollection="true" name="names2" id="id-7fe345c576f9b300425cc8864085fbc6" label="names">
+        <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemDefinition>
+    <dmn:inputData name="names_iterator" id="id-d067b6341c6162af81a943057b7147db" label="names" sigExt:diagramId="82a693a210f7406badefe75039618c58" sigExt:shapeId="sid-41C5B286-42AF-498D-92CA-1C4ECAA6BAE9">
+        <dmn:variable typeRef="names" name="names_iterator" id="id-d067b6341c6162af81a943057b7147db_variable"/>
+    </dmn:inputData>
+    <dmn:inputData name="names" id="id-b5714d7b18e8ffc4f8bf3f1f812d29ba" label="names" sigExt:diagramId="82a693a210f7406badefe75039618c58" sigExt:shapeId="sid-74DCF8B2-231E-42A1-9D18-BD6027B79690">
+        <dmn:variable typeRef="names2" name="names" id="id-b5714d7b18e8ffc4f8bf3f1f812d29ba_variable"/>
+    </dmn:inputData>
+    <dmn:decision name="overallage" id="id-912bcca4f09fa8d877ca69ddc9d30f7b" label="overall_age" sigExt:diagramId="82a693a210f7406badefe75039618c58" sigExt:shapeId="sid-AFA8F6B6-08ED-4C1B-8505-96BDE256B0F5">
+        <dmn:extensionElements>
+            <sigExt:MultiInstanceDecisionLogic>
+                <sigExt:iterationExpression>names</sigExt:iterationExpression>
+                <sigExt:iteratorShapeId>id-d067b6341c6162af81a943057b7147db</sigExt:iteratorShapeId>
+                <sigExt:aggregationFunction>SUM</sigExt:aggregationFunction>
+                <sigExt:topLevelDecisionId>id-880ea2fe103e48d2a281f185e85b3f2b</sigExt:topLevelDecisionId>
+            </sigExt:MultiInstanceDecisionLogic>
+        </dmn:extensionElements>
+        <dmn:variable typeRef="overallage" name="overallage" id="id-912bcca4f09fa8d877ca69ddc9d30f7b_variable"/>
+        <dmn:informationRequirement>
+            <dmn:requiredInput href="#id-b5714d7b18e8ffc4f8bf3f1f812d29ba"/>
+        </dmn:informationRequirement>
+    </dmn:decision>
+    <dmn:decision name="toNumber" id="id-80ad7b57bba5d71b7403cc2003e004b0" label="toNumber" sigExt:diagramId="82a693a210f7406badefe75039618c58" sigExt:shapeId="sid-BE880F7A-C382-4304-957F-AC67EBDF4A35">
+        <dmn:variable typeRef="toNumber" name="toNumber" id="id-80ad7b57bba5d71b7403cc2003e004b0_variable"/>
+        <dmn:informationRequirement>
+            <dmn:requiredInput href="#id-d067b6341c6162af81a943057b7147db"/>
+        </dmn:informationRequirement>
+        <dmn:literalExpression expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/">
+            <dmn:text>len(names_iterator)</dmn:text>
+        </dmn:literalExpression>
+    </dmn:decision>
+    <dmn:decision name="double_" id="id-880ea2fe103e48d2a281f185e85b3f2b" label="double" sigExt:diagramId="82a693a210f7406badefe75039618c58" sigExt:shapeId="sid-D799AA67-7123-4E2C-84AC-0F8D9C800DE8">
+        <dmn:variable typeRef="double_" name="double_" id="id-880ea2fe103e48d2a281f185e85b3f2b_variable"/>
+        <dmn:informationRequirement>
+            <dmn:requiredDecision href="#id-80ad7b57bba5d71b7403cc2003e004b0"/>
+        </dmn:informationRequirement>
+        <dmn:literalExpression expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/">
+            <dmn:text>(toNumber*2)</dmn:text>
+        </dmn:literalExpression>
+    </dmn:decision>
+</dmn:definitions>

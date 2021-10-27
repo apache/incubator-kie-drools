@@ -19,11 +19,14 @@ package org.kie.dmn.signavio;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
@@ -39,6 +42,8 @@ import org.kie.dmn.core.compiler.DecisionCompiler;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.internal.utils.DRGAnalysisUtils;
+import org.kie.dmn.core.internal.utils.DRGAnalysisUtils.DRGDependency;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.functions.AllFunction;
 import org.kie.dmn.feel.runtime.functions.AnyFunction;
@@ -48,6 +53,10 @@ import org.kie.dmn.feel.runtime.functions.MinFunction;
 import org.kie.dmn.feel.runtime.functions.SumFunction;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement.ExtensionElements;
+
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
+import static java.util.stream.Collectors.toSet;
 
 @XStreamAlias("MultiInstanceDecisionLogic")
 public class MultiInstanceDecisionLogic {
@@ -117,22 +126,91 @@ public class MultiInstanceDecisionLogic {
                     getMIDL(node).orElseThrow(() -> new IllegalStateException("Node doesn't contain multi instance decision logic!" + node.toString()));
             
             // set the evaluator accordingly to Signavio logic.
-            di.setEvaluator(new MultiInstanceDecisionNodeEvaluator(midl, model, di, ctx.getFeelHelper().newFEELInstance()));
+            final MultiInstanceDecisionNodeEvaluator miEvaluator = new MultiInstanceDecisionNodeEvaluator(midl, model, di, ctx.getFeelHelper().newFEELInstance());
+            di.setEvaluator(miEvaluator);
             
-            // Remove the top level decision and its dependencies, from the DMN Model (Decision|BKM|InputData) indexes
-            // Remember that as the dependencies will be removed from indexes, are no longer available at evalutation from the DMNExpressionEvaluator
-            // hence the MultiInstanceDecisionNodeEvaluator will need to cache anything which is accessed by the DMN Model (Decision|BKM|InputData) indexes 
-            DecisionNodeImpl topLevelDecision = (DecisionNodeImpl) model.getDecisionById(midl.topLevelDecisionId);
-            recurseNodeToRemoveItAndDepsFromModelIndex(topLevelDecision, model);
+            compiler.addCallback((cCompiler, cCtx, cModel) -> {
+                MIDDependenciesProcessor processor = new MIDDependenciesProcessor(midl, cModel);
+                addRequiredDecisions(miEvaluator, processor);
+                removeChildElementsFromIndex(cModel, processor);
+            });
         }
 
-        public static void recurseNodeToRemoveItAndDepsFromModelIndex(DMNNode topLevelDecision, DMNModelImpl model) {
-            model.removeDMNNodeFromIndexes(topLevelDecision);
-            
-            for ( DMNNode dep : ((DMNBaseNode)topLevelDecision).getDependencies().values() ) {
-                recurseNodeToRemoveItAndDepsFromModelIndex( dep, model);
-            }
+        private void addRequiredDecisions(MultiInstanceDecisionNodeEvaluator miEvaluator,
+                                          MIDDependenciesProcessor processor) {
+            processor
+                .findAllDependencies()
+                .stream()
+                .filter(DecisionNodeImpl.class::isInstance)
+                .map(DecisionNodeImpl.class::cast)
+                .forEach(miEvaluator::addReqDecision);
         }
+
+        private void removeChildElementsFromIndex(DMNModelImpl model, MIDDependenciesProcessor processor) {
+            processor.findAllChildElements().forEach(model::removeDMNNodeFromIndexes);
+        }
+
+    }
+
+    public static class MIDDependenciesProcessor {
+
+        private final MultiInstanceDecisionLogic mid;
+        private final DMNModel model;
+
+        public MIDDependenciesProcessor(MultiInstanceDecisionLogic mid, DMNModel model) {
+            this.mid = mid;
+            this.model = model;
+        }
+
+        public Collection<DMNNode> findAllChildElements() {
+            return new HashSet<>(processNode(topLevelDecision()));
+        }
+
+        public Collection<DMNNode> findAllDependencies() {
+            return DRGAnalysisUtils
+                .dependencies(model, topLevelDecision())
+                .stream()
+                .map(DRGDependency::getDependency)
+                .collect(toSet());
+        }
+
+        private Set<DMNNode> processNode(DMNBaseNode currentNode) {
+            if (currentNodeIsTheIterator(currentNode)) {
+                return singleton(currentNode);
+            }
+
+            Set<DMNNode> pathToIterator = findPathToIterator(currentNode);
+            if (pathToIterator.isEmpty()) {
+                return emptySet();
+            }
+            return extendPathBy(currentNode, pathToIterator);
+        }
+
+        private Set<DMNNode> extendPathBy(DMNBaseNode node, Set<DMNNode> pathToIterator) {
+            Set<DMNNode> extendedPath = new HashSet<>(pathToIterator);
+            extendedPath.add(node);
+            return extendedPath;
+        }
+
+        private Set<DMNNode> findPathToIterator(DMNBaseNode currentNode) {
+            return currentNode
+                .getDependencies()
+                .values()
+                .stream()
+                .map(DMNBaseNode.class::cast)
+                .map(this::processNode)
+                .flatMap(Collection::stream)
+                .collect(toSet());
+        }
+
+        private boolean currentNodeIsTheIterator(DMNBaseNode node) {
+            return mid.getIteratorShapeId().equals(node.getId());
+        }
+
+        private DMNBaseNode topLevelDecision() {
+            return (DMNBaseNode) model.getDecisionById(mid.getTopLevelDecisionId());
+        }
+
     }
 
     /**
@@ -145,6 +223,7 @@ public class MultiInstanceDecisionLogic {
         private DecisionNodeImpl di;
         private String contextIteratorName;
         private DecisionNodeImpl topLevelDecision;
+        private List<DecisionNodeImpl> reqDecisions = new ArrayList<>();
         private final FEEL feel;
         
         public MultiInstanceDecisionNodeEvaluator(MultiInstanceDecisionLogic mi, DMNModelImpl model, DecisionNodeImpl di, FEEL feel) {
@@ -154,6 +233,10 @@ public class MultiInstanceDecisionLogic {
             this.feel = feel;
             contextIteratorName = model.getInputById( mi.iteratorShapeId ).getName();
             topLevelDecision = (DecisionNodeImpl) model.getDecisionById(mi.topLevelDecisionId);
+        }
+        
+        public void addReqDecision(DecisionNodeImpl reqDecision) {
+            this.reqDecisions.add(reqDecision);
         }
 
         @Override
@@ -179,6 +262,10 @@ public class MultiInstanceDecisionLogic {
                     result.setContext( cyclingContext );
                     
                     cyclingContext.set(contextIteratorName, cycledValue);
+                    for (DecisionNodeImpl reqDecision : this.reqDecisions) {
+                        Object subResult = reqDecision.getEvaluator().evaluate(eventManager, result).getResult();
+                        cyclingContext.set(reqDecision.getName(), subResult);
+                    }
                     Object evaluationResult = topLevelDecision.getEvaluator().evaluate(eventManager, result).getResult();
                     invokationResults.add(evaluationResult);
                     

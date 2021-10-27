@@ -72,7 +72,7 @@ public class SignavioTest {
     }
     
     @Test
-    public void test_unmarshall() {
+    public void testUnmarshall() {
         DMNRuntime runtime = createRuntime("Test_Signavio_multiple.dmn");
         DMNModel model0 = runtime.getModels().get(0);
         Definitions definitions = model0.getDefinitions();
@@ -292,5 +292,36 @@ public class SignavioTest {
         LOG.info("{}", evaluateAll);
     
         assertEquals(Arrays.asList("John Doe", "Alice"), evaluateAll.getDecisionResultByName("extractNames").getResult());
+    }
+    
+    @Test
+    public void testSignavioIterateMultiinstanceMultipleDecisions() {
+        DMNRuntime runtime = createRuntime("MID with multiple inside decisions.dmn");
+        
+        DMNContext context = runtime.newContext();
+        context.set("names", Arrays.asList("John", "Alice"));
+        
+        DMNModel model0 = runtime.getModels().get(0);
+        LOG.info("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        LOG.info("{}", evaluateAll);
+    
+        assertThat(evaluateAll.getDecisionResultByName("overallage").getResult(), is(new BigDecimal("18")));
+    }
+    
+    @Test
+    public void testSignavioIterateMultiinstanceMultipleDecisionsOutside() {
+        DMNRuntime runtime = createRuntime("MID with outside requirement.dmn");
+        
+        DMNContext context = runtime.newContext();
+        context.set("numbers", Arrays.asList(1,2,3));
+        context.set("operand", "PLUS");
+        
+        DMNModel model0 = runtime.getModels().get(0);
+        LOG.info("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        LOG.info("{}", evaluateAll);
+    
+        assertThat(evaluateAll.getDecisionResultByName("sumUp").getResult(), is(new BigDecimal("6")));
     }
 }
