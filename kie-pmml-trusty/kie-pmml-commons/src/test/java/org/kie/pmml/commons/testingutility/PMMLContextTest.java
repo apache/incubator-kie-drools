@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.commons.testingutility;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.api.pmml.PMMLRequestData;
@@ -80,5 +81,50 @@ public class PMMLContextTest implements PMMLContext {
     @Override
     public boolean has(String s) {
         return false;
+    }
+
+    @Override
+    public Object getPredictedDisplayValue() {
+        return null;
+    }
+
+    @Override
+    public void setPredictedDisplayValue(Object predictedDisplayValue) {
+
+    }
+
+    @Override
+    public Object getEntityId() {
+        return null;
+    }
+
+    @Override
+    public void setEntityId(Object entityId) {
+
+    }
+
+    @Override
+    public Object getAffinity() {
+        return null;
+    }
+
+    @Override
+    public void setAffinity(Object affinity) {
+
+    }
+
+    @Override
+    public Map<String, Double> getProbabilityMap() {
+        return null;
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return null;
+    }
+
+    @Override
+    public void setProbabilityResultMap(LinkedHashMap<String, Double> probabilityResultMap) {
+
     }
 }

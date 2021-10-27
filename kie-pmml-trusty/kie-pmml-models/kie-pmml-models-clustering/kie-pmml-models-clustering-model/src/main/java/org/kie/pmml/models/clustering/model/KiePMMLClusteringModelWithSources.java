@@ -16,7 +16,6 @@
 package  org.kie.pmml.models.clustering.model;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -44,11 +43,6 @@ public class KiePMMLClusteringModelWithSources extends KiePMMLClusteringModel im
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLClusteringModelWithSources is not meant to be used for actual usage");
-    }
-
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
         throw new KiePMMLException("KiePMMLClusteringModelWithSources is not meant to be used for actual usage");
     }
 

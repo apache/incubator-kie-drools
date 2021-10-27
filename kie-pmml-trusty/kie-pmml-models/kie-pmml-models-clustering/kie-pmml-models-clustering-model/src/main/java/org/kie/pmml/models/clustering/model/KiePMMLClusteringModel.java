@@ -17,7 +17,6 @@ package  org.kie.pmml.models.clustering.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,23 +67,19 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
         double[] aggregates = new double[clusters.size()];
         for (int i = 0; i < clusters.size(); i++) {
             aggregates[i] = comparisonMeasure.getAggregateFunction()
-                    .apply(clusteringFields, comparisonMeasure.getCompareFunction(), inputs, clusters.get(i).getValuesArray(), adjustmentFactor);
+                    .apply(clusteringFields, comparisonMeasure.getCompareFunction(), inputs,
+                           clusters.get(i).getValuesArray(), adjustmentFactor);
         }
 
         final int selectedIndex = findMinIndex(aggregates);
         final KiePMMLCluster selectedCluster = clusters.get(selectedIndex);
         final int selectedEntityId = selectedIndex + 1;
 
-        selectedCluster.getName().ifPresent(this::setPredictedDisplayValue);
-        setEntityId(selectedEntityId);
-        setAffinity(aggregates[selectedIndex]);
+        selectedCluster.getName().ifPresent(context::setPredictedDisplayValue);
+        context.setEntityId(selectedEntityId);
+        context.setAffinity(aggregates[selectedIndex]);
 
         return selectedCluster.getId().orElseGet(() -> Integer.toString(selectedEntityId));
-    }
-
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return new LinkedHashMap<>();
     }
 
     private double computeAdjustmentFactor(Map<String, Object> requestData) {
