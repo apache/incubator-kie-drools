@@ -141,13 +141,17 @@ public class KieModuleMarshaller {
         private static final Schema oldSchema = loadSchema("org/kie/api/old-kmodule.xsd");
 
         private static Schema loadSchema(String xsd) {
-            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema",
-                    "com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory", ClassLoader.getSystemClassLoader());
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
+                Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
+                SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema",
+                        "com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory", ClassLoader.getSystemClassLoader());
                 URL url = KieModuleModel.class.getClassLoader().getResource(xsd);
                 return url != null ? factory.newSchema(url) : null;
             } catch (SAXException ex ) {
                 throw new RuntimeException( "Unable to load XSD", ex );
+            } finally {
+                Thread.currentThread().setContextClassLoader(tccl);
             }
         }
 
@@ -196,10 +200,16 @@ public class KieModuleMarshaller {
         }
 
         private static void validate(Source source, Schema schema) throws SAXException, IOException {
-            Validator validator = schema.newValidator();
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            validator.validate(source);
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
+                Validator validator = schema.newValidator();
+                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+                validator.validate(source);
+            } finally {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
         }
     }
 }

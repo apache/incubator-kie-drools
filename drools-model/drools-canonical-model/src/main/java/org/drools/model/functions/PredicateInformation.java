@@ -40,6 +40,10 @@ public class PredicateInformation {
         addRuleNames(ruleNames);
     }
 
+    public PredicateInformation(String stringConstraint, String ruleName, String ruleFileName) {
+        this(stringConstraint, new String[]{ruleName, ruleFileName});
+    }
+
     public String getStringConstraint() {
         return stringConstraint;
     }

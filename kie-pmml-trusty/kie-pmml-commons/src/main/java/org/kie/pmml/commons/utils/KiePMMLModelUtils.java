@@ -17,6 +17,8 @@ package org.kie.pmml.commons.utils;
 
 import java.util.UUID;
 
+import javax.lang.model.SourceVersion;
+
 import org.kie.pmml.api.enums.DATA_TYPE;
 
 public class KiePMMLModelUtils {
@@ -45,13 +47,17 @@ public class KiePMMLModelUtils {
     }
 
     /**
-     * Convert the given <code>String</code> in a valid variable name (i.e. no dots, no spaces, first letter lower case)
+     * Convert the given <code>String</code> in a valid variable name (i.e. no dots, no spaces, first letter lower case, no keyword)
      * @param input
      * @return
      */
     public static String getSanitizedVariableName(String input) {
         String lowerCasedInput = input.substring(0, 1).toLowerCase() + input.substring(1);
-        return lowerCasedInput.replaceAll("[^A-Za-z0-9]", "");
+        String toReturn = lowerCasedInput.replaceAll("[^A-Za-z0-9]", "");
+        if (SourceVersion.isKeyword(toReturn)) {
+            toReturn += "var";
+        }
+        return toReturn;
     }
 
     /**
