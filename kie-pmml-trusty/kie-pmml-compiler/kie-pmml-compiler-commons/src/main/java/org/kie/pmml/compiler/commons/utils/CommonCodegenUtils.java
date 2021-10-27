@@ -247,11 +247,43 @@ public class CommonCodegenUtils {
      * @param body
      * @param listName
      */
-    public static void addListPopulation(final List<ObjectCreationExpr> toAdd,
-                                         final BlockStmt body,
-                                         final String listName) {
+    public static void addListPopulationByObjectCreationExpr(final List<ObjectCreationExpr> toAdd,
+                                                             final BlockStmt body,
+                                                             final String listName) {
         toAdd.forEach(objectCreationExpr -> {
             NodeList<Expression> arguments = NodeList.nodeList(objectCreationExpr);
+            MethodCallExpr methodCallExpr = new MethodCallExpr();
+            methodCallExpr.setScope(new NameExpr(listName));
+            methodCallExpr.setName("add");
+            methodCallExpr.setArguments(arguments);
+            ExpressionStmt expressionStmt = new ExpressionStmt();
+            expressionStmt.setExpression(methodCallExpr);
+            body.addStatement(expressionStmt);
+        });
+    }
+
+    /**
+     * For every entry in the given list, add
+     * <pre>
+     *     (<i>listName</i>).add(<i>MethodCallExpr</i>>);
+     * </pre>
+     * e.g.
+     * <pre>
+     *     LIST_NAME.add(ObjectA.builder().build());
+     *     LIST_NAME.add(ObjectB.builder().build());
+     *     LIST_NAME.add(ObjectC.builder().build());
+     *     LIST_NAME.add(ObjectD.builder().build());
+     * </pre>
+     * inside the given <code>BlockStmt</code>
+     * @param toAdd
+     * @param body
+     * @param listName
+     */
+    public static void addListPopulationByMethodCallExpr(final List<MethodCallExpr> toAdd,
+                                                         final BlockStmt body,
+                                                         final String listName) {
+        toAdd.forEach(methodCallExpr1 -> {
+            NodeList<Expression> arguments = NodeList.nodeList(methodCallExpr1);
             MethodCallExpr methodCallExpr = new MethodCallExpr();
             methodCallExpr.setScope(new NameExpr(listName));
             methodCallExpr.setName("add");

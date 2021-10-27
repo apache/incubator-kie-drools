@@ -226,7 +226,7 @@ public class CommonCodegenUtilsTest {
                 .collect(Collectors.toList());
         BlockStmt body = new BlockStmt();
         String listName = "LIST_NAME";
-        CommonCodegenUtils.addListPopulation(toAdd, body, listName);
+        CommonCodegenUtils.addListPopulationByObjectCreationExpr(toAdd, body, listName);
         NodeList<Statement> statements = body.getStatements();
         assertEquals(toAdd.size(), statements.size());
         for (Statement statement : statements) {
