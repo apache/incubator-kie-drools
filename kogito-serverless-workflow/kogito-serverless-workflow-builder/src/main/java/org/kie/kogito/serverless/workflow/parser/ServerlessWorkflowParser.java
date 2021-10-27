@@ -29,6 +29,7 @@ import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.kie.api.definition.process.Process;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
@@ -53,7 +54,7 @@ public class ServerlessWorkflowParser {
     public static final String DEFAULT_VERSION = "1.0";
 
     public static final String JSON_NODE = "com.fasterxml.jackson.databind.JsonNode";
-    public static final String DEFAULT_WORKFLOW_VAR = "workflowdata";
+    public static final String DEFAULT_WORKFLOW_VAR = SWFConstants.DEFAULT_WORKFLOW_VAR;
 
     private NodeIdGenerator idGenerator = DefaultNodeIdGenerator.get();
     private Workflow workflow;

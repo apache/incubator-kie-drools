@@ -17,13 +17,13 @@ package org.kie.kogito.serverless.workflow.suppliers;
 
 import java.util.function.Supplier;
 
+import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.kie.kogito.serverless.workflow.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.actions.InjectAction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 public class InjectActionSupplier extends InjectAction implements Supplier<Expression> {
 
@@ -34,10 +34,7 @@ public class InjectActionSupplier extends InjectAction implements Supplier<Expre
     @Override
     public Expression get() {
         try {
-            return new ObjectCreationExpr()
-                    .setType(InjectAction.class.getCanonicalName())
-                    .addArgument(new StringLiteralExpr(mapper.writeValueAsString(node).replace("\"",
-                            "\\\"")));
+            return SupplierUtils.getExpression(InjectAction.class, ObjectMapperFactory.getObjectMapper().writeValueAsString(node).replace("\"", "\\\""));
         } catch (JsonProcessingException e) {
             throw new IllegalStateException(e);
         }

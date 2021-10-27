@@ -36,8 +36,8 @@ import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
-import org.kie.kogito.process.workitems.impl.ExpressionWorkItemResolver;
 import org.kie.kogito.process.workitems.impl.OpenApiResultHandler;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -159,6 +159,7 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
 
         private final String operation;
         private final String interfaceResource;
+        private String exprLang = "jq";
         private Class<? extends ExpressionWorkItemResolver> paramResolverClass;
         private Class<?> paramResolverOutputType;
         private Class<? extends OpenApiResultHandler> resultHandlerType;
@@ -193,6 +194,17 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
         }
 
         /**
+         * Set expression language
+         * 
+         * @param exprLang
+         * @return
+         */
+        public WorkItemBuilder withExprLang(String exprLang) {
+            this.exprLang = exprLang;
+            return this;
+        }
+
+        /**
          * 
          * @param modelParameter
          * @return
@@ -215,9 +227,10 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
             if (functionArgs != null) {
                 factory.metaData(PARAM_META_PARAM_RESOLVER_TYPE, this.paramResolverOutputType.getCanonicalName());
                 functionArgs.entrySet().forEach(
-                        entry -> factory.workParameter(entry.getKey(), processWorkItemValue(entry.getValue(), modelParameter, this.paramResolverClass, this.exprTest)).workParameterDefinition(
-                                entry.getKey(),
-                                DataTypeResolver.fromObject(entry.getValue())));
+                        entry -> factory.workParameter(entry.getKey(), processWorkItemValue(exprLang, entry.getValue(), modelParameter, this.paramResolverClass, this.exprTest))
+                                .workParameterDefinition(
+                                        entry.getKey(),
+                                        DataTypeResolver.fromObject(entry.getValue(), this.exprTest)));
             }
 
             factory.metaData(MODEL_PARAMETER, modelParameter);
@@ -237,8 +250,8 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
             if (functionArgs != null) {
                 workItemNode.setMetaData(PARAM_META_PARAM_RESOLVER_TYPE, this.paramResolverOutputType.getCanonicalName());
                 functionArgs.entrySet().forEach(entry -> {
-                    work.setParameter(entry.getKey(), processWorkItemValue(entry.getValue(), modelParameter, this.paramResolverClass, this.exprTest));
-                    work.addParameterDefinition(new ParameterDefinitionImpl(entry.getKey(), DataTypeResolver.fromObject(entry.getValue())));
+                    work.setParameter(entry.getKey(), processWorkItemValue(exprLang, entry.getValue(), modelParameter, this.paramResolverClass, this.exprTest));
+                    work.addParameterDefinition(new ParameterDefinitionImpl(entry.getKey(), DataTypeResolver.fromObject(entry.getValue(), this.exprTest)));
                 });
             }
             if (this.resultHandlerExpression != null) {

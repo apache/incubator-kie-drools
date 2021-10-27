@@ -17,7 +17,8 @@
   <modules>
     <module>kogito-serverless-workflow-builder</module>
     <module>kogito-serverless-workflow-runtime</module>
-    <module>kogito-jsonpath-utils</module>
+    <module>kogito-jsonpath-expression</module>
+    <module>kogito-jq-expression</module>
   </modules>
 
 </project>

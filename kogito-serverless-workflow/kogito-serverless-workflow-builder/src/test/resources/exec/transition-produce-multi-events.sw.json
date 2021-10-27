@@ -1,6 +1,7 @@
 {
   "id": "produceeventontransition",
   "name": "Produce Event On Transition",
+  "expressionLang": "jsonpath",
   "start": "HelloWorld",
   "events": [
     {

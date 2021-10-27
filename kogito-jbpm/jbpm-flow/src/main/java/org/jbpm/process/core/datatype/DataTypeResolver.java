@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
 import org.jbpm.process.core.datatype.impl.type.EnumDataType;
@@ -52,7 +53,15 @@ public class DataTypeResolver {
     }
 
     public static DataType fromObject(Object value) {
-        return value == null ? defaultDataType : from(value.getClass()).orElse(buildObjectDataType(value.getClass().getCanonicalName()));
+        return fromObject(value, v -> false);
+    }
+
+    public static DataType fromObject(Object value, Predicate<String> exprTest) {
+        return value == null || isExpr(value, exprTest) ? defaultDataType : from(value.getClass()).orElse(buildObjectDataType(value.getClass().getCanonicalName()));
+    }
+
+    private static boolean isExpr(Object value, Predicate<String> exprTest) {
+        return value instanceof CharSequence && exprTest.test(value.toString());
     }
 
     private static DataType from(String type, ClassLoader cl) {

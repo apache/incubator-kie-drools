@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
@@ -140,9 +141,9 @@ public class SwitchHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends
     }
 
     private void addConstraint(NodeFactory<?, ?> startNode, long targetId, DataCondition condition) {
-        ((SplitFactory<?>) startNode).constraint(targetId, concatId(startNode.getNode().getId(), targetId),
-                "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(condition.getCondition()), 0,
-                isDefaultCondition(state, condition));
+        ((SplitFactory<?>) startNode).constraintBuilder(targetId, concatId(startNode.getNode().getId(), targetId),
+                "DROOLS_DEFAULT", workflow.getExpressionLang(), ServerlessWorkflowUtils.conditionScript(condition.getCondition())).withDefault(isDefaultCondition(state, condition))
+                .metadata(Metadata.VARIABLE, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
     }
 
     private EndNodeFactory<P> endNodeFactory(List<ProduceEvent> produceEvents) {

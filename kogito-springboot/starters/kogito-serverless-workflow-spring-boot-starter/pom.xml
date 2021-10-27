@@ -16,6 +16,14 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-jsonpath-expression</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-jq-expression</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-runtime</artifactId>
     </dependency>
   </dependencies>

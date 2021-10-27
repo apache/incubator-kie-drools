@@ -21,8 +21,8 @@ import java.util.function.Supplier;
 
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.process.workitems.impl.ExpressionWorkItemResolver;
 import org.kie.kogito.process.workitems.impl.OpenApiResultHandler;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.expr.Expression;
@@ -39,8 +39,8 @@ class OpenApiTaskDescriptorTest {
 
     private static class DummyWorkItemHandlerResolver extends ExpressionWorkItemResolver {
 
-        protected DummyWorkItemHandlerResolver(String expression, String paramName) {
-            super(expression, paramName);
+        protected DummyWorkItemHandlerResolver(String lang, String expression, String paramName) {
+            super(lang, expression, paramName);
         }
 
         @Override

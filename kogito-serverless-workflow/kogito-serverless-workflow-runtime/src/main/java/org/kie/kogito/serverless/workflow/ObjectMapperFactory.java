@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.process.workitems.impl;
+package org.kie.kogito.serverless.workflow;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class ExpressionWorkItemResolver implements WorkItemParamResolver {
+public class ObjectMapperFactory {
 
-    protected final String expression;
-    private final String paramName;
-
-    protected ExpressionWorkItemResolver(String expression, String paramName) {
-        this.expression = expression;
-        this.paramName = paramName;
+    private ObjectMapperFactory() {
     }
 
-    @Override
-    public Object apply(KogitoWorkItem workItem) {
-        return evalExpression(workItem.getParameter(paramName));
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
+    public static ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
-
-    protected abstract Object evalExpression(Object inputModel);
 }

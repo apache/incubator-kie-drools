@@ -30,15 +30,18 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
-import org.kie.kogito.jsonpath.JsonNodeJsonPathResolver;
-import org.kie.kogito.jsonpath.JsonPathUtils;
-import org.kie.kogito.jsonpath.ObjectJsonPathResolver;
-import org.kie.kogito.process.workitems.impl.ExpressionWorkItemResolver;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
+import org.kie.kogito.serverless.workflow.JsonNodeResolver;
+import org.kie.kogito.serverless.workflow.ObjectResolver;
 import org.kie.kogito.serverless.workflow.parser.NodeIdGenerator;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.kie.kogito.serverless.workflow.parser.util.WorkflowAppContext;
+import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.RestBodyBuilderSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.SysoutActionSupplier;
 import org.kogito.workitem.openapi.JsonNodeResultHandler;
 import org.kogito.workitem.openapi.suppliers.JsonNodeResultHandlerExprSupplier;
 import org.kogito.workitem.rest.RestWorkItemHandler;
@@ -51,6 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.actions.Action;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 import io.serverlessworkflow.api.functions.FunctionRef;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.workflow.Functions;
@@ -129,15 +133,18 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                         .actionNode(idGenerator.getId())
                         .name(actionName)
                         .action(JavaDialect.ID,
-                                ServerlessWorkflowUtils.scriptFunctionScript(functionRef
-                                        .getArguments().get(SCRIPT_TYPE_PARAM).asText()));
+                                functionRef
+                                        .getArguments().get(SCRIPT_TYPE_PARAM).asText());
+            case EXPRESSION:
+                return embeddedSubProcess
+                        .actionNode(idGenerator.getId())
+                        .name(actionName)
+                        .action(new ExpressionActionSupplier(workflow.getExpressionLang(), actionFunction.getOperation()));
             case SYSOUT:
                 return embeddedSubProcess
                         .actionNode(idGenerator.getId())
                         .name(actionName)
-                        .action(JavaDialect.ID,
-                                ServerlessWorkflowUtils.sysOutFunctionScript(functionRef
-                                        .getArguments().get(SYSOUT_TYPE_PARAM).asText()));
+                        .action(new SysoutActionSupplier(workflow.getExpressionLang(), functionRef.getArguments().get(SYSOUT_TYPE_PARAM).asText()));
             case SERVICE:
                 WorkItemNodeFactory<CompositeContextNodeFactory<P>> serviceFactory = embeddedSubProcess
                         .workItemNode(idGenerator.getId())
@@ -162,7 +169,7 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                     serviceFactory.workParameter(WORKITEM_PARAM_TYPE, ServerlessWorkflowParser.JSON_NODE)
                             .outMapping(WORKITEM_PARAM, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
                 } else {
-                    processArgs(serviceFactory, functionArgs, WORKITEM_PARAM, ObjectJsonPathResolver.class);
+                    processArgs(serviceFactory, functionArgs, WORKITEM_PARAM, ObjectResolver.class);
                 }
                 return serviceFactory;
 
@@ -194,15 +201,16 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                         .outMapping(RestWorkItemHandler.RESULT,
                                 ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
                 if (functionArgs != null && !functionArgs.isEmpty()) {
-                    processArgs(workItemFactory, functionArgs, RestWorkItemHandler.CONTENT_DATA, ObjectJsonPathResolver.class);
+                    processArgs(workItemFactory, functionArgs, RestWorkItemHandler.CONTENT_DATA, ObjectResolver.class);
                 }
                 return workItemFactory;
             case OPENAPI:
 
                 return OpenApiTaskDescriptor.builderFor(ServerlessWorkflowUtils.getOpenApiURI(actionFunction),
                         ServerlessWorkflowUtils.getOpenApiOperationId(actionFunction))
+                        .withExprLang(workflow.getExpressionLang())
                         .withModelParameter(WORKITEM_PARAM)
-                        .withArgs(functionsToMap(functionArgs), JsonNodeJsonPathResolver.class, JsonNode.class, s -> true)
+                        .withArgs(functionsToMap(functionArgs), JsonNodeResolver.class, JsonNode.class, s -> true)
                         .withResultHandler(new JsonNodeResultHandlerExprSupplier(), JsonNodeResultHandler.class)
                         .build(embeddedSubProcess.workItemNode(idGenerator.getId())).name(functionRef.getRefName())
                         .inMapping(WORKITEM_PARAM,
@@ -231,7 +239,6 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
     private static Object processValue(JsonNode jsonNode) {
         if (jsonNode.isTextual()) {
             return jsonNode.asText();
-
         } else if (jsonNode.isBoolean()) {
             return jsonNode.asBoolean();
         } else if (jsonNode.isInt()) {
@@ -247,19 +254,20 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
 
     private void processArgs(WorkItemNodeFactory<CompositeContextNodeFactory<P>> workItemFactory,
             JsonNode functionArgs, String paramName, Class<? extends ExpressionWorkItemResolver> clazz) {
-
+        ExpressionHandler expressionHandler = ExpressionHandlerFactory.get(workflow.getExpressionLang());
         Map<String, Object> map = functionsToMap(functionArgs);
         map.entrySet().forEach(
                 entry -> workItemFactory
-                        .workParameter(entry.getKey(), AbstractServiceTaskDescriptor.processWorkItemValue(entry.getValue(), paramName, clazz, JsonPathUtils::isJsonPath))
+                        .workParameter(entry.getKey(), AbstractServiceTaskDescriptor.processWorkItemValue(workflow.getExpressionLang(), entry.getValue(), paramName, clazz, expressionHandler::isExpr))
                         .workParameterDefinition(entry.getKey(),
-                                DataTypeResolver.fromObject(entry.getValue())));
+                                DataTypeResolver.fromObject(entry.getValue(), expressionHandler::isExpr)));
     }
 
     private enum ActionType {
         REST,
         SERVICE,
         OPENAPI,
+        EXPRESSION,
         SCRIPT,
         SYSOUT,
         EMPTY
@@ -269,7 +277,10 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
     private ActionType getActionType(FunctionDefinition actionFunction) {
         if (ServerlessWorkflowUtils.isOpenApiOperation(actionFunction)) {
             return ActionType.OPENAPI;
+        } else if (actionFunction.getType() == Type.EXPRESSION) {
+            return ActionType.EXPRESSION;
         } else {
+
             String type = actionFunction.getMetadata() != null ? actionFunction.getMetadata().get("type") : null;
             if (SERVICE_TYPE.equalsIgnoreCase(type)) {
                 return ActionType.SERVICE;
@@ -289,7 +300,7 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
         return embeddedSubProcess
                 .actionNode(idGenerator.getId())
                 .name(actionName)
-                .action(JavaDialect.ID, ServerlessWorkflowUtils.scriptFunctionScript(""));
+                .action(JavaDialect.ID, "");
     }
 
 }

@@ -1,5 +1,6 @@
 {
   "id": "parallelworkflow",
+  "expressionLang": "jsonpath",
   "name": "parallel-wf",
   "version": "1.0",
   "start": "ExecInParallel",

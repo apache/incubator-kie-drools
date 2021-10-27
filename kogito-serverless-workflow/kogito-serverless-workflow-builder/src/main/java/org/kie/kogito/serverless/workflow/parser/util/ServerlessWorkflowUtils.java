@@ -17,7 +17,6 @@ package org.kie.kogito.serverless.workflow.parser.util;
 
 import java.io.Reader;
 import java.util.NoSuchElementException;
-import java.util.regex.Matcher;
 
 import org.drools.core.util.StringUtils;
 import org.slf4j.Logger;
@@ -26,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.EventDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.mapper.BaseObjectMapper;
 import io.serverlessworkflow.api.mapper.JsonObjectMapper;
@@ -35,10 +35,6 @@ public class ServerlessWorkflowUtils {
 
     public static final String DEFAULT_WORKFLOW_FORMAT = "json";
     public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
-    public static final String DEFAULT_JSONPATH_CONFIG = "com.jayway.jsonpath.Configuration jsonPathConfig = com.jayway.jsonpath.Configuration.builder()" +
-            ".mappingProvider(new com.jayway.jsonpath.spi.mapper.JacksonMappingProvider())" +
-            ".jsonProvider(new com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider()).build(); ";
-
     private static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String APP_PROPERTIES_FUNCTIONS_BASE = "functions.";
     private static final String APP_PROPERTIES_EVENTS_BASE = "events.";
@@ -74,21 +70,6 @@ public class ServerlessWorkflowUtils {
                 .findFirst().orElseThrow(() -> new NoSuchElementException("No event for " + eventName));
     }
 
-    public static String sysOutFunctionScript(String script) {
-        String retStr = DEFAULT_JSONPATH_CONFIG;
-        retStr += "java.lang.String toPrint = \"\";com.fasterxml.jackson.databind.JsonNode jsonNode;";
-        retStr += getJsonPathScript(script);
-        retStr += "System.out.println(toPrint);";
-
-        return retStr;
-    }
-
-    public static String scriptFunctionScript(String script) {
-        String retStr = DEFAULT_JSONPATH_CONFIG;
-        retStr += getJsonPathScript(script);
-        return retStr;
-    }
-
     public static String conditionScript(String conditionStr) {
         if (conditionStr.startsWith("{{")) {
             conditionStr = conditionStr.substring(2);
@@ -97,27 +78,7 @@ public class ServerlessWorkflowUtils {
             conditionStr = conditionStr.substring(0, conditionStr.length() - 2);
         }
 
-        conditionStr = conditionStr.trim();
-
-        // check if we are calling a different workflow var
-        String processVar = "workflowdata";
-        String otherVar = conditionStr.substring(conditionStr.indexOf("$") + 1, conditionStr.indexOf("."));
-
-        if (otherVar.trim().length() > 0) {
-            processVar = otherVar;
-            conditionStr = conditionStr.replaceAll(otherVar, "");
-
-        }
-
-        return "return !((java.util.List<java.lang.String>) com.jayway.jsonpath.JsonPath.parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"" + processVar
-                + "\")).toString()).read(\"" + conditionStr + "\")).isEmpty();";
-    }
-
-    public static String getJsonPathScript(String script) {
-        return script.contains("$") ? script.replaceAll("\\$.([A-Za-z]+)",
-                "jsonNode = com.jayway.jsonpath.JsonPath.using(jsonPathConfig).parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"workflowdata\"))).read(\"@@.$1\", com.fasterxml.jackson.databind.JsonNode.class); toPrint+= jsonNode.isTextual() ? jsonNode.asText() : jsonNode;")
-                .replaceAll("@@", Matcher.quoteReplacement("$")) : script;
-
+        return conditionStr.trim();
     }
 
     public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext) {
@@ -224,7 +185,7 @@ public class ServerlessWorkflowUtils {
      * @return true if the given function refers to an OpenApi operation
      */
     public static boolean isOpenApiOperation(FunctionDefinition function) {
-        return function.getOperation() != null && function.getOperation().contains(OPENAPI_OPERATION_SEPARATOR);
+        return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(OPENAPI_OPERATION_SEPARATOR);
     }
 
 }

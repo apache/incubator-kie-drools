@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.jsonpath;
+package org.kie.kogito.serverless.workflow;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.jsonpath.JsonNodeJsonPathResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,7 +51,7 @@ class JsonNodeJsonPathResolverTest {
                 "      \"rightElement\":\"$.subtractValue\"\n" +
                 "   }\n" +
                 "}";
-        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertThat(processedNode.get("SubtractionOperation").get("leftElement").asInt(), is(32));
         assertThat(processedNode.get("SubtractionOperation").get("rightElement").asInt(), is(3));
@@ -70,7 +69,7 @@ class JsonNodeJsonPathResolverTest {
                 "      \"rightElement\":\"$.subtractValue\"\n" +
                 "   }\n" +
                 "]";
-        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isArray());
         assertThat(processedNode.findValue("leftElement").asInt(), equalTo(32));
@@ -82,7 +81,7 @@ class JsonNodeJsonPathResolverTest {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "\"$.fahrenheit\"";
-        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isValueNode());
         assertThat(processedNode.asInt(), equalTo(32));
@@ -93,7 +92,7 @@ class JsonNodeJsonPathResolverTest {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "[\"$.fahrenheit\", \"$.subtractValue\"]";
-        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isArray());
         assertThat(processedNode.get(0).asInt(), equalTo(32));
@@ -105,7 +104,7 @@ class JsonNodeJsonPathResolverTest {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "$.fahrenheit";
-        final JsonNodeJsonPathResolver resolver = new JsonNodeJsonPathResolver(parameterDefinition, "pepe");
+        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isValueNode());
         assertThat(processedNode.asInt(), equalTo(32));

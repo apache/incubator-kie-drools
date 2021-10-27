@@ -1,6 +1,7 @@
 {
   "id": "applicantworkflow",
   "name": "Applicant Workflow",
+  "expressionLang": "jsonpath",
   "version": "1.0",
   "start": "HandleNewApplicant",
   "events": [

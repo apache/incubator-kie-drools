@@ -1,6 +1,7 @@
 {
   "id": "switchworkflow",
   "name": "switch-wf",
+  "expressionLang": "jsonpath",
   "version": "1.0",
   "start": "AddInfo",
   "states": [

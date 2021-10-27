@@ -1,5 +1,6 @@
 ---
 id: switchworkflow
+expressionLang: jsonpath
 name: switch-wf
 version: '1.0'
 start: AddInfo

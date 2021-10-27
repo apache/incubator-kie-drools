@@ -80,13 +80,26 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-
+        
+        
         <!-- OpenApi Required Libraries for Codegen Test -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-openapi-workitem</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-jsonpath-expression</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-jq-expression</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
     </dependencies>
 
 </project>

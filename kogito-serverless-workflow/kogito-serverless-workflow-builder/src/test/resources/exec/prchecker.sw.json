@@ -1,6 +1,7 @@
 {
   "id": "prchecker",
   "name": "Github PR Checker Workflow",
+  "expressionLang": "jsonpath",
   "version": "1.0",
   "start": "HandleOpenPR",
   "functions": [

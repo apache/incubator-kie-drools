@@ -51,15 +51,5 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-serverless-workflow-runtime</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-jsonpath-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>

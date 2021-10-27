@@ -1,5 +1,6 @@
 {
   "id": "error",
+  "expressionLang": "jsonpath",
   "version": "1.0",
   "name": "Workflow Error example",
   "description": "An example of how to handle an exception thrown by a service",

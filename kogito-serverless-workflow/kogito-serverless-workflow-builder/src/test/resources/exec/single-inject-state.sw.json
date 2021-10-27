@@ -2,6 +2,7 @@
   "id": "function",
   "name": "test-wf",
   "version": "1.0",
+  "expressionLang": "jsonpath",
   "start": "SimpleInject",
   "states": [
     {

@@ -1858,12 +1858,23 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-jsonpath-utils</artifactId>
+        <artifactId>kogito-jsonpath-expression</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-jsonpath-utils</artifactId>
+        <artifactId>kogito-jsonpath-expression</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-jq-expression</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-jq-expression</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

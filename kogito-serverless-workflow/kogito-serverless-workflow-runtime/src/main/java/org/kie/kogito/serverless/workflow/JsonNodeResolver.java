@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jsonpath;
+package org.kie.kogito.serverless.workflow;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.kie.kogito.process.workitems.impl.ExpressionWorkItemResolver;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,19 +27,19 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-public class JsonNodeJsonPathResolver extends ExpressionWorkItemResolver {
+public class JsonNodeResolver extends ExpressionWorkItemResolver {
 
-    public JsonNodeJsonPathResolver(String jsonPathExpr, String paramName) {
-        super(jsonPathExpr, paramName);
+    public JsonNodeResolver(String exprLang, String jsonPathExpr, String paramName) {
+        super(exprLang, jsonPathExpr, paramName);
     }
 
     private JsonNode parse(final Object input) {
         if (input instanceof JsonNode) {
             return (JsonNode) input;
         }
-        ObjectMapper objectMapper = JsonPathUtils.getObjectMapper();
+        ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
         if (input instanceof String) {
-            if (JsonPathUtils.isJsonPath((String) input)) {
+            if (expressionHandler.isExpr((String) input)) {
                 return TextNode.valueOf((String) input);
             }
             try {
@@ -65,8 +65,8 @@ public class JsonNodeJsonPathResolver extends ExpressionWorkItemResolver {
             return processedDefinition;
         } else if (expression.isValueNode()) {
             final String jsonPathExpr = expression.asText();
-            if (JsonPathUtils.isJsonPath(jsonPathExpr)) {
-                return JsonPathUtils.evalExpr(inputModel, jsonPathExpr);
+            if (expressionHandler.isExpr(jsonPathExpr)) {
+                return expressionHandler.parse(jsonPathExpr).eval(inputModel, JsonNode.class);
             }
             return expression.deepCopy();
         }

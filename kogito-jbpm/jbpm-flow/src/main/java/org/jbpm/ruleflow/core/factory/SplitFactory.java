@@ -21,7 +21,6 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionRef;
-import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.node.Split;
 
 public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<SplitFactory<T>, T> {
@@ -51,16 +50,11 @@ public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends 
     }
 
     public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, String constraint, int priority, boolean isDefault) {
-        ConstraintImpl constraintImpl = new ConstraintImpl();
-        constraintImpl.setName(name);
-        constraintImpl.setType(type);
-        constraintImpl.setDialect(dialect);
-        constraintImpl.setConstraint(constraint);
-        constraintImpl.setPriority(priority);
-        constraintImpl.setDefault(isDefault);
-        getSplit().addConstraint(
-                new ConnectionRef(name, toNodeId, Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
-        return this;
+        return constraintBuilder(toNodeId, name, type, dialect, constraint).withDefault(isDefault).priority(priority).done();
+    }
+
+    public ConstraintFactory<SplitFactory<T>> constraintBuilder(long toNodeId, String name, String type, String dialect, String constraint) {
+        return new ConstraintFactory<>(this, toNodeId, name, type, dialect, constraint);
     }
 
     public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority) {

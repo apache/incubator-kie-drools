@@ -2,6 +2,7 @@
   "id": "function",
   "name": "test-wf",
   "start": "HelloWorld",
+  "expressionLang": "jsonpath",
   "functions": [
     {
       "name": "helloWorld",

@@ -1,6 +1,7 @@
 {
   "id": "eventswitchworkflow",
   "name": "event-switch-wf",
+  "expressionLang": "jsonpath",
   "version": "1.0",
   "start": "AddRandomInfo",
   "events": [

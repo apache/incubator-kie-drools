@@ -61,26 +61,6 @@ public class WorkflowUtilsTest {
     }
 
     @Test
-    public void testSysOutFunctionScript() {
-        String script = "$.a $.b";
-        assertThat(ServerlessWorkflowUtils.sysOutFunctionScript(script)).isNotNull();
-    }
-
-    @Test
-    public void testGetJsonPathScript() {
-        String script = "$.a $.b";
-        assertThat(ServerlessWorkflowUtils.getJsonPathScript(script)).isNotNull();
-    }
-
-    @Test
-    public void testDataConditionScript() {
-        assertThat(ServerlessWorkflowUtils.conditionScript("$.customers[?(@.age  > 18)]")).isNotNull();
-        assertThat(ServerlessWorkflowUtils.conditionScript("$.customers[?(@.age  > 18)]"))
-                .isEqualTo(
-                        "return !((java.util.List<java.lang.String>) com.jayway.jsonpath.JsonPath.parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"workflowdata\")).toString()).read(\"$.customers[?(@.age  > 18)]\")).isEmpty();");
-    }
-
-    @Test
     public void testResolveFunctionMetadata() {
         FunctionDefinition function = new FunctionDefinition().withName("testfunction1").withMetadata(Collections.singletonMap("testprop1", "customtestprop1val"));
         String testProp1Val = ServerlessWorkflowUtils.resolveFunctionMetadata(function, "testprop1",

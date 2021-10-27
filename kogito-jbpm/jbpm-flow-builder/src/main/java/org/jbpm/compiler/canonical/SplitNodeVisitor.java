@@ -17,13 +17,16 @@ package org.jbpm.compiler.canonical;
 
 import java.util.Map.Entry;
 
+import org.jbpm.compiler.canonical.descriptors.ExpressionReturnValueSupplier;
 import org.jbpm.compiler.canonical.dialect.feel.FEELDialectCanonicalUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
@@ -57,7 +60,12 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
             for (Entry<ConnectionRef, Constraint> entry : node.getConstraints().entrySet()) {
                 if (entry.getValue() != null) {
                     Expression returnValueEvaluator = null;
-                    if ("FEEL".equals(entry.getValue().getDialect())) {
+                    if (ExpressionHandlerFactory.isSupported(entry.getValue().getDialect())) {
+                        returnValueEvaluator =
+                                new ExpressionReturnValueSupplier(entry.getValue().getDialect(), entry.getValue().getConstraint(), (String) entry.getValue().getMetaData(Metadata.VARIABLE)).get();
+                    }
+                    // TODO integrate FEEL with ExpressionHander 
+                    else if ("FEEL".equals(entry.getValue().getDialect())) {
                         returnValueEvaluator = FEELDialectCanonicalUtils.buildFEELReturnValueEvaluator(variableScope, entry);
                     } else {
                         BlockStmt actionBody = new BlockStmt();
