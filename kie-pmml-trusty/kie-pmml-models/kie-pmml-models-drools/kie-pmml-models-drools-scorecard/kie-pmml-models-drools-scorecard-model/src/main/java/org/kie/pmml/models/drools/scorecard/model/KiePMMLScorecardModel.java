@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.drools.scorecard.model;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -39,11 +38,6 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
 
     public static PMML_MODEL getPmmlModelType() {
         return PMML_MODEL_TYPE;
-    }
-
-    @Override
-    protected LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return new LinkedHashMap<>();
     }
 
     public static class Builder extends KiePMMLDroolsModel.Builder<KiePMMLScorecardModel> {

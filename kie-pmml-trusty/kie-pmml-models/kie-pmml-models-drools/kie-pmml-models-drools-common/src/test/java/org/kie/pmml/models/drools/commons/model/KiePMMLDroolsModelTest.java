@@ -18,7 +18,6 @@ package org.kie.pmml.models.drools.commons.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Before;
@@ -60,11 +59,6 @@ public class KiePMMLDroolsModelTest {
                                          List<KiePMMLExtension> extensions) {
             super(modelName, extensions);
             this.kModulePackageName = kModulePackageName;
-        }
-
-        @Override
-        protected LinkedHashMap<String, Double> getProbabilityResultMap() {
-            return new LinkedHashMap<>();
         }
 
         @Override

@@ -39,6 +39,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
@@ -111,7 +112,7 @@ public class PMMLMiningModelEvaluatorTest {
         final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
         inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", prediction), new ArrayList<>()));
         inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
-        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData);
+        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData, new PMMLContextTest());
         assertNotNull(retrieved);
         assertEquals(OK.getName(), retrieved.getResultCode());
         assertEquals(targetField, retrieved.getResultObjectName());
@@ -138,7 +139,7 @@ public class PMMLMiningModelEvaluatorTest {
         final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
         inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", "FIRST_VALUE"), new ArrayList<>()));
         inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
-        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData);
+        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData, new PMMLContextTest());
         assertNotNull(retrieved);
         assertEquals(FAIL.getName(), retrieved.getResultCode());
         assertEquals(targetField, retrieved.getResultObjectName());

@@ -17,7 +17,6 @@ package org.kie.pmml.models.scorecard.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,8 +76,4 @@ public class KiePMMLScorecardModel extends KiePMMLModel {
                                                              baselineScore).orElse(null);
     }
 
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return new LinkedHashMap<>();
-    }
 }

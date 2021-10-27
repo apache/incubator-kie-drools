@@ -19,7 +19,6 @@ package org.kie.pmml.models.drools.provider;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -357,11 +356,7 @@ public class DroolsModelProviderTest {
             this.kModulePackageName = getSanitizedPackageName(PACKAGE_NAME);
         }
 
-        @Override
-        protected LinkedHashMap<String, Double> getProbabilityResultMap() {
-            return new LinkedHashMap<>();
-        }
-    }
+   }
 
     //  Needed to avoid Mockito usage
     private static class KiePMMLDroolsASTTest extends KiePMMLDroolsAST {

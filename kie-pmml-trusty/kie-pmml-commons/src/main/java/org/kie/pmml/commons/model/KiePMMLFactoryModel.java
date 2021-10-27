@@ -16,7 +16,6 @@
 package org.kie.pmml.commons.model;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -47,11 +46,6 @@ public class KiePMMLFactoryModel extends KiePMMLModel implements HasSourcesMap {
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLFactoryModel is not meant to be used for actual usage");
-    }
-
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
         throw new KiePMMLException("KiePMMLFactoryModel is not meant to be used for actual usage");
     }
 

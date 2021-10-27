@@ -127,8 +127,8 @@ public class KiePMMLModelFactoryUtils {
         final MethodDeclaration methodDeclaration = modelTemplate.addMethod(GET_CREATED_KIEPMMLMININGFIELDS,
                                                                             Modifier.Keyword.PRIVATE);
         final ClassOrInterfaceType returnedType =
-                getTypedClassOrInterfaceType(List.class.getSimpleName(),
-                                             Collections.singletonList(KiePMMLMiningField.class.getSimpleName()));
+                getTypedClassOrInterfaceTypeByTypeNames(List.class.getSimpleName(),
+                                                        Collections.singletonList(KiePMMLMiningField.class.getSimpleName()));
         methodDeclaration.setType(returnedType);
         BlockStmt body = new BlockStmt();
         methodDeclaration.setBody(body);

@@ -15,13 +15,11 @@
  */
 package org.kie.pmml.commons.testingutility;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
@@ -50,11 +48,6 @@ public class KiePMMLTestingModel extends KiePMMLModel {
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
                            final PMMLContext context) {
-        return null;
-    }
-
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
         return null;
     }
 
