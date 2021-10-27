@@ -1,0 +1,15 @@
+[id="ref-example-bind-external-app-kogito_{context}"]
+= Example of binding an external application to a {KOGITO} deployment
+
+After deploying the {KOGITO} microservice, you need to bind your external application to the {KOGITO} microservice deployment.
+
+Binding your external application includes re-routing the external application and binding the application to a new base URL of the server that is associated with the {KOGITO} application. For more information, see the following example:
+
+.Example `/discount` REST endpoint of KJAR on {KIE_SERVER}
+image::KogitoMicroservices/kogito-dmn-endpointon-kie-server.png[Example of a DMN model specific REST endpoint of KJAR on KIE Server]
+
+.Example `/discount` REST endpoint on local {KOGITO}
+image::KogitoMicroservices/kogito-local-running-API.png[Example of a DMN model specific REST endpoint running on local Kogito application]
+
+.Example `/discount` REST endpoint bound to new base URL of {KOGITO}
+image::KogitoMicroservices/kogito-binded-endpoint.png[Example of a DMN model specific REST endpoint with new base URL]

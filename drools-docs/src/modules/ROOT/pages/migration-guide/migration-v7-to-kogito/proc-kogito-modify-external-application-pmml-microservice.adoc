@@ -1,0 +1,26 @@
+[id="proc-kogito-modify-external-application-pmml-microservice_{context}"]
+= Modifying an external application to a {KOGITO} microservice
+
+[role="_abstract"]
+After deploying the PMML microservice, you need to modify the external application to a {KOGITO} deployment.
+
+.Prerequisites
+* The original external application must be implemented on the {KIE_SERVER} client API.
++
+.Example external application implementation on {KIE_SERVER}
+image::KogitoMicroservices/kogito-external-application-implementation-kie-server.png[screen capture of the external application implementation on KIE Server]
+
+.Procedure
+. Remove all the usage of the {KIE_SERVER} client API and replace it with the HTTP communication. The following is an example of a non-Java request:
++
+image::KogitoMicroservices/kogito-example-non-java-request.png[Example non-java request]
+
+. Ensure that any HTTP client Java library is used inside the external application to create a similar invocation and parse the result.
++
+--
+The following is an example of Java 11 HTTP client and Gson to convert the input data to JSON:
+
+image::KogitoMicroservices/kogito-java-11-http-client.png[Example of Java 11 HTTP client]
+
+NOTE: All the parameters that are required as the values of the parameters are embedded in the URL that is called.
+--
