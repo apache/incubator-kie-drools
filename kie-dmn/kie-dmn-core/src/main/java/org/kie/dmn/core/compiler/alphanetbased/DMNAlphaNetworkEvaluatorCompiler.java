@@ -16,14 +16,19 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import org.drools.ancompiler.ANCConfiguration;
 import org.drools.ancompiler.CompiledNetwork;
-import org.drools.ancompiler.CompiledNetworkSource;
+import org.drools.ancompiler.CompiledNetworkSources;
 import org.drools.ancompiler.ObjectTypeNodeCompiler;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -39,11 +44,12 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
+// TODO DT-ANC rename as it's too similar do DMNAlphaNetworkCompiler
+public class DMNAlphaNetworkEvaluatorCompiler extends DMNEvaluatorCompiler {
 
-    static final Logger logger = LoggerFactory.getLogger(AlphaNetDMNEvaluatorCompiler.class);
+    static final Logger logger = LoggerFactory.getLogger(DMNAlphaNetworkEvaluatorCompiler.class);
 
-    public AlphaNetDMNEvaluatorCompiler(DMNCompilerImpl compiler) {
+    public DMNAlphaNetworkEvaluatorCompiler(DMNCompilerImpl compiler) {
         super(compiler);
     }
 
@@ -65,34 +71,34 @@ public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
         GeneratedSources allGeneratedSources = new GeneratedSources();
 
-        // Compile FEEL unary tests to Java source code with row,column index.
-        // i.e. second row third column will have the UnaryTestR2C3.java name
-        Map<String, String> feelTestClasses = tableCells.createFEELSourceClasses();
-        allGeneratedSources.putAllGeneratedFEELTestClasses(feelTestClasses);
 
-        // Generate classes for DMNAlphaNetwork
         DMNAlphaNetworkCompiler dmnAlphaNetworkCompiler = new DMNAlphaNetworkCompiler();
         GeneratedSources generatedSources = dmnAlphaNetworkCompiler.generateSourceCode(decisionTable, tableCells, decisionTableName, allGeneratedSources);
 
-        // Instantiate Alpha Network
-        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(generatedSources.getAllGeneratedSources(), this.getClass().getClassLoader());
-        DMNCompiledAlphaNetwork dmnCompiledAlphaNetwork = generatedSources.newInstanceOfAlphaNetwork(compiledClasses);
+        ReteBuilderContext reteBuilderContext = new ReteBuilderContext();
+        ObjectTypeNode firstObjectTypeNodeOfRete = tableCells.createRete(reteBuilderContext);
 
-        // We need the RETE to create the ANC
-        dmnCompiledAlphaNetwork.initRete();
+        // Compile FEEL unary tests to Java source code with row,column index.
+        Map<String, String> feelTestClasses = tableCells.createFEELSourceClasses();
+        allGeneratedSources.putAllGeneratedFEELTestClasses(feelTestClasses);
 
         // Generate the ANC
-        ObjectTypeNodeCompiler objectTypeNodeCompiler = new ObjectTypeNodeCompiler(dmnCompiledAlphaNetwork.getObjectTypeNode());
-        CompiledNetworkSource compiledNetworkSource = objectTypeNodeCompiler.generateSource();
-        generatedSources.dumpGeneratedAlphaNetwork(compiledNetworkSource);
+        ObjectTypeNodeCompiler objectTypeNodeCompiler = createAlphaNetworkCompiler(firstObjectTypeNodeOfRete);
+        CompiledNetworkSources compiledNetworkSource = objectTypeNodeCompiler.generateSource();
+        generatedSources.addNewSourceClasses(compiledNetworkSource.getAllGeneratedSources());
 
-        // Second compilation, this time for the generated ANC sources
-        Map<String, Class<?>> compiledANC = KieMemoryCompiler.compile(Collections.singletonMap(
-                compiledNetworkSource.getName(), compiledNetworkSource.getSource()), this.getRootClassLoader());
+        // Look at target/generated-sources
+        generatedSources.dumpGeneratedClasses();
 
-        Class<?> aClass = compiledANC.get(compiledNetworkSource.getName());
-        CompiledNetwork compiledAlphaNetwork = compiledNetworkSource.createInstanceAndSet(aClass);
-        dmnCompiledAlphaNetwork.setCompiledAlphaNetwork(compiledAlphaNetwork);
+        // Compile everything
+        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(generatedSources.getAllGeneratedSources(), this.getClass().getClassLoader());
+
+        Class<?> compiledNetworkClass = compiledClasses.get(compiledNetworkSource.getName());
+        CompiledNetwork compiledAlphaNetwork = compiledNetworkSource.createInstanceAndSet(compiledNetworkClass);
+        Results results = new Results();
+        AlphaNetworkEvaluationContext evaluationContext = new AlphaNetworkEvaluationContext(results);
+        DMNAlphaNetworkEvaluator dmnCompiledAlphaNetworkEvaluator = generatedSources
+                .newInstanceOfAlphaNetwork(compiledClasses, compiledAlphaNetwork, evaluationContext);
 
         // FeelDecisionTable is used at runtime to evaluate Hit Policy / Output values
         // TODO DT-ANC probably need to have all the types in here
@@ -102,6 +108,17 @@ public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
         FeelDecisionTable feelDecisionTable = new FeelDecisionTable(decisionTableName, outputs, feelHelper, variableTypes, dmnModelImpl.getTypeRegistry().unknown());
 
-        return new AlphaNetDMNExpressionEvaluator(dmnCompiledAlphaNetwork, feelHelper, decisionTableName, feelDecisionTable, dmnBaseNode);
+        return new DMNAlphaNetworkEvaluatorImpl(dmnCompiledAlphaNetworkEvaluator, feelHelper, decisionTableName, feelDecisionTable, dmnBaseNode, results);
+    }
+
+    private ObjectTypeNodeCompiler createAlphaNetworkCompiler(ObjectTypeNode firstObjectTypeNodeOfRete) {
+        ANCConfiguration ancConfiguration = new ANCConfiguration();
+        ancConfiguration.setDisableContextEntry(true);
+        ancConfiguration.setPrettyPrint(true);
+        ancConfiguration.setEnableModifyObject(false);
+        ObjectTypeNodeCompiler objectTypeNodeCompiler = new ObjectTypeNodeCompiler(ancConfiguration, firstObjectTypeNodeOfRete, true);
+        VariableDeclarator variableDeclarator = new VariableDeclarator(StaticJavaParser.parseType(AlphaNetworkEvaluationContext.class.getCanonicalName()), "ctx");
+        objectTypeNodeCompiler.addAdditionalFields(new FieldDeclaration(NodeList.nodeList(), NodeList.nodeList(variableDeclarator)));
+        return objectTypeNodeCompiler;
     }
 }

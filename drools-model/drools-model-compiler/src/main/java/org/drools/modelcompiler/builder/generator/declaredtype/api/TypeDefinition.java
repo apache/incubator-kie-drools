@@ -24,21 +24,35 @@ public interface TypeDefinition {
 
     String getTypeName();
 
-    List<? extends FieldDefinition> getFields();
+    default List<? extends FieldDefinition> getFields() {
+        return Collections.emptyList();
+    }
 
-    List<FieldDefinition> getKeyFields();
+    default List<FieldDefinition> getKeyFields() {
+        return Collections.emptyList();
+    }
 
-    Optional<String> getSuperTypeName();
+    default Optional<String> getSuperTypeName() {
+        return Optional.empty();
+    }
 
-    default List<String> getInterfacesNames() { return Collections.emptyList(); }
+    default List<String> getInterfacesNames() {
+        return Collections.emptyList();
+    }
 
-    List<AnnotationDefinition> getAnnotationsToBeAdded();
+    default List<AnnotationDefinition> getAnnotationsToBeAdded() {
+        return Collections.emptyList();
+    }
 
-    List<FieldDefinition> findInheritedDeclaredFields();
+    default List<FieldDefinition> findInheritedDeclaredFields() {
+        return Collections.emptyList();
+    }
 
-    default List<MethodDefinition> getMethods() { return Collections.emptyList(); }
+    default List<MethodDefinition> getMethods() {
+        return Collections.emptyList();
+    }
 
     default Optional<String> getJavadoc() {
         return Optional.empty();
     }
- }
+}

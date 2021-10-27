@@ -43,35 +43,36 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.dmn.core.ast.DMNDTExpressionEvaluator.processEvents;
 
-public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
+public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
 
-    private static Logger logger = LoggerFactory.getLogger(AlphaNetDMNExpressionEvaluator.class);
+    private static Logger logger = LoggerFactory.getLogger(DMNAlphaNetworkEvaluatorImpl.class);
 
-    private final DMNCompiledAlphaNetwork compiledNetwork;
+    private final DMNAlphaNetworkEvaluator compiledNetwork;
+    private Results results;
     private final DMNFEELHelper feel;
     private final String decisionTableName;
     private final FeelDecisionTable feelDecisionTable;
     private final DMNBaseNode node;
 
-    public AlphaNetDMNExpressionEvaluator(DMNCompiledAlphaNetwork compiledNetwork,
-                                          DMNFEELHelper feel,
-                                          String decisionTableName,
-                                          FeelDecisionTable feelDecisionTable,
-                                          DMNBaseNode node) {
+    public DMNAlphaNetworkEvaluatorImpl(DMNAlphaNetworkEvaluator compiledNetwork,
+                                        DMNFEELHelper feel,
+                                        String decisionTableName,
+                                        FeelDecisionTable feelDecisionTable,
+                                        DMNBaseNode node,
+                                        Results results) {
         this.feel = feel;
         this.decisionTableName = decisionTableName;
         this.feelDecisionTable = feelDecisionTable;
         this.node = node;
         this.compiledNetwork = compiledNetwork;
+        this.results = results;
     }
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnResult) {
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, dmnResult);
 
-        ResultCollector resultCollector = compiledNetwork.getResultCollector();
-
-        EvaluationContext evalCtx = createEvaluationContext(resultCollector.getEvents(), eventManager, dmnResult);
+        EvaluationContext evalCtx = createEvaluationContext(results.getEvents(), eventManager, dmnResult);
         evalCtx.enterFrame();
 
         DMNDTExpressionEvaluator.EventResults eventResults = null;
@@ -93,7 +94,7 @@ public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
 
             Object result = compiledNetwork.evaluate(evalCtx, feelDecisionTable);
 
-            eventResults = processEvents(resultCollector.getEvents(), eventManager, (DMNResultImpl) dmnResult, node);
+            eventResults = processEvents(results.getEvents(), eventManager, (DMNResultImpl) dmnResult, node);
 
             return new EvaluatorResultImpl(result,
                                            eventResults.hasErrors ?

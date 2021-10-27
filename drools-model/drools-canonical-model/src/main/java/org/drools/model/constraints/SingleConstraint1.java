@@ -20,6 +20,7 @@ package org.drools.model.constraints;
 import org.drools.model.Variable;
 import org.drools.model.functions.LambdaPrinter;
 import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.model.functions.PredicateN;
 import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.Expr1ViewItemImpl;
@@ -39,6 +40,18 @@ public class SingleConstraint1<A> extends AbstractSingleConstraint {
         super(exprId, predicate.predicateInformation());
         this.variable = variable;
         this.predicate = predicate;
+    }
+
+    /**
+     * This constructor generates a constraint that cannot be evaluated as it lacks the actual predicate
+     * The AlphaNode referring this can be shared, as the exprId is provided
+     * Currently it's used only with the Alpha Network Compiler, since the code instantiating
+     * the actual constraint will be inlined inside the compiled Alpha Network itself.
+     */
+    public SingleConstraint1(String exprId, PredicateInformation predicateInformation) {
+        super(exprId, predicateInformation);
+        this.variable = null;
+        this.predicate = null;
     }
 
     public SingleConstraint1(Expr1ViewItemImpl<A> expr) {
