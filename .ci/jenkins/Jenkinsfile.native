@@ -87,7 +87,7 @@ void sendNotification() {
 }
 
 void checkoutKogitoRuntimesRepo() {
-    dir(dirName) {
+    dir(kogitoRuntimesRepo) {
         checkout(githubscm.resolveRepository(kogitoRuntimesRepo, params.GIT_AUTHOR, getKogitoTargetBranch(), false))
     }
 }
