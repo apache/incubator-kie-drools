@@ -46,6 +46,7 @@ import org.dmg.pmml.tree.TreeModel;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
@@ -55,6 +56,7 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -66,6 +68,8 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMiningField;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomOutputField;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTarget;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
@@ -135,11 +139,15 @@ public class KiePMMLModelFactoryUtilsTest {
                 .mapToObj(i -> ModelUtils.convertToKieOutputField(getRandomOutputField(),
                                                                   getRandomDataField()))
                 .collect(Collectors.toList());
+        List<KiePMMLTarget> kiePMMLTargets = IntStream.range(0, 2)
+                .mapToObj(i -> ModelUtils.convertToKiePMMLTarget(getRandomTarget()))
+                .collect(Collectors.toList());
         KiePMMLModelFactoryUtils.setKiePMMLModelConstructor(generatedClassName,
                                                             constructorDeclaration,
                                                             name,
                                                             miningFields,
-                                                            outputFields);
+                                                            outputFields,
+                                                            kiePMMLTargets);
         commonVerifySuperInvocation(generatedClassName, name);
         List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(),
                                                                "miningFields",
@@ -147,11 +155,18 @@ public class KiePMMLModelFactoryUtilsTest {
         MethodCallExpr addMethodCall = retrieved.get(0);
         NodeList<Expression> arguments = addMethodCall.getArguments();
         commonVerifyMiningFieldsObjectCreation(arguments, miningFields);
+
         retrieved = getMethodCallExprList(constructorDeclaration.getBody(), outputFields.size(), "outputFields",
                                           "add");
         addMethodCall = retrieved.get(0);
         arguments = addMethodCall.getArguments();
         commonVerifyOutputFieldsObjectCreation(arguments, outputFields);
+
+        retrieved = getMethodCallExprList(constructorDeclaration.getBody(), outputFields.size(), "kiePMMLTargets",
+                                          "add");
+        addMethodCall = retrieved.get(0);
+        arguments = addMethodCall.getArguments();
+        commonVerifyKiePMMLTargetFieldsMethodCallExpr(arguments, kiePMMLTargets);
     }
 
     @Test
@@ -297,7 +312,7 @@ public class KiePMMLModelFactoryUtilsTest {
             ObjectCreationExpr objCrt = (ObjectCreationExpr) argument;
             assertEquals(OutputField.class.getCanonicalName(), objCrt.getType().asString());
             Optional<OutputField> outputFieldOpt = outputFields.stream()
-                    .filter(miningField -> miningField.getName().equals(objCrt.getArgument(0).asStringLiteralExpr().asString()))
+                    .filter(outputField -> outputField.getName().equals(objCrt.getArgument(0).asStringLiteralExpr().asString()))
                     .findFirst();
             assertTrue(outputFieldOpt.isPresent());
             OutputField outputField = outputFieldOpt.get();
@@ -311,6 +326,43 @@ public class KiePMMLModelFactoryUtilsTest {
             assertEquals(expected, objCrt.getArgument(4).asNameExpr().toString());
             expected = "java.util.Arrays.asList()";
             assertEquals(expected, objCrt.getArgument(5).asMethodCallExpr().toString());
+        });
+    }
+
+    private void commonVerifyKiePMMLTargetFieldsMethodCallExpr(List<Expression> toVerify,
+                                                               List<KiePMMLTarget> kiePMMLTargets) {
+        toVerify.forEach(argument -> {
+            assertTrue(argument instanceof MethodCallExpr);
+            MethodCallExpr mtdfClExpr = (MethodCallExpr) argument;
+            assertEquals("build", mtdfClExpr.getName().asString());
+            final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", mtdfClExpr);
+            Optional<KiePMMLTarget> kiePMMLTargetOpt = kiePMMLTargets.stream()
+                    .filter(targetField -> targetField.getName().equals(builder.getArgument(0).asStringLiteralExpr().asString()))
+                    .findFirst();
+            assertTrue(kiePMMLTargetOpt.isPresent());
+            KiePMMLTarget kiePMMLTarget = kiePMMLTargetOpt.get();
+            MethodCallExpr methodCallExpr = getChainedMethodCallExprFrom("withOpType", mtdfClExpr);
+            String expected = OP_TYPE.class.getCanonicalName() + "." + kiePMMLTarget.getOpType().toString();
+            assertEquals(expected, methodCallExpr.getArgument(0).asNameExpr().toString());
+            methodCallExpr = getChainedMethodCallExprFrom("withField", mtdfClExpr);
+            assertEquals(kiePMMLTarget.getField(), methodCallExpr.getArgument(0).asStringLiteralExpr().asString());
+            expected = CAST_INTEGER.class.getCanonicalName() + "." + kiePMMLTarget.getCastInteger().toString();
+            methodCallExpr = getChainedMethodCallExprFrom("withCastInteger", mtdfClExpr);
+            assertEquals(expected, methodCallExpr.getArgument(0).asNameExpr().toString());
+            expected = kiePMMLTarget.getMin().toString();
+            methodCallExpr = getChainedMethodCallExprFrom("withMin", mtdfClExpr);
+            assertEquals(expected, methodCallExpr.getArgument(0).asDoubleLiteralExpr().toString());
+            expected = kiePMMLTarget.getMax().toString();
+            methodCallExpr = getChainedMethodCallExprFrom("withMax", mtdfClExpr);
+            assertEquals(expected, methodCallExpr.getArgument(0).asDoubleLiteralExpr().toString());
+            expected = "" + kiePMMLTarget.getRescaleConstant();
+            methodCallExpr = getChainedMethodCallExprFrom("withRescaleConstant", mtdfClExpr);
+            assertEquals(expected, methodCallExpr.getArgument(0).asDoubleLiteralExpr().toString());
+            expected = "" + kiePMMLTarget.getRescaleFactor();
+            methodCallExpr = getChainedMethodCallExprFrom("withRescaleFactor", mtdfClExpr);
+            assertEquals(expected, methodCallExpr.getArgument(0).asDoubleLiteralExpr().toString());
+            methodCallExpr = getChainedMethodCallExprFrom("asList", mtdfClExpr);
+            assertEquals(kiePMMLTarget.getTargetValues().size(), methodCallExpr.getArguments().size());
         });
     }
 

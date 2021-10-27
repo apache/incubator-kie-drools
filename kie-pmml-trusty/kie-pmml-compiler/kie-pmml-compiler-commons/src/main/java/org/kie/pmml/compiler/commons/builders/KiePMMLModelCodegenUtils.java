@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.builders;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -32,6 +33,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
@@ -67,6 +69,9 @@ public class KiePMMLModelCodegenUtils {
                                                                                       compilationDTO.getFields());
         final List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(compilationDTO.getOutput(),
                                                                                       compilationDTO.getFields());
+        final List<KiePMMLTarget> targetFields = compilationDTO.getTargets() != null ?
+                ModelUtils.convertToKiePMMLTargetList(compilationDTO.getTargets()) : Collections.emptyList();
+
         final Expression miningFunctionExpression;
         if (compilationDTO.getMINING_FUNCTION() != null) {
             MINING_FUNCTION miningFunction = compilationDTO.getMINING_FUNCTION();
@@ -88,7 +93,8 @@ public class KiePMMLModelCodegenUtils {
                                    constructorDeclaration,
                                    name,
                                    miningFields,
-                                   outputFields);
+                                   outputFields,
+                                   targetFields);
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, compilationDTO.getTransformationDictionary(),
                                                         compilationDTO.getLocalTransformations());
         final BlockStmt body = constructorDeclaration.getBody();
