@@ -662,6 +662,11 @@ public class NamedEntryPoint
         return this.entryPoint;
     }
 
+    @Override
+    public ReteEvaluator getReteEvaluator() {
+        return this.wm;
+    }
+
     public InternalWorkingMemory getInternalWorkingMemory() {
         return this.wm;
     }

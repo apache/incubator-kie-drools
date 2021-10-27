@@ -30,6 +30,7 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.TimerService;
 import org.kie.api.runtime.Calendars;
+import org.kie.api.time.SessionClock;
 
 public interface ReteEvaluator {
 
@@ -80,7 +81,7 @@ public interface ReteEvaluator {
 
     Calendars getCalendars();
 
-    TimerService getSessionClock();
+    SessionClock getSessionClock();
 
     default boolean isSequential() {
         return getKnowledgeBase().getConfiguration().isSequential();

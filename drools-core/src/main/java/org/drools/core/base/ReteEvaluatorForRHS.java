@@ -13,6 +13,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
@@ -487,6 +488,11 @@ public class ReteEvaluatorForRHS
         return delegate.getEntryPoint();
     }
 
+    @Override
+    public ReteEvaluator getReteEvaluator() {
+        return delegate.getReteEvaluator();
+    }
+
     public EntryPointNode getEntryPointNode() {
         return delegate.getEntryPointNode();
     }
@@ -509,6 +515,11 @@ public class ReteEvaluatorForRHS
 
     public GlobalResolver getGlobalResolver() {
         return delegate.getGlobalResolver();
+    }
+
+    @Override
+    public ActivationsManager getActivationsManager() {
+        return delegate.getActivationsManager();
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {
@@ -591,7 +602,7 @@ public class ReteEvaluatorForRHS
         delegate.startOperation();
     }
 
-    public FactHandle getFactHandle(Object object) {
+    public InternalFactHandle getFactHandle(Object object) {
         return delegate.getFactHandle(object);
     }
 

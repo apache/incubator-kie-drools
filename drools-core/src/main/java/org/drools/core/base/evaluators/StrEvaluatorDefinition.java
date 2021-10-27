@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
@@ -169,9 +169,9 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
         /**
          * @inheridDoc
          */
-        public boolean evaluate(InternalWorkingMemory workingMemory,
-                InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
-            final Object objectValue = extractor.getValue(workingMemory, factHandle.getObject());
+        public boolean evaluate(ReteEvaluator reteEvaluator,
+                                InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
+            final Object objectValue = extractor.getValue(reteEvaluator, factHandle.getObject());
 
             switch (parameter) {
                 case startsWith:
@@ -185,11 +185,11 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
             }
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory,
+        public boolean evaluate(ReteEvaluator reteEvaluator,
                 InternalReadAccessor leftExtractor, InternalFactHandle left,
                 InternalReadAccessor rightExtractor, InternalFactHandle right) {
-            final Object value1 = leftExtractor.getValue(workingMemory, left.getObject());
-            final Object value2 = rightExtractor.getValue(workingMemory, right.getObject());
+            final Object value1 = leftExtractor.getValue(reteEvaluator, left.getObject());
+            final Object value2 = rightExtractor.getValue(reteEvaluator, right.getObject());
 
             switch (parameter) {
                 case startsWith:
@@ -204,7 +204,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
         }
 
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
                 VariableContextEntry context, InternalFactHandle right) {
 
                 switch (parameter) {
@@ -223,7 +223,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
         }
 
-        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
                 VariableContextEntry context, InternalFactHandle left) {
                 switch (parameter) {
                 case startsWith:

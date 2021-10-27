@@ -38,8 +38,6 @@ import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
 
-import static org.drools.core.base.DefaultKnowledgeHelper.getFactHandleFromWM;
-
 public interface InternalWorkingMemory
     extends WorkingMemory, WorkingMemoryEntryPoint, EventSupport {
 
@@ -69,10 +67,6 @@ public interface InternalWorkingMemory
     void queueWorkingMemoryAction(final WorkingMemoryAction action);
 
     FactHandleFactory getFactHandleFactory();
-
-    default InternalFactHandle getFactHandle(Object object) {
-        return getFactHandleFromWM(this, object);
-    }
 
     EntryPointId getEntryPoint();
     

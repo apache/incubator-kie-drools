@@ -28,7 +28,7 @@ import java.util.Date;
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.VariableRestriction;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -123,69 +123,69 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
     }
 
     @Override
-    public boolean evaluate(InternalWorkingMemory workingMemory,
+    public boolean evaluate(ReteEvaluator reteEvaluator,
                             final InternalReadAccessor extractor,
                             final InternalFactHandle object1,
                             final FieldValue object2) {
         long rightTS = extractor.isSelfReference() ?
                        getRightTimestamp( object1 ) :
-                       extractor.getLongValue( workingMemory, object1.getObject() );
+                       extractor.getLongValue( reteEvaluator, object1.getObject() );
         long leftTS = getTimestamp(object2);
         return evaluate(rightTS, leftTS);
     }
 
     @Override
-    public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+    public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
                                       final VariableRestriction.VariableContextEntry context,
                                       final InternalFactHandle right) {
         if ( context.leftNull ||
-             context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
+             context.extractor.isNullValue( reteEvaluator, right.getObject() ) ) {
             return false;
         }
 
         long leftTS = ((VariableRestriction.TimestampedContextEntry)context).timestamp;
         long rightTS = context.getFieldExtractor().isSelfReference() ?
                        getRightTimestamp(right) :
-                       context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
+                       context.getFieldExtractor().getLongValue( reteEvaluator, right.getObject() );
 
         return evaluate(rightTS, leftTS);
     }
 
     @Override
-    public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+    public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
                                        final VariableRestriction.VariableContextEntry context,
                                        final InternalFactHandle left) {
         if ( context.rightNull ||
-             context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
+             context.declaration.getExtractor().isNullValue( reteEvaluator, left.getObject() )) {
             return false;
         }
 
         long rightTS = ((VariableRestriction.TimestampedContextEntry)context).timestamp;
         long leftTS = context.declaration.getExtractor().isSelfReference() ?
                       getLeftTimestamp( left ) :
-                      context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
+                      context.declaration.getExtractor().getLongValue( reteEvaluator, left.getObject() );
 
         return evaluate(rightTS, leftTS);
     }
 
     @Override
-    public boolean evaluate(InternalWorkingMemory workingMemory,
+    public boolean evaluate(ReteEvaluator reteEvaluator,
                             final InternalReadAccessor extractor1,
                             final InternalFactHandle handle1,
                             final InternalReadAccessor extractor2,
                             final InternalFactHandle handle2) {
-        if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) ||
-             extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
+        if ( extractor1.isNullValue( reteEvaluator, handle1.getObject() ) ||
+             extractor2.isNullValue( reteEvaluator, handle2.getObject() ) ) {
             return false;
         }
 
         long rightTS = extractor1.isSelfReference() ?
                        getRightTimestamp( handle1 ) :
-                       extractor1.getLongValue( workingMemory, handle1.getObject() );
+                       extractor1.getLongValue( reteEvaluator, handle1.getObject() );
 
         long leftTS = extractor2.isSelfReference() ?
                       getLeftTimestamp( handle2 ) :
-                      extractor2.getLongValue( workingMemory, handle2.getObject() );
+                      extractor2.getLongValue( reteEvaluator, handle2.getObject() );
 
         return evaluate(rightTS, leftTS);
     }

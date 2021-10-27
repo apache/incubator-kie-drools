@@ -21,10 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.Collection;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.ReturnValueExpression;
@@ -85,7 +84,7 @@ public class JavaAccumulatorFunctionExecutor
                      Object context,
                      Tuple leftTuple,
                      Declaration[] declarations,
-                     WorkingMemory workingMemory) {
+                     ReteEvaluator reteEvaluator) {
         return this.function.initContext( (Serializable) context );
     }
 
@@ -98,13 +97,13 @@ public class JavaAccumulatorFunctionExecutor
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) {
+                           ReteEvaluator reteEvaluator) {
         try {
             Object value = this.expression.evaluate( handle,
                                                      leftTuple,
                                                      declarations,
                                                      innerDeclarations,
-                                                     workingMemory,
+                                                     reteEvaluator,
                                                      workingMemoryContext ).getValue();
             return this.function.accumulateValue( (Serializable) context, value );
         } catch (Exception e) {
@@ -119,7 +118,7 @@ public class JavaAccumulatorFunctionExecutor
                               Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              WorkingMemory workingMemory) {
+                              ReteEvaluator reteEvaluator) {
         return this.function.tryReverse( (Serializable) context, value );
     }
 
@@ -130,7 +129,7 @@ public class JavaAccumulatorFunctionExecutor
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) {
+                            ReteEvaluator reteEvaluator) {
         try {
             return this.function.getResult( (Serializable) context );
         } catch (Exception e) {

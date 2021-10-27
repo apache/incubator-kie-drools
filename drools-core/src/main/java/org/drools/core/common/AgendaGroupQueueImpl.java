@@ -123,8 +123,8 @@ public class AgendaGroupQueueImpl
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
-            wm.getAgenda().clearAndCancelAgendaGroup(this.name);
+        public void execute( ReteEvaluator reteEvaluator ) {
+            ((InternalAgenda) reteEvaluator.getActivationsManager()).clearAndCancelAgendaGroup(this.name);
         }
     }
 
@@ -141,8 +141,8 @@ public class AgendaGroupQueueImpl
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
-            wm.getAgenda().setFocus(this.name);
+        public void execute( ReteEvaluator reteEvaluator ) {
+            ((InternalAgenda) reteEvaluator.getActivationsManager()).setFocus(this.name);
         }
 
         @Override
@@ -287,7 +287,7 @@ public class AgendaGroupQueueImpl
             this.ruleFlowGroup = (InternalRuleFlowGroup) context.getWorkingMemory().getAgenda().getRuleFlowGroup( context.readUTF() );
         }
 
-        public void execute(InternalWorkingMemory workingMemory) {
+        public void execute(ReteEvaluator reteEvaluator) {
             // check whether ruleflow group is still empty first
             if ( this.ruleFlowGroup.isEmpty() ) {
                 // deactivate ruleflow group

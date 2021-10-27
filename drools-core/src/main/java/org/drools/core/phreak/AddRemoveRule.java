@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -668,7 +669,7 @@ public class AddRemoveRule {
         if (pmem.isDataDriven() && pmem.getNodeType() == NodeTypeEnums.RightInputAdaterNode) {
             for (PathEndNode pnode : pmem.getPathEndNode().getPathEndNodes()) {
                 if ( pnode instanceof TerminalNode ) {
-                    PathMemory outPmem = wm.getNodeMemory((TerminalNode) pnode);
+                    PathMemory outPmem = reteEvaluator.getNodeMemory((TerminalNode) pnode);
                     if (outPmem.isDataDriven()) {
                         SegmentMemory outSmem = outPmem.getSegmentMemories()[0];
                         if (outSmem != null) {
@@ -700,10 +701,10 @@ public class AddRemoveRule {
                              pmem :
                              reteEvaluator.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
-        InternalAgenda agenda = pmem.getActualAgenda( reteEvaluator );
-        RuleNetworkEvaluator.INSTANCE.outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, agenda,
+        ActivationsManager activationsManager = pmem.getActualActivationsManager( reteEvaluator );
+        RuleNetworkEvaluator.INSTANCE.outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, activationsManager,
                                                 new LinkedList<StackEntry>(),
-                                                true, rtnPmem.getOrCreateRuleAgendaItem(agenda).getRuleExecutor());
+                                                true, rtnPmem.getOrCreateRuleAgendaItem(activationsManager).getRuleExecutor());
     }
 
 
@@ -1079,7 +1080,7 @@ public class AddRemoveRule {
         if (NodeTypeEnums.isTerminalNode(lt.getTupleSink())) {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getTupleSink() );
             if (pmem != null) {
-                PhreakRuleTerminalNode.doLeftDelete( pmem.getActualAgenda( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
+                PhreakRuleTerminalNode.doLeftDelete( pmem.getActualActivationsManager( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
@@ -50,7 +50,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.ConsequenceExceptionHandler;
 import org.drools.core.spi.InternalActivationGroup;
@@ -65,6 +64,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.AgendaGroup;
 import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -306,6 +306,11 @@ public class DefaultAgenda
     }
 
     @Override
+    public RuleAgendaItem peekNextRule() {
+        return getAgendaGroupsManager().peekNextRule();
+    }
+
+    @Override
     public void insertAndStageActivation(final AgendaItem activation) {
         if ( activationObjectTypeConf == null ) {
             EntryPointId ep = workingMemory.getEntryPoint();
@@ -383,14 +388,24 @@ public class DefaultAgenda
 
     public void setFocus(final PropagationContext ctx,
                          final String name) {
-        AgendaGroup agendaGroup = getAgendaGroup( name );
+        InternalAgendaGroup agendaGroup = getAgendaGroupsManager().getAgendaGroup( name );
         agendaGroup.setAutoFocusActivator( ctx );
-        setFocus( agendaGroup );
+        getAgendaGroupsManager().setFocus( agendaGroup );
+    }
+
+    @Override
+    public ReteEvaluator getReteEvaluator() {
+        return this.workingMemory;
     }
 
     @Override
     public AgendaGroupsManager getAgendaGroupsManager() {
         return agendaGroupsManager;
+    }
+
+    @Override
+    public AgendaEventSupport getAgendaEventSupport() {
+        return this.workingMemory.getAgendaEventSupport();
     }
 
     @Override
@@ -445,6 +460,11 @@ public class DefaultAgenda
             group.reset();
         }
         propagationList.reset();
+    }
+
+    @Override
+    public AgendaGroup getAgendaGroup(String name) {
+        return getAgendaGroupsManager().getAgendaGroup(name);
     }
 
     @Override
@@ -554,7 +574,7 @@ public class DefaultAgenda
         do {
             tryagain = false;
             evaluateEagerList();
-            final InternalAgendaGroup group = getNextFocus();
+            final InternalAgendaGroup group = getAgendaGroupsManager().getNextFocus();
             // if there is a group with focus
             if ( group != null ) {
                 localFireCount = ruleEvaluator.evaluateAndFire(filter, fireCount, fireLimit, group);
@@ -761,7 +781,7 @@ public class DefaultAgenda
                 }
 
                 evaluateEagerList();
-                InternalAgendaGroup group = getNextFocus();
+                InternalAgendaGroup group = getAgendaGroupsManager().getNextFocus();
                 if ( group != null && !limitReached ) {
                     // only fire rules while the limit has not reached.
                     // if halt is called, then isFiring will be false.
@@ -903,7 +923,7 @@ public class DefaultAgenda
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
+        public void execute( ReteEvaluator reteEvaluator ) {
             executionStateMachine.internalHalt();
         }
 

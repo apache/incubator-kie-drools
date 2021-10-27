@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -45,7 +44,6 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class PhreakActivationIterator
     implements
@@ -59,23 +57,16 @@ public class PhreakActivationIterator
 
     }
 
-    private PhreakActivationIterator(InternalWorkingMemory wm,
+    private PhreakActivationIterator(ReteEvaluator reteEvaluator,
                                      KieBase kbase) {
-        agendaItems = collectAgendaItems((InternalKnowledgeBase) kbase, wm);
+        agendaItems = collectAgendaItems((InternalKnowledgeBase) kbase, reteEvaluator);
         agendaItemIter =  agendaItems.iterator();
     }
 
 
-    public static PhreakActivationIterator iterator(InternalWorkingMemory wm) {
-        return new PhreakActivationIterator( wm,
-                                             wm.getKnowledgeBase() );
+    public static PhreakActivationIterator iterator(ReteEvaluator reteEvaluator) {
+        return new PhreakActivationIterator( reteEvaluator, reteEvaluator.getKnowledgeBase() );
     }
-
-    public static PhreakActivationIterator iterator(StatefulKnowledgeSession ksession) {
-        return new PhreakActivationIterator( ((WorkingMemoryEntryPoint) ksession).getInternalWorkingMemory(),
-                                             ksession.getKieBase() );
-    }
-
 
     public Object next() {
         if ( agendaItemIter.hasNext() ) {
@@ -100,7 +91,7 @@ public class PhreakActivationIterator
         return Arrays.asList(nodeSet.toArray(new RuleTerminalNode[nodeSet.size()]));
     }
 
-    public static List<AgendaItem> collectAgendaItems(InternalKnowledgeBase kbase, InternalWorkingMemory wm) {
+    public static List<AgendaItem> collectAgendaItems(InternalKnowledgeBase kbase, ReteEvaluator reteEvaluator) {
         Set<RuleTerminalNode> nodeSet = new HashSet<RuleTerminalNode>();
         List<RuleTerminalNode> nodeList = populateRuleTerminalNodes(kbase, nodeSet);
 
@@ -110,12 +101,12 @@ public class PhreakActivationIterator
                 // this node has already been processed
                 continue;
             }
-            processLeftTuples( rtn.getLeftTupleSource(), agendaItems, nodeSet, wm);
+            processLeftTuples( rtn.getLeftTupleSource(), agendaItems, nodeSet, reteEvaluator);
         }
         return agendaItems;
     }
 
-    public static void processLeftTuples(LeftTupleSource node, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
+    public static void processLeftTuples(LeftTupleSource node, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         LeftTupleSource node1 = node;
         while (NodeTypeEnums.LeftInputAdapterNode != node1.getType()) {
             node1 = node1.getLeftTupleSource();
@@ -123,7 +114,7 @@ public class PhreakActivationIterator
         int maxShareCount = node1.getAssociationsSize();
 
         while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
-            Memory memory = wm.getNodeMemory((MemoryFactory) node);
+            Memory memory = reteEvaluator.getNodeMemory((MemoryFactory) node);
             if (memory.getSegmentMemory() == null) {
                 // segment has never been initialized, which means the rule has never been linked.
                 return;
@@ -139,37 +130,37 @@ public class PhreakActivationIterator
                         Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                            collectFromPeers(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+                            collectFromPeers(accctx.getResultLeftTuple(), agendaItems, nodeSet, reteEvaluator);
                         }
                     } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
-                        bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
+                        bm = (BetaMemory) reteEvaluator.getNodeMemory((MemoryFactory) node);
                         FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
                         RightTuple rt = (RightTuple) BetaNode.getFirstTuple( bm.getRightTupleMemory(), it );
                         for (; rt != null; rt = (RightTuple) it.next(rt)) {
                             for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
                                 if ( lt.getFirstChild() != null ) {
-                                    collectFromPeers(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                                    collectFromPeers(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
                                 }
                             }
                         }
                     } else {
-                        bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
+                        bm = (BetaMemory) reteEvaluator.getNodeMemory((MemoryFactory) node);
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                         Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             if ( lt.getFirstChild() != null ) {
-                                collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                                collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
                             }
                         }
                     }
                     return;
                 } else if (NodeTypeEnums.FromNode == node.getType()) {
-                    FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
+                    FromMemory fm = (FromMemory) reteEvaluator.getNodeMemory((MemoryFactory) node);
                     TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                     FastIterator it = ltm.fullFastIterator();
                     for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
                         if ( lt.getFirstChild() != null ) {
-                            collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                            collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
                         }
                     }
                     return;
@@ -182,7 +173,7 @@ public class PhreakActivationIterator
         // This is done by scanning all the LeftTuples referenced from the FactHandles in the ObjectTypeNode
         LeftInputAdapterNode lian = (LeftInputAdapterNode) node;
         if ( !lian.isTerminal() ) {
-            Memory memory = wm.getNodeMemory( ( MemoryFactory ) node );
+            Memory memory = reteEvaluator.getNodeMemory( ( MemoryFactory ) node );
             if ( memory.getSegmentMemory() == null ) {
                 // segment has never been initialized, which means the rule has never been linked.
                 return;
@@ -194,7 +185,7 @@ public class PhreakActivationIterator
             os = os.getParentObjectSource();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
+        final ObjectTypeNodeMemory omem = reteEvaluator.getNodeMemory(otn);
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
 
         java.util.Iterator<InternalFactHandle> it = omem.iterator();
@@ -202,29 +193,29 @@ public class PhreakActivationIterator
             InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
                 if ( lt.getTupleSink() == firstLiaSink ) {
-                    collectFromLeftInput(lt, agendaItems, nodeSet, wm);
+                    collectFromLeftInput(lt, agendaItems, nodeSet, reteEvaluator);
                 }
             });
         }
     }
 
-    private static void collectFromLeftInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
+    private static void collectFromLeftInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         for (; lt != null; lt = lt.getHandleNext()) {
-            collectFromPeers(lt, agendaItems, nodeSet, wm);
+            collectFromPeers(lt, agendaItems, nodeSet, reteEvaluator);
         }
     }
 
-    private static void collectFromPeers(LeftTuple peer, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
+    private static void collectFromPeers(LeftTuple peer, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         while (peer != null) {
             if ( peer.getTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
                 Object accctx = peer.getContextObject();
                 if (accctx instanceof AccumulateContext) {
                     // lefttuple representing an accumulated value now have that value as context object (it was null before) and must be skipped here
-                    collectFromLeftInput(((AccumulateContext) accctx).getResultLeftTuple(), agendaItems, nodeSet, wm);
+                    collectFromLeftInput(((AccumulateContext) accctx).getResultLeftTuple(), agendaItems, nodeSet, reteEvaluator);
                 }
             } else if ( peer.getFirstChild() != null ) {
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
-                    collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
+                    collectFromLeftInput(childLt, agendaItems, nodeSet, reteEvaluator);
                 }
             } else if ( peer.getTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
                 agendaItems.add((AgendaItem) peer);

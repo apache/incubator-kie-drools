@@ -16,9 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -29,6 +26,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.ReteEvaluator;
 
 public class Collect extends ConditionalElement
     implements
@@ -88,7 +88,7 @@ public class Collect extends ConditionalElement
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Object> instantiateResultObject(InternalWorkingMemory wm) throws RuntimeException {
+    public Collection<Object> instantiateResultObject(ReteEvaluator reteEvaluator) throws RuntimeException {
         try {
             // Collect can only be used with a Collection implementation, so
             // FactTemplateObject type is not allowed
@@ -97,7 +97,7 @@ public class Collect extends ConditionalElement
                 String className = determineResultClassName( objType );
                 this.cls = (Class<Collection<Object>>) Class.forName( className,
                                                                       true,
-                                                                      wm.getKnowledgeBase().getRootClassLoader() );
+                                                                      reteEvaluator.getKnowledgeBase().getRootClassLoader() );
             }
             return this.cls.newInstance();
         } catch ( final ClassCastException cce ) {

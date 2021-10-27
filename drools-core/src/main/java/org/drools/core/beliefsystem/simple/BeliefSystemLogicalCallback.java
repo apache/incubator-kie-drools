@@ -19,8 +19,8 @@ import java.io.IOException;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
@@ -77,8 +77,8 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
         this.fullyRetract = fullyRetract;
     }
 
-    public void execute(InternalWorkingMemory workingMemory) {
-        NamedEntryPoint nep = (NamedEntryPoint) handle.getEntryPoint(workingMemory) ;
+    public void execute(ReteEvaluator reteEvaluator) {
+        NamedEntryPoint nep = (NamedEntryPoint) handle.getEntryPoint(reteEvaluator) ;
 
         BeliefSet bs = handle.getEqualityKey().getBeliefSet();
         bs.setWorkingMemoryAction( null );
@@ -93,7 +93,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
                 nep.delete( this.handle, context.getRuleOrigin(), this.activation.getTuple().getTupleSink() );
             } else {
                 ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( nep.getEntryPoint(), handle.getObject() );
-                nep.getEntryPointNode().retractObject( handle, context, typeConf, workingMemory );
+                nep.getEntryPointNode().retractObject( handle, context, typeConf, reteEvaluator );
             }
         }
     }

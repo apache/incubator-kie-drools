@@ -42,6 +42,8 @@ public interface ActivationsManager {
     void addQueryAgendaItem(final RuleAgendaItem item);
     void removeQueryAgendaItem(final RuleAgendaItem item);
 
+    void registerExpiration(PropagationContext expirationContext);
+
     void clearAndCancelActivationGroup(InternalActivationGroup activationGroup);
 
     RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn);
