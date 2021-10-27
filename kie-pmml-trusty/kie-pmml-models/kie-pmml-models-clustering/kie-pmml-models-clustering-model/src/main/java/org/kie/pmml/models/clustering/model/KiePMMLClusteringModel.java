@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.pmml.api.enums.Named;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 public abstract class KiePMMLClusteringModel extends KiePMMLModel {
@@ -54,7 +55,8 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                           final PMMLContext context) {
         double adjustmentFactor = computeAdjustmentFactor(requestData);
 
         Double[] inputs = new Double[clusteringFields.size()];

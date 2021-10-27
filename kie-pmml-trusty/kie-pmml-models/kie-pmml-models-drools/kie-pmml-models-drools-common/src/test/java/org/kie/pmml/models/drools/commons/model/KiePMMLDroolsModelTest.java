@@ -20,13 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
@@ -52,7 +50,7 @@ public class KiePMMLDroolsModelTest {
 
     @Test(expected = KiePMMLException.class)
     public void evaluateNoKieBase() {
-        kiePMMLDroolsModel.evaluate("NOT_KIE_BASE", new HashMap<>());
+        kiePMMLDroolsModel.evaluate("NOT_KIE_BASE", new HashMap<>(), null);
     }
 
     private final class KiePMMLDroolsModelFake extends KiePMMLDroolsModel {
@@ -62,16 +60,6 @@ public class KiePMMLDroolsModelTest {
                                          List<KiePMMLExtension> extensions) {
             super(modelName, extensions);
             this.kModulePackageName = kModulePackageName;
-        }
-
-        @Override
-        public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
-            return super.getFieldTypeMap();
-        }
-
-        @Override
-        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-            return super.evaluate(knowledgeBase, requestData);
         }
 
         @Override
