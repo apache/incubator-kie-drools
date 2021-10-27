@@ -18,12 +18,25 @@ package org.drools.ancompiler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.VoidType;
+import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -32,10 +45,13 @@ import org.drools.core.util.index.AlphaRangeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.StaticJavaParser.parseType;
+
 public class ObjectTypeNodeCompiler {
 
     private static final String NEWLINE = "\n";
-    private static final String PACKAGE_NAME = "org.drools.ancompiler";
+    public static final String PACKAGE_NAME = "org.drools.ancompiler";
     private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replace('.', '/');
     /**
      * This field hold the fully qualified class name that the {@link ObjectTypeNode} is representing.
@@ -56,7 +72,20 @@ public class ObjectTypeNodeCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectTypeNodeCompiler.class);
 
+    // TODO DT-ANC avoid using a boolean
+    private boolean shouldInline;
+
+    /* In case additional fields are needed, will be initialised in order in initAdditionalFields */
+    private List<FieldDeclaration> additionalFields = new ArrayList<>();
+    private ANCConfiguration ancConfiguration;
+
     public ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
+        this(new ANCConfiguration(), objectTypeNode, false);
+    }
+
+    public ObjectTypeNodeCompiler(ANCConfiguration ancConfiguration, ObjectTypeNode objectTypeNode, boolean shouldInline) {
+        this.ancConfiguration = ancConfiguration;
+        this.shouldInline = shouldInline;
         this.objectTypeNode = objectTypeNode;
 
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
@@ -69,7 +98,11 @@ public class ObjectTypeNodeCompiler {
                 , otnHash);
     }
 
-    public CompiledNetworkSource generateSource() {
+    public void addAdditionalFields(FieldDeclaration additionalFieldDeclarations) {
+        this.additionalFields.add(additionalFieldDeclarations);
+    }
+
+    public CompiledNetworkSources generateSource() {
         createClassDeclaration();
 
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
@@ -86,8 +119,10 @@ public class ObjectTypeNodeCompiler {
             parser.setTraverseHashedAlphaNodes(false);
         }
 
+        createAdditionalFields(builder);
+
         // create declarations
-        DeclarationsHandler declarations = new DeclarationsHandler(builder);
+        DeclarationsHandler declarations = new DeclarationsHandler(builder, ancConfiguration.getDisableContextEntry());
         parser.accept(declarations);
 
         // we need the hashed declarations when creating the constructor
@@ -101,8 +136,19 @@ public class ObjectTypeNodeCompiler {
         NodeCollectorHandler nodeCollectors = new NodeCollectorHandler();
         parser.accept(nodeCollectors);
 
-        SetNodeReferenceHandler partitionedSwitch = new SetNodeReferenceHandler(nodeCollectors.getNodes());
-        partitionedSwitch.emitCode(builder);
+
+        final Collection<CompilationUnit> initClasses;
+        builder.append(String.format("protected boolean isInlined() { return %s; }", shouldInline));
+        if(shouldInline) {
+            addEmptySetNetworkReference(builder);
+            InlineFieldReferenceInitHandler inlineFieldReferenceInitHandler = new InlineFieldReferenceInitHandler(nodeCollectors.getNodes(), additionalFields);
+            inlineFieldReferenceInitHandler.emitCode(builder);
+            initClasses = inlineFieldReferenceInitHandler.getPartitionedNodeInitialisationClasses();
+        } else {
+            SetNodeReferenceHandler partitionedSwitch = new SetNodeReferenceHandler(nodeCollectors.getNodes());
+            partitionedSwitch.emitCode(builder);
+            initClasses = null;
+        }
 
         // create assert method
         AssertHandler assertHandler = new AssertHandler(className, !hashedAlphaDeclarations.isEmpty());
@@ -110,8 +156,11 @@ public class ObjectTypeNodeCompiler {
         builder.append(assertHandler.emitCode());
 
         ModifyHandler modifyHandler = new ModifyHandler(className, !hashedAlphaDeclarations.isEmpty());
-        parser.accept(modifyHandler);
+        if (ancConfiguration.isEnableModifyObject()) {
+            parser.accept(modifyHandler);
+        }
         builder.append(modifyHandler.emitCode());
+
 
         DelegateMethodsHandler delegateMethodsHandler = new DelegateMethodsHandler(builder);
         parser.accept(delegateMethodsHandler);
@@ -120,17 +169,58 @@ public class ObjectTypeNodeCompiler {
         builder.append("}").append(NEWLINE);
 
         String sourceCode = builder.toString();
+
+        if(ancConfiguration.isPrettyPrint()) {
+            sourceCode = new PrettyPrinter().print(parse(sourceCode));
+        }
+
         if (logger.isDebugEnabled()) {
             logger.debug(String.format("Generated Compiled Alpha Network %s", sourceCode));
         }
 
-        return new CompiledNetworkSource(
+        return new CompiledNetworkSources(
                 sourceCode,
                 parser.getIndexableConstraint(),
                 getName(),
                 getSourceName(),
                 objectTypeNode,
-                rangeIndexDeclarationMap);
+                rangeIndexDeclarationMap,
+                initClasses);
+    }
+
+    private void addEmptySetNetworkReference(StringBuilder builder) {
+        builder.append("   @Override\n" +
+                               "    protected void setNetworkNodeReference(org.drools.core.common.NetworkNode networkNode) {\n" +
+                               "        \n" +
+                               "    }");
+    }
+
+    // TODO DT-ANC move this outside?
+    private void createAdditionalFields(StringBuilder builder) {
+        for(FieldDeclaration fd : additionalFields) {
+            builder.append(fd.toString());
+        }
+
+        MethodDeclaration initMethod = new MethodDeclaration();
+        initMethod.setModifiers(NodeList.nodeList(Modifier.publicModifier()));
+        initMethod.setType(new VoidType());
+        initMethod.setName("init");
+
+        Parameter args = new Parameter(parseType("Object"), "args");
+        args.setVarArgs(true);
+        initMethod.setParameters(NodeList.nodeList(args));
+
+        BlockStmt initMethodStatements = new BlockStmt();
+        for (int i = 0, additionalFieldsSize = additionalFields.size(); i < additionalFieldsSize; i++) {
+            FieldDeclaration fd = additionalFields.get(i);
+            VariableDeclarator fieldType = fd.getVariables().iterator().next();
+            String fieldInitFromVarargs = String.format("%s = (%s)%s;", fieldType.getName(), fieldType.getType(), String.format("args[%d]", i));
+            Statement initStatement = StaticJavaParser.parseStatement(fieldInitFromVarargs);
+            initMethodStatements.addStatement(initStatement);
+        }
+        initMethod.setBody(initMethodStatements);
+
+        builder.append(initMethod);
     }
 
     /**
@@ -230,7 +320,7 @@ public class ObjectTypeNodeCompiler {
         return PACKAGE_NAME;
     }
 
-    public static List<CompiledNetworkSource> compiledNetworkSources(Rete rete) {
+    public static List<CompiledNetworkSources> compiledNetworkSources(Rete rete) {
         return objectTypeNodeCompiler(rete)
                 .stream()
                 .map(ObjectTypeNodeCompiler::generateSource)
@@ -256,11 +346,11 @@ public class ObjectTypeNodeCompiler {
                 && !(f.getObjectSinkPropagator() instanceof CompiledNetwork); // DROOLS-6336 Avoid generating an ANC from an ANC, it won't work anyway
     }
 
-    public static Map<String, CompiledNetworkSource> compiledNetworkSourceMap(Rete rete) {
-        List<CompiledNetworkSource> compiledNetworkSources = ObjectTypeNodeCompiler.compiledNetworkSources(rete);
+    public static Map<String, CompiledNetworkSources> compiledNetworkSourceMap(Rete rete) {
+        List<CompiledNetworkSources> compiledNetworkSources = ObjectTypeNodeCompiler.compiledNetworkSources(rete);
         return compiledNetworkSources
                 .stream()
-                .collect(Collectors.toMap(CompiledNetworkSource::getName, Function.identity()));
+                .collect(Collectors.toMap(CompiledNetworkSources::getName, Function.identity()));
     }
 
     public static Map<ObjectTypeNode, String> otnWithClassName(Rete rete) {

@@ -49,7 +49,6 @@ public class DMNAlphaNetworkCompiler {
     private CompilationUnit template;
     private ClassOrInterfaceDeclaration dmnAlphaNetworkClass;
 
-
     public DMNAlphaNetworkCompiler() {
     }
 
@@ -62,30 +61,18 @@ public class DMNAlphaNetworkCompiler {
 
         initTemplate();
         setDMNAlphaNetworkClassName(escapedDecisionTableName);
+
         initPropertyNames(decisionTable.getInput());
         initHitPolicy(decisionTable.getHitPolicy(), decisionTable.getAggregation());
 
-        generateAlphaNetworkStatements(tableCells, allGeneratedSources);
         generateValidationStatements(tableCells, allGeneratedSources);
 
         String alphaNetworkClassWithPackage = String.format("org.kie.dmn.core.alphasupport.%s", escapedDecisionTableName);
         allGeneratedSources.addNewAlphaNetworkClass(alphaNetworkClassWithPackage, template.toString());
 
         allGeneratedSources.logGeneratedClasses();
-        allGeneratedSources.dumpGeneratedClasses();
 
         return allGeneratedSources;
-    }
-
-    private void generateAlphaNetworkStatements(TableCells tableCells, GeneratedSources allGeneratedSources) {
-        BlockStmt alphaNetworkStatements = new BlockStmt();
-        tableCells.addAlphaNetworkNode(alphaNetworkStatements, allGeneratedSources);
-
-        BlockStmt alphaNetworkBlock = dmnAlphaNetworkClass
-                .findFirst(BlockStmt.class, block -> blockHasComment(block, "Alpha network creation statements"))
-                .orElseThrow(RuntimeException::new);
-
-        alphaNetworkBlock.replace(alphaNetworkStatements);
     }
 
     private void generateValidationStatements(TableCells tableCells, GeneratedSources allGeneratedSources) {

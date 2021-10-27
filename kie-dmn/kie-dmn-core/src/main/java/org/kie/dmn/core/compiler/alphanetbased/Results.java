@@ -36,12 +36,12 @@ import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import static java.util.stream.Collectors.toList;
 import static org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl.checkResults;
 
-public class ResultCollector {
+public class Results {
 
-    private final Results results = new Results();
+    private final Items items = new Items();
     private final List<FEELEvent> events = new ArrayList<>();
 
-    static class Results {
+    static class Items {
 
         private final TreeMap<Integer, List<ResultObject>> resultGroupedByRow = new TreeMap<>();
 
@@ -96,7 +96,7 @@ public class ResultCollector {
     }
 
     public void addResult(int row, String columnName, Function1<EvaluationContext, Object> outputEvaluationFunction) {
-        results.addResult(new ResultObject(row, columnName, outputEvaluationFunction));
+        items.addResult(new ResultObject(row, columnName, outputEvaluationFunction));
     }
 
     static class ResultObject {
@@ -125,7 +125,7 @@ public class ResultCollector {
     }
 
     public void clearResults() {
-        results.clearResults();
+        items.clearResults();
     }
 
     public List<FEELEvent> getEvents() {
@@ -136,7 +136,7 @@ public class ResultCollector {
                                  HitPolicy hitPolicy,
                                  DecisionTable decisionTable) {
 
-        if (results.hasNoIndexes()) {
+        if (items.hasNoIndexes()) {
 //            if (evaluator.hasDefaultValues()) { TODO DT-ANC default values
 //                return evaluator.defaultToOutput(evalCtx);
 //            }
@@ -150,7 +150,7 @@ public class ResultCollector {
                     Collections.emptyList()));
         }
 
-        List<? extends Indexed> matchIndexes = results.matches();
+        List<? extends Indexed> matchIndexes = items.matches();
         evaluationContext.notifyEvt( () -> {
                                List<Integer> matchedIndexes = matchIndexes.stream().map( dr -> dr.getIndex() + 1 ).collect(Collectors.toList() );
                                return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
@@ -161,7 +161,7 @@ public class ResultCollector {
                            }
         );
 
-        List<Object> resultObjects = results.evaluateResults(evaluationContext);
+        List<Object> resultObjects = items.evaluateResults(evaluationContext);
 
         Map<Integer, String> errorMessages = checkResults(decisionTable.getOutputs(), evaluationContext, matchIndexes, resultObjects );
         if (!errorMessages.isEmpty()) {

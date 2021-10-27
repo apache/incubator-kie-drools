@@ -61,9 +61,9 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
      * This assumes the kie-memory-compiler module is provided at runtime
      */
     private void inMemoryUpdate(ClassLoader rootClassLoader, Rete rete) {
-        Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
+        Map<String, CompiledNetworkSources> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
         if (!compiledNetworkSourcesMap.isEmpty()) {
-            Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
+            Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSources::getSource),
                                                                               rootClassLoader);
             // No need to clear previous sinks/ANC compiled instances
             // as they are removed by ReteOOBuilder.removeTerminalNode after standard KieBaseUpdaterImpl
@@ -78,8 +78,8 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
         // There's not actual need to regenerate the source here but the indexableConstraint is parsed throughout the generation
         // It should be possible to get the indexable constraint without generating the full source
         // see https://issues.redhat.com/browse/DROOLS-5718
-        Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
-        for (Map.Entry<String, CompiledNetworkSource> kv : compiledNetworkSourcesMap.entrySet()) {
+        Map<String, CompiledNetworkSources> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
+        for (Map.Entry<String, CompiledNetworkSources> kv : compiledNetworkSourcesMap.entrySet()) {
             String compiledNetworkClassName = kv.getValue().getName();
             Class<?> aClass;
             try {

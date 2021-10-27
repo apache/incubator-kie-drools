@@ -19,16 +19,12 @@ package org.kie.dmn.core.compiler.alphanetbased;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.ObjectTypeNode;
 
-import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.findMethodTemplate;
 import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.parseJavaClassTemplateFromResources;
-import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceSimpleNameWith;
 
 /**
     Definition of the decision table after the first round of parsing
@@ -76,7 +72,7 @@ public class TableCells {
         Map<String, String> allGeneratedTestClasses = new HashMap<>();
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
             for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
-                cells[rowIndex][columnIndex].compileUnaryTestAndAddTo(allGeneratedTestClasses);
+                cells[rowIndex][columnIndex].crateUnaryTestAndAddTo(allGeneratedTestClasses);
             }
 
             // Generate output cells
@@ -87,50 +83,24 @@ public class TableCells {
         return allGeneratedTestClasses;
     }
 
-    public void addAlphaNetworkNode(BlockStmt alphaNetworkStatements, GeneratedSources generatedSources) {
+    public ObjectTypeNode createRete(ReteBuilderContext reteBuilderContext) {
+        AlphaNetworkCreation alphaNetworkCreation = new AlphaNetworkCreation(reteBuilderContext.buildContext);
 
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
 
-            CompilationUnit alphaNetworkCreationCU = parseJavaClassTemplateFromResources(this.getClass(),
-                                                                                         "/org/kie/dmn/core/alphasupport/AlphaNodeCreationTemplate.java");
-            String methodName = String.format("AlphaNodeCreation%s", rowIndex);
-
-            ClassOrInterfaceDeclaration alphaNodeCreationClass = alphaNetworkCreationCU.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(RuntimeException::new);
-            alphaNodeCreationClass.removeComment();
-
-            replaceSimpleNameWith(alphaNodeCreationClass, "AlphaNodeCreationTemplate", methodName);
-
-            ConstructorDeclaration constructorDeclaration = alphaNodeCreationClass.findFirst(ConstructorDeclaration.class).orElseThrow(RuntimeException::new);
-
-            MethodDeclaration testMethodDefinitionTemplate = findMethodTemplate(alphaNodeCreationClass, "testRxCx");
-
-            BlockStmt creationStatements = constructorDeclaration.getBody();
-            String lastAlphaNodeName = "";
+            AlphaNode lastAlphaNodeCreated = null;
             for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
                 TableCell tableCell = cells[rowIndex][columnIndex];
-                lastAlphaNodeName = tableCell.addNodeCreation(creationStatements, alphaNodeCreationClass, testMethodDefinitionTemplate);
+                lastAlphaNodeCreated = tableCell.createAlphaNode(alphaNetworkCreation, reteBuilderContext, lastAlphaNodeCreated);
             }
 
-            MethodDeclaration outputMethodDefinitionTemplate = findMethodTemplate(alphaNodeCreationClass, "outputRxCx");
             for (int outputColumnIndex = 0; outputColumnIndex < numOutputColumns; outputColumnIndex++) {
-                MethodDeclaration outputMethodDefinitionClone = outputMethodDefinitionTemplate.clone();
                 TableCell tableOutputCell = outputCells[rowIndex][outputColumnIndex];
-                tableOutputCell.addOutputNode(alphaNodeCreationClass, outputMethodDefinitionClone, creationStatements, lastAlphaNodeName);
+                tableOutputCell.addOutputNode(alphaNetworkCreation, lastAlphaNodeCreated);
             }
-            outputMethodDefinitionTemplate.remove();
-
-
-            String classNameWithPackage = TableCell.ALPHANETWORK_STATIC_PACKAGE + "." + methodName;
-            generatedSources.addNewSourceClass(classNameWithPackage, alphaNetworkCreationCU.toString());
-
-            String newAlphaNetworkClass = String.format(
-                    "new %s(builderContext)", classNameWithPackage
-            );
-
-
-            alphaNetworkStatements.addStatement(StaticJavaParser.parseExpression(newAlphaNetworkClass));
 
         }
+        return reteBuilderContext.otn;
     }
 
     public void addColumnValidationStatements(BlockStmt validationStatements, GeneratedSources allGeneratedSources) {

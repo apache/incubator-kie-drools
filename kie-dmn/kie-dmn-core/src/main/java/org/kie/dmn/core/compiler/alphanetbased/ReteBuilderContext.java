@@ -28,7 +28,7 @@ import org.drools.model.Variable;
 
 import static org.drools.model.DSL.declarationOf;
 
-public class AlphaNetworkBuilderContext {
+public class ReteBuilderContext {
 
     public InternalKnowledgeBase kBase;
     public BuildContext buildContext;
@@ -36,9 +36,7 @@ public class AlphaNetworkBuilderContext {
     public Declaration declaration;
     public ObjectTypeNode otn;
 
-    public ResultCollector resultCollector;
-
-    public AlphaNetworkBuilderContext(ResultCollector resultCollector) {
+    public ReteBuilderContext() {
         kBase = KnowledgeBaseFactory.newKnowledgeBase();
         buildContext = new BuildContext(kBase);
         EntryPointNode entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
@@ -50,7 +48,5 @@ public class AlphaNetworkBuilderContext {
 
         otn = new ObjectTypeNode(buildContext.getNextId(), entryPoint, objectType, buildContext);
         buildContext.setObjectSource(otn);
-
-        this.resultCollector = resultCollector;
     }
 }
