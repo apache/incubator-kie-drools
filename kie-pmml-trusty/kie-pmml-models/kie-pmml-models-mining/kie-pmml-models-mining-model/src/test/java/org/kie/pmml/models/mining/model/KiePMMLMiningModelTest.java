@@ -22,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
 import static org.junit.Assert.assertEquals;
@@ -48,7 +49,7 @@ public class KiePMMLMiningModelTest {
 
     @Test(expected = KiePMMLException.class)
     public void evaluate() {
-        KIE_PMML_MINING_MODEL.evaluate("KB", Collections.EMPTY_MAP);
+        KIE_PMML_MINING_MODEL.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
     }
 
     @Test

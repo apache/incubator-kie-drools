@@ -23,6 +23,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,7 +44,7 @@ public class KiePMMLMiningModelWithSourcesTest {
 
     @Test(expected = KiePMMLException.class)
     public void evaluate() {
-        kiePMMLMiningModelWithSources.evaluate("KB", Collections.EMPTY_MAP);
+        kiePMMLMiningModelWithSources.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
     }
 
     @Test(expected = KiePMMLException.class)

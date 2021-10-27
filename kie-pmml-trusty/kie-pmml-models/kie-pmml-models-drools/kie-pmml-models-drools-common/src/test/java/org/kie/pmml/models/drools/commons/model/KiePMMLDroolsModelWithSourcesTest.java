@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -57,7 +58,7 @@ public class KiePMMLDroolsModelWithSourcesTest {
 
     @Test(expected = KiePMMLException.class)
     public void evaluate() {
-        kiePMMLDroolsModelWithSources.evaluate(KIE_BASE, Collections.emptyMap());
+        kiePMMLDroolsModelWithSources.evaluate(KIE_BASE, Collections.emptyMap(), new PMMLContextTest());
     }
 
     @Test(expected = KiePMMLException.class)

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -40,7 +41,8 @@ public class KiePMMLMiningModelWithSources extends KiePMMLMiningModel implements
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                           final PMMLContext pmmlContext) {
         throw new KiePMMLException("KiePMMLMiningModelWithSources is not meant to be used for actual evaluation");
     }
 

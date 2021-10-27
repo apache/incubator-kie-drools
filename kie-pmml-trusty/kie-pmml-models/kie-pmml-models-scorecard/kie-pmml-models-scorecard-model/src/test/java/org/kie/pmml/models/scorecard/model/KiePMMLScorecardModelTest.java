@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -54,7 +55,7 @@ public class KiePMMLScorecardModelTest {
                                                                                 true,
                                                                                 REASONCODE_ALGORITHM.POINTS_BELOW,
                                                                                 0);
-        Object retrieved = kiePMMLScorecardModel.evaluate(null,  Collections.emptyMap());
+        Object retrieved = kiePMMLScorecardModel.evaluate(null, Collections.emptyMap(), new PMMLContextTest());
         assertNotNull(retrieved);
 
         Double EVALUATION_20 = baselineScore - value2;

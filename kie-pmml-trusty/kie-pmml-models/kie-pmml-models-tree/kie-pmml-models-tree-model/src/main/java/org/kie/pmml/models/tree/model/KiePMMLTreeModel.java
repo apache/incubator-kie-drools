@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 public class KiePMMLTreeModel extends KiePMMLModel {
@@ -34,7 +35,8 @@ public class KiePMMLTreeModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                           final PMMLContext context) {
         KiePMMLNodeResult kiePMMLNodeResult = nodeFunction.apply(requestData);
         probabilityResultMap = kiePMMLNodeResult.getProbabilityMap();
         return kiePMMLNodeResult.getScore();

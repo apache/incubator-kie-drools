@@ -29,6 +29,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.PMMLModel;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
@@ -160,9 +161,11 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
      * dependency. It is needed only by <b>Drools-dependent</b>
      * models, so it may be <b>ignored</b> by others
      * @param requestData
+     * @param context used to accumulate additional evaluated values
      * @return
      */
-    public abstract Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData);
+    public abstract Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                                    final PMMLContext context);
 
     /**
      * Returns the <b>probability map</b> evaluated by the model
