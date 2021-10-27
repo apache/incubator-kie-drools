@@ -20,8 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,8 +39,8 @@ public class KiePMMLRegressionTableTest {
     private static final SerializableFunction<Double, Double> FIRST_NUMERIC_FUNCTION = aDouble -> 1 / aDouble;
     private static final SerializableFunction<Double, Double> SECOND_NUMERIC_FUNCTION = aDouble -> 1 - aDouble;
     private final KiePMMLRegressionTable regressionTable;
-    private final SerializableFunction<Object, Double> firstCategoricalFunction;
-    private final SerializableFunction<Object, Double> secondCategoricalFunction;
+    private final SerializableFunction<String, Double> firstCategoricalFunction;
+    private final SerializableFunction<String, Double> secondCategoricalFunction;
     private final double firstNumericalInput;
     private final double secondNumericalInput;
     private final double expectedResult;
@@ -81,17 +79,7 @@ public class KiePMMLRegressionTableTest {
     }
 
     private KiePMMLRegressionTable getKiePMMLRegressionTable() {
-        KiePMMLRegressionTable toReturn = new KiePMMLRegressionTable() {
-            @Override
-            public Object getTargetCategory() {
-                return null;
-            }
-
-            @Override
-            protected void updateResult(AtomicReference<Double> toUpdate) {
-
-            }
-        };
+        final KiePMMLRegressionTable toReturn = new KiePMMLRegressionTable() {};
         toReturn.targetField = TARGET_FIELD;
         toReturn.numericFunctionMap.put(FIRST_NUMERIC_INPUT, FIRST_NUMERIC_FUNCTION);
         toReturn.numericFunctionMap.put(SECOND_NUMERIC_INPUT, SECOND_NUMERIC_FUNCTION);

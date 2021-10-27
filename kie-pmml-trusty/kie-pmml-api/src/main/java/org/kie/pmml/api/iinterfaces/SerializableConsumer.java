@@ -16,9 +16,9 @@
 package org.kie.pmml.api.iinterfaces;
 
 import java.io.Serializable;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
-public interface SerializableFunction<T, R> extends Function<T, R>,
-                                              Serializable {
+public interface SerializableConsumer<T> extends Consumer<T>,
+                                                 Serializable {
 
 }
