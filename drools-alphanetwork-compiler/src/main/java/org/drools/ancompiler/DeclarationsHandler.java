@@ -57,6 +57,7 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     private Map<String, AlphaRangeIndex> rangeIndexDeclarationMap = new HashMap<>();
 
     private final StringBuilder builder;
+    private boolean disableContextEntry;
 
     /**
      * Keeps track of all the ClassFieldReaders for hashed alphas, and the maps that contain hashed values/node ids
@@ -64,8 +65,9 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
      */
     private final Collection<HashedAlphasDeclaration> hashedAlphaDeclarations;
 
-    public DeclarationsHandler(StringBuilder builder) {
+    public DeclarationsHandler(StringBuilder builder, boolean disableContextEntry) {
         this.builder = builder;
+        this.disableContextEntry = disableContextEntry;
         this.hashedAlphaDeclarations = new ArrayList<>();
     }
 
@@ -110,7 +112,9 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     @Override
     public void startNonHashedAlphaNode(AlphaNode alphaNode) {
         builder.append(getVariableDeclaration(alphaNode)).append(NEWLINE);
-        builder.append(getContextVariableDeclaration(alphaNode)).append(NEWLINE);
+        if(!disableContextEntry) {
+            builder.append(getContextVariableDeclaration(alphaNode)).append(NEWLINE);
+        }
     }
 
     @Override

@@ -16,8 +16,13 @@
 
 package org.drools.ancompiler;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.PackageDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
@@ -25,9 +30,9 @@ import org.drools.core.util.index.AlphaRangeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CompiledNetworkSource {
+public class CompiledNetworkSources {
 
-    private final Logger logger = LoggerFactory.getLogger(CompiledNetworkSource.class);
+    private final Logger logger = LoggerFactory.getLogger(CompiledNetworkSources.class);
 
     private final String source;
     private final IndexableConstraint indexableConstraint;
@@ -35,19 +40,22 @@ public class CompiledNetworkSource {
     private final String sourceName;
     private final ObjectTypeNode objectTypeNode;
     private final Map<String, AlphaRangeIndex> rangeIndexDeclarationMap;
+    private Collection<CompilationUnit> initClasses;
 
-    public CompiledNetworkSource(String source,
-                                 IndexableConstraint indexableConstraint,
-                                 String name,
-                                 String sourceName,
-                                 ObjectTypeNode objectTypeNode,
-                                 Map<String, AlphaRangeIndex> rangeIndexDeclarationMap) {
+    public CompiledNetworkSources(String source,
+                                  IndexableConstraint indexableConstraint,
+                                  String name,
+                                  String sourceName,
+                                  ObjectTypeNode objectTypeNode,
+                                  Map<String, AlphaRangeIndex> rangeIndexDeclarationMap,
+                                  Collection<CompilationUnit> initClasses) {
         this.source = source;
         this.indexableConstraint = indexableConstraint;
         this.name = name;
         this.sourceName = sourceName;
         this.objectTypeNode = objectTypeNode;
         this.rangeIndexDeclarationMap = rangeIndexDeclarationMap;
+        this.initClasses = initClasses;
     }
 
     public String getSource() {
@@ -62,10 +70,14 @@ public class CompiledNetworkSource {
         return sourceName;
     }
 
+    public Collection<CompilationUnit> getInitClasses() {
+        return initClasses;
+    }
+
     public CompiledNetwork createInstanceAndSet(Class<?> compiledNetworkClass) {
         CompiledNetwork compiledNetwork = newCompiledNetworkInstance(compiledNetworkClass);
-        compiledNetwork.setNetwork(objectTypeNode);
-        logger.debug("Updating {} with instance of class: {}",
+        compiledNetwork.setStartingObjectTypeNode(objectTypeNode);
+        logger.debug("Setting {} as starting node of: {}",
                      objectTypeNode,
                      compiledNetworkClass.getName());
 
@@ -83,5 +95,21 @@ public class CompiledNetworkSource {
 
     private InternalReadAccessor getFieldExtractor() {
         return indexableConstraint == null ? null : indexableConstraint.getFieldExtractor();
+    }
+
+    public Map<String, String> getAllGeneratedSources() {
+        Map<String, String> allGeneratedSources = new HashMap<>();
+
+        allGeneratedSources.put(getName(), getSource());
+
+        for(CompilationUnit ch : getInitClasses()) {
+            PackageDeclaration packageDeclaration = (PackageDeclaration) ch.getChildNodes().get(0);
+            ClassOrInterfaceDeclaration classOrInterfaceDeclaration = (ClassOrInterfaceDeclaration) ch.getChildNodes().get(1);
+            String classNameWithPackage = String.format("%s.%s", packageDeclaration.getNameAsString(),
+                                                        classOrInterfaceDeclaration.getNameAsString());
+            allGeneratedSources.put(classNameWithPackage, ch.toString());
+        }
+
+        return allGeneratedSources;
     }
 }

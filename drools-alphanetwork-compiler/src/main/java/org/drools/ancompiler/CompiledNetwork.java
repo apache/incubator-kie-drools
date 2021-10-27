@@ -100,12 +100,17 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     public final void setObjectTypeNode(final ObjectTypeNode objectTypeNode) {
         this.objectTypeNode = objectTypeNode;
 
-        NodeReferenceSetter setter = new NodeReferenceSetter();
-        ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
-        parser.accept(setter);
+        // Use this to set all the fields from the RETE
+       if(!isInlined()) {
+           NodeReferenceSetter setter = new NodeReferenceSetter();
+           ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
+           parser.accept(setter);
+       }
     }
 
-    public void setNetwork(ObjectTypeNode objectTypeNode) {
+    // Sets the starting node for the evaluation of the compiled Alpha Network
+    // both in the CompiledNetwork and the ObjectTypeNode itself
+    public void setStartingObjectTypeNode(ObjectTypeNode objectTypeNode) {
         setObjectTypeNode(objectTypeNode);
         setOriginalSinkPropagator(objectTypeNode.getObjectSinkPropagator());
         objectTypeNode.setObjectSinkPropagator(this);
@@ -129,6 +134,15 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
      * @param networkNode node to set to set
      */
     protected abstract void setNetworkNodeReference(NetworkNode networkNode);
+
+    /**
+     * Use to initialize the inlined expression so that the ANC can instantiate without depending on the Rete.
+     * Should be used instead of #setNetworkNodeReference
+     * See #isInlined
+     */
+    public void initConstraintsResults() { }
+
+    protected abstract boolean isInlined();
 
     public NetworkHandlerAdaptor createNodeReferenceSetter() {
         return new NodeReferenceSetter();
@@ -210,4 +224,6 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     public void doUnlinkRiaNode(InternalWorkingMemory wm) {
         originalSinkPropagator.doUnlinkRiaNode(wm);
     }
+
+    public abstract void init(Object... args);
 }

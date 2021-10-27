@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.xml.namespace.QName;
 
 import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
@@ -41,7 +43,7 @@ import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
-import org.kie.dmn.core.compiler.alphanetbased.AlphaNetDMNEvaluatorCompiler;
+import org.kie.dmn.core.compiler.alphanetbased.DMNAlphaNetworkEvaluatorCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator;
@@ -100,7 +102,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
     public static DMNEvaluatorCompiler dmnEvaluatorCompilerFactory(DMNCompilerImpl dmnCompiler, DMNCompilerConfigurationImpl dmnCompilerConfig) {
         if (dmnCompilerConfig.isUseAlphaNetwork()) {
             logger.debug("Using AlphaNetDMNEvaluatorCompiler.");
-            return new AlphaNetDMNEvaluatorCompiler(dmnCompiler);
+            return new DMNAlphaNetworkEvaluatorCompiler(dmnCompiler);
         } else {
             logger.debug("default DMNEvaluatorCompiler.");
             return new DMNEvaluatorCompiler(dmnCompiler);
