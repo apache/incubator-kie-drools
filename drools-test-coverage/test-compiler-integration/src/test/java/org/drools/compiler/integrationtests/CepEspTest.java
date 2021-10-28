@@ -1226,7 +1226,7 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test//(timeout = 10000)
     public void testIdleTimeAndTimeToNextJob() {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_SimpleTimeWindow.drl");
