@@ -26,7 +26,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.tree.TreeModel;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
@@ -41,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.dumpSources;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
@@ -64,7 +62,6 @@ public class KiePMMLTreeModelFactory {
         Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(compilationDTO);
         try {
             Class<?> kiePMMLTreeModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
-            dumpSources(sourcesMap, PMML_MODEL.TREE_MODEL);
             return (KiePMMLTreeModel) kiePMMLTreeModelClass.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
