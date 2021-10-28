@@ -18,10 +18,8 @@ package org.kie.pmml.models.regression.model;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
-import org.kie.pmml.api.iinterfaces.SerializableConsumer;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.api.runtime.PMMLContext;
 
@@ -30,10 +28,9 @@ public abstract class KiePMMLRegressionTable implements Serializable {
     private static final long serialVersionUID = -7899446939844650691L;
     protected Map<String, SerializableFunction<Double, Double>> numericFunctionMap = new HashMap<>();
     protected Map<String, SerializableFunction<String, Double>> categoricalFunctionMap = new HashMap<>();
-    protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap =
             new HashMap<>();
-    protected SerializableConsumer<AtomicReference<Double>> resultUpdater;
+    protected SerializableFunction<Double, Double> resultUpdater;
     protected double intercept;
     protected String targetField;
     protected Object targetCategory;
@@ -43,7 +40,7 @@ public abstract class KiePMMLRegressionTable implements Serializable {
     }
 
     public Object evaluateRegression(final Map<String, Object> input, final PMMLContext context) {
-        final AtomicReference<Double> result = new AtomicReference<>(intercept);
+        double result = intercept;
         final Map<String, Double> resultMap = new HashMap<>();
         for (Map.Entry<String, SerializableFunction<Double, Double>> entry : numericFunctionMap.entrySet()) {
             String key = entry.getKey();
@@ -61,15 +58,13 @@ public abstract class KiePMMLRegressionTable implements Serializable {
                 predictorTermsFunctionMap.entrySet()) {
             resultMap.put(entry.getKey(), entry.getValue().apply(input));
         }
-        resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
-        if (resultUpdater != null) {
-            resultUpdater.accept(result);
+        for (Double value : resultMap.values()) {
+            result += value;
         }
-        return result.get();
-    }
-
-    public Map<String, Object> getOutputFieldsMap() {
-        return outputFieldsMap;
+        if (resultUpdater != null) {
+            result = resultUpdater.apply(result);
+        }
+        return result;
     }
 
     public String getTargetField() {
@@ -106,31 +101,31 @@ public abstract class KiePMMLRegressionTable implements Serializable {
         return valuesMap.getOrDefault(input.toString(), 0.0);
     }
 
-    protected void updateSOFTMAXResult(final AtomicReference<Double> toUpdate) {
-        toUpdate.updateAndGet(y -> 1.0 / (1.0 + Math.exp(-y)));
+    protected double updateSOFTMAXResult(final Double y) {
+        return 1.0 / (1.0 + Math.exp(-y));
     }
 
-    protected void updateLOGITResult(final AtomicReference<Double> toUpdate) {
-        toUpdate.updateAndGet(y -> 1.0 / (1.0 + Math.exp(-y)));
+    protected double updateLOGITResult(final Double y) {
+        return 1.0 / (1.0 + Math.exp(-y));
     }
 
-    protected void updateEXPResult(final AtomicReference<Double> toUpdate) {
-        toUpdate.updateAndGet(Math::exp);
+    protected double updateEXPResult(final Double y) {
+        return Math.exp(y);
     }
 
-    protected void updatePROBITResult(final AtomicReference<Double> toUpdate) {
-        toUpdate.updateAndGet(y -> new NormalDistribution().cumulativeProbability(y));
+    protected double updatePROBITResult(final Double y) {
+        return new NormalDistribution().cumulativeProbability(y);
     }
 
-    protected void updateCLOGLOGResult(final AtomicReference<Double> toUpdate) {
-        toUpdate.updateAndGet(y -> 1.0 - Math.exp(-Math.exp(y)));
+    protected double updateCLOGLOGResult(final Double y) {
+        return 1.0 - Math.exp(-Math.exp(y));
     }
 
-    protected void updateCAUCHITResult(final AtomicReference<Double> toUpdate) {
-        toUpdate.updateAndGet(y -> 0.5 + (1 / Math.PI) * Math.atan(y));
+    protected double updateCAUCHITResult(final Double y) {
+        return 0.5 + (1 / Math.PI) * Math.atan(y);
     }
 
-    protected void updateNONEResult(final AtomicReference<Double> toUpdate) {
-        // NO OP
+    protected double updateNONEResult(final Double y) {
+        return y;
     }
 }

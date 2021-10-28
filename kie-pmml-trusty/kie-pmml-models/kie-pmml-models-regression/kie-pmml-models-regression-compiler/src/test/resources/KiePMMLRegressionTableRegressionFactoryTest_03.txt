@@ -1,1 +1,1 @@
-(org.kie.pmml.api.iinterfaces.SerializableConsumer<java.util.concurrent.atomic.AtomicReference<Double>>) this::update%sResult
+(org.kie.pmml.api.iinterfaces.SerializableFunction<Double, Double>) this::update%sResult
