@@ -41,7 +41,6 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
@@ -495,7 +494,7 @@ public class MVELConsequenceBuilderTest {
 
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext pctx,
-                                 final InternalWorkingMemory workingMemory) {
+                                 final ReteEvaluator reteEvaluator) {
         }
 
         @Override
@@ -504,7 +503,7 @@ public class MVELConsequenceBuilderTest {
 
         public void retractRightTuple(final RightTuple rightTuple,
                                       final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
+                                      final ReteEvaluator reteEvaluator) {
         }
 
         public short getType() {
@@ -513,7 +512,7 @@ public class MVELConsequenceBuilderTest {
 
         public void modifyRightTuple(RightTuple rightTuple,
                                      PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
+                                     ReteEvaluator reteEvaluator) {
         }
 
         public LeftTuple createLeftTuple( InternalFactHandle factHandle,

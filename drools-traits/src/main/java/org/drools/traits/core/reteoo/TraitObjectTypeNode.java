@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.reteoo.EntryPointNode;
@@ -52,9 +52,9 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     }
 
     @Override
-    public void propagateAssert( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
+    public void propagateAssert( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         if ( isAssertAllowed( factHandle ) ) {
-            super.propagateAssert( factHandle, context, workingMemory );
+            super.propagateAssert( factHandle, context, reteEvaluator );
         }
     }
 
@@ -120,7 +120,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     public void modifyObject( InternalFactHandle factHandle,
                               ModifyPreviousTuples modifyPreviousTuples,
                               PropagationContext context,
-                              InternalWorkingMemory workingMemory ) {
+                              ReteEvaluator reteEvaluator ) {
 
         if (!isModifyAllowed( factHandle )) {
             return;
@@ -132,8 +132,8 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
             if (isModifyAllowed(factHandle)) {
                 this.sink.propagateModifyObject(factHandle,
                                                 modifyPreviousTuples,
-                                                context.adaptModificationMaskForObjectType(objectType, workingMemory),
-                                                workingMemory);
+                                                context.adaptModificationMaskForObjectType(objectType, reteEvaluator),
+                                                reteEvaluator);
             } else {
                 //System.err.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + " checks in " + typeMask );
             }
@@ -141,9 +141,9 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
             this.sink.propagateModifyObject(factHandle,
                                             modifyPreviousTuples,
                                             !context.getModificationMask().isSet(PropertySpecificUtil.TRAITABLE_BIT) ?
-                                                    context.adaptModificationMaskForObjectType(objectType, workingMemory) :
+                                                    context.adaptModificationMaskForObjectType(objectType, reteEvaluator) :
                                                     context,
-                                            workingMemory);
+                                            reteEvaluator);
         }
     }
 

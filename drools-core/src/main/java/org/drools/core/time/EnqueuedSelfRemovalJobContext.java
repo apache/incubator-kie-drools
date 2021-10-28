@@ -16,11 +16,11 @@
 
 package org.drools.core.time;
 
-import org.drools.core.common.InternalWorkingMemory;
+import java.util.Map;
+
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.impl.TimerJobInstance;
-
-import java.util.Map;
 
 public class EnqueuedSelfRemovalJobContext extends SelfRemovalJobContext {
     public EnqueuedSelfRemovalJobContext( JobContext jobContext, Map<Long, TimerJobInstance> timerInstances ) {
@@ -29,9 +29,9 @@ public class EnqueuedSelfRemovalJobContext extends SelfRemovalJobContext {
 
     @Override
     public void remove() {
-        getWorkingMemory().addPropagation( new PropagationEntry.AbstractPropagationEntry() {
+        getReteEvaluator().addPropagation( new PropagationEntry.AbstractPropagationEntry() {
             @Override
-            public void execute( InternalWorkingMemory wm ) {
+            public void execute(ReteEvaluator reteEvaluator) {
                 timerInstances.remove( jobContext.getJobHandle().getId() );
             }
         } );

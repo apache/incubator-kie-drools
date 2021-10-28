@@ -26,7 +26,6 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
@@ -132,9 +131,7 @@ public class MVELSalienceBuilderTest {
 
 
         assertEquals( 25,
-                      context.getRule().getSalience().getValue( new DefaultKnowledgeHelper( item, ksession ),
-                                                                context.getRule(),
-                                                                ksession ) );
+                      context.getRule().getSalience().getValue( item, context.getRule(), ksession ) );
 
     }
 
@@ -225,9 +222,7 @@ public class MVELSalienceBuilderTest {
                 Thread.sleep( 1000 );
                 for ( int i = 0; i < iterations && !halt; i++ ) {
                     assertEquals( result,
-                                  salience.getValue( new DefaultKnowledgeHelper( item, wm ),
-                                                     rule,
-                                                     wm ) );
+                                  salience.getValue( item, rule, wm ) );
                     Thread.currentThread().yield();
                 }
             } catch ( Throwable e ) {

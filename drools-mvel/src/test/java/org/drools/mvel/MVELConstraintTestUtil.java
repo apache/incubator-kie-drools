@@ -16,7 +16,7 @@ package org.drools.mvel;
 
 import java.util.ArrayList;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -51,7 +51,7 @@ public class MVELConstraintTestUtil extends MVELConstraint {
     }
 
     @Override
-    protected ParserConfiguration getParserConfiguration(InternalWorkingMemory workingMemory) {
+    protected ParserConfiguration getParserConfiguration(ReteEvaluator reteEvaluator) {
         ParserConfiguration parserConfiguration = new ParserConfiguration();
         parserConfiguration.addImport(Cheese.class);
         return parserConfiguration;

@@ -19,7 +19,6 @@ package org.drools.modelcompiler.constraints;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
@@ -128,7 +127,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     @Override
     public boolean isAllowedCachedLeft( ContextEntry context, InternalFactHandle handle ) {
-        return evaluateUnification( handle, ((LambdaContextEntry) context).getTuple(), ((LambdaContextEntry) context).getReteEvaluator()) );
+        return evaluateUnification( handle, ((LambdaContextEntry) context).getTuple(), ((LambdaContextEntry) context).getReteEvaluator() );
     }
 
     @Override

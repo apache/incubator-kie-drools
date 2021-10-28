@@ -58,8 +58,6 @@ public interface InternalWorkingMemory
 
     long getNextPropagationIdCounter();
 
-    ObjectStore getObjectStore();
-
     default FactHandleClassStore getStoreForClass(Class<?> clazz) {
         return getObjectStore().getStoreForClass(clazz);
     }

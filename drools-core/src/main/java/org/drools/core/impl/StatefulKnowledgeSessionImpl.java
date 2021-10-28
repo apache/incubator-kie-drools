@@ -1304,7 +1304,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     @Override
     public ActivationsManager getActivationsManager() {
-        return null;
+        return agenda;
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {

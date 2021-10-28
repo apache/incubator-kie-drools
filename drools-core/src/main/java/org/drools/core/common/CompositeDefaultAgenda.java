@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
+import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
@@ -104,8 +105,23 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
+    public ReteEvaluator getReteEvaluator() {
+        return agendas[0].getWorkingMemory();
+    }
+
+    @Override
     public AgendaGroupsManager getAgendaGroupsManager() {
-        return null;
+        return agendas[0].getAgendaGroupsManager();
+    }
+
+    @Override
+    public AgendaEventSupport getAgendaEventSupport() {
+        return agendas[0].getAgendaEventSupport();
+    }
+
+    @Override
+    public RuleAgendaItem peekNextRule() {
+        return getAgendaGroupsManager().peekNextRule();
     }
 
     @Override
@@ -247,8 +263,8 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
-            super.execute( wm );
+        public void execute( ReteEvaluator reteEvaluator ) {
+            super.execute( reteEvaluator );
             compositeAgenda.notifyWaitOnRest();
         }
     }
@@ -481,6 +497,11 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public void evaluateEagerList() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.evaluateEagerList -> TODO" );
+    }
+
+    @Override
+    public void evaluateQueriesForRule(RuleAgendaItem item) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

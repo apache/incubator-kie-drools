@@ -16,15 +16,15 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class InstanceNotEqualsConstraint
     implements
@@ -159,12 +159,12 @@ public class InstanceNotEqualsConstraint
             this.entry = entry;
         }
 
-        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+        public void updateFromTuple(final ReteEvaluator reteEvaluator,
                                     final Tuple tuple) {
             this.left = tuple.getObject( this.pattern.getTupleIndex());
         }
 
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+        public void updateFromFactHandle(final ReteEvaluator reteEvaluator,
                                          final InternalFactHandle handle) {
             this.right = handle.getObject();
         }

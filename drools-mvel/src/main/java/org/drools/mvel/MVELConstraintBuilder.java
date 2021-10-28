@@ -50,6 +50,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
@@ -843,10 +844,10 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         @Override
-        public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple ) {
+        public Object getValue(ReteEvaluator reteEvaluator, LeftTuple leftTuple ) {
             Map<String, Object> vars = new HashMap<>();
             for (Declaration d : declarations) {
-                vars.put(d.getBindingName(), QueryArgument.evaluateDeclaration( wm, leftTuple, d ));
+                vars.put(d.getBindingName(), QueryArgument.evaluateDeclaration( reteEvaluator, leftTuple, d ));
             }
             return evaluator.evaluate( null, vars );
         }

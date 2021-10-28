@@ -17,7 +17,7 @@ package org.drools.mvel.asm;
 import java.util.Map;
 
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.WorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.builder.dialect.asm.EvalStub;
 import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
@@ -27,7 +27,23 @@ import org.drools.core.spi.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 
-import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACC_VOLATILE;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.ATHROW;
+import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.GOTO;
+import static org.mvel2.asm.Opcodes.IFNONNULL;
+import static org.mvel2.asm.Opcodes.INVOKESPECIAL;
+import static org.mvel2.asm.Opcodes.IRETURN;
+import static org.mvel2.asm.Opcodes.MONITORENTER;
+import static org.mvel2.asm.Opcodes.MONITOREXIT;
+import static org.mvel2.asm.Opcodes.NEW;
+import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
 
@@ -56,7 +72,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 mv.visitInsn( ARETURN );
             }
         }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
-        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Tuple.class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
+        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Tuple.class, Declaration[].class, ReteEvaluator.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 Label syncStart = new Label();
                 Label syncEnd = new Label();
@@ -82,7 +98,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitVarInsn(ALOAD, 3);
                 // ... EvalGenerator.generate(this, tuple, declarations, workingMemory)
-                invokeStatic(EvalGenerator.class, "generate", null, EvalStub.class, Tuple.class, Declaration[].class, WorkingMemory.class);
+                invokeStatic(EvalGenerator.class, "generate", null, EvalStub.class, Tuple.class, Declaration[].class, ReteEvaluator.class);
                 mv.visitLabel(ifNotInitialized);
                 mv.visitVarInsn(ALOAD, 5);
                 mv.visitInsn(MONITOREXIT);
@@ -102,7 +118,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitVarInsn(ALOAD, 3);
                 mv.visitVarInsn(ALOAD, 4);
-                invokeInterface(EvalExpression.class, "evaluate", Boolean.TYPE, Tuple.class, Declaration[].class, WorkingMemory.class, Object.class);
+                invokeInterface(EvalExpression.class, "evaluate", Boolean.TYPE, Tuple.class, Declaration[].class, ReteEvaluator.class, Object.class);
                 mv.visitInsn(IRETURN);
             }
         }).addMethod(ACC_PUBLIC, "setEval", generator.methodDescr(null, EvalExpression.class), new ClassGenerator.MethodBody() {

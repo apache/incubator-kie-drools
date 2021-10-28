@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
@@ -38,15 +38,15 @@ public class MockObjectSink
 
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                             final ReteEvaluator reteEvaluator) {
         new RightTupleImpl( factHandle, this );
-        this.asserted.add( new Object[]{factHandle, context, workingMemory} );
+        this.asserted.add( new Object[]{factHandle, context, reteEvaluator} );
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
                               final PropagationContext context,
-                              final InternalWorkingMemory workingMemory) {
-        this.retracted.add( new Object[]{rightTuple.getFactHandle(), context, workingMemory} );
+                              final ReteEvaluator reteEvaluator) {
+        this.retracted.add( new Object[]{rightTuple.getFactHandle(), context, reteEvaluator} );
     }
 
     public List getAsserted() {
@@ -119,27 +119,27 @@ public class MockObjectSink
     public void modifyObject(InternalFactHandle factHandle,
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
+                             ReteEvaluator reteEvaluator) {
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(RuleBasePartitionId.MAIN_PARTITION);
         while ( rightTuple != null ) {
             modifyPreviousTuples.removeRightTuple(RuleBasePartitionId.MAIN_PARTITION);
             rightTuple = modifyPreviousTuples.peekRightTuple(RuleBasePartitionId.MAIN_PARTITION);
         }
-        this.updated.add( new Object[]{factHandle, context, workingMemory} );
+        this.updated.add( new Object[]{factHandle, context, reteEvaluator} );
         
     }
 
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
-        this.updated.add( new Object[]{rightTuple, context, workingMemory} );
+                                 ReteEvaluator reteEvaluator) {
+        this.updated.add( new Object[]{rightTuple, context, reteEvaluator} );
         
     }
 
     public void byPassModifyToBetaNode(InternalFactHandle factHandle,
                                        ModifyPreviousTuples modifyPreviousTuples,
                                        PropagationContext context,
-                                       InternalWorkingMemory workingMemory) {
+                                       ReteEvaluator reteEvaluator) {
     }
 
     public int getAssociationsSize() {

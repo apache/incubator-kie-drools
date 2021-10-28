@@ -15,10 +15,10 @@
 
 package org.drools.core.time;
 
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.time.impl.TimerJobInstance;
-
 import java.util.Map;
+
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.time.impl.TimerJobInstance;
 
 public class SelfRemovalJobContext implements JobContext {
 
@@ -48,8 +48,8 @@ public class SelfRemovalJobContext implements JobContext {
     }
 
     @Override
-    public InternalWorkingMemory getWorkingMemory() {
-        return jobContext.getWorkingMemory();
+    public ReteEvaluator getReteEvaluator() {
+        return jobContext.getReteEvaluator();
     }
 
     public void remove() {

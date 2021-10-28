@@ -490,7 +490,7 @@ public class PhreakTimerNode {
 
         @Override
         public ReteEvaluator getReteEvaluator() {
-            return null;
+            return reteEvaluator;
         }
 
         public void setJobHandle(JobHandle jobHandle) {

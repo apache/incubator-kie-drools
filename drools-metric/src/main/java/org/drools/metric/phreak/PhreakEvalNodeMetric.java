@@ -15,14 +15,14 @@
 
 package org.drools.metric.phreak;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakEvalNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.metric.util.MetricLogUtils;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakEvalNodeMetric extends PhreakEvalNode {
 
@@ -30,7 +30,7 @@ public class PhreakEvalNodeMetric extends PhreakEvalNode {
     public void doNode(EvalConditionNode evalNode,
                        EvalMemory em,
                        LeftTupleSink sink,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
@@ -38,7 +38,7 @@ public class PhreakEvalNodeMetric extends PhreakEvalNode {
         try {
             MetricLogUtils.getInstance().startMetrics(evalNode);
 
-            super.doNode(evalNode, em, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(evalNode, em, sink, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

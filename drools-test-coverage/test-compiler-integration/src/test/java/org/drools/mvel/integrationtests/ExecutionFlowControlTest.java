@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.spi.AgendaGroup;
@@ -357,7 +358,7 @@ public class ExecutionFlowControlTest {
         ksession.insert( brie12 );
         ((InternalWorkingMemory)ksession).flushPropagations();
         InternalAgenda agenda = ((InternalAgenda) ksession.getAgenda());
-        final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
+        final AgendaGroup group1 = agenda.getAgendaGroupsManager().getAgendaGroup( "group1" );
         assertEquals( 1, group1.size() );
 
         ksession.getAgenda().getAgendaGroup("group1").setFocus( );
@@ -368,10 +369,10 @@ public class ExecutionFlowControlTest {
 
         final Cheese cheddar20 = new Cheese( "cheddar", 20 );
         ksession.insert( cheddar20 );
-        final AgendaGroup group2 = agenda.getAgendaGroup( "group1" );
+        final AgendaGroup group2 = agenda.getAgendaGroupsManager().getAgendaGroup( "group1" );
         assertEquals( 1, group2.size() );
 
-        agenda.setFocus(group2);
+        agenda.getAgendaGroupsManager().setFocus(group2);
         final Cheese cheddar17 = new Cheese( "cheddar", 17 );
         ksession.insert( cheddar17 );
         assertEquals( 1, group2.size() );
@@ -474,8 +475,8 @@ public class ExecutionFlowControlTest {
         wm.flushPropagations();
 
         final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
-        final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
-        agenda.setFocus( group1 );
+        final AgendaGroup group1 = agenda.getAgendaGroupsManager().getAgendaGroup( "group1" );
+        agenda.getAgendaGroupsManager().setFocus( group1 );
         assertEquals( 1, group1.size() );
         RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations()[0];
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
@@ -490,8 +491,8 @@ public class ExecutionFlowControlTest {
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
         assertEquals(2, ruleItem1.getRuleExecutor().getLeftTupleList().size());
 
-        AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
-        agenda.setFocus( group2);
+        AgendaGroup group2 = agenda.getAgendaGroupsManager().getAgendaGroup( "group2" );
+        agenda.getAgendaGroupsManager().setFocus( group2);
         assertEquals( 1, group2.size() );
         RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations()[0];
         ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
@@ -892,7 +893,7 @@ public class ExecutionFlowControlTest {
         ksession.insert( "Test" );
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
-        assertEquals(2, ((InternalAgenda) ksession.getAgenda()).getRuleFlowGroup("Group1").size());
+        assertEquals(2, ((InternalRuleFlowGroup) ksession.getAgenda().getRuleFlowGroup("Group1")).size());
 
         ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("Group1");
         ksession.fireAllRules();

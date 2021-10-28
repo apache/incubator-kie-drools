@@ -16,18 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.ClockType;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
-import org.drools.core.time.TimerService;
-import org.drools.core.time.TimerServiceFactory;
-import org.drools.core.time.Trigger;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -38,6 +26,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
+
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.TimerServiceFactory;
+import org.drools.core.time.Trigger;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -140,8 +141,8 @@ public class JDKTimerServiceTest {
         }
 
         @Override
-        public InternalWorkingMemory getWorkingMemory() {
-            return (InternalWorkingMemory) Proxy.newProxyInstance( InternalWorkingMemory.class.getClassLoader(),
+        public ReteEvaluator getReteEvaluator() {
+            return (ReteEvaluator) Proxy.newProxyInstance( InternalWorkingMemory.class.getClassLoader(),
                                                                    new Class[]{InternalWorkingMemory.class},
                                                                    new InvocationHandler() {
                                                                        @Override

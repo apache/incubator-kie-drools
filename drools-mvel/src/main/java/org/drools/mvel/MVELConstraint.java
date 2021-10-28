@@ -282,7 +282,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             }
         }
         try {
-            return conditionEvaluator.evaluate(handle, reteEvaluator, tuple);
+            return conditionEvaluator.evaluate(handle, (InternalWorkingMemory) reteEvaluator, tuple);
         } catch (Exception e) {
             throw new ConstraintEvaluationException(expression, evaluationContext, e);
         }
@@ -304,7 +304,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     protected ConditionEvaluator forceJitEvaluator(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple) {
         ConditionEvaluator mvelEvaluator = createMvelConditionEvaluator(reteEvaluator);
         try {
-            mvelEvaluator.evaluate(handle, reteEvaluator, tuple);
+            mvelEvaluator.evaluate(handle, (InternalWorkingMemory) reteEvaluator, tuple);
         } catch (ClassCastException cce) {
         } catch (Exception e) {
             return createMvelConditionEvaluator(reteEvaluator);
@@ -351,7 +351,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
         try {
             if (analyzedCondition == null) {
-                analyzedCondition = (( MVELConditionEvaluator ) mvelEvaluator).getAnalyzedCondition(handle, reteEvaluator, tuple);
+                analyzedCondition = (( MVELConditionEvaluator ) mvelEvaluator).getAnalyzedCondition(handle, (InternalWorkingMemory) reteEvaluator, tuple);
             }
             ClassLoader jitClassLoader = kBase.getRootClassLoader() instanceof ProjectClassLoader ?
                     ((ProjectClassLoader) kBase.getRootClassLoader()).getTypesClassLoader() :

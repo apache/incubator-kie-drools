@@ -40,6 +40,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
@@ -402,7 +403,7 @@ public class ProtobufInputMarshaller {
         ProtobufMessages.Agenda _agenda = _ruleData.getAgenda();
 
         for ( ProtobufMessages.Agenda.AgendaGroup _agendaGroup : _agenda.getAgendaGroupList() ) {
-            AgendaGroupQueueImpl group = (AgendaGroupQueueImpl) agenda.getAgendaGroup( _agendaGroup.getName(), context.getKnowledgeBase() );
+            AgendaGroupQueueImpl group = (AgendaGroupQueueImpl) agenda.getAgendaGroup( _agendaGroup.getName() );
             group.setActive( _agendaGroup.getIsActive() );
             group.setAutoDeactivate( _agendaGroup.getIsAutoDeactivate() );
             group.setClearedForRecency( _agendaGroup.getClearedForRecency() );
@@ -413,15 +414,15 @@ public class ProtobufInputMarshaller {
                 group.addNodeInstance( _nodeInstance.hasProcessInstanceId() ? _nodeInstance.getProcessInstanceId() : _nodeInstance.getProcessInstanceStringId(),
                                        _nodeInstance.getNodeInstanceId() );
             }
-            agenda.putOnAgendaGroupsMap( group.getName(), group );
+            agenda.getAgendaGroupsManager().putOnAgendaGroupsMap( group.getName(), group );
         }
         
         for ( String _groupName : _agenda.getFocusStack().getGroupNameList() ) {
-            agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( _groupName ) );
+            agenda.getAgendaGroupsManager().addAgendaGroupOnStack( (InternalAgendaGroup) agenda.getAgendaGroup( _groupName ) );
         }
         
         for ( ProtobufMessages.Agenda.RuleFlowGroup _ruleFlowGroup : _agenda.getRuleFlowGroupList() ) {
-            AgendaGroupQueueImpl group = (AgendaGroupQueueImpl) agenda.getAgendaGroup( _ruleFlowGroup.getName(), context.getKnowledgeBase() );
+            AgendaGroupQueueImpl group = (AgendaGroupQueueImpl) agenda.getAgendaGroup( _ruleFlowGroup.getName() );
             group.setActive( _ruleFlowGroup.getIsActive() );
             group.setAutoDeactivate( _ruleFlowGroup.getIsAutoDeactivate() );
             
@@ -430,9 +431,9 @@ public class ProtobufInputMarshaller {
                 group.addNodeInstance( _nodeInstance.getProcessInstanceId(),
                                        _nodeInstance.getNodeInstanceId() );
             }
-            agenda.putOnAgendaGroupsMap( group.getName(), group );
+            agenda.getAgendaGroupsManager().putOnAgendaGroupsMap( group.getName(), group );
             if (group.isActive()) {
-                agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( group.getName() ) );
+                agenda.getAgendaGroupsManager().addAgendaGroupOnStack( (InternalAgendaGroup) agenda.getAgendaGroup( group.getName() ) );
             }
         }
 

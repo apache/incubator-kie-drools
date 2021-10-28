@@ -55,6 +55,7 @@ import org.drools.core.base.extractors.BaseShortClassFieldWriter;
 import org.drools.core.base.extractors.BaseZonedDateTimeClassFieldReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.reflective.util.ByteArrayClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.Label;
@@ -336,7 +337,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         Method overridingMethod;
         try {
             overridingMethod = superClass.getMethod( getOverridingGetMethodName( fieldType ),
-                                                     InternalWorkingMemory.class, Object.class );
+                                                     ReteEvaluator.class, Object.class );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report back to JBoss Rules team.",
                                         e );

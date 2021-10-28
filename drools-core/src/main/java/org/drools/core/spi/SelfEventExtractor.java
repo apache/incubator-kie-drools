@@ -16,17 +16,18 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.BaseObjectClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.facttemplates.Fact;
-import org.drools.core.util.ClassUtils;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.BaseObjectClassFieldReader;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.facttemplates.Fact;
+import org.drools.core.util.ClassUtils;
 
 public class SelfEventExtractor extends BaseObjectClassFieldReader
     implements
@@ -63,7 +64,7 @@ public class SelfEventExtractor extends BaseObjectClassFieldReader
         setValueType( objectType.getValueType() );        
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory,
+    public Object getValue(ReteEvaluator reteEvaluator,
                            final Object object) {
         return object;
     }

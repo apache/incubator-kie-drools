@@ -21,8 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -216,13 +216,13 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     }
 
     @Override
-    public void doLinkRiaNode(InternalWorkingMemory wm) {
-        originalSinkPropagator.doLinkRiaNode(wm);
+    public void doLinkRiaNode(ReteEvaluator reteEvaluator) {
+        originalSinkPropagator.doLinkRiaNode(reteEvaluator);
     }
 
     @Override
-    public void doUnlinkRiaNode(InternalWorkingMemory wm) {
-        originalSinkPropagator.doUnlinkRiaNode(wm);
+    public void doUnlinkRiaNode(ReteEvaluator reteEvaluator) {
+        originalSinkPropagator.doUnlinkRiaNode(reteEvaluator);
     }
 
     public abstract void init(Object... args);

@@ -20,7 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.base.extractors.BaseNumberClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompileable;
@@ -110,7 +110,7 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
     /* (non-Javadoc)
      * @see org.kie.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
      */
-    public Object getValue(InternalWorkingMemory workingMemory, Object object) {
+    public Object getValue(ReteEvaluator reteEvaluator, Object object) {
         return evaluator.evaluate( object  );
     }
 

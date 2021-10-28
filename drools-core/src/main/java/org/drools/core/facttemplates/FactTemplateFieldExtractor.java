@@ -26,6 +26,7 @@ import java.math.BigInteger;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MathUtils;
 
@@ -63,7 +64,7 @@ public class FactTemplateFieldExtractor
         return this.factTemplate.getFieldTemplate( this.fieldIndex ).getValueType();
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory,
+    public Object getValue(ReteEvaluator reteEvaluator,
                            final Object object) {
         return ((Fact) object).getFieldValue( this.fieldIndex );
     }
@@ -80,42 +81,42 @@ public class FactTemplateFieldExtractor
         return ClassUtils.canonicalName( getExtractToClass() );
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
         return ((Boolean) ((Fact) object).getFieldValue( this.fieldIndex )).booleanValue();
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory,
+    public byte getByteValue(ReteEvaluator reteEvaluator,
                              final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).byteValue();
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory,
+    public char getCharValue(ReteEvaluator reteEvaluator,
                              final Object object) {
         return ((Character) ((Fact) object).getFieldValue( this.fieldIndex )).charValue();
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory,
+    public double getDoubleValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).doubleValue();
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory,
+    public float getFloatValue(ReteEvaluator reteEvaluator,
                                final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).floatValue();
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory,
+    public int getIntValue(ReteEvaluator reteEvaluator,
                            final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).intValue();
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory,
+    public long getLongValue(ReteEvaluator reteEvaluator,
                              final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).longValue();
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory,
+    public short getShortValue(ReteEvaluator reteEvaluator,
                                final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).shortValue();
     }
@@ -134,9 +135,9 @@ public class FactTemplateFieldExtractor
         return "getValue";
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory,
+    public int getHashCode(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return getValue( workingMemory,
+        return getValue( reteEvaluator,
                          object ).hashCode();
     }
 
@@ -148,7 +149,7 @@ public class FactTemplateFieldExtractor
         return false;
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory,
+    public boolean isNullValue(ReteEvaluator reteEvaluator,
                                Object object) {
         return ((Fact) object).getFieldValue( this.fieldIndex ) == null;
     }
@@ -213,15 +214,15 @@ public class FactTemplateFieldExtractor
                                    object );
     }
 
-    public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+    public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator,
                                          Object object) {
-        return MathUtils.getBigDecimal( getValue( workingMemory,
+        return MathUtils.getBigDecimal( getValue( reteEvaluator,
                                                   object ) );
     }
 
-    public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+    public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator,
                                          Object object) {
-        return MathUtils.getBigInteger( getValue( workingMemory,
+        return MathUtils.getBigInteger( getValue( reteEvaluator,
                                                   object ) );
     }
 

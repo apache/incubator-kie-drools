@@ -55,7 +55,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
     void addAgendaGroupOnStack(InternalAgendaGroup agendaGroup);
 
-    boolean setFocus(InternalAgendaGroup agendaGroup);
+    boolean setFocus(AgendaGroup agendaGroup);
 
     Collection<String> getGroupsName();
 
@@ -147,7 +147,7 @@ public interface AgendaGroupsManager extends Externalizable {
         }
 
         @Override
-        public boolean setFocus(InternalAgendaGroup agendaGroup) {
+        public boolean setFocus(AgendaGroup agendaGroup) {
             throw new UnsupportedOperationException();
         }
 
@@ -388,13 +388,14 @@ public interface AgendaGroupsManager extends Externalizable {
         }
 
         @Override
-        public boolean setFocus(final InternalAgendaGroup agendaGroup) {
+        public boolean setFocus(final AgendaGroup agendaGroup) {
             // Set the focus to the agendaGroup if it doesn't already have the focus
             if ( this.focusStack.getLast() != agendaGroup ) {
                 this.focusStack.getLast().setActive( false );
-                this.focusStack.add( agendaGroup );
-                agendaGroup.setActive( true );
-                agendaGroup.setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+                InternalAgendaGroup internalGroup = (InternalAgendaGroup) agendaGroup;
+                this.focusStack.add( internalGroup );
+                internalGroup.setActive( true );
+                internalGroup.setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
                 final EventSupport eventsupport = this.workingMemory;
                 eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup, this.workingMemory );
                 return true;

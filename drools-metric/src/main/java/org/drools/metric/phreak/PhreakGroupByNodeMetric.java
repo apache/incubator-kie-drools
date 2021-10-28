@@ -14,7 +14,7 @@
 
 package org.drools.metric.phreak;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakGroupByNode;
 import org.drools.core.reteoo.AccumulateNode;
@@ -28,7 +28,7 @@ public class PhreakGroupByNodeMetric extends PhreakGroupByNode {
     public void doNode( AccumulateNode accNode,
                         LeftTupleSink sink,
                         AccumulateNode.AccumulateMemory am,
-                        InternalWorkingMemory wm,
+                        ReteEvaluator reteEvaluator,
                         TupleSets<LeftTuple> srcLeftTuples,
                         TupleSets<LeftTuple> trgLeftTuples,
                         TupleSets<LeftTuple> stagedLeftTuples) {
@@ -36,7 +36,7 @@ public class PhreakGroupByNodeMetric extends PhreakGroupByNode {
         try {
             MetricLogUtils.getInstance().startMetrics(accNode);
 
-            super.doNode(accNode, sink, am, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(accNode, sink, am, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

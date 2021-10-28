@@ -16,8 +16,6 @@
 
 package org.drools.modelcompiler.constraints;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
@@ -48,7 +46,7 @@ public class LambdaEvalExpression implements EvalExpression {
 
     @Override
     public boolean evaluate(Tuple tuple, Declaration[] requiredDeclarations, ReteEvaluator reteEvaluator, Object context) throws Exception {
-        return evaluator.evaluate(tuple.getFactHandle(), tuple, reteEvaluator));
+        return evaluator.evaluate(tuple.getFactHandle(), tuple, reteEvaluator);
     }
 
     @Override

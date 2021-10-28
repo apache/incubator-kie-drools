@@ -67,15 +67,22 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
                                         recency,
                                         timestamp,
                                         duration,
-                                        wmEntryPoint != null ? wmEntryPoint : reteEvaluator.getDefaultEntryPoint(),
+                                        getWmEntryPoint(reteEvaluator, wmEntryPoint),
                                         conf != null && conf.isTrait() );
         } else {
             return new DefaultFactHandle( id,
                                           object,
                                           recency,
-                                          wmEntryPoint != null ? wmEntryPoint : reteEvaluator.getDefaultEntryPoint(),
+                                          getWmEntryPoint(reteEvaluator, wmEntryPoint),
                                           conf != null && conf.isTrait() );
         }
+    }
+
+    private WorkingMemoryEntryPoint getWmEntryPoint(ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint wmEntryPoint) {
+        if (wmEntryPoint != null) {
+            return wmEntryPoint;
+        }
+        return reteEvaluator != null ? reteEvaluator.getDefaultEntryPoint() : null;
     }
 
     @Override

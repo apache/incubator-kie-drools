@@ -25,7 +25,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
@@ -148,22 +148,22 @@ public class CustomOperatorTest {
             super(type, isNegated ? SupersetOfEvaluatorDefinition.NOT_SUPERSET_OF : SupersetOfEvaluatorDefinition.SUPERSET_OF);
         }
 
-        public boolean evaluate(final InternalWorkingMemory workingMemory, final InternalReadAccessor extractor, final InternalFactHandle factHandle, final FieldValue value) {
-            final Object objectValue = extractor.getValue(workingMemory, factHandle);
+        public boolean evaluate(final ReteEvaluator reteEvaluator, final InternalReadAccessor extractor, final InternalFactHandle factHandle, final FieldValue value) {
+            final Object objectValue = extractor.getValue(reteEvaluator, factHandle);
             return evaluateAll((Collection) value.getValue(), (Collection) objectValue);
         }
 
-        public boolean evaluate(final InternalWorkingMemory iwm, final InternalReadAccessor ira, final InternalFactHandle left, final InternalReadAccessor ira1, final InternalFactHandle right) {
+        public boolean evaluate(final ReteEvaluator reteEvaluator, final InternalReadAccessor ira, final InternalFactHandle left, final InternalReadAccessor ira1, final InternalFactHandle right) {
             return evaluateAll((Collection) left.getObject(), (Collection) right.getObject());
         }
 
-        public boolean evaluateCachedLeft(final InternalWorkingMemory workingMemory, final VariableContextEntry context, final InternalFactHandle right) {
-            final Object valRight = context.extractor.getValue(workingMemory, right.getObject());
+        public boolean evaluateCachedLeft(final ReteEvaluator reteEvaluator, final VariableContextEntry context, final InternalFactHandle right) {
+            final Object valRight = context.extractor.getValue(reteEvaluator, right.getObject());
             return evaluateAll((Collection) ((ObjectVariableContextEntry) context).left, (Collection) valRight);
         }
 
-        public boolean evaluateCachedRight(final InternalWorkingMemory workingMemory, final VariableContextEntry context, final InternalFactHandle left) {
-            final Object varLeft = context.declaration.getExtractor().getValue(workingMemory, left);
+        public boolean evaluateCachedRight(final ReteEvaluator reteEvaluator, final VariableContextEntry context, final InternalFactHandle left) {
+            final Object varLeft = context.declaration.getExtractor().getValue(reteEvaluator, left);
             return evaluateAll((Collection) varLeft, (Collection) ((ObjectVariableContextEntry) context).right);
         }
 

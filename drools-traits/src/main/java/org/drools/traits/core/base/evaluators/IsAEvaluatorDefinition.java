@@ -28,7 +28,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitProxy;
@@ -172,13 +172,13 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         /**
          * @inheridDoc
          */
-        public boolean evaluate( InternalWorkingMemory workingMemory,
+        public boolean evaluate( ReteEvaluator reteEvaluator,
                                  InternalReadAccessor extractor, InternalFactHandle handle, FieldValue value ) {
-            final Object objectValue = extractor.getValue( workingMemory, handle.getObject() );
+            final Object objectValue = extractor.getValue( reteEvaluator, handle.getObject() );
             final Object literal = value.getValue();
             if ( cachedValue != literal) {
                 cachedValue = literal;
-                cacheLiteral( literal, workingMemory );
+                cacheLiteral( literal, reteEvaluator );
             }
 
             TraitableBean core;
@@ -203,7 +203,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                     return this.getOperator().isNegated() ^ hasTrait( core, literal );
                 }
             } else {
-                core = lookForWrapper( objectValue, workingMemory );
+                core = lookForWrapper( objectValue, reteEvaluator );
                 if ( core == null ) {
                     if ( literal instanceof Class<?> ) {
                         return this.getOperator().isNegated() ^ ( (Class<?>) literal ).isInstance( objectValue );
@@ -236,8 +236,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             throw new UnsupportedOperationException( " IsA Operator : Unsupported literal " + value );
         }
 
-        private void cacheLiteral( Object value, InternalWorkingMemory workingMemory ) {
-            CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+        private void cacheLiteral( Object value, ReteEvaluator reteEvaluator ) {
+            CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
             cachedLiteral = getCode( value, x );
         }
 
@@ -262,8 +262,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         }
 
 
-        protected TraitableBean lookForWrapper( final Object objectValue, InternalWorkingMemory workingMemory) {
-            Iterator iter = workingMemory.getObjectStore().iterateObjects( new ObjectFilter() {
+        protected TraitableBean lookForWrapper( final Object objectValue, ReteEvaluator reteEvaluator) {
+            Iterator iter = reteEvaluator.getDefaultEntryPoint().getObjectStore().iterateObjects( new ObjectFilter() {
                 public boolean accept(Object object) {
                     if ( object instanceof TraitProxy ) {
                         Object core = ((TraitProxy) object).getObject();
@@ -284,79 +284,79 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             }
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory,
+        public boolean evaluate(ReteEvaluator reteEvaluator,
                                 InternalReadAccessor leftExtractor, InternalFactHandle left,
                                 InternalReadAccessor rightExtractor, InternalFactHandle right) {
-            Object source = leftExtractor.getValue( workingMemory, left != null ? left.getObject() : null );
-            Object target = rightExtractor.getValue( workingMemory, right != null ? right.getObject() : null );
+            Object source = leftExtractor.getValue( reteEvaluator, left != null ? left.getObject() : null );
+            Object target = rightExtractor.getValue( reteEvaluator, right != null ? right.getObject() : null );
 
-            return compare( source, target, workingMemory );
+            return compare( source, target, reteEvaluator );
         }
 
 
-        public boolean evaluateCachedLeft( InternalWorkingMemory workingMemory,
+        public boolean evaluateCachedLeft( ReteEvaluator reteEvaluator,
                                            VariableContextEntry context, InternalFactHandle right ) {
 
             Object target = ((VariableRestriction.ObjectVariableContextEntry) context).left;
-            Object source = context.getFieldExtractor().getValue( workingMemory, right.getObject() );
+            Object source = context.getFieldExtractor().getValue( reteEvaluator, right.getObject() );
 
-            return compare( source, target, workingMemory );
+            return compare( source, target, reteEvaluator );
         }
 
-        public boolean evaluateCachedRight( InternalWorkingMemory workingMemory,
+        public boolean evaluateCachedRight( ReteEvaluator reteEvaluator,
                                             VariableContextEntry context, InternalFactHandle left ) {
 
-            Object target = context.getFieldExtractor().getValue( workingMemory, left.getObject() );
+            Object target = context.getFieldExtractor().getValue( reteEvaluator, left.getObject() );
             Object source = ((VariableRestriction.ObjectVariableContextEntry) context).right;
 
-            return compare( source, target, workingMemory );
+            return compare( source, target, reteEvaluator );
         }
 
 
 
-        private boolean compare( Object source, Object target, InternalWorkingMemory workingMemory ) {
+        private boolean compare( Object source, Object target, ReteEvaluator reteEvaluator ) {
             BitSet sourceTraits = null;
             BitSet targetTraits = null;
             if ( source instanceof Class ) {
-                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 sourceTraits = x.getCode( ((Class) source).getName() );
             } else if ( source instanceof Thing ) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
                 if ( sourceTraits == null && source instanceof TraitType ) {
-                    CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                     sourceTraits = x.getCode( ((TraitType)source)._getTraitName() );
                 }
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
             } else if ( source instanceof String ) {
-                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 sourceTraits = x.getCode( source );
             } else {
-                TraitableBean tbean = lookForWrapper( source, workingMemory);
+                TraitableBean tbean = lookForWrapper( source, reteEvaluator);
                 if ( tbean != null ) {
                     sourceTraits = tbean.getCurrentTypeCode();
                 }
             }
 
             if ( target instanceof Class ) {
-                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 targetTraits = x.getCode( ((Class) target).getName() );
             } else if ( target instanceof String ) {
-                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 targetTraits = x.getCode( target );
             } else if ( target instanceof Thing ) {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
                 if ( targetTraits == null && target instanceof TraitType ) {
-                    CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                     targetTraits = x.getCode( ((TraitType)target)._getTraitName() );
                 }
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();
             } else if ( target instanceof Collection ) {
-                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 targetTraits = getCode( target, x );
             } else {
-                TraitableBean tbean = lookForWrapper( target, workingMemory );
+                TraitableBean tbean = lookForWrapper( target, reteEvaluator );
                 if ( tbean != null ) {
                     targetTraits = tbean.getCurrentTypeCode();
                 }
