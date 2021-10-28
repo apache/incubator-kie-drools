@@ -15,13 +15,6 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -71,14 +64,11 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.OpType;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static java.nio.file.Files.exists;
-import static org.kie.pmml.commons.Constants.DUMP_KIE_PMML_SOURCES;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE;
@@ -1020,36 +1010,4 @@ public class CommonCodegenUtils {
         }
     }
 
-    public static void dumpSources(final Map<String, String> classNameSourceMap, final PMML_MODEL pmmlModel) throws IOException {
-        final String dumpKiePmmlSources = System.getProperty(DUMP_KIE_PMML_SOURCES);
-        if (dumpKiePmmlSources != null && dumpKiePmmlSources.equals("true")) {
-            String targetPath = String.format("%1$s%2$starget%2$sgenerated-sources", System.getProperty("user.dir"),
-                                              File.separator);
-            final File targetDirectory = new File(targetPath);
-            if (!targetDirectory.exists()) {
-                Files.createDirectories(targetDirectory.toPath().getParent());
-            }
-            dumpGeneratedSources(targetDirectory, classNameSourceMap, pmmlModel.getName().toLowerCase());
-        }
-    }
-
-    private static void dumpGeneratedSources(File targetDirectory, Map<String, String> classNameSourceMap,
-                                             String dumpKieSourcesFolder) {
-        for (Map.Entry<String, String> entry : classNameSourceMap.entrySet()) {
-            Path sourceDestinationPath = Paths.get(targetDirectory.getPath(), dumpKieSourcesFolder,
-                                                   entry.getKey().replace('.', '/') + ".java");
-            writeFile(sourceDestinationPath, entry.getValue().getBytes(StandardCharsets.UTF_8));
-        }
-    }
-
-    private static void writeFile(Path packagesDestinationPath, byte[] value) {
-        try {
-            if (!exists(packagesDestinationPath)) {
-                Files.createDirectories(packagesDestinationPath.getParent());
-            }
-            Files.write(packagesDestinationPath, value);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
 }

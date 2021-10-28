@@ -36,7 +36,6 @@ import org.dmg.pmml.clustering.Cluster;
 import org.dmg.pmml.clustering.ClusteringField;
 import org.dmg.pmml.clustering.ClusteringModel;
 import org.dmg.pmml.clustering.MissingValueWeights;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
@@ -52,7 +51,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.assignExprFrom;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.dumpSources;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.methodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -78,7 +76,6 @@ public class KiePMMLClusteringModelFactory {
         Map<String, String> sourcesMap = getKiePMMLClusteringModelSourcesMap(compilationDTO);
         try {
             Class<?> clusteringModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
-            dumpSources(sourcesMap, PMML_MODEL.CLUSTERING_MODEL);
             return (KiePMMLClusteringModel) clusteringModelClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);

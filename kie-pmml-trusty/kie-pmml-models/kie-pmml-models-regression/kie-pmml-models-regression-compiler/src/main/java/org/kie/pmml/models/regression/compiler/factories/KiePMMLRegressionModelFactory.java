@@ -28,7 +28,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
@@ -42,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.dumpSources;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 
@@ -61,7 +59,6 @@ public class KiePMMLRegressionModelFactory {
                 getKiePMMLRegressionModelSourcesMap(compilationDTO);
         try {
             Class<?> kiePMMLRegressionModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
-            dumpSources(sourcesMap, PMML_MODEL.REGRESSION_MODEL);
             return (KiePMMLRegressionModel) kiePMMLRegressionModelClass.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
