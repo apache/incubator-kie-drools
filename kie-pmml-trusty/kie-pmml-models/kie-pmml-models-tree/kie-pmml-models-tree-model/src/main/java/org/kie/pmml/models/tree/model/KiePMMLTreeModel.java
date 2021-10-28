@@ -22,12 +22,13 @@ import java.util.function.Function;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-public class KiePMMLTreeModel extends KiePMMLModel {
+public abstract class KiePMMLTreeModel extends KiePMMLModel {
 
     private static final long serialVersionUID = -5158590062736070465L;
 
     protected Function<Map<String, Object>, KiePMMLNodeResult> nodeFunction;
-    public KiePMMLTreeModel(String modelName) {
+
+    protected KiePMMLTreeModel(String modelName) {
         super(modelName, Collections.emptyList());
     }
 

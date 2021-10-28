@@ -18,7 +18,6 @@ package  org.kie.pmml.models.tree.evaluator;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,12 +32,6 @@ public class PMMLTreeModelEvaluatorTest {
 
     @Test
     public void getPMMLModelType(){
-        assertEquals(PMML_MODEL.TREE_MODEL, evaluator.getPMMLModelType());
-    }
-
-    @Test
-    public void evaluateTrueNode(){
-        KiePMMLTreeModel kiePMMLTreeModel = new KiePMMLTreeModel("MODEL_NAME");
         assertEquals(PMML_MODEL.TREE_MODEL, evaluator.getPMMLModelType());
     }
 

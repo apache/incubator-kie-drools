@@ -24,6 +24,7 @@ import org.kie.pmml.commons.model.HasSourcesMap;
 
 public class KiePMMLTreeModelWithSources extends KiePMMLTreeModel implements HasSourcesMap {
 
+    private static final long serialVersionUID = -4677340719852086583L;
     private final String kmodulePackageName;
     protected Map<String, String> sourcesMap;
 
