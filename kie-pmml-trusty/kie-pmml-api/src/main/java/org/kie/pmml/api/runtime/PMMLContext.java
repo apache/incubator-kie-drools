@@ -58,4 +58,6 @@ public interface PMMLContext extends Context {
     LinkedHashMap<String, Double> getProbabilityResultMap();
 
     void setProbabilityResultMap(LinkedHashMap<String, Double> probabilityResultMap);
+
+    Map<String, Object> getOutputFieldsMap();
 }

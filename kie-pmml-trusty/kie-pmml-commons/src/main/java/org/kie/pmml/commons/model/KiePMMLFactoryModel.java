@@ -45,11 +45,6 @@ public class KiePMMLFactoryModel extends KiePMMLModel implements HasSourcesMap {
     }
 
     @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLFactoryModel is not meant to be used for actual usage");
-    }
-
-    @Override
     public Map<String, String> getSourcesMap() {
         return Collections.unmodifiableMap(sourcesMap);
     }

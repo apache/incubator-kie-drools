@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,34 +45,42 @@ public class KiePMMLRegressionClassificationTableTest {
     private final double firstTableResult;
     private final double secondTableResult;
     private final String expectedResult;
+    private final double firstExpectedValue;
+    private final double secondExpectedValue;
 
-    public KiePMMLRegressionClassificationTableTest(double firstTableResult, double secondTableResult,
-                                                    String expectedResult) {
+    public KiePMMLRegressionClassificationTableTest(double firstTableResult,
+                                                    double secondTableResult,
+                                                    String expectedResult,
+                                                    double firstExpectedValue,
+                                                    double secondExpectedValue) {
         this.firstTableResult = firstTableResult;
         this.secondTableResult = secondTableResult;
         this.expectedResult = expectedResult;
+        this.firstExpectedValue = firstExpectedValue;
+        this.secondExpectedValue = secondExpectedValue;
         classificationTable = getKiePMMLRegressionClassificationTable();
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {24.5, 13.2, CASE_A},
-                {10.4, 16.8, CASE_A},
-                {-0.7, 123.22, CASE_B},
+                {24.5, 13.2, CASE_A, 0.5, 0.5},
+                {10.4, 16.8, CASE_A, 0.5, 0.5},
+                {-0.7, 123.22, CASE_A, 0.5, 0.5},
         });
     }
 
     @Test
     public void evaluateRegression() {
-        // Input unused because KiePMMLRegressionTables used for tests returns values defined in the test parameters
-        Object retrieved = classificationTable.evaluateRegression(new HashMap<>());
+        PMMLContextTest pmmlContextTest = new PMMLContextTest();
+        Map<String, Object> input = new HashMap<>();
+        input.put(CASE_A, firstTableResult);
+        input.put(CASE_B, secondTableResult);
+        Object retrieved = classificationTable.evaluateRegression(input, pmmlContextTest);
         assertEquals(expectedResult, retrieved);
-        final Map<String, Double> probabilityResultMap = classificationTable.getProbabilityResultMap();
-        double expectedDouble = FIRST_ITEM_OPERATOR.applyAsDouble(firstTableResult);
-        assertEquals(expectedDouble, probabilityResultMap.get(CASE_A), 0);
-        expectedDouble = SECOND_ITEM_OPERATOR.applyAsDouble(expectedDouble);
-        assertEquals(expectedDouble, probabilityResultMap.get(CASE_B), 0);
+        final Map<String, Double> probabilityResultMap = pmmlContextTest.getProbabilityResultMap();
+        assertEquals(firstExpectedValue, probabilityResultMap.get(CASE_A), 0);
+        assertEquals(secondExpectedValue, probabilityResultMap.get(CASE_B), 0);
     }
 
     @Test
@@ -110,20 +119,14 @@ public class KiePMMLRegressionClassificationTableTest {
             private static final long serialVersionUID = 8046624834036965711L;
         };
         toReturn.targetCategory = null;
-        toReturn.categoryTableMap.put(CASE_A, getKiePMMLRegressionTable(firstTableResult));
-        toReturn.categoryTableMap.put(CASE_B, getKiePMMLRegressionTable(secondTableResult));
+        toReturn.categoryTableMap.put(CASE_A, getKiePMMLRegressionTable());
+        toReturn.categoryTableMap.put(CASE_B, getKiePMMLRegressionTable());
         toReturn.probabilityMapFunction = toReturn::getCAUCHITProbabilityMap;
         return toReturn;
     }
 
-    private KiePMMLRegressionTable getKiePMMLRegressionTable(double returnedValue) {
+    private KiePMMLRegressionTable getKiePMMLRegressionTable() {
         return new KiePMMLRegressionTable() {
-
-            @Override
-            public Object evaluateRegression(Map<String, Object> input) {
-                return returnedValue;
-            }
-
         };
     }
 }

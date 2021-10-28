@@ -36,14 +36,7 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
                            final PMMLContext context) {
-        final Object toReturn = regressionTable.evaluateRegression(requestData);
-        context.setProbabilityResultMap(regressionTable.getProbabilityResultMap());
-        return toReturn;
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        return regressionTable.getOutputFieldsMap();
+        return regressionTable.evaluateRegression(requestData, context);
     }
 
     public KiePMMLRegressionTable getRegressionTable() {

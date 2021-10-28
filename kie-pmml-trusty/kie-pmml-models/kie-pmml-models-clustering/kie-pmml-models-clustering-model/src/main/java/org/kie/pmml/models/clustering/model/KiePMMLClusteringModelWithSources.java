@@ -42,11 +42,6 @@ public class KiePMMLClusteringModelWithSources extends KiePMMLClusteringModel im
     }
 
     @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLClusteringModelWithSources is not meant to be used for actual usage");
-    }
-
-    @Override
     public Map<String, String> getSourcesMap() {
         return Collections.unmodifiableMap(sourcesMap);
     }

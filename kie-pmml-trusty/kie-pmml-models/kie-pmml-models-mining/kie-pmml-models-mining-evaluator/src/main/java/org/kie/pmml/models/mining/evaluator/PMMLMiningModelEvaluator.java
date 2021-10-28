@@ -108,7 +108,6 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         toReturn.addResultVariable(toEvaluate.getTargetField(), result);
         toReturn.setResultObjectName(toEvaluate.getTargetField());
         toReturn.setResultCode(resultCode.getName());
-        toEvaluate.getOutputFieldsMap().forEach(toReturn::addResultVariable);
         return toReturn;
     }
 

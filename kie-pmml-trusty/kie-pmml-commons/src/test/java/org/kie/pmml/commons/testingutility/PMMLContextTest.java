@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.commons.testingutility;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -22,6 +23,9 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.runtime.PMMLContext;
 
 public class PMMLContextTest implements PMMLContext {
+
+    private final Map<String, Object> outputFieldsMap = new HashMap<>();
+    private LinkedHashMap<String, Double> probabilityResultMap;
 
     @Override
     public PMMLRequestData getRequestData() {
@@ -120,11 +124,16 @@ public class PMMLContextTest implements PMMLContext {
 
     @Override
     public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return null;
+        return probabilityResultMap;
     }
 
     @Override
     public void setProbabilityResultMap(LinkedHashMap<String, Double> probabilityResultMap) {
+        this.probabilityResultMap = probabilityResultMap;
+    }
 
+    @Override
+    public Map<String, Object> getOutputFieldsMap() {
+        return outputFieldsMap;
     }
 }

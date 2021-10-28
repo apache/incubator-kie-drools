@@ -31,10 +31,11 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     private final Map<String, Object> missingValueReplacedMap = new HashMap<>();
     private final Map<String, Object> commonTransformationMap = new HashMap<>();
     private final Map<String, Object> localTransformationMap = new HashMap<>();
+    private final Map<String, Object> outputFieldsMap = new HashMap<>();
+
     private Object predictedDisplayValue;
     private Object entityId;
     private Object affinity;
-    private Map<String, Double> probabilityMap;
     private LinkedHashMap<String, Double> probabilityResultMap;
 
     public PMMLContextImpl(final PMMLRequestData pmmlRequestData) {
@@ -140,5 +141,10 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     @Override
     public void setProbabilityResultMap(LinkedHashMap<String, Double> probabilityResultMap) {
         this.probabilityResultMap = probabilityResultMap;
+    }
+
+    @Override
+    public Map<String, Object> getOutputFieldsMap() {
+        return outputFieldsMap;
     }
 }

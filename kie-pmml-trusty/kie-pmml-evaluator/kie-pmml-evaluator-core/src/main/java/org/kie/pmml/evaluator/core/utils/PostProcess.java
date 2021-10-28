@@ -52,7 +52,7 @@ public class PostProcess {
                                    final PMMLContext pmmlContext, final ProcessingDTO processingDTO) {
         executeTargets(toReturn, processingDTO);
         updateTargetValueType(model, toReturn);
-        populateProcessingDTO(toReturn, model, pmmlContext, processingDTO);
+        populateProcessingDTO(toReturn, pmmlContext, processingDTO);
         populateOutputFields(toReturn, processingDTO);
     }
 
@@ -61,15 +61,15 @@ public class PostProcess {
      * <code>KiePMMLModel</code>
      * during evaluation
      * @param pmml4Result
-     * @param model
      * @param pmmlContext
      * @param toPopulate
      */
-    static void populateProcessingDTO(final PMML4Result pmml4Result, final KiePMMLModel model,
-                                      final PMMLContext pmmlContext, final ProcessingDTO toPopulate) {
+    static void populateProcessingDTO(final PMML4Result pmml4Result,
+                                      final PMMLContext pmmlContext,
+                                      final ProcessingDTO toPopulate) {
         pmml4Result.getResultVariables().forEach((key, value) -> toPopulate.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
         final Map<String, Double> sortedByValue
-                = model.getOutputFieldsMap().entrySet()
+                = pmmlContext.getOutputFieldsMap().entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() instanceof Double && (Double) entry.getValue() > 0)
                 .map((Function<Map.Entry<String, Object>, Map.Entry<String, Double>>) entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), (Double) entry.getValue()))

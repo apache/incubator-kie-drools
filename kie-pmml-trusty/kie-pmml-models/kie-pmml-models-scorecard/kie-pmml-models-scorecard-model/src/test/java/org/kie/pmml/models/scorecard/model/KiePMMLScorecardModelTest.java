@@ -48,6 +48,7 @@ public class KiePMMLScorecardModelTest {
     @Test
     public void evaluate() {
         Double initialScore = 25.23;
+        PMMLContextTest pmmlContextTest = new PMMLContextTest();
         KiePMMLScorecardModel kiePMMLScorecardModel = new KiePMMLScorecardModel(MODEL_NAME,
                                                                                 Collections.emptyList(),
                                                                                 getKiePMMLCharacteristics(),
@@ -55,14 +56,14 @@ public class KiePMMLScorecardModelTest {
                                                                                 true,
                                                                                 REASONCODE_ALGORITHM.POINTS_BELOW,
                                                                                 0);
-        Object retrieved = kiePMMLScorecardModel.evaluate(null, Collections.emptyMap(), new PMMLContextTest());
+        Object retrieved = kiePMMLScorecardModel.evaluate(null, Collections.emptyMap(), pmmlContextTest);
         assertNotNull(retrieved);
 
         Double EVALUATION_20 = baselineScore - value2;
         Double EVALUATION_11 = baselineScore - value1;
         Double expected = initialScore + value2 + value1 + 1;
         assertEquals(expected, retrieved);
-        final Map<String, Object> outputFieldsMap = kiePMMLScorecardModel.getOutputFieldsMap();
+        final Map<String, Object> outputFieldsMap = pmmlContextTest.getOutputFieldsMap();
         assertEquals(2, outputFieldsMap.size());
         assertTrue(outputFieldsMap.containsKey("REASON_CODE_20"));
         assertEquals(EVALUATION_20, outputFieldsMap.get("REASON_CODE_20"));

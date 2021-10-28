@@ -46,12 +46,6 @@ public class KiePMMLRegressionModelWithSourcesTest {
         kiePMMLRegressionModelWithSources.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void getOutputFieldsMap() {
-        kiePMMLRegressionModelWithSources.getOutputFieldsMap();
-    }
-
-
     @Test
     public void getSourcesMap() {
         assertEquals(SOURCES_MAP, kiePMMLRegressionModelWithSources.getSourcesMap());

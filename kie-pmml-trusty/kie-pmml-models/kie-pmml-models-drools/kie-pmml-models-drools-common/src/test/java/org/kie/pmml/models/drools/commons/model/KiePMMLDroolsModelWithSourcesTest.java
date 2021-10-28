@@ -61,11 +61,6 @@ public class KiePMMLDroolsModelWithSourcesTest {
         kiePMMLDroolsModelWithSources.evaluate(KIE_BASE, Collections.emptyMap(), new PMMLContextTest());
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void getOutputFieldsMap() {
-        kiePMMLDroolsModelWithSources.getOutputFieldsMap();
-    }
-
     @Test
     public void getSourcesMap() {
         assertEquals(SOURCES_MAP, kiePMMLDroolsModelWithSources.getSourcesMap());
