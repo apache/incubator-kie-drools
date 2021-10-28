@@ -333,7 +333,7 @@ public class RuleExecutor {
                 queue.dequeue(rtnLt);
             }
 
-            es.getAgendaEventSupport().fireActivationCancelled(rtnLt, null, MatchCancelledCause.CLEAR);
+            es.getAgendaEventSupport().fireActivationCancelled(rtnLt, reteEvaluator, MatchCancelledCause.CLEAR);
         }
     }
 
@@ -387,7 +387,7 @@ public class RuleExecutor {
         // we need to make sure it re-activates
         reteEvaluator.startOperation();
         try {
-            BeforeMatchFiredEvent beforeMatchFiredEvent = activationsManager.getAgendaEventSupport().fireBeforeActivationFired(activation, null);
+            BeforeMatchFiredEvent beforeMatchFiredEvent = activationsManager.getAgendaEventSupport().fireBeforeActivationFired(activation, reteEvaluator);
 
             if ( activation.getActivationGroupNode() != null ) {
                 // We know that this rule will cancel all other activations in the group
@@ -419,7 +419,7 @@ public class RuleExecutor {
                 }
             }
 
-            activationsManager.getAgendaEventSupport().fireAfterActivationFired( activation, null, beforeMatchFiredEvent );
+            activationsManager.getAgendaEventSupport().fireAfterActivationFired( activation, reteEvaluator, beforeMatchFiredEvent );
         } finally {
             reteEvaluator.endOperation();
         }

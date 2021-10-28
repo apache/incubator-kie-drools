@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.util.ClassUtils;
@@ -84,14 +83,14 @@ public class SelfEventExtractor extends BaseObjectClassFieldReader
 
     public String getExtractToClassName() {
         Class<?> clazz = this.objectType instanceof ClassObjectType ?
-                         ((ClassObjectType) this.objectType).getClassType() :
+                         this.objectType.getClassType() :
                          Fact.class;
         return ClassUtils.canonicalName( clazz );
     }
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue", InternalWorkingMemory.class, Object.class );
+            return this.getClass().getDeclaredMethod( "getValue", ReteEvaluator.class, Object.class );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

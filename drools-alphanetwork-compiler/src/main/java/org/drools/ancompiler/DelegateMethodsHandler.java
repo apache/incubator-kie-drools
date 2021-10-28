@@ -50,7 +50,7 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
             "    public void byPassModifyToBetaNode (org.drools.core.common.InternalFactHandle factHandle,\n" +
             "                                        org.drools.core.reteoo.ModifyPreviousTuples modifyPreviousTuples,\n" +
             "                                        org.drools.core.spi.PropagationContext context,\n" +
-            "                                        org.drools.core.common.InternalWorkingMemory workingMemory) {\n" +
+            "                                        org.drools.core.common.ReteEvaluator reteEvaluator) {\n" +
             "        throw new UnsupportedOperationException();\n" +
             "    }\n" +
             "\n";

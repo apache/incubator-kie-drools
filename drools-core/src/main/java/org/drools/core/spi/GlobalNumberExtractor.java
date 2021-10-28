@@ -26,9 +26,9 @@ import java.math.BigInteger;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseDateClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.facttemplates.Fact;
+import org.drools.core.util.ClassUtils;
 
 public class GlobalNumberExtractor extends BaseDateClassFieldReader
     implements
@@ -45,7 +45,7 @@ public class GlobalNumberExtractor extends BaseDateClassFieldReader
 
     public GlobalNumberExtractor(final String identifier,
                                final ObjectType objectType) {
-        super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
+        super(-1, objectType.getClassType(), objectType.getValueType() );
         this.identifier = identifier;
         this.objectType = objectType;        
     }
@@ -55,7 +55,7 @@ public class GlobalNumberExtractor extends BaseDateClassFieldReader
         identifier = in.readUTF();
         objectType = (ObjectType) in.readObject();
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setFieldType( objectType.getClassType() );
         setValueType( objectType.getValueType() );
     }
 
@@ -67,13 +67,14 @@ public class GlobalNumberExtractor extends BaseDateClassFieldReader
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setFieldType( objectType.getClassType() );
         setValueType( objectType.getValueType() );        
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory,
+    @Override
+    public Object getValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return workingMemory.getGlobal( identifier );
+        return reteEvaluator.getGlobal( identifier );
     }
 
     public ObjectType getObjectType() {
@@ -103,7 +104,7 @@ public class GlobalNumberExtractor extends BaseDateClassFieldReader
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                      new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

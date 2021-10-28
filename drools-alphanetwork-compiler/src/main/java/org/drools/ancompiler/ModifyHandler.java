@@ -16,7 +16,6 @@
 
 package org.drools.ancompiler;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -50,7 +49,7 @@ public class ModifyHandler extends PropagatorCompilerHandler {
         return nodeList(new Parameter(factHandleType(), FACT_HANDLE_PARAM_NAME),
                         new Parameter(modifyPreviousTuplesType(), MODIFY_PREVIOUS_TUPLE_PARAM_NAME),
                         new Parameter(propagationContextType(), PROP_CONTEXT_PARAM_NAME),
-                        new Parameter(workingMemoryType(), WORKING_MEMORY_PARAM_NAME));
+                        new Parameter(reteEvaluatorType(), WORKING_MEMORY_PARAM_NAME));
     }
 
     @Override
