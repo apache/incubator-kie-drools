@@ -17,7 +17,6 @@ package org.kie.pmml.commons.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -42,7 +41,6 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
-    protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected List<MiningField> miningFields = new ArrayList<>();
     protected List<OutputField> outputFields = new ArrayList<>();
     protected List<KiePMMLMiningField> kiePMMLMiningFields = new ArrayList<>();
@@ -65,10 +63,6 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public String getTargetField() {
         return targetField;
-    }
-
-    public Map<String, Object> getOutputFieldsMap() {
-        return Collections.unmodifiableMap(outputFieldsMap);
     }
 
     /**
@@ -136,13 +130,6 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
         public Builder<T> withTargetField(String targetField) {
             toBuild.targetField = targetField;
-            return this;
-        }
-
-        public Builder<T> withOutputFieldsMap(Map<String, Object> outputFieldsMap) {
-            if (outputFieldsMap != null) {
-                toBuild.outputFieldsMap.putAll(outputFieldsMap);
-            }
             return this;
         }
     }

@@ -25,6 +25,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
 import static org.kie.pmml.commons.Constants.EXPECTED_TWO_ENTRIES_RETRIEVED;
@@ -35,18 +36,17 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
     protected REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod;
     protected OP_TYPE opType;
     protected Map<String, KiePMMLRegressionTable> categoryTableMap = new LinkedHashMap<>(); // Insertion order matters
-    protected LinkedHashMap<String, Double> probabilityResultMap = new LinkedHashMap<>(); // Insertion order matters
     protected SerializableFunction<LinkedHashMap<String, Double>, LinkedHashMap<String, Double>> probabilityMapFunction; // Insertion order matters
     protected boolean isBinary;
 
     @Override
-    public Object evaluateRegression(Map<String, Object> input) {
+    public Object evaluateRegression(final Map<String, Object> input, final PMMLContext context) {
         final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
         for (Map.Entry<String, KiePMMLRegressionTable> entry : categoryTableMap.entrySet()) {
-            resultMap.put(entry.getKey(), (Double) entry.getValue().evaluateRegression(input));
+            resultMap.put(entry.getKey(), (Double) entry.getValue().evaluateRegression(input, context));
         }
-        probabilityResultMap = probabilityMapFunction.apply(resultMap);
-        final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityResultMap.entrySet(),
+        context.setProbabilityResultMap(probabilityMapFunction.apply(resultMap));
+        final Map.Entry<String, Double> predictedEntry = Collections.max(context.getProbabilityResultMap().entrySet(),
                                                                          Map.Entry.comparingByValue());
         return predictedEntry.getKey();
     }
@@ -58,10 +58,6 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
      */
     public boolean isBinary() {
         return isBinary;
-    }
-
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return probabilityResultMap;
     }
 
     public REGRESSION_NORMALIZATION_METHOD getRegressionNormalizationMethod() {

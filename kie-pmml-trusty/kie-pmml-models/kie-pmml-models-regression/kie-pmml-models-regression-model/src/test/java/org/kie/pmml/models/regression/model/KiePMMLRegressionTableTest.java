@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -74,7 +75,7 @@ public class KiePMMLRegressionTableTest {
         input.put(SECOND_NUMERIC_INPUT, secondNumericalInput);
         input.put(FIRST_CATEGORICAL_INPUT, "unused");
         input.put(SECOND_CATEGORICAL_INPUT, "unused");
-        Object retrieved = regressionTable.evaluateRegression(input);
+        Object retrieved = regressionTable.evaluateRegression(input, new PMMLContextTest());
         assertEquals(expectedResult, retrieved);
     }
 

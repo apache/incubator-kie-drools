@@ -59,8 +59,4 @@ public class KiePMMLFactoryModelTest {
         kiePMMLFactoryModel.evaluate("", Collections.emptyMap(), new PMMLContextTest());
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void getOutputFieldsMap() {
-        kiePMMLFactoryModel.getOutputFieldsMap();
-    }
 }

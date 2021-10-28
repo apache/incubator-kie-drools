@@ -81,10 +81,7 @@ public class KiePMMLDroolsModelFactoryUtils {
                        miningFunction,
                        droolsCompilationDTO.getPackageName());
         addFieldTypeMapPopulation(constructorDeclaration.getBody(), droolsCompilationDTO.getFieldTypeMap());
-//        final MethodDeclaration getKModulePackageNameMethod =
-//                modelTemplate.getMethodsByName(GETKMODULEPACKAGENAME_METHOD).get(0);
-//        populateGetKModulePackageName(getKModulePackageNameMethod, droolsCompilationDTO.getPackageName());
-        return cloneCU;
+         return cloneCU;
     }
 
     /**

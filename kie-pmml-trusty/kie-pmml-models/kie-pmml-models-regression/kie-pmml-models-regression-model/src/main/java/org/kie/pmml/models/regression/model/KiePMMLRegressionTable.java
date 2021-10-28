@@ -17,13 +17,13 @@ package org.kie.pmml.models.regression.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.kie.pmml.api.iinterfaces.SerializableConsumer;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
+import org.kie.pmml.api.runtime.PMMLContext;
 
 public abstract class KiePMMLRegressionTable implements Serializable {
 
@@ -42,7 +42,7 @@ public abstract class KiePMMLRegressionTable implements Serializable {
         return targetCategory;
     }
 
-    public Object evaluateRegression(Map<String, Object> input) {
+    public Object evaluateRegression(final Map<String, Object> input, final PMMLContext context) {
         final AtomicReference<Double> result = new AtomicReference<>(intercept);
         final Map<String, Double> resultMap = new HashMap<>();
         for (Map.Entry<String, SerializableFunction<Double, Double>> entry : numericFunctionMap.entrySet()) {
@@ -90,10 +90,6 @@ public abstract class KiePMMLRegressionTable implements Serializable {
 
     public double getIntercept() {
         return intercept;
-    }
-
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return new LinkedHashMap<>();
     }
 
     protected double evaluateNumericWithExponent(double input, double coefficient, double exponent) {

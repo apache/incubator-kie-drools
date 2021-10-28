@@ -80,8 +80,10 @@ public class KiePMMLTargetFactory {
         final StringLiteralExpr nameExpr = new StringLiteralExpr(kiepmmlTargetField.getName());
         builder.setArgument(0, nameExpr);
         final NodeList<Expression> arguments = new NodeList<>();
-        for (KiePMMLTargetValue targetValue : kiepmmlTargetField.getTargetValues()) {
-            arguments.add(getKiePMMLTargetValueVariableInitializer(targetValue));
+        if (kiepmmlTargetField.getTargetValues() != null) {
+            for (KiePMMLTargetValue targetValue : kiepmmlTargetField.getTargetValues()) {
+                arguments.add(getKiePMMLTargetValueVariableInitializer(targetValue));
+            }
         }
         getChainedMethodCallExprFrom("asList", toReturn).setArguments(arguments);
         OP_TYPE oPT = kiepmmlTargetField.getOpType();

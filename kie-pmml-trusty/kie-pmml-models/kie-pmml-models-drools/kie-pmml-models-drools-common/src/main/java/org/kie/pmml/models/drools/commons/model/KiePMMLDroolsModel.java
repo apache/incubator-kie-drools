@@ -79,11 +79,10 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         String fullClassName = this.getClass().getName();
         String packageName = fullClassName.contains(".") ?
                 fullClassName.substring(0, fullClassName.lastIndexOf('.')) : "";
-        outputFieldsMap.clear();
         KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase) knowledgeBase, name, packageName,
                                                                           toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
-                .withOutputFieldsMap(outputFieldsMap);
+                .withOutputFieldsMap(context.getOutputFieldsMap());
         if (logger.isDebugEnabled()) {
             builder = builder.withAgendaEventListener(agendaEventListener);
         }
@@ -105,7 +104,6 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
                 .add("pmmlMODEL=" + pmmlMODEL)
                 .add("miningFunction=" + miningFunction)
                 .add("targetField='" + targetField + "'")
-                .add("outputFieldsMap=" + outputFieldsMap)
                 .add("name='" + name + "'")
                 .add("extensions=" + extensions)
                 .add("id='" + id + "'")

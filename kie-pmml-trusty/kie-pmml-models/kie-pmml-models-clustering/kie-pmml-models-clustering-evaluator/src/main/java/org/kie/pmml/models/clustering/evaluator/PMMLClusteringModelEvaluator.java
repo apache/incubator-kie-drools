@@ -51,8 +51,6 @@ public class PMMLClusteringModelEvaluator implements PMMLModelEvaluator<KiePMMLC
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());
-        model.getOutputFieldsMap().forEach(toReturn::addResultVariable);
-
         return toReturn;
     }
 }

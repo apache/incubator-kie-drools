@@ -47,11 +47,6 @@ public class KiePMMLMiningModelWithSourcesTest {
         kiePMMLMiningModelWithSources.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void getOutputFieldsMap() {
-        kiePMMLMiningModelWithSources.getOutputFieldsMap();
-    }
-
     @Test
     public void getSourcesMap() {
         assertEquals(SOURCES_MAP, kiePMMLMiningModelWithSources.getSourcesMap());

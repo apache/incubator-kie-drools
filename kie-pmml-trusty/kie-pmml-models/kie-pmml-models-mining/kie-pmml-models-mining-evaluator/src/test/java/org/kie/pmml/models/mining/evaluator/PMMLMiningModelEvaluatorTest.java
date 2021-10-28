@@ -18,11 +18,9 @@ package org.kie.pmml.models.mining.evaluator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -98,16 +96,11 @@ public class PMMLMiningModelEvaluatorTest {
         String name = "NAME";
         String targetField = "TARGET";
         String prediction = "FIRST_VALUE";
-        final Map<String, Object> outputFieldsMap = new HashMap<>();
-        IntStream.range(0,3).forEach(index -> {
-            outputFieldsMap.put("KEY_" + index, "OBJECT_" + index);
-        });
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), SELECT_FIRST).build();
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
-                .withOutputFieldsMap(outputFieldsMap)
                 .build();
         final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
         inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", prediction), new ArrayList<>()));
@@ -125,16 +118,11 @@ public class PMMLMiningModelEvaluatorTest {
     public void getPMML4ResultFAIL() {
         String name = "NAME";
         String targetField = "TARGET";
-        final Map<String, Object> outputFieldsMap = new HashMap<>();
-        IntStream.range(0,3).forEach(index -> {
-            outputFieldsMap.put("KEY_" + index, "OBJECT_" + index);
-        });
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), AVERAGE).build();
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
-                .withOutputFieldsMap(outputFieldsMap)
                 .build();
         final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
         inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", "FIRST_VALUE"), new ArrayList<>()));

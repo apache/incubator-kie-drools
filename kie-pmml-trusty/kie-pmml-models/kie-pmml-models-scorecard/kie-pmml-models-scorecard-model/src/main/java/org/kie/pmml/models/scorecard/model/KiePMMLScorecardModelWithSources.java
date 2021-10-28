@@ -40,11 +40,6 @@ public class KiePMMLScorecardModelWithSources extends KiePMMLScorecardModel impl
     }
 
     @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLScorecardModelWithSources is not meant to be used for actual usage");
-    }
-
-    @Override
     public Map<String, String> getSourcesMap() {
         return Collections.unmodifiableMap(sourcesMap);
     }

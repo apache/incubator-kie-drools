@@ -43,11 +43,6 @@ public class KiePMMLRegressionModelWithSources extends KiePMMLRegressionModel im
     }
 
     @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual usage");
-    }
-
-    @Override
     public Map<String, String> getSourcesMap() {
         return Collections.unmodifiableMap(sourcesMap);
     }
