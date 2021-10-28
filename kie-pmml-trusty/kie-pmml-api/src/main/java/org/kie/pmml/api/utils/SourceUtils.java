@@ -37,7 +37,7 @@ public class SourceUtils {
 
     public static void dumpSources(final Map<String, String> classNameSourceMap, final PMML_MODEL pmmlModel) throws IOException {
         final String dumpKiePmmlSources = System.getProperty(DUMP_KIE_PMML_SOURCES);
-        if (dumpKiePmmlSources != null && dumpKiePmmlSources.equals("true")) {
+        if ("true".equalsIgnoreCase(dumpKiePmmlSources)) {
             String targetPath = String.format("%1$s%2$starget%2$sgenerated-sources", System.getProperty("user.dir"),
                                               File.separator);
             final File targetDirectory = new File(targetPath);

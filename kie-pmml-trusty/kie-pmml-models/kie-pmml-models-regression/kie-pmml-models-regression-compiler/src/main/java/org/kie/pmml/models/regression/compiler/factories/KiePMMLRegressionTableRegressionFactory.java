@@ -220,10 +220,8 @@ public class KiePMMLRegressionTableRegressionFactory {
      */
     static Map<String, Expression> createNumericPredictorsExpressions(final List<NumericPredictor> numericPredictors) {
         return numericPredictors.stream()
-                .map(numericPredictor -> new AbstractMap.SimpleEntry<>(numericPredictor.getName().getValue(),
-                                                                       createNumericPredictorExpression(numericPredictor)))
-                .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey,
-                                          AbstractMap.SimpleEntry::getValue));
+                .collect(Collectors.toMap(numericPredictor -> numericPredictor.getName().getValue(),
+                                          KiePMMLRegressionTableRegressionFactory::createNumericPredictorExpression));
     }
 
     /**
