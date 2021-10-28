@@ -127,6 +127,7 @@ class LimeExplainerTest {
             Saliency saliencyNoPenalty = saliencyMapNoPenalty.get(decisionName);
 
             LimeConfig limeConfig = new LimeConfig()
+                    .withPerturbationContext(new PerturbationContext(seed, random, DEFAULT_NO_OF_PERTURBATIONS))
                     .withSamples(noOfSamples)
                     .withPenalizeBalanceSparse(true);
             LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
