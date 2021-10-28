@@ -760,10 +760,6 @@ public class NamedEntryPoint
         }
     }
 
-    public void enQueueWorkingMemoryAction(WorkingMemoryAction action) {
-        wm.queueWorkingMemoryAction( action );
-    }
-
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
         if (tms == null) {
             tms = new TruthMaintenanceSystem(wm, this);

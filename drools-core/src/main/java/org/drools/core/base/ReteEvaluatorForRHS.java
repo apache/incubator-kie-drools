@@ -28,7 +28,6 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
@@ -464,10 +463,6 @@ public class ReteEvaluatorForRHS
         return delegate.don(activation, core, trait, b, modes);
     }
 
-    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
-        delegate.queueWorkingMemoryAction(action);
-    }
-
     public void delete(FactHandle handle) {
         delegate.delete(handle);
     }
@@ -682,8 +677,8 @@ public class ReteEvaluatorForRHS
         delegate.closeLiveQuery(factHandle);
     }
 
-    public void addPropagation(PropagationEntry propagationEntry) {
-        delegate.addPropagation(propagationEntry);
+    public void addPropagation(PropagationEntry propagationEntry, boolean register) {
+        delegate.addPropagation(propagationEntry, register);
     }
 
     public void flushPropagations() {

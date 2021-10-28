@@ -29,7 +29,6 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.FactHandleClassStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -529,7 +528,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         @Override
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
-            context.reteEvaluator.addPropagation(context.expireAction);
+            context.reteEvaluator.addPropagation(context.expireAction, true);
             context.getExpireAction().getFactHandle().removeJob( context.getJobHandle());
         }
     }

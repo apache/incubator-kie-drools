@@ -62,8 +62,6 @@ public interface InternalWorkingMemory
         return getObjectStore().getStoreForClass(clazz);
     }
 
-    void queueWorkingMemoryAction(final WorkingMemoryAction action);
-
     FactHandleFactory getFactHandleFactory();
 
     EntryPointId getEntryPoint();
@@ -175,8 +173,6 @@ public interface InternalWorkingMemory
     InternalProcessRuntime internalGetProcessRuntime();
 
     void closeLiveQuery(InternalFactHandle factHandle);
-
-    void addPropagation(PropagationEntry propagationEntry);
 
     void flushPropagations();
 

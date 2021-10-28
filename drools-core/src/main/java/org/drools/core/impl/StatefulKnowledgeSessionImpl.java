@@ -1580,15 +1580,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       activation);
     }
 
-    public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
-        try {
-            startOperation();
-            addPropagation(action);
-        } finally {
-            endOperation();
-        }
-    }
-
     /**
      * Retrieve the <code>JoinMemory</code> for a particular
      * <code>JoinNode</code>.
@@ -2016,8 +2007,18 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.timerService.getTimeToNextJob();
     }
 
-    public void addPropagation(PropagationEntry propagationEntry) {
-        agenda.addPropagation( propagationEntry );
+    @Override
+    public void addPropagation(PropagationEntry propagationEntry, boolean register) {
+        try {
+            if (register) {
+                startOperation();
+            }
+            agenda.addPropagation( propagationEntry );
+        } finally {
+            if (register) {
+                endOperation();
+            }
+        }
     }
 
     public void flushPropagations() {

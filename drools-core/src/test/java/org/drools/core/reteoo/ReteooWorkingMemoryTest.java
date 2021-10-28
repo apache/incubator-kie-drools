@@ -162,10 +162,10 @@ public class ReteooWorkingMemoryTest {
 
     @Test @Ignore
     public void testExecuteQueueActions() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
         final ReentrantAction action = new ReentrantAction();
-        ksession.queueWorkingMemoryAction( action );
+        ksession.addPropagation( action, true );
         ksession.flushPropagations();
         assertEquals( 2, action.counter.get() );
     }

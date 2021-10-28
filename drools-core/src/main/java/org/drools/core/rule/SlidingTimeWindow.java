@@ -25,7 +25,6 @@ import java.util.PriorityQueue;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -206,7 +205,7 @@ public class SlidingTimeWindow
             if ( nextTimestamp < clock.getCurrentTime() ) {
                 // Past and out-of-order events should not be insert,
                 // but the engine silently accepts them anyway, resulting in possibly undesirable behaviors
-                reteEvaluator.addPropagation(new BehaviorExpireWMAction(nodeId, this, context));
+                reteEvaluator.addPropagation(new BehaviorExpireWMAction(nodeId, this, context), true);
             } else {
                 // if there exists already another job it meeans that the new one to be created
                 // has to be triggered before the existing one and then we can remove the old one
@@ -368,7 +367,7 @@ public class SlidingTimeWindow
         @Override
         public void execute(JobContext ctx) {
             BehaviorJobContext context = (BehaviorJobContext) ctx;
-            context.reteEvaluator.addPropagation( new BehaviorExpireWMAction( context.nodeId, context.behavior, context.behaviorContext ) );
+            context.reteEvaluator.addPropagation( new BehaviorExpireWMAction( context.nodeId, context.behavior, context.behaviorContext ), true );
         }
 
     }

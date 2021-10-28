@@ -63,7 +63,11 @@ public interface ReteEvaluator {
 
     TimerService getTimerService();
 
-    void addPropagation(PropagationEntry propagationEntry);
+    default void addPropagation(PropagationEntry propagationEntry) {
+        addPropagation(propagationEntry, false);
+    }
+
+    void addPropagation(PropagationEntry propagationEntry, boolean register);
 
     long getNextPropagationIdCounter();
 
