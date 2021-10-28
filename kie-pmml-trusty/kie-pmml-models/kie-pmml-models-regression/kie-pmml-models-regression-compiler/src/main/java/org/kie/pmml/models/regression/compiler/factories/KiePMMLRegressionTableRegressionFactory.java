@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -57,7 +56,6 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.api.iinterfaces.SerializableConsumer;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -76,7 +74,6 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopul
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMethod;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypes;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
@@ -205,12 +202,9 @@ public class KiePMMLRegressionTableRegressionFactory {
         final String thisExpressionMethodName = String.format("update%sResult", normalizationMethod.name());
         final CastExpr castExpr = new CastExpr();
         final String doubleClassName = Double.class.getSimpleName();
-        final ClassOrInterfaceType atomicReferenceType =
-                getTypedClassOrInterfaceTypeByTypeNames(AtomicReference.class.getCanonicalName(),
-                                                        Arrays.asList(doubleClassName));
         final ClassOrInterfaceType consumerType =
-                getTypedClassOrInterfaceTypeByTypes(SerializableConsumer.class.getCanonicalName(),
-                                                    Arrays.asList(atomicReferenceType));
+                getTypedClassOrInterfaceTypeByTypeNames(SerializableFunction.class.getCanonicalName(),
+                                                        Arrays.asList(doubleClassName, doubleClassName));
         castExpr.setType(consumerType);
         castExpr.setExpression(new ThisExpr());
         final MethodReferenceExpr toReturn = new MethodReferenceExpr();

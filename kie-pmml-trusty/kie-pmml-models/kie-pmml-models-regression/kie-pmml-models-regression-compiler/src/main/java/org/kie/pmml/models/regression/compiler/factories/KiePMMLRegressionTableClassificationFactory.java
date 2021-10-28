@@ -212,45 +212,4 @@ public class KiePMMLRegressionTableClassificationFactory {
             body.addStatement(new MethodCallExpr(new NameExpr("categoryTableMap"), "put", expressions));
         });
     }
-//
-//    /**
-//     * Add the  <b>getProbabilityMapMethod</b>s <code>MethodDeclaration</code> to the class
-//     * @param normalizationMethod
-//     * @param tableTemplate
-//     * @return
-//     */
-//    static void populateGetProbabilityMapMethod(final RegressionModel.NormalizationMethod normalizationMethod,
-//                                                final boolean isBinary,
-//                                                final ClassOrInterfaceDeclaration tableTemplate) {
-//        if (UNSUPPORTED_NORMALIZATION_METHODS.contains(normalizationMethod)) {
-//            throw new KiePMMLInternalException(String.format("Unsupported NormalizationMethod %s",
-//                                                             normalizationMethod));
-//        }
-//        try {
-//            String normalizationName = normalizationMethod.name();
-//            if (RegressionModel.NormalizationMethod.NONE.equals(normalizationMethod) && isBinary) {
-//                normalizationName += "Binary";
-//            }
-//            String targetMethodName = String.format("get%sProbabilityMap", normalizationName);
-//
-//            final MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("getProbabilityMap").get(0);
-//            final ReturnStmt returnStmt =
-//                    methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format
-//                    (MISSING_BODY_TEMPLATE, methodDeclaration)))
-//                            .getStatements()
-//                            .stream()
-//                            .filter(ReturnStmt.class::isInstance)
-//                            .map(ReturnStmt.class::cast)
-//                            .findFirst()
-//                            .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_RETURN_IN_METHOD,
-//                                                                                          methodDeclaration)));
-//            final MethodCallExpr toModify = returnStmt.getExpression()
-//                    .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_EXPRESSION_IN_RETURN,
-//                                                                                  methodDeclaration)))
-//                    .asMethodCallExpr();
-//            toModify.setName(targetMethodName);
-//        } catch (Exception e) {
-//            throw new KiePMMLInternalException(e.getMessage());
-//        }
-//    }
 }
