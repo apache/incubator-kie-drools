@@ -22,13 +22,18 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.mvel.compiler.Address;
+import org.drools.mvel.compiler.Asset;
+import org.drools.mvel.compiler.AssetCard;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.IndexedNumber;
+import org.drools.mvel.compiler.Order;
+import org.drools.mvel.compiler.OrderItem;
 import org.drools.mvel.compiler.OuterClass;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Target;
 import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.mvel.integrationtests.facts.AFact;
+
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -507,5 +512,74 @@ public class UpdateTest {
         verify(ael, times(2)).afterMatchFired(any(org.kie.api.event.rule.AfterMatchFiredEvent.class));
         // no cancellations should have happened
         verify(ael, never()).matchCancelled(any(org.kie.api.event.rule.MatchCancelledEvent.class));
+    }
+
+    @Test(timeout = 10000)
+    public void testSwapChild() {
+        // DROOLS-6684
+        final String str = "package org.drools.mvel.compiler;\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "import " + Asset.class.getCanonicalName() + "\n" +
+                           "import " + AssetCard.class.getCanonicalName() + "\n" +
+                           "\n" +
+                           "rule R1\n" +
+                           "    no-loop\n" +
+                           "when\n" +
+                           "    $p : Person(name == \"Mario\") @watch(age)\n" +
+                           "    $as : Asset()\n" +
+                           "    $ac : AssetCard(parent == $as, groupCode != \"A\") \n" +
+                           "then\n" +
+                           "    System.out.println(\"Rule \" + drools.getRule().getName() + \"; \" + $ac);\n" +
+                           "    modify($p){setAge(10)}\n" +
+                           "end\n" +
+                           "\n" +
+                           "rule R2\n" +
+                           "    no-loop\n" +
+                           "when\n" +
+                           "    $p : Person(name == \"Mario\") @watch(age)\n" +
+                           "    $as : Asset()\n" +
+                           "    $ac : AssetCard(parent == $as, groupCode == \"A\") \n" +
+                           "then\n" +
+                           "    System.out.println(\"Rule \" + drools.getRule().getName() + \"; \" + $ac);\n" +
+                           "    modify($p){setAge(10)}\n" +
+                           "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
+
+        Asset asset = new Asset();
+
+        AssetCard assetCard = new AssetCard(1);
+        assetCard.setParent(asset);
+        assetCard.setGroupCode("A");
+        asset.setAssetCard(assetCard);
+
+        Person p = new Person("Mario", 20);
+
+        FactHandle assetFh = ksession.insert(asset);
+        FactHandle assetCardFh = ksession.insert(assetCard);
+        ksession.insert(p);
+
+        int fired = ksession.fireAllRules();
+        System.out.println("1st run : fired = " + fired);
+
+        //----------------------
+
+        AssetCard assetCard2 = new AssetCard(2);
+        assetCard2.setParent(asset);
+        assetCard2.setGroupCode("A");
+        asset.setAssetCard(assetCard2);
+
+        ksession.delete(assetCardFh);
+        ksession.update(assetFh, asset, "assetCard");
+
+        ksession.insert(assetCard2);
+        ksession.update(assetFh, asset, "assetCard");
+
+        fired = ksession.fireAllRules();
+        System.out.println("2nd run : fired = " + fired);
+        System.out.println("=== finish");
+
+        ksession.dispose();
     }
 }
