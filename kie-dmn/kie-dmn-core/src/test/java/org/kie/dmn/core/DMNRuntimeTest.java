@@ -3019,4 +3019,22 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("Decision1").getResult(), is(notNullValue()));
         assertThat(dmnResult.getDecisionResultByName("Decision2").getResult(), is("cd"));
     }
+    
+    @Test
+    public void testNotInvocable() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("notInvocable.dmn", this.getClass());
+        runtime.addListener(new DMNRuntimeEventListener() {});
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_4B70E98C-E74E-48A1-88C6-F3FB1F0C026B", "notInvocable");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("something", "something");
+        context.set("p1", 47);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
+    }
 }
