@@ -73,17 +73,12 @@ public class ContextPutFunction extends BaseFEELFunction {
             return invoke(context, key0, value);
         }
         final FEELFnResult<Map<String, Object>> result = toMap(context);
-        if (result.isLeft()) {
-            return result;
-        }
-        Map<String, Object> resultMap = result.getOrElseThrow(e -> new IllegalStateException("Should have returned toMap error already"));
-        Object contextKey0 = resultMap.get(key0);
-        List keysTail = keys.subList(1, keys.size());
-        FEELFnResult<Map<String, Object>> rightValue = invoke(contextKey0, keysTail, value);
-        if (result.isLeft()) {
-            return result;
-        }
-        resultMap.put(key0, rightValue.getOrElseThrow(e -> new IllegalStateException("Should have returned toMap error already")));
+        result.flatMap(r -> {
+            Object contextKey0 = r.get(key0);
+            List keysTail = keys.subList(1, keys.size());
+            FEELFnResult<Map<String, Object>> rightValue = invoke(contextKey0, keysTail, value);
+            return rightValue.map(rv -> r.put(key0, rv));
+        });
                 
         return result;
     }

@@ -41,5 +41,11 @@ public class FEELFnResult<T> extends Either<FEELEvent, T> {
                 ? ofError(this.getLeft().get())
                 : ofResult(rightFn.apply(this.getRight().get()));
     }
+    
+    public <X> FEELFnResult<X> flatMap(Function<T, FEELFnResult<X>> rightFn) {
+        return isLeft()
+                ? ofError(this.getLeft().get())
+                : rightFn.apply(this.getRight().get());
+    }
 
 }
