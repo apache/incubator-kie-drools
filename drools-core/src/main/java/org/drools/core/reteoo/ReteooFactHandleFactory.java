@@ -78,7 +78,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
         }
     }
 
-    private WorkingMemoryEntryPoint getWmEntryPoint(ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint wmEntryPoint) {
+    protected WorkingMemoryEntryPoint getWmEntryPoint(ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint wmEntryPoint) {
         if (wmEntryPoint != null) {
             return wmEntryPoint;
         }
