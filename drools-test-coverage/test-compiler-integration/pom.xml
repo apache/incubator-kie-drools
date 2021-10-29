@@ -162,7 +162,8 @@
           <artifactId>hamcrest-core</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>  </dependencies>
+    </dependency>  
+  </dependencies>
 
   <profiles>
     <profile>
