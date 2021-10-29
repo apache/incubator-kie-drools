@@ -33,12 +33,12 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
  * Experimental for DMN14-181
  * See also: DMN14-182, DMN14-183
  */
-public class PutFunction extends BaseFEELFunction {
+public class ContextPutFunction extends BaseFEELFunction {
 
-    public static final PutFunction INSTANCE = new PutFunction();
+    public static final ContextPutFunction INSTANCE = new ContextPutFunction();
 
-    public PutFunction() {
-        super("put");
+    public ContextPutFunction() {
+        super("context put");
     }
 
     public FEELFnResult<Map<String, Object>> invoke(@ParameterName("context") Object context, @ParameterName("key") String key, @ParameterName("value") Object value) {
