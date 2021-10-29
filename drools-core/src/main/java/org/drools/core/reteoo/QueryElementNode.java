@@ -123,7 +123,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
                                                final LeftTuple leftTuple ) {
         InternalFactHandle handle = null;
         if( context.getReaderContext() != null ) {
-            handle = context.getReaderContext().createQueryHandle( leftTuple, (InternalWorkingMemory) reteEvaluator, getId() );
+            handle = context.getReaderContext().createQueryHandle( leftTuple, reteEvaluator, getId() );
         }
 
         if (handle == null) {

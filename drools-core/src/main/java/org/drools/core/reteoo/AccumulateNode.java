@@ -25,7 +25,6 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -140,7 +139,7 @@ public class AccumulateNode extends BetaNode {
                                                      final Object result) {
         InternalFactHandle handle = null;
         if ( context.getReaderContext() != null ) {
-            handle = context.getReaderContext().createAccumulateHandle( context.getEntryPoint(), (InternalWorkingMemory) reteEvaluator, leftTuple, result, getId() );
+            handle = context.getReaderContext().createAccumulateHandle( context.getEntryPoint(), reteEvaluator, leftTuple, result, getId() );
         }
         if (handle == null) {
             handle = reteEvaluator.createFactHandle( result,

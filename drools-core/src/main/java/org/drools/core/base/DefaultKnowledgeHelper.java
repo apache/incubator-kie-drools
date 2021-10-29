@@ -84,7 +84,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     protected Activation                                activation;
     protected Tuple                                     tuple;
-    protected ReteEvaluatorForRHS workingMemory;
+    protected ReteEvaluatorForRHS reteEvaluator;
 
     private LinkedList<LogicalDependency<T>>          previousJustified;
 
@@ -95,11 +95,11 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public DefaultKnowledgeHelper(ReteEvaluator reteEvaluator) {
-        this.workingMemory = createWrappedSession( reteEvaluator );
+        this.reteEvaluator = createWrappedSession( reteEvaluator );
     }
 
     public DefaultKnowledgeHelper(Activation activation, ReteEvaluator reteEvaluator) {
-        this.workingMemory = createWrappedSession( reteEvaluator );
+        this.reteEvaluator = createWrappedSession( reteEvaluator );
         this.activation = activation;
     }
 
@@ -111,13 +111,13 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                             ClassNotFoundException {
         activation = (Activation) in.readObject();
         tuple = (LeftTuple) in.readObject();
-        workingMemory = (ReteEvaluatorForRHS) in.readObject();
+        reteEvaluator = (ReteEvaluatorForRHS) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( activation );
         out.writeObject( tuple );
-        out.writeObject( workingMemory );
+        out.writeObject(reteEvaluator);
     }
 
     public void setActivation(final Activation agendaItem) {
@@ -194,13 +194,13 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         
         if ( wasBlocked ) {
             RuleAgendaItem ruleAgendaItem = targetMatch.getRuleAgendaItem();
-            InternalAgenda agenda = workingMemory.getAgenda();
+            InternalAgenda agenda = reteEvaluator.getAgenda();
             agenda.stageLeftTuple(ruleAgendaItem, targetMatch);
         }
     }
 
     public FactHandle insertAsync( final Object object ) {
-        return this.workingMemory.insertAsync( object );
+        return this.reteEvaluator.insertAsync( object );
     }
 
     public InternalFactHandle insert(final Object object) {
@@ -210,7 +210,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public InternalFactHandle insert(final Object object,
                                      final boolean dynamic) {
-        return (InternalFactHandle) this.workingMemory.insert( object,
+        return (InternalFactHandle) this.reteEvaluator.insert( object,
                                                                dynamic,
                                                                this.activation.getRule(),
                                                                this.activation.getTuple().getTupleSink() );
@@ -277,7 +277,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             return ( (BeliefSet) dep.getJustified() ).getFactHandle();
         } else {
             // no previous matching logical dependency, so create a new one
-            return workingMemory.getTruthMaintenanceSystem().insert( object,
+            return reteEvaluator.getTruthMaintenanceSystem().insert( object,
                                                                      value,
                                                                      this.activation.getRule(),
                                                                      this.activation );
@@ -296,26 +296,26 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         }
 
         InternalFactHandle handle = getFactHandleFromWM( object );
-        NamedEntryPoint ep = (NamedEntryPoint) workingMemory.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() );
+        NamedEntryPoint ep = (NamedEntryPoint) reteEvaluator.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() );
         ObjectTypeConf otc = ep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( ep.getEntryPoint(), object );
 
         BeliefSystem beliefSystem;
         if ( value == null ) {
-            beliefSystem = workingMemory.getTruthMaintenanceSystem().getBeliefSystem();
+            beliefSystem = reteEvaluator.getTruthMaintenanceSystem().getBeliefSystem();
         } else {
             if ( value instanceof Mode ) {
                 Mode m = (Mode) value;
                 beliefSystem = (BeliefSystem) m.getBeliefSystem();
             } else {
-                beliefSystem = workingMemory.getTruthMaintenanceSystem().getBeliefSystem();
+                beliefSystem = reteEvaluator.getTruthMaintenanceSystem().getBeliefSystem();
             }
         }
 
         BeliefSet beliefSet = null;
         if ( handle == null ) {
-            handle = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getFactHandleFactoryService().newFactHandle( object,
+            handle = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getFactHandleFactoryService().newFactHandle( object,
                                                                                                                                             otc,
-                                                                                                                                            workingMemory, ep );
+                    reteEvaluator, ep );
         }
         if ( handle.getEqualityKey() == null ) {
             handle.setEqualityKey( new EqualityKey( handle, EqualityKey.STATED ) );
@@ -352,7 +352,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                 justified.getBlockers().remove( (SimpleMode) dep.getMode());
                 if (justified.getBlockers().isEmpty() ) {
                     RuleAgendaItem ruleAgendaItem = justified.getRuleAgendaItem();
-                    workingMemory.getAgenda().stageLeftTuple(ruleAgendaItem, justified);
+                    reteEvaluator.getAgenda().stageLeftTuple(ruleAgendaItem, justified);
                 }
                 dep = tmp;
             }
@@ -361,7 +361,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     
     public void cancelMatch(Match act) {
         AgendaItem match = ( AgendaItem ) act;
-        ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match,  workingMemory);
+        ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match, reteEvaluator);
     }
 
     public InternalFactHandle getFactHandle(Object object) {
@@ -371,7 +371,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             if ( object instanceof CoreWrapper ) {
                 handle = getFactHandleFromWM( ((CoreWrapper) object).getCore() );
             }
-            if ( handle == null && workingMemory.getKnowledgeBase().getConfiguration().getAssertBehaviour() == RuleBaseConfiguration.AssertBehaviour.EQUALITY ) {
+            if ( handle == null && reteEvaluator.getKnowledgeBase().getConfiguration().getAssertBehaviour() == RuleBaseConfiguration.AssertBehaviour.EQUALITY ) {
                 InternalFactHandle modifiedFh = tuple.getFactHandle();
                 while (modifiedFh == null || modifiedFh.getObject() != object) {
                     tuple = tuple.getParent();
@@ -394,7 +394,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void update(final FactHandle handle,
                        final Object newObject){
         InternalFactHandle h = (InternalFactHandle) handle;
-        h.getEntryPoint(workingMemory).update( h,
+        h.getEntryPoint(reteEvaluator).update( h,
                                   newObject,
                                   onlyTraitBitSetMask(),
                                   newObject.getClass(),
@@ -408,13 +408,13 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void update( final FactHandle handle, BitMask mask, Class<?> modifiedClass ) {
         InternalFactHandle h = (InternalFactHandle) handle;
 
-        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint(workingMemory)).update( h,
+        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint(reteEvaluator)).update( h,
                                                                       ((InternalFactHandle)handle).getObject(),
                                                                       mask,
                                                                       modifiedClass,
                                                                       this.activation );
         if ( h.isTraitOrTraitable() ) {
-            workingMemory.updateTraits( h, mask, modifiedClass, this.activation );
+            reteEvaluator.updateTraits( h, mask, modifiedClass, this.activation );
         }
     }
 
@@ -453,7 +453,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             return;
         }
 
-        ((InternalFactHandle) handle).getEntryPoint(workingMemory).delete(handle,
+        ((InternalFactHandle) handle).getEntryPoint(reteEvaluator).delete(handle,
                                                              this.activation.getRule(),
                                                              this.activation.getTuple().getTupleSink(),
                                                              fhState);
@@ -468,11 +468,11 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public WorkingMemory getWorkingMemory() {
-        return this.workingMemory;
+        return this.reteEvaluator;
     }
 
     public KieRuntime getKnowledgeRuntime() {
-        return this.workingMemory;
+        return this.reteEvaluator;
     }
 
     public Activation getMatch() {
@@ -480,11 +480,11 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public void setFocus(final String focus) {
-        this.workingMemory.setFocus( focus );
+        this.reteEvaluator.setFocus( focus );
     }
 
     public Object get(final Declaration declaration) {
-        return declaration.getValue( workingMemory, tuple );
+        return declaration.getValue(reteEvaluator, tuple );
     }
 
     public Declaration getDeclaration(final String identifier) {
@@ -492,23 +492,23 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public void halt() {
-        this.workingMemory.halt();
+        this.reteEvaluator.halt();
     }
 
     public EntryPoint getEntryPoint(String id) {
-        return this.workingMemory.getEntryPoint(id);
+        return this.reteEvaluator.getEntryPoint(id);
     }
 
     public Channel getChannel(String id) {
-        return this.workingMemory.getChannels().get(id);
+        return this.reteEvaluator.getChannels().get(id);
     }
 
     public Map<String, Channel> getChannels() {
-        return Collections.unmodifiableMap( this.workingMemory.getChannels() );
+        return Collections.unmodifiableMap( this.reteEvaluator.getChannels() );
     }
 
     private InternalFactHandle getFactHandleFromWM(final Object object) {
-        return getFactHandleFromWM(workingMemory, object);
+        return getFactHandleFromWM(reteEvaluator, object);
     }
 
     public static InternalFactHandle getFactHandleFromWM(InternalWorkingMemory workingMemory, final Object object) {
@@ -526,7 +526,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         if (ProcessContext.class.equals(contextClass)) {
             String ruleflowGroupName = getMatch().getRule().getRuleFlowGroup();
             if (ruleflowGroupName != null) {
-                Map<Object, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
+                Map<Object, String> nodeInstances = ((InternalRuleFlowGroup) reteEvaluator.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
                 if (!nodeInstances.isEmpty()) {
                     if (nodeInstances.size() > 1) {
                         // TODO
@@ -534,7 +534,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                             "Not supporting multiple node instances for the same ruleflow group");
                     }
                     Map.Entry<Object, String> entry = nodeInstances.entrySet().iterator().next();
-                    ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
+                    ProcessInstance processInstance = reteEvaluator.getProcessInstance(entry.getKey());
                     AbstractProcessContext context = createProcessContext();
                     context.setProcessInstance(processInstance);
                     String nodeInstance = entry.getValue();
@@ -560,7 +560,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     protected AbstractProcessContext createProcessContext() {
-        return new org.drools.core.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
+        return new org.drools.core.spi.ProcessContext(reteEvaluator.getKnowledgeRuntime());
     }
 
     protected boolean sameNodeInstance( NodeInstance subNodeInstance, String nodeInstanceId ) {
@@ -612,15 +612,15 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     @Override
     public <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K, X> core, Class<T> trait ) {
-        return workingMemory.shed( this.activation, core, trait );
+        return reteEvaluator.shed( this.activation, core, trait );
     }
 
     private <T, K> T don( K core, Collection<Class<? extends Thing>> traits, boolean b, Mode... modes ) {
-        return workingMemory.don( this.activation, core, traits, b, modes );
+        return reteEvaluator.don( this.activation, core, traits, b, modes );
     }
 
     private <T, K> T don( K core, Class<T> trait, boolean b, Mode... modes ) {
-        return workingMemory.don( this.activation, core, trait, b, modes );
+        return reteEvaluator.don( this.activation, core, trait, b, modes );
     }
 
     public ClassLoader getProjectClassLoader() {

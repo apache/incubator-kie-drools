@@ -1970,11 +1970,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    @Override
-    public void executeQueuedActions() {
-
-    }
-
     /**
      * Returns the number of time units (usually ms) that the engine is idle
      * according to the session clock or -1 if it is not idle.

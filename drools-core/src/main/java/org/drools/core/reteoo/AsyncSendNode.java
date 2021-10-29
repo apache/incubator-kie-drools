@@ -23,7 +23,6 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
@@ -150,7 +149,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
     public InternalFactHandle createFactHandle(Tuple leftTuple, PropagationContext context, ReteEvaluator reteEvaluator, Object object ) {
         InternalFactHandle handle = null;
         if ( context.getReaderContext() != null ) {
-            handle = context.getReaderContext().createAsyncNodeHandle( leftTuple, (InternalWorkingMemory) reteEvaluator, object, getId(), getObjectTypeConf( reteEvaluator ) );
+            handle = context.getReaderContext().createAsyncNodeHandle( leftTuple, reteEvaluator, object, getId(), getObjectTypeConf( reteEvaluator ) );
         }
 
         if (handle == null) {

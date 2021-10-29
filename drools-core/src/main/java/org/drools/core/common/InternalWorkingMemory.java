@@ -21,20 +21,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
-import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.time.TimerService;
-import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
 
@@ -50,44 +44,18 @@ public interface InternalWorkingMemory
 
     void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
-    <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
-
     void clearNodeMemory(MemoryFactory node);
     
     NodeMemories getNodeMemories();
-
-    long getNextPropagationIdCounter();
 
     default FactHandleClassStore getStoreForClass(Class<?> clazz) {
         return getObjectStore().getStoreForClass(clazz);
     }
 
-    FactHandleFactory getFactHandleFactory();
-
-    EntryPointId getEntryPoint();
-    
-    EntryPointNode getEntryPointNode();
-
-    WorkingMemoryEntryPoint getEntryPoint(String name);
-
     Lock getLock();
 
-    boolean isSequential();
-    
-    ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
-    
     InternalFactHandle getInitialFactHandle();
     
-    Calendars getCalendars();
-    
-    /**
-     * Returns the TimerService instance (session clock) for this
-     * session.
-     * 
-     * @return
-     */
-    TimerService getTimerService();
-
     InternalKnowledgeRuntime getKnowledgeRuntime();
     
     /**
@@ -100,8 +68,6 @@ public interface InternalWorkingMemory
     
     Collection< ? extends EntryPoint> getEntryPoints();
 
-    SessionConfiguration getSessionConfiguration();
-    
     void startBatchExecution();
     
     void endBatchExecution();

@@ -77,7 +77,7 @@ import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationKey;
 
 /**
- * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
+ * Wrapper of ReteEvaluator so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
 public class ReteEvaluatorForRHS
         implements KieSession,
