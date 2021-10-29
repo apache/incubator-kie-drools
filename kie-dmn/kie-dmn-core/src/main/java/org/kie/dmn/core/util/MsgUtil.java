@@ -107,12 +107,6 @@ public final class MsgUtil {
     }
 
     public static String clipString(String source, int maxChars) {
-        if (source.length() <= maxChars) {
-            return source;
-        } else {
-            return new StringBuilder().append(source.substring(0, maxChars))
-                                      .append(String.format("... [string clipped after %s chars, total length is %s]", maxChars, source.length()))
-                                      .toString();
-        }
+        return org.kie.dmn.feel.util.MsgUtil.clipString(source, maxChars);
     }
 }
