@@ -48,7 +48,8 @@ public class FEELValuesConstantsTest extends BaseFEELTest {
                 { "\"šomeÚnicodeŠtriňg\"", "šomeÚnicodeŠtriňg" , null},
                 { "\"横綱\"", "横綱" , null},
                 { "\"thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong\"", "thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong" , null},
-                { "\"\"", "" , null}
+                { "\"\"", "" , null},
+                { "-\"10\"", null , FEELEvent.Severity.WARN}
         };
         return addAdditionalParameters(cases, false);
     }

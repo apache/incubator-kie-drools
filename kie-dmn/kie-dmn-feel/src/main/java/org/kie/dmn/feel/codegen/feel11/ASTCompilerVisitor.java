@@ -659,10 +659,15 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
     public DirectCompilerResult visit(SignedUnaryNode n) {
         DirectCompilerResult result = n.getExpression().accept(this);
         if (n.getSign() == SignedUnaryNode.Sign.NEGATIVE) {
-            return DirectCompilerResult.of(
-                    Expressions.negate(result.getExpression()),
-                    result.resultType,
-                    result.getFieldDeclarations());
+            if (n.getExpression() instanceof StringNode) {
+                return DirectCompilerResult.of(CompiledFEELSupport.compiledWarnExpression(Msg.createMessage(Msg.NEGATING_A_NULL)),
+                                               result.resultType);
+            } else {
+                return DirectCompilerResult.of(
+                        Expressions.negate(result.getExpression()),
+                        result.resultType,
+                        result.getFieldDeclarations());
+            }
         } else {
             return result;
         }

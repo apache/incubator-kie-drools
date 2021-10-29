@@ -66,7 +66,12 @@ public class SignedUnaryNode
             ctx.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.NEGATING_A_NULL)));
             return null;
         } else if ( Sign.NEGATIVE == sign ) {
-            return BigDecimal.valueOf( -1 ).multiply( result );
+            if (expression instanceof StringNode) {
+                ctx.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.NEGATING_A_NULL)));
+                return null;
+            } else {
+                return BigDecimal.valueOf( -1 ).multiply( result );
+            }
         } else {
             return result;
         }
