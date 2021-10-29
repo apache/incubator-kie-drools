@@ -34,6 +34,12 @@
       <artifactId>kie-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Needed by the example as it uses these kjars -->
     <dependency>
       <groupId>org.drools</groupId>
