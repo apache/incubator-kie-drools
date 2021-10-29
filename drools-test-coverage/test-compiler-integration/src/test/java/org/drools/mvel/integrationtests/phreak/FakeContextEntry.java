@@ -20,7 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.Tuple;
 
@@ -29,15 +29,15 @@ public class FakeContextEntry implements ContextEntry {
     private Tuple tuple;
     private InternalFactHandle handle;
 
-    private transient InternalWorkingMemory workingMemory;
+    private transient ReteEvaluator reteEvaluator;
 
-    public void updateFromTuple(InternalWorkingMemory workingMemory, Tuple tuple) {
+    public void updateFromTuple(ReteEvaluator reteEvaluator, Tuple tuple) {
         this.tuple = tuple;
-        this.workingMemory = workingMemory;
+        this.reteEvaluator = reteEvaluator;
     }
 
-    public void updateFromFactHandle(InternalWorkingMemory workingMemory, InternalFactHandle handle) {
-        this.workingMemory = workingMemory;
+    public void updateFromFactHandle(ReteEvaluator reteEvaluator, InternalFactHandle handle) {
+        this.reteEvaluator = reteEvaluator;
         this.handle = handle;
     }
 
@@ -46,7 +46,7 @@ public class FakeContextEntry implements ContextEntry {
     }
 
     public void resetFactHandle() {
-        workingMemory = null;
+        reteEvaluator = null;
         handle = null;
     }
 
@@ -68,15 +68,15 @@ public class FakeContextEntry implements ContextEntry {
         return handle;
     }
 
-    public InternalWorkingMemory getWorkingMemory() {
-        return workingMemory;
-    }
-
     public ContextEntry getNext() {
         throw new UnsupportedOperationException();
     }
 
     public void setNext(final ContextEntry entry) {
         throw new UnsupportedOperationException();
+    }
+
+    public ReteEvaluator getReteEvaluator() {
+        return reteEvaluator;
     }
 }

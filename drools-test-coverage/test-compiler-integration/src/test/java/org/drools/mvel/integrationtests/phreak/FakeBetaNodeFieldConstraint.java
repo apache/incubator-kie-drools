@@ -100,7 +100,7 @@ public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
         try {
             Object value = accessor.invoke(fact);
             Object declObj = tuple.getObject(declaration);
-            Object declValue = declaration.getValue(((FakeContextEntry) context).getWorkingMemory(), declObj);
+            Object declValue = declaration.getValue(((FakeContextEntry) context).getReteEvaluator(), declObj);
             if (operator == Operator.EQUAL) {
                 return value.equals(declValue);
             } else if (operator == Operator.NOT_EQUAL) {
