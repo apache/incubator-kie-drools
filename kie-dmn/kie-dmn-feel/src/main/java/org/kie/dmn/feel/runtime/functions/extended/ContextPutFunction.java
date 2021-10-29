@@ -49,8 +49,7 @@ public class ContextPutFunction extends BaseFEELFunction {
         if (key == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "key", "cannot be null"));
         }
-        FEELFnResult<Map<String, Object>> result = toMap(context);
-        result.map(r -> r.put(key, value));
+        FEELFnResult<Map<String, Object>> result = toMap(context).map(r -> put(r, key, value));
 
         return result;
     }
@@ -72,15 +71,15 @@ public class ContextPutFunction extends BaseFEELFunction {
         if (keys.size() == 1) {
             return invoke(context, key0, value);
         }
-        final FEELFnResult<Map<String, Object>> result = toMap(context);
-        result.flatMap(r -> {
-            Object contextKey0 = r.get(key0);
-            List keysTail = keys.subList(1, keys.size());
-            FEELFnResult<Map<String, Object>> rightValue = invoke(contextKey0, keysTail, value);
-            return rightValue.map(rv -> r.put(key0, rv));
-        });
+        final List keysTail = keys.subList(1, keys.size());
+        final FEELFnResult<Map<String, Object>> result = toMap(context).flatMap(r -> invoke(r.get(key0), keysTail, value).map(rv -> put(r, key0, rv)));
                 
         return result;
+    }
+    
+    private static <K, V> Map<K, V> put(Map<K, V> map, K key, V value) {
+        map.put(key, value);
+        return map;
     }
 
     public static FEELFnResult<Map<String, Object>> toMap(Object context) {
