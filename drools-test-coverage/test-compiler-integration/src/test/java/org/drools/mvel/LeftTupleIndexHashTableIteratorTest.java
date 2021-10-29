@@ -25,8 +25,6 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
@@ -45,9 +43,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTableIteratorTest {
+public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTableIteratorTest {
 
-    public RightTupleIndexHashTableIteratorTest(boolean useLambdaConstraint) {
+    public LeftTupleIndexHashTableIteratorTest(boolean useLambdaConstraint) {
         this.useLambdaConstraint = useLambdaConstraint;
     }
 
@@ -83,26 +81,26 @@ public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTabl
         InternalFactHandle fh12 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
         InternalFactHandle fh13 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
 
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh1, null));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh2, null));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh3, null));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh4, null));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh5, null));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh6, null));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh7, null));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh8, null));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh9, null));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh1, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh2, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh3, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh4, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh5, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh6, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh7, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh8, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh9, null, true));
 
-        TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getRightTupleMemory();
+        TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getLeftTupleMemory();
         // can't create a 0 hashCode, so forcing 
-        TupleList rightTupleList = new TupleList();
-        rightTupleList.add(new RightTupleImpl(fh10, null));
-        hashTable.getTable()[0] = rightTupleList;
-        rightTupleList = new TupleList();
-        rightTupleList.add(new RightTupleImpl(fh11, null));
-        rightTupleList.add(new RightTupleImpl(fh12, null));
-        rightTupleList.add(new RightTupleImpl(fh13, null));
-        ((TupleList) hashTable.getTable()[0]).setNext(rightTupleList);
+        TupleList leftTupleList = new TupleList();
+        leftTupleList.add(new LeftTupleImpl(fh10, null, true));
+        hashTable.getTable()[0] = leftTupleList;
+        leftTupleList = new TupleList();
+        leftTupleList.add(new LeftTupleImpl(fh11, null, true));
+        leftTupleList.add(new LeftTupleImpl(fh12, null, true));
+        leftTupleList.add(new LeftTupleImpl(fh13, null, true));
+        ((TupleList) hashTable.getTable()[0]).setNext(leftTupleList);
 
         List tableIndexList = createTableIndexListForAssertion(hashTable);
         assertEquals(5, tableIndexList.size());
@@ -124,9 +122,9 @@ public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTabl
         }
 
         List resultList = new ArrayList<LeftTupleImpl>();
-        Iterator it = betaMemory.getRightTupleMemory().iterator();
-        for (RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next()) {
-            resultList.add(rightTuple);
+        Iterator it = betaMemory.getLeftTupleMemory().iterator();
+        for (LeftTupleImpl leftTuple = (LeftTupleImpl) it.next(); leftTuple != null; leftTuple = (LeftTupleImpl) it.next()) {
+            resultList.add(leftTuple);
         }
 
         assertEquals(13, resultList.size());
@@ -142,7 +140,7 @@ public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTabl
         entries[5] = mock(TupleList.class);
         entries[9] = mock(TupleList.class);
 
-        RightTuple[] tuples = new RightTuple[]{mock(RightTuple.class), mock(RightTuple.class), mock(RightTuple.class)};
+        LeftTupleImpl[] tuples = new LeftTupleImpl[]{mock(LeftTupleImpl.class), mock(LeftTupleImpl.class), mock(LeftTupleImpl.class)};
 
         // set return values for methods
         when(entries[0].getNext()).thenReturn(null);
