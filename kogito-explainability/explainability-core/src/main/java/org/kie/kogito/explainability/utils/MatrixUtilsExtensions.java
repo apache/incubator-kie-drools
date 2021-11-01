@@ -24,13 +24,13 @@ import java.util.Random;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 
-public class MatrixUtils {
+public class MatrixUtilsExtensions {
     public enum Axis {
         ROW,
         COLUMN
     }
 
-    private MatrixUtils() {
+    private MatrixUtilsExtensions() {
         throw new IllegalStateException("Utility class");
     }
 
@@ -42,7 +42,7 @@ public class MatrixUtils {
      * @return double[][] array, the converted matrix
      */
     public static double[][] matrixFromPredictionInput(PredictionInput p) {
-        return MatrixUtils.rowVector(p.getFeatures().stream()
+        return MatrixUtilsExtensions.rowVector(p.getFeatures().stream()
                 .mapToDouble(f -> f.getValue().asNumber())
                 .toArray());
     }
@@ -68,7 +68,7 @@ public class MatrixUtils {
      * @return double[][] array, the converted matrix
      */
     public static double[][] matrixFromPredictionOutput(PredictionOutput p) {
-        return MatrixUtils.rowVector(p.getOutputs().stream()
+        return MatrixUtilsExtensions.rowVector(p.getOutputs().stream()
                 .mapToDouble(f -> f.getValue().asNumber())
                 .toArray());
     }
@@ -134,7 +134,7 @@ public class MatrixUtils {
      * @return vector, the ith column of x
      */
     public static double[] getCol(double[][] x, int i) {
-        int cols = MatrixUtils.getShape(x)[1];
+        int cols = MatrixUtilsExtensions.getShape(x)[1];
         if (cols <= i || i < 0) {
             throw new IllegalArgumentException(
                     String.format("Column index %d too large, matrix only has %d column(s)", i, cols));
@@ -156,7 +156,7 @@ public class MatrixUtils {
             throw new IllegalArgumentException("Empty column idxs passed to getCols");
         }
 
-        int[] shape = MatrixUtils.getShape(x);
+        int[] shape = MatrixUtilsExtensions.getShape(x);
         double[][] out = new double[shape[0]][idxs.size()];
 
         for (int i = 0; i < shape[0]; i++) {
@@ -180,8 +180,8 @@ public class MatrixUtils {
      * @return the element-wise sum of a and b
      */
     public static double[][] matrixSum(double[][] a, double[][] b) {
-        int[] aShape = MatrixUtils.getShape(a);
-        int[] bShape = MatrixUtils.getShape(b);
+        int[] aShape = MatrixUtilsExtensions.getShape(a);
+        int[] bShape = MatrixUtilsExtensions.getShape(b);
 
         if (!Arrays.equals(aShape, bShape)) {
             throw new IllegalArgumentException("Shape of matrix A must shape of matrix B" +
@@ -206,12 +206,12 @@ public class MatrixUtils {
      * @return the result from adding b from every row of a
      */
     public static double[][] matrixRowSum(double[][] a, double[] b) {
-        int[] aShape = MatrixUtils.getShape(a);
-        double[][] bMat = MatrixUtils.rowVector(b);
+        int[] aShape = MatrixUtilsExtensions.getShape(a);
+        double[][] bMat = MatrixUtilsExtensions.rowVector(b);
         double[][] out = new double[aShape[0]][aShape[1]];
 
         for (int i = 0; i < aShape[0]; i++) {
-            out[i] = MatrixUtils.matrixSum(MatrixUtils.rowVector(a[i]), bMat)[0];
+            out[i] = MatrixUtilsExtensions.matrixSum(MatrixUtilsExtensions.rowVector(a[i]), bMat)[0];
         }
         return out;
     }
@@ -224,7 +224,7 @@ public class MatrixUtils {
      * @return the element-wise matrix difference of a and b
      */
     public static double[][] matrixDifference(double[][] a, double[][] b) {
-        double[][] bNeg = MatrixUtils.matrixMultiply(b, -1.);
+        double[][] bNeg = MatrixUtilsExtensions.matrixMultiply(b, -1.);
         return matrixSum(a, bNeg);
     }
 
@@ -248,8 +248,8 @@ public class MatrixUtils {
      * @return the matrix product of a and b
      */
     public static double[][] matrixMultiply(double[][] a, double[][] b) {
-        int[] aShape = MatrixUtils.getShape(a);
-        int[] bShape = MatrixUtils.getShape(b);
+        int[] aShape = MatrixUtilsExtensions.getShape(a);
+        int[] bShape = MatrixUtilsExtensions.getShape(b);
 
         if (aShape[1] != bShape[0]) {
             throw new IllegalArgumentException("# columns of matrix A must match # rows of matrix B" +
@@ -276,7 +276,7 @@ public class MatrixUtils {
      * @return the matrix product of a and the scalar b
      */
     public static double[][] matrixMultiply(double[][] a, double b) {
-        int[] aShape = MatrixUtils.getShape(a);
+        int[] aShape = MatrixUtilsExtensions.getShape(a);
 
         double[][] product = new double[aShape[0]][aShape[1]];
         for (int i = 0; i < aShape[0]; i++) {
@@ -296,17 +296,17 @@ public class MatrixUtils {
      * @return the result of the sum along that dimension
      */
     public static double[] sum(double[][] x, Axis axis) {
-        int[] shape = MatrixUtils.getShape(x);
-        if (axis == MatrixUtils.Axis.ROW) {
+        int[] shape = MatrixUtilsExtensions.getShape(x);
+        if (axis == MatrixUtilsExtensions.Axis.ROW) {
             double[][] out = new double[1][shape[1]];
             for (int i = 0; i < shape[0]; i++) {
-                out = MatrixUtils.matrixSum(out, MatrixUtils.rowVector(x[i]));
+                out = MatrixUtilsExtensions.matrixSum(out, MatrixUtilsExtensions.rowVector(x[i]));
             }
             return out[0];
         } else {
             double[][] out = new double[1][shape[0]];
             for (int i = 0; i < shape[1]; i++) {
-                out = MatrixUtils.matrixSum(out, MatrixUtils.rowVector(MatrixUtils.getCol(x, i)));
+                out = MatrixUtilsExtensions.matrixSum(out, MatrixUtilsExtensions.rowVector(MatrixUtilsExtensions.getCol(x, i)));
             }
             return out[0];
         }
@@ -319,7 +319,7 @@ public class MatrixUtils {
      * @return the transpose of x
      */
     public static double[][] transpose(double[][] x) {
-        int[] shape = MatrixUtils.getShape(x);
+        int[] shape = MatrixUtilsExtensions.getShape(x);
 
         double[][] transposed = new double[shape[1]][shape[0]];
         for (int i = 0; i < shape[0]; i++) {
@@ -341,7 +341,7 @@ public class MatrixUtils {
     private static int findPivot(double[][] x, boolean[] pivotsUsed) {
         double maxAbs = 0;
         int pivot = 0;
-        int size = MatrixUtils.getShape(x)[0];
+        int size = MatrixUtilsExtensions.getShape(x)[0];
         for (int diagIdx = 0; diagIdx < size; diagIdx++) {
             double abs = Math.abs(x[diagIdx][diagIdx]);
             if (abs > maxAbs && !pivotsUsed[diagIdx]) {
@@ -362,7 +362,7 @@ public class MatrixUtils {
      *         https://www.researchgate.net/publication/271296470_In-Place_Matrix_Inversion_by_Modified_Gauss-Jordan_Algorithm
      */
     private static double[][] invertSquareMatrix(double[][] x, double zeroThreshold) {
-        int size = MatrixUtils.getShape(x)[0];
+        int size = MatrixUtilsExtensions.getShape(x)[0];
         double[][] copy = new double[size][size];
         for (int i = 0; i < size; i++) {
             copy[i] = Arrays.copyOf(x[i], size);
@@ -379,7 +379,7 @@ public class MatrixUtils {
             // find the pivot
             // the pivot idx is the idx of the diagonal element with largest absolute value
             // that hasn't already been used as a pivot
-            int pivot = MatrixUtils.findPivot(copy, pivotsUsed);
+            int pivot = MatrixUtilsExtensions.findPivot(copy, pivotsUsed);
             double pivotVal = copy[pivot][pivot];
 
             // check if pivotVal is 0, allowing for some floating point error
@@ -428,12 +428,12 @@ public class MatrixUtils {
         double[][] xInv;
         for (int jitterTries = 0; jitterTries < numRetries; jitterTries++) {
             try {
-                xInv = MatrixUtils.invertSquareMatrix(x, zeroThreshold);
+                xInv = MatrixUtilsExtensions.invertSquareMatrix(x, zeroThreshold);
                 return xInv;
             } catch (ArithmeticException e) {
                 // if the inversion is unsuccessful, we can try slightly jittering the matrix.
                 // this will reduce the accuracy of the inversion marginally, but ensures that we get results
-                MatrixUtils.jitterMatrix(x, 1e-8, random);
+                MatrixUtilsExtensions.jitterMatrix(x, 1e-8, random);
             }
         }
 

@@ -36,7 +36,7 @@ import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
-import org.kie.kogito.explainability.utils.MatrixUtils;
+import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 import org.kie.kogito.explainability.utils.RandomChoice;
 import org.kie.kogito.explainability.utils.WeightedLinearRegression;
 import org.kie.kogito.explainability.utils.WeightedLinearRegressionResults;
@@ -67,7 +67,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
 
     private ShapDataCarrier initialize(PredictionProvider model) {
         // get shapes of input and output data
-        int[] shape = MatrixUtils.getShape(this.config.getBackgroundMatrix());
+        int[] shape = MatrixUtilsExtensions.getShape(this.config.getBackgroundMatrix());
         int rows = shape[0];
         int cols = shape[1];
 
@@ -77,15 +77,15 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
 
         // establish background data
         CompletableFuture<double[][]> modelNull = model.predictAsync(config.getBackground())
-                .thenApply(MatrixUtils::matrixFromPredictionOutput);
-        CompletableFuture<Integer> outputSize = modelNull.thenApply(mn -> MatrixUtils.getShape(mn)[1]);
+                .thenApply(MatrixUtilsExtensions::matrixFromPredictionOutput);
+        CompletableFuture<Integer> outputSize = modelNull.thenApply(mn -> MatrixUtilsExtensions.getShape(mn)[1]);
 
         //compute the mean of each column
-        CompletableFuture<double[]> fnull = modelNull.thenApply(mn -> MatrixUtils.sum(
-                MatrixUtils.matrixMultiply(mn, 1. / rows),
-                MatrixUtils.Axis.ROW));
+        CompletableFuture<double[]> fnull = modelNull.thenApply(mn -> MatrixUtilsExtensions.sum(
+                MatrixUtilsExtensions.matrixMultiply(mn, 1. / rows),
+                MatrixUtilsExtensions.Axis.ROW));
         CompletableFuture<double[][]> linkNull =
-                fnull.thenApply(fn -> MatrixUtils.rowVector(this.link(fn)));
+                fnull.thenApply(fn -> MatrixUtilsExtensions.rowVector(this.link(fn)));
 
         // track number of samples
         int numSamples = this.config.getNSamples().orElseGet(() -> 2048 + (2 * cols));
@@ -154,10 +154,10 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      */
     private void setVaryingFeatureGroups(PredictionInput input, ShapDataCarrier sdc) {
         List<Integer> varyingFeatureGroups = new ArrayList<>();
-        double[] inputVector = MatrixUtils.matrixFromPredictionInput(input)[0];
+        double[] inputVector = MatrixUtilsExtensions.matrixFromPredictionInput(input)[0];
         double[] columnFeatures = new double[sdc.getRows() + 1];
         for (int col = 0; col < sdc.getCols(); col++) {
-            System.arraycopy(MatrixUtils.getCol(this.config.getBackgroundMatrix(), col),
+            System.arraycopy(MatrixUtilsExtensions.getCol(this.config.getBackgroundMatrix(), col),
                     0, columnFeatures, 0, sdc.getRows());
             columnFeatures[sdc.getRows()] = inputVector[col];
             long uniques = Arrays.stream(columnFeatures).distinct().count();
@@ -177,12 +177,12 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      * @return The normalized vector
      */
     private double[] normalizeWeightVector(double[] v) {
-        double[][] expanded = MatrixUtils.rowVector(v);
-        double sum = MatrixUtils.sum(expanded, MatrixUtils.Axis.COLUMN)[0];
+        double[][] expanded = MatrixUtilsExtensions.rowVector(v);
+        double sum = MatrixUtilsExtensions.sum(expanded, MatrixUtilsExtensions.Axis.COLUMN)[0];
         if (sum == 0) {
             return v;
         } else {
-            return MatrixUtils.matrixMultiply(expanded, 1 / sum)[0];
+            return MatrixUtilsExtensions.matrixMultiply(expanded, 1 / sum)[0];
         }
     }
 
@@ -249,7 +249,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      *         importances of each input feature to that particular output
      */
     public static Saliency[] saliencyFromMatrix(double[][] m, PredictionInput pi, PredictionOutput po) {
-        int[] shape = MatrixUtils.getShape(m);
+        int[] shape = MatrixUtilsExtensions.getShape(m);
         Saliency[] saliencies = new Saliency[shape[0]];
         for (int i = 0; i < shape[0]; i++) {
             List<FeatureImportance> fis = new ArrayList<>();
@@ -273,7 +273,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      *         importances and confidences of each input feature to that particular output
      */
     public static Saliency[] saliencyFromMatrix(double[][] m, double[][] bounds, PredictionInput pi, PredictionOutput po) {
-        int[] shape = MatrixUtils.getShape(m);
+        int[] shape = MatrixUtilsExtensions.getShape(m);
         Saliency[] saliencies = new Saliency[shape[0]];
         for (int i = 0; i < shape[0]; i++) {
             List<FeatureImportance> fis = new ArrayList<>();
@@ -315,7 +315,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
             return new double[os][cols];
         });
 
-        double[][] poMatrix = MatrixUtils.matrixFromPredictionOutput(po);
+        double[][] poMatrix = MatrixUtilsExtensions.matrixFromPredictionOutput(po);
 
         //first find varying features
         this.setVaryingFeatureGroups(pi, sdc);
@@ -327,7 +327,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
         // if 1 feature varies, this feature has all the effect
         {
             CompletableFuture<double[]> diff = sdc.getLinkNull()
-                    .thenApply(ln -> MatrixUtils.matrixDifference(poMatrix, ln)[0]);
+                    .thenApply(ln -> MatrixUtilsExtensions.matrixDifference(poMatrix, ln)[0]);
             return output.thenCompose(o -> diff.thenCombine(sdc.getOutputSize(), (df, os) -> {
                 double[][] out = new double[os][cols];
                 for (int i = 0; i < os; i++) {
@@ -565,12 +565,12 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
                 List<PredictionInput> pis = sdc.getSamplesAdded(i).getSyntheticData();
                 expectationSlices.put(i,
                         sdc.getModel().predictAsync(pis)
-                                .thenApply(MatrixUtils::matrixFromPredictionOutput)
-                                .thenApply(posMatrix -> MatrixUtils.sum(
-                                        MatrixUtils.matrixMultiply(posMatrix, 1. / sdc.getRows()),
-                                        MatrixUtils.Axis.ROW))
+                                .thenApply(MatrixUtilsExtensions::matrixFromPredictionOutput)
+                                .thenApply(posMatrix -> MatrixUtilsExtensions.sum(
+                                        MatrixUtilsExtensions.matrixMultiply(posMatrix, 1. / sdc.getRows()),
+                                        MatrixUtilsExtensions.Axis.ROW))
                                 .thenApply(this::link)
-                                .thenApply(x -> MatrixUtils.matrixDifference(MatrixUtils.rowVector(x), ln)[0]));
+                                .thenApply(x -> MatrixUtilsExtensions.matrixDifference(MatrixUtilsExtensions.rowVector(x), ln)[0]));
             }
 
             // reduce parallel operations into single array
@@ -611,17 +611,17 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
         }
 
         double outputChange = this.link(poMatrix[output]) - this.link(fnull[output]);
-        double[][] dropMask = MatrixUtils.rowVector(MatrixUtils.getCol(xs, dropIdx));
-        double[][] dropEffect = MatrixUtils.matrixMultiply(dropMask, outputChange);
-        double[] adjY = MatrixUtils.matrixDifference(MatrixUtils.rowVector(ys), dropEffect)[0];
+        double[][] dropMask = MatrixUtilsExtensions.rowVector(MatrixUtilsExtensions.getCol(xs, dropIdx));
+        double[][] dropEffect = MatrixUtilsExtensions.matrixMultiply(dropMask, outputChange);
+        double[] adjY = MatrixUtilsExtensions.matrixDifference(MatrixUtilsExtensions.rowVector(ys), dropEffect)[0];
         List<Integer> included = new ArrayList<>();
         sdc.getVaryingFeatureGroups().forEach(v -> {
             if (v != dropIdx) {
                 included.add(v);
             }
         });
-        double[][] includeMask = MatrixUtils.transpose(MatrixUtils.getCols(xs, included));
-        double[][] maskDiff = MatrixUtils.transpose(MatrixUtils.matrixRowDifference(includeMask, dropMask[0]));
+        double[][] includeMask = MatrixUtilsExtensions.transpose(MatrixUtilsExtensions.getCols(xs, included));
+        double[][] maskDiff = MatrixUtilsExtensions.transpose(MatrixUtilsExtensions.matrixRowDifference(includeMask, dropMask[0]));
         return this.runWLRR(maskDiff, adjY, ws, outputChange, dropIdx, sdc);
     }
 

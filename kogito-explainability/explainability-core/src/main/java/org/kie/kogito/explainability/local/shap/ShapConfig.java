@@ -24,7 +24,7 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
-import org.kie.kogito.explainability.utils.MatrixUtils;
+import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 
 public class ShapConfig {
     public enum LinkType {
@@ -59,7 +59,7 @@ public class ShapConfig {
     protected ShapConfig(LinkType link, List<PredictionInput> background, PerturbationContext pc, Executor executor, Integer nSamples, double confidence) {
         this.link = link;
         this.background = background;
-        this.backgroundMatrix = MatrixUtils.matrixFromPredictionInput(background);
+        this.backgroundMatrix = MatrixUtilsExtensions.matrixFromPredictionInput(background);
         this.pc = pc;
         this.executor = executor;
         this.nSamples = nSamples;

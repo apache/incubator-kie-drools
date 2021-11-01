@@ -45,13 +45,13 @@ public class WeightedLinearRegressionResults {
             double[] stdErrors, double[] pvalues) {
         //if intercept is true
         if (intercept) {
-            double[] rawCoeffs = MatrixUtils.getCol(coefficients, 0);
+            double[] rawCoeffs = MatrixUtilsExtensions.getCol(coefficients, 0);
             this.coefficients = java.util.Arrays
                     .stream(rawCoeffs, 0, rawCoeffs.length - 1)
                     .toArray();
             this.intercept = rawCoeffs[rawCoeffs.length - 1];
         } else {
-            this.coefficients = MatrixUtils.getCol(coefficients, 0);
+            this.coefficients = MatrixUtilsExtensions.getCol(coefficients, 0);
             this.intercept = 0.0;
         }
 

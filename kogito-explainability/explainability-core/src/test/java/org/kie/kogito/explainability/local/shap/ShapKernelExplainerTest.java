@@ -41,7 +41,7 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
-import org.kie.kogito.explainability.utils.MatrixUtils;
+import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -135,7 +135,7 @@ class ShapKernelExplainerTest {
     // create a list of prediction inputs from double matrix
     private List<PredictionInput> createPIFromMatrix(double[][] m) {
         List<PredictionInput> pis = new ArrayList<>();
-        int[] shape = MatrixUtils.getShape(m);
+        int[] shape = MatrixUtilsExtensions.getShape(m);
         for (int i = 0; i < shape[0]; i++) {
             List<Feature> fs = new ArrayList<>();
             for (int j = 0; j < shape[1]; j++) {
@@ -506,7 +506,7 @@ class ShapKernelExplainerTest {
 
                 double[][] confidence = explanationsAndConfs[1];
 
-                int[] shape = MatrixUtils.getShape(confidence);
+                int[] shape = MatrixUtilsExtensions.getShape(confidence);
                 for (int i = 0; i < shape[0]; i++) {
                     for (int j = 0; j < shape[1]; j++) {
                         double conf = confidence[i][j];

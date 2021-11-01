@@ -24,7 +24,7 @@ import org.kie.kogito.explainability.model.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MatrixUtilsTest {
+class MatrixUtilsExtensionsTest {
     // === Make some matrices to use in tests ===
     double[][] matOneElem = {
             { 5. },
@@ -134,7 +134,7 @@ class MatrixUtilsTest {
             fs.add(FeatureFactory.newNumericalFeature("f", mat3X5[0][j]));
         }
         PredictionInput pi = new PredictionInput(fs);
-        double[][] converted = MatrixUtils.matrixFromPredictionInput(pi);
+        double[][] converted = MatrixUtilsExtensions.matrixFromPredictionInput(pi);
         assertArrayEquals(mat3X5[0], converted[0]);
     }
 
@@ -151,7 +151,7 @@ class MatrixUtilsTest {
             ps.add(new PredictionInput(fs));
         }
 
-        double[][] converted = MatrixUtils.matrixFromPredictionInput(ps);
+        double[][] converted = MatrixUtilsExtensions.matrixFromPredictionInput(ps);
         assertArrayEquals(mat3X5, converted);
     }
 
@@ -166,7 +166,7 @@ class MatrixUtilsTest {
             ;
         }
         PredictionOutput po = new PredictionOutput(os);
-        double[][] converted = MatrixUtils.matrixFromPredictionOutput(po);
+        double[][] converted = MatrixUtilsExtensions.matrixFromPredictionOutput(po);
         assertArrayEquals(mat3X5[0], converted[0]);
     }
 
@@ -184,14 +184,14 @@ class MatrixUtilsTest {
             ps.add(new PredictionOutput(os));
         }
 
-        double[][] converted = MatrixUtils.matrixFromPredictionOutput(ps);
+        double[][] converted = MatrixUtilsExtensions.matrixFromPredictionOutput(ps);
         assertArrayEquals(mat3X5, converted);
     }
 
     // test creation of row matrix from 1-D array
     @Test
     void testRowVectorCreation() {
-        double[][] converted = MatrixUtils.rowVector(vector);
+        double[][] converted = MatrixUtilsExtensions.rowVector(vector);
         for (int i = 0; i < converted.length; i++) {
             assertEquals(converted[0][i], vector[i]);
         }
@@ -200,7 +200,7 @@ class MatrixUtilsTest {
     // test creation of column matrix from 1-D array
     @Test
     void testColVectorCreation() {
-        double[][] converted = MatrixUtils.columnVector(vector);
+        double[][] converted = MatrixUtilsExtensions.columnVector(vector);
         for (int i = 0; i < converted.length; i++) {
             assertEquals(converted[i][0], vector[i]);
         }
@@ -209,7 +209,7 @@ class MatrixUtilsTest {
     // === Shape Tests ===
     @Test
     void testShape() {
-        int[] shape = MatrixUtils.getShape(mat3X5);
+        int[] shape = MatrixUtilsExtensions.getShape(mat3X5);
         assertArrayEquals(new int[] { 3, 5 }, shape);
     }
 
@@ -218,26 +218,26 @@ class MatrixUtilsTest {
     // test if indexing by too big of column throws an error
     @Test
     void testGetColTooBig() {
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtils.getCol(mat3X4, 10));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCol(mat3X4, 10));
     }
 
     // test if indexing a negative column throws an error
     @Test
     void testGetNegCol() {
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtils.getCol(mat3X4, -10));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCol(mat3X4, -10));
     }
 
     // test single column indexing
     @Test
     void testGetCol() {
-        double[] col = MatrixUtils.getCol(mat3X4, 1);
+        double[] col = MatrixUtilsExtensions.getCol(mat3X4, 1);
         assertArrayEquals(col, new double[] { 10., 5., -3. });
     }
 
     // test multi column indexing
     @Test
     void testGetCols() {
-        double[][] output = MatrixUtils.getCols(mat3X5, List.of(0, 1, 3));
+        double[][] output = MatrixUtilsExtensions.getCols(mat3X5, List.of(0, 1, 3));
         for (int i = 0; i < mat3X5get013.length; i++) {
             assertArrayEquals(mat3X5get013[i], output[i]);
         }
@@ -246,7 +246,7 @@ class MatrixUtilsTest {
     // test extracting multiple dup columns by indexing
     @Test
     void testGetDupCols() {
-        double[][] output = MatrixUtils.getCols(mat3X5, List.of(0, 3, 1, 3, 0));
+        double[][] output = MatrixUtilsExtensions.getCols(mat3X5, List.of(0, 3, 1, 3, 0));
         for (int i = 0; i < mat3X5get03130.length; i++) {
             assertArrayEquals(mat3X5get03130[i], output[i]);
         }
@@ -256,28 +256,28 @@ class MatrixUtilsTest {
     @Test
     void testGetColsTooBig() {
         List<Integer> testIdxs = List.of(0, 6);
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtils.getCols(mat3X5, testIdxs));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(mat3X5, testIdxs));
     }
 
     // test that extracting negative columns throws error
     @Test
     void testGetNegCols() {
         List<Integer> testIdxs = List.of(0, -6);
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtils.getCols(mat3X5, testIdxs));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(mat3X5, testIdxs));
     }
 
     // test that extracting no columns throws error
     @Test
     void testGetNoCols() {
         List<Integer> testIdxs = List.of();
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtils.getCols(mat3X5, testIdxs));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(mat3X5, testIdxs));
     }
 
     // === Transpose Tests ===
     // test transpose a 1x1 mat
     @Test
     void testOneElemTranspose() {
-        double[][] matOneElemTranspose = MatrixUtils.transpose(matOneElem);
+        double[][] matOneElemTranspose = MatrixUtilsExtensions.transpose(matOneElem);
         for (int i = 0; i < matOneElemTranspose.length; i++) {
             assertArrayEquals(matOneElemTranspose[i], matOneElem[i]);
         }
@@ -286,7 +286,7 @@ class MatrixUtilsTest {
     // test transpose a row vector into column
     @Test
     void testVectorTranspose() {
-        double[][] matRowVectorTranspose = MatrixUtils.transpose(matRowVector);
+        double[][] matRowVectorTranspose = MatrixUtilsExtensions.transpose(matRowVector);
         for (int i = 0; i < matRowVectorTranspose.length; i++) {
             assertArrayEquals(matRowVectorTranspose[i], matColVector[i]);
         }
@@ -295,7 +295,7 @@ class MatrixUtilsTest {
     // test transpose a 3x4 matrix
     @Test
     void testMatrixTranspose() {
-        double[][] mat3X4Transpose = MatrixUtils.transpose(mat3X4);
+        double[][] mat3X4Transpose = MatrixUtilsExtensions.transpose(mat3X4);
         for (int i = 0; i < mat3X4Transpose.length; i++) {
             assertArrayEquals(mat3X4Transpose[i], mat4X3[i]);
         }
@@ -305,21 +305,21 @@ class MatrixUtilsTest {
     // test that summing all the rows of matrix returns expected result
     @Test
     void testIntraSumRow() {
-        double[] sum = MatrixUtils.sum(matSquareSingular, MatrixUtils.Axis.ROW);
+        double[] sum = MatrixUtilsExtensions.sum(matSquareSingular, MatrixUtilsExtensions.Axis.ROW);
         assertArrayEquals(mssSumRow, sum, 1e-6);
     }
 
     // test that summing all the cols of matrix returns expected result
     @Test
     void testIntraSumCol() {
-        double[] sum = MatrixUtils.sum(matSquareSingular, MatrixUtils.Axis.COLUMN);
+        double[] sum = MatrixUtilsExtensions.sum(matSquareSingular, MatrixUtilsExtensions.Axis.COLUMN);
         assertArrayEquals(mssSumCol, sum, 1e-6);
     }
 
     // test that summing two matrices returns expected result
     @Test
     void testMatSum() {
-        double[][] sum = MatrixUtils.matrixSum(matSquareSingular, identity);
+        double[][] sum = MatrixUtilsExtensions.matrixSum(matSquareSingular, identity);
         for (int i = 0; i < sum.length; i++) {
             assertArrayEquals(mssPlusIdentity[i], sum[i], 1e-6);
         }
@@ -329,13 +329,13 @@ class MatrixUtilsTest {
     @Test
     void testMatSumWrongSizes() {
         assertThrows(IllegalArgumentException.class,
-                () -> MatrixUtils.matrixSum(matSquareSingular, mat4X3));
+                () -> MatrixUtilsExtensions.matrixSum(matSquareSingular, mat4X3));
     }
 
     // test that difference of two matrices returns expected result
     @Test
     void testMatDiff() {
-        double[][] diff = MatrixUtils.matrixDifference(matSquareSingular, identity);
+        double[][] diff = MatrixUtilsExtensions.matrixDifference(matSquareSingular, identity);
         for (int i = 0; i < diff.length; i++) {
             assertArrayEquals(mssMinusIdentity[i], diff[i], 1e-6);
         }
@@ -344,7 +344,7 @@ class MatrixUtilsTest {
     // test adding a vector to each row of a matrix
     @Test
     void testMatRowSum() {
-        double[][] sum = MatrixUtils.matrixRowSum(identity, vector);
+        double[][] sum = MatrixUtilsExtensions.matrixRowSum(identity, vector);
         for (int i = 0; i < sum.length; i++) {
             assertArrayEquals(matIdentityPlusVector[i], sum[i], 1e-6);
         }
@@ -353,7 +353,7 @@ class MatrixUtilsTest {
     // test subtracting a vector to each row of a matrix
     @Test
     void testMatRowDiff() {
-        double[][] diff = MatrixUtils.matrixRowDifference(matIdentityPlusVector, vector);
+        double[][] diff = MatrixUtilsExtensions.matrixRowDifference(matIdentityPlusVector, vector);
         for (int i = 0; i < diff.length; i++) {
             assertArrayEquals(identity[i], diff[i], 1e-6);
         }
@@ -363,7 +363,7 @@ class MatrixUtilsTest {
     // test multiplying a matrix by a scalar
     @Test
     void testMatMulScalar() {
-        double[][] prod = MatrixUtils.matrixMultiply(mat4X3, 3.0);
+        double[][] prod = MatrixUtilsExtensions.matrixMultiply(mat4X3, 3.0);
         for (int i = 0; i < prod.length; i++) {
             for (int j = 0; j < prod[0].length; j++) {
                 assertEquals(mat4X3[i][j] * 3.0, prod[i][j], 1e-6);
@@ -374,7 +374,7 @@ class MatrixUtilsTest {
     // test multiplying a matrix by zero
     @Test
     void testMatMulByZero() {
-        double[][] prod = MatrixUtils.matrixMultiply(mat4X3, 0.0);
+        double[][] prod = MatrixUtilsExtensions.matrixMultiply(mat4X3, 0.0);
         for (int i = 0; i < prod.length; i++) {
             for (int j = 0; j < prod[0].length; j++) {
                 assertEquals(mat4X3[i][j] * 0.0, prod[i][j], 1e-6);
@@ -385,7 +385,7 @@ class MatrixUtilsTest {
     // test multiplying a matrix by another matrix
     @Test
     void testMatMulNormal() {
-        double[][] prod = MatrixUtils.matrixMultiply(mat4X3, mat3X5);
+        double[][] prod = MatrixUtilsExtensions.matrixMultiply(mat4X3, mat3X5);
         for (int i = 0; i < prod.length; i++) {
             assertArrayEquals(mat43X35Product[i], prod[i], 1e-6);
         }
@@ -395,14 +395,14 @@ class MatrixUtilsTest {
     @Test
     void testMatMulWrongShape() {
         assertThrows(IllegalArgumentException.class,
-                () -> MatrixUtils.matrixMultiply(mat3X4, mat3X5));
+                () -> MatrixUtilsExtensions.matrixMultiply(mat3X4, mat3X5));
 
     }
 
     // test multiplying a row matrix by a col matrix
     @Test
     void testVectorRowColMultiply() {
-        double[][] prod = MatrixUtils.matrixMultiply(matRowVector, matColVector);
+        double[][] prod = MatrixUtilsExtensions.matrixMultiply(matRowVector, matColVector);
         for (int i = 0; i < prod.length; i++) {
             assertArrayEquals(vectorProdRowCol[i], prod[i], 1e-6);
         }
@@ -411,7 +411,7 @@ class MatrixUtilsTest {
     // test multiplying a col matrix by a row matrix
     @Test
     void testVectorColRowMultiply() {
-        double[][] prod = MatrixUtils.matrixMultiply(matColVector, matRowVector);
+        double[][] prod = MatrixUtilsExtensions.matrixMultiply(matColVector, matRowVector);
         for (int i = 0; i < prod.length; i++) {
             assertArrayEquals(vectorProdColRow[i], prod[i], 1e-6);
         }
@@ -421,7 +421,7 @@ class MatrixUtilsTest {
     // test inverting a non singular square matrix
     @Test
     void testInvertNormal() {
-        double[][] inv = MatrixUtils.jitterInvert(matSquareNonSingular, 1, 1e-9, rn);
+        double[][] inv = MatrixUtilsExtensions.jitterInvert(matSquareNonSingular, 1, 1e-9, rn);
         for (int i = 0; i < inv.length; i++) {
             assertArrayEquals(matSNSInv[i], inv[i], 1e-4);
         }
@@ -430,7 +430,7 @@ class MatrixUtilsTest {
     @Test
     // test inverting a singular square matrix
     void testInvertSingular() {
-        assertThrows(ArithmeticException.class, () -> MatrixUtils.jitterInvert(matSquareSingular, 1, 1e-9, rn));
+        assertThrows(ArithmeticException.class, () -> MatrixUtilsExtensions.jitterInvert(matSquareSingular, 1, 1e-9, rn));
     }
 
     // === Jitter Invert Tests ===
@@ -438,11 +438,11 @@ class MatrixUtilsTest {
     void testJitterInvert() {
         // since there's some randomness in jitter invert, let's make sure it's stable
         for (int run = 0; run < 100; run++) {
-            double[][] inv = MatrixUtils.jitterInvert(matSquareSingular, 10, 1e-9, rn);
+            double[][] inv = MatrixUtilsExtensions.jitterInvert(matSquareSingular, 10, 1e-9, rn);
 
             // since the output of jitterInvert is non-deterministic for singular matrices, check to make sure
             // key properties of the inverse matrix hold true; namely M*M_inv = Identity
-            double[][] prod = MatrixUtils.matrixMultiply(matSquareSingular, inv);
+            double[][] prod = MatrixUtilsExtensions.matrixMultiply(matSquareSingular, inv);
             for (int i = 0; i < prod.length; i++) {
                 assertArrayEquals(prod[i], identity[i], 1e-4);
             }
@@ -453,11 +453,11 @@ class MatrixUtilsTest {
     void testSecureJitterInvert() {
         // since there's some randomness in jitter invert, let's make sure it's stable
         for (int run = 0; run < 100; run++) {
-            double[][] inv = MatrixUtils.jitterInvert(matSquareSingular, 10, 1e-9);
+            double[][] inv = MatrixUtilsExtensions.jitterInvert(matSquareSingular, 10, 1e-9);
 
             // since the output of jitterInvert is non-deterministic for singular matrices, check to make sure
             // key properties of the inverse matrix hold true; namely M*M_inv = Identity
-            double[][] prod = MatrixUtils.matrixMultiply(matSquareSingular, inv);
+            double[][] prod = MatrixUtilsExtensions.matrixMultiply(matSquareSingular, inv);
             for (int i = 0; i < prod.length; i++) {
                 assertArrayEquals(prod[i], identity[i], 1e-4);
             }

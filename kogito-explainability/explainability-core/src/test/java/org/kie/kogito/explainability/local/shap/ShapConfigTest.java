@@ -28,7 +28,7 @@ import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
-import org.kie.kogito.explainability.utils.MatrixUtils;
+import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,7 +44,7 @@ class ShapConfigTest {
     PredictionInput pi = new PredictionInput(fs);
     List<PredictionInput> pis = Arrays.asList(pi, pi);
     List<PredictionInput> piEmpty = new ArrayList<>();
-    double[][] piMatrix = MatrixUtils.matrixFromPredictionInput(pis);
+    double[][] piMatrix = MatrixUtilsExtensions.matrixFromPredictionInput(pis);
 
     // Test that everything recovers as expected
     @Test
