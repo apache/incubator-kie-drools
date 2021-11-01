@@ -458,11 +458,6 @@ public class CompiledFEELSupport {
         return null;
     }
 
-    public static Object notifyCompilationWarn(EvaluationContext feelExprCtx, String message) {
-        feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.WARN, message, null));
-        return null;
-    }
-
     public static Object coerceNumber(Object value) {
         return EvalHelper.coerceNumber(value);
     }
@@ -514,15 +509,6 @@ public class CompiledFEELSupport {
         return new MethodCallExpr(
                 new NameExpr("CompiledFEELSupport"),
                 "notifyCompilationError",
-                new NodeList<>(
-                        new NameExpr("feelExprCtx"),
-                        Expressions.stringLiteral(msg)));
-    }
-
-    public static MethodCallExpr compiledWarnExpression(String msg) {
-        return new MethodCallExpr(
-                new NameExpr("CompiledFEELSupport"),
-                "notifyCompilationWarn",
                 new NodeList<>(
                         new NameExpr("feelExprCtx"),
                         Expressions.stringLiteral(msg)));
