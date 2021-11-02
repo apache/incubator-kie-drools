@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Objects;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
@@ -47,7 +47,7 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
 
     @Override
     public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+            Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
         if (declarationA == null) {
             init(leftTuple, innerDeclarations);
         }

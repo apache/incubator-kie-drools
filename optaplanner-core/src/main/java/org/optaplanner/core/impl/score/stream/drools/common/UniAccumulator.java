@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
@@ -44,7 +44,7 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
 
     @Override
     public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+            Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
         InternalFactHandle factHandle = getFactHandle(leftTuple, handle, innerDeclarations);
         A a = (A) declaration.getValue(null, factHandle.getObject());
         return accumulator.apply((ResultContainer_) context, a);

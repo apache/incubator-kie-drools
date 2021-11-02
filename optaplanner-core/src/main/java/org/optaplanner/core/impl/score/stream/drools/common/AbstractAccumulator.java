@@ -20,8 +20,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
@@ -81,7 +81,7 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
 
     @Override
     public final ResultContainer_ init(Object workingMemoryContext, Object context, Tuple leftTuple,
-            Declaration[] declarations, WorkingMemory workingMemory) {
+            Declaration[] declarations, ReteEvaluator reteEvaluator) {
         return containerSupplier.get();
     }
 
@@ -93,14 +93,14 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
     @Override
     public final boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple,
             InternalFactHandle handle, Object value, Declaration[] declarations, Declaration[] innerDeclarations,
-            WorkingMemory workingMemory) {
+            ReteEvaluator reteEvaluator) {
         ((Runnable) value).run();
         return true;
     }
 
     @Override
     public Result_ getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations,
-            WorkingMemory workingMemory) {
+            ReteEvaluator reteEvaluator) {
         return finisher.apply((ResultContainer_) context);
     }
 }
