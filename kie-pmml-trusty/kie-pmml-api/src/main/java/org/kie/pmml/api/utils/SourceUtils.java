@@ -26,11 +26,20 @@ import java.util.Map;
 
 import org.kie.pmml.api.enums.PMML_MODEL;
 
-import static java.nio.file.Files.exists;
-
 public class SourceUtils {
 
+    /**
+     * System property to dump generated PMML sources <b>yes</b>
+     */
     public static final String DUMP_KIE_PMML_SOURCES = "dumpKiePmmlSources";
+    /**
+     * System property to override default output directory for generated PMML sources (inside <b>target</b>)
+     */
+    public static final String DUMP_KIE_PMML_DIRECTORY = "dumpKiePmmlDirectory";
+    /**
+     * Default output directory for generated PMML sources (<b>target/generated-pmml-sources</b>)
+     */
+    public static final String DEFAULT_DUMP_KIE_PMML_DIRECTORY = "generated-pmml-sources";
 
     private SourceUtils() {
     }
@@ -38,8 +47,9 @@ public class SourceUtils {
     public static void dumpSources(final Map<String, String> classNameSourceMap, final PMML_MODEL pmmlModel) throws IOException {
         final String dumpKiePmmlSources = System.getProperty(DUMP_KIE_PMML_SOURCES);
         if ("true".equalsIgnoreCase(dumpKiePmmlSources)) {
-            String targetPath = String.format("%1$s%2$starget%2$sgenerated-sources", System.getProperty("user.dir"),
-                                              File.separator);
+            String outputDir = System.getProperty(DUMP_KIE_PMML_DIRECTORY, DEFAULT_DUMP_KIE_PMML_DIRECTORY);
+            String targetPath = String.format("%1$s%2$starget%2$s%3$s", System.getProperty("user.dir"),
+                                              File.separator, outputDir);
             final File targetDirectory = new File(targetPath);
             if (!targetDirectory.exists()) {
                 Files.createDirectories(targetDirectory.toPath().getParent());
@@ -59,7 +69,7 @@ public class SourceUtils {
 
     private static void writeFile(Path packagesDestinationPath, byte[] value) {
         try {
-            if (!exists(packagesDestinationPath)) {
+            if (!packagesDestinationPath.toFile().exists()) {
                 Files.createDirectories(packagesDestinationPath.getParent());
             }
             Files.write(packagesDestinationPath, value);
