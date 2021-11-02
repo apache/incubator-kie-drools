@@ -23,6 +23,7 @@
     <!-- dependencies versions -->
     <version.com.fasterxml.jackson>2.12.5</version.com.fasterxml.jackson>
     <version.com.jayway.jsonpath>2.6.0</version.com.jayway.jsonpath>
+    <version.net.thisptr.jackson-jq>1.0.0-preview.20210928</version.net.thisptr.jackson-jq>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
@@ -236,6 +237,11 @@
         <artifactId>json-path-assert</artifactId>
         <version>${version.com.jayway.jsonpath}</version>
       </dependency>
+      <dependency>
+        <groupId>net.thisptr</groupId>
+        <artifactId>jackson-jq</artifactId>
+        <version>${version.net.thisptr.jackson-jq}</version>
+       </dependency>
 
       <dependency>
         <groupId>io.smallrye</groupId>

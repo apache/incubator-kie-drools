@@ -15,19 +15,45 @@
  */
 package org.kie.kogito.expr.jq;
 
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
+
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
+import net.thisptr.jackson.jq.BuiltinFunctionLoader;
+import net.thisptr.jackson.jq.Scope;
+import net.thisptr.jackson.jq.Versions;
+
 public class JqExpressionHandler implements ExpressionHandler {
+
+    private static final Pattern jqRegExpr = Pattern.compile("^((\\$\\[).*|(\\.).*)");
+
+    private static Supplier<Scope> scopeSupplier = JqExpressionHandler::getDefaultScope;
+
+    private final Scope scope;
+
+    public static void setScopeSupplier(Supplier<Scope> scopeSupplier) {
+        JqExpressionHandler.scopeSupplier = scopeSupplier;
+    }
+
+    private static Scope getDefaultScope() {
+        Scope scope = Scope.newEmptyScope();
+        BuiltinFunctionLoader.getInstance().loadFunctions(Versions.JQ_1_6, scope);
+        return scope;
+    }
+
+    public JqExpressionHandler() {
+        this.scope = scopeSupplier.get();
+    }
 
     @Override
     public boolean isExpr(String expr) {
-        // TODO implement this
-        return false;
+        return jqRegExpr.matcher(expr).matches();
     }
 
     @Override
     public ParsedExpression parse(String expr) {
-        return new JqParsedExpression(expr);
+        return new JqParsedExpression(scope, expr);
     }
 }
