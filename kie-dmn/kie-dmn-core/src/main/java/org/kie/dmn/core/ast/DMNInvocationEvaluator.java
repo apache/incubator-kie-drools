@@ -99,11 +99,13 @@ public class DMNInvocationEvaluator
             QName importAlias = null;
             String[] fnameParts = functionName.split("\\.");
             if (fnameParts.length > 1) {
-                importAlias = ((DMNModelImpl) ((DMNResultImpl) dmnr).getModel()).getImportAliasesForNS().get(fnameParts[0]);
-                dmnContext.pushScope(fnameParts[0], importAlias.getNamespaceURI());
+                final String functionNamePrefix = functionName.substring(0, functionName.lastIndexOf("."));
+                importAlias = ((DMNModelImpl) ((DMNResultImpl) dmnr).getModel()).getImportAliasesForNS().get(functionNamePrefix);
+                dmnContext.pushScope(functionNamePrefix, importAlias.getNamespaceURI());
                 walkedIntoScope = true;
             }
-            FEELFunction function = this.functionLocator.apply(dmnContext, (fnameParts.length > 1) ? fnameParts[1] : functionName);
+            final String functionNameWithoutPrefix = functionName.substring(functionName.lastIndexOf(".") + 1);
+            FEELFunction function = this.functionLocator.apply(dmnContext, (fnameParts.length > 1) ? functionNameWithoutPrefix : functionName);
             if( function == null ) {
                 // check if it is a configured/built-in function
                 Object r = null;
