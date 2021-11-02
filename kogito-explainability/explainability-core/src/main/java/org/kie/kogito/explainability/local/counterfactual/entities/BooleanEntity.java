@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.local.counterfactual.entities;
 
+import java.util.Objects;
+
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -67,7 +69,7 @@ public class BooleanEntity extends AbstractEntity<Boolean> {
      */
     @Override
     public double distance() {
-        return proposedValue.equals(originalValue) ? 0.0 : 1.0;
+        return Objects.equals(proposedValue, originalValue) ? 0.0 : 1.0;
     }
 
     @Override

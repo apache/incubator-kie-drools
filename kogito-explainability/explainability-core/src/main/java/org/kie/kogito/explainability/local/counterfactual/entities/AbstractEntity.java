@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.local.counterfactual.entities;
 
+import java.util.Objects;
+
 import org.kie.kogito.explainability.model.Feature;
 
 /**
@@ -50,7 +52,7 @@ public abstract class AbstractEntity<T> implements CounterfactualEntity {
      */
     @Override
     public boolean isChanged() {
-        return !originalValue.equals(this.proposedValue);
+        return !Objects.equals(originalValue, proposedValue);
     }
 
     @Override

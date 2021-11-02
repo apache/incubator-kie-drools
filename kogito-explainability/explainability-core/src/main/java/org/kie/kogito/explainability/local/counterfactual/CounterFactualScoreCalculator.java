@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.local.counterfactual;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -68,6 +69,11 @@ public class CounterFactualScoreCalculator implements EasyScoreCalculator<Counte
             // If any of the values is zero use the difference instead of change
             // If neither of the values is zero use the change rate
             double distance;
+            if (Double.isNaN(predictionValue) || Double.isNaN(goalValue)) {
+                String message = String.format("Unsupported NaN or NULL for numeric feature '%s'", prediction.getName());
+                logger.error(message);
+                throw new IllegalArgumentException(message);
+            }
             if (predictionValue == 0 || goalValue == 0) {
                 distance = difference;
             } else {
@@ -79,10 +85,14 @@ public class CounterFactualScoreCalculator implements EasyScoreCalculator<Counte
                 return distance;
             }
 
-        } else if (prediction.getType() == Type.CATEGORICAL || prediction.getType() == Type.BOOLEAN || prediction.getType() == Type.TEXT) {
-            return prediction.getValue().getUnderlyingObject().equals(goal.getValue().getUnderlyingObject()) ? 0.0 : 1.0;
+        } else if (prediction.getType() == Type.CATEGORICAL || prediction.getType() == Type.BOOLEAN
+                || prediction.getType() == Type.TEXT) {
+            final Object goalValueObject = goal.getValue().getUnderlyingObject();
+            final Object predictionValueObject = prediction.getValue().getUnderlyingObject();
+            return Objects.equals(goalValueObject, predictionValueObject) ? 0.0 : 1.0;
         } else {
-            String message = String.format("Feature '%s' has unsupported type '%s'", prediction.getName(), predictionType.toString());
+            String message =
+                    String.format("Feature '%s' has unsupported type '%s'", prediction.getName(), predictionType.toString());
             logger.error(message);
             throw new IllegalArgumentException(message);
         }
