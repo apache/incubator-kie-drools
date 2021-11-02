@@ -1019,4 +1019,53 @@ public class ExpirationTest {
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(2);
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(0);
     }
+
+    @Test
+    public void testAvoidAlreadyExpiredFactsToForeverRemainInWM() {
+        // DROOLS-6680
+        String drl =
+                " import " + DummyEvent.class.getCanonicalName() + ";\n" +
+                " import " + OtherEvent.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "declare DummyEvent\n" +
+                "    @role(event)\n" +
+                "    @timestamp(eventTimestamp)\n" +
+                "    @expires (3d)\n" +
+                "end\n" +
+                "rule \"R1\"\n" +
+                "no-loop \n" +
+                "when\n" +
+                "    $evt: DummyEvent()\n" +
+                "then\n" +
+                "    modify($evt){\n" +
+                "        setState(\"value\")\n" +
+                "    }\n" +
+                "end\n" +
+                "rule \"R2\"\n" +
+                "when\n" +
+                "    $b: OtherEvent()\n" +
+                "    $a: DummyEvent()\n" +
+                "then\n" +
+                "end";
+
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, drl);
+
+        final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
+
+        final long now = System.currentTimeMillis();
+        final PseudoClockScheduler clock = kieSession.getSessionClock();
+
+        clock.advanceTime(now, TimeUnit.MILLISECONDS);
+
+        final long fiveDaysAgo = now - Duration.ofDays(5).toMillis();
+        final DummyEvent dummyEvent = new DummyEvent(1, fiveDaysAgo);
+
+        kieSession.insert(dummyEvent);
+
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        Assertions.assertThat(kieSession.getFactCount()).isEqualTo(0);
+    }
 }
