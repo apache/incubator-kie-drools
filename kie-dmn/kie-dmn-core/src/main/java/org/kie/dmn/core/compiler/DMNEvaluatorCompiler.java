@@ -194,9 +194,11 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
         String[] fnameParts = functionName.split("\\.");
         Optional<DMNNode> findAsDep = Optional.empty();
-        if (fnameParts.length == 2) {
-            QName importAlias = model.getImportNamespaceAndNameforAlias(fnameParts[0]);
-            findAsDep = node.getDependencies().values().stream().filter(d -> d.getModelNamespace().equals(importAlias.getNamespaceURI()) && d.getName().equals(fnameParts[1])).findAny();
+        if (fnameParts.length > 1) {
+            final String functionNamePrefix = functionName.substring(0, functionName.lastIndexOf("."));
+            final String functionNameWithoutPrefix = functionName.substring(functionName.lastIndexOf(".") + 1);
+            QName importAlias = model.getImportNamespaceAndNameforAlias(functionNamePrefix);
+            findAsDep = node.getDependencies().values().stream().filter(d -> d.getModelNamespace().equals(importAlias.getNamespaceURI()) && d.getName().equals(functionNameWithoutPrefix)).findAny();
         } else {
             findAsDep = node.getDependencies().values().stream().filter(d -> d.getName().equals(functionName)).findAny();
         }
