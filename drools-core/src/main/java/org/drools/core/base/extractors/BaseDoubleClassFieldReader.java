@@ -16,11 +16,11 @@
 
 package org.drools.core.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
-
-import java.lang.reflect.Method;
+import org.drools.core.common.ReteEvaluator;
 
 public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
 
@@ -44,57 +44,57 @@ public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
     public BaseDoubleClassFieldReader() {
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return Double.valueOf( getDoubleValue( workingMemory, object ) );
+    public Object getValue(ReteEvaluator reteEvaluator, final Object object) {
+        return Double.valueOf( getDoubleValue( reteEvaluator, object ) );
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator, final Object object) {
         throw new RuntimeException( "Conversion to boolean not supported from double" );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (byte) getDoubleValue( workingMemory, object );
+    public byte getByteValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (byte) getDoubleValue( reteEvaluator, object );
 
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
+    public char getCharValue(ReteEvaluator reteEvaluator, final Object object) {
         throw new RuntimeException( "Conversion to char not supported from double" );
     }
 
-    public abstract double getDoubleValue(InternalWorkingMemory workingMemory, Object object);
+    public abstract double getDoubleValue(ReteEvaluator reteEvaluator, Object object);
 
-    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (float) getDoubleValue( workingMemory, object );
+    public float getFloatValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (float) getDoubleValue( reteEvaluator, object );
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (int) getDoubleValue( workingMemory, object );
+    public int getIntValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (int) getDoubleValue( reteEvaluator, object );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (long) getDoubleValue( workingMemory, object );
+    public long getLongValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (long) getDoubleValue( reteEvaluator, object );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (short) getDoubleValue( workingMemory, object );
+    public short getShortValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (short) getDoubleValue( reteEvaluator, object );
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
+    public boolean isNullValue(ReteEvaluator reteEvaluator, final Object object) {
         return false;
     }
 
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getDoubleValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                      new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
         }
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        final long temp = Double.doubleToLongBits( getDoubleValue( workingMemory, object ) );
+    public int getHashCode(ReteEvaluator reteEvaluator, final Object object) {
+        final long temp = Double.doubleToLongBits( getDoubleValue( reteEvaluator, object ) );
         return (int) (temp ^ (temp >>> 32));
     }
 

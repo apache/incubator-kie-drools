@@ -16,15 +16,15 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 /**
  * Checks if one tuple is the start subtuple of other tuple.
@@ -159,13 +159,13 @@ public class TupleStartEqualsConstraint
             this.entry = entry;
         }
 
-        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+        public void updateFromTuple(final ReteEvaluator reteEvaluator,
                                     final Tuple tuple) {
             this.leftTuple = tuple.skipEmptyHandles();
             this.compareSize = leftTuple.size();
         }
 
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+        public void updateFromFactHandle(final ReteEvaluator reteEvaluator,
                                          final InternalFactHandle handle) {
             // if it is not a rete tuple, then there is a bug in the engine...
             // it MUST be a rete tuple

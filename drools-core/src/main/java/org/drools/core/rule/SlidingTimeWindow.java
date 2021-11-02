@@ -25,7 +25,7 @@ import java.util.PriorityQueue;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
@@ -116,10 +116,10 @@ public class SlidingTimeWindow
     public boolean assertFact(final Object context,
                               final InternalFactHandle fact,
                               final PropagationContext pctx,
-                              final InternalWorkingMemory workingMemory) {
+                              final ReteEvaluator reteEvaluator) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
-        long currentTime = workingMemory.getTimerService().getCurrentTime();
+        long currentTime = reteEvaluator.getTimerService().getCurrentTime();
         if ( isExpired( currentTime, handle ) ) {
             return false;
         }
@@ -128,7 +128,7 @@ public class SlidingTimeWindow
         if ( handle.equals( queue.peek() ) ) {
             // update next expiration time
             updateNextExpiration( handle,
-                                  workingMemory,
+                                  reteEvaluator,
                                   queue,
                                   nodeId );
         }
@@ -140,7 +140,7 @@ public class SlidingTimeWindow
     public void retractFact(final Object context,
                             final InternalFactHandle fact,
                             final PropagationContext pctx,
-                            final InternalWorkingMemory workingMemory) {
+                            final ReteEvaluator reteEvaluator) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
         // it may be a call back to expire the tuple that is already being expired
@@ -150,14 +150,14 @@ public class SlidingTimeWindow
                 queue.poll();
                 // update next expiration time
                 updateNextExpiration( queue.peek(),
-                                      workingMemory,
+                                      reteEvaluator,
                                       queue,
                                       nodeId);
             } else {
                 queue.remove( handle );
             }
             if ( queue.isEmpty() && queue.getJobHandle() != null ) {
-                workingMemory.getTimerService().removeJob( queue.getJobHandle() );
+                reteEvaluator.getTimerService().removeJob( queue.getJobHandle() );
             }
         }
     }
@@ -165,8 +165,8 @@ public class SlidingTimeWindow
     @Override
     public void expireFacts(final Object context,
                             final PropagationContext pctx,
-                            final InternalWorkingMemory workingMemory) {
-        TimerService clock = workingMemory.getTimerService();
+                            final ReteEvaluator reteEvaluator) {
+        TimerService clock = reteEvaluator.getTimerService();
         long currentTime = clock.getCurrentTime();
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
 
@@ -177,15 +177,15 @@ public class SlidingTimeWindow
             queue.remove();
             if( handle.isValid()) {
                 // if not expired yet, expire it
-                final PropagationContext expiresPctx = createPropagationContextForFact( workingMemory, handle, PropagationContext.Type.EXPIRATION );
-                ObjectTypeNode.doRetractObject(handle, expiresPctx, workingMemory);
+                final PropagationContext expiresPctx = createPropagationContextForFact( reteEvaluator, handle, PropagationContext.Type.EXPIRATION );
+                ObjectTypeNode.doRetractObject(handle, expiresPctx, reteEvaluator);
             }
             queue.setExpiringHandle( null );
             handle = queue.peek();
         }
         // update next expiration time
         updateNextExpiration( handle,
-                              workingMemory,
+                              reteEvaluator,
                               queue,
                               nodeId );
     }
@@ -196,24 +196,24 @@ public class SlidingTimeWindow
     }
 
     protected void updateNextExpiration(final InternalFactHandle fact,
-                                        final InternalWorkingMemory workingMemory,
+                                        final ReteEvaluator reteEvaluator,
                                         final Behavior.Context context,
                                         final int nodeId) {
-        TimerService clock = workingMemory.getTimerService();
+        TimerService clock = reteEvaluator.getTimerService();
         if ( fact != null ) {
             long nextTimestamp = ((EventFactHandle) fact).getStartTimestamp() + getSize();
             if ( nextTimestamp < clock.getCurrentTime() ) {
                 // Past and out-of-order events should not be insert,
                 // but the engine silently accepts them anyway, resulting in possibly undesirable behaviors
-                workingMemory.queueWorkingMemoryAction(new BehaviorExpireWMAction(nodeId, this, context));
+                reteEvaluator.addPropagation(new BehaviorExpireWMAction(nodeId, this, context), true);
             } else {
                 // if there exists already another job it meeans that the new one to be created
                 // has to be triggered before the existing one and then we can remove the old one
                 if ( context.getJobHandle() != null ) {
-                    workingMemory.getTimerService().removeJob( context.getJobHandle() );
+                    reteEvaluator.getTimerService().removeJob( context.getJobHandle() );
                 }
 
-                JobContext jobctx = new BehaviorJobContext( nodeId, workingMemory, this, context);
+                JobContext jobctx = new BehaviorJobContext( nodeId, reteEvaluator, this, context);
                 JobHandle handle = clock.scheduleJob( job,
                                                       jobctx,
                                                       PointInTimeTrigger.createPointInTimeTrigger( nextTimestamp, null ) );
@@ -311,18 +311,18 @@ public class SlidingTimeWindow
             implements
             JobContext,
             Externalizable {
-        public InternalWorkingMemory workingMemory;
+        public ReteEvaluator         reteEvaluator;
         public int                   nodeId;
         public Behavior              behavior;
         public Behavior.Context      behaviorContext;
 
         public BehaviorJobContext(int                   nodeId,
-                                  InternalWorkingMemory workingMemory,
+                                  ReteEvaluator reteEvaluator,
                                   Behavior behavior,
                                   Behavior.Context behaviorContext) {
             super();
             this.nodeId = nodeId;
-            this.workingMemory = workingMemory;
+            this.reteEvaluator = reteEvaluator;
             this.behavior = behavior;
             this.behaviorContext = behaviorContext;
         }
@@ -355,8 +355,8 @@ public class SlidingTimeWindow
         }
 
         @Override
-        public InternalWorkingMemory getWorkingMemory() {
-            return workingMemory;
+        public ReteEvaluator getReteEvaluator() {
+            return reteEvaluator;
         }
     }
 
@@ -367,9 +367,7 @@ public class SlidingTimeWindow
         @Override
         public void execute(JobContext ctx) {
             BehaviorJobContext context = (BehaviorJobContext) ctx;
-            context.workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( context.nodeId,
-                                                                                        context.behavior,
-                                                                                        context.behaviorContext ) );
+            context.reteEvaluator.addPropagation( new BehaviorExpireWMAction( context.nodeId, context.behavior, context.behaviorContext ), true );
         }
 
     }
@@ -407,10 +405,8 @@ public class SlidingTimeWindow
         }
 
         @Override
-        public void execute(InternalWorkingMemory workingMemory) {
-            this.behavior.expireFacts( context,
-                                       null,
-                                       workingMemory );
+        public void execute(ReteEvaluator reteEvaluator) {
+            this.behavior.expireFacts( context, null, reteEvaluator );
         }
     }
 }

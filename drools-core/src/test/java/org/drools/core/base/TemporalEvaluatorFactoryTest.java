@@ -16,6 +16,13 @@
 
 package org.drools.core.base;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.drools.core.base.evaluators.AfterEvaluatorDefinition;
 import org.drools.core.base.evaluators.BeforeEvaluatorDefinition;
 import org.drools.core.base.evaluators.CoincidesEvaluatorDefinition;
@@ -26,7 +33,7 @@ import org.drools.core.base.evaluators.MeetsEvaluatorDefinition;
 import org.drools.core.base.evaluators.MetByEvaluatorDefinition;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.core.rule.VariableRestriction.CharVariableContextEntry;
@@ -41,13 +48,6 @@ import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1195,22 +1195,22 @@ public class TemporalEvaluatorFactoryTest {
             return true;
         }
 
-        public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+        public boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                        final Object object) {
             return object != null ? ((Boolean) object).booleanValue() : false;
         }
 
-        public byte getByteValue(InternalWorkingMemory workingMemory,
+        public byte getByteValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
             return object != null ? ((Number) object).byteValue() : (byte) 0;
         }
 
-        public char getCharValue(InternalWorkingMemory workingMemory,
+        public char getCharValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
             return object != null ? ((Character) object).charValue() : '\0';
         }
 
-        public double getDoubleValue(InternalWorkingMemory workingMemory,
+        public double getDoubleValue(ReteEvaluator reteEvaluator,
                                      final Object object) {
             return object != null ? ((Number) object).doubleValue() : 0.0;
         }
@@ -1223,22 +1223,22 @@ public class TemporalEvaluatorFactoryTest {
             return null;
         }
 
-        public float getFloatValue(InternalWorkingMemory workingMemory,
+        public float getFloatValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
             return object != null ? ((Number) object).floatValue() : (float) 0.0;
         }
 
-        public int getHashCode(InternalWorkingMemory workingMemory,
+        public int getHashCode(ReteEvaluator reteEvaluator,
                                final Object object) {
             return 0;
         }
 
-        public int getIntValue(InternalWorkingMemory workingMemory,
+        public int getIntValue(ReteEvaluator reteEvaluator,
                                final Object object) {
             return object != null ? ((Number) object).intValue() : 0;
         }
 
-        public long getLongValue(InternalWorkingMemory workingMemory,
+        public long getLongValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
             return object != null ? ((Number) object).longValue() : 0;
         }
@@ -1251,17 +1251,17 @@ public class TemporalEvaluatorFactoryTest {
             return null;
         }
 
-        public short getShortValue(InternalWorkingMemory workingMemory,
+        public short getShortValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
             return object != null ? ((Number) object).shortValue() : (short) 0;
         }
 
-        public Object getValue(InternalWorkingMemory workingMemory,
+        public Object getValue(ReteEvaluator reteEvaluator,
                                final Object object) {
             return object;
         }
 
-        public boolean isNullValue(InternalWorkingMemory workingMemory,
+        public boolean isNullValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
             return object == null;
         }
@@ -1334,13 +1334,13 @@ public class TemporalEvaluatorFactoryTest {
             return false;
         }
 
-        public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+        public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator,
                                              Object object) {
             // TODO Auto-generated method stub
             return null;
         }
 
-        public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+        public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator,
                                              Object object) {
             // TODO Auto-generated method stub
             return null;

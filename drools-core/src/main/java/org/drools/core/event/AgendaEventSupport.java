@@ -16,9 +16,9 @@
 
 package org.drools.core.event;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.event.rule.impl.ActivationCancelledEventImpl;
 import org.drools.core.event.rule.impl.ActivationCreatedEventImpl;
 import org.drools.core.event.rule.impl.AfterActivationFiredEventImpl;
@@ -39,31 +39,31 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
 
     public AgendaEventSupport() { }
 
-    private InternalKnowledgeRuntime getKRuntime(WorkingMemory workingMemory) {
-        return ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime();
+    private InternalKnowledgeRuntime getKRuntime(ReteEvaluator reteEvaluator) {
+        return reteEvaluator instanceof InternalWorkingMemory ? ((InternalWorkingMemory) reteEvaluator).getKnowledgeRuntime() : null;
     }
 
     public void fireActivationCreated(final Activation activation,
-                                      final WorkingMemory workingMemory) {
+                                      final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            ActivationCreatedEventImpl event = new ActivationCreatedEventImpl( activation, getKRuntime( workingMemory ) );
+            ActivationCreatedEventImpl event = new ActivationCreatedEventImpl( activation, getKRuntime( reteEvaluator ) );
             notifyAllListeners( event, ( l, e ) -> l.matchCreated( e ) );
         }
     }
 
     public void fireActivationCancelled(final Activation activation,
-                                        final WorkingMemory workingMemory,
+                                        final ReteEvaluator reteEvaluator,
                                         final MatchCancelledCause cause) {
         if ( hasListeners() ) {
-            ActivationCancelledEventImpl event = new ActivationCancelledEventImpl( activation, getKRuntime( workingMemory ), cause );
+            ActivationCancelledEventImpl event = new ActivationCancelledEventImpl( activation, getKRuntime( reteEvaluator ), cause );
             notifyAllListeners( event, ( l, e ) -> l.matchCancelled( e ) );
         }
     }
 
     public BeforeMatchFiredEvent fireBeforeActivationFired(final Activation activation,
-                                                           final WorkingMemory workingMemory) {
+                                                           final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            BeforeMatchFiredEvent event = new BeforeActivationFiredEventImpl(activation, getKRuntime(workingMemory));
+            BeforeMatchFiredEvent event = new BeforeActivationFiredEventImpl(activation, getKRuntime(reteEvaluator));
             notifyAllListeners( event, ( l, e ) -> l.beforeMatchFired( e ) );
             return event;
         }
@@ -71,61 +71,61 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
     }
 
     public void fireAfterActivationFired(final Activation activation,
-                                         final InternalWorkingMemory workingMemory, BeforeMatchFiredEvent beforeMatchFiredEvent) {
+                                         final ReteEvaluator reteEvaluator, BeforeMatchFiredEvent beforeMatchFiredEvent) {
         if ( hasListeners() ) {
-            AfterMatchFiredEvent event = new AfterActivationFiredEventImpl( activation, getKRuntime( workingMemory ), beforeMatchFiredEvent );
+            AfterMatchFiredEvent event = new AfterActivationFiredEventImpl( activation, getKRuntime( reteEvaluator ), beforeMatchFiredEvent );
             notifyAllListeners( event, ( l, e ) -> l.afterMatchFired( e ) );
         }
     }
 
     public void fireAgendaGroupPopped(final AgendaGroup agendaGroup,
-                                      final InternalWorkingMemory workingMemory) {
+                                      final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            AgendaGroupPoppedEventImpl event = new AgendaGroupPoppedEventImpl( agendaGroup, getKRuntime( workingMemory ) );
+            AgendaGroupPoppedEventImpl event = new AgendaGroupPoppedEventImpl( agendaGroup, getKRuntime( reteEvaluator ) );
             notifyAllListeners( event, ( l, e ) -> l.agendaGroupPopped( e ) );
         }
     }
 
     public void fireAgendaGroupPushed(final AgendaGroup agendaGroup,
-                                      final InternalWorkingMemory workingMemory) {
+                                      final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            AgendaGroupPushedEventImpl event = new AgendaGroupPushedEventImpl( agendaGroup, getKRuntime( workingMemory ) );
+            AgendaGroupPushedEventImpl event = new AgendaGroupPushedEventImpl( agendaGroup, getKRuntime( reteEvaluator ) );
             notifyAllListeners( event, ( l, e ) -> l.agendaGroupPushed( e ) );
         }
     }
 
     public void fireBeforeRuleFlowGroupActivated(
             final RuleFlowGroup ruleFlowGroup,
-            final InternalWorkingMemory workingMemory) {
+            final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            RuleFlowGroupActivatedEventImpl event = new RuleFlowGroupActivatedEventImpl( ruleFlowGroup, getKRuntime( workingMemory ) );
+            RuleFlowGroupActivatedEventImpl event = new RuleFlowGroupActivatedEventImpl( ruleFlowGroup, getKRuntime( reteEvaluator ) );
             notifyAllListeners( event, ( l, e ) -> l.beforeRuleFlowGroupActivated( e ) );
         }
     }
 
     public void fireAfterRuleFlowGroupActivated(
             final RuleFlowGroup ruleFlowGroup,
-            final InternalWorkingMemory workingMemory) {
+            final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            RuleFlowGroupActivatedEventImpl event = new RuleFlowGroupActivatedEventImpl( ruleFlowGroup, getKRuntime( workingMemory ) );
+            RuleFlowGroupActivatedEventImpl event = new RuleFlowGroupActivatedEventImpl( ruleFlowGroup, getKRuntime( reteEvaluator ) );
             notifyAllListeners( event, ( l, e ) -> l.afterRuleFlowGroupActivated( e ) );
         }
     }
 
     public void fireBeforeRuleFlowGroupDeactivated(
             final RuleFlowGroup ruleFlowGroup,
-            final InternalWorkingMemory workingMemory) {
+            final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            RuleFlowGroupDeactivatedEventImpl event = new RuleFlowGroupDeactivatedEventImpl( ruleFlowGroup, getKRuntime( workingMemory ) );
+            RuleFlowGroupDeactivatedEventImpl event = new RuleFlowGroupDeactivatedEventImpl( ruleFlowGroup, getKRuntime( reteEvaluator ) );
             notifyAllListeners( event, ( l, e ) -> l.beforeRuleFlowGroupDeactivated( e ) );
         }
     }
 
     public void fireAfterRuleFlowGroupDeactivated(
             final RuleFlowGroup ruleFlowGroup,
-            final InternalWorkingMemory workingMemory) {
+            final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            RuleFlowGroupDeactivatedEventImpl event = new RuleFlowGroupDeactivatedEventImpl( ruleFlowGroup, getKRuntime( workingMemory ) );
+            RuleFlowGroupDeactivatedEventImpl event = new RuleFlowGroupDeactivatedEventImpl( ruleFlowGroup, getKRuntime( reteEvaluator ) );
             notifyAllListeners( event, ( l, e ) -> l.afterRuleFlowGroupDeactivated( e ) );
         }
     }

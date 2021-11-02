@@ -30,7 +30,7 @@ import java.util.Set;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.Declaration;
@@ -303,10 +303,10 @@ public class MVELCompilationUnit
                                               final Rule rule,
                                               final Tuple tuples,
                                               final Object[] otherVars,
-                                              final InternalWorkingMemory workingMemory,
+                                              final ReteEvaluator reteEvaluator,
                                               final GlobalResolver globals) {
         VariableResolverFactory factory = createFactory();
-        updateFactory(knowledgeHelper, prevDecl, rule, null, knowledgeHelper, tuples, otherVars, workingMemory, globals, factory );
+        updateFactory(knowledgeHelper, prevDecl, rule, null, knowledgeHelper, tuples, otherVars, reteEvaluator, globals, factory );
         return factory;
     }
 
@@ -316,20 +316,20 @@ public class MVELCompilationUnit
                                               final InternalFactHandle rightHandle,
                                               final Tuple tuple,
                                               final Object[] otherVars,
-                                              final InternalWorkingMemory workingMemory,
+                                              final ReteEvaluator reteEvaluator,
                                               final GlobalResolver globals) {
         VariableResolverFactory factory = createFactory();
-        updateFactory(knowledgeHelper, prevDecl, rule, rightHandle, rightHandle != null ? rightHandle.getObject() : null, tuple, otherVars, workingMemory, globals, factory);
+        updateFactory(knowledgeHelper, prevDecl, rule, rightHandle, rightHandle != null ? rightHandle.getObject() : null, tuple, otherVars, reteEvaluator, globals, factory);
         return factory;
     }
     
     public void updateFactory( InternalFactHandle rightHandle,
                                Tuple tuple,
                                Object[] localVars,
-                               InternalWorkingMemory workingMemory,
+                               ReteEvaluator reteEvaluator,
                                GlobalResolver globalResolver,
                                VariableResolverFactory factory ) {
-        updateFactory( null, null, null, rightHandle, rightHandle != null ? rightHandle.getObject() : null, tuple, localVars, workingMemory, globalResolver, factory );
+        updateFactory( null, null, null, rightHandle, rightHandle != null ? rightHandle.getObject() : null, tuple, localVars, reteEvaluator, globalResolver, factory );
     }    
     
     private void updateFactory( Object knowledgeHelper,
@@ -339,7 +339,7 @@ public class MVELCompilationUnit
                                 Object rightObject,
                                 Tuple tuple,
                                 Object[] otherVars,
-                                InternalWorkingMemory workingMemory,
+                                ReteEvaluator reteEvaluator,
                                 GlobalResolver globals,
                                 VariableResolverFactory factory ) {
         int varLength = inputIdentifiers.length;
@@ -357,7 +357,7 @@ public class MVELCompilationUnit
         if ( globalIdentifiers != null ) {
             for (String globalIdentifier : globalIdentifiers) {
                 if (WM_ARGUMENT.equals( globalIdentifier )) {
-                    factory.getIndexedVariableResolver( i++ ).setValue( workingMemory );
+                    factory.getIndexedVariableResolver( i++ ).setValue( reteEvaluator );
                 } else {
                     factory.getIndexedVariableResolver( i++ ).setValue( globals.resolveGlobal( globalIdentifier ) );
                 }
@@ -388,7 +388,7 @@ public class MVELCompilationUnit
                 }
 
                 for (Declaration decl : prevDecl) {
-                    Object o = decl.getValue(workingMemory, objs != null ? objs[decl.getObjectIndex()] :
+                    Object o = decl.getValue(reteEvaluator, objs != null ? objs[decl.getObjectIndex()] :
                                                                             handles[decl.getObjectIndex()].getObject());
                     factory.getIndexedVariableResolver(i++).setValue(o);
                 }
@@ -399,11 +399,11 @@ public class MVELCompilationUnit
             for ( Declaration decl : this.localDeclarations ) {
                 Object value;
                 if( readLocalsFromTuple && tuple != null ) {
-                    value = decl.getValue( workingMemory,
+                    value = decl.getValue( reteEvaluator,
                                            objs != null ? objs[decl.getObjectIndex()] :
                                                           handles[decl.getObjectIndex()].getObject());
                 } else {
-                    value = decl.getValue( workingMemory,
+                    value = decl.getValue( reteEvaluator,
                                           rightObject ); 
                 }
                 factory.getIndexedVariableResolver( i++ ).setValue( value );

@@ -393,7 +393,7 @@ public class RuleFlowGroupImpl
             this.ruleFlowGroup = (InternalRuleFlowGroup) context.getWorkingMemory().getAgenda().getRuleFlowGroup( context.readUTF() );
         }
 
-        public void execute(InternalWorkingMemory workingMemory) {
+        public void execute(ReteEvaluator reteEvaluator) {
             // check whether ruleflow group is still empty first
             if ( this.ruleFlowGroup.isEmpty() ) {
                 // deactivate ruleflow group

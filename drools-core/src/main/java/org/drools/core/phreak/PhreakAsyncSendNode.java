@@ -20,7 +20,7 @@ import java.util.concurrent.Executor;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AsyncMessage;
 import org.drools.core.reteoo.AsyncMessagesCoordinator;
@@ -42,11 +42,11 @@ public class PhreakAsyncSendNode {
 
     public void doNode(AsyncSendNode node,
                        AsyncSendMemory memory,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples) {
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(node, memory, wm, srcLeftTuples);
+            doLeftInserts(node, memory, reteEvaluator, srcLeftTuples);
         }
 
         srcLeftTuples.resetAll();
@@ -54,7 +54,7 @@ public class PhreakAsyncSendNode {
 
     public void doLeftInserts(AsyncSendNode node,
                               AsyncSendMemory memory,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples) {
 
         BetaMemory bm = memory.getBetaMemory();
@@ -76,13 +76,13 @@ public class PhreakAsyncSendNode {
                 leftTuple.setContextObject( new LinkedHashMap<>() );
             }
 
-            betaConstraints.updateFromTuple(context, wm, leftTuple);
+            betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
             LeftTuple finalLeftTuple = leftTuple;
 
             executor().execute( () -> {
                 // TODO context is not thread safe, it needs to be cloned
-                fetchAndSendResults( node, memory, wm, context, betaConstraints, alphaConstraints, dataProvider,
+                fetchAndSendResults( node, memory, reteEvaluator, context, betaConstraints, alphaConstraints, dataProvider,
                         resultClass, finalLeftTuple, propagationContext );
             } );
 
@@ -92,11 +92,11 @@ public class PhreakAsyncSendNode {
         betaConstraints.resetTuple(context);
     }
 
-    private void fetchAndSendResults( AsyncSendNode node, AsyncSendMemory memory, InternalWorkingMemory wm,
+    private void fetchAndSendResults( AsyncSendNode node, AsyncSendMemory memory, ReteEvaluator reteEvaluator,
                                       ContextEntry[] context, BetaConstraints betaConstraints, AlphaNodeFieldConstraint[] alphaConstraints,
                                       DataProvider dataProvider, Class<?> resultClass, LeftTuple leftTuple, PropagationContext propagationContext ) {
         for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple,
-                                                                      wm,
+                                                                      reteEvaluator,
                                                                       propagationContext,
                                                                       memory.providerContext); it.hasNext(); ) {
             final Object object = it.next();
@@ -104,20 +104,20 @@ public class PhreakAsyncSendNode {
                 continue; // skip anything if it not assignable
             }
 
-            InternalFactHandle factHandle = node.createFactHandle(leftTuple, propagationContext, wm, object);
+            InternalFactHandle factHandle = node.createFactHandle(leftTuple, propagationContext, reteEvaluator, object);
 
-            if ( isAllowed( factHandle, alphaConstraints, wm ) ) {
-                propagate( node, wm, factHandle, betaConstraints, context );
+            if ( isAllowed( factHandle, alphaConstraints, reteEvaluator ) ) {
+                propagate( node, reteEvaluator, factHandle, betaConstraints, context );
             }
         }
     }
 
     public static boolean isAllowed( InternalFactHandle factHandle,
                                      AlphaNodeFieldConstraint[] alphaConstraints,
-                                     InternalWorkingMemory wm ) {
+                                     ReteEvaluator reteEvaluator ) {
         if (alphaConstraints != null) {
             for (AlphaNodeFieldConstraint alphaConstraint : alphaConstraints) {
-                if ( !alphaConstraint.isAllowed( factHandle, wm ) ) {
+                if ( !alphaConstraint.isAllowed( factHandle, reteEvaluator ) ) {
                     return false;
                 }
             }
@@ -126,12 +126,12 @@ public class PhreakAsyncSendNode {
     }
 
     public void propagate( AsyncSendNode node,
-                           InternalWorkingMemory wm,
+                           ReteEvaluator reteEvaluator,
                            InternalFactHandle factHandle,
                            BetaConstraints betaConstraints,
                            ContextEntry[] context ) {
         if (betaConstraints.isAllowedCachedLeft(context, factHandle)) {
-            AsyncMessagesCoordinator.get().propagate( node.getMessageId(), new AsyncMessage( wm, factHandle.getObject() ) );
+            AsyncMessagesCoordinator.get().propagate( node.getMessageId(), new AsyncMessage( reteEvaluator, factHandle.getObject() ) );
         }
     }
 }

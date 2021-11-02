@@ -16,17 +16,17 @@
 
 package org.drools.core.base;
 
-import org.drools.core.common.DroolsObjectInput;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MathUtils;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.core.common.DroolsObjectInput;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MathUtils;
 
 /**
  * This is the supertype for the ASM generated classes for accessing a field.
@@ -168,16 +168,12 @@ abstract public class BaseClassFieldReader
                                    object );
     }
 
-    public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
-                                         Object object) {
-        return MathUtils.getBigDecimal( getValue( workingMemory,
-                                                  object ) );
+    public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator, Object object) {
+        return MathUtils.getBigDecimal( getValue( reteEvaluator, object ) );
     }
 
-    public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
-                                         Object object) {
-        return MathUtils.getBigInteger( getValue( workingMemory,
-                                                  object ) );
+    public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator, Object object) {
+        return MathUtils.getBigInteger( getValue( reteEvaluator, object ) );
     }
 
     public boolean isNullValue(Object object) {

@@ -267,7 +267,7 @@ public class ProtobufOutputMarshaller {
         // need to evaluate all lazy partially evaluated activations before serializing
         boolean dirty = true;
         while ( dirty) {
-            for ( Activation activation : wm.getAgenda().getActivations() ) {
+            for ( Activation activation : wm.getAgenda().getAgendaGroupsManager().getActivations() ) {
                 if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
                     // evaluate it
                     ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm );
@@ -276,7 +276,7 @@ public class ProtobufOutputMarshaller {
             }
             dirty = false;
             // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
-            for ( Activation activation : wm.getAgenda().getActivations() ) {
+            for ( Activation activation : wm.getAgenda().getAgendaGroupsManager().getActivations() ) {
                 if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
                     dirty = true;
                     break;
@@ -293,7 +293,7 @@ public class ProtobufOutputMarshaller {
 
         ProtobufMessages.Agenda.Builder _ab = ProtobufMessages.Agenda.newBuilder();
 
-        AgendaGroup[] agendaGroups = agenda.getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsMap().size()] );
+        AgendaGroup[] agendaGroups = agenda.getAgendaGroupsManager().getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsManager().getAgendaGroupsMap().size()] );
         Arrays.sort( agendaGroups,
                      AgendaGroupSorter.instance );
         for ( AgendaGroup ag : agendaGroups ) {
@@ -323,7 +323,7 @@ public class ProtobufOutputMarshaller {
         }
 
         ProtobufMessages.Agenda.FocusStack.Builder _fsb = ProtobufMessages.Agenda.FocusStack.newBuilder();
-        for ( String groupName : agenda.getGroupsName() ) {
+        for ( String groupName : agenda.getAgendaGroupsManager().getGroupsName() ) {
             _fsb.addGroupName( groupName );
         }
         _ab.setFocusStack( _fsb.build() );
@@ -343,7 +343,7 @@ public class ProtobufOutputMarshaller {
         }
 
         // serialize all network evaluator activations
-        for ( Activation activation : agenda.getActivations() ) {
+        for ( Activation activation : agenda.getAgendaGroupsManager().getActivations() ) {
             if ( activation.isRuleAgendaItem() ) {
                 // serialize it
                 _ab.addRuleActivation( writeActivation( context, (AgendaItem) activation, false) );

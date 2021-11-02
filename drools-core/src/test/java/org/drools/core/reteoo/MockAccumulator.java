@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
@@ -41,18 +41,18 @@ public class MockAccumulator
 
     private Tuple             leftTuple        = null;
     private List              matchingObjects  = Collections.EMPTY_LIST;
-    private WorkingMemory     workingMemory    = null;
+    private ReteEvaluator     reteEvaluator    = null;
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         leftTuple   = (Tuple)in.readObject();
         matchingObjects = (List)in.readObject();
-        workingMemory = (WorkingMemory)in.readObject();
+        reteEvaluator = (ReteEvaluator)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(leftTuple);
         out.writeObject(matchingObjects);
-        out.writeObject(workingMemory);
+        out.writeObject(reteEvaluator);
     }
     public Tuple getLeftTuple() {
         return this.leftTuple;
@@ -62,8 +62,8 @@ public class MockAccumulator
         return this.matchingObjects;
     }
 
-    public WorkingMemory getWorkingMemory() {
-        return this.workingMemory;
+    public ReteEvaluator getReteEvaluator() {
+        return this.reteEvaluator;
     }
 
     public Object createContext() {
@@ -74,10 +74,10 @@ public class MockAccumulator
                        Object context,
                        Tuple leftTuple,
                        Declaration[] declarations,
-                       WorkingMemory workingMemory) {
+                       ReteEvaluator reteEvaluator) {
         this.leftTuple = leftTuple;
         this.matchingObjects = new ArrayList();
-        this.workingMemory = workingMemory;
+        this.reteEvaluator = reteEvaluator;
         return context;
     }
 
@@ -87,7 +87,7 @@ public class MockAccumulator
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) {
+                           ReteEvaluator reteEvaluator) {
         this.matchingObjects.add( handle.getObject() );
         return handle.getObject();
     }
@@ -96,7 +96,7 @@ public class MockAccumulator
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) {
+                            ReteEvaluator reteEvaluator) {
         return this.matchingObjects;
     }
 
@@ -107,7 +107,7 @@ public class MockAccumulator
                               Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              WorkingMemory workingMemory) {
+                              ReteEvaluator reteEvaluator) {
         return false;
     }
 

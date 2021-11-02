@@ -21,18 +21,19 @@ import java.util.Optional;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public interface JobContext extends Serializable {
     /**
      * This method should only be called by the scheduler
      */    
     void setJobHandle(JobHandle jobHandle);
-    
+
     JobHandle getJobHandle();
 
-    InternalWorkingMemory getWorkingMemory();
+    ReteEvaluator getReteEvaluator();
 
     default Optional<InternalKnowledgeRuntime> getInternalKnowledgeRuntime() {
-        return getWorkingMemory() != null ? Optional.ofNullable(getWorkingMemory().getKnowledgeRuntime()) : Optional.empty();
+        return getReteEvaluator() instanceof InternalWorkingMemory ? Optional.ofNullable(((InternalWorkingMemory)getReteEvaluator()).getKnowledgeRuntime()) : Optional.empty();
     }
 }

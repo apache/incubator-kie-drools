@@ -16,14 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -35,6 +27,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
 
 public class From extends ConditionalElement
         implements
@@ -134,7 +133,7 @@ public class From extends ConditionalElement
     }
 
     public Class<?> getResultClass() {
-        return resultClass != null ? resultClass : ((ClassObjectType)resultPattern.getObjectType()).getClassType();
+        return resultClass != null ? resultClass : resultPattern.getObjectType().getClassType();
     }
 
     public void setResultClass(Class<?> resultClass) {
@@ -165,13 +164,13 @@ public class From extends ConditionalElement
 
         @Override
         public Iterator getResults(final Tuple tuple,
-                                   final InternalWorkingMemory wm,
+                                   final ReteEvaluator reteEvaluator,
                                    final PropagationContext ctx,
                                    final Object providerContext) {
             return AccessController.doPrivileged(new PrivilegedAction<Iterator>() {
                 @Override
                 public Iterator run() {
-                    return delegate.getResults(tuple, wm, ctx, providerContext);
+                    return delegate.getResults(tuple, reteEvaluator, ctx, providerContext);
                 }
             }, KiePolicyHelper.getAccessContext());
         }

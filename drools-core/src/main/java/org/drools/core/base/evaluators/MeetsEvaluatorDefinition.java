@@ -16,24 +16,24 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.core.base.BaseEvaluator;
-import org.drools.core.base.ValueType;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.VariableRestriction.LeftStartRightEndContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.time.Interval;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.core.base.BaseEvaluator;
+import org.drools.core.base.ValueType;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.rule.VariableRestriction.LeftStartRightEndContextEntry;
+import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.time.Interval;
 
 /**
  * <p>The implementation of the <code>meets</code> evaluator definition.</p>
@@ -250,18 +250,18 @@ public class MeetsEvaluatorDefinition
                                  Interval.MAX );
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory,
+        public boolean evaluate(ReteEvaluator reteEvaluator,
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeException( "The 'meets' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
-        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
                                            final VariableContextEntry context,
                                            final InternalFactHandle left) {
             if ( context.rightNull || 
-                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
+                    context.declaration.getExtractor().isNullValue( reteEvaluator, left.getObject() )) {
                 return false;
             }
             
@@ -270,11 +270,11 @@ public class MeetsEvaluatorDefinition
             return this.getOperator().isNegated() ^ (dist <= this.finalRange);
         }
 
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
                                           final VariableContextEntry context,
                                           final InternalFactHandle right) {
             if ( context.leftNull ||
-                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
+                    context.extractor.isNullValue( reteEvaluator, right.getObject() ) ) {
                 return false;
             }
             
@@ -283,13 +283,13 @@ public class MeetsEvaluatorDefinition
             return this.getOperator().isNegated() ^ (dist <= this.finalRange);
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory,
+        public boolean evaluate(ReteEvaluator reteEvaluator,
                                 final InternalReadAccessor extractor1,
                                 final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
-            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
-                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
+            if ( extractor1.isNullValue( reteEvaluator, handle1.getObject() ) ||
+                    extractor2.isNullValue( reteEvaluator, handle2.getObject() ) ) {
                 return false;
             }
             

@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Tuple;
@@ -110,17 +111,17 @@ public class ConstraintEvaluator {
         return patternDeclaration;
     }
 
-    public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
+    public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) {
         try {
-            return innerEvaluator.evaluate( handle, workingMemory );
+            return innerEvaluator.evaluate( handle, reteEvaluator );
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
     }
 
-    public boolean evaluate(InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory) {
+    public boolean evaluate(InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator) {
         try {
-            return innerEvaluator.evaluate( handle, tuple, workingMemory );
+            return innerEvaluator.evaluate( handle, tuple, reteEvaluator );
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
@@ -234,11 +235,11 @@ public class ConstraintEvaluator {
             this.patternDeclaration = patternDeclaration;
         }
 
-        public abstract boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception;
-        public abstract boolean evaluate(InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory) throws Exception;
+        public abstract boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) throws Exception;
+        public abstract boolean evaluate(InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator) throws Exception;
 
-        protected Object getArgument( InternalFactHandle handle, InternalWorkingMemory workingMemory, Declaration declaration, Tuple tuple ) {
-            return declaration == patternDeclaration ? handle.getObject() : BindingEvaluator.getArgument( handle, workingMemory, declaration, tuple );
+        protected Object getArgument( InternalFactHandle handle, ReteEvaluator reteEvaluator, Declaration declaration, Tuple tuple ) {
+            return declaration == patternDeclaration ? handle.getObject() : BindingEvaluator.getArgument( handle, reteEvaluator, declaration, tuple );
         }
 
         static class _1 extends InnerEvaluator {
@@ -253,13 +254,13 @@ public class ConstraintEvaluator {
             }
 
             @Override
-            public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
-                return predicate.test( declaration.getValue( workingMemory, handle ) );
+            public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( declaration.getValue( reteEvaluator, handle ) );
             }
 
             @Override
-            public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
-                return predicate.test( getArgument( handle, workingMemory, declaration, tuple ) );
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration, tuple ) );
             }
         }
 
@@ -275,13 +276,13 @@ public class ConstraintEvaluator {
             }
 
             @Override
-            public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
+            public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) throws Exception {
                 return predicate.test( handle.getObject() );
             }
 
             @Override
-            public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
-                return predicate.test( getArgument( handle, workingMemory, declaration, tuple ) );
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration, tuple ) );
             }
         }
 
@@ -299,13 +300,13 @@ public class ConstraintEvaluator {
             }
 
             @Override
-            public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
-                return predicate.test( getArgument( handle, workingMemory, declaration1, null ), getArgument( handle, workingMemory, declaration2, null ) );
+            public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration1, null ), getArgument( handle, reteEvaluator, declaration2, null ) );
             }
 
             @Override
-            public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
-                return predicate.test( getArgument( handle, workingMemory, declaration1, tuple ), getArgument( handle, workingMemory, declaration2, tuple ) );
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration1, tuple ), getArgument( handle, reteEvaluator, declaration2, tuple ) );
             }
         }
 
@@ -321,19 +322,19 @@ public class ConstraintEvaluator {
             }
 
             @Override
-            public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
-                return predicate.test( getInvocationArgs( handle, null, workingMemory ) );
+            public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getInvocationArgs( handle, null, reteEvaluator ) );
             }
 
             @Override
-            public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
-                return predicate.test( getInvocationArgs( handle, tuple, workingMemory ) );
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getInvocationArgs( handle, tuple, reteEvaluator ) );
             }
 
-            private Object[] getInvocationArgs( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
+            private Object[] getInvocationArgs( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) {
                 Object[] params = new Object[declarations.length];
                 for (int i = 0; i < declarations.length; i++) {
-                    params[i] = getArgument( handle, workingMemory, declarations[i], tuple );
+                    params[i] = getArgument( handle, reteEvaluator, declarations[i], tuple );
                 }
                 return params;
             }

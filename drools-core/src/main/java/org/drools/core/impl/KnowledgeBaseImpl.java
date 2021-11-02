@@ -41,6 +41,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -1182,12 +1183,13 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         segmentProtos.remove(rootNode.getId());
     }
 
-    public SegmentMemory createSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource) {
+    @Override
+    public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource tupleSource) {
         SegmentMemory.Prototype proto = segmentProtos.get(tupleSource.getId());
         if (proto == null) {
             return null;
         }
-        return proto.newSegmentMemory(wm);
+        return proto.newSegmentMemory(reteEvaluator);
     }
 
     public SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment) {

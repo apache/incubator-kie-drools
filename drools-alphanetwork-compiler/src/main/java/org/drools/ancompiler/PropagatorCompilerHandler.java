@@ -53,7 +53,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.VoidType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -392,8 +392,8 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
         return StaticJavaParser.parseClassOrInterfaceType(PropagationContext.class.getName());
     }
 
-    public ClassOrInterfaceType workingMemoryType() {
-        return StaticJavaParser.parseClassOrInterfaceType(InternalWorkingMemory.class.getName());
+    public ClassOrInterfaceType reteEvaluatorType() {
+        return StaticJavaParser.parseClassOrInterfaceType(ReteEvaluator.class.getName());
     }
 
     //  type variableName = (type) sourceObject.methodName();

@@ -23,7 +23,7 @@ import org.drools.core.common.AbstractFactHandleFactory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 
@@ -48,36 +48,41 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
                                              final Object object,
                                              final long recency,
                                              final ObjectTypeConf conf,
-                                             final InternalWorkingMemory workingMemory,
+                                             final ReteEvaluator reteEvaluator,
                                              final WorkingMemoryEntryPoint wmEntryPoint ) {
         if ( conf != null && conf.isEvent() ) {
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp;
             if ( type != null && type.getTimestampExtractor() != null ) {
-                timestamp = type.getTimestampExtractor().getLongValue( workingMemory,
-                                                                       object );
+                timestamp = type.getTimestampExtractor().getLongValue( reteEvaluator, object );
             } else {
-                timestamp = workingMemory.getTimerService().getCurrentTime();
+                timestamp = reteEvaluator.getTimerService().getCurrentTime();
             }
             long duration = 0;
             if ( type != null && type.getDurationExtractor() != null ) {
-                duration = type.getDurationExtractor().getLongValue( workingMemory,
-                                                                     object );
+                duration = type.getDurationExtractor().getLongValue( reteEvaluator, object );
             }
             return new EventFactHandle( id,
                                         object,
                                         recency,
                                         timestamp,
                                         duration,
-                                        wmEntryPoint != null ? wmEntryPoint : workingMemory,
+                                        getWmEntryPoint(reteEvaluator, wmEntryPoint),
                                         conf != null && conf.isTrait() );
         } else {
             return new DefaultFactHandle( id,
                                           object,
                                           recency,
-                                          wmEntryPoint != null ? wmEntryPoint : workingMemory,
+                                          getWmEntryPoint(reteEvaluator, wmEntryPoint),
                                           conf != null && conf.isTrait() );
         }
+    }
+
+    protected WorkingMemoryEntryPoint getWmEntryPoint(ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint wmEntryPoint) {
+        if (wmEntryPoint != null) {
+            return wmEntryPoint;
+        }
+        return reteEvaluator != null ? reteEvaluator.getDefaultEntryPoint() : null;
     }
 
     @Override

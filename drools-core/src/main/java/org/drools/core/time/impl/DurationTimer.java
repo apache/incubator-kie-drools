@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
@@ -91,7 +92,7 @@ public class DurationTimer extends BaseTimer
                                  String[] calendarNames,
                                  Calendars calendars,
                                  Declaration[][] declrs,
-                                 InternalWorkingMemory wm) {
+                                 ReteEvaluator reteEvaluator) {
         return createTrigger(getEventTimestamp(leftTuple, timestamp), calendarNames, calendars);
     }
 

@@ -28,6 +28,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -106,7 +107,7 @@ public class AgendaEventSupportTest {
 
         rule.setConsequence( new Consequence() {
             public void evaluate(final KnowledgeHelper knowledgeHelper,
-                                 final WorkingMemory workingMemory) throws Exception {
+                                 final ReteEvaluator reteEvaluator) throws Exception {
             }
 
             public void readExternal(ObjectInput in) throws IOException,

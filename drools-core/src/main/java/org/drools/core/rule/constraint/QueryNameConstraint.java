@@ -20,6 +20,7 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AcceptsReadAccessor;
@@ -52,7 +53,7 @@ public class QueryNameConstraint implements
         this.queryName = queryName;
     }
 
-    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(InternalFactHandle handle, ReteEvaluator reteEvaluator) {
         return ((DroolsQuery)handle.getObject()).getName().equals(queryName);
     }
 

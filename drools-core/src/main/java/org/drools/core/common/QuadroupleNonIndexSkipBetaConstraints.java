@@ -86,19 +86,15 @@ public class QuadroupleNonIndexSkipBetaConstraints
     }
 
     public void updateFromTuple(ContextEntry[] context,
-                                InternalWorkingMemory workingMemory,
+                                ReteEvaluator reteEvaluator,
                                 Tuple tuple) {
-        constraints.updateFromTuple(context,
-                                    workingMemory,
-                                    tuple);
+        constraints.updateFromTuple(context, reteEvaluator, tuple);
     }
 
     public void updateFromFactHandle(ContextEntry[] context,
-                                     InternalWorkingMemory workingMemory,
+                                     ReteEvaluator reteEvaluator,
                                      InternalFactHandle handle) {
-        constraints.updateFromFactHandle(context,
-                                         workingMemory,
-                                         handle);
+        constraints.updateFromFactHandle(context, reteEvaluator, handle);
     }
 
     public boolean isIndexed() {

@@ -19,7 +19,7 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
@@ -32,8 +32,8 @@ public class MockRightTupleSink
 
     public void retractRightTuple(RightTuple rightTuple,
                                   PropagationContext context,
-                                  InternalWorkingMemory workingMemory) {
-        this.retracted.add( new Object[]{rightTuple, context, workingMemory} );
+                                  ReteEvaluator reteEvaluator) {
+        this.retracted.add( new Object[]{rightTuple, context, reteEvaluator} );
 
     }
     
@@ -56,7 +56,7 @@ public class MockRightTupleSink
 
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
+                                 ReteEvaluator reteEvaluator) {
         // TODO Auto-generated method stub
         
     }

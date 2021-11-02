@@ -25,9 +25,9 @@ import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EvalCondition;
@@ -124,7 +124,7 @@ public class EvalConditionNode extends LeftTupleSource
         return this.leftInput.getId() == other.leftInput.getId() && this.condition.equals( other.condition );
     }
 
-    public EvalMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public EvalMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return new EvalMemory( this.condition.createContext() );
     }
 

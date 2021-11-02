@@ -31,8 +31,8 @@ import java.util.Objects;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
@@ -534,7 +534,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     public void propagateAssertObject(final InternalFactHandle factHandle,
                                       final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
+                                      final ReteEvaluator reteEvaluator) {
         final Object object = factHandle.getObject();
 
         // Iterates the FieldIndex collection, which tells you if particularly field is hashed or not
@@ -550,7 +550,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 final AlphaNode sink = this.hashedSinkMap.get( new HashKey( fieldIndex, object ) );
                 if ( sink != null ) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
-                    sink.getObjectSinkPropagator().propagateAssertObject( factHandle, context, workingMemory );
+                    sink.getObjectSinkPropagator().propagateAssertObject( factHandle, context, reteEvaluator );
                 }
             }
         }
@@ -564,7 +564,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 }
                 for (AlphaNode sink : entry.getValue().getMatchingAlphaNodes(object)) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
-                    sink.getObjectSinkPropagator().propagateAssertObject(factHandle, context, workingMemory);
+                    sink.getObjectSinkPropagator().propagateAssertObject(factHandle, context, reteEvaluator);
                 }
             }
         }
@@ -574,7 +574,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             for ( ObjectSinkNode sink : this.hashableSinks ) {
                 doPropagateAssertObject( factHandle,
                                          context,
-                                         workingMemory,
+                                         reteEvaluator,
                                          sink );
             }
         }
@@ -584,7 +584,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             for ( ObjectSinkNode sink : this.rangeIndexableSinks ) {
                 doPropagateAssertObject( factHandle,
                                          context,
-                                         workingMemory,
+                                         reteEvaluator,
                                          sink );
             }
         }
@@ -594,7 +594,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             for ( ObjectSinkNode sink : this.otherSinks ) {
                 doPropagateAssertObject( factHandle,
                                          context,
-                                         workingMemory,
+                                         reteEvaluator,
                                          sink );
             }
         }
@@ -603,7 +603,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     public void propagateModifyObject(final InternalFactHandle factHandle,
                                       final ModifyPreviousTuples modifyPreviousTuples,
                                       final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
+                                      final ReteEvaluator reteEvaluator) {
         final Object object = factHandle.getObject();
 
         // Iterates the FieldIndex collection, which tells you if particularly field is hashed or not
@@ -619,7 +619,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 final AlphaNode sink = this.hashedSinkMap.get( new HashKey( fieldIndex, object ) );
                 if ( sink != null ) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
-                    sink.getObjectSinkPropagator().propagateModifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+                    sink.getObjectSinkPropagator().propagateModifyObject( factHandle, modifyPreviousTuples, context, reteEvaluator );
                 }
             }
         }
@@ -633,7 +633,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 }
                 for (AlphaNode sink : entry.getValue().getMatchingAlphaNodes(object)) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
-                    sink.getObjectSinkPropagator().propagateModifyObject(factHandle, modifyPreviousTuples, context, workingMemory);
+                    sink.getObjectSinkPropagator().propagateModifyObject(factHandle, modifyPreviousTuples, context, reteEvaluator);
                 }
             }
         }
@@ -644,7 +644,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 doPropagateModifyObject( factHandle,
                                          modifyPreviousTuples,
                                          context,
-                                         workingMemory,
+                                         reteEvaluator,
                                          sink );
             }
         }
@@ -655,7 +655,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 doPropagateModifyObject( factHandle,
                                          modifyPreviousTuples,
                                          context,
-                                         workingMemory,
+                                         reteEvaluator,
                                          sink );
             }
         }
@@ -666,7 +666,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 doPropagateModifyObject( factHandle,
                                          modifyPreviousTuples,
                                          context,
-                                         workingMemory,
+                                         reteEvaluator,
                                          sink );
             }
         }
@@ -675,7 +675,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
                                         final ModifyPreviousTuples modifyPreviousTuples,
                                         final PropagationContext context,
-                                        final InternalWorkingMemory workingMemory) {
+                                        final ReteEvaluator reteEvaluator) {
         final Object object = factHandle.getObject();
 
         // We need to iterate in the same order as the assert
@@ -689,7 +689,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 final AlphaNode sink = this.hashedSinkMap.get( new HashKey( fieldIndex, object ) );
                 if ( sink != null ) {
                     // only alpha nodes are hashable
-                    sink.getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+                    sink.getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, reteEvaluator );
                 }
             }
         }
@@ -702,7 +702,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     continue;
                 }
                 for (AlphaNode sink : entry.getValue().getMatchingAlphaNodes(object)) {
-                    sink.getObjectSinkPropagator().byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
+                    sink.getObjectSinkPropagator().byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, reteEvaluator);
                 }
             }
         }
@@ -711,14 +711,14 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         if ( this.hashableSinks != null ) {
             for ( AlphaNode sink : this.hashableSinks ) {
                 // only alpha nodes are hashable
-                sink.getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+                sink.getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, reteEvaluator );
             }
         }
 
         // propagate un-rangeindexed
         if ( this.rangeIndexableSinks != null ) {
             for ( AlphaNode sink : this.rangeIndexableSinks ) {
-                sink.getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+                sink.getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, reteEvaluator );
             }
         }
 
@@ -726,7 +726,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             // propagate others
             for ( ObjectSinkNode sink : this.otherSinks ) {
                 // compound alpha, lianode or betanode
-                sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+                sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, reteEvaluator );
             }
         }
     }
@@ -737,22 +737,22 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
      */
     protected void doPropagateAssertObject(InternalFactHandle factHandle,
                                            PropagationContext context,
-                                           InternalWorkingMemory workingMemory,
+                                           ReteEvaluator reteEvaluator,
                                            ObjectSink sink) {
         sink.assertObject( factHandle,
                            context,
-                           workingMemory );
+                           reteEvaluator );
     }
 
     protected void doPropagateModifyObject(InternalFactHandle factHandle,
                                            final ModifyPreviousTuples modifyPreviousTuples,
                                            PropagationContext context,
-                                           InternalWorkingMemory workingMemory,
+                                           ReteEvaluator reteEvaluator,
                                            ObjectSink sink) {
         sink.modifyObject( factHandle,
                            modifyPreviousTuples,
                            context,
-                           workingMemory );
+                           reteEvaluator );
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
@@ -854,20 +854,20 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         return newSinks;
     }
     
-    public void doLinkRiaNode(InternalWorkingMemory wm) {
+    public void doLinkRiaNode(ReteEvaluator reteEvaluator) {
         if ( this.otherSinks != null ) {
             // this is only used for ria nodes when exists are shared, we know there is no indexing for those
             for ( ObjectSinkNode sink : this.otherSinks ) {
-                SingleObjectSinkAdapter.staticDoLinkRiaNode( sink, wm );
+                SingleObjectSinkAdapter.staticDoLinkRiaNode( sink, reteEvaluator );
             }
         }
     }
 
-    public void doUnlinkRiaNode(InternalWorkingMemory wm) {
+    public void doUnlinkRiaNode(ReteEvaluator reteEvaluator) {
         if ( this.otherSinks != null ) {
             // this is only used for ria nodes when exists are shared, we know there is no indexing for those
             for ( ObjectSinkNode sink : this.otherSinks ) {
-                SingleObjectSinkAdapter.staticDoUnlinkRiaNode( sink, wm );
+                SingleObjectSinkAdapter.staticDoUnlinkRiaNode( sink, reteEvaluator );
             }
         }
     }     

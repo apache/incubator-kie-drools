@@ -22,9 +22,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.Declaration;
@@ -77,8 +77,8 @@ public class CollectAccumulator
                        Object context,
                        Tuple leftTuple,
                        Declaration[] declarations,
-                       WorkingMemory workingMemory) {
-        return this.collect.instantiateResultObject( (InternalWorkingMemory) workingMemory );
+                       ReteEvaluator reteEvaluator) {
+        return this.collect.instantiateResultObject( reteEvaluator );
     }
 
     /* (non-Javadoc)
@@ -90,7 +90,7 @@ public class CollectAccumulator
                              InternalFactHandle handle,
                              Declaration[] declarations,
                              Declaration[] innerDeclarations,
-                             WorkingMemory workingMemory) {
+                             ReteEvaluator reteEvaluator) {
         Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
         ((Collection) context).add( value );
         return value;
@@ -103,7 +103,7 @@ public class CollectAccumulator
                               Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              WorkingMemory workingMemory) {
+                              ReteEvaluator reteEvaluator) {
         ((Collection) context).remove( value );
         return true;
     }
@@ -115,7 +115,7 @@ public class CollectAccumulator
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) {
+                            ReteEvaluator reteEvaluator) {
         return context;
     }
 

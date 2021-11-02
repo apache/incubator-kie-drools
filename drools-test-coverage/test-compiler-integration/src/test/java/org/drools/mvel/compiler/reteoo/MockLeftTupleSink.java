@@ -25,6 +25,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -168,7 +169,7 @@ public class MockLeftTupleSink extends LeftTupleSource
         return null;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return null;
     }
 

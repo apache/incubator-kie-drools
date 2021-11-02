@@ -142,10 +142,10 @@ public class DefaultBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
-                                final InternalWorkingMemory workingMemory,
+                                final ReteEvaluator reteEvaluator,
                                 final Tuple tuple) {
         for (ContextEntry aContext : context) {
-            aContext.updateFromTuple(workingMemory, tuple);
+            aContext.updateFromTuple(reteEvaluator, tuple);
         }
     }
 
@@ -153,10 +153,10 @@ public class DefaultBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
-                                     final InternalWorkingMemory workingMemory,
+                                     final ReteEvaluator reteEvaluator,
                                      final InternalFactHandle handle) {
         for (ContextEntry aContext : context) {
-            aContext.updateFromFactHandle(workingMemory, handle);
+            aContext.updateFromFactHandle(reteEvaluator, handle);
         }
     }
 

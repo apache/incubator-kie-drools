@@ -1,0 +1,109 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.core.common;
+
+import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.base.DefaultKnowledgeHelper;
+import org.drools.core.event.RuleEventListenerSupport;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.spi.GlobalResolver;
+import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.time.TimerService;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.time.SessionClock;
+
+public interface ReteEvaluator {
+
+    ActivationsManager getActivationsManager();
+
+    InternalKnowledgeBase getKnowledgeBase();
+
+    WorkingMemoryEntryPoint getEntryPoint(String name);
+    default EntryPointId getDefaultEntryPointId() {
+        return EntryPointId.DEFAULT;
+    }
+    default WorkingMemoryEntryPoint getDefaultEntryPoint() {
+        return getEntryPoint(getDefaultEntryPointId().getEntryPointId());
+    }
+
+    <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
+
+    GlobalResolver getGlobalResolver();
+    default Object getGlobal(String identifier) {
+        return getGlobalResolver().resolveGlobal( identifier );
+    }
+
+    default InternalFactHandle createFactHandle(Object object, ObjectTypeConf conf, WorkingMemoryEntryPoint wmEntryPoint ) {
+        return getFactHandleFactory().newFactHandle( object, conf, this, wmEntryPoint );
+    }
+
+    FactHandleFactory getFactHandleFactory();
+
+    InternalFactHandle getFactHandle(Object object);
+
+    TimerService getTimerService();
+
+    default void addPropagation(PropagationEntry propagationEntry) {
+        addPropagation(propagationEntry, false);
+    }
+
+    void addPropagation(PropagationEntry propagationEntry, boolean register);
+
+    long getNextPropagationIdCounter();
+
+    default boolean isThreadSafe() {
+        return false;
+    }
+
+    FactHandleClassStore getStoreForClass(Class<?> classType);
+
+    WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String entryPointId);
+
+    SessionConfiguration getSessionConfiguration();
+
+    RuleEventListenerSupport getRuleEventSupport();
+
+    Calendars getCalendars();
+
+    SessionClock getSessionClock();
+
+    default boolean isSequential() {
+        return getKnowledgeBase().getConfiguration().isSequential();
+    }
+
+    default void startOperation() { }
+    default void endOperation() { }
+
+    default KnowledgeHelper createKnowledgeHelper() {
+        return new DefaultKnowledgeHelper( this );
+    }
+
+    default KnowledgeHelper createKnowledgeHelper(Activation activation) {
+        return new DefaultKnowledgeHelper( activation, this );
+    }
+
+    void onSuspend();
+    void onResume();
+
+    ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
+}

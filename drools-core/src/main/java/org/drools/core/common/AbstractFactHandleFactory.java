@@ -54,12 +54,12 @@ public abstract class AbstractFactHandleFactory
     */
     public final InternalFactHandle newFactHandle(Object object,
                                                   ObjectTypeConf conf,
-                                                  InternalWorkingMemory workingMemory,
+                                                  ReteEvaluator reteEvaluator,
                                                   WorkingMemoryEntryPoint wmEntryPoint) {
         return newFactHandle( getNextId(),
                               object,
                               conf,
-                              workingMemory,
+                              reteEvaluator,
                               wmEntryPoint );
     }
 
@@ -69,13 +69,13 @@ public abstract class AbstractFactHandleFactory
     public final InternalFactHandle newFactHandle(long id,
                                                   Object object,
                                                   ObjectTypeConf conf,
-                                                  InternalWorkingMemory workingMemory,
+                                                  ReteEvaluator reteEvaluator,
                                                   WorkingMemoryEntryPoint wmEntryPoint) {
         return newFactHandle( id,
                               object,
                               getNextRecency(),
                               conf,
-                              workingMemory,
+                              reteEvaluator,
                               wmEntryPoint );
     }
 
@@ -86,7 +86,7 @@ public abstract class AbstractFactHandleFactory
                                                      Object object,
                                                      long recency,
                                                      ObjectTypeConf conf,
-                                                     InternalWorkingMemory workingMemory,
+                                                     ReteEvaluator reteEvaluator,
                                                      WorkingMemoryEntryPoint wmEntryPoint );
 
     public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {

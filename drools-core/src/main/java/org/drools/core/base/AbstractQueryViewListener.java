@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -24,9 +24,7 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
 
     public abstract InternalFactHandle getHandle(InternalFactHandle originalHandle);
 
-    public void rowAdded(final RuleImpl rule,
-            final LeftTuple tuple,
-            final InternalWorkingMemory workingMemory) {
+    public void rowAdded(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator) {
         InternalFactHandle[] handles = new InternalFactHandle[((LeftTupleNode)tuple.getTupleSink()).getObjectCount()];
         LeftTuple entry = (LeftTuple) tuple.skipEmptyHandles();
 
@@ -42,14 +40,10 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
         this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
 
-    public void rowRemoved( final RuleImpl rule,
-                            final LeftTuple tuple,
-                            final InternalWorkingMemory workingMemory ) {
+    public void rowRemoved( RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
     }
 
-    public void rowUpdated( final RuleImpl rule,
-                            final LeftTuple tuple,
-                            final InternalWorkingMemory workingMemory ) {
+    public void rowUpdated( RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
     }
 
 }

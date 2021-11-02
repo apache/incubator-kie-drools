@@ -34,12 +34,12 @@ public interface BetaConstraints
     ContextEntry[] createContext();
 
     void updateFromTuple(ContextEntry[] context,
-                         InternalWorkingMemory workingMemory,
+                         ReteEvaluator reteEvaluator,
                          Tuple tuple);
 
     void updateFromFactHandle(ContextEntry[] context,
-                                     InternalWorkingMemory workingMemory,
-                                     InternalFactHandle handle);
+                              ReteEvaluator reteEvaluator,
+                              InternalFactHandle handle);
 
     boolean isAllowedCachedLeft(ContextEntry[] context,
                                 InternalFactHandle handle);

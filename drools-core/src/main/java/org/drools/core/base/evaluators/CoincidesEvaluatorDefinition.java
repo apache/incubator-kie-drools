@@ -16,24 +16,24 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.core.base.BaseEvaluator;
-import org.drools.core.base.ValueType;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.time.Interval;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.core.base.BaseEvaluator;
+import org.drools.core.base.ValueType;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.time.Interval;
 
 /**
  * <p>The implementation of the 'coincides' evaluator definition.</p>
@@ -265,18 +265,18 @@ public class CoincidesEvaluatorDefinition
                                  0 );
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory,
+        public boolean evaluate(ReteEvaluator reteEvaluator,
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeException( "The 'coincides' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
-        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
                                            final VariableContextEntry context,
                                            final InternalFactHandle left) {
             if ( context.rightNull || 
-                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
+                    context.declaration.getExtractor().isNullValue( reteEvaluator, left.getObject() )) {
                 return false;
             }
             
@@ -290,7 +290,7 @@ public class CoincidesEvaluatorDefinition
                 leftStartTS = ((EventFactHandle) left).getStartTimestamp();
                 leftEndTS = ((EventFactHandle) left).getEndTimestamp();
             } else {
-                leftStartTS = context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
+                leftStartTS = context.declaration.getExtractor().getLongValue( reteEvaluator, left.getObject() );
                 leftEndTS = leftStartTS;
             }
 
@@ -299,11 +299,11 @@ public class CoincidesEvaluatorDefinition
             return this.getOperator().isNegated() ^ (distStart <= this.startDev && distEnd <= this.endDev);
         }
 
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
                                           final VariableContextEntry context,
                                           final InternalFactHandle right) {
             if ( context.leftNull ||
-                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
+                    context.extractor.isNullValue( reteEvaluator, right.getObject() ) ) {
                 return false;
             }
 
@@ -314,7 +314,7 @@ public class CoincidesEvaluatorDefinition
                 rightStartTS = ((EventFactHandle) right).getStartTimestamp();
                 rightEndTS = ((EventFactHandle) right).getEndTimestamp();
             } else {
-                rightStartTS = context.extractor.getLongValue( workingMemory, right.getObject() );
+                rightStartTS = context.extractor.getLongValue( reteEvaluator, right.getObject() );
                 rightEndTS = rightStartTS;
             }                        
             
@@ -326,13 +326,13 @@ public class CoincidesEvaluatorDefinition
             return this.getOperator().isNegated() ^ (distStart <= this.startDev && distEnd <= this.endDev);
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory,
+        public boolean evaluate(ReteEvaluator reteEvaluator,
                                 final InternalReadAccessor extractor1,
                                 final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
-            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
-                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
+            if ( extractor1.isNullValue( reteEvaluator, handle1.getObject() ) ||
+                    extractor2.isNullValue( reteEvaluator, handle2.getObject() ) ) {
                 return false;
             }
             
@@ -343,7 +343,7 @@ public class CoincidesEvaluatorDefinition
                 rightStartTS = ((EventFactHandle) handle1).getStartTimestamp();
                 rightEndTS = ((EventFactHandle) handle1).getEndTimestamp();
             } else {
-                rightStartTS = extractor1.getLongValue( workingMemory, handle1.getObject() );
+                rightStartTS = extractor1.getLongValue( reteEvaluator, handle1.getObject() );
                 rightEndTS = rightStartTS;
             }       
             
@@ -351,7 +351,7 @@ public class CoincidesEvaluatorDefinition
                 leftStartTS = ((EventFactHandle) handle2).getStartTimestamp();
                 leftEndTS = ((EventFactHandle) handle2).getEndTimestamp();
             } else {
-                leftStartTS = extractor2.getLongValue( workingMemory, handle2.getObject() );
+                leftStartTS = extractor2.getLongValue( reteEvaluator, handle2.getObject() );
                 leftEndTS = leftStartTS;
             }            
 

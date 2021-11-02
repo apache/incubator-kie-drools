@@ -21,7 +21,7 @@ import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
@@ -86,16 +86,16 @@ public class EvaluatorWrapper
      * 
      * @return
      */
-    public boolean evaluate(InternalWorkingMemory workingMemory, Object left, Object right) {
+    public boolean evaluate(ReteEvaluator reteEvaluator, Object left, Object right) {
         Object leftValue = leftTimestamp != null ? leftTimestamp : left;
         Object rightValue = rightTimestamp != null ? rightTimestamp : right;
 
         return rightLiteral ?
-                evaluator.evaluate( workingMemory,
+                evaluator.evaluate( reteEvaluator,
                                     new ConstantValueReader( leftValue ),
                                     dummyFactHandleOf( leftValue ),
                                     new ObjectFieldImpl( rightValue ) ) :
-                evaluator.evaluate( workingMemory,
+                evaluator.evaluate( reteEvaluator,
                                     new ConstantValueReader( leftValue ),
                                     dummyFactHandleOf( leftValue ),
                                     new ConstantValueReader( rightValue ),
@@ -126,71 +126,40 @@ public class EvaluatorWrapper
         return evaluator.getCoercedValueType();
     }
 
-    /**
-     * @param workingMemory
-     * @param extractor
-     * @param factHandle
-     * @param value
-     * @return
-     * @see org.drools.core.spi.Evaluator#evaluate(org.drools.core.common.InternalWorkingMemory, org.drools.core.spi.InternalReadAccessor, InternalFactHandle, org.drools.core.spi.FieldValue)
-     */
-    public boolean evaluate(InternalWorkingMemory workingMemory,
+    public boolean evaluate(ReteEvaluator reteEvaluator,
                             InternalReadAccessor extractor,
                             InternalFactHandle factHandle,
                             FieldValue value) {
-        return evaluator.evaluate( workingMemory,
+        return evaluator.evaluate( reteEvaluator,
                                    extractor,
                                    factHandle,
                                    value );
     }
 
-    /**
-     * @param workingMemory
-     * @param leftExtractor
-     * @param left
-     * @param rightExtractor
-     * @param right
-     * @return
-     * @see org.drools.core.spi.Evaluator#evaluate(org.drools.core.common.InternalWorkingMemory, org.drools.core.spi.InternalReadAccessor, InternalFactHandle, org.drools.core.spi.InternalReadAccessor, InternalFactHandle)
-     */
-    public boolean evaluate(InternalWorkingMemory workingMemory,
+    public boolean evaluate(ReteEvaluator reteEvaluator,
                             InternalReadAccessor leftExtractor,
                             InternalFactHandle left,
                             InternalReadAccessor rightExtractor,
                             InternalFactHandle right) {
-        return evaluator.evaluate( workingMemory,
+        return evaluator.evaluate( reteEvaluator,
                                    leftExtractor,
                                    left,
                                    rightExtractor,
                                    right );
     }
 
-    /**
-     * @param workingMemory
-     * @param context
-     * @param right
-     * @return
-     * @see org.drools.core.spi.Evaluator#evaluateCachedLeft(org.drools.core.common.InternalWorkingMemory, org.drools.core.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
-     */
-    public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+    public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
                                       VariableContextEntry context,
                                       InternalFactHandle right) {
-        return evaluator.evaluateCachedLeft( workingMemory,
+        return evaluator.evaluateCachedLeft( reteEvaluator,
                                              context,
                                              right );
     }
 
-    /**
-     * @param workingMemory
-     * @param context
-     * @param left
-     * @return
-     * @see org.drools.core.spi.Evaluator#evaluateCachedRight(org.drools.core.common.InternalWorkingMemory, org.drools.core.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
-     */
-    public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+    public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
                                        VariableContextEntry context,
                                        InternalFactHandle left) {
-        return evaluator.evaluateCachedRight( workingMemory,
+        return evaluator.evaluateCachedRight( reteEvaluator,
                                               context,
                                               left );
     }

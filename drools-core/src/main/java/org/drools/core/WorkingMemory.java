@@ -16,8 +16,12 @@
 
 package org.drools.core;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.api.runtime.Environment;
@@ -25,13 +29,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.time.SessionClock;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -40,7 +38,7 @@ import java.util.Map;
  * the RuleBase reference is transient. Please see the RuleBase interface for serializing
  * in WorkingMemories from an InputStream.
  */
-public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryEntryPoint {
+public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager, WorkingMemoryEntryPoint {
 
     /**
      * Returns the Agenda for this WorkingMemory. While the WorkingMemory interface is considered public, the Agenda interface
@@ -62,13 +60,6 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     void setGlobal(String identifier,
                    Object value);
 
-    /**
-     * Retrieve a specific instance of global data by identifier
-     *
-     * @return application data or null if nothing is set under this identifier
-     */
-    Object getGlobal(String identifier);
-
     Environment getEnvironment();
 
     /**
@@ -79,20 +70,6 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @param globalResolver
      */
     void setGlobalResolver(GlobalResolver globalResolver);
-
-    /**
-     * Returns the current GlobalResolver
-     *
-     * @return
-     */
-    GlobalResolver getGlobalResolver();
-
-    /**
-     * Retrieve the <code>RuleBase</code> for this working memory.
-     *
-     * @return The <code>RuleBase</code>.
-     */
-    InternalKnowledgeBase getKnowledgeBase();
 
     /**
      * Fire all items on the agenda until empty.
@@ -114,29 +91,6 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * until empty or at most 'fireLimit' rules have fired
      */
     int fireAllRules(final AgendaFilter agendaFilter, int fireLimit );
-
-    /**
-     * Retrieve the object associated with a <code>FactHandle</code>.
-     *
-     *
-     * @param handle
-     *            The fact handle.
-     *
-     * @return The associated object.
-     */
-    Object getObject(FactHandle handle);
-
-    /**
-     * Retrieve the <code>FactHandle</code> associated with an Object.
-     *
-     * @param object
-     *            The object.
-     *
-     * @return The associated fact handle.
-     */
-    FactHandle getFactHandle(Object object);
-
-    FactHandle getFactHandleByIdentity(final Object object);
 
     /**
      * Returns an Iterator for the Objects in the Working Memory. This Iterator is not thread safe.
@@ -262,20 +216,4 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * Stops rule firing after the current rule finishes executing
      */
     void halt();
-
-    /**
-     * Returns the interface instance for a given entry point, so
-     * that the application can manage entry-point-scoped facts.
-     *
-     * @param id the id of the entry point, as defined in the rules file
-     * @return
-     */
-    WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String id );
-    
-    /**
-     * Returns the session clock instance associated with this session
-     * @return
-     */
-    SessionClock getSessionClock();
-    
 }

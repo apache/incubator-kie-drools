@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.PropagationContext;
@@ -35,26 +36,19 @@ public class OpenQueryViewChangedEventListenerAdapter
         this.viewEventListener = viewEventListener;
     }
 
-    public void rowAdded(final RuleImpl rule,
-                         final LeftTuple leftTuple,
-                         final InternalWorkingMemory workingMemory) {
-        RowAdapter rowAdapter = new RowAdapter(rule,
-                                               leftTuple);
-        leftTuple.setContextObject( rowAdapter );
+    public void rowAdded(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+        RowAdapter rowAdapter = new RowAdapter(rule, tuple);
+        tuple.setContextObject( rowAdapter );
         this.viewEventListener.rowInserted( rowAdapter );
     }
 
-    public void rowRemoved(final RuleImpl rule,
-                           final LeftTuple leftTuple,
-                           final InternalWorkingMemory workingMemory) {
-        RowAdapter rowAdapter = (RowAdapter) leftTuple.getContextObject();
+    public void rowRemoved(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+        RowAdapter rowAdapter = (RowAdapter) tuple.getContextObject();
         this.viewEventListener.rowDeleted( rowAdapter );
     }
 
-    public void rowUpdated(final RuleImpl rule,
-                           final LeftTuple leftTuple,
-                           final InternalWorkingMemory workingMemory) {
-        RowAdapter rowAdapter = (RowAdapter) leftTuple.getContextObject();
+    public void rowUpdated(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+        RowAdapter rowAdapter = (RowAdapter) tuple.getContextObject();
         this.viewEventListener.rowUpdated( rowAdapter );
     }
 

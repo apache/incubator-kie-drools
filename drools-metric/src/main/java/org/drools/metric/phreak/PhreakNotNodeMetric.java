@@ -15,7 +15,7 @@
 
 package org.drools.metric.phreak;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakNotNode;
 import org.drools.core.reteoo.BetaMemory;
@@ -30,7 +30,7 @@ public class PhreakNotNodeMetric extends PhreakNotNode {
     public void doNode(NotNode notNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
@@ -38,7 +38,7 @@ public class PhreakNotNodeMetric extends PhreakNotNode {
         try {
             MetricLogUtils.getInstance().startMetrics(notNode);
 
-            super.doNode(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(notNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

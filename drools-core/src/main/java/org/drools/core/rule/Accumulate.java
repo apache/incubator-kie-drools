@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
@@ -86,7 +86,7 @@ public abstract class Accumulate extends ConditionalElement
     public abstract Object init(final Object workingMemoryContext,
                                 final Object accContext,
                                 Object funcContext, final Tuple leftTuple,
-                                final WorkingMemory workingMemory);
+                                final ReteEvaluator reteEvaluator);
 
     /**
      * Executes the accumulate (action) code for the given fact handle
@@ -95,7 +95,7 @@ public abstract class Accumulate extends ConditionalElement
                                       final Object context,
                                       final Tuple match,
                                       final InternalFactHandle handle,
-                                      final WorkingMemory workingMemory);
+                                      final ReteEvaluator reteEvaluator);
 
     /**
      * Executes the reverse (action) code for the given fact handle
@@ -106,7 +106,7 @@ public abstract class Accumulate extends ConditionalElement
                                        final InternalFactHandle handle,
                                        final RightTuple rightParent,
                                        final LeftTuple match,
-                                       final WorkingMemory workingMemory);
+                                       final ReteEvaluator reteEvaluator);
 
     /**
      * Gets the result of the accumulation
@@ -114,7 +114,7 @@ public abstract class Accumulate extends ConditionalElement
     public abstract Object getResult(final Object workingMemoryContext,
                                      final Object context,
                                      final Tuple leftTuple,
-                                     final WorkingMemory workingMemory);
+                                     final ReteEvaluator reteEvaluator);
 
     /**
      * Returns true if this accumulate supports reverse
@@ -202,5 +202,5 @@ public abstract class Accumulate extends ConditionalElement
     }
 
     public abstract Object accumulate(Object workingMemoryContext, Tuple match, InternalFactHandle childHandle,
-                                      GroupByContext groupByContext, TupleList<AccumulateNode.AccumulateContextEntry> tupleList, WorkingMemory wm);
+                                      GroupByContext groupByContext, TupleList<AccumulateNode.AccumulateContextEntry> tupleList, ReteEvaluator reteEvaluator);
 }

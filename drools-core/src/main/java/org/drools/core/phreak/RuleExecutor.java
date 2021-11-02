@@ -18,13 +18,13 @@ package org.drools.core.phreak;
 import java.util.Comparator;
 
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.RuleEventListenerSupport;
@@ -69,37 +69,37 @@ public class RuleExecutor {
         }
     }
 
-    public void evaluateNetwork(InternalAgenda agenda) {
-        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, agenda );
+    public void evaluateNetwork(ActivationsManager activationsManager) {
+        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, activationsManager );
         setDirty( false );
     }
 
-    public int evaluateNetworkAndFire( InternalWorkingMemory wm,
+    public int evaluateNetworkAndFire( ReteEvaluator reteEvaluator,
                                        AgendaFilter filter,
                                        int fireCount,
                                        int fireLimit ) {
-        reEvaluateNetwork( wm );
-        return fire(wm, pmem.getActualAgenda( wm ), filter, fireCount, fireLimit);
+        reEvaluateNetwork( reteEvaluator );
+        return fire(reteEvaluator, pmem.getActualActivationsManager( reteEvaluator ), filter, fireCount, fireLimit);
     }
 
-    public int evaluateNetworkAndFire( InternalAgenda agenda,
+    public int evaluateNetworkAndFire( ActivationsManager activationsManager,
                                        AgendaFilter filter,
                                        int fireCount,
                                        int fireLimit ) {
-        InternalWorkingMemory wm = agenda.getWorkingMemory();
+        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
 
-        reEvaluateNetwork( agenda );
+        reEvaluateNetwork( activationsManager );
 
-        if ( wm.getSessionConfiguration().isDirectFiring() ) {
+        if ( reteEvaluator.getSessionConfiguration().isDirectFiring() ) {
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
             RuleImpl rule = rtn.getRule();
             int directFirings = tupleList.size();
 
             for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
-                if (cancelAndContinue(wm, rtn, rule, tuple, filter)) {
+                if (cancelAndContinue(reteEvaluator, rtn, rule, tuple, filter)) {
                     directFirings--;
                 } else {
-                    innerFireActivation( wm, agenda, (Activation) tuple, ((Activation) tuple).getConsequence() );
+                    innerFireActivation( reteEvaluator, activationsManager, (Activation) tuple, ((Activation) tuple).getConsequence() );
                 }
                 removeLeftTuple( tuple );
             }
@@ -107,15 +107,15 @@ public class RuleExecutor {
             return directFirings;
         }
 
-        return fire( wm, agenda, filter, fireCount, fireLimit );
+        return fire( reteEvaluator, activationsManager, filter, fireCount, fireLimit );
     }
 
-    public void fire(InternalAgenda agenda) {
-        fire(agenda.getWorkingMemory(), agenda, null, 0, Integer.MAX_VALUE);
+    public void fire(ActivationsManager activationsManager) {
+        fire(activationsManager.getReteEvaluator(), activationsManager, null, 0, Integer.MAX_VALUE);
     }
 
-    private int fire( InternalWorkingMemory wm,
-                      InternalAgenda agenda,
+    private int fire( ReteEvaluator reteEvaluator,
+                      ActivationsManager activationsManager,
                       AgendaFilter filter,
                       int fireCount,
                       int fireLimit) {
@@ -124,7 +124,7 @@ public class RuleExecutor {
         if (!tupleList.isEmpty()) {
             if (!fireExitedEarly && isDeclarativeAgendaEnabled()) {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
-                RuleAgendaItem nextRule = agenda.peekNextRule();
+                RuleAgendaItem nextRule = activationsManager.peekNextRule();
                 if (!isHigherSalience( nextRule )) {
                     fireExitedEarly = true;
                     return localFireCount;
@@ -137,7 +137,7 @@ public class RuleExecutor {
             Tuple tuple = getNextTuple();
             
             if (ruleIsAllMatches) {
-                fireConsequenceEvent(wm, agenda, (AgendaItem) tuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(reteEvaluator, activationsManager, (AgendaItem) tuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
 
             Tuple lastTuple = null;
@@ -145,24 +145,24 @@ public class RuleExecutor {
 
                 //check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
-                if (cancelAndContinue(wm, rtn, rule, tuple, filter)) {
+                if (cancelAndContinue(reteEvaluator, rtn, rule, tuple, filter)) {
                     continue;
                 }
 
                 AgendaItem item = (AgendaItem) tuple;
-                if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept(item, wm, rtn)) {
+                if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept(item, reteEvaluator, rtn)) {
                     // only relevant for serialization, to not refire Matches already fired
                     continue;
                 }
 
-                fireActivation( wm, agenda, item );
+                fireActivation( reteEvaluator, activationsManager, item );
                 localFireCount++;
 
                 if (rtn.getLeftTupleSource() == null) {
                     break; // The activation firing removed this rule from the rule base
                 }
 
-                agenda.flushPropagations();
+                activationsManager.flushPropagations();
 
                 int salience = ruleAgendaItem.getSalience(); // dynamic salience may have updated it, so get again.
                 if (queue != null && !queue.isEmpty() && salience != queue.peek().getSalience()) {
@@ -172,21 +172,21 @@ public class RuleExecutor {
                 }
 
                 if (!ruleIsAllMatches) { // if firing rule is @All don't give way to other rules
-                    if ( haltRuleFiring( fireCount, fireLimit, localFireCount, agenda ) ) {
+                    if ( haltRuleFiring( fireCount, fireLimit, localFireCount, activationsManager ) ) {
                         break; // another rule has high priority and is on the agenda, so evaluate it first
                     }
-                    if (!wm.isSequential()) {
-                        reEvaluateNetwork( agenda );
+                    if (!reteEvaluator.isSequential()) {
+                        reEvaluateNetwork( activationsManager );
                     }
                 }
             }
 
             if (ruleIsAllMatches) {
-                fireConsequenceEvent(wm, agenda, (AgendaItem) lastTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(reteEvaluator, activationsManager, (AgendaItem) lastTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
             }
         }
 
-        removeRuleAgendaItemWhenEmpty(wm);
+        removeRuleAgendaItemWhenEmpty(reteEvaluator);
 
         fireExitedEarly = false;
         return localFireCount;
@@ -211,28 +211,28 @@ public class RuleExecutor {
         return pmem;
     }
 
-    public void removeRuleAgendaItemWhenEmpty(InternalWorkingMemory wm) {
+    public void removeRuleAgendaItemWhenEmpty(ReteEvaluator reteEvaluator) {
         if (!dirty && tupleList.isEmpty()) {
             if (log.isTraceEnabled()) {
                 log.trace("Removing RuleAgendaItem " + ruleAgendaItem);
             }
             ruleAgendaItem.remove();
             if ( ruleAgendaItem.getRule().isQuery() ) {
-                pmem.getActualAgenda( wm ).removeQueryAgendaItem( ruleAgendaItem );
+                pmem.getActualActivationsManager( reteEvaluator ).removeQueryAgendaItem( ruleAgendaItem );
             } else if ( ruleAgendaItem.getRule().isEager() ) {
-                pmem.getActualAgenda( wm ).removeEagerRuleAgendaItem(ruleAgendaItem);
+                pmem.getActualActivationsManager( reteEvaluator ).removeEagerRuleAgendaItem(ruleAgendaItem);
             }
         }
     }
 
-    public void reEvaluateNetwork(InternalWorkingMemory wm) {
-        reEvaluateNetwork(pmem.getActualAgenda( wm ));
+    public void reEvaluateNetwork(ReteEvaluator reteEvaluator) {
+        reEvaluateNetwork(pmem.getActualActivationsManager( reteEvaluator ));
     }
 
-    public void reEvaluateNetwork(InternalAgenda agenda) {
+    public void reEvaluateNetwork(ActivationsManager activationsManager) {
         if ( isDirty() ) {
             setDirty(false);
-            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(pmem, this, agenda);
+            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(pmem, this, activationsManager);
         }
     }
 
@@ -240,20 +240,20 @@ public class RuleExecutor {
         return ruleAgendaItem;
     }
 
-    private boolean cancelAndContinue(InternalWorkingMemory wm,
-            RuleTerminalNode rtn,
-            RuleImpl rule,
-            Tuple leftTuple,
-            AgendaFilter filter) {
+    private boolean cancelAndContinue(ReteEvaluator reteEvaluator,
+                                      RuleTerminalNode rtn,
+                                      RuleImpl rule,
+                                      Tuple leftTuple,
+                                      AgendaFilter filter) {
         // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.
-        if ( !rule.isEffective(leftTuple, rtn, wm) ) {
+        if ( !rule.isEffective(leftTuple, rtn, reteEvaluator) ) {
             return true;
         }
 
         if (rule.hasCalendars()) {
-            long timestamp = wm.getSessionClock().getCurrentTime();
+            long timestamp = reteEvaluator.getSessionClock().getCurrentTime();
             for (String cal : rule.getCalendars()) {
-                if (!wm.getCalendars().get(cal).isTimeIncluded(timestamp)) {
+                if (!reteEvaluator.getCalendars().get(cal).isTimeIncluded(timestamp)) {
                     return true;
                 }
             }
@@ -265,15 +265,15 @@ public class RuleExecutor {
     private boolean haltRuleFiring(int fireCount,
                                    int fireLimit,
                                    int localFireCount,
-                                   InternalAgenda agenda) {
-        if (!agenda.isFiring() || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit))) {
+                                   ActivationsManager activationsManager) {
+        if (!activationsManager.isFiring() || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit))) {
             return true;
         }
 
         // The eager list must be evaluated first, as dynamic salience rules will impact the results of peekNextRule
-        agenda.evaluateEagerList();
+        activationsManager.evaluateEagerList();
 
-        RuleAgendaItem nextRule = agenda.peekNextRule();
+        RuleAgendaItem nextRule = activationsManager.peekNextRule();
         return nextRule != null && (!ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHigherSalience(nextRule));
     }
 
@@ -326,14 +326,14 @@ public class RuleExecutor {
         }
     }
 
-    public void cancel(InternalWorkingMemory wm, EventSupport es) {
+    public void cancel(ReteEvaluator reteEvaluator, EventSupport es) {
         while (!tupleList.isEmpty()) {
             RuleTerminalNodeLeftTuple rtnLt = (RuleTerminalNodeLeftTuple) tupleList.removeFirst();
             if (queue != null) {
                 queue.dequeue(rtnLt);
             }
 
-            es.getAgendaEventSupport().fireActivationCancelled(rtnLt, wm, MatchCancelledCause.CLEAR);
+            es.getAgendaEventSupport().fireActivationCancelled(rtnLt, reteEvaluator, MatchCancelledCause.CLEAR);
         }
     }
 
@@ -381,25 +381,25 @@ public class RuleExecutor {
         }
     }
 
-    public void fireActivation(InternalWorkingMemory wm, InternalAgenda agenda, Activation activation) throws ConsequenceException {
+    public void fireActivation(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation) throws ConsequenceException {
         // We do this first as if a node modifies a fact that causes a recursion
         // on an empty pattern
         // we need to make sure it re-activates
-        wm.startOperation();
+        reteEvaluator.startOperation();
         try {
-            BeforeMatchFiredEvent beforeMatchFiredEvent = wm.getAgendaEventSupport().fireBeforeActivationFired(activation, wm);
+            BeforeMatchFiredEvent beforeMatchFiredEvent = activationsManager.getAgendaEventSupport().fireBeforeActivationFired(activation, reteEvaluator);
 
             if ( activation.getActivationGroupNode() != null ) {
                 // We know that this rule will cancel all other activations in the group
                 // so lets remove the information now, before the consequence fires
                 final InternalActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
                 activationGroup.removeActivation( activation );
-                agenda.clearAndCancelActivationGroup( activationGroup);
+                activationsManager.clearAndCancelActivationGroup( activationGroup );
             }
             activation.setQueued(false);
 
             try {
-                innerFireActivation( wm, agenda, activation, activation.getConsequence() );
+                innerFireActivation( reteEvaluator, activationsManager, activation, activation.getConsequence() );
             } finally {
                 // if the tuple contains expired events
                 for ( Tuple tuple = activation.getTuple().skipEmptyHandles(); tuple != null; tuple = tuple.getParent() ) {
@@ -413,58 +413,58 @@ public class RuleExecutor {
                         if ( handle.expirePartition() && handle.isExpired() &&
                              handle.getFirstRightTuple() == null && handle.getActivationsCount() <= 0 ) {
                             // and if no more activations, retract the handle
-                            handle.getEntryPoint( wm ).delete( handle );
+                            handle.getEntryPoint( reteEvaluator ).delete( handle );
                         }
                     }
                 }
             }
 
-            wm.getAgendaEventSupport().fireAfterActivationFired( activation, wm, beforeMatchFiredEvent );
+            activationsManager.getAgendaEventSupport().fireAfterActivationFired( activation, reteEvaluator, beforeMatchFiredEvent );
         } finally {
-            wm.endOperation();
+            reteEvaluator.endOperation();
         }
     }
 
-    public void fireConsequenceEvent(InternalWorkingMemory wm, InternalAgenda agenda, Activation activation, String consequenceName) {
+    public void fireConsequenceEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation, String consequenceName) {
         Consequence consequence = activation.getRule().getNamedConsequence( consequenceName );
         if (consequence != null) {
-            fireActivationEvent(wm, agenda, activation, consequence);
+            fireActivationEvent(reteEvaluator, activationsManager, activation, consequence);
         }
     }
 
-    private void fireActivationEvent(InternalWorkingMemory wm, InternalAgenda agenda, Activation activation, Consequence consequence) throws ConsequenceException {
-        wm.startOperation();
+    private void fireActivationEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation, Consequence consequence) throws ConsequenceException {
+        reteEvaluator.startOperation();
         try {
-            innerFireActivation( wm, agenda, activation, consequence );
+            innerFireActivation( reteEvaluator, activationsManager, activation, consequence );
         } finally {
-            wm.endOperation();
+            reteEvaluator.endOperation();
         }
     }
 
-    private void innerFireActivation( InternalWorkingMemory wm, InternalAgenda agenda, Activation activation, Consequence consequence ) {
+    private void innerFireActivation( ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation, Consequence consequence ) {
         try {
-            KnowledgeHelper knowledgeHelper = agenda.getKnowledgeHelper();
+            KnowledgeHelper knowledgeHelper = activationsManager.getKnowledgeHelper();
             knowledgeHelper.setActivation( activation );
 
             if ( log.isTraceEnabled() ) {
                 log.trace( "Fire event {} for rule \"{}\" \n{}", consequence.getName(), activation.getRule().getName(), activation.getTuple() );
             }
 
-            RuleEventListenerSupport ruleEventSupport = wm.getRuleEventSupport();
+            RuleEventListenerSupport ruleEventSupport = reteEvaluator.getRuleEventSupport();
             ruleEventSupport.onBeforeMatchFire( activation );
-            consequence.evaluate(knowledgeHelper, wm);
+            consequence.evaluate(knowledgeHelper, reteEvaluator);
             ruleEventSupport.onAfterMatchFire( activation );
 
             activation.setActive(false);
             knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
-            agenda.handleException( wm, activation, e );
+            activationsManager.handleException( activation, e );
         } finally {
             if ( activation.getActivationFactHandle() != null ) {
                 // update the Activation in the WM
                 InternalFactHandle factHandle = activation.getActivationFactHandle();
-                wm.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), wm );
+                reteEvaluator.getDefaultEntryPoint().getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), reteEvaluator );
             }
         }
     }

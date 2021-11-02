@@ -16,14 +16,14 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.PropagationContext;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.spi.PropagationContext;
 
 public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
 
@@ -54,27 +54,27 @@ public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
 
     public void propagateAssertObject(final InternalFactHandle factHandle,
                                       final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
+                                      final ReteEvaluator reteEvaluator) {
 
     }
 
     public void propagateRetractObject(final InternalFactHandle handle,
                                        final PropagationContext context,
-                                       final InternalWorkingMemory workingMemory,
+                                       final ReteEvaluator reteEvaluator,
                                        final boolean useHash) {
     }
     
     public void propagateModifyObject(InternalFactHandle factHandle,
                                       ModifyPreviousTuples modifyPreviousTuples,
                                       PropagationContext context,
-                                      InternalWorkingMemory workingMemory) {
+                                      ReteEvaluator reteEvaluator) {
 
     }
     
     public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
                                         final ModifyPreviousTuples modifyPreviousTuples,
                                         final PropagationContext context,
-                                        final InternalWorkingMemory workingMemory) {
+                                        final ReteEvaluator reteEvaluator) {
         
     }
 
@@ -98,12 +98,12 @@ public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
         return obj instanceof EmptyObjectSinkAdapter;
     }
 
-    public void doLinkRiaNode(InternalWorkingMemory wm) {
+    public void doLinkRiaNode(ReteEvaluator reteEvaluator) {
         // TODO Auto-generated method stub
         
     }
 
-    public void doUnlinkRiaNode(InternalWorkingMemory wm) {
+    public void doUnlinkRiaNode(ReteEvaluator reteEvaluator) {
         // TODO Auto-generated method stub
         
     }

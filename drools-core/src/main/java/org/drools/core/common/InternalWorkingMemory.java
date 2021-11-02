@@ -21,25 +21,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
-import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.time.TimerService;
-import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalWorkingMemory
     extends WorkingMemory, WorkingMemoryEntryPoint, EventSupport {
@@ -53,58 +44,18 @@ public interface InternalWorkingMemory
 
     void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
-    <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
-
     void clearNodeMemory(MemoryFactory node);
     
     NodeMemories getNodeMemories();
-
-    long getNextPropagationIdCounter();
-
-    ObjectStore getObjectStore();
 
     default FactHandleClassStore getStoreForClass(Class<?> clazz) {
         return getObjectStore().getStoreForClass(clazz);
     }
 
-    void queueWorkingMemoryAction(final WorkingMemoryAction action);
-
-    FactHandleFactory getFactHandleFactory();
-    
-    EntryPointId getEntryPoint();
-    
-    EntryPointNode getEntryPointNode();
-
-    EntryPoint getEntryPoint(String name);
-
-    /**
-     * Looks for the fact handle associated to the given object
-     * by looking up the object IDENTITY (==), even if rule base
-     * is configured to AssertBehavior.EQUALITY.
-     * 
-     * @param object
-     * @return null if fact handle not found
-     */
-    FactHandle getFactHandleByIdentity(final Object object);
-
     Lock getLock();
 
-    boolean isSequential();
-    
-    ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
-    
     InternalFactHandle getInitialFactHandle();
     
-    Calendars getCalendars();
-    
-    /**
-     * Returns the TimerService instance (session clock) for this
-     * session.
-     * 
-     * @return
-     */
-    TimerService getTimerService();
-
     InternalKnowledgeRuntime getKnowledgeRuntime();
     
     /**
@@ -117,8 +68,6 @@ public interface InternalWorkingMemory
     
     Collection< ? extends EntryPoint> getEntryPoints();
 
-    SessionConfiguration getSessionConfiguration();
-    
     void startBatchExecution();
     
     void endBatchExecution();
@@ -191,8 +140,6 @@ public interface InternalWorkingMemory
 
     void closeLiveQuery(InternalFactHandle factHandle);
 
-    void addPropagation(PropagationEntry propagationEntry);
-
     void flushPropagations();
 
     void activate();
@@ -214,11 +161,7 @@ public interface InternalWorkingMemory
     default void onSuspend() { }
     default void onResume() { }
 
-    default KnowledgeHelper createKnowledgeHelper() {
-        return new DefaultKnowledgeHelper<>( this );
-    }
-
-    default KnowledgeHelper createKnowledgeHelper(Activation activation) {
-        return new DefaultKnowledgeHelper<>( activation, this );
+    default boolean isThreadSafe() {
+        return getSessionConfiguration().isThreadSafe();
     }
 }

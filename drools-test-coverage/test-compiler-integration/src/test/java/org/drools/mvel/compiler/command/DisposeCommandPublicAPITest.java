@@ -3,6 +3,7 @@ package org.drools.mvel.compiler.command;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.command.assertion.AssertEquals;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -35,7 +36,7 @@ public class DisposeCommandPublicAPITest {
         rule = new RuleImpl("Test");
         rule.setDialect("java");
         rule.setConsequence(new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
+            public void evaluate(KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator) throws Exception {
 
             }
 

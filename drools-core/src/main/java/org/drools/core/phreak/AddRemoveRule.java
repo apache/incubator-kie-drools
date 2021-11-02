@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -32,6 +33,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -626,11 +628,11 @@ public class AddRemoveRule {
         }
     }
 
-    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, boolean streamMode) {
-        return flushLeftTupleIfNecessary(wm, sm, null, streamMode, Tuple.NONE);
+    public static boolean flushLeftTupleIfNecessary(ReteEvaluator reteEvaluator, SegmentMemory sm, boolean streamMode) {
+        return flushLeftTupleIfNecessary(reteEvaluator, sm, null, streamMode, Tuple.NONE);
     }
 
-    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode, short stagedType) {
+    public static boolean flushLeftTupleIfNecessary(ReteEvaluator reteEvaluator, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode, short stagedType) {
         boolean forceFlush = streamMode || ( leftTuple != null && leftTuple.getFactHandle() != null && leftTuple.getFactHandle().isEvent() );
         // @TODO do we really need the check on ( leftTuple != null && leftTuple.getFactHandle() != null && leftTuple.getFactHandle().isEvent() ) (mdp)
         PathMemory pmem = forceFlush ?
@@ -656,22 +658,22 @@ public class AddRemoveRule {
             }
         }
 
-        forceFlushLeftTuple( pmem, sm, wm, leftTupleSets );
+        forceFlushLeftTuple( pmem, sm, reteEvaluator, leftTupleSets );
 
-        forceFlushWhenRiaNode(wm, pmem);
+        forceFlushWhenRiaNode(reteEvaluator, pmem);
 
         return true;
     }
 
-    public static void forceFlushWhenRiaNode(InternalWorkingMemory wm, PathMemory pmem) {
+    public static void forceFlushWhenRiaNode(ReteEvaluator reteEvaluator, PathMemory pmem) {
         if (pmem.isDataDriven() && pmem.getNodeType() == NodeTypeEnums.RightInputAdaterNode) {
             for (PathEndNode pnode : pmem.getPathEndNode().getPathEndNodes()) {
                 if ( pnode instanceof TerminalNode ) {
-                    PathMemory outPmem = wm.getNodeMemory((TerminalNode) pnode);
+                    PathMemory outPmem = reteEvaluator.getNodeMemory((TerminalNode) pnode);
                     if (outPmem.isDataDriven()) {
                         SegmentMemory outSmem = outPmem.getSegmentMemories()[0];
                         if (outSmem != null) {
-                            forceFlushLeftTuple(outPmem, outSmem, wm, new TupleSetsImpl<LeftTuple>());
+                            forceFlushLeftTuple(outPmem, outSmem, reteEvaluator, new TupleSetsImpl<LeftTuple>());
                         }
                     }
                 }
@@ -679,7 +681,7 @@ public class AddRemoveRule {
         }
     }
 
-    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {
+    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, ReteEvaluator reteEvaluator, TupleSets<LeftTuple> leftTupleSets) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
 
         LeftTupleNode node;
@@ -697,12 +699,12 @@ public class AddRemoveRule {
 
         PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ?
                              pmem :
-                             wm.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
+                             reteEvaluator.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
-        InternalAgenda agenda = pmem.getActualAgenda( wm );
-        RuleNetworkEvaluator.INSTANCE.outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, agenda,
+        ActivationsManager activationsManager = pmem.getActualActivationsManager( reteEvaluator );
+        RuleNetworkEvaluator.INSTANCE.outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, activationsManager,
                                                 new LinkedList<StackEntry>(),
-                                                true, rtnPmem.getOrCreateRuleAgendaItem(agenda).getRuleExecutor());
+                                                true, rtnPmem.getOrCreateRuleAgendaItem(activationsManager).getRuleExecutor());
     }
 
 
@@ -1078,7 +1080,7 @@ public class AddRemoveRule {
         if (NodeTypeEnums.isTerminalNode(lt.getTupleSink())) {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getTupleSink() );
             if (pmem != null) {
-                PhreakRuleTerminalNode.doLeftDelete( pmem.getActualAgenda( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
+                PhreakRuleTerminalNode.doLeftDelete( pmem.getActualActivationsManager( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {

@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.time.Interval;
 import org.kie.api.runtime.rule.Operator;
@@ -82,7 +82,7 @@ public interface Evaluator
      * 
      * @return Returns true if evaluation is successful. false otherwise.
      */
-    public boolean evaluate(InternalWorkingMemory workingMemory,
+    public boolean evaluate(ReteEvaluator reteEvaluator,
                             InternalReadAccessor extractor,
                             InternalFactHandle factHandle,
                             FieldValue value);
@@ -119,7 +119,7 @@ public interface Evaluator
      * 
      * @return Returns true if evaluation is successful. false otherwise.
      */
-    public boolean evaluate(InternalWorkingMemory workingMemory,
+    public boolean evaluate(ReteEvaluator reteEvaluator,
                             InternalReadAccessor leftExtractor,
                             InternalFactHandle left,
                             InternalReadAccessor rightExtractor,
@@ -153,7 +153,7 @@ public interface Evaluator
      * 
      * @return Returns true if evaluation is successful. false otherwise.
      */
-    public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+    public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
                                       VariableContextEntry context,
                                       InternalFactHandle right);
 
@@ -184,7 +184,7 @@ public interface Evaluator
      * 
      * @return Returns true if evaluation is successful. false otherwise.
      */
-    public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+    public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
                                        VariableContextEntry context,
                                        InternalFactHandle left);
     

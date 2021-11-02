@@ -16,11 +16,11 @@
 
 package org.drools.core.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
-
-import java.lang.reflect.Method;
+import org.drools.core.common.ReteEvaluator;
 
 public abstract class BaseFloatClassFieldReader extends BaseClassFieldReader {
 
@@ -44,57 +44,57 @@ public abstract class BaseFloatClassFieldReader extends BaseClassFieldReader {
     public BaseFloatClassFieldReader() {
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return Float.valueOf( getFloatValue( workingMemory, object ) );
+    public Object getValue(ReteEvaluator reteEvaluator, final Object object) {
+        return Float.valueOf( getFloatValue( reteEvaluator, object ) );
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator, final Object object) {
         throw new RuntimeException( "Conversion to boolean not supported from float" );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (byte) getFloatValue( workingMemory, object );
+    public byte getByteValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (byte) getFloatValue( reteEvaluator, object );
 
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
+    public char getCharValue(ReteEvaluator reteEvaluator, final Object object) {
         throw new RuntimeException( "Conversion to char not supported from float" );
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getFloatValue( workingMemory, object );
+    public double getDoubleValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getFloatValue( reteEvaluator, object );
     }
 
-    public abstract float getFloatValue(InternalWorkingMemory workingMemory, Object object);
+    public abstract float getFloatValue(ReteEvaluator reteEvaluator, Object object);
 
-    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (int) getFloatValue( workingMemory, object );
+    public int getIntValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (int) getFloatValue( reteEvaluator, object );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (long) getFloatValue( workingMemory, object );
+    public long getLongValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (long) getFloatValue( reteEvaluator, object );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (short) getFloatValue( workingMemory, object );
+    public short getShortValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (short) getFloatValue( reteEvaluator, object );
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
+    public boolean isNullValue(ReteEvaluator reteEvaluator, final Object object) {
         return false;
     }
 
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getFloatValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                      new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
         }
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        return Float.floatToIntBits( getFloatValue( workingMemory, object ) );
+    public int getHashCode(ReteEvaluator reteEvaluator, final Object object) {
+        return Float.floatToIntBits( getFloatValue( reteEvaluator, object ) );
     }
 
 }

@@ -16,8 +16,7 @@
 
 package org.drools.modelcompiler.constraints;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.EvalExpression;
@@ -46,8 +45,8 @@ public class LambdaEvalExpression implements EvalExpression {
     }
 
     @Override
-    public boolean evaluate(Tuple tuple, Declaration[] requiredDeclarations, WorkingMemory workingMemory, Object context) throws Exception {
-        return evaluator.evaluate(tuple.getFactHandle(), tuple, (( InternalWorkingMemory ) workingMemory));
+    public boolean evaluate(Tuple tuple, Declaration[] requiredDeclarations, ReteEvaluator reteEvaluator, Object context) throws Exception {
+        return evaluator.evaluate(tuple.getFactHandle(), tuple, reteEvaluator);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class LambdaEvalExpression implements EvalExpression {
         }
 
         @Override
-        public boolean evaluate(Tuple tuple, Declaration[] requiredDeclarations, WorkingMemory workingMemory, Object context) throws Exception {
+        public boolean evaluate(Tuple tuple, Declaration[] requiredDeclarations, ReteEvaluator reteEvaluator, Object context) throws Exception {
             return true;
         }
 

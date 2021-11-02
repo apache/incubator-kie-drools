@@ -169,7 +169,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
 
                 // Equality might have changed on the object, so remove (which uses the handle id) and add back in
                 if ( fh.getObject() != object ) {
-                    WorkingMemoryEntryPoint wmep = fh.getEntryPoint(ep.getInternalWorkingMemory());
+                    WorkingMemoryEntryPoint wmep = fh.getEntryPoint(ep.getReteEvaluator());
                     wmep.getObjectStore().updateHandle( fh, object );
                     wmep.update( fh, fh.getObject(), allSetButTraitBitMask(), object.getClass(), null );
                 }
@@ -210,7 +210,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         } else if (wasNegated != jtmsBeliefSet.isNegated()) {
             // was decided, still is decided by the negation changed. This must be propagated through the engine
             // This does not happen for pure JTMS, but does for DFL.
-            final PropagationContext updatePctx = ep.getPctxFactory().createPropagationContext(ep.getInternalWorkingMemory().getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
+            final PropagationContext updatePctx = ep.getPctxFactory().createPropagationContext(ep.getReteEvaluator().getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                        pctx.getRuleOrigin(), pctx.getTerminalNodeOrigin(),
                                                                                                        fh, ep.getEntryPoint());
             ep.update(fh, fh.getObject(), fh.getObject(),  getObjectTypeConf(jtmsBeliefSet), updatePctx );

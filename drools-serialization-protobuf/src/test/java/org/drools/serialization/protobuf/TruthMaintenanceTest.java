@@ -498,7 +498,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             // workingMemory.fireAllRules();
             assertEquals("agenda should be empty.",
                          0,
-                         ((InternalAgenda)((StatefulKnowledgeSessionImpl) ksession).getAgenda()).agendaSize());
+                         ((InternalAgenda)((StatefulKnowledgeSessionImpl) ksession).getAgenda()).getAgendaGroupsManager().agendaSize());
 
             h = getFactHandle( h, ksession );
             ksession.delete( h );

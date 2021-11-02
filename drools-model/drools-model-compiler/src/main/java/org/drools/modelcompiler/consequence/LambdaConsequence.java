@@ -24,6 +24,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
@@ -59,27 +60,27 @@ public class LambdaConsequence implements Consequence {
     }
 
     @Override
-    public void evaluate( KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory ) throws Exception {
+    public void evaluate( KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator ) throws Exception {
         if ( this.requiredDeclarations == null ) {
             Declaration[] declarations = (( RuleTerminalNode ) knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
             if (enabledTupleOptimization) {
                 this.requiredDeclarations = declarations;
             } else {
-                Object[] facts = declarationsToFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
+                Object[] facts = declarationsToFacts( knowledgeHelper, reteEvaluator, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
                 consequence.getBlock().execute( facts );
                 return;
             }
         }
 
         // declarations is not null when first level rule is AND so it is possible to calculate them upfront
-        consequence.getBlock().execute( fetchFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory ) );
+        consequence.getBlock().execute( fetchFacts( knowledgeHelper, reteEvaluator ) );
     }
 
-    public static Object[] declarationsToFacts( WorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars ) {
-        return declarationsToFacts( null, ( InternalWorkingMemory ) workingMemory, tuple, declarations, vars, false );
+    public static Object[] declarationsToFacts(ReteEvaluator reteEvaluator, Tuple tuple, Declaration[] declarations, Variable[] vars ) {
+        return declarationsToFacts( null, reteEvaluator, tuple, declarations, vars, false );
     }
 
-    private static Object[] declarationsToFacts( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars, boolean useDrools ) {
+    private static Object[] declarationsToFacts( KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator, Tuple tuple, Declaration[] declarations, Variable[] vars, boolean useDrools ) {
         Object[] objects;
         FactHandleLookup fhLookup = useDrools ? new FactHandleLookup.Multi() : null;
 
@@ -87,7 +88,7 @@ public class LambdaConsequence implements Consequence {
         if ( useDrools ) {
             index++;
             objects = new Object[vars.length + 1];
-            objects[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+            objects[0] = new DroolsImpl( knowledgeHelper, reteEvaluator, fhLookup );
         } else {
             objects = new Object[vars.length];
         }
@@ -100,9 +101,9 @@ public class LambdaConsequence implements Consequence {
                 if ( useDrools ) {
                     fhLookup.put( fh.getObject(), fh );
                 }
-                objects[index++] = declaration.getValue( workingMemory, fh );
+                objects[index++] = declaration.getValue( reteEvaluator, fh );
             } else {
-                objects[index++] = workingMemory.getGlobal( var.getName() );
+                objects[index++] = reteEvaluator.getGlobal( var.getName() );
             }
         }
         return objects;
@@ -116,18 +117,18 @@ public class LambdaConsequence implements Consequence {
         return linkedFH != null ? linkedFH : handle;
     }
 
-    private Object[] fetchFacts( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory ) {
+    private Object[] fetchFacts( KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator ) {
         if (factSuppliers == null) {
-            return initConsequence(knowledgeHelper, workingMemory);
+            return initConsequence(knowledgeHelper, reteEvaluator);
         }
 
         Object[] facts;
         FactHandleLookup fhLookup = null;
-        if (workingMemory.getSessionConfiguration().isThreadSafe()) {
+        if (reteEvaluator.getSessionConfiguration().isThreadSafe()) {
             if ( consequence.isUsingDrools() ) {
                 facts = new Object[consequence.getVariables().length + 1];
                 fhLookup = FactHandleLookup.create( factSuppliers.length );
-                facts[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+                facts[0] = new DroolsImpl( knowledgeHelper, reteEvaluator, fhLookup );
             } else {
                 facts = new Object[consequence.getVariables().length];
             }
@@ -136,28 +137,28 @@ public class LambdaConsequence implements Consequence {
             if ( consequence.isUsingDrools() ) {
                 fhLookup = this.fhLookup;
                 fhLookup.clear();
-                facts[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+                facts[0] = new DroolsImpl( knowledgeHelper, reteEvaluator, fhLookup );
             }
         }
 
         Tuple tuple = knowledgeHelper.getTuple();
         for (int j = 0; j < factSuppliers.length; j++) {
-            tuple = factSuppliers[j].resolveAndStore(facts, workingMemory, tuple, fhLookup);
+            tuple = factSuppliers[j].resolveAndStore(facts, reteEvaluator, tuple, fhLookup);
         }
 
         if (globalSuppliers != null) {
             for (int j = 0; j < globalSuppliers.length; j++) {
-                globalSuppliers[j].resolveAndStore(facts, workingMemory);
+                globalSuppliers[j].resolveAndStore(facts, reteEvaluator);
             }
         }
 
         return facts;
     }
 
-    private Object[] initConsequence( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory) {
+    private Object[] initConsequence( KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator) {
         Variable[] vars = consequence.getVariables();
         if (vars.length == 0) {
-            return consequence.isUsingDrools() ? new Object[] { new DroolsImpl( knowledgeHelper, workingMemory, null ) } : new Object[0];
+            return consequence.isUsingDrools() ? new Object[] { new DroolsImpl( knowledgeHelper, reteEvaluator, null ) } : new Object[0];
         }
 
         Tuple tuple = knowledgeHelper.getTuple();
@@ -179,7 +180,7 @@ public class LambdaConsequence implements Consequence {
             if ( var.isFact() ) {
                 factSuppliers.add( new TupleFactSupplier( supplierIndex, requiredDeclarations[declrCounter++], consequence.isUsingDrools() ) );
             } else {
-                facts[supplierIndex] = workingMemory.getGlobal( var.getName() );
+                facts[supplierIndex] = reteEvaluator.getGlobal( var.getName() );
                 globalSuppliers.add( new GlobalSupplier( supplierIndex, var.getName() ) );
             }
             supplierIndex++;
@@ -188,7 +189,7 @@ public class LambdaConsequence implements Consequence {
         FactHandleLookup fhLookup = null;
         if ( consequence.isUsingDrools() ) {
             fhLookup = FactHandleLookup.create( factSuppliers.size() );
-            facts[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+            facts[0] = new DroolsImpl( knowledgeHelper, reteEvaluator, fhLookup );
         }
 
         Collections.sort( factSuppliers );
@@ -208,13 +209,13 @@ public class LambdaConsequence implements Consequence {
             tupleFactSupplier.setFirst( first );
             first = false;
 
-            tupleFactSupplier.resolveAndStore(facts, workingMemory, current.getFactHandle(), fhLookup);
+            tupleFactSupplier.resolveAndStore(facts, reteEvaluator, current.getFactHandle(), fhLookup);
         }
 
         this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
         this.globalSuppliers = globalSuppliers.isEmpty() ? null : globalSuppliers.toArray( new GlobalSupplier[globalSuppliers.size()] );
 
-        if (!workingMemory.getSessionConfiguration().isThreadSafe()) {
+        if (!reteEvaluator.getSessionConfiguration().isThreadSafe()) {
             this.facts = facts;
             this.fhLookup = fhLookup;
         }
@@ -230,8 +231,8 @@ public class LambdaConsequence implements Consequence {
             this.globalName = globalName;
         }
 
-        public void resolveAndStore(Object[] facts, InternalWorkingMemory workingMemory) {
-            facts[supplierIndex] = workingMemory.getGlobal( globalName );
+        public void resolveAndStore(Object[] facts, ReteEvaluator reteEvaluator) {
+            facts[supplierIndex] = reteEvaluator.getGlobal( globalName );
         }
 
         public int compareTo( GlobalSupplier o ) {
@@ -262,21 +263,21 @@ public class LambdaConsequence implements Consequence {
             }
         }
 
-        public Tuple resolveAndStore(Object[] facts, InternalWorkingMemory workingMemory, Tuple tuple, FactHandleLookup fhLookup) {
+        public Tuple resolveAndStore(Object[] facts, ReteEvaluator reteEvaluator, Tuple tuple, FactHandleLookup fhLookup) {
             // traverses the tuple of as many steps as distance between the former supplier and this one
             for (int i = 0; i < offsetFromPrior; i++) {
                 tuple = tuple.getParent();
             }
-            resolveAndStore(facts, workingMemory, tuple.getFactHandle(), fhLookup);
+            resolveAndStore(facts, reteEvaluator, tuple.getFactHandle(), fhLookup);
             return tuple;
         }
 
-        public void resolveAndStore(Object[] facts, InternalWorkingMemory workingMemory, InternalFactHandle factHandle, FactHandleLookup fhLookup) {
+        public void resolveAndStore(Object[] facts, ReteEvaluator reteEvaluator, InternalFactHandle factHandle, FactHandleLookup fhLookup) {
             InternalFactHandle fh = getOriginalFactHandle( factHandle );
             if ( useDrools ) {
                 fhLookup.put( fh.getObject(), fh );
             }
-            facts[supplierIndex] = declaration.getValue(workingMemory, fh);
+            facts[supplierIndex] = declaration.getValue(reteEvaluator, fh);
         }
 
         @Override

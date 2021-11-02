@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
@@ -50,7 +50,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.ConsequenceExceptionHandler;
 import org.drools.core.spi.InternalActivationGroup;
@@ -65,6 +64,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.AgendaGroup;
 import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -286,28 +286,28 @@ public class DefaultAgenda
         }
     }
 
-    /**
-     * If the item belongs to an activation group, add it
-     *
-     * @param item
-     */
     @Override
-    public void addItemToActivationGroup(final AgendaItem item) {
-        if ( item.isRuleAgendaItem() ) {
+    public void addItemToActivationGroup(final AgendaItem activation) {
+        if ( activation.isRuleAgendaItem() ) {
             throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
         }
-        String group = item.getRule().getActivationGroup();
+        String group = activation.getRule().getActivationGroup();
         if ( group != null && group.length() > 0 ) {
             InternalActivationGroup actgroup = getActivationGroup( group );
 
             // Don't allow lazy activations to activate, from before it's last trigger point
             if ( actgroup.getTriggeredForRecency() != 0 &&
-                 actgroup.getTriggeredForRecency() >= item.getPropagationContext().getFactHandle().getRecency() ) {
+                 actgroup.getTriggeredForRecency() >= activation.getPropagationContext().getFactHandle().getRecency() ) {
                 return;
             }
 
-            actgroup.addActivation( item );
+            actgroup.addActivation( activation );
         }
+    }
+
+    @Override
+    public RuleAgendaItem peekNextRule() {
+        return getAgendaGroupsManager().peekNextRule();
     }
 
     @Override
@@ -381,21 +381,6 @@ public class DefaultAgenda
         TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, ( Tuple ) activation, activation.getRule() );
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#setFocus(org.kie.spi.AgendaGroup)
-     */
-    @Override
-    public boolean setFocus(final AgendaGroup agendaGroup) {
-        return this.agendaGroupsManager.setFocus((InternalAgendaGroup) agendaGroup);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#setFocus(java.lang.String)
-     */
     @Override
     public void setFocus(final String name) {
         setFocus( null, name );
@@ -403,59 +388,24 @@ public class DefaultAgenda
 
     public void setFocus(final PropagationContext ctx,
                          final String name) {
-        AgendaGroup agendaGroup = getAgendaGroup( name );
+        InternalAgendaGroup agendaGroup = getAgendaGroupsManager().getAgendaGroup( name );
         agendaGroup.setAutoFocusActivator( ctx );
-        setFocus( agendaGroup );
+        getAgendaGroupsManager().setFocus( agendaGroup );
     }
 
     @Override
-    public InternalAgendaGroup getNextFocus() {
-        return agendaGroupsManager.getNextFocus();
+    public ReteEvaluator getReteEvaluator() {
+        return this.workingMemory;
     }
 
     @Override
-    public RuleAgendaItem peekNextRule() {
-        return agendaGroupsManager.peekNextRule();
+    public AgendaGroupsManager getAgendaGroupsManager() {
+        return agendaGroupsManager;
     }
 
     @Override
-    public AgendaGroup getAgendaGroup(final String name) {
-        return agendaGroupsManager.getAgendaGroup( name );
-    }
-
-    @Override
-    public void removeAgendaGroup(final String name) {
-        agendaGroupsManager.removeGroup( agendaGroupsManager.getAgendaGroup( name ) );
-    }
-
-    @Override
-    public AgendaGroup getAgendaGroup(String name, InternalKnowledgeBase kBase) {
-        return agendaGroupsManager.getAgendaGroup(name, kBase);
-    }
-
-    @Override
-    public AgendaGroup[] getAgendaGroups() {
-        return agendaGroupsManager.getAgendaGroups();
-    }
-
-    @Override
-    public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
-        return agendaGroupsManager.getAgendaGroupsMap();
-    }
-
-    @Override
-    public void putOnAgendaGroupsMap(String name, InternalAgendaGroup group) {
-        agendaGroupsManager.putOnAgendaGroupsMap(name, group);
-    }
-
-    @Override
-    public Collection<String> getGroupsName() {
-        return agendaGroupsManager.getGroupsName();
-    }
-
-    @Override
-    public void addAgendaGroupOnStack(AgendaGroup agendaGroup) {
-        agendaGroupsManager.addAgendaGroupOnStack((InternalAgendaGroup) agendaGroup);
+    public AgendaEventSupport getAgendaEventSupport() {
+        return this.workingMemory.getAgendaEventSupport();
     }
 
     @Override
@@ -501,41 +451,6 @@ public class DefaultAgenda
     }
 
     @Override
-    public void deactivateRuleFlowGroup(final String name) {
-        agendaGroupsManager.deactivateRuleFlowGroup(name);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#focusStackSize()
-     */
-    @Override
-    public int focusStackSize() {
-        return agendaGroupsManager.focusStackSize();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#agendaSize()
-     */
-    @Override
-    public int agendaSize() {
-        return agendaGroupsManager.agendaSize();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#getActivations()
-     */
-    @Override
-    public Activation[] getActivations() {
-        return agendaGroupsManager.getActivations();
-    }
-
-    @Override
     public void clear() {
         agendaGroupsManager.reset(true);
 
@@ -545,6 +460,11 @@ public class DefaultAgenda
             group.reset();
         }
         propagationList.reset();
+    }
+
+    @Override
+    public AgendaGroup getAgendaGroup(String name) {
+        return getAgendaGroupsManager().getAgendaGroup(name);
     }
 
     @Override
@@ -654,7 +574,7 @@ public class DefaultAgenda
         do {
             tryagain = false;
             evaluateEagerList();
-            final InternalAgendaGroup group = getNextFocus();
+            final InternalAgendaGroup group = getAgendaGroupsManager().getNextFocus();
             // if there is a group with focus
             if ( group != null ) {
                 localFireCount = ruleEvaluator.evaluateAndFire(filter, fireCount, fireLimit, group);
@@ -861,7 +781,7 @@ public class DefaultAgenda
                 }
 
                 evaluateEagerList();
-                InternalAgendaGroup group = getNextFocus();
+                InternalAgendaGroup group = getAgendaGroupsManager().getNextFocus();
                 if ( group != null && !limitReached ) {
                     // only fire rules while the limit has not reached.
                     // if halt is called, then isFiring will be false.
@@ -1003,7 +923,7 @@ public class DefaultAgenda
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
+        public void execute( ReteEvaluator reteEvaluator ) {
             executionStateMachine.internalHalt();
         }
 
@@ -1049,11 +969,11 @@ public class DefaultAgenda
     }
 
     @Override
-    public void handleException(InternalWorkingMemory wm, Activation activation, Exception e) {
+    public void handleException(Activation activation, Exception e) {
         if ( this.legacyConsequenceExceptionHandler != null ) {
-            this.legacyConsequenceExceptionHandler.handleException( activation, wm, e );
+            this.legacyConsequenceExceptionHandler.handleException( activation, getWorkingMemory(), e );
         } else if ( this.consequenceExceptionHandler != null ) {
-            this.consequenceExceptionHandler.handleException( activation, wm.getKnowledgeRuntime(), e );
+            this.consequenceExceptionHandler.handleException( activation, getWorkingMemory().getKnowledgeRuntime(), e );
         } else {
             throw new RuntimeException( e );
         }

@@ -23,6 +23,7 @@ import java.security.CodeSource;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -38,7 +39,7 @@ import static org.junit.Assert.assertNotNull;
 public class PackageCompilationDataTest {
     public static class TestEvalExpression implements EvalExpression {
         public Object createContext() { return null; }
-        public boolean evaluate( Tuple t, Declaration[] d, WorkingMemory w, Object context ) {
+        public boolean evaluate(Tuple t, Declaration[] d, ReteEvaluator reteEvaluator, Object context ) {
             return false;
         }
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

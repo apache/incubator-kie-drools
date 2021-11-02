@@ -19,7 +19,7 @@ package org.drools.modelcompiler.constraints;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
@@ -121,30 +121,30 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     }
 
     @Override
-    public boolean isAllowed( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
+    public boolean isAllowed( InternalFactHandle handle, ReteEvaluator reteEvaluator ) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isAllowedCachedLeft( ContextEntry context, InternalFactHandle handle ) {
-        return evaluateUnification( handle, ((LambdaContextEntry) context).getTuple(), ((LambdaContextEntry) context).getWorkingMemory() );
+        return evaluateUnification( handle, ((LambdaContextEntry) context).getTuple(), ((LambdaContextEntry) context).getReteEvaluator() );
     }
 
     @Override
     public boolean isAllowedCachedRight( Tuple tuple, ContextEntry context ) {
-        return evaluateUnification( ((LambdaContextEntry) context).getHandle(), tuple, ((LambdaContextEntry) context).getWorkingMemory() );
+        return evaluateUnification( ((LambdaContextEntry) context).getHandle(), tuple, ((LambdaContextEntry) context).getReteEvaluator() );
     }
 
-    private boolean evaluateUnification( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
+    private boolean evaluateUnification( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) {
         if (!unification) {
-            return evaluator.evaluate(handle, tuple, workingMemory);
+            return evaluator.evaluate(handle, tuple, reteEvaluator);
         }
         DroolsQuery query = ( DroolsQuery ) tuple.getObject( 0 );
         if (query.getVariables()[indexingDeclaration.getExtractor().getIndex()] != null) {
             return true;
         }
         if (evaluator != null) {
-            return evaluator.evaluate(handle, tuple, workingMemory);
+            return evaluator.evaluate(handle, tuple, reteEvaluator);
         }
         Object argument = indexingDeclaration.getValue( null, query );
         return handle.getObject().equals( argument );

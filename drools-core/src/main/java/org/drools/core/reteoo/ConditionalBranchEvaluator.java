@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.WorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.Tuple;
@@ -88,13 +88,13 @@ public class ConditionalBranchEvaluator implements Externalizable {
     }
 
     public ConditionalExecution evaluate(Tuple tuple,
-                                         WorkingMemory workingMemory,
+                                         ReteEvaluator reteEvaluator,
                                          Object context) {
         tuple = tuple.skipEmptyHandles();
-        if ( condition.isAllowed( tuple, workingMemory, context ) ) {
+        if ( condition.isAllowed( tuple, reteEvaluator, context ) ) {
             return conditionalExecution;
         }
-        return elseBranchEvaluator == null ? null : elseBranchEvaluator.evaluate( tuple, workingMemory, context );
+        return elseBranchEvaluator == null ? null : elseBranchEvaluator.evaluate( tuple, reteEvaluator, context );
     }
 
     public Object createContext() {

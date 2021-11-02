@@ -28,12 +28,12 @@ import java.util.function.ToIntFunction;
 
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
@@ -68,7 +68,9 @@ import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.from;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class GroupByTest {
 
@@ -151,12 +153,12 @@ public class GroupByTest {
             return new int[1];
         }
 
-        @Override public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+        @Override public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, ReteEvaluator reteEvaluator) {
             ((int[])context)[0] = 0;
             return context;
         }
 
-        @Override public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+        @Override public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
             int[] ctx = (int[]) context;
 
             int v = func.applyAsInt(handle.getObject());
@@ -171,14 +173,14 @@ public class GroupByTest {
             return true;
         }
 
-        @Override public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+        @Override public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value, Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
             if (value!=null) {
                 ((Runnable) value).run();
             }
             return true;
         }
 
-        @Override public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+        @Override public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, ReteEvaluator reteEvaluator) {
             int[] ctx = (int[]) context;
             return ctx[0];
         }

@@ -16,30 +16,17 @@
 
 package org.drools.core.common;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.InternalActivationGroup;
-import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleFlowGroup;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 
-public interface InternalAgenda
-    extends
-    Agenda {
+public interface InternalAgenda extends Agenda, ActivationsManager {
 
     /**
      * Returns the WorkignMemory for this Agenda
@@ -72,32 +59,6 @@ public interface InternalAgenda
     void activateRuleFlowGroup(String name, long processInstanceId, String nodeInstanceId);
 
     /**
-     * Deactivates the <code>RuleFlowGroup</code> with the given name.
-     * All activations in the given <code>RuleFlowGroup</code> are removed from the agenda.
-     * As long as the <code>RuleFlowGroup</code> remains deactive,
-     * its activations are not added to the agenda
-     */
-    void deactivateRuleFlowGroup(String name);
-
-    AgendaGroup[] getAgendaGroups();
-
-    /**
-     * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s
-     * @return
-     *      total number of <code>Activation</code>s on the focus stack
-     */
-    int focusStackSize();
-
-    /**
-     * Iterates all the modules in the focus stack returning the total number of <code>Activation</code>s
-     * @return
-     *      total number of activations on the focus stack
-     */
-    int agendaSize();
-
-    Activation[] getActivations();
-
-    /**
      * Clears all Activations from the Agenda
      */
     void clearAndCancel();
@@ -114,12 +75,6 @@ public interface InternalAgenda
      */
     void clearAndCancelActivationGroup(String name);
 
-    /**
-     * Clears all Activations from an Activation Group. Any Activations that are also in an Agenda Group are removed
-     * from the Agenda Group.
-     */
-    void clearAndCancelActivationGroup(InternalActivationGroup activationGroup);
-
     void clearAndCancelRuleFlowGroup(final String name);
 
     /**
@@ -129,23 +84,6 @@ public interface InternalAgenda
     String getFocusName();
 
     int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit);
-
-    AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
-                                int salience,
-                                PropagationContext context,
-                                RuleAgendaItem ruleAgendaItem,
-                                InternalAgendaGroup agendaGroup);
-
-    void cancelActivation(final Activation activation );
-
-    /**
-     * Adds the activation to the agenda. Depending on the mode the agenda is running,
-     * the activation may be added to the agenda priority queue (synchronously or
-     * asynchronously) or be executed immediately.
-     *
-     * @return true if the activation was really added, and not ignored in cases of lock-on-active or no-loop
-     */
-    void modifyActivation(final AgendaItem activation, boolean previouslyActive);
 
     boolean isDeclarativeAgenda();
 
@@ -201,85 +139,32 @@ public interface InternalAgenda
 
     void reset();
 
-    AgendaGroup getAgendaGroup(String name);
-    void removeAgendaGroup(String name);
-
-    AgendaGroup getAgendaGroup(final String name,
-                                      InternalKnowledgeBase kBase);
-
-    InternalActivationGroup getActivationGroup(String name);
-
-    RuleFlowGroup getRuleFlowGroup(String name);
-
     /**
      * Sets a filter that prevents activations from being added to
      * the agenda.
      */
     void setActivationsFilter( ActivationsFilter filter );
 
-    /**
-     * Returns the current activations filter or null if none is set
-     */
-    ActivationsFilter getActivationsFilter();
-
-    RuleAgendaItem createRuleAgendaItem(final int salience,
-                                               final PathMemory rs,
-                                               final TerminalNode rtn );
-
-    RuleAgendaItem peekNextRule();
-
-    boolean isFiring();
-    void executeTask( ExecutableEntry executable );
     void executeFlush();
 
     void activate();
     void deactivate();
     boolean tryDeactivate();
 
-    void insertAndStageActivation(AgendaItem activation);
-
-    void addEagerRuleAgendaItem(RuleAgendaItem item);
-    void removeEagerRuleAgendaItem(RuleAgendaItem item);
-
-    void addQueryAgendaItem(final RuleAgendaItem item);
-    void removeQueryAgendaItem(final RuleAgendaItem item);
-
-    boolean setFocus(AgendaGroup agendaGroup);
-
     void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified);
-
-    Map<String, InternalAgendaGroup> getAgendaGroupsMap();
-    void putOnAgendaGroupsMap(String name, InternalAgendaGroup group);
-
-    void addAgendaGroupOnStack(AgendaGroup agendaGroup);
-
-    void evaluateEagerList();
 
     Map<String,InternalActivationGroup> getActivationGroupsMap();
 
-    InternalAgendaGroup getNextFocus();
-
-    Collection<String> getGroupsName();
-
     int sizeOfRuleFlowGroup(String s);
-
-    void addItemToActivationGroup(AgendaItem item);
 
     boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
 
-    void registerExpiration(PropagationContext expirationContext);
-
     void addPropagation(PropagationEntry propagationEntry );
-    void flushPropagations();
     void notifyWaitOnRest();
     Iterator<PropagationEntry> getActionsIterator();
     boolean hasPendingPropagations();
 
-    void handleException(InternalWorkingMemory wm, Activation activation, Exception e);
-
     boolean isParallelAgenda();
-
-    KnowledgeHelper getKnowledgeHelper();
 
     default PropagationList getPropagationList() {
         throw new UnsupportedOperationException();

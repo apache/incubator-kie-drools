@@ -21,7 +21,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 
-import org.drools.core.WorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.kie.internal.security.KiePolicyHelper;
 
@@ -34,7 +34,7 @@ public interface EvalExpression
     
     boolean evaluate(Tuple tuple,
                      Declaration[] requiredDeclarations,
-                     WorkingMemory workingMemory,
+                     ReteEvaluator reteEvaluator,
                      Object context ) throws Exception;
 
     void replaceDeclaration(Declaration declaration,
@@ -67,10 +67,10 @@ public interface EvalExpression
         @Override
         public boolean evaluate(final Tuple tuple,
                 final Declaration[] requiredDeclarations,
-                final WorkingMemory workingMemory,
+                final ReteEvaluator reteEvaluator,
                 final Object context) throws Exception {
             return AccessController.doPrivileged(
-                    (PrivilegedExceptionAction<Boolean>) () -> delegate.evaluate(tuple, requiredDeclarations, workingMemory, context), KiePolicyHelper.getAccessContext());
+                    (PrivilegedExceptionAction<Boolean>) () -> delegate.evaluate(tuple, requiredDeclarations, reteEvaluator, context), KiePolicyHelper.getAccessContext());
         }
 
         @Override

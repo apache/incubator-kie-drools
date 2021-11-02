@@ -16,10 +16,9 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -35,12 +34,12 @@ public class PhreakExistsNode {
     public void doNode(ExistsNode existsNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
         if (!existsNode.isRightInputIsRiaNode()) {
-            doNormalNode(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doNormalNode(existsNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         } else {
             PhreakSubnetworkNotExistsNode.doSubNetworkNode(existsNode, sink, bm,
                                                            srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -50,7 +49,7 @@ public class PhreakExistsNode {
 public void doNormalNode(ExistsNode existsNode,
                          LeftTupleSink sink,
                          BetaMemory bm,
-                         InternalWorkingMemory wm,
+                         ReteEvaluator reteEvaluator,
                          TupleSets<LeftTuple> srcLeftTuples,
                          TupleSets<LeftTuple> trgLeftTuples,
                          TupleSets<LeftTuple> stagedLeftTuples) {
@@ -75,26 +74,26 @@ public void doNormalNode(ExistsNode existsNode,
     if (srcRightTuples.getInsertFirst() != null) {
         // left deletes must come before right deletes. Otherwise right deletes could
         // stage a deletion, that is later deleted in the rightDelete, causing potential problems
-        doRightInserts(existsNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+        doRightInserts(existsNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples);
     }
 
     if (srcRightTuples.getUpdateFirst() != null) {
         // must come after rightInserts and before rightDeletes, to avoid staging clash
-        doRightUpdates(existsNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+        doRightUpdates(existsNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
     }
 
     if (srcRightTuples.getDeleteFirst() != null) {
         // must come after rightUpdetes, to avoid staging clash
-        doRightDeletes(existsNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+        doRightDeletes(existsNode, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
     }
 
 
     if (srcLeftTuples.getUpdateFirst() != null) {
-        doLeftUpdates(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        doLeftUpdates(existsNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
     }
 
     if (srcLeftTuples.getInsertFirst() != null) {
-        doLeftInserts(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
+        doLeftInserts(existsNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples);
     }
 
     srcRightTuples.resetAll();
@@ -104,7 +103,7 @@ public void doNormalNode(ExistsNode existsNode,
     public void doLeftInserts(ExistsNode existsNode,
                               LeftTupleSink sink,
                               BetaMemory bm,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
@@ -118,7 +117,7 @@ public void doNormalNode(ExistsNode existsNode,
             boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(existsNode, leftTuple);
 
             constraints.updateFromTuple( contextEntry,
-                                         wm,
+                                         reteEvaluator,
                                          leftTuple );
 
             // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
@@ -140,7 +139,7 @@ public void doNormalNode(ExistsNode existsNode,
     public void doRightInserts(ExistsNode existsNode,
                                LeftTupleSink sink,
                                BetaMemory bm,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
@@ -156,7 +155,7 @@ public void doNormalNode(ExistsNode existsNode,
                 FastIterator it = existsNode.getLeftIterator( ltm );
 
                 constraints.updateFromFactHandle( contextEntry,
-                                                  wm,
+                                                  reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
                 for ( LeftTuple leftTuple = existsNode.getFirstLeftTuple( rightTuple, ltm, it ); leftTuple != null; ) {
@@ -192,7 +191,7 @@ public void doNormalNode(ExistsNode existsNode,
     public void doLeftUpdates(ExistsNode existsNode,
                               LeftTupleSink sink,
                               BetaMemory bm,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples,
                               TupleSets<LeftTuple> stagedLeftTuples) {
@@ -228,7 +227,7 @@ public void doNormalNode(ExistsNode existsNode,
             }
 
             constraints.updateFromTuple(contextEntry,
-                                        wm,
+                                        reteEvaluator,
                                         leftTuple);
 
             if ( !leftUpdateOptimizationAllowed && blocker != null ) {
@@ -291,7 +290,7 @@ public void doNormalNode(ExistsNode existsNode,
     public void doRightUpdates(ExistsNode existsNode,
                                LeftTupleSink sink,
                                BetaMemory bm,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples,
                                TupleSets<LeftTuple> stagedLeftTuples) {
@@ -311,7 +310,7 @@ public void doNormalNode(ExistsNode existsNode,
                 LeftTuple firstLeftTuple = existsNode.getFirstLeftTuple( rightTuple, ltm, leftIt );
 
                 constraints.updateFromFactHandle( contextEntry,
-                                                  wm,
+                                                  reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
 
@@ -369,7 +368,7 @@ public void doNormalNode(ExistsNode existsNode,
                     }
 
                     constraints.updateFromTuple( contextEntry,
-                                                 wm,
+                                                 reteEvaluator,
                                                  leftTuple );
 
                     if ( iterateFromStart ) {
@@ -440,7 +439,7 @@ public void doNormalNode(ExistsNode existsNode,
 
     public void doRightDeletes(ExistsNode existsNode,
                                BetaMemory bm,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples,
                                TupleSets<LeftTuple> stagedLeftTuples) {
@@ -476,7 +475,7 @@ public void doNormalNode(ExistsNode existsNode,
                     }
 
                     constraints.updateFromTuple(contextEntry,
-                                                wm,
+                                                reteEvaluator,
                                                 leftTuple);
 
                     if (useComparisonIndex) {

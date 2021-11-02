@@ -15,7 +15,13 @@
 
 package org.drools.mvel.compiler.reteoo;
 
-import org.drools.core.common.InternalWorkingMemory;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -23,12 +29,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MockRightTupleSink
     implements
@@ -38,8 +38,8 @@ public class MockRightTupleSink
 
     public void retractRightTuple(RightTuple rightTuple,
                                   PropagationContext context,
-                                  InternalWorkingMemory workingMemory) {
-        this.retracted.add( new Object[]{rightTuple, context, workingMemory} );
+                                  ReteEvaluator reteEvaluator) {
+        this.retracted.add( new Object[]{rightTuple, context, reteEvaluator} );
 
     }
     
@@ -67,7 +67,7 @@ public class MockRightTupleSink
 
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
+                                 ReteEvaluator reteEvaluator) {
     }
 
     public int getAssociationsSize() {

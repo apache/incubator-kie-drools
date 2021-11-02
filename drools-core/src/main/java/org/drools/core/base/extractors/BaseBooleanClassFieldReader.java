@@ -16,11 +16,11 @@
 
 package org.drools.core.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
-
-import java.lang.reflect.Method;
+import org.drools.core.common.ReteEvaluator;
 
 /**
  * A Base class for primitive boolean class field
@@ -48,51 +48,51 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
     public BaseBooleanClassFieldReader() {
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory,
+    public Object getValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return getBooleanValue( workingMemory,
+        return getBooleanValue( reteEvaluator,
                                 object ) ? Boolean.TRUE : Boolean.FALSE;
     }
 
-    public abstract boolean getBooleanValue(InternalWorkingMemory workingMemory,
+    public abstract boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                             Object object);
 
-    public byte getByteValue(InternalWorkingMemory workingMemory,
+    public byte getByteValue(ReteEvaluator reteEvaluator,
                              final Object object) {
         throw new RuntimeException( "Conversion to byte not supported from boolean" );
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory,
+    public char getCharValue(ReteEvaluator reteEvaluator,
                              final Object object) {
         throw new RuntimeException( "Conversion to char not supported from boolean" );
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory,
+    public double getDoubleValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
         throw new RuntimeException( "Conversion to double not supported from boolean" );
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory,
+    public float getFloatValue(ReteEvaluator reteEvaluator,
                                final Object object) {
         throw new RuntimeException( "Conversion to float not supported from boolean" );
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory,
+    public int getIntValue(ReteEvaluator reteEvaluator,
                            final Object object) {
         throw new RuntimeException( "Conversion to int not supported from boolean" );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory,
+    public long getLongValue(ReteEvaluator reteEvaluator,
                              final Object object) {
         throw new RuntimeException( "Conversion to long not supported from boolean" );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory,
+    public short getShortValue(ReteEvaluator reteEvaluator,
                                final Object object) {
         throw new RuntimeException( "Conversion to short not supported from boolean" );
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory,
+    public boolean isNullValue(ReteEvaluator reteEvaluator,
                                final Object object) {
         return false;
     }
@@ -100,16 +100,16 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getBooleanValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                      new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
         }
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory,
+    public int getHashCode(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return getBooleanValue( workingMemory,
+        return getBooleanValue( reteEvaluator,
                                 object ) ? 1231 : 1237;
     }
 

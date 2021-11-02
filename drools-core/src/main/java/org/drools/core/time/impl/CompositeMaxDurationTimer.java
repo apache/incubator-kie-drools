@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
@@ -80,7 +81,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
                                  String[] calendarNames,
                                  Calendars calendars,
                                  Declaration[][] declrs,
-                                 InternalWorkingMemory wm) {
+                                 ReteEvaluator reteEvaluator) {
         return createTrigger( getMaxTimestamp(leftTuple, timestamp), calendarNames, calendars );
     }
 

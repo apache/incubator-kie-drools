@@ -16,17 +16,17 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.BetaNodeFieldConstraint;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.Tuple;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
+
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.Tuple;
 
 /**
  * A superclass for all composite constraints, like "OR" and "AND"
@@ -231,7 +231,7 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
 
         public ContextEntry[]        betas;
         public ContextEntry          next;
-        public InternalWorkingMemory workingMemory;
+        public ReteEvaluator         reteEvaluator;
         public InternalFactHandle    handle;
 
         public MultiFieldConstraintContextEntry() {
@@ -248,14 +248,14 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             betas   = (ContextEntry[])in.readObject();
             next  = (ContextEntry)in.readObject();
-            workingMemory  = (InternalWorkingMemory)in.readObject();
+            reteEvaluator  = (ReteEvaluator)in.readObject();
             handle  = (InternalFactHandle)in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject(betas);
             out.writeObject(next);
-            out.writeObject(workingMemory);
+            out.writeObject(reteEvaluator);
             out.writeObject(handle);
         }
         
@@ -267,32 +267,32 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
             this.next = entry;
         }
 
-        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
+        public void updateFromFactHandle(ReteEvaluator reteEvaluator,
                                          InternalFactHandle handle) {
-            this.workingMemory = workingMemory;
+            this.reteEvaluator = reteEvaluator;
             this.handle = handle;
             for (ContextEntry beta : betas) {
-                beta.updateFromFactHandle(workingMemory, handle);
+                beta.updateFromFactHandle(reteEvaluator, handle);
             }
         }
 
-        public void updateFromTuple(InternalWorkingMemory workingMemory,
+        public void updateFromTuple(ReteEvaluator reteEvaluator,
                                     Tuple tuple) {
-            this.workingMemory = workingMemory;
+            this.reteEvaluator = reteEvaluator;
             for (ContextEntry beta : betas) {
-                beta.updateFromTuple(workingMemory, tuple);
+                beta.updateFromTuple(reteEvaluator, tuple);
             }
         }
 
         public void resetTuple() {
-            this.workingMemory = null;
+            this.reteEvaluator = null;
             for ( int i = 0, length = this.betas.length; i < length; i++ ) {
                 this.betas[i].resetTuple();
             }
         }
 
         public void resetFactHandle() {
-            this.workingMemory = null;
+            this.reteEvaluator = null;
             this.handle = null;
             for ( int i = 0, length = this.betas.length; i < length; i++ ) {
                 this.betas[i].resetFactHandle();

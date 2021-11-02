@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
@@ -100,12 +101,12 @@ public class CronTimer extends BaseTimer
                                  String[] calendarNames,
                                  Calendars calendars,
                                  Declaration[][] declrs,
-                                 InternalWorkingMemory wm) {
+                                 ReteEvaluator reteEvaluator) {
         Declaration[] startDeclarations = declrs[0];
 
         return new CronTrigger( timestamp,
-                                evalDateExpression( this.startTime, leftTuple, startDeclarations, wm ),
-                                evalDateExpression( this.endTime, leftTuple, startDeclarations, wm ),
+                                evalDateExpression( this.startTime, leftTuple, startDeclarations, reteEvaluator ),
+                                evalDateExpression( this.endTime, leftTuple, startDeclarations, reteEvaluator ),
                                 this.repeatLimit,
                                 this.cronExpression,
                                 calendarNames,

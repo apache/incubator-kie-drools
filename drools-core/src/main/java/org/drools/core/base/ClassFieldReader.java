@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
 
@@ -113,9 +113,9 @@ public class ClassFieldReader
         return this.reader != null;
     }
     
-    public Object getValue(InternalWorkingMemory workingMemory,
+    public Object getValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return this.reader.getValue( workingMemory,
+        return this.reader.getValue( reteEvaluator,
                                      object );
     }
 
@@ -157,57 +157,57 @@ public class ClassFieldReader
         return true;
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
-        return this.reader.getBooleanValue( workingMemory,
+        return this.reader.getBooleanValue( reteEvaluator,
                                             object );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory,
+    public byte getByteValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return this.reader.getByteValue( workingMemory,
+        return this.reader.getByteValue( reteEvaluator,
                                          object );
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory,
+    public char getCharValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return this.reader.getCharValue( workingMemory,
+        return this.reader.getCharValue( reteEvaluator,
                                          object );
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory,
+    public double getDoubleValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
-        return this.reader.getDoubleValue( workingMemory,
+        return this.reader.getDoubleValue( reteEvaluator,
                                            object );
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory,
+    public float getFloatValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        return this.reader.getFloatValue( workingMemory,
+        return this.reader.getFloatValue( reteEvaluator,
                                           object );
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory,
+    public int getIntValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return this.reader.getIntValue( workingMemory,
+        return this.reader.getIntValue( reteEvaluator,
                                         object );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory,
+    public long getLongValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return this.reader.getLongValue( workingMemory,
+        return this.reader.getLongValue( reteEvaluator,
                                          object );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory,
+    public short getShortValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        return this.reader.getShortValue( workingMemory,
+        return this.reader.getShortValue( reteEvaluator,
                                           object );
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory,
+    public boolean isNullValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        return this.reader.isNullValue( workingMemory,
+        return this.reader.isNullValue( reteEvaluator,
                                         object );
     }
 
@@ -219,9 +219,9 @@ public class ClassFieldReader
         return this.reader.getNativeReadMethod().getName();
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory,
+    public int getHashCode(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return this.reader.getHashCode( workingMemory,
+        return this.reader.getHashCode( reteEvaluator,
                                         object );
     }
 
@@ -277,15 +277,15 @@ public class ClassFieldReader
         return reader.isNullValue( object );
     }
 
-    public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+    public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator,
                                          Object object) {
-        return reader.getBigDecimalValue( workingMemory,
+        return reader.getBigDecimalValue( reteEvaluator,
                                           object );
     }
 
-    public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+    public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator,
                                          Object object) {
-        return reader.getBigIntegerValue( workingMemory,
+        return reader.getBigIntegerValue( reteEvaluator,
                                           object );
     }
 

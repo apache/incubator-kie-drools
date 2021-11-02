@@ -16,17 +16,17 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.BaseObjectClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.facttemplates.Fact;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.BaseObjectClassFieldReader;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.facttemplates.Fact;
+import org.drools.core.util.ClassUtils;
 
 public class PatternExtractor extends BaseObjectClassFieldReader
     implements
@@ -67,7 +67,7 @@ public class PatternExtractor extends BaseObjectClassFieldReader
         setValueType( objectType.getValueType() );        
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory,
+    public Object getValue(ReteEvaluator reteEvaluator,
                            final Object object) {
         return object;
     }
@@ -95,7 +95,7 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                      new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

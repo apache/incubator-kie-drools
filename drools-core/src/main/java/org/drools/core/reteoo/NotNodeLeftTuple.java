@@ -22,8 +22,8 @@ import java.util.Collections;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
@@ -170,13 +170,13 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
 
         BetaNode betaNode = ( (BetaNode) getTupleSink() );
         BetaConstraints constraints = betaNode.getRawConstraints();
-        InternalWorkingMemory wm = getFactHandle().getWorkingMemory();
-        BetaMemory bm = (BetaMemory) wm.getNodeMemory( (MemoryFactory) getTupleSink() );
+        ReteEvaluator reteEvaluator = getFactHandle().getReteEvaluator();
+        BetaMemory bm = (BetaMemory) reteEvaluator.getNodeMemory( (MemoryFactory) getTupleSink() );
         TupleMemory rtm = bm.getRightTupleMemory();
         FastIterator it = betaNode.getRightIterator( rtm );
 
         ContextEntry[] contextEntry = bm.getContext();
-        constraints.updateFromTuple( contextEntry, wm, this );
+        constraints.updateFromTuple( contextEntry, reteEvaluator, this );
 
         Collection<Object> result = new ArrayList<>();
         for (RightTuple rightTuple = betaNode.getFirstRightTuple(this, rtm, null, it); rightTuple != null; ) {

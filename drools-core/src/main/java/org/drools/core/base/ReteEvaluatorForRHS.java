@@ -12,8 +12,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
@@ -26,8 +26,8 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
@@ -77,9 +77,9 @@ import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationKey;
 
 /**
- * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
+ * Wrapper of ReteEvaluator so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
-public class WrappedStatefulKnowledgeSessionForRHS
+public class ReteEvaluatorForRHS
         implements KieSession,
                    InternalWorkingMemoryActions,
                    EventSupport,
@@ -88,15 +88,15 @@ public class WrappedStatefulKnowledgeSessionForRHS
 
     protected StatefulKnowledgeSessionImpl delegate;
 
-    public WrappedStatefulKnowledgeSessionForRHS(WorkingMemory workingMemory) {
+    public ReteEvaluatorForRHS(ReteEvaluator reteEvaluator) {
         super();
-        this.delegate = (StatefulKnowledgeSessionImpl) workingMemory;
+        this.delegate = (StatefulKnowledgeSessionImpl) reteEvaluator;
     }
 
     /**
      * This should be used just by deserialization. Please avoid using this empty constructor in your code.
      */
-    public WrappedStatefulKnowledgeSessionForRHS() {
+    public ReteEvaluatorForRHS() {
     }
 
     @Override
@@ -216,10 +216,6 @@ public class WrappedStatefulKnowledgeSessionForRHS
         delegate.fireUntilHalt(agendaFilter);
     }
 
-    public void executeQueuedActions() {
-        delegate.executeQueuedActions();
-    }
-
     public RuleRuntimeEventSupport getRuleRuntimeEventSupport() {
         return delegate.getRuleRuntimeEventSupport();
     }
@@ -231,10 +227,6 @@ public class WrappedStatefulKnowledgeSessionForRHS
 
     public AgendaEventSupport getAgendaEventSupport() {
         return delegate.getAgendaEventSupport();
-    }
-
-    public long getPropagationIdCounter() {
-        return delegate.getPropagationIdCounter();
     }
 
     public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
@@ -471,10 +463,6 @@ public class WrappedStatefulKnowledgeSessionForRHS
         return delegate.don(activation, core, trait, b, modes);
     }
 
-    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
-        delegate.queueWorkingMemoryAction(action);
-    }
-
     public void delete(FactHandle handle) {
         delegate.delete(handle);
     }
@@ -495,11 +483,16 @@ public class WrappedStatefulKnowledgeSessionForRHS
         return delegate.getEntryPoint();
     }
 
+    @Override
+    public ReteEvaluator getReteEvaluator() {
+        return delegate.getReteEvaluator();
+    }
+
     public EntryPointNode getEntryPointNode() {
         return delegate.getEntryPointNode();
     }
 
-    public EntryPoint getEntryPoint(String name) {
+    public WorkingMemoryEntryPoint getEntryPoint(String name) {
         return delegate.getEntryPoint(name);
     }
 
@@ -515,12 +508,13 @@ public class WrappedStatefulKnowledgeSessionForRHS
         delegate.setGlobalResolver(globalResolver);
     }
 
-    public FactHandle getFactHandleByIdentity(Object object) {
-        return delegate.getFactHandleByIdentity(object);
-    }
-
     public GlobalResolver getGlobalResolver() {
         return delegate.getGlobalResolver();
+    }
+
+    @Override
+    public ActivationsManager getActivationsManager() {
+        return delegate.getActivationsManager();
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {
@@ -603,7 +597,7 @@ public class WrappedStatefulKnowledgeSessionForRHS
         delegate.startOperation();
     }
 
-    public FactHandle getFactHandle(Object object) {
+    public InternalFactHandle getFactHandle(Object object) {
         return delegate.getFactHandle(object);
     }
 
@@ -683,8 +677,8 @@ public class WrappedStatefulKnowledgeSessionForRHS
         delegate.closeLiveQuery(factHandle);
     }
 
-    public void addPropagation(PropagationEntry propagationEntry) {
-        delegate.addPropagation(propagationEntry);
+    public void addPropagation(PropagationEntry propagationEntry, boolean register) {
+        delegate.addPropagation(propagationEntry, register);
     }
 
     public void flushPropagations() {

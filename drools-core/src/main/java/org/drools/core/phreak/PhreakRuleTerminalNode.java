@@ -15,11 +15,10 @@
 
 package org.drools.core.phreak;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.EventSupport;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
@@ -39,38 +38,38 @@ import org.kie.api.event.rule.MatchCancelledCause;
 */
 public class PhreakRuleTerminalNode {
     public void doNode(TerminalNode rtnNode,
-                       InternalAgenda agenda,
+                       ActivationsManager activationsManager,
                        TupleSets<LeftTuple> srcLeftTuples,
                        RuleExecutor executor) {
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(agenda, srcLeftTuples, executor);
+            doLeftDeletes(activationsManager, srcLeftTuples, executor);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(rtnNode, agenda, srcLeftTuples, executor);
+            doLeftUpdates(rtnNode, activationsManager, srcLeftTuples, executor);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(rtnNode, agenda, srcLeftTuples, executor);
+            doLeftInserts(rtnNode, activationsManager, srcLeftTuples, executor);
         }
 
         srcLeftTuples.resetAll();
     }
 
     public void doLeftInserts(TerminalNode rtnNode,
-                              InternalAgenda agenda,
+                              ActivationsManager activationsManager,
                               TupleSets<LeftTuple> srcLeftTuples,
                               RuleExecutor executor) {
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
 
         if ( rtnNode.getRule().getAutoFocus() && !ruleAgendaItem.getAgendaGroup().isActive() ) {
-            agenda.setFocus( ruleAgendaItem.getAgendaGroup() );
+            activationsManager.getAgendaGroupsManager().setFocus( ruleAgendaItem.getAgendaGroup() );
         }
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            doLeftTupleInsert(rtnNode, executor, agenda, ruleAgendaItem, leftTuple);
+            doLeftTupleInsert(rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -78,10 +77,10 @@ public class PhreakRuleTerminalNode {
     }
 
     public static void doLeftTupleInsert(TerminalNode rtnNode, RuleExecutor executor,
-                                         InternalAgenda agenda, RuleAgendaItem ruleAgendaItem,
+                                         ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
                                          LeftTuple leftTuple) {
-        InternalWorkingMemory wm = agenda.getWorkingMemory();
-        if ( wm.getSessionConfiguration().isDirectFiring() ) {
+        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
+        if ( reteEvaluator.getSessionConfiguration().isDirectFiring() ) {
             executor.addLeftTuple(leftTuple);
             return;
         }
@@ -92,57 +91,56 @@ public class PhreakRuleTerminalNode {
             return;
         }
 
-        int salienceInt = getSalienceValue( rtnNode, ruleAgendaItem, ( AgendaItem ) leftTuple, wm );
+        int salienceInt = getSalienceValue( rtnNode, ruleAgendaItem, ( AgendaItem ) leftTuple, reteEvaluator );
 
         RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) leftTuple;
-        agenda.createAgendaItem( rtnLeftTuple, salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup() );
+        activationsManager.createAgendaItem( rtnLeftTuple, salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup() );
 
-        EventSupport es = wm;
-        es.getAgendaEventSupport().fireActivationCreated(rtnLeftTuple, wm);
+        activationsManager.getAgendaEventSupport().fireActivationCreated(rtnLeftTuple, activationsManager.getReteEvaluator());
 
         if (  rtnNode.getRule().isLockOnActive() &&
               leftTuple.getPropagationContext().getType() != PropagationContext.Type.RULE_ADDITION ) {
             InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
             if (blockedByLockOnActive(rtnNode.getRule(), pctx, agendaGroup)) {
-                es.getAgendaEventSupport().fireActivationCancelled(rtnLeftTuple, wm, MatchCancelledCause.FILTER );
+                activationsManager.getAgendaEventSupport().fireActivationCancelled(rtnLeftTuple, reteEvaluator, MatchCancelledCause.FILTER );
                 return;
             }
         }
 
-        if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept( rtnLeftTuple, wm, rtnNode)) {
+        if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple, reteEvaluator, rtnNode)) {
             // only relevant for seralization, to not refire Matches already fired
             return;
         }
 
-        agenda.addItemToActivationGroup( rtnLeftTuple );
         executor.addLeftTuple( leftTuple );
         leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
 
+        activationsManager.addItemToActivationGroup( rtnLeftTuple );
         if ( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
-            agenda.insertAndStageActivation( rtnLeftTuple );
+            activationsManager.insertAndStageActivation( rtnLeftTuple );
         }
     }
 
-    private static int getSalienceValue( TerminalNode rtnNode, RuleAgendaItem ruleAgendaItem, AgendaItem leftTuple, InternalWorkingMemory wm ) {
+    private static int getSalienceValue( TerminalNode rtnNode, RuleAgendaItem ruleAgendaItem, AgendaItem leftTuple, ReteEvaluator reteEvaluator ) {
         Salience salience = ruleAgendaItem.getRule().getSalience();
         return salience == null ? 0 : (salience.isDynamic() ?
-                    salience.getValue(wm.createKnowledgeHelper( leftTuple ), rtnNode.getRule(), wm) :
+                    salience.getValue(leftTuple, rtnNode.getRule(), reteEvaluator) :
                     salience.getValue() );
     }
 
     public void doLeftUpdates(TerminalNode rtnNode,
-                              InternalAgenda agenda,
+                              ActivationsManager activationsManager,
                               TupleSets<LeftTuple> srcLeftTuples,
                               RuleExecutor executor) {
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
         if ( rtnNode.getRule().getAutoFocus() && !ruleAgendaItem.getAgendaGroup().isActive() ) {
-            agenda.setFocus(ruleAgendaItem.getAgendaGroup());
+            activationsManager.getAgendaGroupsManager().setFocus(ruleAgendaItem.getAgendaGroup());
         }
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            doLeftTupleUpdate(rtnNode, executor, agenda, leftTuple);
+            doLeftTupleUpdate(rtnNode, executor, activationsManager, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -150,14 +148,14 @@ public class PhreakRuleTerminalNode {
     }
 
     public static void doLeftTupleUpdate(TerminalNode rtnNode, RuleExecutor executor,
-                                         InternalAgenda agenda, LeftTuple leftTuple) {
+                                         ActivationsManager activationsManager, LeftTuple leftTuple) {
         RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) leftTuple;
-        InternalWorkingMemory wm = agenda.getWorkingMemory();
+        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
 
-        if ( wm.getSessionConfiguration().isDirectFiring() ) {
+        if ( reteEvaluator.getSessionConfiguration().isDirectFiring() ) {
             if (!rtnLeftTuple.isQueued() ) {
                 executor.addLeftTuple( leftTuple );
-                wm.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );
+                reteEvaluator.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );
             }
             return;
         }
@@ -173,9 +171,9 @@ public class PhreakRuleTerminalNode {
             blocked = rtnNode.getRule().isNoLoop() && rtnNode.equals(pctx.getTerminalNodeOrigin());
         }
 
-        int salienceInt = getSalienceValue( rtnNode, executor.getRuleAgendaItem(), ( AgendaItem ) leftTuple, wm );
+        int salienceInt = getSalienceValue( rtnNode, executor.getRuleAgendaItem(), ( AgendaItem ) leftTuple, reteEvaluator );
         
-        if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept( rtnLeftTuple, wm, rtnNode)) {
+        if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple, reteEvaluator, rtnNode)) {
             // only relevant for serialization, to not re-fire Matches already fired
             return;
         }
@@ -193,12 +191,11 @@ public class PhreakRuleTerminalNode {
             if ( addToExector ) {
                 if (!rtnLeftTuple.isQueued() ) {
                     // not queued, so already fired, so it's effectively recreated
-                    EventSupport es = ( EventSupport ) wm;
-                    es.getAgendaEventSupport().fireActivationCreated( rtnLeftTuple, wm );
+                    activationsManager.getAgendaEventSupport().fireActivationCreated( rtnLeftTuple, reteEvaluator );
 
                     rtnLeftTuple.update( salienceInt, pctx );
                     executor.addLeftTuple( leftTuple );
-                    wm.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );
+                    reteEvaluator.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );
                 }
             }
 
@@ -208,28 +205,28 @@ public class PhreakRuleTerminalNode {
         }
 
         if( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled()) {
-            agenda.modifyActivation(rtnLeftTuple, rtnLeftTuple.isQueued());
+            activationsManager.modifyActivation(rtnLeftTuple, rtnLeftTuple.isQueued());
         }
     }
 
-    public void doLeftDeletes(InternalAgenda agenda,
+    public void doLeftDeletes(ActivationsManager activationsManager,
                               TupleSets<LeftTuple> srcLeftTuples,
                               RuleExecutor executor) {
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            doLeftDelete(agenda, executor, leftTuple);
+            doLeftDelete(activationsManager, executor, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
         }
     }
 
-    public static void doLeftDelete(InternalAgenda agenda, RuleExecutor executor, Tuple leftTuple) {
+    public static void doLeftDelete(ActivationsManager activationsManager, RuleExecutor executor, Tuple leftTuple) {
         RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
         rtnLt.setMatched( false );
 
-        agenda.cancelActivation( rtnLt );
+        activationsManager.cancelActivation( rtnLt );
 
         if ( leftTuple.getMemory() != null ) {
             // Expiration propagations should not be removed from the list, as they still need to fire

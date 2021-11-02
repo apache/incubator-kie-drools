@@ -21,7 +21,7 @@ import java.util.Date;
 
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
 
@@ -46,52 +46,52 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
+    public Object getValue(ReteEvaluator reteEvaluator, final Object object) {
         return object;
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator, final Object object) {
         throw new RuntimeException( "Conversion to boolean not supported from Date" );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (byte) getLongValue( workingMemory, object );
+    public byte getByteValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (byte) getLongValue( reteEvaluator, object );
 
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (char) getLongValue( workingMemory, object );
+    public char getCharValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (char) getLongValue( reteEvaluator, object );
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getLongValue( workingMemory, object );
+    public double getDoubleValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getLongValue( reteEvaluator, object );
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getLongValue( workingMemory, object );
+    public float getFloatValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getLongValue( reteEvaluator, object );
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (int) getLongValue( workingMemory, object );
+    public int getIntValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (int) getLongValue( reteEvaluator, object );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory, Object object) {
-        return getDate( workingMemory, object ).getTime();
+    public long getLongValue(ReteEvaluator reteEvaluator, Object object) {
+        return getDate( reteEvaluator, object ).getTime();
     }
 
-    protected Date getDate( InternalWorkingMemory workingMemory, Object object ) {
-        return (Date)getValue( workingMemory, object );
+    protected Date getDate( ReteEvaluator reteEvaluator, Object object ) {
+        return (Date)getValue( reteEvaluator, object );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (short) getLongValue( workingMemory, object );
+    public short getShortValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (short) getLongValue( reteEvaluator, object );
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
+    public boolean isNullValue(ReteEvaluator reteEvaluator, final Object object) {
         if ( object == null ) {
             return true;
         } else {
-            return getValue( workingMemory,
+            return getValue( reteEvaluator,
                              object ) == null;
         }
     }
@@ -99,7 +99,7 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                      new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
@@ -110,8 +110,8 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
         return "getValue";
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {        
-        final long temp = getLongValue( workingMemory, object );
+    public int getHashCode(ReteEvaluator reteEvaluator, final Object object) {        
+        final long temp = getLongValue( reteEvaluator, object );
         return (int) (temp ^ (temp >>> 32));
     }
 

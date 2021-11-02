@@ -15,7 +15,7 @@
 
 package org.drools.metric.phreak;
 
-import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakTimerNode;
 import org.drools.core.reteoo.LeftTuple;
@@ -34,7 +34,7 @@ public class PhreakTimerNodeMetric extends PhreakTimerNode {
                        PathMemory pmem,
                        SegmentMemory smem,
                        LeftTupleSink sink,
-                       InternalAgenda agenda,
+                       ActivationsManager activationsManager,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
@@ -42,7 +42,7 @@ public class PhreakTimerNodeMetric extends PhreakTimerNode {
         try {
             MetricLogUtils.getInstance().startMetrics(timerNode);
 
-            super.doNode(timerNode, tm, pmem, smem, sink, agenda, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(timerNode, tm, pmem, smem, sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

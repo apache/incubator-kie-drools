@@ -20,13 +20,12 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -197,11 +196,11 @@ public class FieldConstraintTest {
                                     Tuple tuple,
                                     Declaration[] previousDeclarations,
                                     Declaration[] localDeclarations,
-                                    WorkingMemory workingMemory,
+                                    ReteEvaluator reteEvaluator,
                                     Object context) {
-                int price1 = previousDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory,
+                int price1 = previousDeclarations[0].getIntValue( reteEvaluator,
                                                                   tuple.getObject( previousDeclarations[0] ) );
-                int price2 = localDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory,
+                int price2 = localDeclarations[0].getIntValue( reteEvaluator,
                                                                handle.getObject() );
 
                 return (price2 == (price1 * 2));

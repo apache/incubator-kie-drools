@@ -662,6 +662,11 @@ public class NamedEntryPoint
         return this.entryPoint;
     }
 
+    @Override
+    public ReteEvaluator getReteEvaluator() {
+        return this.wm;
+    }
+
     public InternalWorkingMemory getInternalWorkingMemory() {
         return this.wm;
     }
@@ -753,10 +758,6 @@ public class NamedEntryPoint
                 }
             }
         }
-    }
-
-    public void enQueueWorkingMemoryAction(WorkingMemoryAction action) {
-        wm.queueWorkingMemoryAction( action );
     }
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {

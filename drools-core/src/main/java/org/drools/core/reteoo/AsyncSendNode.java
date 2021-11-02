@@ -23,9 +23,9 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.AsyncSend;
@@ -146,30 +146,27 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         this.leftInput.networkUpdated(updateContext);
     }
 
-    public InternalFactHandle createFactHandle( Tuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object object ) {
+    public InternalFactHandle createFactHandle(Tuple leftTuple, PropagationContext context, ReteEvaluator reteEvaluator, Object object ) {
         InternalFactHandle handle = null;
         if ( context.getReaderContext() != null ) {
-            handle = context.getReaderContext().createAsyncNodeHandle( leftTuple, workingMemory, object, getId(), getObjectTypeConf( workingMemory ) );
+            handle = context.getReaderContext().createAsyncNodeHandle( leftTuple, reteEvaluator, object, getId(), getObjectTypeConf( reteEvaluator ) );
         }
 
         if (handle == null) {
-            handle = workingMemory.getFactHandleFactory().newFactHandle( object,
-                                                                         getObjectTypeConf( workingMemory ),
-                                                                         workingMemory,
-                                                                         null );
+            handle = reteEvaluator.createFactHandle( object, getObjectTypeConf( reteEvaluator ), null );
         }
         return handle;
     }
 
-    public ObjectTypeConf getObjectTypeConf( InternalWorkingMemory workingMemory ) {
+    public ObjectTypeConf getObjectTypeConf( ReteEvaluator reteEvaluator ) {
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
-            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), getResultClass(), workingMemory.getKnowledgeBase() );
+            objectTypeConf = new ClassObjectTypeConf( reteEvaluator.getDefaultEntryPointId(), getResultClass(), reteEvaluator.getKnowledgeBase() );
         }
         return objectTypeConf;
     }
 
-    public T createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public T createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         BetaMemory beta = new BetaMemory( new TupleList(),
                                           null,
                                           this.betaConstraints.createContext(),

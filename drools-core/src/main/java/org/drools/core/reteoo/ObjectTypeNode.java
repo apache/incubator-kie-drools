@@ -29,12 +29,12 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.FactHandleClassStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
@@ -223,14 +223,14 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
 
     public void assertInitialFact(final InternalFactHandle factHandle,
                                   final PropagationContext context,
-                                  final InternalWorkingMemory workingMemory) {
+                                  final ReteEvaluator reteEvaluator) {
         if (objectMemoryEnabled) {
-            InitialFactObjectTypeNodeMemory memory = (InitialFactObjectTypeNodeMemory) workingMemory.getNodeMemory(this);
+            InitialFactObjectTypeNodeMemory memory = (InitialFactObjectTypeNodeMemory) reteEvaluator.getNodeMemory(this);
             memory.add(factHandle);
         }
 
         checkDirty();
-        propagateAssert(factHandle, context, workingMemory);
+        propagateAssert(factHandle, context, reteEvaluator);
     }
 
     protected void checkDirty() {
@@ -252,19 +252,17 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
      *
      * @param factHandle    The fact handle.
      * @param context       The propagation context.
-     * @param workingMemory The working memory session.
+     * @param reteEvaluator The working memory session.
      */
     @Override
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                             final ReteEvaluator reteEvaluator) {
     }
 
-    public void propagateAssert(InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory) {
+    public void propagateAssert(InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator) {
         checkDirty();
-        this.sink.propagateAssertObject(factHandle,
-                                        context,
-                                        workingMemory);
+        this.sink.propagateAssertObject(factHandle, context, reteEvaluator);
     }
 
     /**
@@ -273,31 +271,31 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
      *
      * @param factHandle    The fact handle.
      * @param context       The propagation context.
-     * @param workingMemory The working memory session.
+     * @param reteEvaluator The working memory session.
      */
     public void retractObject(final InternalFactHandle factHandle,
                               final PropagationContext context,
-                              final InternalWorkingMemory workingMemory) {
+                              final ReteEvaluator reteEvaluator) {
         checkDirty();
 
-        doRetractObject( factHandle, context, workingMemory);
+        doRetractObject( factHandle, context, reteEvaluator);
     }
 
     public void retractObject(final InternalFactHandle factHandle,
                               final PropagationContext context,
-                              final InternalWorkingMemory workingMemory,
+                              final ReteEvaluator reteEvaluator,
                               int partition) {
         checkDirty();
 
-        retractRightTuples( factHandle, context, workingMemory, partition );
-        retractLeftTuples( factHandle, context, workingMemory, partition );
+        retractRightTuples( factHandle, context, reteEvaluator, partition );
+        retractLeftTuples( factHandle, context, reteEvaluator, partition );
     }
 
     public static void doRetractObject(final InternalFactHandle factHandle,
                                        final PropagationContext context,
-                                       final InternalWorkingMemory workingMemory) {
-        retractRightTuples( factHandle, context, workingMemory );
-        retractLeftTuples( factHandle, context, workingMemory );
+                                       final ReteEvaluator reteEvaluator) {
+        retractRightTuples( factHandle, context, reteEvaluator );
+        retractLeftTuples( factHandle, context, reteEvaluator );
     }
 
     public static void expireLeftTuple(LeftTuple leftTuple) {
@@ -318,35 +316,31 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         }
     }
 
-    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
+    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         factHandle.forEachLeftTuple( lt -> {
             LeftTupleSink sink = lt.getTupleSink();
-            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt,
-                                                                                context,
-                                                                                workingMemory);
+            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt, context, reteEvaluator);
         } );
         factHandle.clearLeftTuples();
     }
 
-    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory, int partition ) {
+    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator, int partition ) {
         DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
         linkedTuples.forEachLeftTuple( partition, lt -> {
             LeftTupleSink sink = lt.getTupleSink();
-            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt,
-                                                                                context,
-                                                                                workingMemory);
+            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt, context, reteEvaluator);
         } );
         linkedTuples.clearLeftTuples(partition);
     }
 
-    public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        factHandle.forEachRightTuple( rt -> rt.retractTuple( context, workingMemory) );
+    public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
+        factHandle.forEachRightTuple( rt -> rt.retractTuple( context, reteEvaluator) );
         factHandle.clearRightTuples();
     }
 
-    public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory, int partition ) {
+    public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator, int partition ) {
         DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
-        linkedTuples.forEachRightTuple( partition, rt -> rt.retractTuple( context, workingMemory) );
+        linkedTuples.forEachRightTuple( partition, rt -> rt.retractTuple( context, reteEvaluator) );
         linkedTuples.clearRightTuples(partition);
     }
 
@@ -358,13 +352,13 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     public void modifyObject(InternalFactHandle factHandle,
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
+                             ReteEvaluator reteEvaluator) {
         checkDirty();
 
         this.sink.propagateModifyObject(factHandle,
                                         modifyPreviousTuples,
-                                        context.adaptModificationMaskForObjectType(objectType, workingMemory),
-                                        workingMemory);
+                                        context.adaptModificationMaskForObjectType(objectType, reteEvaluator),
+                                        reteEvaluator);
     }
 
     @Override
@@ -378,9 +372,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         Iterator<InternalFactHandle> it = memory.iterator();
 
         while (it.hasNext()) {
-            sink.assertObject(it.next(),
-                              context,
-                              workingMemory);
+            sink.assertObject(it.next(), context, workingMemory);
         }
     }
 
@@ -460,12 +452,12 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
      * to switch back to a standard HashMap.
      */
     @Override
-    public ObjectTypeNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        Class<?> classType = ((ClassObjectType) getObjectType()).getClassType();
+    public ObjectTypeNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+        Class<?> classType = getObjectType().getClassType();
         if (InitialFact.class.isAssignableFrom(classType)) {
             return new InitialFactObjectTypeNodeMemory(classType);
         }
-        return new ObjectTypeNodeMemory(classType, wm);
+        return new ObjectTypeNodeMemory(classType, reteEvaluator);
     }
 
     public boolean isObjectMemoryEnabled() {
@@ -536,7 +528,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         @Override
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
-            context.workingMemory.queueWorkingMemoryAction(context.expireAction);
+            context.reteEvaluator.addPropagation(context.expireAction, true);
             context.getExpireAction().getFactHandle().removeJob( context.getJobHandle());
         }
     }
@@ -546,14 +538,14 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
             JobContext,
             Externalizable {
         public final WorkingMemoryReteExpireAction expireAction;
-        public final InternalWorkingMemory         workingMemory;
+        public final ReteEvaluator         reteEvaluator;
         public JobHandle                     handle;
 
         public ExpireJobContext(WorkingMemoryReteExpireAction expireAction,
-                                InternalWorkingMemory workingMemory) {
+                                ReteEvaluator reteEvaluator) {
             super();
             this.expireAction = expireAction;
-            this.workingMemory = workingMemory;
+            this.reteEvaluator = reteEvaluator;
         }
 
         @Override
@@ -570,8 +562,8 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
             return expireAction;
         }
 
-        public InternalWorkingMemory getWorkingMemory() {
-            return workingMemory;
+        public ReteEvaluator getReteEvaluator() {
+            return reteEvaluator;
         }
 
         public JobHandle getHandle() {
@@ -599,7 +591,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     public void byPassModifyToBetaNode(InternalFactHandle factHandle,
                                        ModifyPreviousTuples modifyPreviousTuples,
                                        PropagationContext context,
-                                       InternalWorkingMemory workingMemory) {
+                                       ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException("This should never get called, as the PropertyReactive first happens at the AlphaNode");
     }
 
@@ -612,9 +604,9 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
             this.classType = classType;
         }
 
-        ObjectTypeNodeMemory(Class<?> classType, InternalWorkingMemory wm) {
+        ObjectTypeNodeMemory(Class<?> classType, ReteEvaluator reteEvaluator) {
             this(classType);
-            store = wm.getStoreForClass(classType);
+            store = reteEvaluator.getStoreForClass(classType);
         }
 
         @Override

@@ -16,11 +16,11 @@
 
 package org.drools.core.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
-
-import java.lang.reflect.Method;
+import org.drools.core.common.ReteEvaluator;
 
 public abstract class BaseShortClassFieldReader extends BaseClassFieldReader {
 
@@ -44,56 +44,56 @@ public abstract class BaseShortClassFieldReader extends BaseClassFieldReader {
     public BaseShortClassFieldReader() {
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getShortValue( workingMemory, object );
+    public Object getValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getShortValue( reteEvaluator, object );
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator, final Object object) {
         throw new RuntimeException( "Conversion to boolean not supported from short" );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (byte) getShortValue( workingMemory, object );
+    public byte getByteValue(ReteEvaluator reteEvaluator, final Object object) {
+        return (byte) getShortValue( reteEvaluator, object );
 
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
+    public char getCharValue(ReteEvaluator reteEvaluator, final Object object) {
         throw new RuntimeException( "Conversion to char not supported from short" );
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getShortValue( workingMemory, object );
+    public double getDoubleValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getShortValue( reteEvaluator, object );
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getShortValue( workingMemory, object );
+    public float getFloatValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getShortValue( reteEvaluator, object );
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getShortValue( workingMemory, object );
+    public int getIntValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getShortValue( reteEvaluator, object );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getShortValue( workingMemory, object );
+    public long getLongValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getShortValue( reteEvaluator, object );
     }
 
-    public abstract short getShortValue(InternalWorkingMemory workingMemory, Object object);
+    public abstract short getShortValue(ReteEvaluator reteEvaluator, Object object);
     
-    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
+    public boolean isNullValue(ReteEvaluator reteEvaluator, final Object object) {
         return false;
     }
 
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getShortValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                      new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
         }
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        return getShortValue( workingMemory, object );
+    public int getHashCode(ReteEvaluator reteEvaluator, final Object object) {
+        return getShortValue( reteEvaluator, object );
     }
 }

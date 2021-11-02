@@ -48,7 +48,7 @@ public class AssertHandler extends PropagatorCompilerHandler {
     protected NodeList<Parameter> methodParameters() {
         return nodeList(new Parameter(factHandleType(), FACT_HANDLE_PARAM_NAME),
                         new Parameter(propagationContextType(), PROP_CONTEXT_PARAM_NAME),
-                        new Parameter(workingMemoryType(), WORKING_MEMORY_PARAM_NAME));
+                        new Parameter(reteEvaluatorType(), WORKING_MEMORY_PARAM_NAME));
     }
 
     @Override

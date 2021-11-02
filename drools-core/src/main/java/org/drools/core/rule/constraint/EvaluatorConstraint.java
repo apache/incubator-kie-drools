@@ -15,9 +15,13 @@
 
 package org.drools.core.rule.constraint;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IntervalProviderConstraint;
@@ -29,11 +33,6 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
 
 public class EvaluatorConstraint extends MutableTypeConstraint implements IntervalProviderConstraint {
 
@@ -61,12 +60,12 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return declarations.length == 0;
     }
 
-    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(InternalFactHandle handle, ReteEvaluator reteEvaluator) {
         if (isLiteral()) {
-            return evaluator.evaluate(workingMemory, rightReadAccessor, handle, field);
+            return evaluator.evaluate(reteEvaluator, rightReadAccessor, handle, field);
         }
 
-        return evaluator.evaluate( workingMemory,
+        return evaluator.evaluate( reteEvaluator,
                                    rightReadAccessor,
                                    handle,
                                    declarations[0].getExtractor(),
@@ -75,26 +74,26 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
 
     public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
         if (isLiteral()) {
-            return evaluator.evaluate( ((LiteralContextEntry) context).workingMemory,
+            return evaluator.evaluate( ((LiteralContextEntry) context).reteEvaluator,
                                        ((LiteralContextEntry) context).getFieldExtractor(),
                                        handle,
                                        field );
         }
 
-        return evaluator.evaluateCachedLeft( ((VariableContextEntry) context).workingMemory,
+        return evaluator.evaluateCachedLeft( ((VariableContextEntry) context).reteEvaluator,
                                              (VariableContextEntry) context,
                                              handle );
     }
 
     public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
         if (isLiteral()) {
-            return evaluator.evaluate( ((LiteralContextEntry) context).workingMemory,
+            return evaluator.evaluate( ((LiteralContextEntry) context).reteEvaluator,
                                        ((LiteralContextEntry) context).getFieldExtractor(),
                                        ((LiteralContextEntry) context).getFactHandle(),
                                        field );
         }
 
-        return evaluator.evaluateCachedRight( ((VariableContextEntry) context).workingMemory,
+        return evaluator.evaluateCachedRight( ((VariableContextEntry) context).reteEvaluator,
                                               (VariableContextEntry) context,
                                               tuple.get(declarations[0]));
     }
@@ -171,7 +170,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         public InternalReadAccessor extractor;
         public InternalFactHandle   factHandle;
         public ContextEntry         next;
-        public InternalWorkingMemory workingMemory;
+        public ReteEvaluator        reteEvaluator;
 
         public LiteralContextEntry() {
         }
@@ -185,14 +184,14 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
             extractor = (InternalReadAccessor) in.readObject();
             factHandle = ( InternalFactHandle ) in.readObject();
             next = (ContextEntry) in.readObject();
-            workingMemory = ( InternalWorkingMemory ) in .readObject();
+            reteEvaluator = ( ReteEvaluator ) in .readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( extractor );
             out.writeObject( factHandle );
             out.writeObject( next );
-            out.writeObject( workingMemory );
+            out.writeObject( reteEvaluator );
         }
 
         public InternalReadAccessor getFieldExtractor() {
@@ -211,15 +210,15 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
             this.next = entry;
         }
 
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+        public void updateFromFactHandle(final ReteEvaluator reteEvaluator,
                                          final InternalFactHandle handle) {
             this.factHandle = handle;
-            this.workingMemory = workingMemory;
+            this.reteEvaluator = reteEvaluator;
         }
 
-        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+        public void updateFromTuple(final ReteEvaluator reteEvaluator,
                                     final Tuple tuple) {
-            this.workingMemory = workingMemory;
+            this.reteEvaluator = reteEvaluator;
         }
 
         public void resetTuple() {

@@ -21,7 +21,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public class BaseLocalDateClassFieldReader extends BaseDateClassFieldReader {
 
@@ -46,8 +46,8 @@ public class BaseLocalDateClassFieldReader extends BaseDateClassFieldReader {
                valueType );
     }
 
-    protected Date getDate( InternalWorkingMemory workingMemory, Object object ) {
-        LocalDate ld = ((LocalDate )getValue( workingMemory, object ));
+    protected Date getDate(ReteEvaluator reteEvaluator, Object object ) {
+        LocalDate ld = ((LocalDate )getValue( reteEvaluator, object ));
         return Date.from( ld.atStartOfDay().atZone( ZoneId.systemDefault() ).toInstant() );
     }
 }

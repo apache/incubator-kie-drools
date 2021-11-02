@@ -22,12 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PhreakAccumulateNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -135,18 +134,17 @@ public class AccumulateNode extends BetaNode {
     }
 
     public InternalFactHandle createResultFactHandle(final PropagationContext context,
-                                                     final InternalWorkingMemory workingMemory,
+                                                     final ReteEvaluator reteEvaluator,
                                                      final LeftTuple leftTuple,
                                                      final Object result) {
         InternalFactHandle handle = null;
         if ( context.getReaderContext() != null ) {
-            handle = context.getReaderContext().createAccumulateHandle( context.getEntryPoint(), workingMemory, leftTuple, result, getId() );
+            handle = context.getReaderContext().createAccumulateHandle( context.getEntryPoint(), reteEvaluator, leftTuple, result, getId() );
         }
         if (handle == null) {
-            handle = workingMemory.getFactHandleFactory().newFactHandle( result,
-                                                                         null, // no need to retrieve the ObjectTypeConf, acc result is never an event or a trait
-                                                                         workingMemory,
-                                                                         null );
+            handle = reteEvaluator.createFactHandle( result,
+                                                     null, // no need to retrieve the ObjectTypeConf, acc result is never an event or a trait
+                                                     null );
         }
         return handle;
     }
@@ -181,7 +179,7 @@ public class AccumulateNode extends BetaNode {
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public Memory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         BetaMemory betaMemory = this.constraints.createBetaMemory(config,
                                                                   NodeTypeEnums.AccumulateNode);
         AccumulateMemory memory = this.accumulate.isMultiFunction() ?
@@ -385,11 +383,11 @@ public class AccumulateNode extends BetaNode {
         }
 
         public TupleList<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, Tuple leftTuple,
-                                                          Object key, WorkingMemory wm) {
+                                                          Object key, ReteEvaluator reteEvaluator) {
             return groupsMap.computeIfAbsent(key, k -> {
                 AccumulateContextEntry entry = new AccumulateContextEntry(key);
-                entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, wm) );
-                PhreakAccumulateNode.initContext(workingMemoryContext, (InternalWorkingMemory) wm, accumulate, leftTuple, entry);
+                entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, reteEvaluator) );
+                PhreakAccumulateNode.initContext(workingMemoryContext, reteEvaluator, accumulate, leftTuple, entry);
                 return new TupleList<>(entry);
             });
         }
@@ -492,16 +490,16 @@ public class AccumulateNode extends BetaNode {
      */
     public void retractRightTuple( final RightTuple rightTuple,
                                    final PropagationContext pctx,
-                                   final InternalWorkingMemory workingMemory ) {
-        final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
+                                   final ReteEvaluator reteEvaluator ) {
+        final AccumulateMemory memory = (AccumulateMemory) reteEvaluator.getNodeMemory( this );
 
         BetaMemory bm = memory.getBetaMemory();
         rightTuple.setPropagationContext( pctx );
-        doDeleteRightTuple( rightTuple, workingMemory, bm );
+        doDeleteRightTuple( rightTuple, reteEvaluator, bm );
     }
 
     @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 

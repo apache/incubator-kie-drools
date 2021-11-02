@@ -27,6 +27,7 @@ import java.util.List;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.Evaluator;
@@ -222,17 +223,17 @@ public class ReturnValueRestriction
     public boolean isAllowed(final InternalReadAccessor readAccessor,
                              final InternalFactHandle handle,
                              final Tuple tuple,
-                             final WorkingMemory workingMemory,
+                             final ReteEvaluator reteEvaluator,
                              final ContextEntry context) {
         try {
-            return this.evaluator.evaluate( (InternalWorkingMemory) workingMemory,
+            return this.evaluator.evaluate( reteEvaluator,
                                             this.readAccessor,
                                             handle,
                                             this.expression.evaluate( handle,
                                                                       tuple,
                                                                       this.previousDeclarations,
                                                                       this.localDeclarations,
-                                                                      workingMemory,
+                                                                      reteEvaluator,
                                                                       ((ReturnValueContextEntry) context).dialectContext ) );
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
@@ -241,7 +242,7 @@ public class ReturnValueRestriction
 
     public boolean isAllowed(final InternalReadAccessor extractor,
                              final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory,
+                             final ReteEvaluator reteEvaluator,
                              final ContextEntry context) {
         try {
             ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;            
@@ -249,9 +250,9 @@ public class ReturnValueRestriction
                                                          null,
                                                          this.previousDeclarations,
                                                          this.localDeclarations,
-                                                         workingMemory,
+                                                         reteEvaluator,
                                                          ctx.dialectContext );
-            return this.evaluator.evaluate( workingMemory,
+            return this.evaluator.evaluate( reteEvaluator,
                                             this.readAccessor,
                                             handle,
                                             value );
@@ -268,9 +269,9 @@ public class ReturnValueRestriction
                                                          ctx.tuple,
                                                          this.previousDeclarations,
                                                          this.localDeclarations,
-                                                         ctx.workingMemory,
+                                                         ctx.reteEvaluator,
                                                          ctx.dialectContext );
-            return this.evaluator.evaluate( ctx.workingMemory,
+            return this.evaluator.evaluate( ctx.reteEvaluator,
                                             this.readAccessor,
                                             handle,
                                             value );
@@ -287,9 +288,9 @@ public class ReturnValueRestriction
                                                          tuple,
                                                          this.previousDeclarations,
                                                          this.localDeclarations,
-                                                         ctx.workingMemory,
+                                                         ctx.reteEvaluator,
                                                          ctx.dialectContext );
-            return this.evaluator.evaluate( ctx.workingMemory,
+            return this.evaluator.evaluate( ctx.reteEvaluator,
                                             this.readAccessor,
                                             ctx.handle,
                                             value );
@@ -403,7 +404,7 @@ public class ReturnValueRestriction
         public ReadAccessor          fieldExtractor;
         public InternalFactHandle    handle;
         public Tuple                 tuple;
-        public InternalWorkingMemory workingMemory;
+        public ReteEvaluator reteEvaluator;
         public Declaration[]         previousDeclarations;
         public Declaration[]         localDeclarations;
 
@@ -427,7 +428,7 @@ public class ReturnValueRestriction
             fieldExtractor = (ReadAccessor) in.readObject();
             handle = (InternalFactHandle) in.readObject();
             tuple = (LeftTuple) in.readObject();
-            workingMemory = (InternalWorkingMemory) in.readObject();
+            reteEvaluator = (ReteEvaluator) in.readObject();
             previousDeclarations = (Declaration[]) in.readObject();
             localDeclarations = (Declaration[]) in.readObject();
             entry = (ContextEntry) in.readObject();
@@ -438,7 +439,7 @@ public class ReturnValueRestriction
             out.writeObject( fieldExtractor );
             out.writeObject( handle );
             out.writeObject( tuple );
-            out.writeObject( workingMemory );
+            out.writeObject( reteEvaluator );
             out.writeObject( previousDeclarations );
             out.writeObject( localDeclarations );
             out.writeObject( entry );
@@ -453,15 +454,15 @@ public class ReturnValueRestriction
             this.entry = entry;
         }
 
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+        public void updateFromFactHandle(final ReteEvaluator reteEvaluator,
                                          final InternalFactHandle handle) {
-            this.workingMemory = workingMemory;
+            this.reteEvaluator = reteEvaluator;
             this.handle = handle;
         }
 
-        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+        public void updateFromTuple(final ReteEvaluator reteEvaluator,
                                     final Tuple tuple) {
-            this.workingMemory = workingMemory;
+            this.reteEvaluator = reteEvaluator;
             this.tuple = tuple;
         }
 
@@ -493,8 +494,8 @@ public class ReturnValueRestriction
         /* (non-Javadoc)
          * @see org.kie.rule.ReturnValueContextEntry#getWorkingMemory()
          */
-        public InternalWorkingMemory getWorkingMemory() {
-            return this.workingMemory;
+        public ReteEvaluator getReteEvaluator() {
+            return this.reteEvaluator;
         }
 
         public void resetTuple() {

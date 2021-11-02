@@ -19,7 +19,7 @@ package org.drools.core.spi;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 
@@ -27,7 +27,7 @@ public interface Enabled extends Serializable {
     boolean getValue(final Tuple tuple,
                      final Declaration[] declarations,
                      final RuleImpl rule,
-                     final WorkingMemory workingMemory);
+                     final ReteEvaluator reteEvaluator);
 
     default Declaration[] findDeclarations( Map<String, Declaration> decls) {
         return null;

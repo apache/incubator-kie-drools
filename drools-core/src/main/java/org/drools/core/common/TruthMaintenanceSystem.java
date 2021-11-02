@@ -25,6 +25,7 @@ import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
@@ -96,7 +97,7 @@ public class TruthMaintenanceSystem {
         InternalFactHandle fh = null;
         if ( key == null ) {
             // no EqualityKey exits, so we construct one. We know it can only be justified.
-            fh =  ep.getHandleFactory().newFactHandle(object, typeConf, ep.getInternalWorkingMemory(), ep );
+            fh =  ep.getHandleFactory().newFactHandle(object, typeConf, ep.getReteEvaluator(), ep );
             key = new EqualityKey( fh, EqualityKey.JUSTIFIED );
             fh.setEqualityKey( key );
             put(key);
@@ -104,7 +105,7 @@ public class TruthMaintenanceSystem {
             fh = key.getLogicalFactHandle();
             if ( fh == null ) {
                 // The EqualityKey exists, but this is the first logical object in the key.
-                fh =  ep.getHandleFactory().newFactHandle(object, typeConf, ep.getInternalWorkingMemory(), ep );
+                fh =  ep.getHandleFactory().newFactHandle(object, typeConf, ep.getReteEvaluator(), ep );
                 key.setLogicalFactHandle( fh );
                 fh.setEqualityKey( key );
             }
@@ -136,9 +137,9 @@ public class TruthMaintenanceSystem {
             throw new IllegalArgumentException( "The FactHandle did not originate from TMS : " + fh);
         }
 
-        InternalWorkingMemory wm = ep.getInternalWorkingMemory();
+        ReteEvaluator reteEvaluator = ep.getReteEvaluator();
 
-        final PropagationContext propagationContext = ep.getPctxFactory().createPropagationContext( wm.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
+        final PropagationContext propagationContext = ep.getPctxFactory().createPropagationContext( reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
                                                                                                     null, null, ifh,  ep.getEntryPoint());
 
         TruthMaintenanceSystemHelper.removeLogicalDependencies( ifh, propagationContext );

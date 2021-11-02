@@ -22,7 +22,7 @@ import java.util.Map;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleExecutor;
@@ -183,7 +183,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return consequenceName == null ? RuleImpl.DEFAULT_CONSEQUENCE_NAME : consequenceName;
     }
 
-    public void cancelMatch(AgendaItem match, InternalWorkingMemoryActions workingMemory) {
+    public void cancelMatch(AgendaItem match, ReteEvaluator reteEvaluator) {
         match.cancel();
         if ( match.isQueued() ) {
             Tuple leftTuple = match.getTuple();
@@ -194,7 +194,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                 }
             }
             RuleExecutor ruleExecutor = ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor();
-            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualAgenda( workingMemory ), ruleExecutor, leftTuple);
+            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( reteEvaluator ), ruleExecutor, leftTuple);
         }
     }
 

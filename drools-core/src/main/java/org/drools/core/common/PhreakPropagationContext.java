@@ -228,7 +228,7 @@ public class PhreakPropagationContext
         this.modificationMask = modificationMask;
     }
 
-    public PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory) {
+    public PropagationContext adaptModificationMaskForObjectType(ObjectType type, ReteEvaluator reteEvaluator) {
         if (isAllSetPropertyReactiveMask(originalMask) || originalMask.isSet(PropertySpecificUtil.TRAITABLE_BIT) || !(type instanceof ClassObjectType)) {
             return this;
         }
@@ -255,8 +255,8 @@ public class PhreakPropagationContext
             return this;
         }
 
-        List<String> typeClassProps = getAccessibleProperties( workingMemory, classType, pkgName );
-        List<String> modifiedClassProps = getAccessibleProperties( workingMemory, modifiedClass );
+        List<String> typeClassProps = getAccessibleProperties( reteEvaluator, classType, pkgName );
+        List<String> modifiedClassProps = getAccessibleProperties( reteEvaluator, modifiedClass );
         modificationMask = getEmptyPropertyReactiveMask(typeClassProps.size());
 
         for (int i = 0; i < modifiedClassProps.size(); i++) {
@@ -277,15 +277,15 @@ public class PhreakPropagationContext
         return this;
     }
 
-    private List<String> getAccessibleProperties( InternalWorkingMemory workingMemory, Class<?> classType ) {
-        return getAccessibleProperties( workingMemory, classType, classType.getPackage().getName() );
+    private List<String> getAccessibleProperties( ReteEvaluator reteEvaluator, Class<?> classType ) {
+        return getAccessibleProperties( reteEvaluator, classType, classType.getPackage().getName() );
     }
 
-    private List<String> getAccessibleProperties( InternalWorkingMemory workingMemory, Class<?> classType, String pkgName ) {
+    private List<String> getAccessibleProperties( ReteEvaluator reteEvaluator, Class<?> classType, String pkgName ) {
         if ( pkgName.equals( "java.lang" ) || pkgName.equals( "java.util" ) ) {
             return Collections.EMPTY_LIST;
         }
-        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( pkgName );
+        InternalKnowledgePackage pkg = reteEvaluator.getKnowledgeBase().getPackage( pkgName );
         TypeDeclaration tdecl =  pkg != null ? pkg.getTypeDeclaration( classType ) : null;
         return tdecl != null ? tdecl.getAccessibleProperties() : Collections.EMPTY_LIST;
     }

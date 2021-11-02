@@ -48,6 +48,7 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.DefaultFactHandle;
@@ -67,6 +68,7 @@ import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -803,10 +805,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             TerminalNode[] tnodes = evalQuery(queryName, queryObject, handle, pCtx, calledFromRHS);
 
-            List<Map<String, Declaration>> decls = new ArrayList<Map<String, Declaration>>();
+            List<Map<String, Declaration>> decls = new ArrayList<>();
             if ( tnodes != null ) {
                 for ( TerminalNode node : tnodes ) {
-                    decls.add( ((QueryTerminalNode) node).getSubRule().getOuterDeclarations() );
+                    decls.add( node.getSubRule().getOuterDeclarations() );
                 }
             }
 
@@ -895,13 +897,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
+        public void execute( ReteEvaluator reteEvaluator ) {
             QueryTerminalNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
             if ( tnodes == null ) {
                 throw new RuntimeException( "Query '" + queryName + "' does not exist" );
             }
 
-            QueryTerminalNode tnode = (QueryTerminalNode) tnodes[0];
+            QueryTerminalNode tnode = tnodes[0];
 
             if (queryObject.getElements().length != tnode.getQuery().getParameters().length) {
                 throw new RuntimeException( "Query '" + queryName + "' has been invoked with a wrong number of arguments. Expected " +
@@ -958,7 +960,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
+        public void execute( ReteEvaluator reteEvaluator ) {
             LeftInputAdapterNode lian = factHandle.getFirstLeftTuple().getTupleSource();
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
@@ -979,6 +981,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public EntryPointId getEntryPoint() {
         return this.defaultEntryPoint.getEntryPoint();
+    }
+
+    @Override
+    public ReteEvaluator getReteEvaluator() {
+        return this;
     }
 
     public InternalWorkingMemory getInternalWorkingMemory() {
@@ -1295,6 +1302,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.agenda.clearAndCancelRuleFlowGroup(group);
     }
 
+    @Override
+    public ActivationsManager getActivationsManager() {
+        return agenda;
+    }
+
     public InternalKnowledgeBase getKnowledgeBase() {
         return this.kBase;
     }
@@ -1400,15 +1412,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     /**
      * @see org.drools.core.WorkingMemory
      */
-    public FactHandle getFactHandle(final Object object) {
-        return this.defaultEntryPoint.getFactHandle(object);
-    }
-
-    /**
-     * @see org.drools.core.WorkingMemory
-     */
-    public FactHandle getFactHandleByIdentity(final Object object) {
-        return getObjectStore().getHandleForObjectIdentity(object);
+    public InternalFactHandle getFactHandle(final Object object) {
+        return (InternalFactHandle) this.defaultEntryPoint.getFactHandle(object);
     }
 
     /**
@@ -1471,8 +1476,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void submit(AtomicAction action) {
         agenda.addPropagation( new PropagationEntry.AbstractPropagationEntry() {
             @Override
-            public void execute( InternalWorkingMemory wm ) {
-                action.execute( (KieSession)wm );
+            public void execute( ReteEvaluator reteEvaluator ) {
+                action.execute( (KieSession)reteEvaluator );
             }
         } );
     }
@@ -1502,10 +1507,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                              final RuleImpl rule,
                              final TerminalNode terminalNode) {
         checkAlive();
-        return this.defaultEntryPoint.insert(object,
-                                             dynamic,
-                                             rule,
-                                             terminalNode);
+        return this.defaultEntryPoint.insert(object, dynamic, rule, terminalNode);
     }
 
     public void retract(FactHandle handle) {
@@ -1578,19 +1580,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       activation);
     }
 
-    public void executeQueuedActions() {
-        flushPropagations();
-    }
-
-    public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
-        try {
-            startOperation();
-            addPropagation(action);
-        } finally {
-            endOperation();
-        }
-    }
-
     /**
      * Retrieve the <code>JoinMemory</code> for a particular
      * <code>JoinNode</code>.
@@ -1630,10 +1619,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.propagationIdCounter.incrementAndGet();
     }
 
-    public long getPropagationIdCounter() {
-        return this.propagationIdCounter.get();
-    }
-
     public Lock getLock() {
         return this.lock;
     }
@@ -1669,14 +1654,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
         }
 
-        public void execute(InternalWorkingMemory workingMemory) {
-            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+        public void execute(ReteEvaluator reteEvaluator) {
+            PropagationContextFactory pctxFactory = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
-            final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
+            final PropagationContext context = pctxFactory.createPropagationContext(reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                     this.ruleOrigin, this.tuple != null ? this.tuple.getTupleSink() : null, this.factHandle);
-            workingMemory.getKnowledgeBase().getRete().assertObject(this.factHandle,
-                                                                    context,
-                                                                    workingMemory);
+            reteEvaluator.getKnowledgeBase().getRete().assertObject(this.factHandle, context, reteEvaluator);
         }
     }
 
@@ -1722,30 +1705,30 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.node = (ObjectTypeNode) context.getSinks().get(nodeId);
         }
 
-        public void execute(InternalWorkingMemory workingMemory) {
+        public void execute(ReteEvaluator reteEvaluator) {
             if (!factHandle.isValid()) {
                 return;
             }
 
-            PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.Type.EXPIRATION );
-            workingMemory.getAgenda().registerExpiration( context );
+            PropagationContext context = createPropagationContextForFact( reteEvaluator, factHandle, PropagationContext.Type.EXPIRATION );
+            reteEvaluator.getActivationsManager().registerExpiration( context );
 
             factHandle.forEachLeftTuple( ObjectTypeNode::expireLeftTuple );
             factHandle.forEachRightTuple( rt -> {
-                rt.setExpired(workingMemory, context);
+                rt.setExpired(reteEvaluator, context);
                 ObjectTypeNode.expireRightTuple(rt);
             } );
 
-            expireFactHandle( workingMemory, factHandle );
+            expireFactHandle( reteEvaluator, factHandle );
         }
 
-        private static void expireFactHandle( InternalWorkingMemory workingMemory, EventFactHandle factHandle ) {
+        private static void expireFactHandle( ReteEvaluator reteEvaluator, EventFactHandle factHandle ) {
             factHandle.decreaseOtnCount();
             if (factHandle.getOtnCount() == 0) {
                 factHandle.setExpired( true );
                 if (factHandle.getActivationsCount() == 0) {
                     String epId = factHandle.getEntryPointName();
-                    ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
+                    ( (InternalWorkingMemoryEntryPoint) reteEvaluator.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
                 } else {
                     factHandle.setPendingRemoveFromStore( true );
                 }
@@ -1779,23 +1762,23 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
+        public void execute( ReteEvaluator reteEvaluator ) {
             if (!factHandle.isValid()) {
                 return;
             }
 
-            PropagationContext context = createPropagationContextForFact( wm, factHandle, PropagationContext.Type.EXPIRATION );
-            ( (CompositeDefaultAgenda) wm.getAgenda() ).getPartitionedAgenda( partition ).registerExpiration( context );
+            PropagationContext context = createPropagationContextForFact( reteEvaluator, factHandle, PropagationContext.Type.EXPIRATION );
+            ( (CompositeDefaultAgenda) reteEvaluator.getActivationsManager() ).getPartitionedAgenda( partition ).registerExpiration( context );
 
             DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
             linkedTuples.forEachLeftTuple( partition, ObjectTypeNode::expireLeftTuple );
             linkedTuples.forEachRightTuple( partition, rt -> {
-                rt.setExpired(wm, context);
+                rt.setExpired(reteEvaluator, context);
                 ObjectTypeNode.expireRightTuple(rt);
             });
 
             if (isMainPartition()) {
-                WorkingMemoryReteExpireAction.expireFactHandle( wm, factHandle );
+                WorkingMemoryReteExpireAction.expireFactHandle( reteEvaluator, factHandle );
             }
         }
 
@@ -2019,8 +2002,18 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.timerService.getTimeToNextJob();
     }
 
-    public void addPropagation(PropagationEntry propagationEntry) {
-        agenda.addPropagation( propagationEntry );
+    @Override
+    public void addPropagation(PropagationEntry propagationEntry, boolean register) {
+        try {
+            if (register) {
+                startOperation();
+            }
+            agenda.addPropagation( propagationEntry );
+        } finally {
+            if (register) {
+                endOperation();
+            }
+        }
     }
 
     public void flushPropagations() {
@@ -2233,7 +2226,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public Map.Entry[] getActivationParameters(long activationId) {
-        Activation[] activations = agenda.getActivations();
+        Activation[] activations = agenda.getAgendaGroupsManager().getActivations();
         for (int i = 0; i < activations.length; i++) {
             if (activations[i].getActivationNumber() == activationId) {
                 Map params = getActivationParameters(activations[i]);

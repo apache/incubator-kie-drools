@@ -69,11 +69,11 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
-                                final InternalWorkingMemory workingMemory,
+                                final ReteEvaluator reteEvaluator,
                                 final Tuple tuple) {
-        context[0].updateFromTuple( workingMemory,
+        context[0].updateFromTuple( reteEvaluator,
                                     tuple );
-        context[1].updateFromTuple( workingMemory,
+        context[1].updateFromTuple( reteEvaluator,
                                     tuple );
     }
 
@@ -81,11 +81,11 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
      * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
-                                     final InternalWorkingMemory workingMemory,
+                                     final ReteEvaluator reteEvaluator,
                                      final InternalFactHandle handle) {
-        context[0].updateFromFactHandle( workingMemory,
+        context[0].updateFromFactHandle( reteEvaluator,
                                          handle );
-        context[1].updateFromFactHandle( workingMemory,
+        context[1].updateFromFactHandle( reteEvaluator,
                                          handle );
     }
 

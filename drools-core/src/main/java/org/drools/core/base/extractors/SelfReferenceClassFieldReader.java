@@ -16,10 +16,10 @@
 
 package org.drools.core.base.extractors;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
-
 import java.io.Externalizable;
+
+import org.drools.core.base.ValueType;
+import org.drools.core.common.ReteEvaluator;
 
 /**
  * A special field extractor for the self reference "this".
@@ -38,12 +38,12 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader im
                ValueType.determineValueType( clazz ) ); // value type
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
+    public Object getValue(ReteEvaluator reteEvaluator, final Object object) {
         return object;
     }
     
-    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getValue( workingMemory, object ) == null;
+    public boolean isNullValue(ReteEvaluator reteEvaluator, final Object object) {
+        return getValue( reteEvaluator, object ) == null;
     }
     
     @Override

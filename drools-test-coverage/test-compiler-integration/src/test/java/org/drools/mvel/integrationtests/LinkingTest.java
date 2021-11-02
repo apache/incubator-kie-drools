@@ -1539,7 +1539,7 @@ public class LinkingTest {
         wm.flushPropagations();
 
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
-        InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
+        InternalAgendaGroup group = agenda.getAgendaGroupsManager().getNextFocus();
         AgendaItem item = (AgendaItem) group.remove();
         RuleExecutor ruleExecutor = ((RuleAgendaItem)item).getRuleExecutor();
         int count = ruleExecutor.evaluateNetworkAndFire(wm, null, 0, -1);

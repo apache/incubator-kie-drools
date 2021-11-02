@@ -28,6 +28,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallingHelper;
@@ -274,7 +275,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public InternalFactHandle createAccumulateHandle( EntryPointId entryPointId, InternalWorkingMemory workingMemory,
+    public InternalFactHandle createAccumulateHandle( EntryPointId entryPointId, ReteEvaluator reteEvaluator,
                                                       LeftTuple leftTuple, Object result, int nodeId) {
         InternalFactHandle handle = null;
         ProtobufMessages.FactHandle _handle = null;
@@ -285,19 +286,19 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
 
         if( _handle != null ) {
             // create a handle with the given id
-            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
+            handle = reteEvaluator.getFactHandleFactory().newFactHandle( _handle.getId(),
                     result,
                     _handle.getRecency(),
-                    workingMemory.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( entryPointId,
+                    reteEvaluator.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( entryPointId,
                             result ),
-                    workingMemory,
+                    reteEvaluator,
                     null ); // so far, result is not an event
         }
         return handle;
     }
 
     @Override
-    public InternalFactHandle createAsyncNodeHandle( Tuple leftTuple, InternalWorkingMemory workingMemory,
+    public InternalFactHandle createAsyncNodeHandle( Tuple leftTuple, ReteEvaluator reteEvaluator,
                                                      Object object, int nodeId, ObjectTypeConf objectTypeConf ) {
         ProtobufMessages.FactHandle _handle = null;
         Map<TupleKey, List<ProtobufMessages.FactHandle>> map = (Map<TupleKey, List<ProtobufMessages.FactHandle>>) getNodeMemories().get( nodeId );
@@ -316,18 +317,18 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
         InternalFactHandle handle = null;
         if( _handle != null ) {
             // create a handle with the given id
-            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
+            handle = reteEvaluator.getFactHandleFactory().newFactHandle( _handle.getId(),
                     object,
                     _handle.getRecency(),
                     objectTypeConf,
-                    workingMemory,
+                    reteEvaluator,
                     null );
         }
         return handle;
     }
 
     @Override
-    public QueryElementFactHandle createQueryResultHandle( Tuple leftTuple, InternalWorkingMemory workingMemory, Object[] objects, int nodeId ) {
+    public QueryElementFactHandle createQueryResultHandle(Tuple leftTuple, Object[] objects, int nodeId ) {
         ProtobufMessages.FactHandle handle = null;
         Map<TupleKey, ProtobufInputMarshaller.QueryElementContext> map = (Map<TupleKey, ProtobufInputMarshaller.QueryElementContext>) getNodeMemories().get( nodeId );
         if( map != null ) {
@@ -345,7 +346,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public InternalFactHandle createQueryHandle(Tuple leftTuple, InternalWorkingMemory workingMemory, int nodeId ) {
+    public InternalFactHandle createQueryHandle(Tuple leftTuple, ReteEvaluator reteEvaluator, int nodeId ) {
         ProtobufMessages.FactHandle handle = null;
         Map<TupleKey, ProtobufInputMarshaller.QueryElementContext> map = (Map<TupleKey, ProtobufInputMarshaller.QueryElementContext>) getNodeMemories().get( nodeId );
         if( map != null ) {
@@ -353,12 +354,12 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
         }
 
         return handle != null ?
-                workingMemory.getFactHandleFactory().newFactHandle( handle.getId(),
+                reteEvaluator.getFactHandleFactory().newFactHandle( handle.getId(),
                         null,
                         handle.getRecency(),
                         null,
-                        workingMemory,
-                        workingMemory ) :
+                        reteEvaluator,
+                        null ) :
                 null;
     }
 

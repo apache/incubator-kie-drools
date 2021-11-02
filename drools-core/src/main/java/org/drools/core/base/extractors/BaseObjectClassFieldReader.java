@@ -21,7 +21,7 @@ import java.util.Date;
 
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
@@ -39,12 +39,12 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
-    public abstract Object getValue(InternalWorkingMemory workingMemory,
+    public abstract Object getValue(ReteEvaluator reteEvaluator,
                                     Object object);
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
 
         if ( value instanceof Boolean ) {
@@ -54,9 +54,9 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         throw new RuntimeException( "Conversion to boolean not supported from " + getExtractToClass().getName() );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory,
+    public byte getByteValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
 
         if ( value instanceof Character ) {
@@ -66,9 +66,9 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         throw new RuntimeException( "Conversion to byte not supported from " +  getExtractToClass().getName());
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory,
+    public char getCharValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
 
         if ( value instanceof Character ) {
@@ -78,9 +78,9 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         throw new RuntimeException( "Conversion to char not supported from " +  getExtractToClass().getName() );
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory,
+    public double getDoubleValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
 
         if( value instanceof Character ) {
@@ -92,9 +92,9 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         throw new RuntimeException( "Conversion to double not supported from " +  getExtractToClass().getName() );
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory,
+    public float getFloatValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
 
         if( value instanceof Character ) {
@@ -106,9 +106,9 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         throw new RuntimeException( "Conversion to float not supported from " +  getExtractToClass().getName() );
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory,
+    public int getIntValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
 
         if( value instanceof Character ) {
@@ -120,9 +120,9 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         throw new RuntimeException( "Conversion to int not supported from " +  getExtractToClass().getName() );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory,
+    public long getLongValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
 
         if( value instanceof Character ) {
@@ -136,9 +136,9 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         throw new RuntimeException( "Conversion to long not supported from " +  getExtractToClass().getName() );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory,
+    public short getShortValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
 
         if( value instanceof Character ) {
@@ -150,12 +150,12 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         throw new RuntimeException( "Conversion to short not supported from " +  getExtractToClass().getName() );
     }
 
-    public boolean isNullValue(InternalWorkingMemory workingMemory,
+    public boolean isNullValue(ReteEvaluator reteEvaluator,
                                final Object object) {
         if ( object == null ) {
             return true;
         } else {
-            return getValue( workingMemory,
+            return getValue( reteEvaluator,
                              object ) == null;
         }
     }
@@ -163,7 +163,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getMethod( getNativeReadMethodName(),
-                                              new Class[]{InternalWorkingMemory.class, Object.class} );
+                                              new Class[]{ReteEvaluator.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
@@ -178,9 +178,9 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         return "get" + type.getName().substring(0, 1).toUpperCase() + type.getName().substring(1) + "Value";
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory,
+    public int getHashCode(ReteEvaluator reteEvaluator,
                            final Object object) {
-        final Object value = getValue( workingMemory,
+        final Object value = getValue( reteEvaluator,
                                        object );
         return (value != null) ? value.hashCode() : 0;
     }

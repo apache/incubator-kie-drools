@@ -17,9 +17,9 @@
 package org.drools.core;
 
 
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -84,9 +84,7 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
     TruthMaintenanceSystem getTruthMaintenanceSystem();
 
     EntryPointId getEntryPoint();
-    InternalWorkingMemory getInternalWorkingMemory();
-
-    FactHandle getFactHandleByIdentity(Object object);
+    ReteEvaluator getReteEvaluator();
 
     void reset();
 

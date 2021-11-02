@@ -78,7 +78,7 @@ public interface InternalFactHandle
 
     LeftTuple getFirstLeftTuple();
 
-    default InternalWorkingMemory getWorkingMemory() {
+    default ReteEvaluator getReteEvaluator() {
         return null;
     }
 
@@ -86,7 +86,7 @@ public interface InternalFactHandle
     default String getEntryPointName() {
         return getEntryPointId() != null ? getEntryPointId().getEntryPointId() : null;
     }
-    WorkingMemoryEntryPoint getEntryPoint(InternalWorkingMemory wm);
+    WorkingMemoryEntryPoint getEntryPoint(ReteEvaluator reteEvaluator);
 
     InternalFactHandle clone();
     
@@ -301,7 +301,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public WorkingMemoryEntryPoint getEntryPoint( InternalWorkingMemory wm ) {
+        public WorkingMemoryEntryPoint getEntryPoint( ReteEvaluator reteEvaluator ) {
             throw new UnsupportedOperationException();
         }
 

@@ -126,7 +126,7 @@ public class SimpleBeliefSystem
         } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
-            WorkingMemoryEntryPoint ep = bfh.getEntryPoint(this.ep.getInternalWorkingMemory());
+            WorkingMemoryEntryPoint ep = bfh.getEntryPoint(this.ep.getReteEvaluator());
             ep.getObjectStore().updateHandle(bfh, beliefSet.getFirst().getObject().getObject());
             ep.update( bfh, bfh.getObject(), allSetButTraitBitMask(), Object.class, null );
         }

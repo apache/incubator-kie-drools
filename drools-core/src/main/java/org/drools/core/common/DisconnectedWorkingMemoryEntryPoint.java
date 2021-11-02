@@ -47,6 +47,11 @@ public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPo
         return new EntryPointId( id );
     }
 
+    @Override
+    public ReteEvaluator getReteEvaluator() {
+        return null;
+    }
+
     public long getFactCount() {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
@@ -144,16 +149,6 @@ public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPo
 
     @Override
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
-    }
-
-    @Override
-    public InternalWorkingMemory getInternalWorkingMemory() {
-        return null;
-    }
-
-    @Override
-    public FactHandle getFactHandleByIdentity( Object object ) {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 

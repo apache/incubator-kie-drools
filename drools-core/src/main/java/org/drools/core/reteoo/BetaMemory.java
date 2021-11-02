@@ -16,8 +16,8 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.rule.ContextEntry;
@@ -84,21 +84,21 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return context;
     }
 
-    public boolean linkNode(LeftTupleSource tupleSource, InternalWorkingMemory wm) {
-        return linkNode(tupleSource, wm, true);
+    public boolean linkNode(LeftTupleSource tupleSource, ReteEvaluator reteEvaluator) {
+        return linkNode(tupleSource, reteEvaluator, true);
     }
 
-    public boolean linkNode(LeftTupleSource tupleSource, InternalWorkingMemory wm, boolean notify) {
+    public boolean linkNode(LeftTupleSource tupleSource, ReteEvaluator reteEvaluator, boolean notify) {
         if (segmentMemory == null) {
-            segmentMemory = getOrCreateSegmentMemory( tupleSource, wm );
+            segmentMemory = getOrCreateSegmentMemory( tupleSource, reteEvaluator );
         }
         return notify ?
-               segmentMemory.linkNode(nodePosMaskBit, wm) :
+               segmentMemory.linkNode(nodePosMaskBit, reteEvaluator) :
                segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
     }
 
-    public boolean unlinkNode(InternalWorkingMemory wm) {
-        return segmentMemory.unlinkNode(nodePosMaskBit, wm);
+    public boolean unlinkNode(ReteEvaluator reteEvaluator) {
+        return segmentMemory.unlinkNode(nodePosMaskBit, reteEvaluator);
     }
 
     public short getNodeType() {
@@ -137,16 +137,16 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return counter--;
     }
 
-    public boolean setNodeDirty(LeftTupleSource tupleSource, InternalWorkingMemory wm) {
-        return setNodeDirty(tupleSource, wm, true);
+    public boolean setNodeDirty(LeftTupleSource tupleSource, ReteEvaluator reteEvaluator) {
+        return setNodeDirty(tupleSource, reteEvaluator, true);
     }
 
-    public boolean setNodeDirty(LeftTupleSource tupleSource, InternalWorkingMemory wm, boolean notify) {
+    public boolean setNodeDirty(LeftTupleSource tupleSource, ReteEvaluator reteEvaluator, boolean notify) {
         if (segmentMemory == null) {
-            segmentMemory = getOrCreateSegmentMemory( tupleSource, wm );
+            segmentMemory = getOrCreateSegmentMemory( tupleSource, reteEvaluator );
         }
         return notify ?
-               segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit) :
+               segmentMemory.notifyRuleLinkSegment(reteEvaluator, nodePosMaskBit) :
                segmentMemory.linkSegmentWithoutRuleNotify(nodePosMaskBit);
     }
 

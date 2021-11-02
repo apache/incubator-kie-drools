@@ -18,9 +18,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
@@ -51,22 +50,22 @@ public class LambdaGroupByAccumulate extends Accumulate {
         this.groupingFunction1 = groupingDeclarations.length == 1 ? groupingFunction.asFunction1() : null;
     }
 
-    private Object getKey( Tuple tuple, InternalFactHandle handle, WorkingMemory workingMemory ) {
+    private Object getKey( Tuple tuple, InternalFactHandle handle, ReteEvaluator reteEvaluator ) {
         if (groupingFunction1 != null) {
-            return groupingFunction1.apply( getValue( tuple, handle, workingMemory, groupingDeclarations[0] ) );
+            return groupingFunction1.apply( getValue( tuple, handle, reteEvaluator, groupingDeclarations[0] ) );
         }
 
         Object[] args = new Object[groupingDeclarations.length];
         for (int i = 0; i < groupingDeclarations.length; i++) {
-            args[i] = getValue( tuple, handle, workingMemory, groupingDeclarations[i] );
+            args[i] = getValue( tuple, handle, reteEvaluator, groupingDeclarations[i] );
         }
         return groupingFunction.apply( args );
     }
 
-    private Object getValue( Tuple tuple, InternalFactHandle handle, WorkingMemory workingMemory, Declaration declaration ) {
+    private Object getValue( Tuple tuple, InternalFactHandle handle, ReteEvaluator reteEvaluator, Declaration declaration ) {
         // we already have the handle, so avoid tuple iteration if not needed.
         // (is this really saving time, as get(int index) has pretty much the same check, at best saves some method call) (mdp)
-        return declaration.getValue( ( InternalWorkingMemory )workingMemory, declaration.getTupleIndex() < tuple.size() ? tuple.get( declaration ).getObject() : handle.getObject() );
+        return declaration.getValue( reteEvaluator, declaration.getTupleIndex() < tuple.size() ? tuple.get( declaration ).getObject() : handle.getObject() );
     }
 
     @Override
@@ -99,34 +98,34 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     @Override
     public Object init(Object workingMemoryContext, Object accContext,
-                       Object funcContext, Tuple leftTuple, WorkingMemory workingMemory) {
+                       Object funcContext, Tuple leftTuple, ReteEvaluator reteEvaluator) {
         // do nothing here, it's done when the group is first created
         return funcContext;
     }
 
     @Override
     public Object accumulate( Object workingMemoryContext, Object context,
-                              Tuple match, InternalFactHandle handle, WorkingMemory wm ) {
+                              Tuple match, InternalFactHandle handle, ReteEvaluator reteEvaluator ) {
         GroupByContext groupByContext = ( GroupByContext ) context;
         TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
-                                                                              match, getKey(match, handle, wm), wm);
+                                                                              match, getKey(match, handle, reteEvaluator), reteEvaluator);
 
-        return accumulate(workingMemoryContext, match, handle, groupByContext, tupleList, wm);
+        return accumulate(workingMemoryContext, match, handle, groupByContext, tupleList, reteEvaluator);
     }
 
     @Override
     public Object accumulate(Object workingMemoryContext, Tuple match, InternalFactHandle handle,
-                             GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, WorkingMemory wm) {
+                             GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, ReteEvaluator reteEvaluator) {
         groupByContext.moveToPropagateTupleList(tupleList);
-        return innerAccumulate.accumulate(workingMemoryContext, tupleList.getContext(), match, handle, wm);
+        return innerAccumulate.accumulate(workingMemoryContext, tupleList.getContext(), match, handle, reteEvaluator);
     }
 
     @Override
     public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-                              RightTuple rightParent, LeftTuple match, WorkingMemory workingMemory) {
+                              RightTuple rightParent, LeftTuple match, ReteEvaluator reteEvaluator) {
         TupleList<AccumulateContextEntry> memory = match.getMemory();
         AccumulateContextEntry entry = memory.getContext();
-        boolean reversed = innerAccumulate.tryReverse(workingMemoryContext, entry, leftTuple, handle, rightParent, match, workingMemory);
+        boolean reversed = innerAccumulate.tryReverse(workingMemoryContext, entry, leftTuple, handle, rightParent, match, reteEvaluator);
 
         if (reversed) {
             GroupByContext groupByContext = ( GroupByContext ) context;
@@ -143,9 +142,9 @@ public class LambdaGroupByAccumulate extends Accumulate {
     }
 
     @Override
-    public Object getResult( Object workingMemoryContext, Object context, Tuple leftTuple, WorkingMemory workingMemory ) {
+    public Object getResult( Object workingMemoryContext, Object context, Tuple leftTuple, ReteEvaluator reteEvaluator ) {
         AccumulateContextEntry entry = (AccumulateContextEntry) context;
-        return entry.isEmpty() ? null : innerAccumulate.getResult(workingMemoryContext, context, leftTuple, workingMemory);
+        return entry.isEmpty() ? null : innerAccumulate.getResult(workingMemoryContext, context, leftTuple, reteEvaluator);
     }
 
     @Override

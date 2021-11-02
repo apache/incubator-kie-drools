@@ -18,7 +18,7 @@ package org.drools.modelcompiler.constraints;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Tuple;
@@ -43,13 +43,13 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
     }
 
     @Override
-    public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory  ) {
+    public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator  ) {
         TemporalConstraint temporalConstraint = (TemporalConstraint) constraint;
         InternalFactHandle[] fhs = getBetaInvocationFactHandles( handle, tuple );
-        long start1 = getStartTimestamp( fhs[0], workingMemory, getDeclarations()[0], temporalConstraint.getF1() );
+        long start1 = getStartTimestamp( fhs[0], reteEvaluator, getDeclarations()[0], temporalConstraint.getF1() );
         long duration1 = getDuration( fhs[0] );
         long end1 = start1 + duration1;
-        long start2 = getStartTimestamp( fhs[1], workingMemory, getDeclarations()[1], temporalConstraint.getF2() );
+        long start2 = getStartTimestamp( fhs[1], reteEvaluator, getDeclarations()[1], temporalConstraint.getF2() );
         long duration2 = getDuration( fhs[1] );
         long end2 = start2 + duration2;
         TemporalPredicate temporalPredicate = temporalConstraint.getTemporalPredicate();
@@ -74,22 +74,22 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         return fh instanceof EventFactHandle ? ( (EventFactHandle ) fh).getDuration() : 0L;
     }
 
-    private long getStartTimestamp( InternalFactHandle fh, InternalWorkingMemory workingMemory, Declaration decl, Function1<Object, ?> f ) {
+    private long getStartTimestamp( InternalFactHandle fh, ReteEvaluator reteEvaluator, Declaration decl, Function1<Object, ?> f ) {
         if (f != null) {
-            return getTimestampFromDate( f.apply( decl.getValue( workingMemory, fh.getObject() ) ) );
+            return getTimestampFromDate( f.apply( decl.getValue( reteEvaluator, fh.getObject() ) ) );
         }
         return fh instanceof EventFactHandle && !(decl.getExtractor() instanceof LambdaReadAccessor) ?
                 ( (EventFactHandle ) fh).getStartTimestamp() :
-                getTimestampFromDate( decl.getValue( workingMemory, fh.getObject() ) );
+                getTimestampFromDate( decl.getValue( reteEvaluator, fh.getObject() ) );
     }
 
     @Override
-    public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
+    public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) {
         TemporalConstraint temporalConstraint = (TemporalConstraint) constraint;
-        long start1 = getStartTimestamp( handle, workingMemory, getDeclarations()[0], temporalConstraint.getF1() );
+        long start1 = getStartTimestamp( handle, reteEvaluator, getDeclarations()[0], temporalConstraint.getF1() );
         long duration1 = getDuration( handle );
         long end1 = start1 + duration1;
-        long start2 = getNonEventTimestamp(temporalConstraint, handle, workingMemory);
+        long start2 = getNonEventTimestamp(temporalConstraint, handle, reteEvaluator);
         long duration2 = 0;
         long end2 = start2 + duration2;
         TemporalPredicate temporalPredicate = temporalConstraint.getTemporalPredicate();
@@ -100,10 +100,10 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         }
     }
 
-    private long getNonEventTimestamp(TemporalConstraint temporalConstraint, InternalFactHandle handle, InternalWorkingMemory workingMemory) {
+    private long getNonEventTimestamp(TemporalConstraint temporalConstraint, InternalFactHandle handle, ReteEvaluator reteEvaluator) {
         return constraint instanceof FixedTemporalConstraint ?
                 (( FixedTemporalConstraint ) constraint).getValue() :
-                getStartTimestamp( handle, workingMemory, getDeclarations()[1], temporalConstraint.getF2() );
+                getStartTimestamp( handle, reteEvaluator, getDeclarations()[1], temporalConstraint.getF2() );
     }
 
     @Override

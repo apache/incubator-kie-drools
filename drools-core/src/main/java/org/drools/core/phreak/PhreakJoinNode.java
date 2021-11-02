@@ -16,7 +16,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
@@ -32,7 +32,7 @@ public class PhreakJoinNode {
     public void doNode(JoinNode joinNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
-                       InternalWorkingMemory wm,
+                       ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
@@ -56,19 +56,19 @@ public class PhreakJoinNode {
         }
 
         if (srcRightTuples.getUpdateFirst() != null) {
-            doRightUpdates(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            doRightUpdates(joinNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null ) {
-            doLeftUpdates(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftUpdates(joinNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcRightTuples.getInsertFirst() != null) {
-            doRightInserts(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+            doRightInserts(joinNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
+            doLeftInserts(joinNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples);
         }
 
         srcRightTuples.resetAll();
@@ -78,7 +78,7 @@ public class PhreakJoinNode {
     public void doLeftInserts(JoinNode joinNode,
                               LeftTupleSink sink,
                               BetaMemory bm,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
@@ -98,7 +98,7 @@ public class PhreakJoinNode {
             FastIterator it = joinNode.getRightIterator( rtm );
 
             constraints.updateFromTuple( contextEntry,
-                                         wm,
+                                         reteEvaluator,
                                          leftTuple );
 
             for (RightTuple rightTuple = joinNode.getFirstRightTuple( leftTuple,
@@ -126,7 +126,7 @@ public class PhreakJoinNode {
     public void doRightInserts(JoinNode joinNode,
                                LeftTupleSink sink,
                                BetaMemory bm,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
@@ -146,7 +146,7 @@ public class PhreakJoinNode {
                 FastIterator it = joinNode.getLeftIterator( ltm );
 
                 constraints.updateFromFactHandle( contextEntry,
-                                                  wm,
+                                                  reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
                 for ( LeftTuple leftTuple = joinNode.getFirstLeftTuple( rightTuple, ltm, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
@@ -176,7 +176,7 @@ public class PhreakJoinNode {
     public void doLeftUpdates(JoinNode joinNode,
                               LeftTupleSink sink,
                               BetaMemory bm,
-                              InternalWorkingMemory wm,
+                              ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples,
                               TupleSets<LeftTuple> stagedLeftTuples) {
@@ -188,7 +188,7 @@ public class PhreakJoinNode {
             LeftTuple next = leftTuple.getStagedNext();
 
             constraints.updateFromTuple(contextEntry,
-                                        wm,
+                                        reteEvaluator,
                                         leftTuple);
 
             FastIterator it = joinNode.getRightIterator(rtm);
@@ -282,7 +282,7 @@ public class PhreakJoinNode {
     public void doRightUpdates(JoinNode joinNode,
                                LeftTupleSink sink,
                                BetaMemory bm,
-                               InternalWorkingMemory wm,
+                               ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples,
                                TupleSets<LeftTuple> stagedLeftTuples) {
@@ -298,7 +298,7 @@ public class PhreakJoinNode {
                 LeftTuple leftTuple = joinNode.getFirstLeftTuple( rightTuple, ltm, it );
 
                 constraints.updateFromFactHandle( contextEntry,
-                                                  wm,
+                                                  reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
                 // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket

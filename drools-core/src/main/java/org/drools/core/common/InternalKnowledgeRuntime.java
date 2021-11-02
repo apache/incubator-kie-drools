@@ -27,10 +27,6 @@ public interface InternalKnowledgeRuntime extends KieRuntime {
 
     void endOperation();
 
-    void executeQueuedActions();
-
-    void queueWorkingMemoryAction(WorkingMemoryAction action);
-
     InternalProcessRuntime getProcessRuntime();
 
     void setIdentifier(long id);

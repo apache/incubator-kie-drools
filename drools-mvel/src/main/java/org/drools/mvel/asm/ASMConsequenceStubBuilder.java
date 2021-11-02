@@ -14,9 +14,11 @@
 
 package org.drools.mvel.asm;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.rule.GroupElement;
+import java.util.Map;
+
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.builder.dialect.asm.ConsequenceStub;
 import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 import org.drools.core.spi.CompiledInvoker;
@@ -25,9 +27,19 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 
-import java.util.Map;
-
-import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACC_VOLATILE;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.ATHROW;
+import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.GOTO;
+import static org.mvel2.asm.Opcodes.IFNONNULL;
+import static org.mvel2.asm.Opcodes.MONITORENTER;
+import static org.mvel2.asm.Opcodes.MONITOREXIT;
+import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
 
@@ -64,7 +76,7 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
             public void body(MethodVisitor mv) {
                 returnAsArray((Boolean[]) vars.get("notPatterns"));
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, ReteEvaluator.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 Label syncStart = new Label();
                 Label syncEnd = new Label();
@@ -89,7 +101,7 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
                 // ... ConsequenceGenerator.generate(this, knowledgeHelper, workingMemory)
-                invokeStatic(ConsequenceGenerator.class, "generate", null, ConsequenceStub.class, KnowledgeHelper.class, WorkingMemory.class);
+                invokeStatic(ConsequenceGenerator.class, "generate", null, ConsequenceStub.class, KnowledgeHelper.class, ReteEvaluator.class);
                 mv.visitLabel(ifNotInitialized);
                 mv.visitVarInsn(ALOAD, 3);
                 mv.visitInsn(MONITOREXIT);
@@ -107,7 +119,7 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
                 getFieldFromThis("consequence", Consequence.class);
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
-                invokeInterface(Consequence.class, "evaluate", null, KnowledgeHelper.class, WorkingMemory.class);
+                invokeInterface(Consequence.class, "evaluate", null, KnowledgeHelper.class, ReteEvaluator.class);
                 mv.visitInsn(RETURN);
             }
         }).addMethod(ACC_PUBLIC, "setConsequence", generator.methodDescr(null, Consequence.class), new ClassGenerator.MethodBody() {

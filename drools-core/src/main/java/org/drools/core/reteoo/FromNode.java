@@ -27,9 +27,9 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
@@ -44,7 +44,6 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 
-import static org.drools.core.base.DefaultKnowledgeHelper.getFactHandleFromWM;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
@@ -200,23 +199,23 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     @SuppressWarnings("unchecked")
     public RightTuple createRightTuple( final LeftTuple leftTuple,
                                         final PropagationContext context,
-                                        final InternalWorkingMemory workingMemory,
+                                        final ReteEvaluator reteEvaluator,
                                         final Object object ) {
-        return new RightTupleImpl( createFactHandle( workingMemory, object ) );
+        return new RightTupleImpl( createFactHandle( reteEvaluator, object ) );
     }
 
-    public InternalFactHandle createFactHandle( InternalWorkingMemory workingMemory, Object object ) {
-        InternalFactHandle handle = getFactHandleFromWM(workingMemory, object);
+    public InternalFactHandle createFactHandle( ReteEvaluator reteEvaluator, Object object ) {
+        InternalFactHandle handle = reteEvaluator.getFactHandle(object);
         if (handle != null && handle.getObject() == object) {
             return handle;
         }
 
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
-            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), getResultClass(), workingMemory.getKnowledgeBase() );
+            objectTypeConf = new ClassObjectTypeConf( reteEvaluator.getDefaultEntryPointId(), getResultClass(), reteEvaluator.getKnowledgeBase() );
         }
 
-        return workingMemory.getFactHandleFactory().newFactHandle(object, objectTypeConf, workingMemory, null );
+        return reteEvaluator.createFactHandle(object, objectTypeConf, null );
     }
 
 
@@ -238,7 +237,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
 
-    public T createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public T createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         BetaMemory beta = new BetaMemory( new TupleList(),
                                           null,
                                           this.betaConstraints.createContext(),

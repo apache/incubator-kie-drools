@@ -19,11 +19,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
@@ -79,19 +77,19 @@ public class MVELEvalExpression
 
     public boolean evaluate(final Tuple tuple,
                             final Declaration[] requiredDeclarations,
-                            final WorkingMemory workingMemory,
+                            final ReteEvaluator reteEvaluator,
                             final Object context) throws Exception {
         VariableResolverFactory factory = ( VariableResolverFactory ) context;
         
         unit.updateFactory( null,
-                            (LeftTuple) tuple,
+                            tuple,
                             null,
-                            (InternalWorkingMemory) workingMemory,
-                            workingMemory.getGlobalResolver(),
+                            reteEvaluator,
+                            reteEvaluator.getGlobalResolver(),
                             factory );
 
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( "MAIN" );
+        InternalKnowledgePackage pkg = reteEvaluator.getKnowledgeBase().getPackage( "MAIN" );
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );

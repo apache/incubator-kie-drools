@@ -24,6 +24,7 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
@@ -161,10 +162,10 @@ public class ReteooWorkingMemoryTest {
 
     @Test @Ignore
     public void testExecuteQueueActions() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
         final ReentrantAction action = new ReentrantAction();
-        ksession.queueWorkingMemoryAction( action );
+        ksession.addPropagation( action, true );
         ksession.flushPropagations();
         assertEquals( 2, action.counter.get() );
     }
@@ -216,17 +217,17 @@ public class ReteooWorkingMemoryTest {
             implements WorkingMemoryAction {
         // I am using AtomicInteger just as an int wrapper... nothing to do with concurrency here
         public AtomicInteger counter = new AtomicInteger(0);
-        public void execute(InternalWorkingMemory workingMemory) {
+        public void execute(ReteEvaluator reteEvaluator) {
             // the reentrant action must be executed completely
             // before any of the final actions is executed
             assertEquals( 0, counter.get() );
-            workingMemory.queueWorkingMemoryAction( new FinalAction( counter ) );
+            reteEvaluator.addPropagation( new FinalAction( counter ) );
             assertEquals( 0, counter.get() );
-            workingMemory.queueWorkingMemoryAction( new FinalAction( counter ) );
+            reteEvaluator.addPropagation( new FinalAction( counter ) );
             assertEquals( 0, counter.get() );
-            workingMemory.flushPropagations();
+            reteEvaluator.getActivationsManager().flushPropagations();
             assertEquals( 0, counter.get() );
-            workingMemory.flushPropagations();
+            reteEvaluator.getActivationsManager().flushPropagations();
             assertEquals( 0, counter.get() );
         }
     }

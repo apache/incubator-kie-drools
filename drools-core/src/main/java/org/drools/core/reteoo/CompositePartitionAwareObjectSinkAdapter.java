@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
@@ -106,8 +106,8 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     }
 
     @Override
-    public void propagateAssertObject( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        CompositeDefaultAgenda compositeAgenda = (CompositeDefaultAgenda) workingMemory.getAgenda();
+    public void propagateAssertObject( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
+        CompositeDefaultAgenda compositeAgenda = (CompositeDefaultAgenda) reteEvaluator.getActivationsManager();
         if (hashed) {
             AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( new CompositeObjectSinkAdapter.HashKey( fieldIndex, factHandle.getObject() ) );
             if ( sink != null ) {
@@ -137,8 +137,8 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
-            propagator.propagateAssertObject( factHandle, context, wm );
+        public void execute( ReteEvaluator reteEvaluator ) {
+            propagator.propagateAssertObject( factHandle, context, reteEvaluator );
         }
 
         @Override
@@ -160,8 +160,8 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
-            sink.getObjectSinkPropagator().propagateAssertObject( factHandle, context, wm );
+        public void execute( ReteEvaluator reteEvaluator ) {
+            sink.getObjectSinkPropagator().propagateAssertObject( factHandle, context, reteEvaluator );
         }
 
         @Override
@@ -202,27 +202,27 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     }
 
     @Override
-    public void propagateModifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory ) {
+    public void propagateModifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator ) {
         throw new UnsupportedOperationException("propagateModifyObject has to be executed by partitions");
     }
 
-    public void propagateModifyObjectForPartition( InternalFactHandle handle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm, int partition ) {
-        partitionedPropagators[partition].propagateModifyObject(handle, modifyPreviousTuples, context, wm);
+    public void propagateModifyObjectForPartition(InternalFactHandle handle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator, int partition ) {
+        partitionedPropagators[partition].propagateModifyObject(handle, modifyPreviousTuples, context, reteEvaluator);
     }
 
     @Override
-    public void byPassModifyToBetaNode( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory ) {
+    public void byPassModifyToBetaNode( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator ) {
         throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a beta");
     }
 
     @Override
-    public void doLinkRiaNode( InternalWorkingMemory wm ) {
+    public void doLinkRiaNode( ReteEvaluator reteEvaluator ) {
         throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a RIA");
 
     }
 
     @Override
-    public void doUnlinkRiaNode( InternalWorkingMemory wm ) {
+    public void doUnlinkRiaNode( ReteEvaluator reteEvaluator ) {
         throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a RIA");
 
     }

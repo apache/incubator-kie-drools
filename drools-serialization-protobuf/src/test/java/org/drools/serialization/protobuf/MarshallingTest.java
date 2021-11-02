@@ -33,7 +33,6 @@ import java.util.jar.JarInputStream;
 
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DroolsObjectInputStream;
@@ -41,6 +40,7 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
@@ -152,7 +152,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       ksession.getObjects().iterator().next() );
 
         assertEquals( 2,
-                      ((InternalAgenda) ksession.getAgenda()).agendaSize() );
+                      ((InternalAgenda) ksession.getAgenda()).getAgendaGroupsManager().agendaSize() );
 
         ksession.fireAllRules();
 
@@ -210,7 +210,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       IteratorToList.convert( session.getObjects().iterator() ).get(0) );
 
         assertEquals(2,
-                     ((InternalAgenda) session.getAgenda()).agendaSize());
+                     ((InternalAgenda) session.getAgenda()).getAgendaGroupsManager().agendaSize());
 
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
         session.fireAllRules();
@@ -268,7 +268,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       IteratorToList.convert( session.getObjects().iterator() ).get( 0 ) );
 
         assertEquals( 2,
-                      ((InternalAgenda) session.getAgenda()).agendaSize() );
+                      ((InternalAgenda) session.getAgenda()).getAgendaGroupsManager().agendaSize() );
 
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
         session.fireAllRules();
@@ -325,7 +325,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       IteratorToList.convert( session.getObjects().iterator() ).get( 0 ) );
 
         assertEquals( 2,
-                      ((InternalAgenda) session.getAgenda()).agendaSize() );
+                      ((InternalAgenda) session.getAgenda()).getAgendaGroupsManager().agendaSize() );
 
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
 
@@ -429,7 +429,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       IteratorToList.convert( session.getObjects().iterator() ).get( 0 ) );
 
         assertEquals( 3,
-                      ((InternalAgenda) session.getAgenda()).agendaSize() );
+                      ((InternalAgenda) session.getAgenda()).getAgendaGroupsManager().agendaSize() );
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
         session.fireAllRules();
@@ -1972,7 +1972,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
         assertEquals( 1,
-                      ((InternalAgenda) ksession.getAgenda()).agendaSize() );
+                      ((InternalAgenda) ksession.getAgenda()).getAgendaGroupsManager().agendaSize() );
         ksession.fireAllRules();
         assertEquals( 5,
                       ((Number) results.get( 1 )).intValue() );
@@ -2000,7 +2000,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ((InternalWorkingMemory)ksession).flushPropagations();
 
         assertEquals( 1,
-                      ((InternalAgenda) ksession.getAgenda()).agendaSize()  );
+                      ((InternalAgenda) ksession.getAgenda()).getAgendaGroupsManager().agendaSize()  );
     }
 
     @Test
@@ -2221,7 +2221,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         rule.setConsequence( new Consequence() {
             public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) throws Exception {
+                                 ReteEvaluator reteEvaluator) throws Exception {
                 fired.add( "a" );
             }
 

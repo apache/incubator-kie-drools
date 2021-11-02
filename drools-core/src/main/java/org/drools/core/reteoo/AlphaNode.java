@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
@@ -112,34 +113,34 @@ public class AlphaNode extends ObjectSource
 
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        if (this.constraint.isAllowed(factHandle, workingMemory)) {
-            this.sink.propagateAssertObject( factHandle, context, workingMemory );
+                             final ReteEvaluator reteEvaluator) {
+        if (this.constraint.isAllowed(factHandle, reteEvaluator)) {
+            this.sink.propagateAssertObject( factHandle, context, reteEvaluator );
         }
     }
 
     public void modifyObject(final InternalFactHandle factHandle,
                              final ModifyPreviousTuples modifyPreviousTuples,
                              final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                             final ReteEvaluator reteEvaluator) {
         if (context.getModificationMask().intersects(inferredMask)) {
 
-            if (this.constraint.isAllowed(factHandle, workingMemory)) {
+            if (this.constraint.isAllowed(factHandle, reteEvaluator)) {
                 this.sink.propagateModifyObject(factHandle,
                         modifyPreviousTuples,
                         context,
-                        workingMemory);
+                        reteEvaluator);
             }
         } else {
-            byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
+            byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, reteEvaluator);
         }
     }
 
     public void byPassModifyToBetaNode(final InternalFactHandle factHandle,
                                        final ModifyPreviousTuples modifyPreviousTuples,
                                        final PropagationContext context,
-                                       final InternalWorkingMemory workingMemory) {
-        sink.byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
+                                       final ReteEvaluator reteEvaluator) {
+        sink.byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, reteEvaluator);
     }
 
 
@@ -147,11 +148,8 @@ public class AlphaNode extends ObjectSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         // get the objects from the parent
-        ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter(sink,
-                this.constraint);
-        this.source.updateSink(adapter,
-                context,
-                workingMemory);
+        ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter(sink, this.constraint);
+        this.source.updateSink(adapter, context, workingMemory);
     }
 
     public String toString() {
@@ -230,10 +228,10 @@ public class AlphaNode extends ObjectSource
 
         public void assertObject(final InternalFactHandle handle,
                                  final PropagationContext propagationContext,
-                                 final InternalWorkingMemory workingMemory) {
+                                 final ReteEvaluator reteEvaluator) {
             try {
-                if (this.constraint.isAllowed(handle, workingMemory)) {
-                    this.sink.assertObject(handle, propagationContext, workingMemory);
+                if (this.constraint.isAllowed(handle, reteEvaluator)) {
+                    this.sink.assertObject(handle, propagationContext, reteEvaluator);
                 }
             } catch (RuntimeException e) {
                 // Forcing the jitting of a constraint the eveluation may throw a CCE
@@ -256,14 +254,14 @@ public class AlphaNode extends ObjectSource
         public void modifyObject(final InternalFactHandle factHandle,
                                  final ModifyPreviousTuples modifyPreviousTuples,
                                  final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
+                                 final ReteEvaluator reteEvaluator) {
             throw new UnsupportedOperationException("This method should NEVER EVER be called");
         }
 
         public void byPassModifyToBetaNode(InternalFactHandle factHandle,
                                            ModifyPreviousTuples modifyPreviousTuples,
                                            PropagationContext context,
-                                           InternalWorkingMemory workingMemory) {
+                                           ReteEvaluator reteEvaluator) {
         }
 
         public short getType() {

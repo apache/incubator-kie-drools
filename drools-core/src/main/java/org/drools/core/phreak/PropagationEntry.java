@@ -17,11 +17,9 @@ package org.drools.core.phreak;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -39,8 +37,7 @@ import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 
 public interface PropagationEntry {
 
-    void execute(InternalWorkingMemory wm);
-    void execute(InternalKnowledgeRuntime kruntime);
+    void execute(ReteEvaluator reteEvaluator);
 
     PropagationEntry getNext();
     void setNext(PropagationEntry next);
@@ -73,11 +70,6 @@ public interface PropagationEntry {
         @Override
         public boolean isCalledFromRHS() {
             return false;
-        }
-
-        @Override
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            execute( ((WorkingMemoryEntryPoint) kruntime).getInternalWorkingMemory() );
         }
 
         @Override
@@ -140,43 +132,43 @@ public interface PropagationEntry {
         private final PropagationContext context;
         private final ObjectTypeConf objectTypeConf;
 
-        public Insert( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory workingMemory, ObjectTypeConf objectTypeConf) {
+        public Insert( InternalFactHandle handle, PropagationContext context, ReteEvaluator reteEvaluator, ObjectTypeConf objectTypeConf) {
             this.handle = handle;
             this.context = context;
             this.objectTypeConf = objectTypeConf;
 
             if ( objectTypeConf.isEvent() ) {
-                scheduleExpiration(workingMemory, handle, context, objectTypeConf, workingMemory.getTimerService().getCurrentTime());
+                scheduleExpiration(reteEvaluator, handle, context, objectTypeConf, reteEvaluator.getTimerService().getCurrentTime());
             }
         }
 
-        public static void execute( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory wm, ObjectTypeConf objectTypeConf) {
+        public static void execute( InternalFactHandle handle, PropagationContext context, ReteEvaluator reteEvaluator, ObjectTypeConf objectTypeConf) {
             if ( objectTypeConf.isEvent() ) {
-                scheduleExpiration(wm, handle, context, objectTypeConf, wm.getTimerService().getCurrentTime());
+                scheduleExpiration(reteEvaluator, handle, context, objectTypeConf, reteEvaluator.getTimerService().getCurrentTime());
             }
-            propagate( handle, context, wm, objectTypeConf );
+            propagate( handle, context, reteEvaluator, objectTypeConf );
         }
 
-        private static void propagate( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory wm, ObjectTypeConf objectTypeConf ) {
+        private static void propagate( InternalFactHandle handle, PropagationContext context, ReteEvaluator reteEvaluator, ObjectTypeConf objectTypeConf ) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
-                otn.propagateAssert( handle, context, wm );
+                otn.propagateAssert( handle, context, reteEvaluator );
             }
         }
 
-        public void execute( InternalWorkingMemory wm ) {
-            propagate( handle, context, wm, objectTypeConf );
+        public void execute( ReteEvaluator reteEvaluator ) {
+            propagate( handle, context, reteEvaluator, objectTypeConf );
         }
 
-        private static void scheduleExpiration(InternalWorkingMemory wm, InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, long insertionTime) {
+        private static void scheduleExpiration(ReteEvaluator reteEvaluator, InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, long insertionTime) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
-                scheduleExpiration( wm, handle, context, otn, insertionTime, otn.getExpirationOffset() );
+                scheduleExpiration( reteEvaluator, handle, context, otn, insertionTime, otn.getExpirationOffset() );
             }
             if ( objectTypeConf.getConcreteObjectTypeNode() == null ) {
-                scheduleExpiration( wm, handle, context, null, insertionTime, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
+                scheduleExpiration( reteEvaluator, handle, context, null, insertionTime, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
             }
         }
 
-        private static void scheduleExpiration( InternalWorkingMemory wm, InternalFactHandle handle, PropagationContext context, ObjectTypeNode otn, long insertionTime, long expirationOffset ) {
+        private static void scheduleExpiration( ReteEvaluator reteEvaluator, InternalFactHandle handle, PropagationContext context, ObjectTypeNode otn, long insertionTime, long expirationOffset ) {
             if ( expirationOffset == NEVER_EXPIRES || expirationOffset == Long.MAX_VALUE || context.getReaderContext() != null ) {
                 return;
             }
@@ -186,11 +178,11 @@ public interface PropagationEntry {
             long nextTimestamp = getNextTimestamp( insertionTime, expirationOffset, eventFactHandle );
 
             WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
-            if (nextTimestamp <= wm.getTimerService().getCurrentTime()) {
-                wm.addPropagation( action );
+            if (nextTimestamp <= reteEvaluator.getTimerService().getCurrentTime()) {
+                reteEvaluator.addPropagation( action );
             } else {
-                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, wm );
-                JobHandle jobHandle = wm.getTimerService()
+                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, reteEvaluator );
+                JobHandle jobHandle = reteEvaluator.getTimerService()
                                         .scheduleJob( job,
                                                       jobctx,
                                                       PointInTimeTrigger.createPointInTimeTrigger( nextTimestamp, null ) );
@@ -221,21 +213,21 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
         }
 
-        public void execute(InternalWorkingMemory wm) {
-            execute(handle, context, objectTypeConf, wm);
+        public void execute(ReteEvaluator reteEvaluator) {
+            execute(handle, context, objectTypeConf, reteEvaluator);
         }
 
-        public static void execute(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm) {
+        public static void execute(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, ReteEvaluator reteEvaluator) {
             // make a reference to the previous tuples, then null then on the handle
             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.detachLinkedTuples() );
             ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
             for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
-                cachedNodes[i].modifyObject( handle, modifyPreviousTuples, pctx, wm );
+                cachedNodes[i].modifyObject( handle, modifyPreviousTuples, pctx, reteEvaluator );
                 if (i < cachedNodes.length - 1) {
-                    removeRightTuplesMatchingOTN( pctx, wm, modifyPreviousTuples, cachedNodes[i], 0 );
+                    removeRightTuplesMatchingOTN( pctx, reteEvaluator, modifyPreviousTuples, cachedNodes[i], 0 );
                 }
             }
-            modifyPreviousTuples.retractTuples(pctx, wm);
+            modifyPreviousTuples.retractTuples(pctx, reteEvaluator);
         }
 
         @Override
@@ -266,20 +258,20 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
         }
 
-        public void execute(InternalWorkingMemory wm) {
+        public void execute(ReteEvaluator reteEvaluator) {
             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.detachLinkedTuplesForPartition(partition) );
             ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
             for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
                 ObjectTypeNode otn = cachedNodes[i];
                 ( (CompositePartitionAwareObjectSinkAdapter) otn.getObjectSinkPropagator() )
                         .propagateModifyObjectForPartition( handle, modifyPreviousTuples,
-                                                            context.adaptModificationMaskForObjectType(otn.getObjectType(), wm),
-                                                            wm, partition );
+                                                            context.adaptModificationMaskForObjectType(otn.getObjectType(), reteEvaluator),
+                                                            reteEvaluator, partition );
                 if (i < cachedNodes.length - 1) {
-                    removeRightTuplesMatchingOTN( context, wm, modifyPreviousTuples, otn, partition );
+                    removeRightTuplesMatchingOTN( context, reteEvaluator, modifyPreviousTuples, otn, partition );
                 }
             }
-            modifyPreviousTuples.retractTuples(context, wm);
+            modifyPreviousTuples.retractTuples(context, reteEvaluator);
         }
 
         @Override
@@ -301,8 +293,8 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
         }
 
-        public void execute(InternalWorkingMemory wm) {
-            epn.propagateRetract(handle, context, objectTypeConf, wm);
+        public void execute(ReteEvaluator reteEvaluator) {
+            epn.propagateRetract(handle, context, objectTypeConf, reteEvaluator);
         }
 
         @Override
@@ -333,7 +325,7 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
         }
 
-        public void execute(InternalWorkingMemory wm) {
+        public void execute(ReteEvaluator reteEvaluator) {
             ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
             if ( cachedNodes == null ) {
@@ -342,11 +334,11 @@ public interface PropagationEntry {
             }
 
             for ( ObjectTypeNode cachedNode : cachedNodes ) {
-                cachedNode.retractObject( handle, context, wm, partition );
+                cachedNode.retractObject( handle, context, reteEvaluator, partition );
             }
 
             if (handle.isEvent() && isMainPartition()) {
-                ((EventFactHandle) handle).unscheduleAllJobs(wm);
+                ((EventFactHandle) handle).unscheduleAllJobs(reteEvaluator);
             }
         }
 

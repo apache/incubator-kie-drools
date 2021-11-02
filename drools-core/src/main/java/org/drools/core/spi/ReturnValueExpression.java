@@ -21,8 +21,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.kie.internal.security.KiePolicyHelper;
 
@@ -36,7 +36,7 @@ public interface ReturnValueExpression
                                Tuple tuple,
                                Declaration[] previousDeclarations,
                                Declaration[] localDeclarations,
-                               WorkingMemory workingMemory,
+                        ReteEvaluator reteEvaluator,
                                Object context ) throws Exception;
     
     void replaceDeclaration(Declaration declaration,
@@ -62,12 +62,12 @@ public interface ReturnValueExpression
                 final Tuple tuple, 
                 final Declaration[] previousDeclarations, 
                 final Declaration[] localDeclarations, 
-                final WorkingMemory workingMemory, 
+                final ReteEvaluator reteEvaluator,
                 final Object context) throws Exception {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<FieldValue>() {
                 @Override
                 public FieldValue run() throws Exception {
-                    return delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, workingMemory, context);
+                    return delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, reteEvaluator, context);
                 }
             }, KiePolicyHelper.getAccessContext());
         }

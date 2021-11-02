@@ -18,24 +18,24 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 
 public class RiaPathMemory extends PathMemory {
 
     private List<RuleImpl> rules;
     
-    public RiaPathMemory(RightInputAdapterNode riaNode, InternalWorkingMemory wm) {
-        super( riaNode, wm );
+    public RiaPathMemory(RightInputAdapterNode riaNode, ReteEvaluator reteEvaluator) {
+        super( riaNode, reteEvaluator );
     }
 
     @Override
-    protected boolean initDataDriven( InternalWorkingMemory wm ) {
+    protected boolean initDataDriven( ReteEvaluator reteEvaluator ) {
         for (PathEndNode pnode : getPathEndNode().getPathEndNodes()) {
             if (pnode instanceof TerminalNode) {
                 RuleImpl rule = ( (TerminalNode) pnode ).getRule();
-                if ( isRuleDataDriven( wm, rule ) ) {
+                if ( isRuleDataDriven( reteEvaluator, rule ) ) {
                     return true;
                 }
             }
@@ -48,18 +48,18 @@ public class RiaPathMemory extends PathMemory {
     }
 
     @Override
-    public void doLinkRule(InternalWorkingMemory wm) {
-        getRightInputAdapterNode().getObjectSinkPropagator().doLinkRiaNode( wm );
+    public void doLinkRule(ReteEvaluator reteEvaluator) {
+        getRightInputAdapterNode().getObjectSinkPropagator().doLinkRiaNode( reteEvaluator );
     }
 
     @Override
-    public void doLinkRule(InternalAgenda agenda ) {
-        doLinkRule(agenda.getWorkingMemory());
+    public void doLinkRule(ActivationsManager activationsManager ) {
+        doLinkRule(activationsManager.getReteEvaluator());
     }
 
     @Override
-    public void doUnlinkRule(InternalWorkingMemory wm) {
-        getRightInputAdapterNode().getObjectSinkPropagator().doUnlinkRiaNode( wm );
+    public void doUnlinkRule(ReteEvaluator reteEvaluator) {
+        getRightInputAdapterNode().getObjectSinkPropagator().doUnlinkRiaNode( reteEvaluator );
     }
 
     @Override

@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
@@ -50,12 +50,12 @@ public class ReactiveObjectUtil {
                 continue;
             }
             PropagationContext propagationContext = leftTuple.getPropagationContext();
-            ReactiveFromNode node = (ReactiveFromNode)leftTuple.getTupleSink();
+            ReactiveFromNode node = leftTuple.getTupleSink();
 
             LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
-            InternalWorkingMemory wm = propagationContext.getFactHandle().getWorkingMemory();
+            ReteEvaluator reteEvaluator = propagationContext.getFactHandle().getReteEvaluator();
 
-            wm.addPropagation(new ReactivePropagation(object, (ReactiveFromNodeLeftTuple)leftTuple, propagationContext, node, sink, type));
+            reteEvaluator.addPropagation(new ReactivePropagation(object, (ReactiveFromNodeLeftTuple)leftTuple, propagationContext, node, sink, type));
         }
     }
 
@@ -78,20 +78,18 @@ public class ReactiveObjectUtil {
         }
 
         @Override
-        public void execute( InternalWorkingMemory wm ) {
+        public void execute( ReteEvaluator reteEvaluator ) {
             if ( leftTuple.resetModificationState( object ) == ModificationType.NONE ) {
                 return;
             }
 
-            ReactiveFromNode.ReactiveFromMemory mem = wm.getNodeMemory(node);
-            InternalFactHandle factHandle = node.createFactHandle( wm, object );
+            ReactiveFromNode.ReactiveFromMemory mem = reteEvaluator.getNodeMemory(node);
+            InternalFactHandle factHandle = node.createFactHandle( reteEvaluator, object );
 
-            if ( type != ModificationType.REMOVE && isAllowed( factHandle, node.getAlphaConstraints(), wm, mem ) ) {
+            if ( type != ModificationType.REMOVE && isAllowed( factHandle, node.getAlphaConstraints(), reteEvaluator, mem ) ) {
                 ContextEntry[] context = mem.getBetaMemory().getContext();
                 BetaConstraints betaConstraints = node.getBetaConstraints();
-                betaConstraints.updateFromTuple( context,
-                                                 wm,
-                                                 leftTuple );
+                betaConstraints.updateFromTuple( context, reteEvaluator, leftTuple );
 
                 propagate( sink,
                            leftTuple,
@@ -113,7 +111,7 @@ public class ReactiveObjectUtil {
                 }
             }
 
-            mem.getBetaMemory().setNodeDirty(node, wm);
+            mem.getBetaMemory().setNodeDirty(node, reteEvaluator);
         }
     }
 }

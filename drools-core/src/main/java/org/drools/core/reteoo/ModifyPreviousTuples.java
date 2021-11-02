@@ -16,10 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.spi.PropagationContext;
@@ -64,27 +64,27 @@ public class ModifyPreviousTuples {
     }
 
     public void retractTuples(PropagationContext pctx,
-                              InternalWorkingMemory wm) {
-        linkedTuples.forEachLeftTuple( lt -> doDeleteObject(pctx, wm, lt) );
-        linkedTuples.forEachRightTuple( rt -> doRightDelete(pctx, wm, rt) );
+                              ReteEvaluator reteEvaluator) {
+        linkedTuples.forEachLeftTuple( lt -> doDeleteObject(pctx, reteEvaluator, lt) );
+        linkedTuples.forEachRightTuple( rt -> doRightDelete(pctx, reteEvaluator, rt) );
     }
 
-    public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
+    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
         LeftInputAdapterNode liaNode = leftTuple.getTupleSource();
-        LeftInputAdapterNode.LiaNodeMemory lm = wm.getNodeMemory( liaNode );
+        LeftInputAdapterNode.LiaNodeMemory lm = reteEvaluator.getNodeMemory( liaNode );
         SegmentMemory sm = lm.getSegmentMemory();
         if (sm != null) {
-            LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, sm, wm, liaNode, true, lm );
+            LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, sm, reteEvaluator, liaNode, true, lm );
         } else {
-            InternalAgenda agenda = wm.getAgenda();
-            TerminalNode rtn = ( TerminalNode ) leftTuple.getTupleSink();
-            PathMemory pathMemory = wm.getNodeMemory( rtn );
-            PhreakRuleTerminalNode.doLeftDelete(agenda, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);
+            ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
+            TerminalNode rtn = leftTuple.getTupleSink();
+            PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
+            PhreakRuleTerminalNode.doLeftDelete(activationsManager, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);
         }
     }
 
-    public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
+    public void doRightDelete(PropagationContext pctx, ReteEvaluator reteEvaluator, RightTuple rightTuple) {
         rightTuple.setPropagationContext( pctx );
-        rightTuple.retractTuple( pctx, wm );
+        rightTuple.retractTuple( pctx, reteEvaluator );
     }
 }

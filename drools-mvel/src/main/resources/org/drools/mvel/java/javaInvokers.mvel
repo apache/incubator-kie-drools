@@ -41,22 +41,22 @@ public class @{invokerClassName} implements org.drools.core.spi.ReturnValueExpre
                             org.drools.core.spi.Tuple tuple,
                             org.drools.core.rule.Declaration[] previousDeclarations,
                             org.drools.core.rule.Declaration[] localDeclarations,
-                            org.drools.core.WorkingMemory workingMemory,
+                            org.drools.core.common.ReteEvaluator reteEvaluator,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( reteEvaluator, tuple );
         @code{i0++}
         @end{}
         @if{readLocalsFromTuple}
-          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( reteEvaluator, tuple );
           @code{i0++}
           @end{}
         @else{}
-          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle );
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( reteEvaluator, handle );
           @code{i0++}
           @end{}
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
 
         return @{ruleClassName}.@{methodName}(
@@ -91,16 +91,16 @@ public class @{invokerClassName} implements org.drools.core.spi.PredicateExpress
                             org.drools.core.spi.Tuple tuple,
                             org.drools.core.rule.Declaration[] previousDeclarations,
                             org.drools.core.rule.Declaration[] localDeclarations,
-                            org.drools.core.WorkingMemory workingMemory,
+                            org.drools.core.common.ReteEvaluator reteEvaluator,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple ) );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( reteEvaluator, tuple ) );
           @code{i0++}
         @end{}
-        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle );
+        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( reteEvaluator, handle );
           @code{i0++}
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
 
         return @{ruleClassName}.@{methodName}(
@@ -132,13 +132,13 @@ public class @{invokerClassName} implements org.drools.core.spi.EvalExpression, 
 
     public boolean evaluate(org.drools.core.spi.Tuple tuple,
                             org.drools.core.rule.Declaration[] declarations,
-                            org.drools.core.WorkingMemory workingMemory,
+                            org.drools.core.common.ReteEvaluator reteEvaluator,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple ) );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple ) );
             @code{i0++}
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
 
         return @{ruleClassName}.@{methodName}(
@@ -179,11 +179,11 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                      java.lang.Object context,
                      org.drools.core.spi.Tuple tuple,
                      org.drools.core.rule.Declaration[] declarations,
-                     org.drools.core.WorkingMemory workingMemory) {
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+                     org.drools.core.common.ReteEvaluator reteEvaluator) {
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
             @code{i0++}
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
 
         try {
@@ -203,25 +203,25 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                            org.drools.core.common.InternalFactHandle handle,
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
-                           org.drools.core.WorkingMemory workingMemory) {
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+                           org.drools.core.common.ReteEvaluator reteEvaluator) {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
             @code{ i0++ }
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
         @if{isMultiPattern}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( reteEvaluator, tuple );
             @code{ i0++ }
           @end{}
         @else{}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( reteEvaluator, handle );
             @code{ i0++ }
           @end{}
         @end{}
 
         try {
             return ((@{ruleClassName}.@{className})context).accumulate(
-                workingMemory,
+                reteEvaluator,
                 handle,
                 innerDeclarations@if{declarations != empty},@end{}
                 @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
@@ -239,29 +239,29 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                            java.lang.Object value,
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
-                           org.drools.core.WorkingMemory workingMemory) {
+                           org.drools.core.common.ReteEvaluator reteEvaluator) {
         if (!supportsReverse()) {
             return false;
         }
 
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
             @code{ i0++ }
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
         @if{isMultiPattern}
-          @code{ i0 = 0}@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+          @code{ i0 = 0}@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( reteEvaluator, tuple );
             @code{ i0++ }
           @end{}
         @else{}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( reteEvaluator, handle );
             @code{ i0++ }
           @end{}
         @end{}
 
         try {
             ((@{ruleClassName}.@{className})context).reverse(
-                workingMemory,
+                reteEvaluator,
                 handle,
                 value@if{globals != empty},@end{}
                 @foreach{identifier : globals} @{identifier}@end{","});
@@ -276,11 +276,11 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                             java.lang.Object context,
                             org.drools.core.spi.Tuple tuple,
                             org.drools.core.rule.Declaration[] declarations,
-                            org.drools.core.WorkingMemory workingMemory) {
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+                            org.drools.core.common.ReteEvaluator reteEvaluator) {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
             @code{ i0++ }
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
 
         try {
@@ -333,14 +333,14 @@ public class @{invokerClassName} implements org.drools.core.spi.Action, org.droo
     private static final long serialVersionUID  = 510l;
 
     public void execute(org.drools.core.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.core.WorkingMemory workingMemory) throws Exception {
-        execute(knowledgeHelper, workingMemory, null);
+                        org.drools.core.common.ReteEvaluator reteEvaluator) throws Exception {
+        execute(knowledgeHelper, reteEvaluator, null);
     }
 
     public void execute(org.drools.core.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.core.WorkingMemory workingMemory, org.drools.core.spi.ProcessContext context ) throws Exception {
+                        org.drools.core.common.ReteEvaluator reteEvaluator, org.drools.core.spi.ProcessContext context ) throws Exception {
 
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
 
         @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) context.getVariable( "@{identifier}" );
@@ -367,9 +367,9 @@ public class @{invokerClassName} implements org.drools.core.spi.ReturnValueEvalu
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.drools.core.WorkingMemory workingMemory, org.drools.core.spi.ProcessContext processContext) throws Exception {
+    public Object evaluate(org.drools.core.common.ReteEvaluator reteEvaluator, org.drools.core.spi.ProcessContext processContext) throws Exception {
 
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}
 
         @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) processContext.getVariable( "@{identifier}" );

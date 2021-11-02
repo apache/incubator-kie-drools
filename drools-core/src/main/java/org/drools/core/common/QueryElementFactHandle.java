@@ -103,7 +103,7 @@ public class QueryElementFactHandle
     }
 
     @Override
-    public WorkingMemoryEntryPoint getEntryPoint( InternalWorkingMemory wm ) {
+    public WorkingMemoryEntryPoint getEntryPoint( ReteEvaluator reteEvaluator ) {
         return null;
     }
 

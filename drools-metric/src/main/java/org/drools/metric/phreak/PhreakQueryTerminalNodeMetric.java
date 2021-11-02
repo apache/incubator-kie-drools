@@ -15,7 +15,7 @@
 
 package org.drools.metric.phreak;
 
-import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakQueryTerminalNode;
 import org.drools.core.phreak.StackEntry;
@@ -28,14 +28,14 @@ public class PhreakQueryTerminalNodeMetric extends PhreakQueryTerminalNode {
 
     @Override
     public void doNode(QueryTerminalNode qtnNode,
-                       InternalAgenda agenda,
+                       ActivationsManager activationsManager,
                        TupleSets<LeftTuple> srcLeftTuples,
                        LinkedList<StackEntry> stack) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(qtnNode);
 
-            super.doNode(qtnNode, agenda, srcLeftTuples, stack);
+            super.doNode(qtnNode, activationsManager, srcLeftTuples, stack);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

@@ -20,9 +20,8 @@ import java.util.Objects;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.Drools;
 import org.drools.model.functions.Function1;
 
 public class LambdaReadAccessor extends BaseObjectClassFieldReader implements InternalReadAccessor {
@@ -39,7 +38,7 @@ public class LambdaReadAccessor extends BaseObjectClassFieldReader implements In
     }
 
     @Override
-    public Object getValue( InternalWorkingMemory workingMemory, Object object ) {
+    public Object getValue( ReteEvaluator reteEvaluator, Object object ) {
         return lambda.apply( object );
     }
 

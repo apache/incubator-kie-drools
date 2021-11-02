@@ -24,6 +24,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
@@ -130,10 +131,10 @@ public class RightInputAdapterNode extends ObjectSource
     /**
      * Creates and return the node memory
      */    
-    public RiaNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public RiaNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         RiaNodeMemory rianMem = new RiaNodeMemory();
 
-        RiaPathMemory pmem = new RiaPathMemory(this, wm);
+        RiaPathMemory pmem = new RiaPathMemory(this, reteEvaluator);
         PathMemSpec pathMemSpec = getPathMemSpec();
         pmem.setAllLinkedMaskTest( pathMemSpec.allLinkedTestMask );
         pmem.setSegmentMemories( new SegmentMemory[pathMemSpec.smemCount] );
@@ -326,7 +327,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     @Override
-    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
+    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory wm) {
         throw new UnsupportedOperationException();
     }
 

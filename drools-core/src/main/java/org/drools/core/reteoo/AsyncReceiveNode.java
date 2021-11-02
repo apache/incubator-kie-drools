@@ -23,11 +23,10 @@ import java.util.function.Consumer;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -101,10 +100,10 @@ public class AsyncReceiveNode extends LeftTupleSource
         return receive.getResultClass();
     }
 
-    public ObjectTypeConf getObjectTypeConf( InternalWorkingMemory workingMemory ) {
+    public ObjectTypeConf getObjectTypeConf( ReteEvaluator reteEvaluator ) {
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
-            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), getResultClass(), workingMemory.getKnowledgeBase() );
+            objectTypeConf = new ClassObjectTypeConf( reteEvaluator.getDefaultEntryPointId(), getResultClass(), reteEvaluator.getKnowledgeBase() );
         }
         return objectTypeConf;
     }
@@ -120,8 +119,8 @@ public class AsyncReceiveNode extends LeftTupleSource
         }
 
         @Override
-        public void execute( final InternalWorkingMemory wm ) {
-            AsyncReceiveMemory memory = wm.getNodeMemory( asyncReceiveNode );
+        public void execute( final ReteEvaluator reteEvaluator ) {
+            AsyncReceiveMemory memory = reteEvaluator.getNodeMemory( asyncReceiveNode );
             memory.addMessage( object );
             memory.setNodeDirtyWithoutNotify();
 
@@ -130,8 +129,7 @@ public class AsyncReceiveNode extends LeftTupleSource
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }
-                InternalAgenda agenda = pmem.getActualAgenda( wm );
-                pmem.doLinkRule( agenda );
+                pmem.doLinkRule( reteEvaluator );
             }
         }
     }
@@ -167,8 +165,8 @@ public class AsyncReceiveNode extends LeftTupleSource
         return this.leftInput.getId() != other.leftInput.getId() && this.messageId.equals( other.messageId );
     }
 
-    public AsyncReceiveMemory createMemory( final RuleBaseConfiguration config, InternalWorkingMemory wm ) {
-        return new AsyncReceiveMemory(this, wm);
+    public AsyncReceiveMemory createMemory( final RuleBaseConfiguration config, ReteEvaluator reteEvaluator ) {
+        return new AsyncReceiveMemory(this, reteEvaluator);
     }
 
     @Override
@@ -287,9 +285,9 @@ public class AsyncReceiveNode extends LeftTupleSource
         private SegmentMemory memory;
         private long nodePosMaskBit;
 
-        public AsyncReceiveMemory(AsyncReceiveNode node, InternalWorkingMemory wm) {
+        public AsyncReceiveMemory(AsyncReceiveNode node, ReteEvaluator reteEvaluator) {
             this.messageId = node.messageId;
-            this.receiver = asyncMessage -> wm.addPropagation( new AsyncReceiveAction( node, asyncMessage.getObject() ) );
+            this.receiver = asyncMessage -> reteEvaluator.addPropagation( new AsyncReceiveAction( node, asyncMessage.getObject() ) );
             AsyncMessagesCoordinator.get().registerReceiver( node.messageId, receiver );
         }
 

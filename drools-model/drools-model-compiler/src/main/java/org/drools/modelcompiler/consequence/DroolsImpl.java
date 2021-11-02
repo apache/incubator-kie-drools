@@ -16,10 +16,10 @@
 
 package org.drools.modelcompiler.consequence;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.TypeDeclaration;
@@ -33,18 +33,17 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
 public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext {
     private final KnowledgeHelper knowledgeHelper;
-    private final WorkingMemory workingMemory;
+    private final ReteEvaluator reteEvaluator;
 
     private final FactHandleLookup fhLookup;
 
-    DroolsImpl(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, FactHandleLookup fhLookup) {
-        this.workingMemory = workingMemory;
+    DroolsImpl(KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator, FactHandleLookup fhLookup) {
+        this.reteEvaluator = reteEvaluator;
         this.knowledgeHelper = knowledgeHelper;
         this.fhLookup = fhLookup;
     }
@@ -57,7 +56,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
     @Override
     public void insert(Object object, boolean dynamic) {
         TerminalNode terminalNode = (( AgendaItem )getMatch()).getTerminalNode();
-        ((InternalWorkingMemoryActions)workingMemory).insert(object, dynamic, getRule(), terminalNode);
+        ((InternalWorkingMemoryEntryPoint)reteEvaluator.getDefaultEntryPoint()).insert(object, dynamic, getRule(), terminalNode);
     }
 
     @Override
@@ -106,7 +105,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
         org.drools.core.util.bitmask.BitMask mask = org.drools.core.util.bitmask.AllSetBitMask.get();
 
         if (modifiedProperties.length > 0) {
-            TypeDeclaration typeDeclaration = workingMemory.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
+            TypeDeclaration typeDeclaration = reteEvaluator.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
             if (typeDeclaration.isPropertyReactive()) {
                 mask = calculatePositiveMask( modifiedClass, asList( modifiedProperties ), typeDeclaration.getAccessibleProperties() );
             }
@@ -117,7 +116,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     private InternalFactHandle getFactHandleForObject( Object object ) {
         InternalFactHandle fh = fhLookup.get(object);
-        return fh != null ? fh : (InternalFactHandle) workingMemory.getFactHandle( object );
+        return fh != null ? fh : reteEvaluator.getFactHandle( object );
     }
 
     @Override

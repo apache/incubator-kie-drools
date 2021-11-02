@@ -17,7 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -38,7 +38,7 @@ public class TraitProxyObjectTypeNode extends ObjectTypeNode {
     public void modifyObject(InternalFactHandle factHandle,
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
+                             ReteEvaluator reteEvaluator) {
         checkDirty();
         // node can't have sinks. Avoid mask recalculations and other operations on updates
     }

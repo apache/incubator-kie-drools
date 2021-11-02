@@ -14,10 +14,12 @@
 
 package org.drools.mvel.asm;
 
+import java.util.Map;
+
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
@@ -30,9 +32,15 @@ import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mvel2.asm.MethodVisitor;
 
-import java.util.Map;
-
-import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.AALOAD;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
+import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
 
@@ -49,7 +57,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 push(name);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, ReteEvaluator.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 // Tuple tuple = knowledgeHelper.getTuple();
                 mv.visitVarInsn(ALOAD, 1);
@@ -84,19 +92,18 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
                     mv.visitVarInsn(ASTORE, factPos); // fact[i]
 
-                    // declarations[i].getValue((org.kie.common.InternalWorkingMemory)workingMemory, obj[i] );
+                    // declarations[i].getValue( reteEvaluator, obj[i] );
                     mv.visitVarInsn(ALOAD, 4); // org.kie.rule.Declaration[]
                     push(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitVarInsn(ALOAD, 2); // WorkingMemory
-                    cast(InternalWorkingMemory.class);
                     mv.visitVarInsn(ALOAD, factPos); // fact[i]
                     invokeInterface(InternalFactHandle.class, "getObject", Object.class);
                     String readMethod = declarations[i].getNativeReadMethodName();
                     boolean isObject = readMethod.equals("getValue");
                     String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
                     mv.visitMethodInsn(INVOKEVIRTUAL, Declaration.class.getName().replace('.', '/'), readMethod,
-                                       "(L" + InternalWorkingMemory.class.getName().replace('.', '/')+";Ljava/lang/Object;)" + returnedType);
+                                       "(L" + ReteEvaluator.class.getName().replace('.', '/')+";Ljava/lang/Object;)" + returnedType);
                     if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarations[i].getTypeName()));
                     offset += store(objPos, declarations[i].getTypeName()); // obj[i]
 
@@ -119,9 +126,9 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     consequenceMethodDescr.append(typeDescr(declarations[i].getTypeName())).append("L" + FactHandle.class.getName().replace('.', '/') + ";" );
                 }
 
-                // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+                // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
                 for (int i = 0; i < globals.length; i++) {
-                    mv.visitVarInsn(ALOAD, 2); // WorkingMemory
+                    mv.visitVarInsn(ALOAD, 2); // ReteEvaluator
                     push(globals[i]);
                     invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
                     mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));

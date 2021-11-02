@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.ReactiveObject;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.DataProvider;
@@ -52,8 +53,8 @@ public class LambdaDataProvider implements DataProvider {
     }
 
     @Override
-    public Iterator getResults( Tuple tuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext ) {
-        Object result = getResult( tuple, wm );
+    public Iterator getResults(Tuple tuple, ReteEvaluator reteEvaluator, PropagationContext ctx, Object providerContext ) {
+        Object result = getResult( tuple, reteEvaluator );
 
         if (isReactive()) {
             if ( result instanceof ReactiveObject ) {
@@ -80,29 +81,29 @@ public class LambdaDataProvider implements DataProvider {
         return Collections.singletonList( result ).iterator();
     }
 
-    private Object getResult( Tuple tuple, InternalWorkingMemory wm ) {
+    private Object getResult( Tuple tuple, ReteEvaluator reteEvaluator ) {
         Object result;
         if (declarations.length == 0) {
             result = providerFunction.apply();
         } else if (declarations.length == 1) {
-            result = getValueForDeclaration( tuple, wm, declarations[0] );
+            result = getValueForDeclaration( tuple, reteEvaluator, declarations[0] );
             if ( providerFunction != null ) {
                 result = providerFunction.apply( result );
             }
         } else {
             Object[] args = new Object[declarations.length];
             for (int i = 0; i < declarations.length; i++) {
-                args[i] = getValueForDeclaration( tuple, wm, declarations[i] );
+                args[i] = getValueForDeclaration( tuple, reteEvaluator, declarations[i] );
             }
             result = providerFunction.apply( args );
         }
         return result;
     }
 
-    private Object getValueForDeclaration( Tuple tuple, InternalWorkingMemory wm, Declaration declaration ) {
+    private Object getValueForDeclaration( Tuple tuple, ReteEvaluator reteEvaluator, Declaration declaration ) {
         return declaration.getExtractor().isGlobal() ?
-                declaration.getExtractor().getValue( wm, declaration.getIdentifier() ) :
-                declaration.getValue( wm, tuple );
+                declaration.getExtractor().getValue( reteEvaluator, declaration.getIdentifier() ) :
+                declaration.getValue( reteEvaluator, tuple );
     }
 
     @Override

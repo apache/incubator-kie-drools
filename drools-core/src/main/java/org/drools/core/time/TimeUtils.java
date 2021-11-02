@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.DateUtils;
@@ -134,19 +134,19 @@ public class TimeUtils {
         return result;
     }
 
-    public static long evalTimeExpression( TimerExpression expr, Tuple leftTuple, Declaration[] declrs, InternalWorkingMemory wm ) {
-        Object d = expr.getValue( leftTuple,  declrs, wm );
+    public static long evalTimeExpression( TimerExpression expr, Tuple leftTuple, Declaration[] declrs, ReteEvaluator reteEvaluator ) {
+        Object d = expr.getValue( leftTuple,  declrs, reteEvaluator );
         if ( d instanceof Number ) {
             return ((Number) d).longValue();
         }
         return TimeUtils.parseTimeString( d.toString() );
     }
 
-    public static Date evalDateExpression( TimerExpression expr, Tuple leftTuple, Declaration[] declrs, InternalWorkingMemory wm ) {
+    public static Date evalDateExpression( TimerExpression expr, Tuple leftTuple, Declaration[] declrs, ReteEvaluator reteEvaluator ) {
         if (expr == null) {
             return null;
         }
-        Object d = expr.getValue( leftTuple, declrs, wm );
+        Object d = expr.getValue( leftTuple, declrs, reteEvaluator );
         if ( d == null ) {
             return null;
         }

@@ -67,8 +67,8 @@ public class ActivationIterator
     }
 
     public static Iterator iterator(WorkingMemoryEntryPoint ksession ) {
-        InternalWorkingMemory wm = ksession.getInternalWorkingMemory();
-        return PhreakActivationIterator.iterator(wm);
+        ReteEvaluator reteEvaluator = ksession.getReteEvaluator();
+        return PhreakActivationIterator.iterator(reteEvaluator);
     }
 
     public Object next() {

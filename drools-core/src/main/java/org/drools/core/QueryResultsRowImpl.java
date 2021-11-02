@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResultsRow;
@@ -28,14 +28,14 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 public class QueryResultsRowImpl implements QueryResultsRow {
 
     protected QueryRowWithSubruleIndex row;
-    private WorkingMemory workingMemory;
+    private ReteEvaluator reteEvaluator;
     private QueryResultsImpl queryResults;
 
     public QueryResultsRowImpl(final QueryRowWithSubruleIndex row,
-                               final WorkingMemory workingMemory,
+                               final ReteEvaluator reteEvaluator,
                                final QueryResultsImpl queryResults) {
         this.row = row;
-        this.workingMemory = workingMemory;
+        this.reteEvaluator = reteEvaluator;
         this.queryResults = queryResults;
     }
 
@@ -83,7 +83,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
      * Return the Object for the given Declaration.
      */
     public Object get(final Declaration declaration) {
-        return declaration.getValue( (InternalWorkingMemory) workingMemory, getObject( getFactHandle( declaration ) ) );
+        return declaration.getValue( reteEvaluator, getObject( getFactHandle( declaration ) ) );
     }
 
     /*

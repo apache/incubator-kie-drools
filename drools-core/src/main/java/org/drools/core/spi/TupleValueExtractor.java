@@ -15,7 +15,7 @@
 package org.drools.core.spi;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 
 public interface TupleValueExtractor extends Cloneable {
 
@@ -25,7 +25,7 @@ public interface TupleValueExtractor extends Cloneable {
         return getValue( null, tuple );
     }
 
-    Object getValue( InternalWorkingMemory workingMemory, Tuple tuple );
+    Object getValue( ReteEvaluator reteEvaluator, Tuple tuple );
 
     TupleValueExtractor clone();
 

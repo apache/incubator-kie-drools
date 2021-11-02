@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
@@ -146,10 +147,10 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(InternalFactHandle handle, ReteEvaluator reteEvaluator) {
         return type == OR ?
-                constraints.stream().anyMatch( c -> c.isAllowed(handle, workingMemory) ) :
-                constraints.stream().allMatch( c -> c.isAllowed(handle, workingMemory) );
+                constraints.stream().anyMatch( c -> c.isAllowed(handle, reteEvaluator) ) :
+                constraints.stream().allMatch( c -> c.isAllowed(handle, reteEvaluator) );
     }
 
     @Override

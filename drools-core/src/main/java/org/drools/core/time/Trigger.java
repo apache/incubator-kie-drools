@@ -19,7 +19,7 @@ package org.drools.core.time;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.ReteEvaluator;
 
 /**
  * A trigger interface for scheduling jobs
@@ -29,9 +29,9 @@ public interface Trigger extends Serializable {
     /**
      * this method will be called before any job being called to provide some context 
      * to trigger
-     * @param runtime
+     * @param reteEvaluator
      */
-    default void initialize(InternalKnowledgeRuntime runtime) {}
+    default void initialize(ReteEvaluator reteEvaluator) {}
     /**
      * This method is used to query the trigger about the existence of a
      * possible next fire time, but WITHOUT changing any internal state 
@@ -42,7 +42,7 @@ public interface Trigger extends Serializable {
      * @return the Date of the next fire time or null if there is no  
      *         next fire time.
      */
-    public Date hasNextFireTime();
+    Date hasNextFireTime();
     
     /**
      * This method returns the date of the next fire time and updates
@@ -53,5 +53,5 @@ public interface Trigger extends Serializable {
      * @return the Date of the next fire time or null if there is no
      *         next fire time.
      */
-    public Date nextFireTime();
+    Date nextFireTime();
 }
