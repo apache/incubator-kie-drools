@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -222,7 +223,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         // Check they aren't in the Agenda
         assertEquals(0,
-                agenda.getAgendaGroup("MAIN").size());
+                ((InternalAgendaGroup) agenda.getAgendaGroup("MAIN")).size());
 
         // Check we have 0 activation cancellation events
         assertEquals(0,
@@ -232,7 +233,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         // Check the AgendaGroup and RuleFlowGroup  are now empty
         assertEquals(0,
-                agenda.getAgendaGroup("MAIN").size());
+                ((InternalAgendaGroup) agenda.getAgendaGroup("MAIN")).size());
         assertEquals(0,
                 agenda.sizeOfRuleFlowGroup("flowgroup-1"));
 

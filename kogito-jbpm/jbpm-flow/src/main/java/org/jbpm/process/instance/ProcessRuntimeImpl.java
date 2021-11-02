@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.KogitoProcessEventSupportImpl;
@@ -370,13 +371,13 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
                         String eventType = ruleName.substring(0,
                                 index);
 
-                        kruntime.queueWorkingMemoryAction(new SignalManagerSignalAction(eventType, event));
+                        ((ReteEvaluator) kruntime).addPropagation(new SignalManagerSignalAction(eventType, event), true);
                     } else if (ruleName.startsWith("RuleFlowStateEventSubProcess-")
                             || ruleName.startsWith("RuleFlowStateEvent-")
                             || ruleName.startsWith("RuleFlow-Milestone-")
                             || ruleName.startsWith("RuleFlow-AdHocComplete-")
                             || ruleName.startsWith("RuleFlow-AdHocActivate-")) {
-                        kruntime.queueWorkingMemoryAction(new SignalManagerSignalAction(ruleName, event));
+                        ((ReteEvaluator) kruntime).addPropagation(new SignalManagerSignalAction(ruleName, event), true);
                     }
                 } else {
                     String ruleName = event.getMatch().getRule().getName();
@@ -602,15 +603,8 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         }
 
         @Override
-        public void execute(InternalWorkingMemory workingMemory) {
-
+        public void execute(ReteEvaluator reteEvaluator) {
             signalEvent(type, event);
         }
-
-        @Override
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            signalEvent(type, event);
-        }
-
     }
 }

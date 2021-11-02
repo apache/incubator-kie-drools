@@ -26,6 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.drools.core.KogitoWorkingMemory;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -115,8 +116,8 @@ public class DefaultSignalManager implements SignalManager {
             }
         }
 
-        public void execute(InternalWorkingMemory workingMemory) {
-            ProcessInstance processInstance = ((KogitoWorkingMemory) workingMemory).getProcessInstance(processInstanceId);
+        public void execute(ReteEvaluator reteEvaluator) {
+            ProcessInstance processInstance = ((KogitoWorkingMemory) reteEvaluator).getProcessInstance(processInstanceId);
             if (processInstance != null) {
                 processInstance.signalEvent(type, event);
             }
@@ -175,8 +176,8 @@ public class DefaultSignalManager implements SignalManager {
             }
         }
 
-        public void execute(InternalWorkingMemory workingMemory) {
-            ((DefaultSignalManager) ((InternalProcessRuntime) workingMemory.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
+        public void execute(ReteEvaluator reteEvaluator) {
+            ((DefaultSignalManager) ((InternalProcessRuntime) ((InternalWorkingMemory) reteEvaluator).getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {

@@ -28,6 +28,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -347,7 +348,7 @@ public class KieBaseImpl implements InternalKnowledgeBase {
     }
 
     @Override
-    public SegmentMemory createSegmentFromPrototype(InternalWorkingMemory internalWorkingMemory, LeftTupleSource leftTupleSource) {
+    public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource leftTupleSource) {
         throw new UnsupportedOperationException();
     }
 

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.ProcessEventSupport;
@@ -514,16 +514,9 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         }
 
         @Override
-        public void execute(InternalWorkingMemory workingMemory) {
-
+        public void execute(ReteEvaluator reteEvaluator) {
             signalEvent(type, event);
         }
-
-        @Override
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            signalEvent(type, event);
-        }
-
     }
 
     @Override

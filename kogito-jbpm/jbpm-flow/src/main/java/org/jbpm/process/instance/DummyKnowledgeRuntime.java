@@ -21,7 +21,6 @@ import java.util.Map;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.time.TimerService;
 import org.jbpm.workflow.instance.impl.CodegenNodeInstanceFactoryRegistry;
@@ -92,11 +91,6 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
     }
 
     @Override
-    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
-
-    }
-
-    @Override
     public InternalProcessRuntime getProcessRuntime() {
         return this.processRuntime;
     }
@@ -133,11 +127,6 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public void endOperation() {
-
-    }
-
-    @Override
-    public void executeQueuedActions() {
 
     }
 
