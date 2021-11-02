@@ -531,4 +531,12 @@ public class CompiledFEELSupport {
     public static BigDecimal pow(BigDecimal l, BigDecimal r) {
         return BigDecimalMath.pow( l, r, MathContext.DECIMAL128 );
     }
+
+    public static BigDecimal negate(EvaluationContext feelExprCtx, Object value) {
+        if (value instanceof String) {
+            feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.CANNOT_NEGATE), null));
+            return null;
+        }
+        return ((BigDecimal)value).negate();
+    }
 }
