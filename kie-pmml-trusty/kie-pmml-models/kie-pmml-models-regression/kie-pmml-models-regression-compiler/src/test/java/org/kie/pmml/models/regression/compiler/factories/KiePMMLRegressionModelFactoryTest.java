@@ -254,7 +254,7 @@ public class KiePMMLRegressionModelFactoryTest {
         for (NumericPredictor numericPredictor : originalRegressionTable.getNumericPredictors()) {
             assertTrue(numericFunctionMap.containsKey(numericPredictor.getName().getValue()));
         }
-        final Map<String, SerializableFunction<Object, Double>> categoricalFunctionMap =
+        final Map<String, SerializableFunction<String, Double>> categoricalFunctionMap =
                 regressionTable.getCategoricalFunctionMap();
         for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
             assertTrue(categoricalFunctionMap.containsKey(categoricalPredictor.getName().getValue()));

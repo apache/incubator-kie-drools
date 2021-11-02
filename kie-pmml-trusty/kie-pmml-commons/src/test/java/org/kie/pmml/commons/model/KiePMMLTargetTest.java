@@ -21,7 +21,7 @@ import java.util.Collections;
 import org.junit.Test;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class KiePMMLTargetTest {
 
@@ -63,7 +63,7 @@ public class KiePMMLTargetTest {
     public void applyRescaleFactor() {
         KiePMMLTarget kiePMMLTarget = getBuilder().build();
         assertEquals(4.0, kiePMMLTarget.applyRescaleFactor(4.0), 0.0);
-        kiePMMLTarget = getBuilder().withRescaleFactor(2).build();
+        kiePMMLTarget = getBuilder().withRescaleFactor(2.0).build();
         assertEquals(8.0, kiePMMLTarget.applyRescaleFactor(4.0), 0.0);
     }
 
@@ -71,7 +71,7 @@ public class KiePMMLTargetTest {
     public void applyRescaleConstant() {
         KiePMMLTarget kiePMMLTarget = getBuilder().build();
         assertEquals(6.0, kiePMMLTarget.applyRescaleConstant(6.0), 0.0);
-        kiePMMLTarget = getBuilder().withRescaleConstant(2).build();
+        kiePMMLTarget = getBuilder().withRescaleConstant(2.0).build();
         assertEquals(8.0, kiePMMLTarget.applyRescaleConstant(6.0), 0.0);
     }
 

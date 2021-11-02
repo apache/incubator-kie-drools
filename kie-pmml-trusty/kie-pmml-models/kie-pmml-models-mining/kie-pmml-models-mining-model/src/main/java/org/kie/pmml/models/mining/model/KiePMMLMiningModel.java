@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.mining.model;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -41,7 +41,6 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     protected String algorithmName;
     protected boolean scorable = true;
     protected KiePMMLSegmentation segmentation;
-    private LinkedHashMap<String, Double> probabilityResultMap;
 
     protected KiePMMLMiningModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -52,17 +51,9 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                           final PMMLContext pmmlContext) {
         throw new KiePMMLException("KiePMMLMiningModel is not meant to be used for actual evaluation");
-    }
-
-    public void setProbabilityResultMap(LinkedHashMap<String, Double> probabilityResultMap) {
-        this.probabilityResultMap = probabilityResultMap;
-    }
-
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return probabilityResultMap;
     }
 
     @Override

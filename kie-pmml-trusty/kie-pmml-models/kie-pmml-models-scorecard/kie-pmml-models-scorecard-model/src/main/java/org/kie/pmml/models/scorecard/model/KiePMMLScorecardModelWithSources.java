@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.HasSourcesMap;
 
 public class KiePMMLScorecardModelWithSources extends KiePMMLScorecardModel implements HasSourcesMap {
@@ -33,13 +34,9 @@ public class KiePMMLScorecardModelWithSources extends KiePMMLScorecardModel impl
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                           final PMMLContext context) {
         throw new KiePMMLException("KiePMMLScorecardModelWithSources is not meant to be used for actual evaluation");
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLScorecardModelWithSources is not meant to be used for actual usage");
     }
 
     @Override

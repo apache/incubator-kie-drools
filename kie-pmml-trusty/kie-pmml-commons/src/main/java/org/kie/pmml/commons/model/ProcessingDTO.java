@@ -68,10 +68,6 @@ public class ProcessingDTO {
         this.kiePMMLNameValues = kiePMMLNameValues;
         this.orderedReasonCodes = new ArrayList<>();
         this.miningFields = model.getMiningFields();
-        this.predictedDisplayValue = model.getPredictedDisplayValue();
-        this.entityId = model.getEntityId();
-        this.affinity = model.getAffinity();
-        this.probabilityMap = model.getProbabilityMap();
     }
 
     /**

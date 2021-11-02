@@ -16,10 +16,10 @@
 package org.kie.pmml.models.drools.commons.model;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.HasRule;
 
 /**
@@ -30,7 +30,6 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
     private static final long serialVersionUID = -168095076511604775L;
     protected Map<String, String> sourcesMap;
     protected Map<String, String> rulesSourceMap;
-    private final String kmodulePackageName;
     private final String pkgUUID;
 
     public KiePMMLDroolsModelWithSources(String name,
@@ -40,24 +39,15 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
                                          Map<String, String> rulesSourceMap) {
         super(name, Collections.emptyList());
         this.sourcesMap = sourcesMap;
-        this.kmodulePackageName = kmodulePackageName;
         this.pkgUUID = pkgUUID;
         this.rulesSourceMap = rulesSourceMap;
+        this.kModulePackageName = kmodulePackageName;
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                           final PMMLContext pmmlContext) {
         throw new KiePMMLException("KiePMMLDroolsModelWithSources. is not meant to be used for actual evaluation");
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLDroolsModelWithSources. is not meant to be used for actual usage");
-    }
-
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        throw new KiePMMLException("KiePMMLDroolsModelWithSources is not meant to be used for actual usage");
     }
 
     @Override
@@ -68,11 +58,6 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
     @Override
     public void addSourceMap(String key, String value) {
         sourcesMap.put(key, value);
-    }
-
-    @Override
-    public String getKModulePackageName() {
-        return kmodulePackageName;
     }
 
     @Override

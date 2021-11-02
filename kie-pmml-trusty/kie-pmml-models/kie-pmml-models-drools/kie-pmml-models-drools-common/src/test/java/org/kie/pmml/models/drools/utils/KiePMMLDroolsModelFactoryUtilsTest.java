@@ -62,6 +62,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateAssignExpr;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
@@ -122,6 +123,8 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         assignExpressionMap.put("miningFunction",
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
+        String expectedKModulePackageName = getSanitizedPackageName(packageName + "." + modelName);
+        assignExpressionMap.put("kModulePackageName", new StringLiteralExpr(expectedKModulePackageName));
         assertTrue(commonEvaluateAssignExpr(constructorDeclaration.getBody(), assignExpressionMap));
         int expectedMethodCallExprs = assignExpressionMap.size() + fieldTypeMap.size() + 1; // The last "1" is for
         // the super invocation
@@ -136,14 +139,17 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         SimpleName tableName = new SimpleName("TABLE_NAME");
         String targetField = "TARGET_FIELD";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
+        String kModulePackageName = getSanitizedPackageName("kModulePackageName");
         KiePMMLDroolsModelFactoryUtils.setConstructor(model, constructorDeclaration, tableName, targetField,
-                                                      miningFunction);
+                                                      miningFunction,
+                                                      kModulePackageName);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
         assignExpressionMap.put("miningFunction",
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
+        assignExpressionMap.put("kModulePackageName", new StringLiteralExpr(kModulePackageName));
         assertTrue(commonEvaluateConstructor(constructorDeclaration, tableName.asString(),
                                              superInvocationExpressionsMap,
                                              assignExpressionMap));
