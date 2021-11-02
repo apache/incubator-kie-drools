@@ -24,6 +24,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.core.reteoo.Sink;
 
+import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class ModifyHandler extends PropagatorCompilerHandler {
@@ -34,7 +35,12 @@ public class ModifyHandler extends PropagatorCompilerHandler {
 
     @Override
     protected Statement propagateMethod(Sink sink) {
-        Statement modifyStatement = StaticJavaParser.parseStatement("ALPHATERMINALNODE.modifyObject(handle, modifyPreviousTuples, context, wm);");
+        Statement modifyStatement;
+        if (sinkCanBeInlined(sink)) {
+            modifyStatement = parseStatement("ALPHATERMINALNODE.collectObject();");
+        } else {
+            modifyStatement = parseStatement("ALPHATERMINALNODE.modifyObject(handle, modifyPreviousTuples, context, wm);");
+        }
         replaceNameExpr(modifyStatement, "ALPHATERMINALNODE", getVariableName(sink));
         return modifyStatement;
     }

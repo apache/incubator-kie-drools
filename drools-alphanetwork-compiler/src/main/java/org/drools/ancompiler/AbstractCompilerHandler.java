@@ -36,15 +36,22 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
 
     protected static final String RANGE_INDEX_VARIABLE_NAME_PREFIX = "rangeIndex";
 
-    protected static Class<?> getVariableType(AlphaNode alphaNode) {
+    public static Class<?> getVariableType(AlphaNode alphaNode) {
 
         // for alphas, we use the constraint of the alpha for the declaration
         return alphaNode.getConstraint().getClass();
     }
 
-    protected static Class<?> getVariableType(Sink sink) {
+    public static Class<?> getVariableType(Sink sink) {
 
+        if(sinkCanBeInlined(sink)) {
+            return ((CanInlineInANC<?>) sink).inlinedType();
+        }
         return sink.getClass();
+    }
+
+    public static boolean sinkCanBeInlined(Sink sink) {
+        return sink instanceof CanInlineInANC<?>;
     }
 
     protected static String getVariableName(AlphaNode alphaNode) {

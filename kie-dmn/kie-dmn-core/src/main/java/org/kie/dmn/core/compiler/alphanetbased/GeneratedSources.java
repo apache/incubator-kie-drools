@@ -25,18 +25,16 @@ import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import org.drools.ancompiler.CompiledNetworkSource;
+import org.drools.ancompiler.CompiledNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.util.Optional.of;
 import static org.kie.dmn.core.compiler.alphanetbased.TableCell.ALPHANETWORK_STATIC_PACKAGE;
 
 public class GeneratedSources {
 
-    // TODO DT-ANC support specific packages for both DMN and Alpha Network classes
+    // TODO DT-ANC https://issues.redhat.com/browse/DROOLS-6620
     private static final String ANC_PACKAGE = "org.drools.ancompiler";
 
     private static final Logger logger = LoggerFactory.getLogger(GeneratedSources.class);
@@ -47,10 +45,13 @@ public class GeneratedSources {
     private final Map<String, String> allGeneratedSources = new HashMap<>();
 
     private String alphaNetworkClassName = null;
-    private Optional<Path> optionalDumpFolder = Optional.empty();
 
     public void addNewSourceClass(String classNameWithPackage, String classSourceCode) {
         allGeneratedSources.put(classNameWithPackage, classSourceCode);
+    }
+
+    public void addNewSourceClasses(Map<String, String> sourceClasses) {
+        allGeneratedSources.putAll(sourceClasses);
     }
 
     public void addNewAlphaNetworkClass(String alphaNetworkClassWithPackage, String toString) {
@@ -58,15 +59,19 @@ public class GeneratedSources {
         this.alphaNetworkClassName = alphaNetworkClassWithPackage;
     }
 
-    public DMNCompiledAlphaNetwork newInstanceOfAlphaNetwork(Map<String, Class<?>> compiledClasses) {
+    public DMNAlphaNetworkEvaluator newInstanceOfAlphaNetwork(Map<String, Class<?>> compiledClasses,
+                                                              CompiledNetwork compiledNetwork,
+                                                              AlphaNetworkEvaluationContext alphaNetworkEvaluationContext) {
         Class<?> inputSetClass = compiledClasses.get(alphaNetworkClassName);
         Object inputSetInstance;
         try {
-            inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
+            inputSetInstance = inputSetClass
+                    .getDeclaredConstructor(CompiledNetwork.class, AlphaNetworkEvaluationContext.class)
+                    .newInstance(compiledNetwork, alphaNetworkEvaluationContext);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return (DMNCompiledAlphaNetwork) inputSetInstance;
+        return (DMNAlphaNetworkEvaluator) inputSetInstance;
     }
 
     public Map<String, String> getAllGeneratedSources() {
@@ -98,39 +103,19 @@ public class GeneratedSources {
                     final String tempDirPackage = tempDirWithPrefix.getName(8).toString();
                     String javaSource = kv.getValue();
 
-                    // each run will have its own package
-                    String withUniquePackageDMN = javaSource.replace(ALPHANETWORK_STATIC_PACKAGE, tempDirPackage + "." + ALPHANETWORK_STATIC_PACKAGE);
+                    javaSource = javaSource.replace("package " + ANC_PACKAGE, "package " + tempDirPackage + "." + ANC_PACKAGE);
+                    javaSource = javaSource.replace("= " + ANC_PACKAGE, "= " + tempDirPackage + "." + ANC_PACKAGE);
+                    javaSource = javaSource.replace(ALPHANETWORK_STATIC_PACKAGE, tempDirPackage + "." + ALPHANETWORK_STATIC_PACKAGE);
 
-                    Files.write(path, withUniquePackageDMN.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
+
+                    Files.write(path, javaSource.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
                 }
                 if (logger.isDebugEnabled()) {
                     logger.debug("Dumped files to: \n\n{}\n", tempDirWithPrefix);
                 }
 
-                optionalDumpFolder = of(tempDirWithPrefix);
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public void dumpGeneratedAlphaNetwork(CompiledNetworkSource compiledNetworkSource) {
-        if (DUMP_GENERATED_CLASSES) {
-            try {
-                Path tempDirWithPrefix = this.optionalDumpFolder.orElseThrow(RuntimeException::new);
-
-                Path path = tempDirWithPrefix.resolve(compiledNetworkSource.getName().replace(".", "/") + ".java");
-
-                Files.createDirectories(path.getParent());
-
-                final String tempDirPackage = tempDirWithPrefix.getName(8).toString();
-
-                String javaSource = compiledNetworkSource.getSource();
-                String withUniquePackageANC = javaSource.replace("package " + ANC_PACKAGE, "package " + tempDirPackage + "." + ANC_PACKAGE);
-
-                Files.write(path, withUniquePackageANC.getBytes(StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

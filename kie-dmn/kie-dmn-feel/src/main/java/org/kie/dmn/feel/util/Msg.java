@@ -54,6 +54,7 @@ public final class Msg {
     public static final Message1 COMPARING_TO_UT = new Message1("Comparing to a unary test is not semantically defined: %s");
     public static final Message1 UT_OF_UT = new Message1("An unary test of a unary test is not semantically defined: %s");
     public static final Message1 MALFORMED_AT_LITERAL = new Message1("Malformed at-literal: %s");
+    public static final Message1 CANNOT_INVOKE = new Message1("Not an invocable: '%s'");
 
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);
