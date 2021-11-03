@@ -28,15 +28,16 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 /**
+ * Proposal DMN14-187
  * Experimental for DMN14-182
  * See also: DMN14-181, DMN14-183
  */
-public class PutAllFunction extends BaseFEELFunction {
+public class ContextMergeFunction extends BaseFEELFunction {
 
-    public static final PutAllFunction INSTANCE = new PutAllFunction();
+    public static final ContextMergeFunction INSTANCE = new ContextMergeFunction();
 
-    public PutAllFunction() {
-        super("put all");
+    public ContextMergeFunction() {
+        super("context merge");
     }
 
     public FEELFnResult<Map<String, Object>> invoke(@ParameterName("contexts") List<Object> contexts) {
@@ -47,7 +48,7 @@ public class PutAllFunction extends BaseFEELFunction {
         StringBuilder errors = new StringBuilder();
         Map<String, Object> result = new HashMap<String, Object>();
         for (int i = 0; i < contexts.size(); i++) {
-            FEELFnResult<Map<String, Object>> ci = PutFunction.toMap(contexts.get(i));
+            FEELFnResult<Map<String, Object>> ci = ContextPutFunction.toMap(contexts.get(i));
             final int index = i + 1;
             ci.consume(event -> errors.append("context of index " + (index) + " " + event.getMessage()), values -> result.putAll(values));
         }

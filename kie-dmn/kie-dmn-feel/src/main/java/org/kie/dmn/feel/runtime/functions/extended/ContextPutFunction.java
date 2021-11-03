@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.functions.extended;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -29,15 +30,16 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 /**
+ * Proposal DMN14-187
  * Experimental for DMN14-181
  * See also: DMN14-182, DMN14-183
  */
-public class PutFunction extends BaseFEELFunction {
+public class ContextPutFunction extends BaseFEELFunction {
 
-    public static final PutFunction INSTANCE = new PutFunction();
+    public static final ContextPutFunction INSTANCE = new ContextPutFunction();
 
-    public PutFunction() {
-        super("put");
+    public ContextPutFunction() {
+        super("context put");
     }
 
     public FEELFnResult<Map<String, Object>> invoke(@ParameterName("context") Object context, @ParameterName("key") String key, @ParameterName("value") Object value) {
@@ -47,10 +49,37 @@ public class PutFunction extends BaseFEELFunction {
         if (key == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "key", "cannot be null"));
         }
-        FEELFnResult<Map<String, Object>> result = toMap(context);
-        result.map(r -> r.put(key, value));
+        FEELFnResult<Map<String, Object>> result = toMap(context).map(r -> put(r, key, value));
 
         return result;
+    }
+    
+    public FEELFnResult<Map<String, Object>> invoke(@ParameterName("context") Object context, @ParameterName("keys") List keys, @ParameterName("value") Object value) {
+        if (context == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "context", "cannot be null"));
+        }
+        if (keys == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "keys", "cannot be null"));
+        } else if (keys.isEmpty()) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "keys", "cannot be empty"));
+        }
+        Object head = keys.get(0);
+        if (!(head instanceof String)) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "keys", "an element is not a key: "+head));
+        }
+        final String key0 = (String) head;
+        if (keys.size() == 1) {
+            return invoke(context, key0, value);
+        }
+        final List keysTail = keys.subList(1, keys.size());
+        final FEELFnResult<Map<String, Object>> result = toMap(context).flatMap(r -> invoke(r.get(key0), keysTail, value).map(rv -> put(r, key0, rv)));
+                
+        return result;
+    }
+    
+    private static <K, V> Map<K, V> put(Map<K, V> map, K key, V value) {
+        map.put(key, value);
+        return map;
     }
 
     public static FEELFnResult<Map<String, Object>> toMap(Object context) {

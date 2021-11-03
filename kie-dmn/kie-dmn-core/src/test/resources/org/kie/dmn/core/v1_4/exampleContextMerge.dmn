@@ -28,7 +28,7 @@
       <dmn:requiredDecision href="#_F42B08A7-30B7-4791-98E0-BAA0361ED615"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_9DE450A1-4BFC-4CAC-96DC-1CDCCFE5FB29">
-      <dmn:text>put all([Partial Person, {"last name": Last name, "age": Age}])</dmn:text>
+      <dmn:text>context merge([Partial Person, {"last name": Last name, "age": Age}])</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
   <dmn:decision id="_29EA3452-B47A-499D-9C37-EA586754E8C0" name="Age">
