@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.trusty.service.common.TrustyService;
@@ -37,6 +38,8 @@ public abstract class BaseEventConsumer<E> {
     private static final Logger LOG = LoggerFactory.getLogger(BaseEventConsumer.class);
 
     protected final TrustyService service;
+    protected final ManagedExecutor executor;
+
     private final ObjectMapper mapper;
     private final StorageExceptionsProvider storageExceptionsProvider;
 
@@ -44,13 +47,17 @@ public abstract class BaseEventConsumer<E> {
     private boolean failOnAllExceptions;
 
     protected BaseEventConsumer() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
-    public BaseEventConsumer(final TrustyService service, ObjectMapper mapper, StorageExceptionsProvider storageExceptionsProvider) {
+    public BaseEventConsumer(final TrustyService service,
+            final ObjectMapper mapper,
+            final StorageExceptionsProvider storageExceptionsProvider,
+            final ManagedExecutor executor) {
         this.service = service;
         this.mapper = mapper;
         this.storageExceptionsProvider = storageExceptionsProvider;
+        this.executor = executor;
     }
 
     protected CompletionStage<Void> handleMessage(final Message<String> message) {

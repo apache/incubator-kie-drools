@@ -22,6 +22,7 @@ import java.util.concurrent.CompletionStage;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
@@ -53,9 +54,15 @@ public class ExplainabilityResultConsumer extends BaseEventConsumer<BaseExplaina
     }
 
     @Inject
-    public ExplainabilityResultConsumer(TrustyService service, ExplainerServiceHandlerRegistry explainerServiceHandlerRegistry, ObjectMapper mapper,
-            StorageExceptionsProvider storageExceptionsProvider) {
-        super(service, mapper, storageExceptionsProvider);
+    public ExplainabilityResultConsumer(TrustyService service,
+            ExplainerServiceHandlerRegistry explainerServiceHandlerRegistry,
+            ObjectMapper mapper,
+            StorageExceptionsProvider storageExceptionsProvider,
+            ManagedExecutor executor) {
+        super(service,
+                mapper,
+                storageExceptionsProvider,
+                executor);
         this.explainerServiceHandlerRegistry = explainerServiceHandlerRegistry;
     }
 
@@ -66,7 +73,7 @@ public class ExplainabilityResultConsumer extends BaseEventConsumer<BaseExplaina
     @Override
     @Incoming("trusty-explainability-result")
     public CompletionStage<Void> handleMessage(Message<String> message) {
-        return CompletableFuture.runAsync(() -> super.handleMessage(message));
+        return CompletableFuture.runAsync(() -> super.handleMessage(message), executor);
     }
 
     @Override

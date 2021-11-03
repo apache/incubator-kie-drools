@@ -22,6 +22,7 @@ import java.util.concurrent.CompletionStage;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.decision.DecisionModelMetadata;
@@ -50,14 +51,20 @@ public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
     }
 
     @Inject
-    public ModelEventConsumer(TrustyService service, ObjectMapper mapper, StorageExceptionsProvider storageExceptionsProvider) {
-        super(service, mapper, storageExceptionsProvider);
+    public ModelEventConsumer(TrustyService service,
+            ObjectMapper mapper,
+            StorageExceptionsProvider storageExceptionsProvider,
+            ManagedExecutor executor) {
+        super(service,
+                mapper,
+                storageExceptionsProvider,
+                executor);
     }
 
     @Override
     @Incoming("kogito-tracing-model")
     public CompletionStage<Void> handleMessage(final Message<String> message) {
-        return CompletableFuture.runAsync(() -> super.handleMessage(message));
+        return CompletableFuture.runAsync(() -> super.handleMessage(message), executor);
     }
 
     @Override

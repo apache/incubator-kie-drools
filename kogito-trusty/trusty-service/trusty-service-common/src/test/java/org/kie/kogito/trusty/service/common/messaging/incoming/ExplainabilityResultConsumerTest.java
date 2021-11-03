@@ -57,6 +57,7 @@ import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
 import io.cloudevents.CloudEvent;
+import io.smallrye.context.SmallRyeManagedExecutor;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
@@ -167,7 +168,8 @@ class ExplainabilityResultConsumerTest {
         consumer = new ExplainabilityResultConsumer(trustyService,
                 explainerServiceHandlerRegistry,
                 TrustyServiceTestUtils.MAPPER,
-                storageExceptionsProvider);
+                storageExceptionsProvider,
+                SmallRyeManagedExecutor.builder().build());
     }
 
     @Test

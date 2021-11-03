@@ -29,6 +29,8 @@ import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 
+import io.smallrye.context.SmallRyeManagedExecutor;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -46,7 +48,10 @@ class TraceEventConsumerTest {
     void setup() {
         trustyService = mock(TrustyService.class);
         storageExceptionsProvider = mock(StorageExceptionsProvider.class);
-        consumer = new TraceEventConsumer(trustyService, TrustyServiceTestUtils.MAPPER, storageExceptionsProvider);
+        consumer = new TraceEventConsumer(trustyService,
+                TrustyServiceTestUtils.MAPPER,
+                storageExceptionsProvider,
+                SmallRyeManagedExecutor.builder().build());
     }
 
     @Test
