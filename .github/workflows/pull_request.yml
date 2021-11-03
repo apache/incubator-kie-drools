@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Maven Build
     steps:
-      - name: Support longpaths
+      - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ginxo/droolsjbpm-build-bootstrap/.ci/actions/long-paths@BXMSPROD-1539
       - name: Java and Maven Setup
