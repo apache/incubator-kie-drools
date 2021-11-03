@@ -14,5 +14,8 @@ public class OptaPlannerFeature implements Feature {
         final String reason = "Quarkus run time init for OptaPlanner";
         // TODO: Remove after https://issues.redhat.com/browse/DROOLS-6643 is resolved.
         runtimeInit.initializeAtRunTime("org.drools.compiler.kproject.models.KieModuleMarshaller", reason);
+        runtimeInit.initializeAtRunTime("org.drools.core.rule.KieModuleMetaInfo$Marshaller", reason);
+
+        runtimeInit.initializeAtRunTime("org.drools.core.rule.JavaDialectRuntimeData", reason);
     }
 }
