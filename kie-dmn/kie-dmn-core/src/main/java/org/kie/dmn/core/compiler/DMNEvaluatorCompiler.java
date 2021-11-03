@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -195,10 +196,10 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         String[] fnameParts = functionName.split("\\.");
         Optional<DMNNode> findAsDep = Optional.empty();
         if (fnameParts.length > 1) {
-            final String functionNamePrefix = functionName.substring(0, functionName.lastIndexOf("."));
-            final String functionNameWithoutPrefix = functionName.substring(functionName.lastIndexOf(".") + 1);
-            QName importAlias = model.getImportNamespaceAndNameforAlias(functionNamePrefix);
-            findAsDep = node.getDependencies().values().stream().filter(d -> d.getModelNamespace().equals(importAlias.getNamespaceURI()) && d.getName().equals(functionNameWithoutPrefix)).findAny();
+            findAsDep = node.getDependencies().values().stream().filter(dmnNode -> {
+                final Optional<String> alias = dmnNode.getModelImportAliasFor(dmnNode.getModelNamespace(), dmnNode.getModelName());
+                return alias.isPresent() && Objects.equals(functionName, alias.get() + "." + dmnNode.getName());
+            }).findFirst();
         } else {
             findAsDep = node.getDependencies().values().stream().filter(d -> d.getName().equals(functionName)).findAny();
         }
