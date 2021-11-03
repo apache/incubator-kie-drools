@@ -1,10 +1,1 @@
-{
-    if (Objects.equals(%s, input))
-        return %s;
-    else if (Objects.equals(%s, input))
-        return %s;
-    else if (Objects.equals(%s, input))
-        return %s;
-    else
-        return 0.0;
-}
+(org.kie.pmml.api.iinterfaces.SerializableFunction<String, Double>) input -> evaluateCategoricalPredictor(input, %s)

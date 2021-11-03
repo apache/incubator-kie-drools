@@ -7,8 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.kie.pmml.commons.model.KiePMMLMiningField;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.*;
 import org.kie.pmml.commons.model.expressions.*;
 import org.kie.pmml.commons.transformations.*;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -26,11 +25,7 @@ public class KiePMMLScorecardModelTemplate extends KiePMMLScorecardModel {
         localTransformations = null;
         kiePMMLMiningFields = null;
         kiePMMLOutputFields = null;
-    }
-
-    @Override
-    public String getKModulePackageName() {
-        return null;
+        kModulePackageName = null;
     }
 
 }

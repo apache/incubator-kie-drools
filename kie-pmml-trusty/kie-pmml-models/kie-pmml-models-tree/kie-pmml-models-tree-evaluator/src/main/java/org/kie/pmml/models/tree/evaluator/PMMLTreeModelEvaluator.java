@@ -50,7 +50,7 @@ public class PMMLTreeModelEvaluator implements PMMLModelEvaluator<KiePMMLTreeMod
                 getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();
-        Object result = model.evaluate(knowledgeBase, requestData);
+        Object result = model.evaluate(knowledgeBase, requestData, pmmlContext);
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());

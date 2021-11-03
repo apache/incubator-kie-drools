@@ -10,16 +10,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class KiePMMLEvaluateMethodTemplate {
 
     private double evaluateNumericWithExponent(double input) {
-        double coefficient = 5;
-        double exponent = 2;
         // Considering exponent because it is != 1
-        return Math.pow(input, exponent) * coefficient;
+        return evaluateNumericWithExponent(input, coefficient, exponent);
     }
 
     private double evaluateNumericWithoutExponent(double input) {
-        double coefficient = 1;
         // Ignoring exponent because it is 1
-        return input * coefficient;
+        return evaluateNumericWithoutExponent(input, coefficient);
     }
 
     private double evaluateCategorical(Object input) {

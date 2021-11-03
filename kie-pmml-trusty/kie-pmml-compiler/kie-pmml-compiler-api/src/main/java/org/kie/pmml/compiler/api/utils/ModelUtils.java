@@ -525,7 +525,7 @@ public class ModelUtils {
     }
 
     public static List<Field<?>> getFieldsFromDataDictionaryAndTransformationDictionary(final DataDictionary dataDictionary,
-                                                                                             final TransformationDictionary transformationDictionary) {
+                                                                                        final TransformationDictionary transformationDictionary) {
         final List<Field<?>> toReturn = new ArrayList<>();
         if (dataDictionary != null && dataDictionary.hasDataFields()) {
             dataDictionary.getDataFields().stream().map(Field.class::cast)
