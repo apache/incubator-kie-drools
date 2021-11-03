@@ -29,14 +29,18 @@ public class EmptyHeaderTest {
 
     @Test(expected = DecisionTableParseException.class)
 	public void testEmptyConditionInXLS() {
-		DecisionTableConfiguration dtconf = KnowledgeBuilderFactory
-				.newDecisionTableConfiguration();
-		dtconf.setInputType(DecisionTableInputType.XLS);
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
-				.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource(
-                "emptyCondition.xls", getClass()), ResourceType.DTABLE,
-                dtconf);
+		try {
+			DecisionTableConfiguration dtconf = KnowledgeBuilderFactory
+					.newDecisionTableConfiguration();
+			dtconf.setInputType(DecisionTableInputType.XLS);
+			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+					.newKnowledgeBuilder();
+			kbuilder.add(ResourceFactory.newClassPathResource(
+							"emptyCondition.xls", getClass()), ResourceType.DTABLE,
+					dtconf);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	@Test(expected = DecisionTableParseException.class)
