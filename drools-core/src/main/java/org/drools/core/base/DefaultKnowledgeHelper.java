@@ -466,6 +466,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         }
         if (reteEvaluator instanceof StatefulKnowledgeSessionImpl) {
             wrappedEvaluator = new ReteEvaluatorForRHS((StatefulKnowledgeSessionImpl) reteEvaluator);
+            return wrappedEvaluator;
         }
         throw new UnsupportedOperationException("Operation not supported when using a lightweight session");
     }
