@@ -22,6 +22,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -55,14 +56,14 @@ public class TraitNamedEntryPoint extends NamedEntryPoint {
                                 KieComponentFactory componentFactory) {
         this.entryPoint = entryPoint;
         this.entryPointNode = entryPointNode;
-        this.wm = wm;
-        this.kBase = this.wm.getKnowledgeBase();
+        this.reteEvaluator = reteEvaluator;
+        this.kBase = this.reteEvaluator.getKnowledgeBase();
         this.lock = lock;
-        this.handleFactory = this.wm.getFactHandleFactory();
+        this.handleFactory = this.reteEvaluator.getFactHandleFactory();
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         boolean isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(this.kBase.getConfiguration().getAssertBehaviour());
         this.objectStore = new ClassAwareObjectStore(isEqualityBehaviour, this.lock);
-        this.traitHelper = componentFactory.createTraitHelper(wm, this);
+        this.traitHelper = componentFactory.createTraitHelper((InternalWorkingMemoryActions) reteEvaluator, this);
     }
 
     @Override
