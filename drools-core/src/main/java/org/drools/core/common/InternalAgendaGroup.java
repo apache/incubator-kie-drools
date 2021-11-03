@@ -66,9 +66,7 @@ public interface InternalAgendaGroup extends AgendaGroup {
 
     void visited();
 
-    void setWorkingMemory(InternalWorkingMemory workingMemory);
-
-    InternalWorkingMemory getWorkingMemory();
+    void setReteEvaluator(ReteEvaluator reteEvaluator);
 
     void hasRuleFlowListener(boolean hasRuleFlowLister);
 

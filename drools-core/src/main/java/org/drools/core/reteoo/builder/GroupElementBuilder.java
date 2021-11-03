@@ -148,7 +148,7 @@ public class GroupElementBuilder
                 // adapt it to a Tuple source
                 context.setTupleSource( utils.attachNode( context,
                                                           context.getComponentFactory().getNodeFactoryService()
-                                                                 .buildLeftInputAdapterNode( context.getNextId(),
+                                                                 .buildLeftInputAdapterNode( context.getNextNodeId(),
                                                                                              context.getObjectSource(),
                                                                                              context, terminal ) ) );
                 context.setObjectSource( null );
@@ -164,7 +164,7 @@ public class GroupElementBuilder
                                                                                         false );
 
                 JoinNode joinNode = context.getComponentFactory()
-                                           .getNodeFactoryService().buildJoinNode( context.getNextId(),
+                                           .getNodeFactoryService().buildJoinNode( context.getNextNodeId(),
                                                                                    context.getTupleSource(),
                                                                                    context.getObjectSource(),
                                                                                    betaConstraints,
@@ -245,7 +245,7 @@ public class GroupElementBuilder
 
             // if it is a subnetwork
             if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
-                RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode(context.getNextId(),
+                RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode(context.getNextNodeId(),
                                                                                                                           context.getTupleSource(),
                                                                                                                           tupleSource,
                                                                                                                           context);
@@ -273,7 +273,7 @@ public class GroupElementBuilder
             // in each case
 
 
-            NotNode node = nfactory.buildNotNode( context.getNextId(),
+            NotNode node = nfactory.buildNotNode( context.getNextNodeId(),
                                                   context.getTupleSource(),
                                                   context.getObjectSource(),
                                                   betaConstraints,
@@ -324,7 +324,7 @@ public class GroupElementBuilder
 
             // if it is a subnetwork
             if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
-                RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextId(),
+                RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
                                                                                                                            context.getTupleSource(),
                                                                                                                            tupleSource,
                                                                                                                            context );
@@ -346,7 +346,7 @@ public class GroupElementBuilder
                                                                                     context.getBetaconstraints(),
                                                                                     false );
 
-            ExistsNode node = nfactory.buildExistsNode(context.getNextId(),
+            ExistsNode node = nfactory.buildExistsNode(context.getNextNodeId(),
                                                        context.getTupleSource(),
                                                        context.getObjectSource(),
                                                        betaConstraints,

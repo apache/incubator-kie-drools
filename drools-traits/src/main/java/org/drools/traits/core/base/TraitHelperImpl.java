@@ -139,7 +139,7 @@ public class TraitHelperImpl implements Externalizable,
                 InternalFactHandle h = (InternalFactHandle) lookupFactHandle( t );
                 if ( h != null ) {
                     NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint(workingMemory);
-                    PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
+                    PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getReteEvaluator().getNextPropagationIdCounter(),
                                                                                                            PropagationContext.Type.MODIFICATION,
                                                                                                            activation != null ? activation.getRule() : null,
                                                                                                            activation != null ? activation.getTuple().getTupleSink() : null,
@@ -295,7 +295,7 @@ public class TraitHelperImpl implements Externalizable,
 
             Object o = h.getObject();
             NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint(workingMemory);
-            PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
+            PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getReteEvaluator().getNextPropagationIdCounter(),
                                                                                                    PropagationContext.Type.MODIFICATION,
                                                                                                    activation.getRule(),
                                                                                                    activation.getTuple().getTupleSink(),

@@ -20,10 +20,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements ObjectUpdatedEvent {
@@ -31,12 +30,12 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
     private Object      object;
     private Object      oldObject;
     
-    public ObjectUpdatedEventImpl(final WorkingMemory workingMemory,
+    public ObjectUpdatedEventImpl(final KieRuntime kruntime,
                                   final PropagationContext propagationContext,
                                   final FactHandle handle,
                                   final Object oldObject,
                                   final Object object) {
-        super( ((InternalWorkingMemory) workingMemory ).getKnowledgeRuntime(), propagationContext );
+        super( kruntime, propagationContext );
         this.factHandle = handle;
         this.oldObject = oldObject;
         this.object = object;

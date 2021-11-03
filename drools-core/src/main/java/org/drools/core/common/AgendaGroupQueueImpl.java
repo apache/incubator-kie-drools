@@ -53,7 +53,7 @@ public class AgendaGroupQueueImpl
     private          long               activatedForRecency;
     private          long               clearedForRecency;
 
-    private InternalWorkingMemory workingMemory;
+    private ReteEvaluator reteEvaluator;
     private boolean               autoDeactivate = true;
     private Map<Object, String>     nodeInstances  = new ConcurrentHashMap<>();
 
@@ -86,18 +86,14 @@ public class AgendaGroupQueueImpl
         return this.name;
     }
 
-    public void setWorkingMemory(InternalWorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
+    public void setReteEvaluator(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
         // workingMemory can be null during deserialization
-        if (workingMemory != null && workingMemory.getSessionConfiguration().isDirectFiring()) {
+        if (reteEvaluator != null && reteEvaluator.getSessionConfiguration().isDirectFiring()) {
             this.priorityQueue = new ArrayQueue();
         } else {
             this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
         }
-    }
-
-    public InternalWorkingMemory getWorkingMemory() {
-        return workingMemory;
     }
 
     @Override
@@ -111,7 +107,7 @@ public class AgendaGroupQueueImpl
     }
 
     public void clear() {
-        workingMemory.addPropagation( new ClearAction( this.name ) );
+        reteEvaluator.addPropagation( new ClearAction( this.name ) );
     }
 
     public class ClearAction extends PropagationEntry.AbstractPropagationEntry {
@@ -129,7 +125,7 @@ public class AgendaGroupQueueImpl
     }
 
     public void setFocus() {
-        workingMemory.addPropagation( new SetFocusAction( this.name ) );
+        reteEvaluator.addPropagation( new SetFocusAction( this.name ) );
     }
 
     public class SetFocusAction extends PropagationEntry.AbstractPropagationEntry {

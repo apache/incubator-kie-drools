@@ -43,7 +43,7 @@ public class QueryElementBuilder
 
         context.setTupleSource( utils.attachNode( context,
                                                   context.getComponentFactory().getNodeFactoryService().buildQueryElementNode(
-                                                                        context.getNextId(),
+                                                                        context.getNextNodeId(),
                                                                         context.getTupleSource(),
                                                                         qe,
                                                                         context.isTupleMemoryEnabled(),

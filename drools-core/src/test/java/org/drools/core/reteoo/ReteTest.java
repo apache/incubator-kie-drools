@@ -238,7 +238,7 @@ public class ReteTest extends DroolsTestCase {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final Rete rete = kBase.getRete();
-        final IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
+        final IdGenerator idGenerator = kBase.getReteooBuilder().getNodeIdsGenerator();
 
         // Attach a List ObjectTypeNode
         final ObjectTypeNode listOtn = new ObjectTypeNode(idGenerator.getNextId(),

@@ -20,21 +20,20 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class ObjectDeletedEventImpl extends RuleRuntimeEventImpl implements ObjectDeletedEvent {
     private FactHandle factHandle;
     private Object oldbOject;
     
-    public ObjectDeletedEventImpl(final WorkingMemory workingMemory,
+    public ObjectDeletedEventImpl(final KieRuntime kruntime,
                                    final PropagationContext propagationContext,
                                    final FactHandle handle,
                                    final Object object) {
-        super( ((InternalWorkingMemory) workingMemory ).getKnowledgeRuntime(), propagationContext );
+        super( kruntime, propagationContext );
         this.factHandle = handle;
         this.oldbOject = object;
     }

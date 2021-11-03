@@ -36,7 +36,7 @@ public class AsyncReceiveBuilder implements ReteooComponentBuilder {
                 new AlphaNodeFieldConstraint[0];
 
         context.setTupleSource( utils.attachNode( context,
-                context.getComponentFactory().getNodeFactoryService().buildAsyncReceiveNode( context.getNextId(),
+                context.getComponentFactory().getNodeFactoryService().buildAsyncReceiveNode( context.getNextNodeId(),
                                                                                              receive,
                                                                                              context.getTupleSource(),
                                                                                              alphaNodeFieldConstraints,

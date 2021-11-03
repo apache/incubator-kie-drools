@@ -36,7 +36,7 @@ public class EvalBuilder
         context.setTupleSource( utils.attachNode( context,
                                                   context.getComponentFactory()
                                                          .getNodeFactoryService()
-                                                         .buildEvalNode( context.getNextId(),
+                                                         .buildEvalNode( context.getNextNodeId(),
                                                                          context.getTupleSource(),
                                                                          eval,
                                                                          context ) ) );

@@ -6,9 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.core.SessionConfiguration;
@@ -19,7 +17,6 @@ import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -88,9 +85,9 @@ public class ReteEvaluatorForRHS
 
     protected StatefulKnowledgeSessionImpl delegate;
 
-    public ReteEvaluatorForRHS(ReteEvaluator reteEvaluator) {
+    public ReteEvaluatorForRHS(StatefulKnowledgeSessionImpl reteEvaluator) {
         super();
-        this.delegate = (StatefulKnowledgeSessionImpl) reteEvaluator;
+        this.delegate = reteEvaluator;
     }
 
     /**
@@ -130,10 +127,6 @@ public class ReteEvaluatorForRHS
 
     public <T> T createRuntimeService(Class<T> cls) {
         return delegate.createRuntimeService(cls);
-    }
-
-    public Map<String, WorkingMemoryEntryPoint> getEntryPointMap() {
-        return delegate.getEntryPointMap();
     }
 
     public void addEventListener(ProcessEventListener listener) {
@@ -250,16 +243,8 @@ public class ReteEvaluatorForRHS
         return delegate.getProcessInstance(correlationKey);
     }
 
-    public Map<String, WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
-        return delegate.getWorkingMemoryEntryPoints();
-    }
-
     public long getLastIdleTimestamp() {
         return delegate.getLastIdleTimestamp();
-    }
-
-    public Entry[] getActivationParameters(long activationId) {
-        return delegate.getActivationParameters(activationId);
     }
 
     public int hashCode() {
@@ -285,18 +270,6 @@ public class ReteEvaluatorForRHS
 
     public String toString() {
         return delegate.toString();
-    }
-
-    public List iterateObjectsToList() {
-        return delegate.iterateObjectsToList();
-    }
-
-    public List iterateNonDefaultEntryPointObjectsToList() {
-        return delegate.iterateNonDefaultEntryPointObjectsToList();
-    }
-
-    public Map getActivationParameters(Activation activation) {
-        return delegate.getActivationParameters(activation);
     }
 
     public void addEventListener(KieBaseEventListener listener) {
@@ -383,10 +356,6 @@ public class ReteEvaluatorForRHS
 
     public void setIdentifier(long id) {
         delegate.setIdentifier(id);
-    }
-
-    public InternalWorkingMemory getInternalWorkingMemory() {
-        return delegate.getInternalWorkingMemory();
     }
 
     public void setRuleRuntimeEventSupport(RuleRuntimeEventSupport workingMemoryEventSupport) {

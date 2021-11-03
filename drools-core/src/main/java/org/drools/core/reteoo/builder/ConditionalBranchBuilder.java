@@ -36,7 +36,7 @@ public class ConditionalBranchBuilder implements ReteooComponentBuilder {
 
         ConditionalBranchNode node = context.getComponentFactory()
                                             .getNodeFactoryService()
-                                            .buildConditionalBranchNode( context.getNextId(), context.getTupleSource(),
+                                            .buildConditionalBranchNode( context.getNextNodeId(), context.getTupleSource(),
                                                                          branchEvaluator, context );
 
         context.setTupleSource( utils.attachNode(context, node) );

@@ -16,10 +16,13 @@
 
 package org.drools.core.common;
 
+import java.util.Collection;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.event.RuleEventListenerSupport;
+import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -30,13 +33,18 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.TimerService;
 import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.StatefulRuleSession;
 import org.kie.api.time.SessionClock;
 
-public interface ReteEvaluator {
+public interface ReteEvaluator extends StatefulRuleSession {
 
     ActivationsManager getActivationsManager();
 
     InternalKnowledgeBase getKnowledgeBase();
+
+    Collection<? extends EntryPoint> getEntryPoints();
 
     WorkingMemoryEntryPoint getEntryPoint(String name);
     default EntryPointId getDefaultEntryPointId() {
@@ -83,6 +91,8 @@ public interface ReteEvaluator {
 
     RuleEventListenerSupport getRuleEventSupport();
 
+    RuleRuntimeEventSupport getRuleRuntimeEventSupport();
+
     Calendars getCalendars();
 
     SessionClock getSessionClock();
@@ -102,8 +112,9 @@ public interface ReteEvaluator {
         return new DefaultKnowledgeHelper( activation, this );
     }
 
-    void onSuspend();
-    void onResume();
-
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
+
+    FactHandle insert(Object object);
+
+    void halt();
 }

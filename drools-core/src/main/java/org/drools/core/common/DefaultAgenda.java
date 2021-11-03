@@ -202,17 +202,14 @@ public class DefaultAgenda
                                        final PropagationContext context,
                                        RuleAgendaItem ruleAgendaItem,
                                        InternalAgendaGroup agendaGroup) {
-        rtnLeftTuple.init(activationCounter++,
-                          salience,
-                          context,
-                          ruleAgendaItem, agendaGroup);
+        rtnLeftTuple.init(activationCounter++, salience, context, ruleAgendaItem, agendaGroup);
         return rtnLeftTuple;
     }
 
     @Override
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
-        this.agendaGroupsManager.setWorkingMemory( workingMemory );
+        this.agendaGroupsManager.setReteEvaluator( workingMemory );
 
         if ( !workingMemory.getSessionConfiguration().isThreadSafe() ) {
             executionStateMachine = new UnsafeExecutionStateMachine();
@@ -232,7 +229,6 @@ public class DefaultAgenda
                new SynchronizedPropagationList( workingMemory );
     }
 
-    @Override
     public PropagationList getPropagationList() {
         return propagationList;
     }
@@ -292,7 +288,7 @@ public class DefaultAgenda
             throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
         }
         String group = activation.getRule().getActivationGroup();
-        if ( group != null && group.length() > 0 ) {
+        if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = getActivationGroup( group );
 
             // Don't allow lazy activations to activate, from before it's last trigger point

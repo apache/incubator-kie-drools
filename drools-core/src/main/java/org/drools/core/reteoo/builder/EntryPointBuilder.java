@@ -41,7 +41,7 @@ public class EntryPointBuilder
         if( epn == null ) {
             NodeFactory nFactory = context.getComponentFactory().getNodeFactoryService();
             context.setObjectSource( utils.attachNode( context,
-                                                       nFactory.buildEntryPointNode( context.getNextId(),
+                                                       nFactory.buildEntryPointNode( context.getNextNodeId(),
                                                                                      context.getKnowledgeBase().getRete(),
                                                                                      context ) ) );
         } else {

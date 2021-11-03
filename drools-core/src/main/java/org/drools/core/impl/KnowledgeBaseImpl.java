@@ -1110,7 +1110,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         NodeFactory nodeFactory = kieComponentFactory.getNodeFactoryService();
 
         // always add the default entry point
-        EntryPointNode epn = nodeFactory.buildEntryPointNode(this.reteooBuilder.getIdGenerator().getNextId(),
+        EntryPointNode epn = nodeFactory.buildEntryPointNode(this.reteooBuilder.getNodeIdsGenerator().getNextId(),
                                                              RuleBasePartitionId.MAIN_PARTITION,
                                                              this.getConfiguration().isMultithreadEvaluation(),
                                                              this.rete,
@@ -1123,7 +1123,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         context.setObjectTypeNodeMemoryEnabled(true);
         context.setPartitionId(RuleBasePartitionId.MAIN_PARTITION);
 
-        ObjectTypeNode otn = nodeFactory.buildObjectTypeNode(this.reteooBuilder.getIdGenerator().getNextId(),
+        ObjectTypeNode otn = nodeFactory.buildObjectTypeNode(this.reteooBuilder.getNodeIdsGenerator().getNextId(),
                                                              epn,
                                                              ClassObjectType.InitialFact_ObjectType,
                                                              context);
@@ -1163,12 +1163,12 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
 
     public int getNodeCount() {
         // may start in 0
-        return this.reteooBuilder.getIdGenerator().getLastId() + 1;
+        return this.reteooBuilder.getNodeIdsGenerator().getLastId() + 1;
     }
 
-    public int getMemoryCount(String topic) {
+    public int getMemoryCount() {
         // may start in 0
-        return this.reteooBuilder.getIdGenerator().getLastId(topic) + 1;
+        return this.reteooBuilder.getMemoryIdsGenerator().getLastId() + 1;
     }
 
     public void registerSegmentPrototype(LeftTupleSource tupleSource, SegmentMemory smem) {

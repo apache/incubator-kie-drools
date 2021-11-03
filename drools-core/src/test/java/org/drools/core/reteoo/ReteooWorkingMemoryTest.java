@@ -178,7 +178,7 @@ public class ReteooWorkingMemoryTest {
         Rete rete = kBase.getRete();
 
         NodeFactory nFacotry = kBase.getConfiguration().getComponentFactory().getNodeFactoryService();
-        EntryPointNode epn = nFacotry.buildEntryPointNode( kBase.getReteooBuilder().getIdGenerator().getNextId(),
+        EntryPointNode epn = nFacotry.buildEntryPointNode( kBase.getReteooBuilder().getNodeIdsGenerator().getNextId(),
                                                             RuleBasePartitionId.MAIN_PARTITION,
                                                             kBase.getConfiguration().isMultithreadEvaluation(),
                                                             rete,

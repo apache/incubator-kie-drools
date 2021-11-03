@@ -23,10 +23,10 @@ import org.drools.core.base.TraitHelper;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
@@ -40,17 +40,17 @@ public class TraitNamedEntryPoint extends NamedEntryPoint {
 
     public TraitNamedEntryPoint(EntryPointId entryPoint,
                                 EntryPointNode entryPointNode,
-                                StatefulKnowledgeSessionImpl wm,
+                                ReteEvaluator reteEvaluator,
                                 KieComponentFactory componentFactory) {
         this(entryPoint,
              entryPointNode,
-             wm,
+             reteEvaluator,
              new ReentrantLock(), componentFactory);
     }
 
     public TraitNamedEntryPoint(EntryPointId entryPoint,
                                 EntryPointNode entryPointNode,
-                                StatefulKnowledgeSessionImpl wm,
+                                ReteEvaluator reteEvaluator,
                                 ReentrantLock lock,
                                 KieComponentFactory componentFactory) {
         this.entryPoint = entryPoint;

@@ -78,12 +78,12 @@ public class AlphaNodeTest extends DroolsTestCase {
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
-        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextNodeId() );
 
         AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(store, "cheddar", useLambdaConstraint);
 
         // With Memory
-        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextNodeId(),
                                                    constraint,
                                                    source,
                                                    buildContext ); // no memory
@@ -144,11 +144,11 @@ public class AlphaNodeTest extends DroolsTestCase {
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
-        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextNodeId() );
 
         AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(store, "cheddar", useLambdaConstraint);
 
-        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextNodeId(),
                                                    constraint,
                                                    source,
                                                    buildContext );
@@ -202,11 +202,11 @@ public class AlphaNodeTest extends DroolsTestCase {
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
-        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextNodeId() );
 
         AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(store, "cheddar", useLambdaConstraint);
 
-        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextNodeId(),
                                                    constraint,
                                                    source,
                                                    buildContext ); // no memory

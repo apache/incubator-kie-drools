@@ -23,9 +23,7 @@ import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
@@ -55,7 +53,7 @@ public class TruthMaintenanceSystem {
 
     public TruthMaintenanceSystem() {}
 
-    public TruthMaintenanceSystem(StatefulKnowledgeSessionImpl wm,
+    public TruthMaintenanceSystem(ReteEvaluator reteEvaluator,
                                   InternalWorkingMemoryEntryPoint ep) {
         this.ep = ep;
 
@@ -67,7 +65,7 @@ public class TruthMaintenanceSystem {
         this.equalityKeyMap.setComparator( EqualityKeyComparator.getInstance() );
 
 
-        defaultBeliefSystem = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getBeliefSystemFactory().createBeliefSystem(wm.getSessionConfiguration().getBeliefSystemType(), ep, this);
+        defaultBeliefSystem = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getBeliefSystemFactory().createBeliefSystem(reteEvaluator.getSessionConfiguration().getBeliefSystemType(), ep, this);
     }
 
     public ObjectHashMap getEqualityKeyMap() {

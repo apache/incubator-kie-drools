@@ -29,8 +29,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.Bag;
 import org.kie.api.definition.rule.Rule;
 
-import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
-
 /**
  * The base class for all Rete nodes.
  */
@@ -87,7 +85,7 @@ public abstract class BaseNode
 
     protected void initMemoryId( BuildContext context ) {
         if (context != null && this instanceof MemoryFactory) {
-            memoryId = context.getNextId( DEFAULT_RULE_UNIT );
+            memoryId = context.getNextMemoryId();
         }
     }
 
@@ -124,7 +122,7 @@ public abstract class BaseNode
                           ReteooBuilder builder) {
         boolean removed = doRemove( context, builder );
         if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
-            builder.getIdGenerator().releaseId(this );
+            builder.releaseId(this);
         }
         return removed;
     }

@@ -128,7 +128,7 @@ public class ProtobufOutputMarshaller {
 
         try {
             wm.getLock().lock();
-            for (WorkingMemoryEntryPoint ep : wm.getWorkingMemoryEntryPoints().values()) {
+            for (EntryPoint ep : wm.getEntryPoints()) {
                 if (ep instanceof NamedEntryPoint) {
                     ((NamedEntryPoint)ep).lock();
                 }
@@ -160,7 +160,7 @@ public class ProtobufOutputMarshaller {
 
             writeNodeMemories( context, _ruleData );
 
-            for ( EntryPoint wmep : wm.getWorkingMemoryEntryPoints().values() ) {
+            for ( EntryPoint wmep : wm.getEntryPoints() ) {
                 ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
                 _epb.setEntryPointId( wmep.getEntryPointId() );
 
@@ -214,7 +214,7 @@ public class ProtobufOutputMarshaller {
 
             return _session.build();
         } finally {
-            for (WorkingMemoryEntryPoint ep : wm.getWorkingMemoryEntryPoints().values()) {
+            for (EntryPoint ep : wm.getEntryPoints()) {
                 if (ep instanceof NamedEntryPoint) {
                     ((NamedEntryPoint)ep).unlock();
                 }

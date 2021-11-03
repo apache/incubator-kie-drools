@@ -34,7 +34,7 @@ public class AlphaNetworkCreation {
     }
 
     public int getNextId() {
-        return buildContext.getNextId();
+        return buildContext.getNextNodeId();
     }
 
     public <T extends Class<?>> void  addResultSink(ObjectSource source,

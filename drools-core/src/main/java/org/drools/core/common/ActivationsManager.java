@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.phreak.ExecutableEntry;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -26,6 +27,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
+import org.kie.api.runtime.rule.AgendaFilter;
 
 public interface ActivationsManager {
     ReteEvaluator getReteEvaluator();
@@ -44,6 +46,7 @@ public interface ActivationsManager {
 
     void registerExpiration(PropagationContext expirationContext);
 
+    void clearAndCancelActivationGroup(String name);
     void clearAndCancelActivationGroup(InternalActivationGroup activationGroup);
 
     RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn);
@@ -72,9 +75,13 @@ public interface ActivationsManager {
 
     KnowledgeHelper getKnowledgeHelper();
 
+    void executeTask(ExecutableEntry executableEntry);
+
     default void handleException(Activation activation, Exception e) {
         throw new RuntimeException(e);
     }
 
-    void executeTask(ExecutableEntry executableEntry);
+    int fireAllRules(AgendaFilter agendaFilter, int fireLimit);
+
+    void addPropagation(PropagationEntry propagationEntry);
 }

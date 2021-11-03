@@ -78,7 +78,7 @@ public interface InternalKnowledgeBase extends KieBase {
     Map<String, Class<?>> getGlobals();
 
     int getNodeCount();
-    int getMemoryCount(String unitName);
+    int getMemoryCount();
 
     void executeQueuedActions();
 

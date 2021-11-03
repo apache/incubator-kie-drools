@@ -23,7 +23,7 @@ import org.drools.core.rule.EntryPointId;
 public class DefaultNamedEntryPointFactory implements NamedEntryPointFactory {
 
     @Override
-    public NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id, StatefulKnowledgeSessionImpl wm) {
-        return new NamedEntryPoint(id, addedNode, wm);
+    public NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id, ReteEvaluator reteEvaluator) {
+        return new NamedEntryPoint(id, addedNode, reteEvaluator);
     }
 }
