@@ -96,16 +96,25 @@ public class DMNInvocationEvaluator
 
         try {
             boolean walkedIntoScope = false;
-            QName importAlias = null;
+            String functionNamePrefix = "";
             String[] fnameParts = functionName.split("\\.");
-            if (fnameParts.length > 1) {
-                final String functionNamePrefix = functionName.substring(0, functionName.lastIndexOf("."));
-                importAlias = ((DMNModelImpl) ((DMNResultImpl) dmnr).getModel()).getImportAliasesForNS().get(functionNamePrefix);
-                dmnContext.pushScope(functionNamePrefix, importAlias.getNamespaceURI());
-                walkedIntoScope = true;
+            boolean thereAreImports = !((DMNModelImpl) result.getModel()).getImportAliasesForNS().isEmpty();
+            if (fnameParts.length > 1 && thereAreImports) {
+
+                for(String part : fnameParts) {
+                    functionNamePrefix += part;
+                    QName importAlias = ((DMNModelImpl) result.getModel()).getImportAliasesForNS().get(functionNamePrefix);
+                    if (importAlias != null) {
+                        dmnContext.pushScope(functionNamePrefix, importAlias.getNamespaceURI());
+                        walkedIntoScope = true;
+                        break;
+                    } else {
+                        functionNamePrefix +=".";
+                    }
+                }
             }
-            final String functionNameWithoutPrefix = functionName.substring(functionName.lastIndexOf(".") + 1);
-            FEELFunction function = this.functionLocator.apply(dmnContext, (fnameParts.length > 1) ? functionNameWithoutPrefix : functionName);
+            final String functionNameWithoutPrefix = functionName.replaceFirst(functionNamePrefix + ".", "");
+            FEELFunction function = this.functionLocator.apply(dmnContext, walkedIntoScope ? functionNameWithoutPrefix : functionName);
             if( function == null ) {
                 // check if it is a configured/built-in function
                 Object r = null;
