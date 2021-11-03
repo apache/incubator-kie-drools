@@ -33,7 +33,10 @@ import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasClassLoader;
+
+import static org.kie.pmml.api.utils.SourceUtils.dumpSources;
 
 /**
  * Abstract class to be extended by all <b>model-specific</b> compilation dtos
@@ -151,7 +154,12 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
 
     @Override
     public Class<?> compileAndLoadClass(Map<String, String> sourcesMap) {
-        return source.compileAndLoadClass(sourcesMap);
+        try {
+            dumpSources(sourcesMap, source.getPMML_MODEL());
+            return source.compileAndLoadClass(sourcesMap);
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
     }
 
     @Override

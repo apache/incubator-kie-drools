@@ -108,7 +108,7 @@ public class CommonCodegenUtilsTest {
         assertEquals(expected, retrievedString);
         BlockStmt body = new BlockStmt();
         body.addStatement(retrieved);
-        Parameter listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
+        Parameter listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
         Parameter fieldRefParameter = new Parameter(parseClassOrInterfaceType(String.class.getName()), fieldNameToRef);
         commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
         //
@@ -126,7 +126,7 @@ public class CommonCodegenUtilsTest {
         assertEquals(expected, retrievedString);
         body = new BlockStmt();
         body.addStatement(retrieved);
-        listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
+        listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
         fieldRefParameter = new Parameter(parseClassOrInterfaceType(String.class.getName()), fieldNameToRef);
         commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
     }
@@ -226,7 +226,7 @@ public class CommonCodegenUtilsTest {
                 .collect(Collectors.toList());
         BlockStmt body = new BlockStmt();
         String listName = "LIST_NAME";
-        CommonCodegenUtils.addListPopulation(toAdd, body, listName);
+        CommonCodegenUtils.addListPopulationByObjectCreationExpr(toAdd, body, listName);
         NodeList<Statement> statements = body.getStatements();
         assertEquals(toAdd.size(), statements.size());
         for (Statement statement : statements) {
@@ -322,7 +322,7 @@ public class CommonCodegenUtilsTest {
     public void getTypedClassOrInterfaceType() {
         String className = "CLASS_NAME";
         List<String> typesName = Arrays.asList("TypeA", "TypeB");
-        ClassOrInterfaceType retrieved = CommonCodegenUtils.getTypedClassOrInterfaceType(className, typesName);
+        ClassOrInterfaceType retrieved = CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(className, typesName);
         assertNotNull(retrieved);
         String expected = String.format("%1$s<%2$s,%3$s>", className, typesName.get(0), typesName.get(1));
         assertEquals(expected, retrieved.asString());

@@ -13,27 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  org.kie.pmml.models.tree.evaluator;
+package org.kie.pmml.api.iinterfaces;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.pmml.api.enums.PMML_MODEL;
+import java.io.Serializable;
+import java.util.function.Consumer;
 
-import static org.junit.Assert.assertEquals;
-
-public class PMMLTreeModelEvaluatorTest {
-
-    private PMMLTreeModelEvaluator evaluator;
-
-    @Before
-    public void setUp(){
-        evaluator = new PMMLTreeModelEvaluator();
-    }
-
-    @Test
-    public void getPMMLModelType(){
-        assertEquals(PMML_MODEL.TREE_MODEL, evaluator.getPMMLModelType());
-    }
-
+public interface SerializableConsumer<T> extends Consumer<T>,
+                                                 Serializable {
 
 }

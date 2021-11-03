@@ -13,16 +13,8 @@ public class KiePMMLRegressionTableRegressionTemplate extends KiePMMLRegressionT
     public KiePMMLRegressionTableRegressionTemplate() {
         intercept = 0.1;
         targetField = "fld4";
-    }
-
-    @Override
-    public Object getTargetCategory() {
-//        return null;
-    }
-
-    @Override
-    protected void updateResult(final AtomicReference<Double> toUpdate) {
-            // NONE
+        targetCategory = null;
+        resultUpdater = null;
     }
 
 }

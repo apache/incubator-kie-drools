@@ -84,8 +84,6 @@ import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 public class CommonCodegenUtils {
 
     static final String LAMBDA_PARAMETER_NAME = "lmbdParam";
-    static final String METHOD_NAME_TEMPLATE = "%s%s";
-    static final String PARAMETER_NAME_TEMPLATE = "param%s";
     public static String OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME = "kiePMMLNameValue";
 
     private CommonCodegenUtils() {
@@ -163,8 +161,8 @@ public class CommonCodegenUtils {
         initializer.setScope(initializerScope);
         // Optional<KiePMMLNameValue> kiePMMLNameValue
         VariableDeclarator variableDeclarator =
-                new VariableDeclarator(getTypedClassOrInterfaceType(Optional.class.getName(),
-                                                                    Collections.singletonList(KiePMMLNameValue.class.getName())),
+                new VariableDeclarator(getTypedClassOrInterfaceTypeByTypeNames(Optional.class.getName(),
+                                                                               Collections.singletonList(KiePMMLNameValue.class.getName())),
                                        OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME);
         // Optional<KiePMMLNameValue> kiePMMLNameValue = kiePMMLNameValueListParam.stream().filter((KiePMMLNameValue
         // kpmmlnv)  -> Objects.equals(fieldNameToRef, kpmmlnv.getName())).findFirst()
@@ -239,11 +237,43 @@ public class CommonCodegenUtils {
      * @param body
      * @param listName
      */
-    public static void addListPopulation(final List<ObjectCreationExpr> toAdd,
-                                         final BlockStmt body,
-                                         final String listName) {
+    public static void addListPopulationByObjectCreationExpr(final List<ObjectCreationExpr> toAdd,
+                                                             final BlockStmt body,
+                                                             final String listName) {
         toAdd.forEach(objectCreationExpr -> {
             NodeList<Expression> arguments = NodeList.nodeList(objectCreationExpr);
+            MethodCallExpr methodCallExpr = new MethodCallExpr();
+            methodCallExpr.setScope(new NameExpr(listName));
+            methodCallExpr.setName("add");
+            methodCallExpr.setArguments(arguments);
+            ExpressionStmt expressionStmt = new ExpressionStmt();
+            expressionStmt.setExpression(methodCallExpr);
+            body.addStatement(expressionStmt);
+        });
+    }
+
+    /**
+     * For every entry in the given list, add
+     * <pre>
+     *     (<i>listName</i>).add(<i>MethodCallExpr</i>>);
+     * </pre>
+     * e.g.
+     * <pre>
+     *     LIST_NAME.add(ObjectA.builder().build());
+     *     LIST_NAME.add(ObjectB.builder().build());
+     *     LIST_NAME.add(ObjectC.builder().build());
+     *     LIST_NAME.add(ObjectD.builder().build());
+     * </pre>
+     * inside the given <code>BlockStmt</code>
+     * @param toAdd
+     * @param body
+     * @param listName
+     */
+    public static void addListPopulationByMethodCallExpr(final List<MethodCallExpr> toAdd,
+                                                         final BlockStmt body,
+                                                         final String listName) {
+        toAdd.forEach(methodCallExpr1 -> {
+            NodeList<Expression> arguments = NodeList.nodeList(methodCallExpr1);
             MethodCallExpr methodCallExpr = new MethodCallExpr();
             methodCallExpr.setScope(new NameExpr(listName));
             methodCallExpr.setName("add");
@@ -367,11 +397,31 @@ public class CommonCodegenUtils {
      * @param typesName
      * @return
      */
-    public static ClassOrInterfaceType getTypedClassOrInterfaceType(final String className,
-                                                                    final List<String> typesName) {
-        ClassOrInterfaceType toReturn = parseClassOrInterfaceType(className);
+    public static ClassOrInterfaceType getTypedClassOrInterfaceTypeByTypeNames(final String className,
+                                                                               final List<String> typesName) {
         List<Type> types = typesName.stream()
                 .map(StaticJavaParser::parseClassOrInterfaceType).collect(Collectors.toList());
+        return getTypedClassOrInterfaceTypeByTypes(className, types);
+    }
+
+    /**
+     * Returns
+     * <pre>
+     *     (<i>className</i>)<(<i>comma-separated list of types</i>)>
+     * </pre>
+     * <p>
+     * e.g
+     * <pre>
+     *     CLASS_NAME<TypeA, TypeB>
+     * </pre>
+     * a <b>typed</b> <code>ClassOrInterfaceType</code>
+     * @param className
+     * @param types
+     * @return
+     */
+    public static ClassOrInterfaceType getTypedClassOrInterfaceTypeByTypes(final String className,
+                                                                           final List<Type> types) {
+        ClassOrInterfaceType toReturn = parseClassOrInterfaceType(className);
         toReturn.setTypeArguments(NodeList.nodeList(types));
         return toReturn;
     }
@@ -959,4 +1009,5 @@ public class CommonCodegenUtils {
             this.replacement = replacement;
         }
     }
+
 }

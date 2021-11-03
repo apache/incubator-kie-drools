@@ -18,15 +18,12 @@ package org.kie.pmml.models.drools.commons.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
@@ -34,12 +31,13 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 public class KiePMMLDroolsModelTest {
 
     private final static String MODEL_NAME = "MODELNAME";
+    private final static String KMODULE_PACKAGE_NAME = getSanitizedPackageName(MODEL_NAME);
     private final static List<KiePMMLExtension> EXTENSIONS = new ArrayList<>();
     private KiePMMLDroolsModel kiePMMLDroolsModel;
 
     @Before
     public void setup() {
-        kiePMMLDroolsModel = new KiePMMLDroolsModelFake(MODEL_NAME, EXTENSIONS);
+        kiePMMLDroolsModel = new KiePMMLDroolsModelFake(MODEL_NAME, KMODULE_PACKAGE_NAME, EXTENSIONS);
     }
 
     @Test
@@ -51,28 +49,16 @@ public class KiePMMLDroolsModelTest {
 
     @Test(expected = KiePMMLException.class)
     public void evaluateNoKieBase() {
-        kiePMMLDroolsModel.evaluate("NOT_KIE_BASE", new HashMap<>());
+        kiePMMLDroolsModel.evaluate("NOT_KIE_BASE", new HashMap<>(), null);
     }
 
     private final class KiePMMLDroolsModelFake extends KiePMMLDroolsModel {
 
-        protected KiePMMLDroolsModelFake(String modelName, List<KiePMMLExtension> extensions) {
+        protected KiePMMLDroolsModelFake(String modelName,
+                                         String kModulePackageName,
+                                         List<KiePMMLExtension> extensions) {
             super(modelName, extensions);
-        }
-
-        @Override
-        public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
-            return super.getFieldTypeMap();
-        }
-
-        @Override
-        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-            return super.evaluate(knowledgeBase, requestData);
-        }
-
-        @Override
-        protected LinkedHashMap<String, Double> getProbabilityResultMap() {
-            return new LinkedHashMap<>();
+            this.kModulePackageName = kModulePackageName;
         }
 
         @Override

@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.drools.scorecard.model;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -32,7 +31,8 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
         super(modelName, extensions);
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+    public static Builder builder(String name, List<KiePMMLExtension> extensions,
+                                  MINING_FUNCTION miningFunction) {
         return new Builder(name, extensions, miningFunction);
     }
 
@@ -40,14 +40,10 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
         return PMML_MODEL_TYPE;
     }
 
-    @Override
-    protected LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return new LinkedHashMap<>();
-    }
-
     public static class Builder extends KiePMMLDroolsModel.Builder<KiePMMLScorecardModel> {
 
-        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+        private Builder(String name, List<KiePMMLExtension> extensions,
+                        MINING_FUNCTION miningFunction) {
             super("Scorecard-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLScorecardModel(name, extensions));
         }
     }
