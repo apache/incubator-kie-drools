@@ -618,10 +618,6 @@ public class NamedEntryPoint
         }
     }
 
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        return this.reteEvaluator.getWorkingMemoryEntryPoint( name );
-    }
-
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return entryPointNode.getTypeConfReg();
     }

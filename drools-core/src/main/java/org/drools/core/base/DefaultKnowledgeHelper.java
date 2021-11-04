@@ -82,10 +82,10 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     private static final long                         serialVersionUID = 510l;
 
-    private Activation activation;
+    protected Activation activation;
     private Tuple tuple;
 
-    private ReteEvaluator reteEvaluator;
+    protected ReteEvaluator reteEvaluator;
     private ReteEvaluatorForRHS wrappedEvaluator;
 
     private LinkedList<LogicalDependency<T>>          previousJustified;
@@ -460,7 +460,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return getWrappedEvaluator();
     }
 
-    private ReteEvaluatorForRHS getWrappedEvaluator() {
+    protected ReteEvaluatorForRHS getWrappedEvaluator() {
         if (wrappedEvaluator != null) {
             return wrappedEvaluator;
         }

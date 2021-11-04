@@ -54,8 +54,6 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
     FactHandle insert(Object object,
                       boolean dynamic);
 
-    WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
-    
     /**
      * Internal method called by the engine when the session is being disposed, so that the entry point
      * can proceed with the necessary clean ups.

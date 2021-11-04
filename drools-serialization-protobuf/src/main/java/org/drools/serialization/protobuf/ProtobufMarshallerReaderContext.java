@@ -289,7 +289,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
             handle = reteEvaluator.getFactHandleFactory().newFactHandle( _handle.getId(),
                     result,
                     _handle.getRecency(),
-                    reteEvaluator.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( entryPointId,
+                    reteEvaluator.getDefaultEntryPoint().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( entryPointId,
                             result ),
                     reteEvaluator,
                     null ); // so far, result is not an event

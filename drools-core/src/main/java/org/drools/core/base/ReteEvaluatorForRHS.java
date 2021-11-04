@@ -33,7 +33,6 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
@@ -175,10 +174,6 @@ public class ReteEvaluatorForRHS
 
     public <T> T execute(Command<T> command) {
         return delegate.execute(command);
-    }
-
-    public void initInitialFact(InternalKnowledgeBase kBase, MarshallerReaderContext context) {
-        delegate.initInitialFact(kBase, context);
     }
 
     public LiveQuery openLiveQuery(String query, Object[] arguments, ViewChangedEventListener listener) {
@@ -740,10 +735,6 @@ public class ReteEvaluatorForRHS
 
     public void halt() {
         delegate.halt();
-    }
-
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
-        return delegate.getWorkingMemoryEntryPoint(id);
     }
 
     public SessionClock getSessionClock() {

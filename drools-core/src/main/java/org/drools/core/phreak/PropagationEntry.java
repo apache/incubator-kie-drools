@@ -17,6 +17,7 @@ package org.drools.core.phreak;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -24,9 +25,15 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpire
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ModifyPreviousTuples;
+import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
@@ -122,6 +129,63 @@ public interface PropagationEntry {
         @Override
         public boolean requiresImmediateFlushing() {
             return true;
+        }
+    }
+
+    class ExecuteQuery extends PropagationEntry.PropagationEntryWithResult<QueryTerminalNode[]> {
+
+        private final String queryName;
+        private final DroolsQuery queryObject;
+        private final InternalFactHandle handle;
+        private final PropagationContext pCtx;
+        private final boolean calledFromRHS;
+
+        public ExecuteQuery( String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS ) {
+            this.queryName = queryName;
+            this.queryObject = queryObject;
+            this.handle = handle;
+            this.pCtx = pCtx;
+            this.calledFromRHS = calledFromRHS;
+        }
+
+        @Override
+        public void execute( ReteEvaluator reteEvaluator ) {
+            QueryTerminalNode[] tnodes = reteEvaluator.getKnowledgeBase().getReteooBuilder().getTerminalNodesForQuery( queryName );
+            if ( tnodes == null ) {
+                throw new RuntimeException( "Query '" + queryName + "' does not exist" );
+            }
+
+            QueryTerminalNode tnode = tnodes[0];
+
+            if (queryObject.getElements().length != tnode.getQuery().getParameters().length) {
+                throw new RuntimeException( "Query '" + queryName + "' has been invoked with a wrong number of arguments. Expected " +
+                        tnode.getQuery().getParameters().length + ", actual " + queryObject.getElements().length );
+            }
+
+            LeftTupleSource lts = tnode.getLeftTupleSource();
+            while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+                lts = lts.getLeftTupleSource();
+            }
+            LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
+            LeftInputAdapterNode.LiaNodeMemory lmem = reteEvaluator.getNodeMemory( lian );
+            if ( lmem.getSegmentMemory() == null ) {
+                SegmentUtilities.createSegmentMemory( lts, reteEvaluator );
+            }
+
+            LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, reteEvaluator, lmem, false, queryObject.isOpen() );
+
+            for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
+                RuleAgendaItem evaluator = reteEvaluator.getActivationsManager().createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
+                evaluator.getRuleExecutor().setDirty( true );
+                evaluator.getRuleExecutor().evaluateNetworkAndFire( reteEvaluator, null, 0, -1 );
+            }
+
+            done(tnodes);
+        }
+
+        @Override
+        public boolean isCalledFromRHS() {
+            return calledFromRHS;
         }
     }
 

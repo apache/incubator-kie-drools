@@ -59,9 +59,6 @@ public interface ActivationsManager {
 
     void cancelActivation(final Activation activation);
 
-    void modifyActivation(final AgendaItem activation, boolean previouslyActive);
-
-    void insertAndStageActivation(AgendaItem activation);
     void addItemToActivationGroup(AgendaItem activation);
 
     RuleAgendaItem peekNextRule();
@@ -84,4 +81,12 @@ public interface ActivationsManager {
     int fireAllRules(AgendaFilter agendaFilter, int fireLimit);
 
     void addPropagation(PropagationEntry propagationEntry);
+
+    default void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified) {
+        if (!ruleAgendaItem.isQueued()) {
+            ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem(this);
+        }
+        ruleAgendaItem.getRuleExecutor().addLeftTuple( justified.getTuple() );
+    }
+
 }

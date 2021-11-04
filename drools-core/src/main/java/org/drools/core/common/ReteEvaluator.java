@@ -35,6 +35,7 @@ import org.drools.core.time.TimerService;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.StatefulRuleSession;
 import org.kie.api.time.SessionClock;
 
@@ -60,6 +61,9 @@ public interface ReteEvaluator extends StatefulRuleSession {
     default Object getGlobal(String identifier) {
         return getGlobalResolver().resolveGlobal( identifier );
     }
+    default void setGlobal(String identifier, Object value) {
+        getGlobalResolver().setGlobal(identifier, value);
+    }
 
     default InternalFactHandle createFactHandle(Object object, ObjectTypeConf conf, WorkingMemoryEntryPoint wmEntryPoint ) {
         return getFactHandleFactory().newFactHandle( object, conf, this, wmEntryPoint );
@@ -80,12 +84,12 @@ public interface ReteEvaluator extends StatefulRuleSession {
     long getNextPropagationIdCounter();
 
     default boolean isThreadSafe() {
-        return false;
+        return true;
     }
 
-    FactHandleClassStore getStoreForClass(Class<?> classType);
-
-    WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String entryPointId);
+    default FactHandleClassStore getStoreForClass(Class<?> clazz) {
+        return getDefaultEntryPoint().getObjectStore().getStoreForClass(clazz);
+    }
 
     SessionConfiguration getSessionConfiguration();
 
@@ -112,9 +116,11 @@ public interface ReteEvaluator extends StatefulRuleSession {
         return new DefaultKnowledgeHelper( activation, this );
     }
 
-    ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
-
     FactHandle insert(Object object);
 
+    QueryResults getQueryResults(String queryName, Object... arguments);
+
     void halt();
+
+    void dispose();
 }

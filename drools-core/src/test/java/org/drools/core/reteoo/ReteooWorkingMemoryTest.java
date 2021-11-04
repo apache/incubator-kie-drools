@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.TruthMaintenanceSystem;
@@ -60,7 +59,7 @@ public class ReteooWorkingMemoryTest {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        final TruthMaintenanceSystem tms = ((NamedEntryPoint)ksession.getWorkingMemoryEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
+        final TruthMaintenanceSystem tms = ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()).getTruthMaintenanceSystem();
         final String string = "test";
 
         FactHandle fd = ksession.insert( string );

@@ -16,8 +16,10 @@
 
 package org.drools.core.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +30,10 @@ import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaGroupsManager;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -40,6 +45,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
@@ -48,9 +54,13 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.StringUtils;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
+
+import static org.drools.core.common.DefaultAgenda.ON_DELETE_MATCH_CONSEQUENCE_NAME;
 
 public class ActivationsManagerImpl implements ActivationsManager {
 
@@ -73,11 +83,16 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     private final Map<QueryImpl, RuleAgendaItem> queries = new ConcurrentHashMap<>();
 
+    private List<PropagationContext> expirationContexts;
+
     public ActivationsManagerImpl(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
         this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(reteEvaluator);
         this.propagationList = new SynchronizedPropagationList(reteEvaluator);
         this.ruleEvaluator = new SequentialRuleEvaluator( this );
+        if (reteEvaluator.getKnowledgeBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
+            expirationContexts = new ArrayList<>();
+        }
     }
 
     @Override
@@ -128,8 +143,10 @@ public class ActivationsManagerImpl implements ActivationsManager {
     }
 
     @Override
-    public void registerExpiration(PropagationContext expirationContext) {
-        throw new UnsupportedOperationException();
+    public void registerExpiration(PropagationContext ectx) {
+        // it is safe to add into the expirationContexts list without any synchronization because
+        // the state machine already guarantees that only one thread at time can access it
+        expirationContexts.add(ectx);
     }
 
     @Override
@@ -174,17 +191,25 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void cancelActivation(Activation activation) {
-        throw new UnsupportedOperationException();
-    }
+        AgendaItem item = (AgendaItem) activation;
+        item.removeAllBlockersAndBlocked( this );
 
-    @Override
-    public void modifyActivation(AgendaItem activation, boolean previouslyActive) {
-        throw new UnsupportedOperationException();
-    }
+        if ( activation.isQueued() ) {
+            if ( activation.getActivationGroupNode() != null ) {
+                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+            }
+            ((Tuple) activation).decreaseActivationCountForEvents();
 
-    @Override
-    public void insertAndStageActivation(AgendaItem activation) {
-        throw new UnsupportedOperationException();
+            getAgendaEventSupport().fireActivationCancelled( activation, reteEvaluator, MatchCancelledCause.WME_MODIFY );
+        }
+
+        if (item.getRuleAgendaItem() != null) {
+            item.getRuleAgendaItem().getRuleExecutor().fireConsequenceEvent( this.reteEvaluator, this, item, ON_DELETE_MATCH_CONSEQUENCE_NAME );
+        }
+
+        reteEvaluator.getRuleEventSupport().onDeleteMatch( item );
+
+        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, ( Tuple ) activation, activation.getRule() );
     }
 
     @Override
@@ -253,7 +278,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void executeTask(ExecutableEntry executableEntry) {
-        throw new UnsupportedOperationException();
+        executableEntry.execute();
     }
 
     @Override
@@ -297,7 +322,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
                 group = null; // set the group to null in case the fire limit has been reached
             }
 
-            if ( returnedFireCount == 0 && head == null && ( group == null || ( group.isEmpty() && !group.isAutoDeactivate() ) ) ) {
+            if ( returnedFireCount == 0 && head == null && ( group == null || ( group.isEmpty() && !group.isAutoDeactivate() ) ) && !flushExpirations() ) {
                 // if true, the engine is now considered potentially at rest
                 head = restHandler.handleRest( this );
             }
@@ -305,6 +330,27 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
         agendaGroupsManager.deactivateMainGroupWhenEmpty();
         return fireCount;
+    }
+
+    private boolean flushExpirations() {
+        if (expirationContexts == null || expirationContexts.isEmpty() || propagationList.hasEntriesDeferringExpiration()) {
+            return false;
+        }
+        for (PropagationContext ectx : expirationContexts) {
+            doRetract( ectx );
+        }
+        expirationContexts.clear();
+        return true;
+    }
+
+    private void doRetract( PropagationContext ectx ) {
+        InternalFactHandle factHandle = ectx.getFactHandle();
+        ObjectTypeNode.retractLeftTuples( factHandle, ectx, reteEvaluator );
+        ObjectTypeNode.retractRightTuples( factHandle, ectx, reteEvaluator );
+        if ( factHandle.isPendingRemoveFromStore() ) {
+            String epId = factHandle.getEntryPointName();
+            ( (InternalWorkingMemoryEntryPoint) reteEvaluator.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
+        }
     }
 
     interface RestHandler {

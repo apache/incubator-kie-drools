@@ -80,14 +80,11 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
@@ -417,7 +414,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public WorkingMemoryEntryPoint getEntryPoint(String name) {
-        return getWorkingMemoryEntryPoint(name);
+        return this.entryPointsManager.getEntryPoint(name);
     }
 
     public Collection<? extends org.kie.api.runtime.rule.EntryPoint> getEntryPoints() {
@@ -771,12 +768,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             DroolsQuery queryObject = new DroolsQuery( queryName,
                                                        arguments,
                                                        getQueryListenerInstance(),
-                                                       false ,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       null );
+                                                       false );
 
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           null,
@@ -834,12 +826,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             DroolsQuery queryObject = new DroolsQuery( query,
                                                        arguments,
                                                        new OpenQueryViewChangedEventListenerAdapter( listener ),
-                                                       true,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       null);
+                                                       true);
             InternalFactHandle handle = this.handleFactory.newFactHandle(queryObject,
                                                                          null,
                                                                          this,
@@ -858,67 +845,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    protected QueryTerminalNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
-        ExecuteQuery executeQuery = new ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
+    private QueryTerminalNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
+        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
         addPropagation( executeQuery );
         return executeQuery.getResult();
-    }
-
-    private class ExecuteQuery extends PropagationEntry.PropagationEntryWithResult<QueryTerminalNode[]> {
-
-        private final String queryName;
-        private final DroolsQuery queryObject;
-        private final InternalFactHandle handle;
-        private final PropagationContext pCtx;
-        private final boolean calledFromRHS;
-
-        private ExecuteQuery( String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS ) {
-            this.queryName = queryName;
-            this.queryObject = queryObject;
-            this.handle = handle;
-            this.pCtx = pCtx;
-            this.calledFromRHS = calledFromRHS;
-        }
-
-        @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
-            QueryTerminalNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
-            if ( tnodes == null ) {
-                throw new RuntimeException( "Query '" + queryName + "' does not exist" );
-            }
-
-            QueryTerminalNode tnode = tnodes[0];
-
-            if (queryObject.getElements().length != tnode.getQuery().getParameters().length) {
-                throw new RuntimeException( "Query '" + queryName + "' has been invoked with a wrong number of arguments. Expected " +
-                        tnode.getQuery().getParameters().length + ", actual " + queryObject.getElements().length );
-            }
-
-            LeftTupleSource lts = tnode.getLeftTupleSource();
-            while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-                lts = lts.getLeftTupleSource();
-            }
-            LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
-            LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
-            if ( lmem.getSegmentMemory() == null ) {
-                SegmentUtilities.createSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
-            }
-
-            LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, StatefulKnowledgeSessionImpl.this, lmem, false, queryObject.isOpen() );
-
-            for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
-                RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
-                evaluator.getRuleExecutor().setDirty( true );
-                evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
-            }
-
-            done(tnodes);
-        }
-        
-        @Override
-        public boolean isCalledFromRHS() {
-        	return calledFromRHS;
-        }
     }
 
     public void closeLiveQuery(final InternalFactHandle factHandle) {
@@ -1805,10 +1735,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
         }
         return workItemManager;
-    }
-
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        return this.entryPointsManager.getEntryPoint(name);
     }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {

@@ -113,11 +113,6 @@ public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPo
     }
 
     @Override
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String name ) {
-        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
-    }
-
-    @Override
     public void dispose() {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }

@@ -40,7 +40,7 @@ public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
 
     RuleAgendaItem getRuleAgendaItem();
 
-    void removeAllBlockersAndBlocked(InternalAgenda agenda);
+    void removeAllBlockersAndBlocked(ActivationsManager activationsManager);
 
     void removeBlocked(LogicalDependency<SimpleMode> dep);
 

@@ -41,7 +41,8 @@ public class ReteEvaluatorTest {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
-                "  $p : Person(name == \"Mario\")\n" +
+                "  $s : String()\n" +
+                "  $p : Person(name == $s)\n" +
                 "then\n" +
                 "  modify($p) { setAge($p.getAge()+1) }\n" +
                 "end";
@@ -49,6 +50,7 @@ public class ReteEvaluatorTest {
         ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl( getKBase( str ) );
 
         Person me = new Person( "Mario", 40 );
+        reteEvaluator.insert( "Mario" );
         reteEvaluator.insert( me );
         assertEquals( 1, reteEvaluator.fireAllRules() );
 
