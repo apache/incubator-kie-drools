@@ -50,7 +50,8 @@ public class FEELValuesConstantsTest extends BaseFEELTest {
                 { "\"thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong\"", "thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong" , null},
                 { "\"\"", "" , null},
                 { "-\"10\"", null , FEELEvent.Severity.ERROR},
-                { "-string(\"10\")", null , FEELEvent.Severity.ERROR}
+                { "-string(\"10\")", null , FEELEvent.Severity.ERROR},
+                { "+\"10\"", null , FEELEvent.Severity.ERROR},
         };
         return addAdditionalParameters(cases, false);
     }

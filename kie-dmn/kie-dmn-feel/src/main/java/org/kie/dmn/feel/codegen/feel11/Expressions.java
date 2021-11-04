@@ -106,6 +106,10 @@ public class Expressions {
         return new MethodCallExpr(STDLIB, "negate", NodeList.nodeList(FeelCtx.FEELCTX, expression));
     }
 
+    public static Expression positive(Expression expression) {
+        return new MethodCallExpr(STDLIB, "positive", NodeList.nodeList(FeelCtx.FEELCTX, expression));
+    }
+
     public static MethodCallExpr binary(
             InfixOpNode.InfixOperator operator,
             Expression l,

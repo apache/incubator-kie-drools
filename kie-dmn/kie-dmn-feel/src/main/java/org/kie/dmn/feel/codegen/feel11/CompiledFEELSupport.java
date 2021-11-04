@@ -533,10 +533,27 @@ public class CompiledFEELSupport {
     }
 
     public static BigDecimal negate(EvaluationContext feelExprCtx, Object value) {
-        if (value instanceof String) {
-            feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.CANNOT_NEGATE), null));
+        if (isValidSignedType(feelExprCtx, value)) {
+            return ((BigDecimal) value).negate();
+        } else {
             return null;
         }
-        return ((BigDecimal)value).negate();
+    }
+
+    public static BigDecimal positive(EvaluationContext feelExprCtx, Object value) {
+        if (isValidSignedType(feelExprCtx, value)) {
+            return (BigDecimal) value;
+        } else {
+            return null;
+        }
+    }
+
+    private static boolean isValidSignedType(EvaluationContext feelExprCtx, Object value) {
+        if (value instanceof String) {
+            feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.CANNOT_BE_SIGNED), null));
+            return false;
+        } else {
+            return true;
+        }
     }
 }

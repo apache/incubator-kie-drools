@@ -63,10 +63,10 @@ public class SignedUnaryNode
         if (expression == null) return null;
         Object expressionResult = expression.evaluate( ctx );
         if (expressionResult instanceof String) {
-            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CANNOT_NEGATE)));
+            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CANNOT_BE_SIGNED)));
             return null;
         }
-        BigDecimal result = EvalHelper.getBigDecimalOrNull( expression.evaluate( ctx ) );
+        BigDecimal result = EvalHelper.getBigDecimalOrNull( expressionResult );
         if ( result == null ) {
             ctx.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.NEGATING_A_NULL)));
             return null;
