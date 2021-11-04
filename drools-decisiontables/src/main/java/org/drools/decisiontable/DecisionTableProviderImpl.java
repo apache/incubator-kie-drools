@@ -18,11 +18,13 @@ package org.drools.decisiontable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
+import org.drools.template.parser.DecisionTableParseException;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.RuleTemplateConfiguration;
@@ -35,16 +37,20 @@ public class DecisionTableProviderImpl
 
     private static final transient Logger logger = LoggerFactory.getLogger( DecisionTableProviderImpl.class );
 
+    @Override
     public String loadFromResource(Resource resource,
                                    DecisionTableConfiguration configuration) {
 
         try {
             return compileResource( resource, configuration );
         } catch (IOException e) {
-            throw new RuntimeException( e );
+            throw new UncheckedIOException( e );
+        } catch (Exception e) {
+            throw new DecisionTableParseException(resource, e);
         }
     }
 
+    @Override
     public List<String> loadFromInputStreamWithTemplates(Resource resource,
                                                          DecisionTableConfiguration configuration) {
         List<String> drls = new ArrayList<String>( configuration.getRuleTemplateConfigurations().size() );
@@ -58,6 +64,8 @@ public class DecisionTableProviderImpl
                                            template.getCol()));
             } catch (IOException e) {
                 logger.error( "Cannot open " + template.getTemplate(), e );
+            } catch (Exception e) {
+                throw new DecisionTableParseException(resource, e);
             }
         }
         return drls;
