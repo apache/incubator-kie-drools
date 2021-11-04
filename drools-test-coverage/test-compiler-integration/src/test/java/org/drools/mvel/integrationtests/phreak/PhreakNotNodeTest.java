@@ -30,13 +30,12 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.core.rule.JavaDialectRuntimeData;
 import org.junit.Test;
 
 import static org.drools.mvel.integrationtests.phreak.A.a;
 import static org.drools.mvel.integrationtests.phreak.B.b;
 
-// TODO: EM Need to migrate this to executable model
 public class PhreakNotNodeTest {
 
     BuildContext          buildContext;
@@ -150,7 +149,7 @@ public class PhreakNotNodeTest {
 
         RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );
         InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.pkg1" );
-        pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
+        pkg.getDialectRuntimeRegistry().setDialectData( "java", new JavaDialectRuntimeData() );
         pkg.addRule( rule );
         buildContext.setRule( rule );
     

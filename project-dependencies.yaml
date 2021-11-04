@@ -1,0 +1,223 @@
+version: "2.1"
+
+dependencies:
+  - project: kiegroup/lienzo-core
+
+  - project: kiegroup/lienzo-tests
+    dependencies:
+      - project: kiegroup/lienzo-core
+
+  - project: kiegroup/droolsjbpm-build-bootstrap
+
+  - project: kiegroup/kie-soup
+    dependencies:
+      - project: kiegroup/droolsjbpm-build-bootstrap
+
+  - project: kiegroup/appformer
+    dependencies:    
+      - project: kiegroup/lienzo-core
+      - project: kiegroup/droolsjbpm-build-bootstrap
+      - project: kiegroup/lienzo-tests
+      - project: kiegroup/kie-soup
+
+  - project: kiegroup/droolsjbpm-knowledge
+    dependencies:
+      - project: kiegroup/kie-soup
+    mapping:
+      dependencies:
+        default:
+          - source: 7.x
+            target: main
+      dependant:
+        default:
+          - source: main
+            target: 7.x
+      exclude:
+        - kiegroup/optaweb-employee-rostering
+        - kiegroup/optaweb-vehicle-routing
+        - kiegroup/optaplanner
+        - kiegroup/drools
+
+  - project: kiegroup/drools
+    dependencies:
+      - project: kiegroup/kie-soup
+      - project: kiegroup/droolsjbpm-knowledge        
+    mapping:
+      dependencies:
+        default:
+          - source: 7.x
+            target: main
+      dependant:
+        default:
+          - source: main
+            target: 7.x
+      exclude:
+        - kiegroup/optaweb-employee-rostering
+        - kiegroup/optaweb-vehicle-routing
+        - kiegroup/optaplanner          
+        - kiegroup/droolsjbpm-knowledge          
+
+  - project: kiegroup/jbpm
+    dependencies:
+      - project: kiegroup/drools
+      - project: kiegroup/kie-soup
+
+  - project: kiegroup/optaplanner
+    dependencies:
+      - project: kiegroup/drools
+    mapping:
+      dependencies:
+        default:
+          - source: 7.x
+            target: main
+        kiegroup/drools:
+          - source: main
+            target: 7.x
+          - source: 7.x
+            target: 7.x
+        kiegroup/droolsjbpm-knowledge:
+          - source: main
+            target: 7.x
+          - source: 7.x
+            target: 7.x
+      dependant:
+        default:
+          - source: main
+            target: 7.x
+      exclude:
+        - kiegroup/optaweb-employee-rostering  
+        - kiegroup/optaweb-vehicle-routing
+
+  - project: kiegroup/kie-jpmml-integration
+    dependencies:
+      - project: kiegroup/drools
+      - project: kiegroup/jbpm
+
+  - project: kiegroup/droolsjbpm-integration
+    dependencies:
+      - project: kiegroup/optaplanner
+      - project: kiegroup/kie-jpmml-integration
+      - project: kiegroup/drools
+      - project: kiegroup/jbpm
+
+  - project: kiegroup/openshift-drools-hacep
+    dependencies:
+      - project: kiegroup/droolsjbpm-integration
+
+  - project: kiegroup/kie-uberfire-extensions
+    dependencies:
+      - project: kiegroup/appformer
+
+  - project: kiegroup/kie-wb-playground
+    dependencies:
+      - project: kiegroup/droolsjbpm-integration
+
+  - project: kiegroup/kie-wb-common
+    dependencies:
+      - project: kiegroup/lienzo-core
+      - project: kiegroup/appformer
+      - project: kiegroup/kie-uberfire-extensions
+      - project: kiegroup/kie-wb-playground
+      - project: kiegroup/droolsjbpm-integration
+
+  - project: kiegroup/drools-wb
+    dependencies:
+      - project: kiegroup/lienzo-core
+      - project: kiegroup/kie-wb-common
+
+  - project: kiegroup/optaplanner-wb
+    dependencies:
+      - project: kiegroup/appformer
+      - project: kiegroup/kie-uberfire-extensions
+      - project: kiegroup/drools-wb
+      - project: kiegroup/drools
+      - project: kiegroup/optaplanner
+      - project: kiegroup/kie-soup
+      - project: kiegroup/kie-wb-common
+      - project: kiegroup/kie-wb-playground
+
+  - project: kiegroup/jbpm-designer
+    dependencies:
+      - project: kiegroup/kie-wb-common
+
+  - project: kiegroup/jbpm-work-items
+    dependencies:
+      - project: kiegroup/jbpm
+      - project: kiegroup/droolsjbpm-integration
+
+  - project: kiegroup/jbpm-wb
+    dependencies:
+      - project: kiegroup/kie-uberfire-extensions
+      - project: kiegroup/drools-wb
+      - project: kiegroup/jbpm-designer
+      - project: kiegroup/jbpm-work-items
+
+  - project: kiegroup/kie-docs
+
+  - project: kiegroup/optaweb-employee-rostering
+    dependencies:
+      - project: kiegroup/optaplanner
+    mapping:
+      dependencies:
+        default:
+          - source: 7.x
+            target: main
+        kiegroup/drools:
+          - source: main
+            target: 7.x
+          - source: 7.x
+            target: 7.x
+        kiegroup/droolsjbpm-knowledge:
+          - source: main
+            target: 7.x
+          - source: 7.x
+            target: 7.x
+      dependant:
+        default:
+          - source: main
+            target: 7.x
+      exclude:
+        - kiegroup/optaweb-vehicle-routing  
+        - kiegroup/optaplanner
+
+  - project: kiegroup/optaweb-vehicle-routing
+    dependencies:
+      - project: kiegroup/optaplanner
+    mapping:
+      dependencies:
+        default:
+          - source: 7.x
+            target: main
+        kiegroup/drools:
+          - source: main
+            target: 7.x
+          - source: 7.x
+            target: 7.x
+        kiegroup/droolsjbpm-knowledge:
+          - source: main
+            target: 7.x
+          - source: 7.x
+            target: 7.x
+      dependant:
+        default:
+          - source: main
+            target: 7.x
+      exclude:
+        - kiegroup/optaweb-employee-rostering  
+        - kiegroup/optaplanner
+
+
+  - project: kiegroup/kie-wb-distributions
+    dependencies:
+      - project: kiegroup/kie-soup
+      - project: kiegroup/drools
+      - project: kiegroup/optaplanner
+      - project: kiegroup/jbpm-wb
+      - project: kiegroup/appformer
+      - project: kiegroup/kie-uberfire-extensions
+      - project: kiegroup/optaplanner-wb
+
+  - project: kiegroup/process-migration-service
+    dependencies:
+      - project: kiegroup/droolsjbpm-integration
+
