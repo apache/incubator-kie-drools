@@ -2882,7 +2882,7 @@ public class CepEspTest extends AbstractCepEspTest {
                      "MyBean bin = new MyBean( 99, ev );\n" +
                      "MyEvent ev2 = new MyEvent( 2, 2000 );\n" +
                      "\n" +
-                     "drools.getWorkingMemory().getWorkingMemoryEntryPoint( \"X\" ).insert( ev2 );\n" +
+                     "drools.getWorkingMemory().getEntryPoint( \"X\" ).insert( ev2 );\n" +
                      "insert( bin );\n" +
                      "end\n" +
                      "\n" +
