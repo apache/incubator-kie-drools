@@ -41,17 +41,16 @@ public class PMMLClusteringModelEvaluator implements PMMLModelEvaluator<KiePMMLC
     public PMML4Result evaluate(final KieBase knowledgeBase,
                                 final KiePMMLClusteringModel model,
                                 final PMMLContext context) {
-        final Map<String, Object> requestData = getUnwrappedParametersMap(context.getRequestData().getMappedRequestParams());
+        final Map<String, Object> requestData =
+                getUnwrappedParametersMap(context.getRequestData().getMappedRequestParams());
 
-        Object result = model.evaluate(knowledgeBase, requestData);
+        Object result = model.evaluate(knowledgeBase, requestData, context);
 
         String targetField = model.getTargetField();
         PMML4Result toReturn = new PMML4Result();
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());
-        model.getOutputFieldsMap().forEach(toReturn::addResultVariable);
-
         return toReturn;
     }
 }

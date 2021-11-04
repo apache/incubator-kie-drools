@@ -17,7 +17,9 @@ package org.kie.pmml.evaluator.core;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.kie.api.pmml.PMMLRequestData;
@@ -29,6 +31,12 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     private final Map<String, Object> missingValueReplacedMap = new HashMap<>();
     private final Map<String, Object> commonTransformationMap = new HashMap<>();
     private final Map<String, Object> localTransformationMap = new HashMap<>();
+    private final Map<String, Object> outputFieldsMap = new HashMap<>();
+
+    private Object predictedDisplayValue;
+    private Object entityId;
+    private Object affinity;
+    private LinkedHashMap<String, Double> probabilityResultMap;
 
     public PMMLContextImpl(final PMMLRequestData pmmlRequestData) {
         super();
@@ -68,5 +76,75 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     @Override
     public Map<String, Object> getLocalTransformationMap() {
         return Collections.unmodifiableMap(localTransformationMap);
+    }
+
+    static LinkedHashMap<String, Double> getFixedProbabilityMap(final LinkedHashMap<String, Double> probabilityResultMap) {
+        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
+        String[] resultMapKeys = probabilityResultMap.keySet().toArray(new String[0]);
+        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
+        for (int i = 0; i < probabilityResultMap.size(); i++) {
+            String key = resultMapKeys[i];
+            double value = probabilityResultMap.get(key);
+            if (i < resultMapKeys.length - 1) {
+                sumCounter.accumulateAndGet(value, Double::sum);
+                toReturn.put(key, value);
+            } else {
+                // last element
+                toReturn.put(key, 1 - sumCounter.get());
+            }
+        }
+        return toReturn;
+    }
+
+    @Override
+    public Object getPredictedDisplayValue() {
+        return predictedDisplayValue;
+    }
+
+    @Override
+    public void setPredictedDisplayValue(Object predictedDisplayValue) {
+        this.predictedDisplayValue = predictedDisplayValue;
+    }
+
+    @Override
+    public Object getEntityId() {
+        return entityId;
+    }
+
+    @Override
+    public void setEntityId(Object entityId) {
+        this.entityId = entityId;
+    }
+
+    @Override
+    public Object getAffinity() {
+        return affinity;
+    }
+
+    @Override
+    public void setAffinity(Object affinity) {
+        this.affinity = affinity;
+    }
+
+    @Override
+    public Map<String, Double> getProbabilityMap() {
+        final LinkedHashMap<String, Double> probabilityResultMap = getProbabilityResultMap();
+        return probabilityResultMap != null ?
+                Collections.unmodifiableMap(getFixedProbabilityMap(probabilityResultMap)) : Collections.emptyMap();
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return probabilityResultMap;
+    }
+
+    @Override
+    public void setProbabilityResultMap(LinkedHashMap<String, Double> probabilityResultMap) {
+        this.probabilityResultMap = probabilityResultMap;
+    }
+
+    @Override
+    public Map<String, Object> getOutputFieldsMap() {
+        return outputFieldsMap;
     }
 }

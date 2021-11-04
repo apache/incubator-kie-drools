@@ -27,6 +27,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -47,24 +48,28 @@ public class PostProcess {
         // Avoid instantiation
     }
 
-    public static void postProcess(final PMML4Result toReturn, final KiePMMLModel model, final ProcessingDTO processingDTO) {
+    public static void postProcess(final PMML4Result toReturn, final KiePMMLModel model,
+                                   final PMMLContext pmmlContext, final ProcessingDTO processingDTO) {
         executeTargets(toReturn, processingDTO);
         updateTargetValueType(model, toReturn);
-        populateProcessingDTO(toReturn, model,  processingDTO);
+        populateProcessingDTO(toReturn, pmmlContext, processingDTO);
         populateOutputFields(toReturn, processingDTO);
     }
 
     /**
-     * Method used to populate a <code>ProcessingDTO</code> with values accumulated inside the given <code>KiePMMLModel</code>
+     * Method used to populate a <code>ProcessingDTO</code> with values accumulated inside the given
+     * <code>KiePMMLModel</code>
      * during evaluation
      * @param pmml4Result
-     * @param model
+     * @param pmmlContext
      * @param toPopulate
      */
-    static void populateProcessingDTO(final PMML4Result pmml4Result, final KiePMMLModel model, final ProcessingDTO toPopulate) {
+    static void populateProcessingDTO(final PMML4Result pmml4Result,
+                                      final PMMLContext pmmlContext,
+                                      final ProcessingDTO toPopulate) {
         pmml4Result.getResultVariables().forEach((key, value) -> toPopulate.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
         final Map<String, Double> sortedByValue
-                = model.getOutputFieldsMap().entrySet()
+                = pmmlContext.getOutputFieldsMap().entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() instanceof Double && (Double) entry.getValue() > 0)
                 .map((Function<Map.Entry<String, Object>, Map.Entry<String, Double>>) entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), (Double) entry.getValue()))
@@ -73,10 +78,10 @@ public class PostProcess {
                                           LinkedHashMap::new));
         final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
         toPopulate.addOrderedReasonCodes(orderedReasonCodes);
-        toPopulate.setAffinity(model.getAffinity());
-        toPopulate.setEntityId(model.getEntityId());
-        toPopulate.setPredictedDisplayValue(model.getPredictedDisplayValue());
-        toPopulate.setProbabilityMap(model.getProbabilityMap());
+        toPopulate.setAffinity(pmmlContext.getAffinity());
+        toPopulate.setEntityId(pmmlContext.getEntityId());
+        toPopulate.setPredictedDisplayValue(pmmlContext.getPredictedDisplayValue());
+        toPopulate.setProbabilityMap(pmmlContext.getProbabilityMap());
     }
 
     /**

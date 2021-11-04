@@ -18,11 +18,9 @@ package org.kie.pmml.models.mining.evaluator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +37,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
@@ -97,21 +96,16 @@ public class PMMLMiningModelEvaluatorTest {
         String name = "NAME";
         String targetField = "TARGET";
         String prediction = "FIRST_VALUE";
-        final Map<String, Object> outputFieldsMap = new HashMap<>();
-        IntStream.range(0,3).forEach(index -> {
-            outputFieldsMap.put("KEY_" + index, "OBJECT_" + index);
-        });
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), SELECT_FIRST).build();
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
-                .withOutputFieldsMap(outputFieldsMap)
                 .build();
         final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
         inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", prediction), new ArrayList<>()));
         inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
-        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData);
+        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData, new PMMLContextTest());
         assertNotNull(retrieved);
         assertEquals(OK.getName(), retrieved.getResultCode());
         assertEquals(targetField, retrieved.getResultObjectName());
@@ -124,21 +118,16 @@ public class PMMLMiningModelEvaluatorTest {
     public void getPMML4ResultFAIL() {
         String name = "NAME";
         String targetField = "TARGET";
-        final Map<String, Object> outputFieldsMap = new HashMap<>();
-        IntStream.range(0,3).forEach(index -> {
-            outputFieldsMap.put("KEY_" + index, "OBJECT_" + index);
-        });
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), AVERAGE).build();
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
-                .withOutputFieldsMap(outputFieldsMap)
                 .build();
         final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
         inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", "FIRST_VALUE"), new ArrayList<>()));
         inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
-        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData);
+        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData, new PMMLContextTest());
         assertNotNull(retrieved);
         assertEquals(FAIL.getName(), retrieved.getResultCode());
         assertEquals(targetField, retrieved.getResultObjectName());

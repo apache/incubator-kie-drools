@@ -24,7 +24,6 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.FieldFactory;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.base.evaluators.Operator;
@@ -32,11 +31,8 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
 
 public class ReteTesterHelper {
 
@@ -74,27 +70,7 @@ public class ReteTesterHelper {
                                                               final String fieldName,
                                                               final Declaration declaration,
                                                               final String evaluatorString) {
-
-        final InternalReadAccessor extractor = store.getReader(clazz,
-                                                               fieldName);
-        String expression = fieldName + " " + evaluatorString + " " + declaration.getIdentifier();
-        return new MVELConstraintTestUtil(expression, declaration, extractor);
-    }
-
-    public AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
-                                                         final String fieldName,
-                                                         final String evaluatorString,
-                                                         final String value) {
-        final Class<?> clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
-
-        final InternalReadAccessor extractor = store.getReader(clazz,
-                                                               fieldName);
-
-        FieldValue fieldValue = FieldFactory.getInstance().getFieldValue(value, extractor.getValueType());
-
-        return new MVELConstraintTestUtil(fieldName + evaluatorString + value,
-                                          fieldValue,
-                                          extractor);
+        return new FakeBetaNodeFieldConstraint(clazz, fieldName, declaration, evaluatorString);
     }
 
     public Evaluator getEvaluator(Class<?> cls,

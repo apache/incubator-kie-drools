@@ -15,6 +15,6 @@ public abstract class DroolsModelEvaluator implements PMMLModelEvaluator<KiePMML
     @Override
     public PMML4Result evaluate(final KieBase knowledgeBase, KiePMMLDroolsModel model, PMMLContext pmmlContext) {
         final Map<String, Object> requestData = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        return (PMML4Result) model.evaluate(knowledgeBase, requestData);
+        return (PMML4Result) model.evaluate(knowledgeBase, requestData, pmmlContext);
     }
 }

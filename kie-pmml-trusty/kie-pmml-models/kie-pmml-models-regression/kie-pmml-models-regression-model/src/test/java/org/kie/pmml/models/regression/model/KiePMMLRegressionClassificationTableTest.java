@@ -21,57 +21,66 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class KiePMMLRegressionClassificationTableTest {
 
-    private static final DoubleUnaryOperator FIRST_ITEM_OPERATOR = aDouble -> 1 / aDouble;
+    // CAUCHIT
+    private static final DoubleUnaryOperator FIRST_ITEM_OPERATOR =
+            aDouble -> 0.5 + (1 / Math.PI) * Math.atan(aDouble); //  aDouble -> 1 / aDouble;
     private static final DoubleUnaryOperator SECOND_ITEM_OPERATOR = aDouble -> 1 - aDouble;
+    //
     private static final String CASE_A = "caseA";
     private static final String CASE_B = "caseB";
     private final KiePMMLRegressionClassificationTable classificationTable;
     private final double firstTableResult;
     private final double secondTableResult;
     private final String expectedResult;
+    private final double firstExpectedValue;
+    private final double secondExpectedValue;
 
-    public KiePMMLRegressionClassificationTableTest(double firstTableResult, double secondTableResult,
-                                                    String expectedResult) {
+    public KiePMMLRegressionClassificationTableTest(double firstTableResult,
+                                                    double secondTableResult,
+                                                    String expectedResult,
+                                                    double firstExpectedValue,
+                                                    double secondExpectedValue) {
         this.firstTableResult = firstTableResult;
         this.secondTableResult = secondTableResult;
         this.expectedResult = expectedResult;
+        this.firstExpectedValue = firstExpectedValue;
+        this.secondExpectedValue = secondExpectedValue;
         classificationTable = getKiePMMLRegressionClassificationTable();
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {24.5, 13.2, CASE_B},
-                {10.4, 16.8, CASE_B},
-                {0.7, 0.22, CASE_A},
+                {24.5, 13.2, CASE_A, 0.5, 0.5},
+                {10.4, 16.8, CASE_A, 0.5, 0.5},
+                {-0.7, 123.22, CASE_A, 0.5, 0.5},
         });
     }
 
     @Test
     public void evaluateRegression() {
+        PMMLContextTest pmmlContextTest = new PMMLContextTest();
         Map<String, Object> input = new HashMap<>();
-        input.put("a", 24);
-        input.put("b", 32);
-        Object retrieved = classificationTable.evaluateRegression(input);
+        input.put(CASE_A, firstTableResult);
+        input.put(CASE_B, secondTableResult);
+        Object retrieved = classificationTable.evaluateRegression(input, pmmlContextTest);
         assertEquals(expectedResult, retrieved);
-        final Map<String, Double> probabilityResultMap = classificationTable.getProbabilityResultMap();
-        double expectedDouble = FIRST_ITEM_OPERATOR.applyAsDouble(firstTableResult);
-        assertEquals(expectedDouble, probabilityResultMap.get(CASE_A), 0);
-        expectedDouble = SECOND_ITEM_OPERATOR.applyAsDouble(expectedDouble);
-        assertEquals(expectedDouble, probabilityResultMap.get(CASE_B), 0);
+        final Map<String, Double> probabilityResultMap = pmmlContextTest.getProbabilityResultMap();
+        assertEquals(firstExpectedValue, probabilityResultMap.get(CASE_A), 0);
+        assertEquals(secondExpectedValue, probabilityResultMap.get(CASE_B), 0);
     }
 
     @Test
@@ -108,46 +117,16 @@ public class KiePMMLRegressionClassificationTableTest {
         KiePMMLRegressionClassificationTable toReturn = new KiePMMLRegressionClassificationTable() {
 
             private static final long serialVersionUID = 8046624834036965711L;
-
-            @Override
-            public boolean isBinary() {
-                return true;
-            }
-
-            @Override
-            protected LinkedHashMap<String, Double> getProbabilityMap(LinkedHashMap<String, Double> resultMap) {
-                return getProbabilityMap(resultMap, FIRST_ITEM_OPERATOR, SECOND_ITEM_OPERATOR);
-            }
-
-            @Override
-            public Object getTargetCategory() {
-                return null;
-            }
-
         };
-        toReturn.categoryTableMap.put(CASE_A, getKiePMMLRegressionTable(firstTableResult));
-        toReturn.categoryTableMap.put(CASE_B, getKiePMMLRegressionTable(secondTableResult));
+        toReturn.targetCategory = null;
+        toReturn.categoryTableMap.put(CASE_A, getKiePMMLRegressionTable());
+        toReturn.categoryTableMap.put(CASE_B, getKiePMMLRegressionTable());
+        toReturn.probabilityMapFunction = toReturn::getCAUCHITProbabilityMap;
         return toReturn;
     }
 
-    private KiePMMLRegressionTable getKiePMMLRegressionTable(double returnedValue) {
+    private KiePMMLRegressionTable getKiePMMLRegressionTable() {
         return new KiePMMLRegressionTable() {
-
-            @Override
-            public Object evaluateRegression(Map<String, Object> input) {
-                return returnedValue;
-            }
-
-            @Override
-            public Object getTargetCategory() {
-                return null;
-            }
-
-            @Override
-            protected void updateResult(AtomicReference<Double> toUpdate) {
-
-            }
-
         };
     }
 }

@@ -16,20 +16,12 @@
 
 package org.kie.pmml.compiler.commons.implementations;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
-import org.dmg.pmml.Field;
-import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
-import org.dmg.pmml.Output;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.mining.MiningModel;
 import org.junit.Test;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -37,18 +29,12 @@ import org.kie.pmml.compiler.api.mocks.TestModel;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
-import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
-import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDataField;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPMMLWithMiningRandomTestModel;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPMMLWithRandomTestModel;
-import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataType;
-import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMiningSchema;
-import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomOutput;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled;
@@ -150,50 +136,4 @@ public class KiePMMLModelRetrieverTest {
         assertFalse(retrieved.isPresent());
     }
 
-    @Test
-    public void getPopulatedWithPMMLModelFields() {
-        KiePMMLTestingModel toPopulate = KiePMMLTestingModel.builder("TESTINGMODEL",
-                                                                     Collections.emptyList(),
-                                                                     MINING_FUNCTION.REGRESSION).build();
-        assertTrue(toPopulate.getMiningFields().isEmpty());
-        assertTrue(toPopulate.getOutputFields().isEmpty());
-        final MiningSchema miningSchema = getRandomMiningSchema();
-        DataDictionary dataDictionary = new DataDictionary();
-        dataDictionary.addDataFields(miningSchema.getMiningFields().stream()
-                                             .map(miningField -> getDataField(miningField.getName().getValue(),
-                                                                              miningField.getOpType(),
-                                                                              getRandomDataType())).toArray(DataField[]::new));
-        final Output output = getRandomOutput();
-        final List<Field<?>> fields = getFieldsFromDataDictionary(dataDictionary);
-        KiePMMLTestingModel populated =
-                (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
-                                                                                            fields,
-                                                                                            miningSchema, output);
-        assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
-        assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
-        toPopulate = KiePMMLTestingModel.builder("TESTINGMODEL",
-                                                 Collections.emptyList(),
-                                                 MINING_FUNCTION.REGRESSION).build();
-        populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
-                                                                                                fields,
-                                                                                                miningSchema, null);
-        assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
-        assertTrue(populated.getOutputFields().isEmpty());
-        toPopulate = KiePMMLTestingModel.builder("TESTINGMODEL",
-                                                 Collections.emptyList(),
-                                                 MINING_FUNCTION.REGRESSION).build();
-        populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
-                                                                                                fields, null,
-                                                                                                output);
-        assertTrue(populated.getMiningFields().isEmpty());
-        assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
-        toPopulate = KiePMMLTestingModel.builder("TESTINGMODEL",
-                                                 Collections.emptyList(),
-                                                 MINING_FUNCTION.REGRESSION).build();
-        populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
-                                                                                                fields, null,
-                                                                                                null);
-        assertTrue(populated.getMiningFields().isEmpty());
-        assertTrue(populated.getOutputFields().isEmpty());
-    }
 }

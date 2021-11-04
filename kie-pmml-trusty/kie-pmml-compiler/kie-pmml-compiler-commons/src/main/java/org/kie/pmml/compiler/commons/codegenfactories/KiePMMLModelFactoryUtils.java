@@ -51,6 +51,7 @@ import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
@@ -61,11 +62,13 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedVariableN
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLLocalTransformationsFactory.LOCAL_TRANSFORMATIONS;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLMiningFieldFactory.getMiningFieldVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLOutputFieldFactory.getOutputFieldVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTargetFactory.getKiePMMLTargetVariableInitializer;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTransformationDictionaryFactory.TRANSFORMATION_DICTIONARY;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulationByMethodCallExpr;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulationByObjectCreationExpr;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListFromList;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue;
 
 /**
@@ -106,18 +109,23 @@ public class KiePMMLModelFactoryUtils {
      * @param name
      * @param miningFields
      * @param outputFields
+     * @param targetFields
      */
     public static void setKiePMMLModelConstructor(final String generatedClassName,
                                                   final ConstructorDeclaration constructorDeclaration,
                                                   final String name,
                                                   final List<MiningField> miningFields,
-                                                  final List<OutputField> outputFields) {
+                                                  final List<OutputField> outputFields,
+                                                  final List<KiePMMLTarget> targetFields) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, name);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<ObjectCreationExpr> miningFieldsObjectCreations = getMiningFieldsObjectCreations(miningFields);
-        addListPopulation(miningFieldsObjectCreations, body, "miningFields");
+        addListPopulationByObjectCreationExpr(miningFieldsObjectCreations, body, "miningFields");
         final List<ObjectCreationExpr> outputFieldsObjectCreations = getOutputFieldsObjectCreations(outputFields);
-        addListPopulation(outputFieldsObjectCreations, body, "outputFields");
+        addListPopulationByObjectCreationExpr(outputFieldsObjectCreations, body, "outputFields");
+        final List<MethodCallExpr> kiePMMLTargetFieldsObjectCreations =
+                getKiePMMLTargetFieldsObjectCreations(targetFields);
+        addListPopulationByMethodCallExpr(kiePMMLTargetFieldsObjectCreations, body, "kiePMMLTargets");
     }
 
     public static void addGetCreatedKiePMMLMiningFieldsMethod(final ClassOrInterfaceDeclaration modelTemplate,
@@ -127,8 +135,8 @@ public class KiePMMLModelFactoryUtils {
         final MethodDeclaration methodDeclaration = modelTemplate.addMethod(GET_CREATED_KIEPMMLMININGFIELDS,
                                                                             Modifier.Keyword.PRIVATE);
         final ClassOrInterfaceType returnedType =
-                getTypedClassOrInterfaceType(List.class.getSimpleName(),
-                                             Collections.singletonList(KiePMMLMiningField.class.getSimpleName()));
+                getTypedClassOrInterfaceTypeByTypeNames(List.class.getSimpleName(),
+                                                        Collections.singletonList(KiePMMLMiningField.class.getSimpleName()));
         methodDeclaration.setType(returnedType);
         BlockStmt body = new BlockStmt();
         methodDeclaration.setBody(body);
@@ -153,8 +161,8 @@ public class KiePMMLModelFactoryUtils {
         final MethodDeclaration methodDeclaration = modelTemplate.addMethod(GET_CREATED_KIEPMMLOUTPUTFIELDS,
                                                                             Modifier.Keyword.PRIVATE);
         final ClassOrInterfaceType returnedType =
-                getTypedClassOrInterfaceType(List.class.getSimpleName(),
-                                             Collections.singletonList(KiePMMLOutputField.class.getSimpleName()));
+                getTypedClassOrInterfaceTypeByTypeNames(List.class.getSimpleName(),
+                                                        Collections.singletonList(KiePMMLOutputField.class.getSimpleName()));
         methodDeclaration.setType(returnedType);
         BlockStmt body = new BlockStmt();
         methodDeclaration.setBody(body);
@@ -335,6 +343,17 @@ public class KiePMMLModelFactoryUtils {
                                                             allowedValues));
                     return toReturn;
                 })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Create a <code>List&lt;ObjectCreationExpr&gt;</code> for the given <code>List&lt;KiePMMLTarget&gt;</code>
+     * @param targetFields
+     * @return
+     */
+    static List<MethodCallExpr> getKiePMMLTargetFieldsObjectCreations(final List<KiePMMLTarget> targetFields) {
+        return targetFields.stream()
+                .map(targetField -> getKiePMMLTargetVariableInitializer(targetField))
                 .collect(Collectors.toList());
     }
 

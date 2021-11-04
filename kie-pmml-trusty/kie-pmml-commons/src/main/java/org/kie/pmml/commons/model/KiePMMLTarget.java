@@ -176,25 +176,28 @@ public class KiePMMLTarget extends AbstractKiePMMLComponent {
             return this;
         }
 
-        public Builder withMin(double min) {
+        public Builder withMin(Double min) {
             toBuild.min = min;
             return this;
         }
 
-        public Builder withMax(double max) {
+        public Builder withMax(Double max) {
             toBuild.max = max;
             return this;
         }
 
-        public Builder withRescaleConstant(double rescaleConstant) {
-            toBuild.rescaleConstant = rescaleConstant;
+        public Builder withRescaleConstant(Double rescaleConstant) {
+            if (rescaleConstant != null) {
+                toBuild.rescaleConstant = rescaleConstant;
+            }
             return this;
         }
 
-        public Builder withRescaleFactor(double rescaleFactor) {
-            toBuild.rescaleFactor = rescaleFactor;
+        public Builder withRescaleFactor(Double rescaleFactor) {
+            if (rescaleFactor != null) {
+                toBuild.rescaleFactor = rescaleFactor;
+            }
             return this;
         }
-
     }
 }

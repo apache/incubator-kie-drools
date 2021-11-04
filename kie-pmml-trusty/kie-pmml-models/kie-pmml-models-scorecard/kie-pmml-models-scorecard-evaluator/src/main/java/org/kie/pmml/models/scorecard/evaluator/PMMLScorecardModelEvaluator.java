@@ -45,7 +45,7 @@ public class PMMLScorecardModelEvaluator implements PMMLModelEvaluator<KiePMMLSc
         String targetField = model.getTargetField();
         final Map<String, Object> requestData =
                 getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        Object result = model.evaluate(knowledgeBase, requestData);
+        Object result = model.evaluate(knowledgeBase, requestData, pmmlContext);
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());

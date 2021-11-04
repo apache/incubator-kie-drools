@@ -19,10 +19,12 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.HasSourcesMap;
 
 public class KiePMMLTreeModelWithSources extends KiePMMLTreeModel implements HasSourcesMap {
 
+    private static final long serialVersionUID = -4677340719852086583L;
     private final String kmodulePackageName;
     protected Map<String, String> sourcesMap;
 
@@ -33,13 +35,9 @@ public class KiePMMLTreeModelWithSources extends KiePMMLTreeModel implements Has
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                           final PMMLContext context) {
         throw new KiePMMLException("KiePMMLTreeModelWithSources is not meant to be used for actual evaluation");
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLTreeModelWithSources is not meant to be used for actual usage");
     }
 
     @Override
