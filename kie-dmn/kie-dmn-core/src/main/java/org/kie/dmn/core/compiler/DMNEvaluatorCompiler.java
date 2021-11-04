@@ -214,8 +214,8 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         Optional<DMNNode> findAsDep = Optional.empty();
         if (fnameParts.length > 1) {
             findAsDep = node.getDependencies().values().stream()
-                .filter(dmnNode -> dmnNode.getModelImportAliasFor(dmnNode.getModelNamespace(), dmnNode.getModelName()).map(iaf->Objects.equals(functionName, iaf + "." + dmnNode.getName())).orElse(false);
-            }).findFirst();
+                    .filter(dmnNode -> dmnNode.getModelImportAliasFor(dmnNode.getModelNamespace(), dmnNode.getModelName()).map(alias -> Objects.equals(functionName, alias + "." + dmnNode.getName())).orElse(false)
+            ).findFirst();
         } else {
             findAsDep = node.getDependencies().values().stream().filter(d -> d.getName().equals(functionName)).findAny();
         }
