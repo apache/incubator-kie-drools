@@ -56,9 +56,9 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.6.11
+        uses: kiegroup/github-action-build-chain@v2.6.13
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
           starting-project: kiegroup/kogito-examples
       - name: Publish Test Report
         if: ${{ always() }}
