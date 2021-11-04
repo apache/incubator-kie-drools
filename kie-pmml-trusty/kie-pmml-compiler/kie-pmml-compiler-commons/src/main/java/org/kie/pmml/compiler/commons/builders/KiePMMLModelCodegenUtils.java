@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.compiler.commons.builders;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -35,7 +34,6 @@ import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
-import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
@@ -67,12 +65,9 @@ public class KiePMMLModelCodegenUtils {
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final String name = compilationDTO.getModelName();
         final String generatedClassName = compilationDTO.getSimpleClassName();
-        final List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(compilationDTO.getMiningSchema(),
-                                                                                      compilationDTO.getFields());
-        final List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(compilationDTO.getOutput(),
-                                                                                      compilationDTO.getFields());
-        final List<KiePMMLTarget> targetFields = compilationDTO.getTargets() != null ?
-                ModelUtils.convertToKiePMMLTargetList(compilationDTO.getTargets()) : Collections.emptyList();
+        final List<MiningField> miningFields = compilationDTO.getKieMiningFields();
+        final List<OutputField> outputFields = compilationDTO.getKieOutputFields();
+        final List<KiePMMLTarget> targetFields = compilationDTO.getKiePMMLTargetFields();
 
         final Expression miningFunctionExpression;
         if (compilationDTO.getMINING_FUNCTION() != null) {
