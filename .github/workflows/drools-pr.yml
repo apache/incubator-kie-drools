@@ -29,6 +29,7 @@ jobs:
     steps:
       - name: Clean Disk Space
         uses: ginxo/kogito-pipelines/.ci/actions/disk-space@BXMSPROD-1540
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
