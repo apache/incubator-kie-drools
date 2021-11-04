@@ -23,6 +23,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 
 /**
@@ -46,7 +47,17 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModelWithSources(final CompilationDTO<T> compilationDTO);
+    default KiePMMLModelWithSources getKiePMMLModelWithSources(final CompilationDTO<T> compilationDTO) {
+        final Map<String, String> sourcesMap = getSourcesMap(compilationDTO);
+        return new KiePMMLModelWithSources(compilationDTO.getModelName(),
+                                           compilationDTO.getPackageName(),
+                                           compilationDTO.getKieMiningFields(),
+                                           compilationDTO.getKieOutputFields(),
+                                           compilationDTO.getKiePMMLTargetFields(),
+                                           sourcesMap);
+    }
+
+    Map<String, String> getSourcesMap(final CompilationDTO<T> compilationDTO);
 
     /**
      * Method provided only to have <b>drools</b> models working when invoked by a <code>MiningModel</code>
@@ -55,8 +66,8 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    default E getKiePMMLModelWithSourcesCompiled(final CompilationDTO<T> compilationDTO) {
-        E toReturn = getKiePMMLModelWithSources(compilationDTO);
+    default KiePMMLModelWithSources getKiePMMLModelWithSourcesCompiled(final CompilationDTO<T> compilationDTO) {
+        KiePMMLModelWithSources toReturn = getKiePMMLModelWithSources(compilationDTO);
         final Map<String, String> sourcesMap = ((HasSourcesMap) toReturn).getSourcesMap();
         try {
             compilationDTO.compileAndLoadClass(sourcesMap);

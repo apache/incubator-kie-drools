@@ -16,6 +16,7 @@
 package org.kie.pmml.compiler.api.dto;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,11 @@ import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.models.MiningField;
+import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.commons.model.KiePMMLTarget;
+import org.kie.pmml.compiler.api.utils.ModelUtils;
 
 /**
  * Interface to be implemented by all concrete <b>compilation dtos</b>
@@ -111,4 +116,16 @@ public interface CompilationDTO<T extends Model> extends Serializable {
     PMML_MODEL getPMML_MODEL();
 
     MINING_FUNCTION getMINING_FUNCTION();
+
+    default List<MiningField> getKieMiningFields() {
+        return ModelUtils.convertToKieMiningFieldList(getMiningSchema(), getFields());
+    }
+
+    default List<OutputField> getKieOutputFields() {
+        return ModelUtils.convertToKieOutputFieldList(getOutput(), getFields());
+    }
+
+    default List<KiePMMLTarget> getKiePMMLTargetFields() {
+        return getTargets() != null ? ModelUtils.convertToKiePMMLTargetList(getTargets()) : Collections.emptyList();
+    }
 }

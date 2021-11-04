@@ -25,7 +25,6 @@ import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.compiler.factories.KiePMMLScorecardModelFactory;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
-import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModelWithSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,7 @@ public class ScorecardModelImplementationProvider implements ModelImplementation
     }
 
     @Override
-    public KiePMMLScorecardModel getKiePMMLModelWithSources(final CompilationDTO<Scorecard> compilationDTO) {
+    public Map<String, String> getSourcesMap(final CompilationDTO<Scorecard> compilationDTO) {
         logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(),
                      compilationDTO.getModel(),
@@ -61,10 +60,8 @@ public class ScorecardModelImplementationProvider implements ModelImplementation
         try {
             ScorecardCompilationDTO scorecardCompilationDTO =
                     ScorecardCompilationDTO.fromCompilationDTO(compilationDTO);
-            final Map<String, String> sourcesMap =
+            return
                     KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(scorecardCompilationDTO);
-            return new KiePMMLScorecardModelWithSources(scorecardCompilationDTO.getModelName(),
-                                                        scorecardCompilationDTO.getPackageName(), sourcesMap);
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }

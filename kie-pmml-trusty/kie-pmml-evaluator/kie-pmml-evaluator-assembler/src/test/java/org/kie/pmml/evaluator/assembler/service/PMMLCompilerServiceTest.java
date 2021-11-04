@@ -170,6 +170,7 @@ public class PMMLCompilerServiceTest {
 
     private static class KiePMMLModelHasRule extends KiePMMLTestingModelWithSources implements HasRule {
 
+        private static final long serialVersionUID = 5250975029393865181L;
         private final String pkgUUID = generateUUID();
 
         public KiePMMLModelHasRule(String name, List<KiePMMLExtension> extensions) {
@@ -184,6 +185,7 @@ public class PMMLCompilerServiceTest {
 
     private static class KiePMMLModelHasNestedModelsHasRule extends KiePMMLTestingModelWithSources implements HasNestedModels {
 
+        private static final long serialVersionUID = -2112335126983848047L;
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
 
         public KiePMMLModelHasNestedModelsHasRule(String name, List<KiePMMLExtension> extensions) {
@@ -200,6 +202,7 @@ public class PMMLCompilerServiceTest {
 
     private static class KiePMMLModelHasNestedModelsHasSourceMap extends KiePMMLTestingModelWithSources implements HasNestedModels {
 
+        private static final long serialVersionUID = 2897025575666595935L;
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
 
         public KiePMMLModelHasNestedModelsHasSourceMap(String name, List<KiePMMLExtension> extensions) {

@@ -27,7 +27,6 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
-import org.kie.pmml.commons.testingutility.KiePMMLTestingModelWithSources;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.mocks.TestModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
@@ -63,10 +62,8 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     }
 
     @Override
-    public KiePMMLTestingModel getKiePMMLModelWithSources(final CompilationDTO<TestModel> compilationDTO) {
-        final Map<String, String> sourcesMap = getKiePMMLTestModelSourcesMap(compilationDTO);
-        return new KiePMMLTestingModelWithSources(compilationDTO.getModelName(), compilationDTO.getPackageName()
-                , sourcesMap);
+    public Map<String, String> getSourcesMap(CompilationDTO<TestModel> compilationDTO) {
+        return getKiePMMLTestModelSourcesMap(compilationDTO);
     }
 
     private Map<String, String> getKiePMMLTestModelSourcesMap(final CompilationDTO<TestModel> compilationDTO) {
