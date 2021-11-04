@@ -80,7 +80,8 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
     }
 
     PMML4Result getPMML4Result(final KiePMMLMiningModel toEvaluate,
-                               final LinkedHashMap<String, KiePMMLNameValueProbabilityMapTuple> inputData) {
+                               final LinkedHashMap<String, KiePMMLNameValueProbabilityMapTuple> inputData,
+                               final PMMLContext pmmlContext) {
         final MULTIPLE_MODEL_METHOD multipleModelMethod = toEvaluate.getSegmentation().getMultipleModelMethod();
         Object result = null;
         LinkedHashMap<String, Double> probabilityResultMap = null;
@@ -102,12 +103,11 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
             logger.warn(e.getMessage());
             resultCode = FAIL;
         }
-        toEvaluate.setProbabilityResultMap(probabilityResultMap);
+        pmmlContext.setProbabilityResultMap(probabilityResultMap);
         PMML4Result toReturn = new PMML4Result();
         toReturn.addResultVariable(toEvaluate.getTargetField(), result);
         toReturn.setResultObjectName(toEvaluate.getTargetField());
         toReturn.setResultCode(resultCode.getName());
-        toEvaluate.getOutputFieldsMap().forEach(toReturn::addResultVariable);
         return toReturn;
     }
 
@@ -248,7 +248,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
                 pmml4Result.getResultVariables().forEach((s, o) -> pmmlContext.getRequestData().addRequestParam(s, o));
 
                 PMML4ResultProbabilityMapTuple pmml4ResultTuple = new PMML4ResultProbabilityMapTuple(pmml4Result,
-                                                                                                     segment.getModel().getProbabilityMap());
+                                                                                                     pmmlContext.getProbabilityMap());
 
                 KiePMMLNameValue predictionValue = getKiePMMLNameValue(pmml4ResultTuple.pmml4Result,
                                                                        multipleModelMethod,
@@ -260,7 +260,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
                                                                                        probabilityValues));
             });
         }
-        return getPMML4Result(toEvaluate, inputData);
+        return getPMML4Result(toEvaluate, inputData, pmmlContext);
     }
 
     /**

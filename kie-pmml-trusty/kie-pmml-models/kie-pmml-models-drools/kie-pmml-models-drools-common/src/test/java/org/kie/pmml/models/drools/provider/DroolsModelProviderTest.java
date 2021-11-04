@@ -19,7 +19,6 @@ package org.kie.pmml.models.drools.provider;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -155,19 +154,17 @@ public class DroolsModelProviderTest {
                                                                        pmml,
                                                                        scorecard,
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
-        KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
+        KiePMMLDroolsModelWithSources retrieved = droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
-        assertTrue(retrieved instanceof KiePMMLDroolsModelWithSources);
-        KiePMMLDroolsModelWithSources retrievedWithSources = (KiePMMLDroolsModelWithSources) retrieved;
-        assertEquals(SOURCE_MAP, retrievedWithSources.getSourcesMap());
+        assertEquals(SOURCE_MAP, retrieved.getSourcesMap());
         String expectedPackageName = compilationDTO.getPackageName();
-        assertEquals(expectedPackageName, retrievedWithSources.getKModulePackageName());
-        assertEquals(scorecard.getModelName(), retrievedWithSources.getName());
+        assertEquals(expectedPackageName, retrieved.getKModulePackageName());
+        assertEquals(scorecard.getModelName(), retrieved.getName());
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         commonVerifyPackageDescr(packageDescr, expectedPackageName);
         assertNotNull(retrieved);
         final String rootPath = expectedPackageName + ".";
-        commonVerifyRulesSourcesMap(retrievedWithSources.getRulesSourcesMap(), packageDescr, rootPath);
+        commonVerifyRulesSourcesMap(retrieved.getRulesSourcesMap(), packageDescr, rootPath);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -354,13 +351,10 @@ public class DroolsModelProviderTest {
             this.transformationDictionary = transformationDictionary;
             this.model = model;
             this.fieldTypeMap = fieldTypeMap;
+            this.kModulePackageName = getSanitizedPackageName(PACKAGE_NAME);
         }
 
-        @Override
-        protected LinkedHashMap<String, Double> getProbabilityResultMap() {
-            return new LinkedHashMap<>();
-        }
-    }
+   }
 
     //  Needed to avoid Mockito usage
     private static class KiePMMLDroolsASTTest extends KiePMMLDroolsAST {

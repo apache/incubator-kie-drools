@@ -32,8 +32,8 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
-import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
@@ -65,10 +65,10 @@ public class KiePMMLModelCodegenUtils {
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final String name = compilationDTO.getModelName();
         final String generatedClassName = compilationDTO.getSimpleClassName();
-        final List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(compilationDTO.getMiningSchema(),
-                                                                                      compilationDTO.getFields());
-        final List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(compilationDTO.getOutput(),
-                                                                                      compilationDTO.getFields());
+        final List<MiningField> miningFields = compilationDTO.getKieMiningFields();
+        final List<OutputField> outputFields = compilationDTO.getKieOutputFields();
+        final List<KiePMMLTarget> targetFields = compilationDTO.getKiePMMLTargetFields();
+
         final Expression miningFunctionExpression;
         if (compilationDTO.getMINING_FUNCTION() != null) {
             MINING_FUNCTION miningFunction = compilationDTO.getMINING_FUNCTION();
@@ -90,7 +90,8 @@ public class KiePMMLModelCodegenUtils {
                                    constructorDeclaration,
                                    name,
                                    miningFields,
-                                   outputFields);
+                                   outputFields,
+                                   targetFields);
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, compilationDTO.getTransformationDictionary(),
                                                         compilationDTO.getLocalTransformations());
         final BlockStmt body = constructorDeclaration.getBody();

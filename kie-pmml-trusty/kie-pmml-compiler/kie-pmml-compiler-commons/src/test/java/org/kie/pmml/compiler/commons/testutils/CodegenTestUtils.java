@@ -72,6 +72,12 @@ public class CodegenTestUtils {
         }
     }
 
+    public static void commonValidateCompilationWithImports(Expression expression, List<Class<?>> imports) {
+        BlockStmt body = new BlockStmt();
+        body.addStatement(expression);
+        commonValidateCompilationWithImports(body, imports);
+    }
+
     public static void commonValidateCompilationWithImports(BlockStmt body, List<Class<?>> imports) {
         ClassOrInterfaceDeclaration classOrInterfaceType = new ClassOrInterfaceDeclaration();
         classOrInterfaceType.setName("CommCodeTest");

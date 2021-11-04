@@ -18,31 +18,14 @@ package org.kie.pmml.commons.testingutility;
 import java.util.Collections;
 import java.util.Map;
 
-import org.kie.pmml.commons.model.HasSourcesMap;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 
-public class KiePMMLTestingModelWithSources extends KiePMMLTestingModel implements HasSourcesMap {
+public class KiePMMLTestingModelWithSources extends KiePMMLModelWithSources {
 
-    private final String kmodulePackageName;
-    protected Map<String, String> sourcesMap;
+    private static final long serialVersionUID = 6937400978611393947L;
 
     public KiePMMLTestingModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap) {
-        super(modelName, Collections.emptyList());
-        this.sourcesMap = sourcesMap;
-        this.kmodulePackageName = kmodulePackageName;
-    }
-
-    @Override
-    public Map<String, String> getSourcesMap() {
-        return Collections.unmodifiableMap(sourcesMap);
-    }
-
-    @Override
-    public void addSourceMap(String key, String value) {
-        sourcesMap.put(key, value);
-    }
-
-    @Override
-    public String getKModulePackageName() {
-        return kmodulePackageName;
+        super(modelName, kmodulePackageName, Collections.emptyList(), Collections.emptyList(),
+              Collections.emptyList(), sourcesMap);
     }
 }

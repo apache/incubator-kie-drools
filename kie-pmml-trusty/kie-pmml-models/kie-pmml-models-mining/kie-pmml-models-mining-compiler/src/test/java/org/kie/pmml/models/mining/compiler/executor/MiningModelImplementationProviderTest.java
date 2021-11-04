@@ -147,14 +147,13 @@ public class MiningModelImplementationProviderTest {
                                                                        pmml,
                                                                        miningmodel,
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
-        final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
+        final KiePMMLMiningModelWithSources retrieved =
+                (KiePMMLMiningModelWithSources) PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);
         assertNotNull(retrieved.getNestedModels());
         assertFalse(retrieved.getNestedModels().isEmpty());
-        assertTrue(retrieved instanceof KiePMMLMiningModelWithSources);
-        final Map<String, String> sourcesMap =
-                new HashMap<>(((KiePMMLMiningModelWithSources) retrieved).getSourcesMap());
+        final Map<String, String> sourcesMap = new HashMap<>(retrieved.getSourcesMap());
         assertFalse(sourcesMap.isEmpty());
         try {
             KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());

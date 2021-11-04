@@ -16,9 +16,9 @@
 package org.kie.pmml.models.regression.model;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 /**
@@ -34,18 +34,9 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
-        return regressionTable.evaluateRegression(requestData);
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        return regressionTable.getOutputFieldsMap();
-    }
-
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return regressionTable.getProbabilityResultMap();
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                           final PMMLContext context) {
+        return regressionTable.evaluateRegression(requestData, context);
     }
 
     public KiePMMLRegressionTable getRegressionTable() {

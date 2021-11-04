@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.regression.model;
+package org.kie.pmml.commons.model;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,53 +23,52 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class KiePMMLRegressionModelWithSourcesTest {
+public class KiePMMLModelWithSourcesTest {
 
     private static final String MODEL_NAME = "MODEL_NAME";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private final static Map<String, String> SOURCES_MAP = new HashMap<>();
 
-    private KiePMMLRegressionModelWithSources kiePMMLRegressionModelWithSources;
+    private KiePMMLModelWithSources kiePMMLModelWithSources;
 
     @Before
     public void setup() {
-        kiePMMLRegressionModelWithSources = new KiePMMLRegressionModelWithSources(MODEL_NAME, PACKAGE_NAME, SOURCES_MAP);
+        kiePMMLModelWithSources = new KiePMMLModelWithSources(MODEL_NAME,
+                                                              PACKAGE_NAME,
+                                                              Collections.emptyList(),
+                                                              Collections.emptyList(),
+                                                              Collections.emptyList(),
+                                                              SOURCES_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void evaluate() {
-        kiePMMLRegressionModelWithSources.evaluate("KB", Collections.EMPTY_MAP);
+        kiePMMLModelWithSources.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
     }
-
-    @Test(expected = KiePMMLException.class)
-    public void getOutputFieldsMap() {
-        kiePMMLRegressionModelWithSources.getOutputFieldsMap();
-    }
-
 
     @Test
     public void getSourcesMap() {
-        assertEquals(SOURCES_MAP, kiePMMLRegressionModelWithSources.getSourcesMap());
+        assertEquals(SOURCES_MAP, kiePMMLModelWithSources.getSourcesMap());
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void addToGetSourcesMap() {
-        Map<String, String> retrieved = kiePMMLRegressionModelWithSources.getSourcesMap();
+        Map<String, String> retrieved = kiePMMLModelWithSources.getSourcesMap();
         retrieved.put("KEY", "VALUE");
     }
 
     @Test
     public void addSourceMap() {
-        Map<String, String> retrieved = kiePMMLRegressionModelWithSources.getSourcesMap();
+        Map<String, String> retrieved = kiePMMLModelWithSources.getSourcesMap();
         assertTrue(retrieved.isEmpty());
-        kiePMMLRegressionModelWithSources.addSourceMap("KEY", "VALUE");
-        retrieved = kiePMMLRegressionModelWithSources.getSourcesMap();
+        kiePMMLModelWithSources.addSourceMap("KEY", "VALUE");
+        retrieved = kiePMMLModelWithSources.getSourcesMap();
         assertTrue(retrieved.containsKey("KEY"));
         assertEquals("VALUE", retrieved.get("KEY"));
     }
-
 }

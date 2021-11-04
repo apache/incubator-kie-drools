@@ -94,7 +94,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
                 .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s",
                                                                       model.getPmmlMODEL())));
         PMML4Result toReturn = executor.evaluate(knowledgeBase, model, context);
-        postProcess(toReturn, model, processingDTO);
+        postProcess(toReturn, model, context, processingDTO);
         return toReturn;
     }
 

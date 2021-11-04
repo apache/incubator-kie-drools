@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
@@ -81,7 +82,7 @@ public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
      * @param derivedFields
      * @param outputFields
      * @param inputData
-     * @param outputFieldsMap
+     * @param context
      * @param initialScore
      * @return
      */
@@ -89,7 +90,7 @@ public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
                                      final List<KiePMMLDerivedField> derivedFields,
                                      final List<KiePMMLOutputField> outputFields,
                                      final Map<String, Object> inputData,
-                                     final Map<String, Object> outputFieldsMap,
+                                     final PMMLContext context,
                                      final Number initialScore,
                                      final REASONCODE_ALGORITHM reasoncodeAlgorithm,
                                      final boolean useReasonCodes,
@@ -106,7 +107,8 @@ public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
                 }
                 accumulator = addNumbers(accumulator, evaluationScore);
                 if (useReasonCodes && evaluation.getReasonCode() != null) {
-                    populateReasonCodes(evaluation, characteristic, reasoncodeAlgorithm, outputFieldsMap, baselineScore);
+                    populateReasonCodes(evaluation, characteristic, reasoncodeAlgorithm, context.getOutputFieldsMap()
+                            , baselineScore);
                 }
             }
         }
@@ -122,7 +124,6 @@ public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
                 characteristic.getBaselineScore() : baselineScore;
         Number rankingScore = calculatePartialScore(baselineScoreToUse, evaluation.getScore(),
                                                     reasoncodeAlgorithm);
-
         outputFieldsMap.put(evaluation.getReasonCode(), rankingScore);
     }
 }

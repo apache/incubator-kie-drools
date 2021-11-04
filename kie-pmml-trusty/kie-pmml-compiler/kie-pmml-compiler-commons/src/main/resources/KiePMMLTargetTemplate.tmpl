@@ -1,0 +1,23 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.KiePMMLTarget;
+
+public class KiePMMLTargetTemplate {
+
+
+    private KiePMMLTarget getKiePMMLTarget() {
+        KiePMMLTarget target = KiePMMLTarget.builder(name, Collections.emptyList())
+                .withTargetValues(Arrays.asList(targetValue1, targetValue2))
+                .withOpType(opType)
+                .withField(field)
+                .withCastInteger(castInteger)
+                .withMin(min)
+                .withMax(max)
+                .withRescaleConstant(rescaleConstant)
+                .withRescaleFactor(rescaleFactor)
+                .build();
+    }
+
+}

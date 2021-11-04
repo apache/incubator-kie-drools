@@ -21,7 +21,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -29,7 +28,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.dmg.pmml.Model;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -80,12 +78,10 @@ public class KiePMMLDroolsModelFactoryUtils {
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         String targetField = droolsCompilationDTO.getTargetFieldName();
         setConstructor(droolsCompilationDTO.getModel(), constructorDeclaration, modelTemplate.getName(), targetField,
-                       miningFunction);
+                       miningFunction,
+                       droolsCompilationDTO.getPackageName());
         addFieldTypeMapPopulation(constructorDeclaration.getBody(), droolsCompilationDTO.getFieldTypeMap());
-        final MethodDeclaration getKModulePackageNameMethod =
-                modelTemplate.getMethodsByName(GETKMODULEPACKAGENAME_METHOD).get(0);
-        populateGetKModulePackageName(getKModulePackageNameMethod, droolsCompilationDTO.getPackageName());
-        return cloneCU;
+         return cloneCU;
     }
 
     /**
@@ -95,12 +91,14 @@ public class KiePMMLDroolsModelFactoryUtils {
      * @param tableName
      * @param targetField
      * @param miningFunction
+     * @param kModulePackageName
      */
     static void setConstructor(final Model model,
                                final ConstructorDeclaration constructorDeclaration,
                                final SimpleName tableName,
                                final String targetField,
-                               final MINING_FUNCTION miningFunction) {
+                               final MINING_FUNCTION miningFunction,
+                               final String kModulePackageName) {
         constructorDeclaration.setName(tableName);
         final BlockStmt body = constructorDeclaration.getBody();
         CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
@@ -109,6 +107,8 @@ public class KiePMMLDroolsModelFactoryUtils {
         PMML_MODEL pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
         CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() +
                                                                                             "." + pmmlModel.name()));
+        CommonCodegenUtils.setAssignExpressionValue(body, "kModulePackageName",
+                                                    new StringLiteralExpr(kModulePackageName));
     }
 
     /**
@@ -130,18 +130,4 @@ public class KiePMMLDroolsModelFactoryUtils {
         }
     }
 
-    /**
-     * Populate the <b>getKModulePackageName</b> method override
-     */
-    static void populateGetKModulePackageName(final MethodDeclaration getKModulePackageNameMethod,
-                                              final String packageName) {
-        final BlockStmt blockStmt = getKModulePackageNameMethod.getBody()
-                .orElseThrow(() -> new KiePMMLException("Missing body inside " + getKModulePackageNameMethod));
-        blockStmt.getStatements().forEach(statement -> {
-            if (statement instanceof ReturnStmt) {
-                ReturnStmt returnStmt = (ReturnStmt) statement;
-                returnStmt.setExpression(new StringLiteralExpr(packageName));
-            }
-        });
-    }
 }

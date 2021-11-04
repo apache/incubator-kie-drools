@@ -19,49 +19,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasSourcesMap;
+import org.kie.pmml.api.models.MiningField;
+import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
+import org.kie.pmml.commons.model.KiePMMLTarget;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html>MiningModel</a>
  */
-public class KiePMMLMiningModelWithSources extends KiePMMLMiningModel implements HasSourcesMap {
+public class KiePMMLMiningModelWithSources extends KiePMMLModelWithSources implements HasNestedModels {
 
-    private final String kmodulePackageName;
-    protected Map<String, String> sourcesMap;
+    private static final long serialVersionUID = -1375185422040275122L;
     protected List<KiePMMLModel> nestedModels;
 
-    public KiePMMLMiningModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap,List<KiePMMLModel> nestedModels) {
-        super(modelName, Collections.emptyList());
-        this.sourcesMap = sourcesMap;
-        this.kmodulePackageName = kmodulePackageName;
+    public KiePMMLMiningModelWithSources(final String modelName,
+                                         final String kmodulePackageName,
+                                         final List<MiningField> miningFields,
+                                         final List<OutputField> outputFields,
+                                         final List<KiePMMLTarget> targetFields,
+                                         final Map<String, String> sourcesMap,
+                                         final List<KiePMMLModel> nestedModels) {
+        super(modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap);
         this.nestedModels = Collections.unmodifiableList(nestedModels);
-    }
-
-    @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
-        throw new KiePMMLException("KiePMMLMiningModelWithSources is not meant to be used for actual evaluation");
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLMiningModelWithSources is not meant to be used for actual usage");
-    }
-
-    @Override
-    public Map<String, String> getSourcesMap() {
-        return Collections.unmodifiableMap(sourcesMap);
-    }
-
-    @Override
-    public void addSourceMap(String key, String value) {
-        sourcesMap.put(key, value);
-    }
-
-    @Override
-    public String getKModulePackageName() {
-        return kmodulePackageName;
     }
 
     @Override

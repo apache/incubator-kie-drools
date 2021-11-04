@@ -15,64 +15,37 @@
  */
 package org.kie.pmml.models.drools.commons.model;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.MiningField;
+import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.HasRule;
+import org.kie.pmml.commons.model.IsDrools;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
+import org.kie.pmml.commons.model.KiePMMLTarget;
 
 /**
  * KIE representation of PMML model that use <b>Drools</b> for implementation
  */
-public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasRule {
+public class KiePMMLDroolsModelWithSources extends KiePMMLModelWithSources implements IsDrools,
+                                                                                      HasRule {
 
     private static final long serialVersionUID = -168095076511604775L;
-    protected Map<String, String> sourcesMap;
     protected Map<String, String> rulesSourceMap;
-    private final String kmodulePackageName;
     private final String pkgUUID;
 
-    public KiePMMLDroolsModelWithSources(String name,
-                                         String kmodulePackageName,
-                                         String pkgUUID,
-                                         Map<String, String> sourcesMap,
-                                         Map<String, String> rulesSourceMap) {
-        super(name, Collections.emptyList());
-        this.sourcesMap = sourcesMap;
-        this.kmodulePackageName = kmodulePackageName;
+    public KiePMMLDroolsModelWithSources(final String modelName,
+                                         final String kmodulePackageName,
+                                         final List<MiningField> miningFields,
+                                         final List<OutputField> outputFields,
+                                         final List<KiePMMLTarget> targetFields,
+                                         final Map<String, String> sourcesMap,
+                                         final String pkgUUID,
+                                         final Map<String, String> rulesSourceMap) {
+        super(modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap);
         this.pkgUUID = pkgUUID;
         this.rulesSourceMap = rulesSourceMap;
-    }
-
-    @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
-        throw new KiePMMLException("KiePMMLDroolsModelWithSources. is not meant to be used for actual evaluation");
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLDroolsModelWithSources. is not meant to be used for actual usage");
-    }
-
-    @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        throw new KiePMMLException("KiePMMLDroolsModelWithSources is not meant to be used for actual usage");
-    }
-
-    @Override
-    public Map<String, String> getSourcesMap() {
-        return Collections.unmodifiableMap(sourcesMap);
-    }
-
-    @Override
-    public void addSourceMap(String key, String value) {
-        sourcesMap.put(key, value);
-    }
-
-    @Override
-    public String getKModulePackageName() {
-        return kmodulePackageName;
     }
 
     @Override

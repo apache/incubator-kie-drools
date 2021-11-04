@@ -19,7 +19,6 @@ package org.kie.pmml.models.scorecard.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +27,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
+import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -50,10 +50,10 @@ public class KiePMMLCharacteristicsTest {
         Double initialScore = 25.23;
         KiePMMLCharacteristics kiePMMLCharacteristics = new KiePMMLCharacteristics("NAME", Collections.emptyList(),
                                                                                    getKiePMMLCharacteristicList());
-        final Map<String, Object> outputFieldsMap = new HashMap<>();
+        PMMLContextTest pmmlContextTest = new PMMLContextTest();
         Optional<Number> retrieved = kiePMMLCharacteristics.evaluate(Collections.emptyList(), Collections.emptyList()
                 , Collections.emptyList(), Collections.emptyMap(),
-                                                                     outputFieldsMap,
+                                                                     pmmlContextTest,
                                                                      initialScore,
                                                                      REASONCODE_ALGORITHM.POINTS_BELOW,
                                                                      true,
@@ -64,7 +64,7 @@ public class KiePMMLCharacteristicsTest {
         Double EVALUATION_11 = baselineScore - value1;
         Double expected = initialScore + value2 + value1 + 1;
         assertEquals(expected, retrieved.get());
-
+        final Map<String, Object> outputFieldsMap = pmmlContextTest.getOutputFieldsMap();
         assertEquals(2, outputFieldsMap.size());
         assertTrue(outputFieldsMap.containsKey("REASON_CODE_20"));
         assertEquals(EVALUATION_20, outputFieldsMap.get("REASON_CODE_20"));
