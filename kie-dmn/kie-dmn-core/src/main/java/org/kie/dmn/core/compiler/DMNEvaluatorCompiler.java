@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.kie.api.io.Resource;
-import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
@@ -196,10 +195,9 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         String[] fnameParts = functionName.split("\\.");
         Optional<DMNNode> findAsDep = Optional.empty();
         if (fnameParts.length > 1) {
-            findAsDep = node.getDependencies().values().stream().filter(dmnNode -> {
-                final Optional<String> alias = dmnNode.getModelImportAliasFor(dmnNode.getModelNamespace(), dmnNode.getModelName());
-                return alias.isPresent() && Objects.equals(functionName, alias.get() + "." + dmnNode.getName());
-            }).findFirst();
+            findAsDep = node.getDependencies().values().stream()
+                    .filter(dmnNode -> dmnNode.getModelImportAliasFor(dmnNode.getModelNamespace(), dmnNode.getModelName()).map(alias -> Objects.equals(functionName, alias + "." + dmnNode.getName())).orElse(false)
+            ).findFirst();
         } else {
             findAsDep = node.getDependencies().values().stream().filter(d -> d.getName().equals(functionName)).findAny();
         }
