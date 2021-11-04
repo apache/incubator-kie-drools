@@ -24,21 +24,21 @@ jobs:
     steps:
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: ginxo/droolsjbpm-build-bootstrap/.ci/actions/long-paths@BXMSPROD-1539
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/long-paths@main
       - name: Java and Maven Setup
-        uses: ginxo/droolsjbpm-build-bootstrap/.ci/actions/java@BXMSPROD-1539
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/java@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
       - name: Cache Maven
-        uses: ginxo/droolsjbpm-build-bootstrap/.ci/actions/cache-maven@BXMSPROD-1539
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/cache-maven@main
         with:
           key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
-        uses: ginxo/droolsjbpm-build-bootstrap/.ci/actions/build-chain@BXMSPROD-1539
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/build-chain@main
         with:
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
-        uses: ginxo/droolsjbpm-build-bootstrap/.ci/actions/surefire-report@BXMSPROD-1539
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/surefire-report@main
         if: ${{ always() }}
