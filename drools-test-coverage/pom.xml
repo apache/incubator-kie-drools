@@ -21,6 +21,7 @@
     <module>standalone</module>
     <module>test-suite</module>
     <module>test-compiler-integration</module>
+    <module>test-integration-nomvel</module>
   </modules>
 
 </project>
