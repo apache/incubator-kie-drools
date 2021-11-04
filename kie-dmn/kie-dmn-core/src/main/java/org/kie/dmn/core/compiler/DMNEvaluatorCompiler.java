@@ -213,9 +213,8 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         String[] fnameParts = functionName.split("\\.");
         Optional<DMNNode> findAsDep = Optional.empty();
         if (fnameParts.length > 1) {
-            findAsDep = node.getDependencies().values().stream().filter(dmnNode -> {
-                final Optional<String> alias = dmnNode.getModelImportAliasFor(dmnNode.getModelNamespace(), dmnNode.getModelName());
-                return alias.isPresent() && Objects.equals(functionName, alias.get() + "." + dmnNode.getName());
+            findAsDep = node.getDependencies().values().stream()
+                .filter(dmnNode -> dmnNode.getModelImportAliasFor(dmnNode.getModelNamespace(), dmnNode.getModelName()).map(iaf->Objects.equals(functionName, iaf + "." + dmnNode.getName())).orElse(false);
             }).findFirst();
         } else {
             findAsDep = node.getDependencies().values().stream().filter(d -> d.getName().equals(functionName)).findAny();
