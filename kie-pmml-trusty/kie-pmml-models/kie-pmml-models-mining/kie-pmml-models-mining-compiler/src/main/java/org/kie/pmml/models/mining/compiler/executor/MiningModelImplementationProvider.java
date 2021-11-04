@@ -23,6 +23,7 @@ import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
@@ -55,7 +56,12 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     }
 
     @Override
-    public KiePMMLMiningModel getKiePMMLModelWithSources(final CompilationDTO<MiningModel> compilationDTO) {
+    public Map<String, String> getSourcesMap(final CompilationDTO<MiningModel> compilationDTO) {
+        throw new KiePMMLException("MiningModelImplementationProvider.getSourcesMap is not meant to be invoked");
+    }
+
+    @Override
+    public KiePMMLModelWithSources getKiePMMLModelWithSources(final CompilationDTO<MiningModel> compilationDTO) {
         if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,
                                                      compilationDTO.getHasClassloader().getClass().getName()));
@@ -64,7 +70,12 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
         final Map<String, String> sourcesMap =
                 KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(MiningModelCompilationDTO.fromCompilationDTO(compilationDTO),
                                                                           nestedModels);
-        return new KiePMMLMiningModelWithSources(compilationDTO.getModelName(), compilationDTO.getPackageName(),
-                                                 sourcesMap, nestedModels);
+        return new KiePMMLMiningModelWithSources(compilationDTO.getModelName(),
+                                                 compilationDTO.getPackageName(),
+                                                 compilationDTO.getKieMiningFields(),
+                                                 compilationDTO.getKieOutputFields(),
+                                                 compilationDTO.getKiePMMLTargetFields(),
+                                                 sourcesMap,
+                                                 nestedModels);
     }
 }

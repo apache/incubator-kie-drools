@@ -38,6 +38,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
@@ -88,7 +89,12 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     }
 
     @Override
-    public E getKiePMMLModelWithSources(final CompilationDTO<T> compilationDTO) {
+    public Map<String, String> getSourcesMap(final CompilationDTO<T> compilationDTO) {
+        throw new KiePMMLException("DroolsModelProvider.getSourcesMap is not meant to be invoked");
+    }
+
+    @Override
+    public KiePMMLDroolsModelWithSources getKiePMMLModelWithSources(final CompilationDTO<T> compilationDTO) {
         logger.trace("getKiePMMLModelWithSources {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(), compilationDTO.getModel());
         if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
@@ -108,11 +114,14 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             String pkgUUID = getPkgUUID(knowledgeBuilder.getReleaseId(), compilationDTO.getPackageName());
             packageDescr.setPreferredPkgUUID(pkgUUID);
             Map<String, String> rulesSourceMap = Collections.unmodifiableMap(getRulesSourceMap(packageDescr));
-            E toReturn = (E) new KiePMMLDroolsModelWithSources(compilationDTO.getModelName(),
-                                                               compilationDTO.getPackageName(),
-                                                               pkgUUID,
-                                                               sourcesMap,
-                                                               rulesSourceMap);
+            KiePMMLDroolsModelWithSources toReturn = new KiePMMLDroolsModelWithSources(compilationDTO.getModelName(),
+                                                                                       compilationDTO.getPackageName(),
+                                                                                       compilationDTO.getKieMiningFields(),
+                                                                                       compilationDTO.getKieOutputFields(),
+                                                                                       compilationDTO.getKiePMMLTargetFields(),
+                                                                                       sourcesMap,
+                                                                                       pkgUUID,
+                                                                                       rulesSourceMap);
             knowledgeBuilder.registerPackage(packageDescr);
             return toReturn;
         } catch (Exception e) {
@@ -121,7 +130,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     }
 
     @Override
-    public E getKiePMMLModelWithSourcesCompiled(final CompilationDTO<T> compilationDTO) {
+    public KiePMMLModelWithSources getKiePMMLModelWithSourcesCompiled(final CompilationDTO<T> compilationDTO) {
         logger.trace("getKiePMMLModelWithSourcesCompiled {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(), compilationDTO.getModel());
         if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
@@ -142,9 +151,14 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             String pkgUUID = getPkgUUID(knowledgeBuilder.getReleaseId(), compilationDTO.getPackageName());
             packageDescr.setPreferredPkgUUID(pkgUUID);
             Map<String, String> rulesSourceMap = Collections.unmodifiableMap(getRulesSourceMap(packageDescr));
-            E toReturn = (E) new KiePMMLDroolsModelWithSources(compilationDTO.getModelName(),
-                                                               compilationDTO.getPackageName(), pkgUUID, sourcesMap
-                    , rulesSourceMap);
+            KiePMMLDroolsModelWithSources toReturn = new KiePMMLDroolsModelWithSources(compilationDTO.getModelName(),
+                                                                                       compilationDTO.getPackageName(),
+                                                                                       compilationDTO.getKieMiningFields(),
+                                                                                       compilationDTO.getKieOutputFields(),
+                                                                                       compilationDTO.getKiePMMLTargetFields(),
+                                                                                       sourcesMap,
+                                                                                       pkgUUID,
+                                                                                       rulesSourceMap);
             // Needed to compile Rules from PackageDescr
             CompositePackageDescr compositePackageDescr = new CompositePackageDescr(null, packageDescr);
             knowledgeBuilder.buildPackages(Collections.singletonList(compositePackageDescr));

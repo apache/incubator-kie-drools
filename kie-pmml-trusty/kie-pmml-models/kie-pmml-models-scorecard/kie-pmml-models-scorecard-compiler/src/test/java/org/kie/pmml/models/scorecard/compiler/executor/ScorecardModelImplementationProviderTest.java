@@ -24,16 +24,15 @@ import org.dmg.pmml.scorecard.Scorecard;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
-import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModelWithSources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class ScorecardModelImplementationProviderTest {
 
@@ -77,10 +76,9 @@ public class ScorecardModelImplementationProviderTest {
                                                                        basicComplexPartialScorePmml,
                                                                        basicComplexPartialScore,
                                                                        new HasClassLoaderMock());
-        KiePMMLScorecardModel retrieved = provider.getKiePMMLModelWithSources(compilationDTO);
+        KiePMMLModelWithSources retrieved = provider.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
-        assertTrue(retrieved instanceof KiePMMLScorecardModelWithSources);
-        Map<String, String> retrievedSourcesMap = ((KiePMMLScorecardModelWithSources) retrieved).getSourcesMap();
+        Map<String, String> retrievedSourcesMap = retrieved.getSourcesMap();
         assertNotNull(retrievedSourcesMap);
         assertFalse(retrievedSourcesMap.isEmpty());
     }

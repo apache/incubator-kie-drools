@@ -29,7 +29,7 @@ import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.ExternalizableMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
-import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
+import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.test.util.filesystem.FileUtils;
 
@@ -71,7 +71,7 @@ public class TreeModelImplementationProviderTest {
                                                                        pmml,
                                                                        (TreeModel) pmml.getModels().get(0),
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
-        final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
+        final KiePMMLDroolsModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);
     }

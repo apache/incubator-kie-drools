@@ -35,7 +35,6 @@ import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,17 +71,13 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModelWithSources(final CompilationDTO<RegressionModel> compilationDTO) {
+    public Map<String, String> getSourcesMap(final CompilationDTO<RegressionModel> compilationDTO) {
         logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(),
                      compilationDTO.getModel(),
                      compilationDTO.getHasClassloader());
         try {
-            final Map<String, String> sourcesMap =
-                    KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
-            return new KiePMMLRegressionModelWithSources(compilationDTO.getModelName(),
-                                                         compilationDTO.getPackageName(),
-                                                         sourcesMap);
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         } catch (IOException e) {
             throw new KiePMMLException(e);
         }

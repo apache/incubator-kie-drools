@@ -28,11 +28,11 @@ import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 
 import static org.dmg.pmml.regression.RegressionModel.NormalizationMethod.CAUCHIT;
 import static org.dmg.pmml.regression.RegressionModel.NormalizationMethod.CLOGLOG;
@@ -100,12 +100,9 @@ public class RegressionModelImplementationProviderTest {
                                                                        pmml,
                                                                        regressionModel,
                                                                        new HasClassLoaderMock());
-        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
+        final KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
-        assertTrue(retrieved instanceof KiePMMLRegressionModelWithSources);
-        KiePMMLRegressionModelWithSources retrievedWithSources = (KiePMMLRegressionModelWithSources) retrieved;
-        assertTrue(retrievedWithSources instanceof Serializable);
-        final Map<String, String> sourcesMap = retrievedWithSources.getSourcesMap();
+        final Map<String, String> sourcesMap = retrieved.getSourcesMap();
         assertNotNull(sourcesMap);
         assertFalse(sourcesMap.isEmpty());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
