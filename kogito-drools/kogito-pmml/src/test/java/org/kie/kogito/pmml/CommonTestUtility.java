@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -34,6 +33,7 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -59,29 +59,36 @@ public class CommonTestUtility {
 
     public static KiePMMLModel getKiePMMLModelInternal() {
         String modelName = "MODEL_NAME";
-        return getKiePMMLModelInternal(modelName);
+        return getKiePMMLModelInternal(modelName, Collections.emptyList(), Collections.emptyList());
     }
 
     public static KiePMMLModel getKiePMMLModelInternal(String modelName) {
+        return getKiePMMLModelInternal(modelName, Collections.emptyList(), Collections.emptyList());
+    }
+
+    public static KiePMMLModel getKiePMMLModelInternal(final List<MiningField> miningFields, final List<OutputField> outputFields) {
+        String modelName = "MODEL_NAME";
+        return getKiePMMLModelInternal(modelName, miningFields, outputFields);
+    }
+
+    public static KiePMMLModel getKiePMMLModelInternal(String modelName, final List<MiningField> miningFieldsParam, final List<OutputField> outputFieldsParam) {
         return new KiePMMLModel(modelName, Collections.emptyList()) {
 
             @Override
-            public Object evaluate(Object o, Map<String, Object> map) {
+            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData, PMMLContext context) {
                 return null;
             }
 
             @Override
-            protected LinkedHashMap<String, Double> getProbabilityResultMap() {
-                return new LinkedHashMap<>();
+            public List<MiningField> getMiningFields() {
+                return miningFieldsParam;
+            }
+
+            @Override
+            public List<OutputField> getOutputFields() {
+                return outputFieldsParam;
             }
         };
-    }
-
-    public static KiePMMLModel getKiePMMLModelInternal(List<MiningField> miningFields, List<OutputField> outputFields) {
-        KiePMMLModel toReturn = getKiePMMLModelInternal();
-        toReturn.setMiningFields(miningFields);
-        toReturn.setOutputFields(outputFields);
-        return toReturn;
     }
 
     public static List<MiningField> getRandomMiningFields() {
