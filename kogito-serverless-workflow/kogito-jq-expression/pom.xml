@@ -27,5 +27,9 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-jackson-utils</artifactId>
+    </dependency>
   </dependencies>
 </project>

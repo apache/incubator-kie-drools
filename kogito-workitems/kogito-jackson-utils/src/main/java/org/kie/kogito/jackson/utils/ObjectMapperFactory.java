@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow;
+package org.kie.kogito.jackson.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,7 +24,7 @@ public class ObjectMapperFactory {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static ObjectMapper getObjectMapper() {
+    public static ObjectMapper get() {
         return objectMapper;
     }
 }

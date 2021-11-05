@@ -31,6 +31,16 @@
         <version>${version.io.quarkus}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+         <groupId>io.quarkiverse.jackson-jq</groupId>
+         <artifactId>quarkus-jackson-jq</artifactId>
+         <version>${version.io.quarkiverse.jackson-jq}</version>
+       </dependency>
+       <dependency>
+         <groupId>io.quarkiverse.jackson-jq</groupId>
+         <artifactId>quarkus-jackson-jq-deployment</artifactId>
+         <version>${version.io.quarkiverse.jackson-jq}</version>
+       </dependency>
     </dependencies>
   </dependencyManagement>
 

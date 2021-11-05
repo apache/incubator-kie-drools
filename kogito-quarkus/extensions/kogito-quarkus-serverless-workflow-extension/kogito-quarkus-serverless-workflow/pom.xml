@@ -68,6 +68,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-jq-expression</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.jackson-jq</groupId>
+      <artifactId>quarkus-jackson-jq</artifactId>
+    </dependency>
   </dependencies>
 
 

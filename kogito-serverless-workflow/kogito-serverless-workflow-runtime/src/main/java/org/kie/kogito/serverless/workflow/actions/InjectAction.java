@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.serverless.workflow.ObjectMapperFactory;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,7 +42,7 @@ public class InjectAction implements Action {
 
     private static JsonNode readObject(String json) {
         try {
-            return ObjectMapperFactory.getObjectMapper().readTree(json);
+            return ObjectMapperFactory.get().readTree(json);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }

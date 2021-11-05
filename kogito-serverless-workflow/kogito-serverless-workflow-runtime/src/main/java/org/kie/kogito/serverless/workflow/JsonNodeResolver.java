@@ -18,6 +18,7 @@ package org.kie.kogito.serverless.workflow;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,7 +38,7 @@ public class JsonNodeResolver extends ExpressionWorkItemResolver {
         if (input instanceof JsonNode) {
             return (JsonNode) input;
         }
-        ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
+        ObjectMapper objectMapper = ObjectMapperFactory.get();
         if (input instanceof String) {
             if (expressionHandler.isExpr((String) input)) {
                 return TextNode.valueOf((String) input);

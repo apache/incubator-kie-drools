@@ -34,6 +34,11 @@
       <artifactId>kogito-addons-quarkus-messaging-deployment</artifactId>
       <version>${project.version}</version>
     </dependency>
+     <dependency>
+      <groupId>io.quarkiverse.jackson-jq</groupId>
+      <artifactId>quarkus-jackson-jq-deployment</artifactId>
+    </dependency>
+    
     <!-- Quarkus Deployment Extensions Dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -51,7 +56,11 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-jackson-deployment</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-jackson-deployment</artifactId>
+    </dependency>
+   
     <!-- codegen dependencies -->
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -21,7 +21,6 @@ import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +43,21 @@ class JqExpressionHandlerTest {
     }
 
     @Test
+    void testNumericExpression() {
+        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".number*.number");
+        JsonNode node = new ObjectMapper().createObjectNode().put("number", 2);
+        assertEquals(4, parsedExpression.eval(node, JsonNode.class).asInt());
+    }
+
+    @Test
+    void testNumericAssignment() {
+        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".result = .number*.number");
+        JsonNode node = new ObjectMapper().createObjectNode().put("number", 2);
+        parsedExpression.eval(node, JsonNode.class);
+        assertEquals(4, node.get("result").asInt());
+    }
+
+    @Test
     void testJsonNodeExpression() {
         ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo");
         ObjectMapper mapper = new ObjectMapper();
@@ -56,10 +70,7 @@ class JqExpressionHandlerTest {
     void testMultiExpression() {
         ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo,.main,.another");
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", "Javierito").put("main", "Pepito").put("another", "Fulanito");
-        ArrayNode arrayNode = parsedExpression.eval(node, ArrayNode.class);
-        assertEquals("Javierito", arrayNode.get(0).asText());
-        assertEquals("Pepito", arrayNode.get(1).asText());
-        assertEquals("Fulanito", arrayNode.get(2).asText());
+        assertEquals("Javierito Pepito Fulanito", parsedExpression.eval(node, String.class));
     }
 
 }

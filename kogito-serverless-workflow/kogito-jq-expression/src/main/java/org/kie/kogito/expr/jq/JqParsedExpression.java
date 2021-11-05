@@ -15,10 +15,11 @@
  */
 package org.kie.kogito.expr.jq;
 
+import org.kie.kogito.jackson.utils.MergeUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import net.thisptr.jackson.jq.JsonQuery;
@@ -41,52 +42,97 @@ public class JqParsedExpression implements ParsedExpression {
         }
     }
 
-    private static class HolderOutput implements Output {
-        private JsonNode out;
-        private boolean arrayCreated;
+    private interface TypedOutput<T> extends Output {
+        T getResult();
+    }
+
+    private <T> TypedOutput<T> output(Object context, Class<T> returnClass) {
+        TypedOutput<?> out;
+        if (Boolean.class.isAssignableFrom(returnClass)) {
+            out = new BooleanOutput();
+        } else if (String.class.isAssignableFrom(returnClass)) {
+            out = new StringOutput();
+        } else {
+            out = new JsonNodeOutput((JsonNode) context);
+        }
+        return (TypedOutput<T>) out;
+    }
+
+    private static class BooleanOutput implements TypedOutput<Boolean> {
+
+        boolean result;
 
         @Override
         public void emit(JsonNode out) throws JsonQueryException {
-            if (this.out == null) {
-                this.out = out;
+            result = out.asBoolean();
+        }
+
+        @Override
+        public Boolean getResult() {
+            return result;
+        }
+
+    }
+
+    private static class StringOutput implements TypedOutput<String> {
+        StringBuilder sb = new StringBuilder();
+
+        @Override
+        public void emit(JsonNode out) throws JsonQueryException {
+            if (sb.length() > 0) {
+                sb.append(' ');
+            }
+            sb.append(out.asText());
+        }
+
+        @Override
+        public String getResult() {
+            return sb.toString();
+        }
+
+    }
+
+    private static class JsonNodeOutput implements TypedOutput<JsonNode> {
+
+        private JsonNode context;
+        private JsonNode result;
+        private boolean arrayCreated;
+
+        public JsonNodeOutput(JsonNode context) {
+            this.context = context;
+        }
+
+        @Override
+        public void emit(JsonNode out) throws JsonQueryException {
+            if (out.isArray() || out.isObject()) {
+                MergeUtils.merge(out, context);
+            }
+            if (this.result == null) {
+                this.result = out;
             } else if (!arrayCreated) {
                 ArrayNode newNode = ObjectMapperFactory.get().createArrayNode();
-                newNode.add(this.out).add(out);
-                this.out = newNode;
+                newNode.add(this.result).add(out);
+                this.result = newNode;
                 arrayCreated = true;
             } else {
-                ((ArrayNode) this.out).add(out);
+                ((ArrayNode) this.result).add(out);
             }
         }
 
+        @Override
         public JsonNode getResult() {
-            return out;
+            return result;
         }
     }
 
     @Override
     public <T> T eval(Object context, Class<T> returnClass) {
         try {
-            HolderOutput out = new HolderOutput();
-            query.apply(this.scope, (JsonNode) context, out);
-            if (Boolean.class.isAssignableFrom(returnClass)) {
-                return (T) (Boolean) out.getResult().asBoolean();
-            } else if (String.class.isAssignableFrom(returnClass)) {
-                return (T) out.getResult().asText();
-            } else {
-                return (T) out.getResult();
-            }
+            TypedOutput<T> output = output(context, returnClass);
+            query.apply(this.scope, (JsonNode) context, output);
+            return output.getResult();
         } catch (JsonQueryException e) {
-            throw new IllegalArgumentException("Unable to evaluate content " + context, e);
+            throw new IllegalArgumentException("Unable to evaluate content " + context + " using query " + query, e);
         }
     }
-
-    private static class ObjectMapperFactory {
-        private static ObjectMapper mapper = new ObjectMapper();
-
-        public static ObjectMapper get() {
-            return mapper;
-        }
-    }
-
 }
