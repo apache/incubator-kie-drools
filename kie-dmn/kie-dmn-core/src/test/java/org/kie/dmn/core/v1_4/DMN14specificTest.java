@@ -54,7 +54,7 @@ public class DMN14specificTest extends BaseVariantTest {
 
     @Test
     public void testDMNv1_4_put() {
-        final DMNRuntime runtime = createRuntime("examplePut.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("exampleContextPut.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("ns1", "examplePut");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).describedAs(formatMessages(dmnModel.getMessages())).isFalse();
@@ -71,7 +71,7 @@ public class DMN14specificTest extends BaseVariantTest {
 
     @Test
     public void testDMNv1_4_putAll() {
-        final DMNRuntime runtime = createRuntime("examplePutAll.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("exampleContextMerge.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_864E9A62-12E5-41DC-A7A6-7F028822A067", "examplePutAll");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).describedAs(formatMessages(dmnModel.getMessages())).isFalse();

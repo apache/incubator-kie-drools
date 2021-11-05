@@ -81,7 +81,7 @@
       <dmn:requiredDecision href="#_14843EA5-0AE7-4357-AEA4-3416CAED2148"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_5F3A2665-75A7-4572-90C0-B349972DF61C">
-      <dmn:text>put(Support Request, "priority", Determine Priority)</dmn:text>
+      <dmn:text>context put(Support Request, "priority", Determine Priority)</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
   <dmndi:DMNDI>

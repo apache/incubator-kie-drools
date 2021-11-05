@@ -27,6 +27,7 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 /**
+ * Proposal DMN14-187
  * Experimental for DMN14-183, an inverse of `get entries()`
  * See also: DMN14-181, DMN14-182
  */
