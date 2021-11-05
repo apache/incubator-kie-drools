@@ -53,6 +53,7 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -2953,6 +2954,85 @@ public class CompilerTest extends BaseModelTest {
                      "end";
 
         KieSession ksession = getKieSession(str1, str2);
+
+        Person me = new Person("Luca");
+        me.setSalary(null);
+        me.setMoney(null);
+        ksession.insert(Integer.valueOf(10));
+        ksession.insert(me);
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testSharedPredicateInformationExceedMaxRuleDefs() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(containsString("Error evaluating constraint '$i < salary * 20' in "));
+        exceptionRule.expectMessage(containsString(" and in more rules"));
+
+        // shared by 11 rules
+        String str1 =
+                "import " + Person.class.getCanonicalName() + ";" +
+                      "rule R1 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end\n" +
+                      "rule R2 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end";
+        String str2 =
+                "import " + Person.class.getCanonicalName() + ";" +
+                      "rule R3 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end\n" +
+                      "rule R4 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end";
+        String str3 =
+                "import " + Person.class.getCanonicalName() + ";" +
+                      "rule R5 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end\n" +
+                      "rule R6 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end\n" +
+                      "rule R7 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end\n" +
+                      "rule R8 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end\n" +
+                      "rule R9 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end\n" +
+                      "rule R10 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end\n" +
+                      "rule R11 when\n" +
+                      "  $i : Integer()\n" +
+                      "  $p : Person($i < salary * 20 )\n" +
+                      "then\n" +
+                      "end";
+
+        KieSession ksession = getKieSession(str1, str2, str3);
 
         Person me = new Person("Luca");
         me.setSalary(null);
