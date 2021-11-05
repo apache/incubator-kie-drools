@@ -2,366 +2,337 @@ const executionIds = require('./executionIds');
 
 const simpleInputData = [
   {
+    name: 'Prior refusal?',
+    value: {
+      kind: 'UNIT',
+      type: 'boolean',
+      value: false
+    }
+  },
+  {
     name: 'Credit Score',
-    typeRef: 'number',
-    kind: 'UNIT',
-    value: 738,
-    components: null
+    value: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 738
+    }
   },
   {
     name: 'Down Payment',
-    typeRef: 'number',
-    kind: 'UNIT',
-    value: 70000,
-    components: null
+    value: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 70000
+    }
   },
   {
     name: 'Favorite cheese',
-    typeRef: 'string',
-    kind: 'UNIT',
-    value: 'Cheddar',
-    components: null
+    value: {
+      kind: 'UNIT',
+      type: 'string',
+      value: 'Cheddar'
+    }
   },
   {
     name: 'Property',
-    typeRef: 'tProperty',
-    kind: 'STRUCTURE',
-    value: null,
-    components: [
-      {
-        name: 'Purchase Price',
-        typeRef: 'number',
-        kind: 'UNIT',
-        value: 34000,
-        components: null
-      },
-      {
-        name: 'Monthly Tax Payment',
-        typeRef: 'number',
-        kind: 'UNIT',
-        value: 0.2,
-        components: null
-      },
-      {
-        name: 'Monthly Insurance Payment',
-        typeRef: 'number',
-        kind: 'UNIT',
-        value: 0.15,
-        components: null
-      },
-      {
-        name: 'Monthly HOA Payment',
-        typeRef: 'number',
-        kind: 'UNIT',
-        value: 0.12,
-        components: null
-      },
-      {
-        name: 'Address',
-        typeRef: 'tAddress',
-        kind: 'STRUCTURE',
-        value: null,
-        components: [
-          {
-            name: 'Street',
-            typeRef: 'string',
-            kind: 'UNIT',
-            value: '272 10th St.',
-            components: null
-          },
-          {
-            name: 'Unit',
-            typeRef: 'string',
-            kind: 'UNIT',
-            value: 'A',
-            components: null
-          },
-          {
-            name: 'City',
-            typeRef: 'string',
-            kind: 'UNIT',
-            value: 'Malibu',
-            components: null
-          },
-          {
-            name: 'State',
-            typeRef: 'string',
-            kind: 'UNIT',
-            value: 'CA',
-            components: null
-          },
-          {
-            name: 'ZIP',
-            typeRef: 'string',
-            value: '90903',
-            components: null
+    value: {
+      kind: 'STRUCTURE',
+      type: 'tProperty',
+      value: {
+        'Purchase Price': {
+          kind: 'UNIT',
+          type: 'number',
+          value: 34000
+        },
+        'Monthly Tax Payment': {
+          kind: 'UNIT',
+          type: 'number',
+          value: 0.2
+        },
+        'Monthly Insurance Payment': {
+          kind: 'UNIT',
+          type: 'number',
+          value: 0.15
+        },
+        'Monthly HOA Payment': {
+          kind: 'UNIT',
+          type: 'number',
+          value: 0.12
+        },
+        Address: {
+          kind: 'STRUCTURE',
+          type: 'tAddress',
+          value: {
+            Street: {
+              kind: 'UNIT',
+              type: 'string',
+              value: '272 10th St.'
+            },
+            Unit: {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'A'
+            },
+            City: {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'Malibu'
+            },
+            State: {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'CA'
+            },
+            ZIP: {
+              kind: 'UNIT',
+              type: 'string',
+              value: '90903'
+            }
           }
-        ]
+        }
       }
-    ]
+    }
   },
   {
     name: 'Borrower',
-    typeRef: 'tBorrower',
-    kind: 'STRUCTURE',
-    value: null,
-    components: [
-      {
-        name: 'Full Name',
-        typeRef: 'string',
-        kind: 'UNIT',
-        value: 'Jim Osterberg',
-        components: null
-      },
-      {
-        name: 'Tax ID',
-        typeRef: 'string',
-        kind: 'UNIT',
-        value: '11123322323',
-        components: null
-      },
-      {
-        name: 'Employment Income',
-        typeRef: 'number',
-        kind: 'UNIT',
-        value: 99000,
-        components: null
-      },
-      {
-        name: 'Other Income',
-        typeRef: 'number',
-        kind: 'UNIT',
-        value: 0,
-        components: null
-      },
-      {
-        name: 'Assets',
-        typeRef: 'tAssets',
-        kind: 'STRUCTURE',
-        value: null,
-        components: [
-          [
+    value: {
+      kind: 'STRUCTURE',
+      type: 'tBorrower',
+      value: {
+        'Full Name': {
+          kind: 'UNIT',
+          type: 'string',
+          value: 'Jim Osterberg'
+        },
+        'Tax ID': {
+          kind: 'UNIT',
+          type: 'string',
+          value: '11123322323'
+        },
+        'Employment Income': {
+          kind: 'UNIT',
+          type: 'number',
+          value: 99000
+        },
+        'Other Income': {
+          kind: 'UNIT',
+          type: 'number',
+          value: 0
+        },
+        Assets: {
+          kind: 'COLLECTION',
+          type: 'tAssets',
+          value: [
             {
-              name: 'Type',
-              typeRef: 'string',
-              kind: 'UNIT',
-              value: 'C',
-              components: null
+              kind: 'STRUCTURE',
+              type: 'tAsset',
+              value: {
+                Type: {
+                  kind: 'UNIT',
+                  type: 'string',
+                  value: 'C'
+                },
+                'Institution Account or Description': {
+                  kind: 'UNIT',
+                  type: 'string',
+                  value: 'Chase'
+                },
+                Value: {
+                  kind: 'UNIT',
+                  type: 'number',
+                  value: 45000
+                }
+              }
             },
             {
-              name: 'Institution Account or Description',
-              typeRef: 'string',
-              kind: 'UNIT',
-              value: 'Chase',
-              components: null
-            },
-            {
-              name: 'Value',
-              typeRef: 'number',
-              kind: 'UNIT',
-              value: 45000,
-              components: null
-            }
-          ],
-          [
-            {
-              name: 'Type',
-              typeRef: 'string',
-              kind: 'UNIT',
-              value: 'Other Non-Liquid',
-              components: null
-            },
-            {
-              name: 'Institution Account or Description',
-              typeRef: 'string',
-              kind: 'UNIT',
-              value: 'Vanguard',
-              components: null
-            },
-            {
-              name: 'Value',
-              typeRef: 'number',
-              kind: 'UNIT',
-              value: 33000,
-              components: null
+              kind: 'STRUCTURE',
+              type: 'tAsset',
+              value: {
+                Type: {
+                  kind: 'UNIT',
+                  type: 'string',
+                  value: 'Other Non-Liquid'
+                },
+                'Institution Account or Description': {
+                  kind: 'UNIT',
+                  type: 'string',
+                  value: 'Vanguard'
+                },
+                Value: {
+                  kind: 'UNIT',
+                  type: 'number',
+                  value: 33000
+                }
+              }
             }
           ]
-        ]
+        }
       }
-    ]
+    }
   },
   {
     name: 'Liabilities',
-    typeRef: 'tLiabilities',
-    kind: 'STRUCTURE',
-    value: null,
-    components: [
-      [
+    value: {
+      kind: 'COLLECTION',
+      type: 'tLiabilities',
+      value: [
         {
-          name: 'Type',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'Credit Card',
-          components: null
+          kind: 'STRUCTURE',
+          type: 'tLiability',
+          value: {
+            Type: {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'Credit Card'
+            },
+            Payee: {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'Chase'
+            },
+            'Monthly Payment': {
+              kind: 'UNIT',
+              type: 'number',
+              value: 300
+            },
+            Balance: {
+              kind: 'UNIT',
+              type: 'number',
+              value: 0
+            },
+            'To be paid off': {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'Yes'
+            }
+          }
         },
         {
-          name: 'Payee',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'Chase',
-          components: null
-        },
-        {
-          name: 'Monthly Payment',
-          typeRef: 'number',
-          kind: 'UNIT',
-          value: 300,
-          components: null
-        },
-        {
-          name: 'Balance',
-          typeRef: 'number',
-          kind: 'UNIT',
-          value: 0,
-          components: null
-        },
-        {
-          name: 'To be paid off',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'Yes',
-          components: null
-        }
-      ],
-      [
-        {
-          name: 'Type',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'Lease',
-          components: null
-        },
-        {
-          name: 'Payee',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'BMW Finance',
-          components: null
-        },
-        {
-          name: 'Monthly Payment',
-          typeRef: 'number',
-          kind: 'UNIT',
-          value: 450,
-          components: null
-        },
-        {
-          name: 'Balance',
-          typeRef: 'number',
-          kind: 'UNIT',
-          value: 0,
-          components: null
-        },
-        {
-          name: 'To be paid off',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'No',
-          components: null
+          kind: 'STRUCTURE',
+          type: 'tLiability',
+          value: {
+            Type: {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'Lease'
+            },
+            Payee: {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'BMW Finance'
+            },
+            'Monthly Payment': {
+              kind: 'UNIT',
+              type: 'number',
+              value: 450
+            },
+            Balance: {
+              kind: 'UNIT',
+              type: 'number',
+              value: 0
+            },
+            'To be paid off': {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'No'
+            }
+          }
         }
       ]
-    ]
+    }
   },
   {
     name: 'Lender Ratings',
-    typeRef: 'tLenderRatings',
-    kind: 'STRUCTURE',
-    value: null,
-    components: [
-      [
+    value: {
+      kind: 'COLLECTION',
+      type: 'tLenderRatings',
+      value: [
         {
-          name: 'Lender Name',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'Gordon Cole',
-          components: null
+          kind: 'STRUCTURE',
+          type: 'tLenderRating',
+          value: {
+            'Lender Name': {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'Gordon Cole'
+            },
+            'Customer Rating': {
+              kind: 'UNIT',
+              type: 'number',
+              value: 4.2
+            }
+          }
         },
         {
-          name: 'Customer Rating',
-          typeRef: 'number',
-          kind: 'UNIT',
-          value: 4.2,
-          components: null
-        }
-      ],
-      [
-        {
-          name: 'Lender Name',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'Dale Cooper',
-          components: null
+          kind: 'STRUCTURE',
+          type: 'tLenderRating',
+          value: {
+            'Lender Name': {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'Dale Cooper'
+            },
+            'Customer Rating': {
+              kind: 'UNIT',
+              type: 'number',
+              value: 3.6
+            }
+          }
         },
         {
-          name: 'Customer Rating',
-          typeRef: 'number',
-          kind: 'UNIT',
-          value: 3.6,
-          components: null
-        }
-      ],
-      [
-        {
-          name: 'Lender Name',
-          typeRef: 'string',
-          kind: 'UNIT',
-          value: 'Chester Desmond',
-          components: null
-        },
-        {
-          name: 'Customer Rating',
-          typeRef: 'number',
-          kind: 'UNIT',
-          value: 4.6,
-          components: null
+          kind: 'STRUCTURE',
+          type: 'tLenderRating',
+          value: {
+            'Lender Name': {
+              kind: 'UNIT',
+              type: 'string',
+              value: 'Chester Desmond'
+            },
+            'Customer Rating': {
+              kind: 'UNIT',
+              type: 'number',
+              value: 4.6
+            }
+          }
         }
       ]
-    ]
+    }
   }
 ];
 
 const structuredInput = [
   {
     name: 'Structured input 1',
-    typeRef: 'tStructure',
-    kind: 'STRUCTURE',
-    value: null,
-    components: [
-      {
-        name: 'Structure1 field1',
-        typeRef: 'tField1',
-        kind: 'UNIT',
-        value: 'value',
-        components: null
+    value: {
+      kind: 'STRUCTURE',
+      type: 'tStructure',
+      value: {
+        'Structure1 field1': {
+          kind: 'UNIT',
+          type: 'tField1',
+          value: 'value'
+        }
       }
-    ]
+    }
   }
 ];
 
 const allStringInputs = [
   {
     name: 'Input 1',
-    typeRef: 'string',
-    kind: 'UNIT',
-    value: 'value1',
-    components: null
+    value: {
+      kind: 'UNIT',
+      type: 'string',
+      value: 'value1'
+    }
   },
   {
     name: 'Input 2',
-    typeRef: 'string',
-    kind: 'UNIT',
-    value: 'value2',
-    components: null
+    value: {
+      kind: 'UNIT',
+      type: 'string',
+      value: 'value2'
+    }
   }
 ];
 

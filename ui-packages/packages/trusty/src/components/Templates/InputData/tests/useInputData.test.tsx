@@ -18,13 +18,13 @@ describe('useInputData', () => {
         inputs: [
           {
             name: 'Asset Score',
-            typeRef: 'number',
+            type: 'number',
             value: 738,
             components: []
           },
           {
             name: 'Asset Amount',
-            typeRef: 'number',
+            type: 'number',
             value: 70000,
             components: []
           }

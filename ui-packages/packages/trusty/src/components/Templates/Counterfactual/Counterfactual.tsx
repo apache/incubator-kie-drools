@@ -33,18 +33,20 @@ const Counterfactual = () => {
     if (inputData.status !== RemoteDataStatus.SUCCESS) {
       return false;
     }
-    return inputData.data.find(input => input.kind === 'UNIT') === undefined;
+    return (
+      inputData.data.find(input => input.value.kind === 'UNIT') === undefined
+    );
   }, [inputData]);
 
   const noSupportedSearchDomain = useMemo(() => {
     if (inputData.status !== RemoteDataStatus.SUCCESS) {
       return false;
     }
-    const units = inputData.data.filter(input => input.kind === 'UNIT');
+    const units = inputData.data.filter(input => input.value.kind === 'UNIT');
     if (units.length === 0) {
       return false;
     }
-    return units.every(input => typeof input.value === 'string');
+    return units.every(input => typeof input.value.value === 'string');
   }, [inputData]);
 
   const noSupportedOutcomes = useMemo(() => {

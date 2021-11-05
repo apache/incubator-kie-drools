@@ -13,9 +13,8 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
         "outcomeId": "_12268B68-94A1-4960-B4C8-0B6071AFDE58",
         "outcomeName": "Mortgage Approval",
         "outcomeResult": Object {
-          "components": null,
-          "name": "Mortgage Approval",
-          "typeRef": "boolean",
+          "kind": "UNIT",
+          "type": "boolean",
           "value": true,
         },
       },
@@ -26,9 +25,8 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
         "outcomeId": "_9CFF8C35-4EB3-451E-874C-DB27A5A424C0",
         "outcomeName": "Risk Score",
         "outcomeResult": Object {
-          "components": null,
-          "name": "Risk Score",
-          "typeRef": "number",
+          "kind": "UNIT",
+          "type": "number",
           "value": 21.7031851958099,
         },
       },
@@ -39,9 +37,8 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
         "outcomeId": "_d361c79e-8c06-4504-bdb2-d6b90b915166",
         "outcomeName": "Client Score",
         "outcomeResult": Object {
-          "components": null,
-          "name": "Client Score",
-          "typeRef": "number",
+          "kind": "UNIT",
+          "type": "number",
           "value": null,
         },
       },
@@ -74,9 +71,8 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                   "outcomeId": "_12268B68-94A1-4960-B4C8-0B6071AFDE58",
                   "outcomeName": "Mortgage Approval",
                   "outcomeResult": Object {
-                    "components": null,
-                    "name": "Mortgage Approval",
-                    "typeRef": "boolean",
+                    "kind": "UNIT",
+                    "type": "boolean",
                     "value": true,
                   },
                 }
@@ -124,11 +120,11 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                       <OutcomeProperty
                         hidePropertyName={true}
                         key="Mortgage Approval"
-                        property={
+                        name="Mortgage Approval"
+                        value={
                           Object {
-                            "components": null,
-                            "name": "Mortgage Approval",
-                            "typeRef": "boolean",
+                            "kind": "UNIT",
+                            "type": "boolean",
                             "value": true,
                           }
                         }
@@ -232,9 +228,8 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                   "outcomeId": "_9CFF8C35-4EB3-451E-874C-DB27A5A424C0",
                   "outcomeName": "Risk Score",
                   "outcomeResult": Object {
-                    "components": null,
-                    "name": "Risk Score",
-                    "typeRef": "number",
+                    "kind": "UNIT",
+                    "type": "number",
                     "value": 21.7031851958099,
                   },
                 }
@@ -282,11 +277,11 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                       <OutcomeProperty
                         hidePropertyName={true}
                         key="Risk Score"
-                        property={
+                        name="Risk Score"
+                        value={
                           Object {
-                            "components": null,
-                            "name": "Risk Score",
-                            "typeRef": "number",
+                            "kind": "UNIT",
+                            "type": "number",
                             "value": 21.7031851958099,
                           }
                         }
@@ -390,9 +385,8 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                   "outcomeId": "_d361c79e-8c06-4504-bdb2-d6b90b915166",
                   "outcomeName": "Client Score",
                   "outcomeResult": Object {
-                    "components": null,
-                    "name": "Client Score",
-                    "typeRef": "number",
+                    "kind": "UNIT",
+                    "type": "number",
                     "value": null,
                   },
                 }
@@ -440,11 +434,11 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                       <OutcomeProperty
                         hidePropertyName={true}
                         key="Client Score"
-                        property={
+                        name="Client Score"
+                        value={
                           Object {
-                            "components": null,
-                            "name": "Client Score",
-                            "typeRef": "number",
+                            "kind": "UNIT",
+                            "type": "number",
                             "value": null,
                           }
                         }
@@ -555,99 +549,93 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
         "outcomeId": "432343443",
         "outcomeName": "Recommended Loan Products",
         "outcomeResult": Object {
-          "components": Array [
-            Array [
-              Object {
-                "components": null,
-                "name": "Product",
-                "typeRef": "string",
-                "value": "Lender B - ARM5/1-Standard",
+          "kind": "COLLECTION",
+          "type": "tProducts",
+          "value": Array [
+            Object {
+              "kind": "STRUCTURE",
+              "type": "tProduct",
+              "value": Object {
+                "Cash to Close": Object {
+                  "kind": "UNIT",
+                  "type": "string",
+                  "value": "$1,267.90",
+                },
+                "Interest Rate": Object {
+                  "kind": "UNIT",
+                  "type": "string",
+                  "value": "3.8",
+                },
+                "Monthly Payment": Object {
+                  "kind": "UNIT",
+                  "type": "string",
+                  "value": "$1,267.90",
+                },
+                "Note Amount": Object {
+                  "kind": "UNIT",
+                  "type": "string",
+                  "value": "$273,775.90",
+                },
+                "Product": Object {
+                  "kind": "UNIT",
+                  "type": "string",
+                  "value": "Lender B - ARM5/1-Standard",
+                },
+                "Recommendation": Object {
+                  "kind": "UNIT",
+                  "type": "string",
+                  "value": "Good",
+                },
+                "Required Credit Score": Object {
+                  "kind": "UNIT",
+                  "type": "number",
+                  "value": 720,
+                },
               },
-              Object {
-                "components": null,
-                "name": "Recommendation",
-                "typeRef": "string",
-                "value": "Good",
-              },
-              Object {
-                "components": null,
-                "name": "Note Amount",
-                "typeRef": "string",
-                "value": "$273,775.90",
-              },
-              Object {
-                "components": null,
-                "name": "Interest Rate",
-                "typeRef": "string",
-                "value": "3.8",
-              },
-              Object {
-                "components": null,
-                "name": "Monthly Payment",
-                "typeRef": "string",
-                "value": "$1,267.90",
-              },
-              Object {
-                "components": null,
-                "name": "Cash to Close",
-                "typeRef": "string",
-                "value": "$1,267.90",
-              },
-              Object {
-                "components": null,
-                "name": "Required Credit Score",
-                "typeRef": "number",
-                "value": 720,
-              },
-            ],
-            Array [
-              Object {
-                "components": null,
-                "name": "Product",
-                "typeRef": "string",
-                "value": "Lender C - Fixed30-Standard",
-              },
-              Object {
-                "components": null,
-                "name": "Recommendation",
-                "typeRef": "string",
-                "value": "Best",
-              },
-              Object {
-                "components": null,
-                "name": "Note Amount",
-                "typeRef": "string",
-                "value": "$274,599.40",
-              },
-              Object {
-                "components": null,
-                "name": "Interest Rate",
-                "typeRef": "string",
-                "value": "3.88",
-              },
-              Object {
-                "components": null,
-                "name": "Monthly Payment",
-                "typeRef": "string",
-                "value": "$1,291.27",
-              },
-              Object {
-                "components": null,
-                "name": "Cash to Close",
-                "typeRef": "string",
+            },
+            Object {
+              "Cash to Close": Object {
+                "kind": "UNIT",
+                "type": "string",
                 "value": "$75,491.99",
               },
-              Object {
+              "Interest Rate": Object {
+                "kind": "UNIT",
+                "type": "string",
+                "value": "3.88",
+              },
+              "Monthly Payment": Object {
+                "kind": "UNIT",
+                "type": "string",
+                "value": "$1,291.27",
+              },
+              "Note Amount": Object {
                 "components": null,
-                "name": "Required Credit Score",
-                "typeRef": "number",
+                "kind": "UNIT",
+                "type": "string",
+                "value": "$274,599.40",
+              },
+              "Recommendation": Object {
+                "kind": "UNIT",
+                "type": "string",
+                "value": "Best",
+              },
+              "Required Credit Score": Object {
+                "kind": "UNIT",
+                "type": "number",
                 "value": 680,
               },
-            ],
+              "kind": "STRUCTURE",
+              "type": "tProduct",
+              "value": Object {
+                "Product": Object {
+                  "kind": "UNIT",
+                  "type": "string",
+                  "value": "Lender C - Fixed30-Standard",
+                },
+              },
+            },
           ],
-          "name": "Recommended Loan Products",
-          "typeRef": "tProducts",
-          "value": null,
         },
       },
     ]
@@ -679,99 +667,93 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                   "outcomeId": "432343443",
                   "outcomeName": "Recommended Loan Products",
                   "outcomeResult": Object {
-                    "components": Array [
-                      Array [
-                        Object {
-                          "components": null,
-                          "name": "Product",
-                          "typeRef": "string",
-                          "value": "Lender B - ARM5/1-Standard",
+                    "kind": "COLLECTION",
+                    "type": "tProducts",
+                    "value": Array [
+                      Object {
+                        "kind": "STRUCTURE",
+                        "type": "tProduct",
+                        "value": Object {
+                          "Cash to Close": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "$1,267.90",
+                          },
+                          "Interest Rate": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "3.8",
+                          },
+                          "Monthly Payment": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "$1,267.90",
+                          },
+                          "Note Amount": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "$273,775.90",
+                          },
+                          "Product": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "Lender B - ARM5/1-Standard",
+                          },
+                          "Recommendation": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "Good",
+                          },
+                          "Required Credit Score": Object {
+                            "kind": "UNIT",
+                            "type": "number",
+                            "value": 720,
+                          },
                         },
-                        Object {
-                          "components": null,
-                          "name": "Recommendation",
-                          "typeRef": "string",
-                          "value": "Good",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Note Amount",
-                          "typeRef": "string",
-                          "value": "$273,775.90",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Interest Rate",
-                          "typeRef": "string",
-                          "value": "3.8",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Monthly Payment",
-                          "typeRef": "string",
-                          "value": "$1,267.90",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Cash to Close",
-                          "typeRef": "string",
-                          "value": "$1,267.90",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Required Credit Score",
-                          "typeRef": "number",
-                          "value": 720,
-                        },
-                      ],
-                      Array [
-                        Object {
-                          "components": null,
-                          "name": "Product",
-                          "typeRef": "string",
-                          "value": "Lender C - Fixed30-Standard",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Recommendation",
-                          "typeRef": "string",
-                          "value": "Best",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Note Amount",
-                          "typeRef": "string",
-                          "value": "$274,599.40",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Interest Rate",
-                          "typeRef": "string",
-                          "value": "3.88",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Monthly Payment",
-                          "typeRef": "string",
-                          "value": "$1,291.27",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Cash to Close",
-                          "typeRef": "string",
+                      },
+                      Object {
+                        "Cash to Close": Object {
+                          "kind": "UNIT",
+                          "type": "string",
                           "value": "$75,491.99",
                         },
-                        Object {
+                        "Interest Rate": Object {
+                          "kind": "UNIT",
+                          "type": "string",
+                          "value": "3.88",
+                        },
+                        "Monthly Payment": Object {
+                          "kind": "UNIT",
+                          "type": "string",
+                          "value": "$1,291.27",
+                        },
+                        "Note Amount": Object {
                           "components": null,
-                          "name": "Required Credit Score",
-                          "typeRef": "number",
+                          "kind": "UNIT",
+                          "type": "string",
+                          "value": "$274,599.40",
+                        },
+                        "Recommendation": Object {
+                          "kind": "UNIT",
+                          "type": "string",
+                          "value": "Best",
+                        },
+                        "Required Credit Score": Object {
+                          "kind": "UNIT",
+                          "type": "number",
                           "value": 680,
                         },
-                      ],
+                        "kind": "STRUCTURE",
+                        "type": "tProduct",
+                        "value": Object {
+                          "Product": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "Lender C - Fixed30-Standard",
+                          },
+                        },
+                      },
                     ],
-                    "name": "Recommended Loan Products",
-                    "typeRef": "tProducts",
-                    "value": null,
                   },
                 }
               }
@@ -820,61 +802,60 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                       className="pf-c-card__body"
                     >
                       <OutcomeSubList
-                        subListItem={
-                          Array [
-                            Object {
-                              "components": null,
-                              "name": "Product",
-                              "typeRef": "string",
-                              "value": "Lender B - ARM5/1-Standard",
+                        key="Recommended Loan Products"
+                        name="Recommended Loan Products"
+                        value={
+                          Object {
+                            "kind": "STRUCTURE",
+                            "type": "tProduct",
+                            "value": Object {
+                              "Cash to Close": Object {
+                                "kind": "UNIT",
+                                "type": "string",
+                                "value": "$1,267.90",
+                              },
+                              "Interest Rate": Object {
+                                "kind": "UNIT",
+                                "type": "string",
+                                "value": "3.8",
+                              },
+                              "Monthly Payment": Object {
+                                "kind": "UNIT",
+                                "type": "string",
+                                "value": "$1,267.90",
+                              },
+                              "Note Amount": Object {
+                                "kind": "UNIT",
+                                "type": "string",
+                                "value": "$273,775.90",
+                              },
+                              "Product": Object {
+                                "kind": "UNIT",
+                                "type": "string",
+                                "value": "Lender B - ARM5/1-Standard",
+                              },
+                              "Recommendation": Object {
+                                "kind": "UNIT",
+                                "type": "string",
+                                "value": "Good",
+                              },
+                              "Required Credit Score": Object {
+                                "kind": "UNIT",
+                                "type": "number",
+                                "value": 720,
+                              },
                             },
-                            Object {
-                              "components": null,
-                              "name": "Recommendation",
-                              "typeRef": "string",
-                              "value": "Good",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Note Amount",
-                              "typeRef": "string",
-                              "value": "$273,775.90",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Interest Rate",
-                              "typeRef": "string",
-                              "value": "3.8",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Monthly Payment",
-                              "typeRef": "string",
-                              "value": "$1,267.90",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Cash to Close",
-                              "typeRef": "string",
-                              "value": "$1,267.90",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Required Credit Score",
-                              "typeRef": "number",
-                              "value": 720,
-                            },
-                          ]
+                          }
                         }
                       >
                         <OutcomeProperty
                           hidePropertyName={false}
                           key="Product"
-                          property={
+                          name="Product"
+                          value={
                             Object {
-                              "components": null,
-                              "name": "Product",
-                              "typeRef": "string",
+                              "kind": "UNIT",
+                              "type": "string",
                               "value": "Lender B - ARM5/1-Standard",
                             }
                           }
@@ -939,11 +920,11 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                         <OutcomeProperty
                           hidePropertyName={false}
                           key="Recommendation"
-                          property={
+                          name="Recommendation"
+                          value={
                             Object {
-                              "components": null,
-                              "name": "Recommendation",
-                              "typeRef": "string",
+                              "kind": "UNIT",
+                              "type": "string",
                               "value": "Good",
                             }
                           }
@@ -1008,11 +989,11 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                         <OutcomeProperty
                           hidePropertyName={false}
                           key="Note Amount"
-                          property={
+                          name="Note Amount"
+                          value={
                             Object {
-                              "components": null,
-                              "name": "Note Amount",
-                              "typeRef": "string",
+                              "kind": "UNIT",
+                              "type": "string",
                               "value": "$273,775.90",
                             }
                           }
@@ -1077,11 +1058,11 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                         <OutcomeProperty
                           hidePropertyName={false}
                           key="Interest Rate"
-                          property={
+                          name="Interest Rate"
+                          value={
                             Object {
-                              "components": null,
-                              "name": "Interest Rate",
-                              "typeRef": "string",
+                              "kind": "UNIT",
+                              "type": "string",
                               "value": "3.8",
                             }
                           }
@@ -1146,11 +1127,11 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                         <OutcomeProperty
                           hidePropertyName={false}
                           key="Monthly Payment"
-                          property={
+                          name="Monthly Payment"
+                          value={
                             Object {
-                              "components": null,
-                              "name": "Monthly Payment",
-                              "typeRef": "string",
+                              "kind": "UNIT",
+                              "type": "string",
                               "value": "$1,267.90",
                             }
                           }
@@ -1215,11 +1196,11 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                         <OutcomeProperty
                           hidePropertyName={false}
                           key="Cash to Close"
-                          property={
+                          name="Cash to Close"
+                          value={
                             Object {
-                              "components": null,
-                              "name": "Cash to Close",
-                              "typeRef": "string",
+                              "kind": "UNIT",
+                              "type": "string",
                               "value": "$1,267.90",
                             }
                           }
@@ -1284,11 +1265,11 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                         <OutcomeProperty
                           hidePropertyName={false}
                           key="Required Credit Score"
-                          property={
+                          name="Required Credit Score"
+                          value={
                             Object {
-                              "components": null,
-                              "name": "Required Credit Score",
-                              "typeRef": "number",
+                              "kind": "UNIT",
+                              "type": "number",
                               "value": 720,
                             }
                           }
@@ -1433,99 +1414,93 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                   "outcomeId": "432343443",
                   "outcomeName": "Recommended Loan Products",
                   "outcomeResult": Object {
-                    "components": Array [
-                      Array [
-                        Object {
-                          "components": null,
-                          "name": "Product",
-                          "typeRef": "string",
-                          "value": "Lender B - ARM5/1-Standard",
+                    "kind": "COLLECTION",
+                    "type": "tProducts",
+                    "value": Array [
+                      Object {
+                        "kind": "STRUCTURE",
+                        "type": "tProduct",
+                        "value": Object {
+                          "Cash to Close": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "$1,267.90",
+                          },
+                          "Interest Rate": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "3.8",
+                          },
+                          "Monthly Payment": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "$1,267.90",
+                          },
+                          "Note Amount": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "$273,775.90",
+                          },
+                          "Product": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "Lender B - ARM5/1-Standard",
+                          },
+                          "Recommendation": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "Good",
+                          },
+                          "Required Credit Score": Object {
+                            "kind": "UNIT",
+                            "type": "number",
+                            "value": 720,
+                          },
                         },
-                        Object {
-                          "components": null,
-                          "name": "Recommendation",
-                          "typeRef": "string",
-                          "value": "Good",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Note Amount",
-                          "typeRef": "string",
-                          "value": "$273,775.90",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Interest Rate",
-                          "typeRef": "string",
-                          "value": "3.8",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Monthly Payment",
-                          "typeRef": "string",
-                          "value": "$1,267.90",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Cash to Close",
-                          "typeRef": "string",
-                          "value": "$1,267.90",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Required Credit Score",
-                          "typeRef": "number",
-                          "value": 720,
-                        },
-                      ],
-                      Array [
-                        Object {
-                          "components": null,
-                          "name": "Product",
-                          "typeRef": "string",
-                          "value": "Lender C - Fixed30-Standard",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Recommendation",
-                          "typeRef": "string",
-                          "value": "Best",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Note Amount",
-                          "typeRef": "string",
-                          "value": "$274,599.40",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Interest Rate",
-                          "typeRef": "string",
-                          "value": "3.88",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Monthly Payment",
-                          "typeRef": "string",
-                          "value": "$1,291.27",
-                        },
-                        Object {
-                          "components": null,
-                          "name": "Cash to Close",
-                          "typeRef": "string",
+                      },
+                      Object {
+                        "Cash to Close": Object {
+                          "kind": "UNIT",
+                          "type": "string",
                           "value": "$75,491.99",
                         },
-                        Object {
+                        "Interest Rate": Object {
+                          "kind": "UNIT",
+                          "type": "string",
+                          "value": "3.88",
+                        },
+                        "Monthly Payment": Object {
+                          "kind": "UNIT",
+                          "type": "string",
+                          "value": "$1,291.27",
+                        },
+                        "Note Amount": Object {
                           "components": null,
-                          "name": "Required Credit Score",
-                          "typeRef": "number",
+                          "kind": "UNIT",
+                          "type": "string",
+                          "value": "$274,599.40",
+                        },
+                        "Recommendation": Object {
+                          "kind": "UNIT",
+                          "type": "string",
+                          "value": "Best",
+                        },
+                        "Required Credit Score": Object {
+                          "kind": "UNIT",
+                          "type": "number",
                           "value": 680,
                         },
-                      ],
+                        "kind": "STRUCTURE",
+                        "type": "tProduct",
+                        "value": Object {
+                          "Product": Object {
+                            "kind": "UNIT",
+                            "type": "string",
+                            "value": "Lender C - Fixed30-Standard",
+                          },
+                        },
+                      },
                     ],
-                    "name": "Recommended Loan Products",
-                    "typeRef": "tProducts",
-                    "value": null,
                   },
                 }
               }
@@ -1574,61 +1549,61 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                       className="pf-c-card__body"
                     >
                       <OutcomeSubList
-                        subListItem={
-                          Array [
-                            Object {
-                              "components": null,
-                              "name": "Product",
-                              "typeRef": "string",
-                              "value": "Lender C - Fixed30-Standard",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Recommendation",
-                              "typeRef": "string",
-                              "value": "Best",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Note Amount",
-                              "typeRef": "string",
-                              "value": "$274,599.40",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Interest Rate",
-                              "typeRef": "string",
-                              "value": "3.88",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Monthly Payment",
-                              "typeRef": "string",
-                              "value": "$1,291.27",
-                            },
-                            Object {
-                              "components": null,
-                              "name": "Cash to Close",
-                              "typeRef": "string",
+                        key="Recommended Loan Products"
+                        name="Recommended Loan Products"
+                        value={
+                          Object {
+                            "Cash to Close": Object {
+                              "kind": "UNIT",
+                              "type": "string",
                               "value": "$75,491.99",
                             },
-                            Object {
+                            "Interest Rate": Object {
+                              "kind": "UNIT",
+                              "type": "string",
+                              "value": "3.88",
+                            },
+                            "Monthly Payment": Object {
+                              "kind": "UNIT",
+                              "type": "string",
+                              "value": "$1,291.27",
+                            },
+                            "Note Amount": Object {
                               "components": null,
-                              "name": "Required Credit Score",
-                              "typeRef": "number",
+                              "kind": "UNIT",
+                              "type": "string",
+                              "value": "$274,599.40",
+                            },
+                            "Recommendation": Object {
+                              "kind": "UNIT",
+                              "type": "string",
+                              "value": "Best",
+                            },
+                            "Required Credit Score": Object {
+                              "kind": "UNIT",
+                              "type": "number",
                               "value": 680,
                             },
-                          ]
+                            "kind": "STRUCTURE",
+                            "type": "tProduct",
+                            "value": Object {
+                              "Product": Object {
+                                "kind": "UNIT",
+                                "type": "string",
+                                "value": "Lender C - Fixed30-Standard",
+                              },
+                            },
+                          }
                         }
                       >
                         <OutcomeProperty
                           hidePropertyName={false}
                           key="Product"
-                          property={
+                          name="Product"
+                          value={
                             Object {
-                              "components": null,
-                              "name": "Product",
-                              "typeRef": "string",
+                              "kind": "UNIT",
+                              "type": "string",
                               "value": "Lender C - Fixed30-Standard",
                             }
                           }
@@ -1683,420 +1658,6 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                                       className="formatted-value"
                                     >
                                       Lender C - Fixed30-Standard
-                                    </span>
-                                  </FormattedValue>
-                                </div>
-                              </SplitItem>
-                            </div>
-                          </Split>
-                        </OutcomeProperty>
-                        <OutcomeProperty
-                          hidePropertyName={false}
-                          key="Recommendation"
-                          property={
-                            Object {
-                              "components": null,
-                              "name": "Recommendation",
-                              "typeRef": "string",
-                              "value": "Best",
-                            }
-                          }
-                        >
-                          <Split
-                            className="outcome__property"
-                            data-ouia-component-id="Recommendation"
-                            data-ouia-component-type="outcome-property"
-                            data-ouia-safe={true}
-                            key="31"
-                          >
-                            <div
-                              className="pf-l-split outcome__property"
-                              data-ouia-component-id="Recommendation"
-                              data-ouia-component-type="outcome-property"
-                              data-ouia-safe={true}
-                            >
-                              <SplitItem
-                                className="outcome__property__name"
-                                data-ouia-component-id="Recommendation"
-                                data-ouia-component-type="property-name"
-                                data-ouia-safe={true}
-                                key="property-name"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__name"
-                                  data-ouia-component-id="Recommendation"
-                                  data-ouia-component-type="property-name"
-                                  data-ouia-safe={true}
-                                >
-                                  Recommendation
-                                  :
-                                </div>
-                              </SplitItem>
-                              <SplitItem
-                                className="outcome__property__value"
-                                data-ouia-component-id="Recommendation"
-                                data-ouia-component-type="property-value"
-                                data-ouia-safe={true}
-                                key="property-value"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__value"
-                                  data-ouia-component-id="Recommendation"
-                                  data-ouia-component-type="property-value"
-                                  data-ouia-safe={true}
-                                >
-                                  <FormattedValue
-                                    value="Best"
-                                  >
-                                    <span
-                                      className="formatted-value"
-                                    >
-                                      Best
-                                    </span>
-                                  </FormattedValue>
-                                </div>
-                              </SplitItem>
-                            </div>
-                          </Split>
-                        </OutcomeProperty>
-                        <OutcomeProperty
-                          hidePropertyName={false}
-                          key="Note Amount"
-                          property={
-                            Object {
-                              "components": null,
-                              "name": "Note Amount",
-                              "typeRef": "string",
-                              "value": "$274,599.40",
-                            }
-                          }
-                        >
-                          <Split
-                            className="outcome__property"
-                            data-ouia-component-id="Note Amount"
-                            data-ouia-component-type="outcome-property"
-                            data-ouia-safe={true}
-                            key="32"
-                          >
-                            <div
-                              className="pf-l-split outcome__property"
-                              data-ouia-component-id="Note Amount"
-                              data-ouia-component-type="outcome-property"
-                              data-ouia-safe={true}
-                            >
-                              <SplitItem
-                                className="outcome__property__name"
-                                data-ouia-component-id="Note Amount"
-                                data-ouia-component-type="property-name"
-                                data-ouia-safe={true}
-                                key="property-name"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__name"
-                                  data-ouia-component-id="Note Amount"
-                                  data-ouia-component-type="property-name"
-                                  data-ouia-safe={true}
-                                >
-                                  Note Amount
-                                  :
-                                </div>
-                              </SplitItem>
-                              <SplitItem
-                                className="outcome__property__value"
-                                data-ouia-component-id="Note Amount"
-                                data-ouia-component-type="property-value"
-                                data-ouia-safe={true}
-                                key="property-value"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__value"
-                                  data-ouia-component-id="Note Amount"
-                                  data-ouia-component-type="property-value"
-                                  data-ouia-safe={true}
-                                >
-                                  <FormattedValue
-                                    value="$274,599.40"
-                                  >
-                                    <span
-                                      className="formatted-value"
-                                    >
-                                      $274,599.40
-                                    </span>
-                                  </FormattedValue>
-                                </div>
-                              </SplitItem>
-                            </div>
-                          </Split>
-                        </OutcomeProperty>
-                        <OutcomeProperty
-                          hidePropertyName={false}
-                          key="Interest Rate"
-                          property={
-                            Object {
-                              "components": null,
-                              "name": "Interest Rate",
-                              "typeRef": "string",
-                              "value": "3.88",
-                            }
-                          }
-                        >
-                          <Split
-                            className="outcome__property"
-                            data-ouia-component-id="Interest Rate"
-                            data-ouia-component-type="outcome-property"
-                            data-ouia-safe={true}
-                            key="33"
-                          >
-                            <div
-                              className="pf-l-split outcome__property"
-                              data-ouia-component-id="Interest Rate"
-                              data-ouia-component-type="outcome-property"
-                              data-ouia-safe={true}
-                            >
-                              <SplitItem
-                                className="outcome__property__name"
-                                data-ouia-component-id="Interest Rate"
-                                data-ouia-component-type="property-name"
-                                data-ouia-safe={true}
-                                key="property-name"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__name"
-                                  data-ouia-component-id="Interest Rate"
-                                  data-ouia-component-type="property-name"
-                                  data-ouia-safe={true}
-                                >
-                                  Interest Rate
-                                  :
-                                </div>
-                              </SplitItem>
-                              <SplitItem
-                                className="outcome__property__value"
-                                data-ouia-component-id="Interest Rate"
-                                data-ouia-component-type="property-value"
-                                data-ouia-safe={true}
-                                key="property-value"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__value"
-                                  data-ouia-component-id="Interest Rate"
-                                  data-ouia-component-type="property-value"
-                                  data-ouia-safe={true}
-                                >
-                                  <FormattedValue
-                                    value="3.88"
-                                  >
-                                    <span
-                                      className="formatted-value"
-                                    >
-                                      3.88
-                                    </span>
-                                  </FormattedValue>
-                                </div>
-                              </SplitItem>
-                            </div>
-                          </Split>
-                        </OutcomeProperty>
-                        <OutcomeProperty
-                          hidePropertyName={false}
-                          key="Monthly Payment"
-                          property={
-                            Object {
-                              "components": null,
-                              "name": "Monthly Payment",
-                              "typeRef": "string",
-                              "value": "$1,291.27",
-                            }
-                          }
-                        >
-                          <Split
-                            className="outcome__property"
-                            data-ouia-component-id="Monthly Payment"
-                            data-ouia-component-type="outcome-property"
-                            data-ouia-safe={true}
-                            key="34"
-                          >
-                            <div
-                              className="pf-l-split outcome__property"
-                              data-ouia-component-id="Monthly Payment"
-                              data-ouia-component-type="outcome-property"
-                              data-ouia-safe={true}
-                            >
-                              <SplitItem
-                                className="outcome__property__name"
-                                data-ouia-component-id="Monthly Payment"
-                                data-ouia-component-type="property-name"
-                                data-ouia-safe={true}
-                                key="property-name"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__name"
-                                  data-ouia-component-id="Monthly Payment"
-                                  data-ouia-component-type="property-name"
-                                  data-ouia-safe={true}
-                                >
-                                  Monthly Payment
-                                  :
-                                </div>
-                              </SplitItem>
-                              <SplitItem
-                                className="outcome__property__value"
-                                data-ouia-component-id="Monthly Payment"
-                                data-ouia-component-type="property-value"
-                                data-ouia-safe={true}
-                                key="property-value"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__value"
-                                  data-ouia-component-id="Monthly Payment"
-                                  data-ouia-component-type="property-value"
-                                  data-ouia-safe={true}
-                                >
-                                  <FormattedValue
-                                    value="$1,291.27"
-                                  >
-                                    <span
-                                      className="formatted-value"
-                                    >
-                                      $1,291.27
-                                    </span>
-                                  </FormattedValue>
-                                </div>
-                              </SplitItem>
-                            </div>
-                          </Split>
-                        </OutcomeProperty>
-                        <OutcomeProperty
-                          hidePropertyName={false}
-                          key="Cash to Close"
-                          property={
-                            Object {
-                              "components": null,
-                              "name": "Cash to Close",
-                              "typeRef": "string",
-                              "value": "$75,491.99",
-                            }
-                          }
-                        >
-                          <Split
-                            className="outcome__property"
-                            data-ouia-component-id="Cash to Close"
-                            data-ouia-component-type="outcome-property"
-                            data-ouia-safe={true}
-                            key="35"
-                          >
-                            <div
-                              className="pf-l-split outcome__property"
-                              data-ouia-component-id="Cash to Close"
-                              data-ouia-component-type="outcome-property"
-                              data-ouia-safe={true}
-                            >
-                              <SplitItem
-                                className="outcome__property__name"
-                                data-ouia-component-id="Cash to Close"
-                                data-ouia-component-type="property-name"
-                                data-ouia-safe={true}
-                                key="property-name"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__name"
-                                  data-ouia-component-id="Cash to Close"
-                                  data-ouia-component-type="property-name"
-                                  data-ouia-safe={true}
-                                >
-                                  Cash to Close
-                                  :
-                                </div>
-                              </SplitItem>
-                              <SplitItem
-                                className="outcome__property__value"
-                                data-ouia-component-id="Cash to Close"
-                                data-ouia-component-type="property-value"
-                                data-ouia-safe={true}
-                                key="property-value"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__value"
-                                  data-ouia-component-id="Cash to Close"
-                                  data-ouia-component-type="property-value"
-                                  data-ouia-safe={true}
-                                >
-                                  <FormattedValue
-                                    value="$75,491.99"
-                                  >
-                                    <span
-                                      className="formatted-value"
-                                    >
-                                      $75,491.99
-                                    </span>
-                                  </FormattedValue>
-                                </div>
-                              </SplitItem>
-                            </div>
-                          </Split>
-                        </OutcomeProperty>
-                        <OutcomeProperty
-                          hidePropertyName={false}
-                          key="Required Credit Score"
-                          property={
-                            Object {
-                              "components": null,
-                              "name": "Required Credit Score",
-                              "typeRef": "number",
-                              "value": 680,
-                            }
-                          }
-                        >
-                          <Split
-                            className="outcome__property"
-                            data-ouia-component-id="Required Credit Score"
-                            data-ouia-component-type="outcome-property"
-                            data-ouia-safe={true}
-                            key="36"
-                          >
-                            <div
-                              className="pf-l-split outcome__property"
-                              data-ouia-component-id="Required Credit Score"
-                              data-ouia-component-type="outcome-property"
-                              data-ouia-safe={true}
-                            >
-                              <SplitItem
-                                className="outcome__property__name"
-                                data-ouia-component-id="Required Credit Score"
-                                data-ouia-component-type="property-name"
-                                data-ouia-safe={true}
-                                key="property-name"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__name"
-                                  data-ouia-component-id="Required Credit Score"
-                                  data-ouia-component-type="property-name"
-                                  data-ouia-safe={true}
-                                >
-                                  Required Credit Score
-                                  :
-                                </div>
-                              </SplitItem>
-                              <SplitItem
-                                className="outcome__property__value"
-                                data-ouia-component-id="Required Credit Score"
-                                data-ouia-component-type="property-value"
-                                data-ouia-safe={true}
-                                key="property-value"
-                              >
-                                <div
-                                  className="pf-l-split__item outcome__property__value"
-                                  data-ouia-component-id="Required Credit Score"
-                                  data-ouia-component-type="property-value"
-                                  data-ouia-safe={true}
-                                >
-                                  <FormattedValue
-                                    value={680}
-                                  >
-                                    <span
-                                      className="formatted-value"
-                                    >
-                                      680
                                     </span>
                                   </FormattedValue>
                                 </div>
@@ -2190,9 +1751,8 @@ exports[`Outcomes renders a single outcome without the list view 1`] = `
         "outcomeId": "_12268B68-94A1-4960-B4C8-0B6071AFDE58",
         "outcomeName": "Mortgage Approval",
         "outcomeResult": Object {
-          "components": null,
-          "name": "Mortgage Approval",
-          "typeRef": "boolean",
+          "kind": "UNIT",
+          "type": "boolean",
           "value": true,
         },
       },
@@ -2205,7 +1765,7 @@ exports[`Outcomes renders a single outcome without the list view 1`] = `
     data-ouia-safe={true}
   >
     <LightCard
-      key="54"
+      key="48"
     >
       <Card
         data-ouia-component-type="outcome-card"
@@ -2225,11 +1785,11 @@ exports[`Outcomes renders a single outcome without the list view 1`] = `
               <OutcomeProperty
                 hidePropertyName={false}
                 key="Mortgage Approval"
-                property={
+                name="Mortgage Approval"
+                value={
                   Object {
-                    "components": null,
-                    "name": "Mortgage Approval",
-                    "typeRef": "boolean",
+                    "kind": "UNIT",
+                    "type": "boolean",
                     "value": true,
                   }
                 }
@@ -2239,7 +1799,7 @@ exports[`Outcomes renders a single outcome without the list view 1`] = `
                   data-ouia-component-id="Mortgage Approval"
                   data-ouia-component-type="outcome-property"
                   data-ouia-safe={true}
-                  key="55"
+                  key="49"
                 >
                   <div
                     className="pf-l-split outcome__property"
@@ -2330,7 +1890,7 @@ exports[`Outcomes renders a skipped decision with no outcome 1`] = `
         className="pf-l-gallery pf-m-gutter outcome-cards"
       >
         <GalleryItem
-          key="53"
+          key="47"
         >
           <div>
             <OutcomeCard
@@ -2527,74 +2087,63 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
         "outcomeId": "849849489",
         "outcomeName": "Client Ratings",
         "outcomeResult": Object {
-          "components": Array [
-            Object {
-              "components": Array [
-                Object {
-                  "components": null,
-                  "name": "Loan Amount",
-                  "typeRef": "number",
+          "kind": "STRUCTURE",
+          "type": "tRatings",
+          "value": Object {
+            "Rating Type A": Object {
+              "kind": "STRUCTURE",
+              "type": "tRating",
+              "value": Object {
+                "Loan Amount": Object {
+                  "kind": "UNIT",
+                  "type": "number",
                   "value": 540000,
                 },
-                Object {
-                  "components": null,
-                  "name": "Repayment Rate",
-                  "typeRef": "number",
-                  "value": 900,
-                },
-                Object {
-                  "components": null,
-                  "name": "Loan Eligibility",
-                  "typeRef": "boolean",
+                "Loan Eligibility": Object {
+                  "kind": "UNIT",
+                  "type": "boolean",
                   "value": true,
                 },
-              ],
-              "name": "Rating Type A",
-              "typeRef": "string",
-              "value": null,
+                "Repayment Rate": Object {
+                  "kind": "UNIT",
+                  "type": "number",
+                  "value": 900,
+                },
+              },
             },
-            Object {
-              "components": Array [
-                Object {
-                  "components": null,
-                  "name": "Loan amount",
-                  "typeRef": "number",
+            "Rating Type B": Object {
+              "kind": "STRUCTURE",
+              "type": "tRating",
+              "value": Object {
+                "Loan amount": Object {
+                  "kind": "UNIT",
+                  "type": "number",
                   "value": 340000,
                 },
-                Object {
-                  "components": null,
-                  "name": "Repayment rate",
-                  "typeRef": "number",
+                "Repayment rate": Object {
+                  "kind": "UNIT",
+                  "type": "number",
                   "value": 2000,
                 },
-                Object {
-                  "components": Array [
-                    Object {
-                      "components": null,
-                      "name": "Loan amount",
-                      "typeRef": "number",
+                "Sub-Rating Type C": Object {
+                  "kind": "STRUCTURE",
+                  "type": "tRating",
+                  "value": Object {
+                    "Loan amount": Object {
+                      "kind": "UNIT",
+                      "type": "number",
                       "value": 390000,
                     },
-                    Object {
-                      "components": null,
-                      "name": "Repayment rate",
-                      "typeRef": "number",
+                    "Repayment rate": Object {
+                      "kind": "UNIT",
+                      "type": "number",
                       "value": 5000,
                     },
-                  ],
-                  "name": "Sub-Rating Type C",
-                  "typeRef": "number",
-                  "value": null,
+                  },
                 },
-              ],
-              "name": "Rating Type B",
-              "typeRef": "number",
-              "value": null,
+              },
             },
-          ],
-          "name": "Client Ratings",
-          "typeRef": "tProducts",
-          "value": null,
+          },
         },
       },
     ]
@@ -2613,7 +2162,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
         className="pf-l-gallery pf-m-gutter outcome-cards"
       >
         <GalleryItem
-          key="37"
+          key="31"
         >
           <div>
             <OutcomeCard
@@ -2626,74 +2175,63 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                   "outcomeId": "849849489",
                   "outcomeName": "Client Ratings",
                   "outcomeResult": Object {
-                    "components": Array [
-                      Object {
-                        "components": Array [
-                          Object {
-                            "components": null,
-                            "name": "Loan Amount",
-                            "typeRef": "number",
+                    "kind": "STRUCTURE",
+                    "type": "tRatings",
+                    "value": Object {
+                      "Rating Type A": Object {
+                        "kind": "STRUCTURE",
+                        "type": "tRating",
+                        "value": Object {
+                          "Loan Amount": Object {
+                            "kind": "UNIT",
+                            "type": "number",
                             "value": 540000,
                           },
-                          Object {
-                            "components": null,
-                            "name": "Repayment Rate",
-                            "typeRef": "number",
-                            "value": 900,
-                          },
-                          Object {
-                            "components": null,
-                            "name": "Loan Eligibility",
-                            "typeRef": "boolean",
+                          "Loan Eligibility": Object {
+                            "kind": "UNIT",
+                            "type": "boolean",
                             "value": true,
                           },
-                        ],
-                        "name": "Rating Type A",
-                        "typeRef": "string",
-                        "value": null,
+                          "Repayment Rate": Object {
+                            "kind": "UNIT",
+                            "type": "number",
+                            "value": 900,
+                          },
+                        },
                       },
-                      Object {
-                        "components": Array [
-                          Object {
-                            "components": null,
-                            "name": "Loan amount",
-                            "typeRef": "number",
+                      "Rating Type B": Object {
+                        "kind": "STRUCTURE",
+                        "type": "tRating",
+                        "value": Object {
+                          "Loan amount": Object {
+                            "kind": "UNIT",
+                            "type": "number",
                             "value": 340000,
                           },
-                          Object {
-                            "components": null,
-                            "name": "Repayment rate",
-                            "typeRef": "number",
+                          "Repayment rate": Object {
+                            "kind": "UNIT",
+                            "type": "number",
                             "value": 2000,
                           },
-                          Object {
-                            "components": Array [
-                              Object {
-                                "components": null,
-                                "name": "Loan amount",
-                                "typeRef": "number",
+                          "Sub-Rating Type C": Object {
+                            "kind": "STRUCTURE",
+                            "type": "tRating",
+                            "value": Object {
+                              "Loan amount": Object {
+                                "kind": "UNIT",
+                                "type": "number",
                                 "value": 390000,
                               },
-                              Object {
-                                "components": null,
-                                "name": "Repayment rate",
-                                "typeRef": "number",
+                              "Repayment rate": Object {
+                                "kind": "UNIT",
+                                "type": "number",
                                 "value": 5000,
                               },
-                            ],
-                            "name": "Sub-Rating Type C",
-                            "typeRef": "number",
-                            "value": null,
+                            },
                           },
-                        ],
-                        "name": "Rating Type B",
-                        "typeRef": "number",
-                        "value": null,
+                        },
                       },
-                    ],
-                    "name": "Client Ratings",
-                    "typeRef": "tProducts",
-                    "value": null,
+                    },
                   },
                 }
               }
@@ -2741,82 +2279,71 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                         compact={true}
                         key="Client Ratings"
                         name="Client Ratings"
-                        outcome={
+                        value={
                           Object {
-                            "components": Array [
-                              Object {
-                                "components": Array [
-                                  Object {
-                                    "components": null,
-                                    "name": "Loan Amount",
-                                    "typeRef": "number",
+                            "kind": "STRUCTURE",
+                            "type": "tRatings",
+                            "value": Object {
+                              "Rating Type A": Object {
+                                "kind": "STRUCTURE",
+                                "type": "tRating",
+                                "value": Object {
+                                  "Loan Amount": Object {
+                                    "kind": "UNIT",
+                                    "type": "number",
                                     "value": 540000,
                                   },
-                                  Object {
-                                    "components": null,
-                                    "name": "Repayment Rate",
-                                    "typeRef": "number",
-                                    "value": 900,
-                                  },
-                                  Object {
-                                    "components": null,
-                                    "name": "Loan Eligibility",
-                                    "typeRef": "boolean",
+                                  "Loan Eligibility": Object {
+                                    "kind": "UNIT",
+                                    "type": "boolean",
                                     "value": true,
                                   },
-                                ],
-                                "name": "Rating Type A",
-                                "typeRef": "string",
-                                "value": null,
+                                  "Repayment Rate": Object {
+                                    "kind": "UNIT",
+                                    "type": "number",
+                                    "value": 900,
+                                  },
+                                },
                               },
-                              Object {
-                                "components": Array [
-                                  Object {
-                                    "components": null,
-                                    "name": "Loan amount",
-                                    "typeRef": "number",
+                              "Rating Type B": Object {
+                                "kind": "STRUCTURE",
+                                "type": "tRating",
+                                "value": Object {
+                                  "Loan amount": Object {
+                                    "kind": "UNIT",
+                                    "type": "number",
                                     "value": 340000,
                                   },
-                                  Object {
-                                    "components": null,
-                                    "name": "Repayment rate",
-                                    "typeRef": "number",
+                                  "Repayment rate": Object {
+                                    "kind": "UNIT",
+                                    "type": "number",
                                     "value": 2000,
                                   },
-                                  Object {
-                                    "components": Array [
-                                      Object {
-                                        "components": null,
-                                        "name": "Loan amount",
-                                        "typeRef": "number",
+                                  "Sub-Rating Type C": Object {
+                                    "kind": "STRUCTURE",
+                                    "type": "tRating",
+                                    "value": Object {
+                                      "Loan amount": Object {
+                                        "kind": "UNIT",
+                                        "type": "number",
                                         "value": 390000,
                                       },
-                                      Object {
-                                        "components": null,
-                                        "name": "Repayment rate",
-                                        "typeRef": "number",
+                                      "Repayment rate": Object {
+                                        "kind": "UNIT",
+                                        "type": "number",
                                         "value": 5000,
                                       },
-                                    ],
-                                    "name": "Sub-Rating Type C",
-                                    "typeRef": "number",
-                                    "value": null,
+                                    },
                                   },
-                                ],
-                                "name": "Rating Type B",
-                                "typeRef": "number",
-                                "value": null,
+                                },
                               },
-                            ],
-                            "name": "Client Ratings",
-                            "typeRef": "tProducts",
-                            "value": null,
+                            },
                           }
                         }
                       >
                         <div
                           className="outcome__title outcome__title--struct"
-                          key="41"
+                          key="35"
                         >
                           <span
                             className="outcome__property__name"
@@ -2833,7 +2360,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                         >
                           <div
                             className="outcome-item"
-                            data-ouia-component-id="Rating Type A"
+                            data-ouia-component-id="Client Ratings"
                             data-ouia-component-type="outcome-subitem"
                             data-ouia-safe={true}
                             key="Rating Type A"
@@ -2841,38 +2368,34 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                             <OutcomeComposed
                               compact={true}
                               key="Rating Type A"
-                              name="Client Ratings"
-                              outcome={
+                              name="Rating Type A"
+                              value={
                                 Object {
-                                  "components": Array [
-                                    Object {
-                                      "components": null,
-                                      "name": "Loan Amount",
-                                      "typeRef": "number",
+                                  "kind": "STRUCTURE",
+                                  "type": "tRating",
+                                  "value": Object {
+                                    "Loan Amount": Object {
+                                      "kind": "UNIT",
+                                      "type": "number",
                                       "value": 540000,
                                     },
-                                    Object {
-                                      "components": null,
-                                      "name": "Repayment Rate",
-                                      "typeRef": "number",
-                                      "value": 900,
-                                    },
-                                    Object {
-                                      "components": null,
-                                      "name": "Loan Eligibility",
-                                      "typeRef": "boolean",
+                                    "Loan Eligibility": Object {
+                                      "kind": "UNIT",
+                                      "type": "boolean",
                                       "value": true,
                                     },
-                                  ],
-                                  "name": "Rating Type A",
-                                  "typeRef": "string",
-                                  "value": null,
+                                    "Repayment Rate": Object {
+                                      "kind": "UNIT",
+                                      "type": "number",
+                                      "value": 900,
+                                    },
+                                  },
                                 }
                               }
                             >
                               <div
                                 className="outcome__title outcome__title--struct"
-                                key="42"
+                                key="36"
                               >
                                 <span
                                   className="outcome__property__name"
@@ -2889,7 +2412,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                               >
                                 <div
                                   className="outcome-item"
-                                  data-ouia-component-id="Loan Amount"
+                                  data-ouia-component-id="Rating Type A"
                                   data-ouia-component-type="outcome-subitem"
                                   data-ouia-safe={true}
                                   key="Loan Amount"
@@ -2897,11 +2420,11 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                   <OutcomeProperty
                                     hidePropertyName={false}
                                     key="Loan Amount"
-                                    property={
+                                    name="Loan Amount"
+                                    value={
                                       Object {
-                                        "components": null,
-                                        "name": "Loan Amount",
-                                        "typeRef": "number",
+                                        "kind": "UNIT",
+                                        "type": "number",
                                         "value": 540000,
                                       }
                                     }
@@ -2911,7 +2434,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                       data-ouia-component-id="Loan Amount"
                                       data-ouia-component-type="outcome-property"
                                       data-ouia-safe={true}
-                                      key="43"
+                                      key="37"
                                     >
                                       <div
                                         className="pf-l-split outcome__property"
@@ -2966,7 +2489,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                 </div>
                                 <div
                                   className="outcome-item"
-                                  data-ouia-component-id="Repayment Rate"
+                                  data-ouia-component-id="Rating Type A"
                                   data-ouia-component-type="outcome-subitem"
                                   data-ouia-safe={true}
                                   key="Repayment Rate"
@@ -2974,11 +2497,11 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                   <OutcomeProperty
                                     hidePropertyName={false}
                                     key="Repayment Rate"
-                                    property={
+                                    name="Repayment Rate"
+                                    value={
                                       Object {
-                                        "components": null,
-                                        "name": "Repayment Rate",
-                                        "typeRef": "number",
+                                        "kind": "UNIT",
+                                        "type": "number",
                                         "value": 900,
                                       }
                                     }
@@ -2988,7 +2511,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                       data-ouia-component-id="Repayment Rate"
                                       data-ouia-component-type="outcome-property"
                                       data-ouia-safe={true}
-                                      key="44"
+                                      key="38"
                                     >
                                       <div
                                         className="pf-l-split outcome__property"
@@ -3043,7 +2566,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                 </div>
                                 <div
                                   className="outcome-item"
-                                  data-ouia-component-id="Loan Eligibility"
+                                  data-ouia-component-id="Rating Type A"
                                   data-ouia-component-type="outcome-subitem"
                                   data-ouia-safe={true}
                                   key="Loan Eligibility"
@@ -3051,11 +2574,11 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                   <OutcomeProperty
                                     hidePropertyName={false}
                                     key="Loan Eligibility"
-                                    property={
+                                    name="Loan Eligibility"
+                                    value={
                                       Object {
-                                        "components": null,
-                                        "name": "Loan Eligibility",
-                                        "typeRef": "boolean",
+                                        "kind": "UNIT",
+                                        "type": "boolean",
                                         "value": true,
                                       }
                                     }
@@ -3065,7 +2588,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                       data-ouia-component-id="Loan Eligibility"
                                       data-ouia-component-type="outcome-property"
                                       data-ouia-safe={true}
-                                      key="45"
+                                      key="39"
                                     >
                                       <div
                                         className="pf-l-split outcome__property"
@@ -3123,7 +2646,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                           </div>
                           <div
                             className="outcome-item"
-                            data-ouia-component-id="Rating Type B"
+                            data-ouia-component-id="Client Ratings"
                             data-ouia-component-type="outcome-subitem"
                             data-ouia-safe={true}
                             key="Rating Type B"
@@ -3131,51 +2654,45 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                             <OutcomeComposed
                               compact={true}
                               key="Rating Type B"
-                              name="Client Ratings"
-                              outcome={
+                              name="Rating Type B"
+                              value={
                                 Object {
-                                  "components": Array [
-                                    Object {
-                                      "components": null,
-                                      "name": "Loan amount",
-                                      "typeRef": "number",
+                                  "kind": "STRUCTURE",
+                                  "type": "tRating",
+                                  "value": Object {
+                                    "Loan amount": Object {
+                                      "kind": "UNIT",
+                                      "type": "number",
                                       "value": 340000,
                                     },
-                                    Object {
-                                      "components": null,
-                                      "name": "Repayment rate",
-                                      "typeRef": "number",
+                                    "Repayment rate": Object {
+                                      "kind": "UNIT",
+                                      "type": "number",
                                       "value": 2000,
                                     },
-                                    Object {
-                                      "components": Array [
-                                        Object {
-                                          "components": null,
-                                          "name": "Loan amount",
-                                          "typeRef": "number",
+                                    "Sub-Rating Type C": Object {
+                                      "kind": "STRUCTURE",
+                                      "type": "tRating",
+                                      "value": Object {
+                                        "Loan amount": Object {
+                                          "kind": "UNIT",
+                                          "type": "number",
                                           "value": 390000,
                                         },
-                                        Object {
-                                          "components": null,
-                                          "name": "Repayment rate",
-                                          "typeRef": "number",
+                                        "Repayment rate": Object {
+                                          "kind": "UNIT",
+                                          "type": "number",
                                           "value": 5000,
                                         },
-                                      ],
-                                      "name": "Sub-Rating Type C",
-                                      "typeRef": "number",
-                                      "value": null,
+                                      },
                                     },
-                                  ],
-                                  "name": "Rating Type B",
-                                  "typeRef": "number",
-                                  "value": null,
+                                  },
                                 }
                               }
                             >
                               <div
                                 className="outcome__title outcome__title--struct"
-                                key="47"
+                                key="41"
                               >
                                 <span
                                   className="outcome__property__name"
@@ -3192,7 +2709,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                               >
                                 <div
                                   className="outcome-item"
-                                  data-ouia-component-id="Loan amount"
+                                  data-ouia-component-id="Rating Type B"
                                   data-ouia-component-type="outcome-subitem"
                                   data-ouia-safe={true}
                                   key="Loan amount"
@@ -3200,11 +2717,11 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                   <OutcomeProperty
                                     hidePropertyName={false}
                                     key="Loan amount"
-                                    property={
+                                    name="Loan amount"
+                                    value={
                                       Object {
-                                        "components": null,
-                                        "name": "Loan amount",
-                                        "typeRef": "number",
+                                        "kind": "UNIT",
+                                        "type": "number",
                                         "value": 340000,
                                       }
                                     }
@@ -3214,7 +2731,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                       data-ouia-component-id="Loan amount"
                                       data-ouia-component-type="outcome-property"
                                       data-ouia-safe={true}
-                                      key="48"
+                                      key="42"
                                     >
                                       <div
                                         className="pf-l-split outcome__property"
@@ -3269,7 +2786,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                 </div>
                                 <div
                                   className="outcome-item"
-                                  data-ouia-component-id="Repayment rate"
+                                  data-ouia-component-id="Rating Type B"
                                   data-ouia-component-type="outcome-subitem"
                                   data-ouia-safe={true}
                                   key="Repayment rate"
@@ -3277,11 +2794,11 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                   <OutcomeProperty
                                     hidePropertyName={false}
                                     key="Repayment rate"
-                                    property={
+                                    name="Repayment rate"
+                                    value={
                                       Object {
-                                        "components": null,
-                                        "name": "Repayment rate",
-                                        "typeRef": "number",
+                                        "kind": "UNIT",
+                                        "type": "number",
                                         "value": 2000,
                                       }
                                     }
@@ -3291,7 +2808,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                       data-ouia-component-id="Repayment rate"
                                       data-ouia-component-type="outcome-property"
                                       data-ouia-safe={true}
-                                      key="49"
+                                      key="43"
                                     >
                                       <div
                                         className="pf-l-split outcome__property"
@@ -3346,7 +2863,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                 </div>
                                 <div
                                   className="outcome-item"
-                                  data-ouia-component-id="Sub-Rating Type C"
+                                  data-ouia-component-id="Rating Type B"
                                   data-ouia-component-type="outcome-subitem"
                                   data-ouia-safe={true}
                                   key="Sub-Rating Type C"
@@ -3354,32 +2871,29 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                   <OutcomeComposed
                                     compact={true}
                                     key="Sub-Rating Type C"
-                                    name="Client Ratings"
-                                    outcome={
+                                    name="Sub-Rating Type C"
+                                    value={
                                       Object {
-                                        "components": Array [
-                                          Object {
-                                            "components": null,
-                                            "name": "Loan amount",
-                                            "typeRef": "number",
+                                        "kind": "STRUCTURE",
+                                        "type": "tRating",
+                                        "value": Object {
+                                          "Loan amount": Object {
+                                            "kind": "UNIT",
+                                            "type": "number",
                                             "value": 390000,
                                           },
-                                          Object {
-                                            "components": null,
-                                            "name": "Repayment rate",
-                                            "typeRef": "number",
+                                          "Repayment rate": Object {
+                                            "kind": "UNIT",
+                                            "type": "number",
                                             "value": 5000,
                                           },
-                                        ],
-                                        "name": "Sub-Rating Type C",
-                                        "typeRef": "number",
-                                        "value": null,
+                                        },
                                       }
                                     }
                                   >
                                     <div
                                       className="outcome__title outcome__title--struct"
-                                      key="50"
+                                      key="44"
                                     >
                                       <span
                                         className="outcome__property__name"
@@ -3396,7 +2910,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                     >
                                       <div
                                         className="outcome-item"
-                                        data-ouia-component-id="Loan amount"
+                                        data-ouia-component-id="Sub-Rating Type C"
                                         data-ouia-component-type="outcome-subitem"
                                         data-ouia-safe={true}
                                         key="Loan amount"
@@ -3404,11 +2918,11 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                         <OutcomeProperty
                                           hidePropertyName={false}
                                           key="Loan amount"
-                                          property={
+                                          name="Loan amount"
+                                          value={
                                             Object {
-                                              "components": null,
-                                              "name": "Loan amount",
-                                              "typeRef": "number",
+                                              "kind": "UNIT",
+                                              "type": "number",
                                               "value": 390000,
                                             }
                                           }
@@ -3418,7 +2932,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                             data-ouia-component-id="Loan amount"
                                             data-ouia-component-type="outcome-property"
                                             data-ouia-safe={true}
-                                            key="51"
+                                            key="45"
                                           >
                                             <div
                                               className="pf-l-split outcome__property"
@@ -3473,7 +2987,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                       </div>
                                       <div
                                         className="outcome-item"
-                                        data-ouia-component-id="Repayment rate"
+                                        data-ouia-component-id="Sub-Rating Type C"
                                         data-ouia-component-type="outcome-subitem"
                                         data-ouia-safe={true}
                                         key="Repayment rate"
@@ -3481,11 +2995,11 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                         <OutcomeProperty
                                           hidePropertyName={false}
                                           key="Repayment rate"
-                                          property={
+                                          name="Repayment rate"
+                                          value={
                                             Object {
-                                              "components": null,
-                                              "name": "Repayment rate",
-                                              "typeRef": "number",
+                                              "kind": "UNIT",
+                                              "type": "number",
                                               "value": 5000,
                                             }
                                           }
@@ -3495,7 +3009,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                                             data-ouia-component-id="Repayment rate"
                                             data-ouia-component-type="outcome-property"
                                             data-ouia-safe={true}
-                                            key="52"
+                                            key="46"
                                           >
                                             <div
                                               className="pf-l-split outcome__property"
@@ -3643,23 +3157,20 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
         "outcomeId": "_d361c79e-8c06-4504-bdb2-d6b90b915166",
         "outcomeName": "Last Transaction",
         "outcomeResult": Object {
-          "components": Array [
-            Object {
-              "components": null,
-              "name": "Auth Code",
-              "typeRef": "tAuthCode",
-              "value": "Authorized",
-            },
-            Object {
-              "components": null,
-              "name": "Amount",
-              "typeRef": "number",
+          "kind": "STRUCTURE",
+          "type": "tTransaction",
+          "value": Object {
+            "Amount": Object {
+              "kind": "UNIT",
+              "type": "number",
               "value": 10000,
             },
-          ],
-          "name": "Last Transaction",
-          "typeRef": "tTransaction",
-          "value": null,
+            "Auth Code": Object {
+              "kind": "UNIT",
+              "type": "tAuthCode",
+              "value": "Authorized",
+            },
+          },
         },
       },
     ]
@@ -3691,23 +3202,20 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                   "outcomeId": "_d361c79e-8c06-4504-bdb2-d6b90b915166",
                   "outcomeName": "Last Transaction",
                   "outcomeResult": Object {
-                    "components": Array [
-                      Object {
-                        "components": null,
-                        "name": "Auth Code",
-                        "typeRef": "tAuthCode",
-                        "value": "Authorized",
-                      },
-                      Object {
-                        "components": null,
-                        "name": "Amount",
-                        "typeRef": "number",
+                    "kind": "STRUCTURE",
+                    "type": "tTransaction",
+                    "value": Object {
+                      "Amount": Object {
+                        "kind": "UNIT",
+                        "type": "number",
                         "value": 10000,
                       },
-                    ],
-                    "name": "Last Transaction",
-                    "typeRef": "tTransaction",
-                    "value": null,
+                      "Auth Code": Object {
+                        "kind": "UNIT",
+                        "type": "tAuthCode",
+                        "value": "Authorized",
+                      },
+                    },
                   },
                 }
               }
@@ -3755,25 +3263,22 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                         compact={true}
                         key="Last Transaction"
                         name="Last Transaction"
-                        outcome={
+                        value={
                           Object {
-                            "components": Array [
-                              Object {
-                                "components": null,
-                                "name": "Auth Code",
-                                "typeRef": "tAuthCode",
-                                "value": "Authorized",
-                              },
-                              Object {
-                                "components": null,
-                                "name": "Amount",
-                                "typeRef": "number",
+                            "kind": "STRUCTURE",
+                            "type": "tTransaction",
+                            "value": Object {
+                              "Amount": Object {
+                                "kind": "UNIT",
+                                "type": "number",
                                 "value": 10000,
                               },
-                            ],
-                            "name": "Last Transaction",
-                            "typeRef": "tTransaction",
-                            "value": null,
+                              "Auth Code": Object {
+                                "kind": "UNIT",
+                                "type": "tAuthCode",
+                                "value": "Authorized",
+                              },
+                            },
                           }
                         }
                       >
@@ -3796,7 +3301,7 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                         >
                           <div
                             className="outcome-item"
-                            data-ouia-component-id="Auth Code"
+                            data-ouia-component-id="Last Transaction"
                             data-ouia-component-type="outcome-subitem"
                             data-ouia-safe={true}
                             key="Auth Code"
@@ -3804,11 +3309,11 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                             <OutcomeProperty
                               hidePropertyName={false}
                               key="Auth Code"
-                              property={
+                              name="Auth Code"
+                              value={
                                 Object {
-                                  "components": null,
-                                  "name": "Auth Code",
-                                  "typeRef": "tAuthCode",
+                                  "kind": "UNIT",
+                                  "type": "tAuthCode",
                                   "value": "Authorized",
                                 }
                               }
@@ -3873,7 +3378,7 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                           </div>
                           <div
                             className="outcome-item"
-                            data-ouia-component-id="Amount"
+                            data-ouia-component-id="Last Transaction"
                             data-ouia-component-type="outcome-subitem"
                             data-ouia-safe={true}
                             key="Amount"
@@ -3881,11 +3386,11 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                             <OutcomeProperty
                               hidePropertyName={false}
                               key="Amount"
-                              property={
+                              name="Amount"
+                              value={
                                 Object {
-                                  "components": null,
-                                  "name": "Amount",
-                                  "typeRef": "number",
+                                  "kind": "UNIT",
+                                  "type": "number",
                                   "value": 10000,
                                 }
                               }
@@ -4037,9 +3542,8 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
         "outcomeId": "_ff34378e-fe90-4c58-9f7f-b9ce5767a415",
         "outcomeName": "Merchant Blacklist",
         "outcomeResult": Object {
-          "components": null,
-          "name": "Merchant Blacklist",
-          "typeRef": "string",
+          "kind": "UNIT",
+          "type": "string",
           "value": Array [
             "ILLICITCORP",
             "SLIMSHADY",
@@ -4076,9 +3580,8 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                   "outcomeId": "_ff34378e-fe90-4c58-9f7f-b9ce5767a415",
                   "outcomeName": "Merchant Blacklist",
                   "outcomeResult": Object {
-                    "components": null,
-                    "name": "Merchant Blacklist",
-                    "typeRef": "string",
+                    "kind": "UNIT",
+                    "type": "string",
                     "value": Array [
                       "ILLICITCORP",
                       "SLIMSHADY",
@@ -4130,11 +3633,11 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                       <OutcomeProperty
                         hidePropertyName={true}
                         key="Merchant Blacklist"
-                        property={
+                        name="Merchant Blacklist"
+                        value={
                           Object {
-                            "components": null,
-                            "name": "Merchant Blacklist",
-                            "typeRef": "string",
+                            "kind": "UNIT",
+                            "type": "string",
                             "value": Array [
                               "ILLICITCORP",
                               "SLIMSHADY",

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DecisionInput {
+public class NamedTypedValue {
 
-    public static final String ID_FIELD = "id";
     public static final String NAME_FIELD = "name";
     public static final String VALUE_FIELD = "value";
-
-    @JsonProperty(ID_FIELD)
-    private String id;
 
     @JsonProperty(NAME_FIELD)
     private String name;
@@ -36,21 +32,12 @@ public class DecisionInput {
     @JsonProperty(VALUE_FIELD)
     private TypedValue value;
 
-    public DecisionInput() {
+    public NamedTypedValue() {
     }
 
-    public DecisionInput(String id, String name, TypedValue value) {
-        this.id = id;
+    public NamedTypedValue(String name, TypedValue value) {
         this.name = name;
         this.value = value;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {

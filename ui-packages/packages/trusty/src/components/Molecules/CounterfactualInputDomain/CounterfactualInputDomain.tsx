@@ -1,8 +1,8 @@
 import React from 'react';
-import { CFSearchInput } from '../../../types';
+import { CFSearchInputUnit } from '../../../types';
 
 type CounterfactualInputDomainProps = {
-  input: CFSearchInput;
+  input: CFSearchInputUnit;
 };
 
 const CounterfactualInputDomain = ({
@@ -21,7 +21,7 @@ const CounterfactualInputDomain = ({
       domain =
         // special treatment for boolean values that have a 'fake' categorical
         // domain
-        typeof input.value === 'boolean' ? (
+        typeof input.originalValue.value === 'boolean' ? (
           <></>
         ) : (
           <span>

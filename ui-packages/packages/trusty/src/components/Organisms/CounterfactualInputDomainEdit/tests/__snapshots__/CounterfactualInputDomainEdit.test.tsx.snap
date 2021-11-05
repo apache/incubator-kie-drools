@@ -4,14 +4,19 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
 <CounterfactualInputDomainEdit
   input={
     Object {
-      "components": null,
-      "domain": Object {
-        "type": "RANGE",
-      },
-      "kind": "UNIT",
       "name": "field",
-      "typeRef": "number",
-      "value": 123,
+      "value": Object {
+        "domain": Object {
+          "type": "RANGE",
+        },
+        "kind": "UNIT",
+        "originalValue": Object {
+          "kind": "UNIT",
+          "type": "number",
+          "value": 123,
+        },
+        "type": "number",
+      },
     }
   }
   inputIndex={0}

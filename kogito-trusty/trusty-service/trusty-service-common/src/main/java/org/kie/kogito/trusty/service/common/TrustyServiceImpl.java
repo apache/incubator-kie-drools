@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -53,8 +52,7 @@ import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Execution;
-import org.kie.kogito.trusty.storage.api.model.TypedVariable;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,12 +151,12 @@ public class TrustyServiceImpl implements TrustyService {
         if (isExplainabilityEnabled) {
             Map<String, TypedValue> inputs = decision.getInputs() != null
                     ? decision.getInputs().stream()
-                            .collect(HashMap::new, (m, v) -> m.put(v.getName(), MessagingUtils.modelToTracingTypedValue(v.getValue())), HashMap::putAll)
+                            .collect(HashMap::new, (m, v) -> m.put(v.getName(), v.getValue()), HashMap::putAll)
                     : Collections.emptyMap();
 
             Map<String, TypedValue> outputs = decision.getOutcomes() != null
                     ? decision.getOutcomes().stream()
-                            .collect(HashMap::new, (m, v) -> m.put(v.getOutcomeName(), MessagingUtils.modelToTracingTypedValue(v.getOutcomeResult())), HashMap::putAll)
+                            .collect(HashMap::new, (m, v) -> m.put(v.getOutcomeName(), v.getOutcomeResult()), HashMap::putAll)
                     : Collections.emptyMap();
 
             explainabilityRequestProducer.sendEvent(new LIMEExplainabilityRequestDto(
@@ -200,7 +198,7 @@ public class TrustyServiceImpl implements TrustyService {
 
     @Override
     public CounterfactualExplainabilityRequest requestCounterfactuals(String executionId,
-            List<TypedVariableWithValue> goals,
+            List<NamedTypedValue> goals,
             List<CounterfactualSearchDomain> searchDomains) {
         Storage<String, Decision> storage = storageService.getDecisionsStorage();
         if (!storage.containsKey(executionId)) {
@@ -213,7 +211,7 @@ public class TrustyServiceImpl implements TrustyService {
     }
 
     protected CounterfactualExplainabilityRequest storeCounterfactualRequest(String executionId,
-            List<TypedVariableWithValue> goals,
+            List<NamedTypedValue> goals,
             List<CounterfactualSearchDomain> searchDomains,
             Long maxRunningTimeSeconds) {
         String counterfactualId = UUID.randomUUID().toString();
@@ -226,14 +224,14 @@ public class TrustyServiceImpl implements TrustyService {
 
     protected void sendCounterfactualRequestEvent(String executionId,
             String counterfactualId,
-            List<TypedVariableWithValue> goals,
+            List<NamedTypedValue> goals,
             List<CounterfactualSearchDomain> searchDomains,
             Long maxRunningTimeSeconds) {
         Decision decision = getDecisionById(executionId);
 
         //This is returned as null under Redis, so play safe
         Collection<DecisionInput> decisionInputs = Objects.nonNull(decision.getInputs()) ? decision.getInputs() : Collections.emptyList();
-        if (!isStructureIdentical(decisionInputs.stream().map(DecisionInput::getValue).collect(Collectors.toList()), searchDomains)) {
+        if (!isStructureIdentical(decisionInputs, searchDomains)) {
             String error = buildCounterfactualErrorMessage(String.format("The structure of the Search Domains do not match the structure of the original Inputs for decision with ID %s.", executionId),
                     "Decision inputs:-", decisionInputs,
                     "Search domains:-", searchDomains);
@@ -243,7 +241,7 @@ public class TrustyServiceImpl implements TrustyService {
 
         //This is returned as null under Redis, so play safe
         Collection<DecisionOutcome> decisionOutcomes = Objects.nonNull(decision.getOutcomes()) ? decision.getOutcomes() : Collections.emptyList();
-        if (!isStructureSubset(decisionOutcomes.stream().map(DecisionOutcome::getOutcomeResult).collect(Collectors.toList()), goals)) {
+        if (!isStructureSubset(decisionOutcomes, goals)) {
             String error =
                     buildCounterfactualErrorMessage(String.format("The structure of the Goals is not comparable to the structure of the original Outcomes for decision with ID %s.", executionId),
                             "Decision outcomes:-", decisionOutcomes,
@@ -254,17 +252,19 @@ public class TrustyServiceImpl implements TrustyService {
 
         Map<String, TypedValue> originalInputs = decision.getInputs() != null
                 ? decision.getInputs().stream()
-                        .collect(HashMap::new, (m, v) -> m.put(v.getName(), MessagingUtils.modelToTracingTypedValue(v.getValue())), HashMap::putAll)
+                        .collect(HashMap::new, (m, v) -> m.put(v.getName(), v.getValue()), HashMap::putAll)
                 : Collections.emptyMap();
 
         Map<String, TypedValue> requiredOutputs = goals != null
                 ? goals.stream()
-                        .collect(HashMap::new, (m, v) -> m.put(v.getName(), MessagingUtils.modelToTracingTypedValue(v)), HashMap::putAll)
+                        .collect(HashMap::new, (m, v) -> m.put(v.getName(), v.getValue()), HashMap::putAll)
                 : Collections.emptyMap();
 
         Map<String, CounterfactualSearchDomainDto> searchDomainDtos = searchDomains != null
                 ? searchDomains.stream()
-                        .collect(HashMap::new, (m, v) -> m.put(v.getName(), MessagingUtils.modelToCounterfactualSearchDomainDto(v)), HashMap::putAll)
+                        .collect(HashMap::new, (m, v) -> m.put(v.getName(),
+                                MessagingUtils.modelToCounterfactualSearchDomainDto(v.getValue())),
+                                HashMap::putAll)
                 : Collections.emptyMap();
 
         explainabilityRequestProducer.sendEvent(new CounterfactualExplainabilityRequestDto(
@@ -278,7 +278,7 @@ public class TrustyServiceImpl implements TrustyService {
                 maxRunningTimeSeconds));
     }
 
-    private <T extends TypedVariable<T>> String buildCounterfactualErrorMessage(String title,
+    private <T> String buildCounterfactualErrorMessage(String title,
             String decisionValuesTitle,
             Object decisionValues,
             String counterfactualValuesTitle,
@@ -343,5 +343,4 @@ public class TrustyServiceImpl implements TrustyService {
                 decision.getExecutedModelName();
         return new ModelIdentifierDto("dmn", resourceId);
     }
-
 }

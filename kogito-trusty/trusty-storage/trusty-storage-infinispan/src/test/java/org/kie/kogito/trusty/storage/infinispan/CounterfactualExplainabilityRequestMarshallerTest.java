@@ -21,11 +21,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainUnitValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -34,14 +35,17 @@ public class CounterfactualExplainabilityRequestMarshallerTest extends Marshalle
 
     @Test
     public void testWriteAndRead() throws IOException {
-        List<TypedVariableWithValue> goals = Collections.singletonList(TypedVariableWithValue.buildUnit("unitIn", "number", JsonNodeFactory.instance.numberNode(10)));
-        List<CounterfactualSearchDomain> searchDomains = Collections.singletonList(
-                new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
-                        "unitIn",
+        List<NamedTypedValue> goals = Collections.singletonList(new NamedTypedValue("unitIn",
+                new UnitValue("number",
                         "number",
-                        null,
-                        false,
-                        new CounterfactualDomainRange(JsonNodeFactory.instance.numberNode(0), JsonNodeFactory.instance.numberNode(10))));
+                        JsonNodeFactory.instance.numberNode(10))));
+        List<CounterfactualSearchDomain> searchDomains = Collections.singletonList(
+                new CounterfactualSearchDomain("age",
+                        new CounterfactualSearchDomainUnitValue("integer",
+                                "integer",
+                                Boolean.TRUE,
+                                new CounterfactualDomainRange(JsonNodeFactory.instance.numberNode(0), JsonNodeFactory.instance.numberNode(10)))));
+
         CounterfactualExplainabilityRequest request = new CounterfactualExplainabilityRequest("executionId", "counterfactualId", goals, searchDomains, 60L);
         CounterfactualExplainabilityRequestMarshaller marshaller = new CounterfactualExplainabilityRequestMarshaller(new ObjectMapper());
 
@@ -52,7 +56,7 @@ public class CounterfactualExplainabilityRequestMarshallerTest extends Marshalle
         Assertions.assertEquals(request.getCounterfactualId(), retrieved.getCounterfactualId());
         Assertions.assertEquals(goals.get(0).getName(), retrieved.getGoals().stream().findFirst().get().getName());
         Assertions.assertEquals(searchDomains.get(0).getName(), retrieved.getSearchDomains().stream().findFirst().get().getName());
-        Assertions.assertEquals(0, ((CounterfactualDomainRange) retrieved.getSearchDomains().stream().findFirst().get().getDomain()).getLowerBound().asInt());
+        Assertions.assertEquals(0, ((CounterfactualDomainRange) retrieved.getSearchDomains().stream().findFirst().get().getValue().toUnit().getDomain()).getLowerBound().asInt());
         Assertions.assertEquals(60L, request.getMaxRunningTimeSeconds());
     }
 }

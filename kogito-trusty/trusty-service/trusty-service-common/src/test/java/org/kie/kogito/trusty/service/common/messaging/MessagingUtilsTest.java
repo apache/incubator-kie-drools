@@ -16,12 +16,8 @@
 
 package org.kie.kogito.trusty.service.common.messaging;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -36,8 +32,10 @@ import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainCollectionValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainStructureValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainUnitValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainValue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,8 +44,6 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -56,37 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MessagingUtilsTest {
 
-    TypedVariableWithValue typedVariable = new TypedVariableWithValue(TypedValue.Kind.UNIT, "name", "string", new TextNode("sample"), emptyList());
-
-    @Test
-    void modelToTracingTypedValue() {
-        assertNull(MessagingUtils.modelToTracingTypedValue(null));
-
-        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariable);
-        assertNotNull(typedValue);
-        assertTrue(typedValue instanceof UnitValue);
-    }
-
-    @Test
-    void modelToTracingTypedValueCollection() {
-        assertNull(MessagingUtils.modelToTracingTypedValueCollection(null));
-
-        Collection<TypedValue> typedValues = MessagingUtils.modelToTracingTypedValueCollection(singletonList(typedVariable));
-        assertNotNull(typedValues);
-        assertEquals(1, typedValues.size());
-        assertTrue(typedValues.iterator().next() instanceof UnitValue);
-    }
-
-    @Test
-    void modelToTracingTypedValueMap() {
-        assertNull(MessagingUtils.modelToTracingTypedValueMap(null));
-
-        Map<String, TypedValue> valueMap = MessagingUtils.modelToTracingTypedValueMap(singletonList(typedVariable));
-        assertNotNull(valueMap);
-        assertEquals(1, valueMap.size());
-        assertTrue(valueMap.containsKey("name"));
-        assertTrue(valueMap.get("name") instanceof UnitValue);
-    }
+    TypedValue typedVariable = new UnitValue("string", "string", new TextNode("sample"));
 
     @Test
     void modelToCounterfactualSearchDomainDto_null() {
@@ -95,10 +61,8 @@ class MessagingUtilsTest {
 
     @Test
     void modelToCounterfactualSearchDomainDto_Unit_Categorical() {
-        CounterfactualSearchDomain searchDomain = new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
-                "name",
+        CounterfactualSearchDomainValue searchDomain = new CounterfactualSearchDomainUnitValue("string",
                 "string",
-                null,
                 Boolean.TRUE,
                 new CounterfactualDomainCategorical(asList(new TextNode("A"), new TextNode("B"))));
 
@@ -124,10 +88,8 @@ class MessagingUtilsTest {
 
     @Test
     void modelToCounterfactualSearchDomainDto_Unit_Range() {
-        CounterfactualSearchDomain searchDomain = new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
-                "age",
+        CounterfactualSearchDomainValue searchDomain = new CounterfactualSearchDomainUnitValue("integer",
                 "integer",
-                null,
                 Boolean.TRUE,
                 new CounterfactualDomainRange(new IntNode(18), new IntNode(65)));
 
@@ -155,14 +117,13 @@ class MessagingUtilsTest {
         //See https://issues.redhat.com/browse/FAI-509
         String request = "{\n" +
                 "      \"kind\": \"UNIT\",\n" +
-                "      \"name\": \"hasReferral\",\n" +
-                "      \"typeRef\": \"boolean\",\n" +
-                "      \"components\": null,\n" +
+                "      \"type\": \"boolean\",\n" +
+                "      \"baseType\": \"boolean\",\n" +
                 "      \"value\": false,\n" +
                 "      \"fixed\": false\n" +
                 "    }";
         ObjectMapper mapper = new ObjectMapper();
-        CounterfactualSearchDomain searchDomain = mapper.readValue(request, CounterfactualSearchDomain.class);
+        CounterfactualSearchDomainValue searchDomain = mapper.readValue(request, CounterfactualSearchDomainValue.class);
 
         CounterfactualSearchDomainDto searchDomainDto = MessagingUtils.modelToCounterfactualSearchDomainDto(searchDomain);
         assertNotNull(searchDomainDto);
@@ -181,17 +142,11 @@ class MessagingUtilsTest {
 
     @Test
     void modelToCounterfactualSearchDomainDto_Collection() {
-        CounterfactualSearchDomain searchDomain = new CounterfactualSearchDomain(TypedValue.Kind.COLLECTION,
-                "weights",
-                "collection",
-                List.of(new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
-                        "weight",
+        CounterfactualSearchDomainValue searchDomain = new CounterfactualSearchDomainCollectionValue("collection",
+                List.of(new CounterfactualSearchDomainUnitValue("integer",
                         "integer",
-                        null,
                         Boolean.TRUE,
-                        new CounterfactualDomainRange(new IntNode(10), new IntNode(20)))),
-                Boolean.TRUE,
-                new CounterfactualDomainRange(new IntNode(18), new IntNode(65)));
+                        new CounterfactualDomainRange(new IntNode(10), new IntNode(20)))));
 
         CounterfactualSearchDomainDto searchDomainDto = MessagingUtils.modelToCounterfactualSearchDomainDto(searchDomain);
         assertNotNull(searchDomainDto);
@@ -220,17 +175,12 @@ class MessagingUtilsTest {
 
     @Test
     void modelToCounterfactualSearchDomainDto_Structure() {
-        CounterfactualSearchDomain searchDomain = new CounterfactualSearchDomain(TypedValue.Kind.STRUCTURE,
-                "employee",
-                "Employee",
-                List.of(new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
-                        "salary",
-                        "integer",
-                        null,
-                        Boolean.TRUE,
-                        new CounterfactualDomainRange(new IntNode(1000), new IntNode(2000)))),
-                Boolean.TRUE,
-                new CounterfactualDomainRange(new IntNode(18), new IntNode(65)));
+        CounterfactualSearchDomainValue searchDomain = new CounterfactualSearchDomainStructureValue("Employee",
+                Map.of("salary",
+                        new CounterfactualSearchDomainUnitValue("integer",
+                                "integer",
+                                Boolean.TRUE,
+                                new CounterfactualDomainRange(new IntNode(1000), new IntNode(2000)))));
 
         CounterfactualSearchDomainDto searchDomainDto = MessagingUtils.modelToCounterfactualSearchDomainDto(searchDomain);
         assertNotNull(searchDomainDto);
@@ -260,10 +210,8 @@ class MessagingUtilsTest {
 
     @Test
     void modelToCounterfactualSearchDomainDto_Unit_nullDomain() {
-        CounterfactualSearchDomain searchDomain = new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
-                "name",
+        CounterfactualSearchDomainValue searchDomain = new CounterfactualSearchDomainUnitValue("string",
                 "string",
-                null,
                 Boolean.TRUE,
                 null);
 
@@ -280,197 +228,6 @@ class MessagingUtilsTest {
         assertTrue(unit.isFixed());
         assertNotNull(unit.getDomain());
         assertTrue(unit.getDomain() instanceof CounterfactualDomainFixedDto);
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    void tracingTypedValueToModelWhenMapIsNull() {
-        assertTrue(MessagingUtils.tracingTypedValueToModel((Map) null).isEmpty());
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    void tracingTypedValueToModelWhenMapEntryIsNull() {
-        assertNull(MessagingUtils.tracingTypedValueToModel((Map.Entry) null));
-    }
-
-    @Test
-    void tracingTypedValueToModelWhenMapEntryValueIsNull() {
-        //Map.entry(k, v) does not accept null values so use the long route
-        Map<String, TypedValue> map = new HashMap<>();
-        map.put("key", null);
-        Map.Entry<String, TypedValue> entry = map.entrySet().iterator().next();
-
-        assertNull(MessagingUtils.tracingTypedValueToModel(entry));
-    }
-
-    @Test
-    void modelToTracingTypedValueRoundTrip() {
-        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariable);
-
-        TypedVariableWithValue result = MessagingUtils.tracingTypedValueToModel(Map.entry("name", typedValue));
-        assertNotNull(result);
-        assertEquals(typedVariable.getName(), result.getName());
-        assertEquals(typedVariable.getKind(), result.getKind());
-        assertEquals(typedVariable.getTypeRef(), result.getTypeRef());
-        assertEquals(typedVariable.getValue(), result.getValue());
-        assertNull(result.getComponents());
-    }
-
-    @Test
-    void modelToTracingTypedValueCollectionRoundTrip() {
-        TypedVariableWithValue collectionItem1 = TypedVariableWithValue.buildUnit("item1", "string", new TextNode("sample1"));
-        TypedVariableWithValue collectionItem2 = TypedVariableWithValue.buildUnit("item2", "number", new IntNode(123));
-
-        TypedVariableWithValue typedVariableWithCollection = TypedVariableWithValue.buildCollection("collection",
-                "object",
-                List.of(collectionItem1, collectionItem2));
-
-        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariableWithCollection);
-
-        TypedVariableWithValue result = MessagingUtils.tracingTypedValueToModel(Map.entry("collection", typedValue));
-        assertNotNull(result);
-        assertEquals(typedVariableWithCollection.getName(), result.getName());
-        assertEquals(typedVariableWithCollection.getKind(), result.getKind());
-        assertEquals(typedVariableWithCollection.getTypeRef(), result.getTypeRef());
-        assertEquals(typedVariableWithCollection.getValue(), result.getValue());
-        assertNotNull(result.getComponents());
-        assertEquals(2, result.getComponents().size());
-
-        Iterator<TypedVariableWithValue> resultComponentIterator = result.getComponents().iterator();
-        TypedVariableWithValue resultComponent1 = resultComponentIterator.next();
-        assertNotNull(resultComponent1);
-        //Names are not converted to TypedValue and hence are not available on the return for collections
-        assertEquals("", resultComponent1.getName());
-        assertEquals(collectionItem1.getKind(), resultComponent1.getKind());
-        assertEquals(collectionItem1.getTypeRef(), resultComponent1.getTypeRef());
-        assertEquals(collectionItem1.getValue(), resultComponent1.getValue());
-        assertNull(resultComponent1.getComponents());
-
-        TypedVariableWithValue resultComponent2 = resultComponentIterator.next();
-        assertNotNull(resultComponent2);
-        //Names are not converted to TypedValue and hence are not available on the return for collections
-        assertEquals("", resultComponent2.getName());
-        assertEquals(collectionItem2.getKind(), resultComponent2.getKind());
-        assertEquals(collectionItem2.getTypeRef(), resultComponent2.getTypeRef());
-        assertEquals(collectionItem2.getValue(), resultComponent2.getValue());
-        assertNull(resultComponent2.getComponents());
-    }
-
-    @Test
-    void modelToTracingTypedValueStructureRoundTrip() {
-        TypedVariableWithValue structureItem1 = TypedVariableWithValue.buildUnit("child1", "string", new TextNode("sample1"));
-        TypedVariableWithValue structureItem2 = TypedVariableWithValue.buildUnit("child2", "number", new IntNode(123));
-        TypedVariableWithValue typedVariableWithStructure = TypedVariableWithValue.buildStructure("structure",
-                "object",
-                List.of(structureItem1, structureItem2));
-
-        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariableWithStructure);
-
-        TypedVariableWithValue result = MessagingUtils.tracingTypedValueToModel(Map.entry("structure", typedValue));
-        assertNotNull(result);
-        assertEquals(typedVariableWithStructure.getName(), result.getName());
-        assertEquals(typedVariableWithStructure.getKind(), result.getKind());
-        assertEquals(typedVariableWithStructure.getTypeRef(), result.getTypeRef());
-        assertEquals(typedVariableWithStructure.getValue(), result.getValue());
-        assertNotNull(result.getComponents());
-        assertEquals(2, result.getComponents().size());
-
-        //TypedValue stores children in a Map. The original order of the children is therefore not preserved on the return for structures
-        Optional<TypedVariableWithValue> oResultComponent1 = result.getComponents().stream().filter(c -> c.getName().equals("child1")).findFirst();
-        assertTrue(oResultComponent1.isPresent());
-        TypedVariableWithValue resultComponent1 = oResultComponent1.get();
-        assertEquals(structureItem1.getName(), resultComponent1.getName());
-        assertEquals(structureItem1.getKind(), resultComponent1.getKind());
-        assertEquals(structureItem1.getTypeRef(), resultComponent1.getTypeRef());
-        assertEquals(structureItem1.getValue(), resultComponent1.getValue());
-        assertNull(resultComponent1.getComponents());
-
-        //TypedValue stores children in a Map. The original order of the children is therefore not preserved on the return for structures
-        Optional<TypedVariableWithValue> oResultComponent2 = result.getComponents().stream().filter(c -> c.getName().equals("child2")).findFirst();
-        assertTrue(oResultComponent2.isPresent());
-        TypedVariableWithValue resultComponent2 = oResultComponent2.get();
-        assertEquals(structureItem2.getName(), resultComponent2.getName());
-        assertEquals(structureItem2.getKind(), resultComponent2.getKind());
-        assertEquals(structureItem2.getTypeRef(), resultComponent2.getTypeRef());
-        assertEquals(structureItem2.getValue(), resultComponent2.getValue());
-        assertNull(resultComponent2.getComponents());
-    }
-
-    @Test
-    void modelToTracingTypedValueStructureComplexRoundTrip() {
-        TypedVariableWithValue structureItem1 = TypedVariableWithValue.buildUnit("child1", "string", new TextNode("sample1"));
-
-        TypedVariableWithValue collectionItem1 = TypedVariableWithValue.buildUnit("item1", "string", new TextNode("sample1"));
-        TypedVariableWithValue collectionItem2 = TypedVariableWithValue.buildUnit("item2", "number", new IntNode(123));
-
-        TypedVariableWithValue typedVariableWithCollection = TypedVariableWithValue.buildCollection("collection",
-                "object",
-                List.of(collectionItem1, collectionItem2));
-
-        TypedVariableWithValue structureItem2 = TypedVariableWithValue.buildStructure("child2", "number", List.of(typedVariableWithCollection));
-        TypedVariableWithValue typedVariableWithStructure = TypedVariableWithValue.buildStructure("structure",
-                "object",
-                List.of(structureItem1, structureItem2));
-
-        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariableWithStructure);
-
-        TypedVariableWithValue result = MessagingUtils.tracingTypedValueToModel(Map.entry("structure", typedValue));
-        assertNotNull(result);
-        assertEquals(typedVariableWithStructure.getName(), result.getName());
-        assertEquals(typedVariableWithStructure.getKind(), result.getKind());
-        assertEquals(typedVariableWithStructure.getTypeRef(), result.getTypeRef());
-        assertEquals(typedVariableWithStructure.getValue(), result.getValue());
-        assertNotNull(result.getComponents());
-        assertEquals(2, result.getComponents().size());
-
-        //TypedValue stores children in a Map. The original order of the children is therefore not preserved on the return for structures
-        Optional<TypedVariableWithValue> oResultComponent1 = result.getComponents().stream().filter(c -> c.getName().equals("child1")).findFirst();
-        assertTrue(oResultComponent1.isPresent());
-        TypedVariableWithValue resultComponent1 = oResultComponent1.get();
-        assertEquals(structureItem1.getName(), resultComponent1.getName());
-        assertEquals(structureItem1.getKind(), resultComponent1.getKind());
-        assertEquals(structureItem1.getTypeRef(), resultComponent1.getTypeRef());
-        assertEquals(structureItem1.getValue(), resultComponent1.getValue());
-        assertNull(resultComponent1.getComponents());
-
-        //TypedValue stores children in a Map. The original order of the children is therefore not preserved on the return for structures
-        Optional<TypedVariableWithValue> oResultComponent2 = result.getComponents().stream().filter(c -> c.getName().equals("child2")).findFirst();
-        assertTrue(oResultComponent2.isPresent());
-        TypedVariableWithValue resultComponent2 = oResultComponent2.get();
-        assertEquals(structureItem2.getName(), resultComponent2.getName());
-        assertEquals(structureItem2.getKind(), resultComponent2.getKind());
-        assertEquals(structureItem2.getTypeRef(), resultComponent2.getTypeRef());
-        assertEquals(structureItem2.getValue(), resultComponent2.getValue());
-        assertNotNull(resultComponent2.getComponents());
-        assertEquals(1, resultComponent2.getComponents().size());
-
-        TypedVariableWithValue resultComponent2Child1 = resultComponent2.getComponents().iterator().next();
-        assertEquals(typedVariableWithCollection.getName(), resultComponent2Child1.getName());
-        assertEquals(typedVariableWithCollection.getKind(), resultComponent2Child1.getKind());
-        assertEquals(typedVariableWithCollection.getTypeRef(), resultComponent2Child1.getTypeRef());
-        assertEquals(typedVariableWithCollection.getValue(), resultComponent2Child1.getValue());
-        assertNotNull(resultComponent2Child1.getComponents());
-        assertEquals(2, resultComponent2Child1.getComponents().size());
-
-        Iterator<TypedVariableWithValue> resultComponent2Child1Iterator = resultComponent2Child1.getComponents().iterator();
-        TypedVariableWithValue resultComponent2Child1Sibling1 = resultComponent2Child1Iterator.next();
-        assertNotNull(resultComponent2Child1Sibling1);
-        //Names are not converted to TypedValue and hence are not available on the return for collections
-        assertEquals("", resultComponent2Child1Sibling1.getName());
-        assertEquals(collectionItem1.getKind(), resultComponent2Child1Sibling1.getKind());
-        assertEquals(collectionItem1.getTypeRef(), resultComponent2Child1Sibling1.getTypeRef());
-        assertEquals(collectionItem1.getValue(), resultComponent2Child1Sibling1.getValue());
-        assertNull(resultComponent2Child1Sibling1.getComponents());
-
-        TypedVariableWithValue resultComponent2Child1Sibling2 = resultComponent2Child1Iterator.next();
-        assertNotNull(resultComponent2Child1Sibling2);
-        //Names are not converted to TypedValue and hence are not available on the return for collections
-        assertEquals("", resultComponent2Child1Sibling2.getName());
-        assertEquals(collectionItem2.getKind(), resultComponent2Child1Sibling2.getKind());
-        assertEquals(collectionItem2.getTypeRef(), resultComponent2Child1Sibling2.getTypeRef());
-        assertEquals(collectionItem2.getValue(), resultComponent2Child1Sibling2.getValue());
-        assertNull(resultComponent2Child1Sibling2.getComponents());
     }
 
 }

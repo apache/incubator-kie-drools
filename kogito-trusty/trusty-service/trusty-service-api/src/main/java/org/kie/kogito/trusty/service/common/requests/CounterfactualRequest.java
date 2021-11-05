@@ -21,7 +21,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,7 +31,7 @@ public class CounterfactualRequest {
 
     @JsonProperty("goals")
     @NotNull(message = "goals object must be provided.")
-    private List<TypedVariableWithValue> goals;
+    private List<NamedTypedValue> goals;
 
     @JsonProperty("searchDomains")
     @NotNull(message = "searchDomains object must be provided.")
@@ -40,13 +40,13 @@ public class CounterfactualRequest {
     private CounterfactualRequest() {
     }
 
-    public CounterfactualRequest(@NotNull List<TypedVariableWithValue> goals,
+    public CounterfactualRequest(@NotNull List<NamedTypedValue> goals,
             @NotNull List<CounterfactualSearchDomain> searchDomains) {
         this.goals = Objects.requireNonNull(goals);
         this.searchDomains = Objects.requireNonNull(searchDomains);
     }
 
-    public List<TypedVariableWithValue> getGoals() {
+    public List<NamedTypedValue> getGoals() {
         return goals;
     }
 

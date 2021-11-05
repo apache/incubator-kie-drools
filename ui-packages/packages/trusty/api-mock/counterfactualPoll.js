@@ -87,13 +87,16 @@ function getResult(executionId, baseId, isFinal) {
         if (index === 0) {
           return {
             ...input,
-            value: Math.floor(
-              Math.random() *
-                input.value *
-                0.2 *
-                (Math.random() > 0.5 ? 1 : -1) +
-                input.value
-            )
+            value: {
+              ...input.value,
+              value: Math.floor(
+                Math.random() *
+                  input.value.value *
+                  0.2 *
+                  (Math.random() > 0.5 ? 1 : -1) +
+                  input.value.value
+              )
+            }
           };
         }
         return input;

@@ -17,16 +17,21 @@ package org.kie.kogito.trusty.service.common;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.tracing.typedvalue.StructureValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 
 import com.fasterxml.jackson.databind.node.IntNode;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.trusty.service.common.CounterfactualParameterValidation.isStructureSubset;
-import static org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue.buildStructure;
-import static org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue.buildUnit;
+import static org.kie.kogito.trusty.service.common.TypedValueTestUtils.buildGoalStructure;
+import static org.kie.kogito.trusty.service.common.TypedValueTestUtils.buildGoalUnit;
+import static org.kie.kogito.trusty.service.common.TypedValueTestUtils.buildOutcomeStructure;
+import static org.kie.kogito.trusty.service.common.TypedValueTestUtils.buildOutcomeUnit;
 
 public class CounterfactualParameterValidationSubsetTest {
 
@@ -61,14 +66,14 @@ public class CounterfactualParameterValidationSubsetTest {
     @Test
     public void testGoals_UnitNull() {
         assertFalse(isStructureSubset(
-                List.of(buildUnit("age", "integer", new IntNode(18))),
+                List.of(buildOutcomeUnit("age", "integer", new IntNode(18))),
                 null));
     }
 
     @Test
     public void testGoals_UnitEmpty() {
         assertTrue(isStructureSubset(
-                List.of(buildUnit("age", "integer", new IntNode(18))),
+                List.of(buildOutcomeUnit("age", "integer", new IntNode(18))),
                 Collections.emptyList()));
     }
 
@@ -76,170 +81,169 @@ public class CounterfactualParameterValidationSubsetTest {
     public void testGoals_NullUnit() {
         assertFalse(isStructureSubset(
                 null,
-                List.of(buildUnit("age", "integer", new IntNode(18)))));
+                List.of(buildGoalUnit("age", "integer", new IntNode(18)))));
     }
 
     @Test
     public void testGoals_EmptyUnit() {
         assertFalse(isStructureSubset(
                 Collections.emptyList(),
-                List.of(buildUnit("age", "integer", new IntNode(18)))));
+                List.of(buildGoalUnit("age", "integer", new IntNode(18)))));
     }
 
     @Test
     public void testGoals_UnitUnit() {
         assertTrue(isStructureSubset(
-                List.of(buildUnit("age", "integer", new IntNode(18))),
-                List.of(buildUnit("age", "integer", new IntNode(18)))));
+                List.of(buildOutcomeUnit("age", "integer", new IntNode(18))),
+                List.of(buildGoalUnit("age", "integer", new IntNode(18)))));
     }
 
     @Test
     public void testGoals_UnitUnits() {
         assertFalse(isStructureSubset(
-                List.of(buildUnit("age", "integer", new IntNode(18))),
-                List.of(buildUnit("age", "integer", new IntNode(18)),
-                        buildUnit("salary", "integer", new IntNode(5000)))));
+                List.of(buildOutcomeUnit("age", "integer", new IntNode(18))),
+                List.of(buildGoalUnit("age", "integer", new IntNode(18)),
+                        buildGoalUnit("salary", "integer", new IntNode(5000)))));
     }
 
     @Test
     public void testGoals_UnitsUnit() {
         assertTrue(isStructureSubset(
-                List.of(buildUnit("age", "integer", new IntNode(18)),
-                        buildUnit("salary", "integer", new IntNode(10000))),
-                List.of(buildUnit("age", "integer", new IntNode(18)))));
+                List.of(buildOutcomeUnit("age", "integer", new IntNode(18)),
+                        buildOutcomeUnit("salary", "integer", new IntNode(10000))),
+                List.of(buildGoalUnit("age", "integer", new IntNode(18)))));
     }
 
     @Test
     public void testGoals_UnitsUnits() {
         assertTrue(isStructureSubset(
-                List.of(buildUnit("age", "integer", new IntNode(18)),
-                        buildUnit("salary", "integer", new IntNode(10000))),
-                List.of(buildUnit("age", "integer", new IntNode(18)),
-                        buildUnit("salary", "integer", new IntNode(100000)))));
+                List.of(buildOutcomeUnit("age", "integer", new IntNode(18)),
+                        buildOutcomeUnit("salary", "integer", new IntNode(10000))),
+                List.of(buildGoalUnit("age", "integer", new IntNode(18)),
+                        buildGoalUnit("salary", "integer", new IntNode(100000)))));
     }
 
     @Test
     public void testGoals_UnitsUnits__WithDifferentOrder() {
         assertTrue(isStructureSubset(
-                List.of(buildUnit("salary", "integer", new IntNode(10000)),
-                        buildUnit("age", "integer", new IntNode(18))),
-                List.of(buildUnit("age", "integer", new IntNode(18)),
-                        buildUnit("salary", "integer", new IntNode(100000)))));
+                List.of(buildOutcomeUnit("salary", "integer", new IntNode(10000)),
+                        buildOutcomeUnit("age", "integer", new IntNode(18))),
+                List.of(buildGoalUnit("age", "integer", new IntNode(18)),
+                        buildGoalUnit("salary", "integer", new IntNode(100000)))));
     }
 
     @Test
     public void testGoals_StructureUnit() {
         assertFalse(isStructureSubset(
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)),
-                                buildUnit("salary", "integer", new IntNode(10000))))),
-                List.of(buildUnit("age", "integer", new IntNode(18)))));
+                List.of(buildOutcomeStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                "salary", new UnitValue("integer", "integer", new IntNode(10000))))),
+                List.of(buildGoalUnit("age", "integer", new IntNode(18)))));
     }
 
     @Test
     public void testGoals_UnitStructure() {
         assertFalse(isStructureSubset(
-                List.of(buildUnit("age", "integer", new IntNode(18))),
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)),
-                                buildUnit("salary", "integer", new IntNode(100000)))))));
+                List.of(buildOutcomeUnit("age", "integer", new IntNode(18))),
+                List.of(buildGoalStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                "salary", new UnitValue("integer", "integer", new IntNode(100000)))))));
     }
 
     @Test
     public void testGoals_StructureStructure() {
         assertTrue(isStructureSubset(
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)),
-                                buildUnit("salary", "integer", new IntNode(10000))))),
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)),
-                                buildUnit("salary", "integer", new IntNode(100000)))))));
+                List.of(buildOutcomeStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                "salary", new UnitValue("integer", "integer", new IntNode(10000))))),
+                List.of(buildGoalStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                "salary", new UnitValue("integer", "integer", new IntNode(100000)))))));
     }
 
     @Test
     public void testGoals_StructureStructureSubset() {
         assertTrue(isStructureSubset(
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)),
-                                buildUnit("salary", "integer", new IntNode(10000))))),
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)))))));
+                List.of(buildOutcomeStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                "salary", new UnitValue("integer", "integer", new IntNode(10000))))),
+                List.of(buildGoalStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)))))));
     }
 
     @Test
     public void testGoals_StructureStructure__WithDifferentOrder() {
         assertTrue(isStructureSubset(
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("salary", "integer", new IntNode(10000)),
-                                buildUnit("age", "integer", new IntNode(18))))),
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)),
-                                buildUnit("salary", "integer", new IntNode(100000)))))));
+                List.of(buildOutcomeStructure("person", "tPerson",
+                        Map.of("salary", new UnitValue("integer", "integer", new IntNode(10000)),
+                                "age", new UnitValue("integer", "integer", new IntNode(18))))),
+                List.of(buildGoalStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                "salary", new UnitValue("integer", "integer", new IntNode(100000)))))));
     }
 
     @Test
     public void testGoals_StructureWithStructureStructureWithStructure() {
         assertTrue(isStructureSubset(
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)),
-                                buildStructure("income", "tIncome",
-                                        List.of(buildUnit("salary", "integer", new IntNode(10000)),
-                                                buildUnit("bonuses", "integer", new IntNode(50000))))))),
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildUnit("age", "integer", new IntNode(18)),
-                                buildStructure("income", "tIncome",
-                                        List.of(buildUnit("salary", "integer", new IntNode(100000)),
-                                                buildUnit("bonuses", "integer", new IntNode(500000)))))))));
+                List.of(buildOutcomeStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                "income", new StructureValue("tIncome",
+                                        Map.of("salary", new UnitValue("integer", "integer", new IntNode(10000)),
+                                                "bonuses", new UnitValue("integer", "integer", new IntNode(50000))))))),
+                List.of(buildGoalStructure("person", "tPerson",
+                        Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                "income", new StructureValue("tIncome",
+                                        Map.of("salary", new UnitValue("integer", "integer", new IntNode(100000)),
+                                                "bonuses", new UnitValue("integer", "integer", new IntNode(500000)))))))));
     }
 
     @Test
     public void testGoals_ComplexComplex() {
         assertTrue(isStructureSubset(
-                List.of(buildUnit("hatSize", "integer", new IntNode(16)),
-                        buildStructure("person", "tPerson",
-                                List.of(buildUnit("age", "integer", new IntNode(18)),
-                                        buildStructure("income", "tIncome",
-                                                List.of(buildUnit("salary", "integer", new IntNode(10000)),
-                                                        buildUnit("bonuses", "integer", new IntNode(50000))))))),
-                List.of(buildUnit("hatSize", "integer", new IntNode(12)),
-                        buildStructure("person", "tPerson",
-                                List.of(buildUnit("age", "integer", new IntNode(18)),
-                                        buildStructure("income", "tIncome",
-                                                List.of(buildUnit("salary", "integer", new IntNode(100000)),
-                                                        buildUnit("bonuses", "integer", new IntNode(500000)))))))));
+                List.of(buildOutcomeUnit("hatSize", "integer", new IntNode(16)),
+                        buildOutcomeStructure("person", "tPerson",
+                                Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                        "income", new StructureValue("tIncome",
+                                                Map.of("salary", new UnitValue("integer", "integer", new IntNode(10000)),
+                                                        "bonuses", new UnitValue("integer", "integer", new IntNode(50000))))))),
+                List.of(buildGoalUnit("hatSize", "integer", new IntNode(12)),
+                        buildGoalStructure("person", "tPerson",
+                                Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                        "income", new StructureValue("tIncome",
+                                                Map.of("salary", new UnitValue("integer", "integer", new IntNode(100000)),
+                                                        "bonuses", new UnitValue("integer", "integer", new IntNode(500000)))))))));
     }
 
     @Test
     public void testGoals_ComplexComplex__WithDifferentOrder() {
         assertTrue(isStructureSubset(
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildStructure("income", "tIncome",
-                                List.of(buildUnit("salary", "integer", new IntNode(10000)),
-                                        buildUnit("bonuses", "integer", new IntNode(50000)))),
-                                buildUnit("age", "integer", new IntNode(18)))),
-                        buildUnit("hatSize", "integer", new IntNode(16))),
-                List.of(buildUnit("hatSize", "integer", new IntNode(12)),
-                        buildStructure("person", "tPerson",
-                                List.of(buildUnit("age", "integer", new IntNode(18)),
-                                        buildStructure("income", "tIncome",
-                                                List.of(buildUnit("salary", "integer", new IntNode(100000)),
-                                                        buildUnit("bonuses", "integer", new IntNode(500000)))))))));
+                List.of(buildOutcomeStructure("person", "tPerson",
+                        Map.of("income", new StructureValue("tIncome",
+                                Map.of("salary", new UnitValue("integer", "integer", new IntNode(10000)),
+                                        "bonuses", new UnitValue("integer", "integer", new IntNode(50000)))),
+                                "age", new UnitValue("integer", "integer", new IntNode(18)))),
+                        buildOutcomeUnit("hatSize", "integer", new IntNode(16))),
+                List.of(buildGoalUnit("hatSize", "integer", new IntNode(12)),
+                        buildGoalStructure("person", "tPerson",
+                                Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                        "income", new StructureValue("tIncome",
+                                                Map.of("salary", new UnitValue("integer", "integer", new IntNode(100000)),
+                                                        "bonuses", new UnitValue("integer", "integer", new IntNode(500000)))))))));
     }
 
     @Test
     public void testGoals_ComplexComplex__WithDifferentOrder_WithDifference() {
         assertFalse(isStructureSubset(
-                List.of(buildStructure("person", "tPerson",
-                        List.of(buildStructure("income", "tIncome",
-                                List.of(buildUnit("salary", "integer", new IntNode(10000)))),
-                                buildUnit("age", "integer", new IntNode(18)))),
-                        buildUnit("hatSize", "integer", new IntNode(16))),
-                List.of(buildUnit("hatSize", "integer", new IntNode(12)),
-                        buildStructure("person", "tPerson",
-                                List.of(buildUnit("age", "integer", new IntNode(18)),
-                                        buildStructure("income", "tIncome",
-                                                List.of(buildUnit("salary", "integer", new IntNode(100000)),
-                                                        buildUnit("bonuses", "integer", new IntNode(500000)))))))));
+                List.of(buildOutcomeStructure("person", "tPerson",
+                        Map.of("income", new StructureValue("tIncome",
+                                Map.of("salary", new UnitValue("integer", "integer", new IntNode(10000)))),
+                                "age", new UnitValue("integer", "integer", new IntNode(18)))),
+                        buildOutcomeUnit("hatSize", "integer", new IntNode(16))),
+                List.of(buildGoalUnit("hatSize", "integer", new IntNode(12)),
+                        buildGoalStructure("person", "tPerson",
+                                Map.of("age", new UnitValue("integer", "integer", new IntNode(18)),
+                                        "income", new StructureValue("tIncome",
+                                                Map.of("salary", new UnitValue("integer", "integer", new IntNode(100000)),
+                                                        "bonuses", new UnitValue("integer", "integer", new IntNode(500000)))))))));
     }
-
 }

@@ -16,8 +16,11 @@
 package org.kie.kogito.trusty.storage.api.model;
 
 import java.util.Collection;
+import java.util.Map;
 
+import org.kie.kogito.tracing.decision.event.message.Message;
 import org.kie.kogito.tracing.decision.event.message.MessageLevel;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,10 +46,10 @@ public class DecisionOutcome {
     private String evaluationStatus;
 
     @JsonProperty(OUTCOME_RESULT_FIELD)
-    private TypedVariableWithValue outcomeResult;
+    private TypedValue outcomeResult;
 
     @JsonProperty(OUTCOME_INPUTS_FIELD)
-    private Collection<TypedVariableWithValue> outcomeInputs;
+    private Map<String, TypedValue> outcomeInputs;
 
     @JsonProperty(MESSAGES_FIELD)
     private Collection<Message> messages;
@@ -54,7 +57,11 @@ public class DecisionOutcome {
     public DecisionOutcome() {
     }
 
-    public DecisionOutcome(String outcomeId, String outcomeName, String evaluationStatus, TypedVariableWithValue outcomeResult, Collection<TypedVariableWithValue> outcomeInputs,
+    public DecisionOutcome(String outcomeId,
+            String outcomeName,
+            String evaluationStatus,
+            TypedValue outcomeResult,
+            Map<String, TypedValue> outcomeInputs,
             Collection<Message> messages) {
         this.outcomeId = outcomeId;
         this.outcomeName = outcomeName;
@@ -88,19 +95,19 @@ public class DecisionOutcome {
         this.evaluationStatus = evaluationStatus;
     }
 
-    public TypedVariableWithValue getOutcomeResult() {
+    public TypedValue getOutcomeResult() {
         return outcomeResult;
     }
 
-    public void setOutcomeResult(TypedVariableWithValue outcomeResult) {
+    public void setOutcomeResult(TypedValue outcomeResult) {
         this.outcomeResult = outcomeResult;
     }
 
-    public Collection<TypedVariableWithValue> getOutcomeInputs() {
+    public Map<String, TypedValue> getOutcomeInputs() {
         return outcomeInputs;
     }
 
-    public void setOutcomeInputs(Collection<TypedVariableWithValue> outcomeInputs) {
+    public void setOutcomeInputs(Map<String, TypedValue> outcomeInputs) {
         this.outcomeInputs = outcomeInputs;
     }
 

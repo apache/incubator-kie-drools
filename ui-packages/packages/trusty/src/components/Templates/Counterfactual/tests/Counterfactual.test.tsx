@@ -70,11 +70,9 @@ describe('Counterfactual', () => {
           outcomeName: 'Mortgage Approval',
           evaluationStatus: 'SUCCEEDED',
           outcomeResult: {
-            name: 'Mortgage Approval',
-            typeRef: 'boolean',
             kind: 'UNIT',
-            value: true,
-            components: []
+            type: 'boolean',
+            value: true
           },
           messages: [],
           hasErrors: false
@@ -86,10 +84,11 @@ describe('Counterfactual', () => {
       data: [
         {
           name: 'Asset Score',
-          typeRef: 'number',
-          kind: 'UNIT',
-          value: 738,
-          components: null
+          value: {
+            kind: 'UNIT',
+            type: 'number',
+            value: 738
+          }
         }
       ] as ItemObject[]
     };
@@ -134,19 +133,15 @@ describe('Counterfactual', () => {
           outcomeName: 'Mortgage Approval',
           evaluationStatus: 'SUCCEEDED',
           outcomeResult: {
-            name: 'Mortgage Approval',
-            typeRef: 'tMortgage',
             kind: 'STRUCTURE',
-            value: null,
-            components: [
-              {
-                name: 'approved',
-                typeRef: 'boolean',
+            type: 'tMortgage',
+            value: {
+              approved: {
                 kind: 'UNIT',
-                value: true,
-                components: null
+                type: 'boolean',
+                value: true
               }
-            ]
+            }
           },
           messages: [],
           hasErrors: false
@@ -158,18 +153,17 @@ describe('Counterfactual', () => {
       data: [
         {
           name: 'Asset Score',
-          typeRef: 'tAssetScore',
-          kind: 'STRUCTURE',
-          value: null,
-          components: [
-            {
-              name: 'score',
-              typeRef: 'number',
-              kind: 'UNIT',
-              value: 123,
-              components: null
+          value: {
+            type: 'tAssetScore',
+            kind: 'STRUCTURE',
+            value: {
+              score: {
+                kind: 'UNIT',
+                type: 'number',
+                value: 123
+              }
             }
-          ]
+          }
         }
       ] as ItemObject[]
     };

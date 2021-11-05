@@ -1,7 +1,12 @@
 import React from 'react';
 import InputDataBrowser from '../InputDataBrowser';
 import { mount, shallow } from 'enzyme';
-import { ItemObject, RemoteData, RemoteDataStatus } from '../../../../types';
+import {
+  ItemObject,
+  ItemObjectUnit,
+  RemoteData,
+  RemoteDataStatus
+} from '../../../../types';
 
 describe('InputDataBrowser', () => {
   test('renders a loading animation while fetching data', () => {
@@ -20,28 +25,33 @@ describe('InputDataBrowser', () => {
       data: [
         {
           name: 'Asset Score',
-          typeRef: 'number',
-          value: 738,
-          components: null
+          value: {
+            kind: 'UNIT',
+            type: 'number',
+            value: 738
+          }
         },
         {
           name: 'Asset Amount',
-          typeRef: 'number',
-          value: 700,
-          components: null
+          value: {
+            kind: 'UNIT',
+            type: 'number',
+            value: 700
+          }
         },
         {
           name: 'Property',
-          typeRef: 'tProperty',
-          value: null,
-          components: [
-            {
-              name: 'Purchase Price',
-              typeRef: 'number',
-              value: 34000,
-              components: null
+          value: {
+            kind: 'STRUCTURE',
+            type: 'tProperty',
+            value: {
+              'Purchase Price': {
+                kind: 'UNIT',
+                type: 'number',
+                value: 34000
+              }
             }
-          ]
+          }
         }
       ]
     } as RemoteData<Error, ItemObject[]>;
@@ -68,16 +78,16 @@ describe('InputDataBrowser', () => {
     expect(dataList.find('CategoryLine').prop('categoryLabel')).toMatch('Root');
     expect(dataList.find('InputValue')).toHaveLength(2);
     expect(
-      dataList
+      (dataList
         .find('InputValue')
         .at(0)
-        .prop('inputValue')
+        .prop('inputValue') as ItemObjectUnit).value
     ).toBe(738);
     expect(
-      dataList
+      (dataList
         .find('InputValue')
         .at(1)
-        .prop('inputValue')
+        .prop('inputValue') as ItemObjectUnit).value
     ).toBe(700);
 
     wrapper
@@ -95,6 +105,9 @@ describe('InputDataBrowser', () => {
     );
 
     expect(propertyDataList.find('InputValue')).toHaveLength(1);
-    expect(propertyDataList.find('InputValue').prop('inputValue')).toBe(34000);
+    expect(
+      (propertyDataList.find('InputValue').prop('inputValue') as ItemObjectUnit)
+        .value
+    ).toBe(34000);
   });
 });

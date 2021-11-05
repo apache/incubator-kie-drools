@@ -85,5 +85,4 @@ public abstract class BaseExplainabilityResult {
     public void setStatusDetails(String statusDetails) {
         this.statusDetails = statusDetails;
     }
-
 }

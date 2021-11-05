@@ -17,20 +17,15 @@
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.tracing.decision.event.message.MessageLevel;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceInputValue;
 import org.kie.kogito.tracing.decision.event.trace.TraceOutputValue;
-import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.Message;
-import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 
 public class TraceEventConverter {
 
@@ -61,39 +56,7 @@ public class TraceEventConverter {
     }
 
     public static DecisionInput toInput(TraceInputValue eventInput) {
-        return new DecisionInput(eventInput.getId(), eventInput.getName(), toTypedVariable(eventInput.getName(), eventInput.getValue()));
-    }
-
-    public static TypedVariableWithValue toTypedVariable(String name, TypedValue typedValue) {
-        if (typedValue == null) {
-            return TypedVariableWithValue.buildUnit(name, null, null);
-        }
-        switch (typedValue.getKind()) {
-            case STRUCTURE:
-                return TypedVariableWithValue.buildStructure(
-                        name,
-                        typedValue.getType(),
-                        Optional.ofNullable(typedValue.toStructure().getValue())
-                                .map(v -> v.entrySet().stream()
-                                        .map(e -> toTypedVariable(e.getKey(), e.getValue()))
-                                        .collect(Collectors.toList()))
-                                .orElse(null));
-            case COLLECTION:
-                return TypedVariableWithValue.buildCollection(
-                        name,
-                        typedValue.getType(),
-                        Optional.ofNullable(typedValue.toCollection().getValue())
-                                .map(v -> v.stream()
-                                        .map(x -> toTypedVariable(null, x))
-                                        .collect(Collectors.toList()))
-                                .orElse(null));
-            case UNIT:
-                return TypedVariableWithValue.buildUnit(
-                        name,
-                        typedValue.getType(),
-                        typedValue.toUnit().getValue());
-        }
-        throw new IllegalStateException("Unsupported TypedVariable of kind " + typedValue.getKind());
+        return new DecisionInput(eventInput.getId(), eventInput.getName(), eventInput.getValue());
     }
 
     public static DecisionOutcome toOutcome(TraceOutputValue eventOutput) {
@@ -101,25 +64,9 @@ public class TraceEventConverter {
                 eventOutput.getId(),
                 eventOutput.getName(),
                 eventOutput.getStatus(),
-                toTypedVariable(eventOutput.getName(), eventOutput.getValue()),
-                eventOutput.getInputs() == null ? null : eventOutput.getInputs().entrySet().stream().map(e -> toTypedVariable(e.getKey(), e.getValue())).collect(Collectors.toList()),
-                eventOutput.getMessages() == null ? null : eventOutput.getMessages().stream().map(TraceEventConverter::toMessage).collect(Collectors.toList()));
-    }
-
-    public static Message toMessage(org.kie.kogito.tracing.decision.event.message.Message eventMessage) {
-        return new Message(
-                eventMessage.getLevel(),
-                eventMessage.getCategory() == null ? null : eventMessage.getCategory().name(),
-                eventMessage.getType(),
-                eventMessage.getSourceId(),
-                eventMessage.getText(),
-                toMessageExceptionField(eventMessage.getException()));
-    }
-
-    public static MessageExceptionField toMessageExceptionField(org.kie.kogito.tracing.decision.event.message.MessageExceptionField eventException) {
-        return eventException == null
-                ? null
-                : new MessageExceptionField(eventException.getClassName(), eventException.getMessage(), toMessageExceptionField(eventException.getCause()));
+                eventOutput.getValue(),
+                eventOutput.getInputs(),
+                eventOutput.getMessages());
     }
 
     public static boolean decisionHasSucceeded(List<TraceOutputValue> outputs) {

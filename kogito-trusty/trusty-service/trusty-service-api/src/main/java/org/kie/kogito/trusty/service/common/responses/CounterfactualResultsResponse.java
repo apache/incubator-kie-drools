@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,7 +43,7 @@ public class CounterfactualResultsResponse extends CounterfactualExplainabilityR
 
     public CounterfactualResultsResponse(@NotNull String executionId,
             @NotNull String counterfactualId,
-            @NotNull Collection<TypedVariableWithValue> goals,
+            @NotNull Collection<NamedTypedValue> goals,
             @NotNull Collection<CounterfactualSearchDomain> searchDomains,
             Long maxRunningTimeSeconds,
             @NotNull List<CounterfactualExplainabilityResult> solutions) {

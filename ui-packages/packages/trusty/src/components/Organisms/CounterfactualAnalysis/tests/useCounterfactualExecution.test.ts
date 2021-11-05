@@ -32,7 +32,7 @@ describe('useCounterfactualExecution', () => {
           {
             kind: 'UNIT',
             name: 'canRequestLoan',
-            typeRef: 'boolean',
+            type: 'boolean',
             components: null,
             value: true
           }
@@ -42,7 +42,7 @@ describe('useCounterfactualExecution', () => {
             fixed: false,
             kind: 'UNIT',
             name: 'monthlySalary',
-            typeRef: 'number',
+            type: 'number',
             components: null,
             domain: {
               type: 'RANGE',
@@ -71,19 +71,22 @@ describe('useCounterfactualExecution', () => {
             stage: 'INTERMEDIATE',
             inputs: [
               {
-                kind: 'UNIT',
                 name: 'monthlySalary',
-                typeRef: 'Double',
-                components: null,
-                value: 2428.5761968979696
+                value: {
+                  kind: 'UNIT',
+                  type: 'Double',
+                  value: 2428.5761968979696
+                }
               }
             ],
             outputs: [
               {
-                kind: 'UNIT',
                 name: 'canRequestLoan',
-                typeRef: 'Boolean',
-                value: true
+                value: {
+                  kind: 'UNIT',
+                  type: 'Boolean',
+                  value: true
+                }
               }
             ]
           }
@@ -123,26 +126,32 @@ describe('useCounterfactualExecution', () => {
         goals: [
           {
             id: '_46B5CA54-27CA-4950-B601-63F58BC3BDFE',
-            kind: 'UNIT',
-            name: 'canRequestLoan',
-            originalValue: false,
             role: 2,
-            typeRef: 'boolean',
-            value: true
+            name: 'canRequestLoan',
+            value: {
+              kind: 'UNIT',
+              type: 'boolean',
+              value: true
+            },
+            originalValue: {
+              kind: 'UNIT',
+              type: 'boolean',
+              value: false
+            }
           }
         ] as CFGoal[],
         searchDomains: [
           {
-            kind: 'UNIT',
             name: 'monthlySalary',
-            typeRef: 'number',
-            components: null,
-            value: 50,
-            fixed: false,
-            domain: {
-              type: 'RANGE',
-              lowerBound: 60,
-              upperBound: 6000
+            value: {
+              kind: 'UNIT',
+              type: 'number',
+              fixed: false,
+              domain: {
+                type: 'RANGE',
+                lowerBound: 60,
+                upperBound: 6000
+              }
             }
           }
         ] as CFSearchInput[]

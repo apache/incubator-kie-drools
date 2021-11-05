@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from 'react';
@@ -37,6 +38,7 @@ import {
   CFAnalysisResult,
   CFExecutionStatus,
   CFSearchInput,
+  CFSearchInputUnit,
   CFStatus
 } from '../../../types';
 import { CFDispatch } from '../CounterfactualAnalysis/CounterfactualAnalysis';
@@ -44,7 +46,7 @@ import FormattedValue from '../../Atoms/FormattedValue/FormattedValue';
 import './CounterfactualTable.scss';
 import {
   isInputConstraintSupported,
-  isInputTypeSupported
+  isSearchInputTypeSupportedForCounterfactual
 } from '../../Templates/Counterfactual/counterfactualReducer';
 
 type CounterfactualTableProps = {
@@ -148,7 +150,12 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
       payload: { searchInputIndex: rowId }
     });
     // boolean search domain hack
-    if (isSelected && typeof rows[rowId].value === 'boolean') {
+    if (
+      isSelected &&
+      rows[rowId].value.kind === 'UNIT' &&
+      typeof (rows[rowId].value as CFSearchInputUnit).originalValue.value ===
+        'boolean'
+    ) {
       dispatch({
         type: 'CF_SET_INPUT_DOMAIN',
         payload: {
@@ -164,7 +171,10 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
 
   const canSelectInput = useCallback(
     (input: CFSearchInput) => {
-      return isInputSelectionEnabled && isInputTypeSupported(input);
+      return (
+        isInputSelectionEnabled &&
+        isSearchInputTypeSupportedForCounterfactual(input)
+      );
     },
     [isInputSelectionEnabled]
   );
@@ -182,7 +192,11 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
 
   useEffect(() => {
     setRows(inputs);
-    setAreAllRowsSelected(inputs.find(input => input.fixed) === undefined);
+    setAreAllRowsSelected(
+      inputs
+        .filter(input => input.value.kind === 'UNIT')
+        .find(input => (input.value as CFSearchInputUnit).fixed) === undefined
+    );
   }, [inputs]);
 
   useEffect(() => {
@@ -387,7 +401,10 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                             select={{
                               rowIndex,
                               onSelect,
-                              isSelected: row.fixed === false,
+                              isSelected:
+                                row.value.kind === 'UNIT' &&
+                                (row.value as CFSearchInputUnit).fixed ===
+                                  false,
                               disable: !canSelectInput(row)
                             }}
                           />
@@ -399,7 +416,9 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                               row={row}
                               rowIndex={rowIndex}
                               isInputSelectionEnabled={isInputSelectionEnabled}
-                              isInputTypeSupported={isInputTypeSupported}
+                              isInputTypeSupported={
+                                isSearchInputTypeSupportedForCounterfactual
+                              }
                               isInputConstraintSupported={
                                 isInputConstraintSupported
                               }
@@ -407,8 +426,13 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                             />
                           </Td>
                           <Td key={`${rowIndex}_3`} dataLabel={columns[2]}>
-                            {row.components === null && (
-                              <FormattedValue value={row.value} />
+                            {row.value.kind === 'UNIT' && (
+                              <FormattedValue
+                                value={
+                                  (row.value as CFSearchInputUnit).originalValue
+                                    .value
+                                }
+                              />
                             )}
                           </Td>
                           {displayedResults.length > 1 && (
@@ -431,7 +455,7 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                                   }
                                   ${
                                     value !== row.value &&
-                                    row.components === null
+                                    row.value.kind === 'UNIT'
                                       ? 'cf-table__result-value--changed'
                                       : 'cf-table__result-value'
                                   }
@@ -511,28 +535,40 @@ const ConstraintCell = (props: ConstraintCellProps) => {
   const isConstraintEditEnabled =
     isInputSelectionEnabled && isConstraintSupported;
 
+  const unit = useMemo(
+    () =>
+      row.value.kind === 'UNIT' ? (row.value as CFSearchInputUnit) : undefined,
+    [row]
+  );
+  const unsupported = <em>Not yet supported</em>;
+
+  //This should not be possible but let's not assume...
+  if (row.value.kind !== 'UNIT') {
+    return unsupported;
+  }
+
   return (
     <>
-      {!isInputSelectionEnabled && row.domain && (
-        <CounterfactualInputDomain input={row} />
+      {!isInputSelectionEnabled && unit.domain && (
+        <CounterfactualInputDomain input={unit} />
       )}
       {isConstraintEditEnabled && (
         <Button
           variant={'link'}
           isInline={true}
           onClick={() => onEditConstraint(row, rowIndex)}
-          icon={!row.domain && <PlusCircleIcon />}
-          isDisabled={row.fixed}
+          icon={!unit.domain && <PlusCircleIcon />}
+          isDisabled={unit.fixed}
           className={'counterfactual-constraint-edit'}
         >
-          {row.domain ? (
-            <CounterfactualInputDomain input={row} />
+          {unit.domain ? (
+            <CounterfactualInputDomain input={unit} />
           ) : (
             <>Constraint</>
           )}
         </Button>
       )}
-      {!isTypeSupported && <em>Not yet supported</em>}
+      {!isTypeSupported && unsupported}
     </>
   );
 };
@@ -547,7 +583,9 @@ const convertCFResultsInputs = (results: CFAnalysisResult[]) => {
         if (!rows[inputIndex + 1]) {
           rows.push([]);
         }
-        rows[inputIndex + 1].push(input.components === null ? input.value : '');
+        rows[inputIndex + 1].push(
+          input.value.kind === 'UNIT' ? input.value.value : ''
+        );
       });
     });
   }

@@ -31,7 +31,7 @@ const CounterfactualOutcomesSelected = ({
               <span key={goal.id}>
                 {goal.role === CFGoalRole.FIXED && (
                   <span>
-                    {goal.name}: {goal.value.toString()}
+                    {goal.name}: {goal.value.value.toString()}
                   </span>
                 )}
                 {goal.role === CFGoalRole.FLOATING && (

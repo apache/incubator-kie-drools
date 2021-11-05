@@ -5,8 +5,11 @@ import {
   CFGoal,
   CFGoalRole,
   CFSearchInput,
+  CFSearchInputUnit,
+  CFSearchInputValue,
   CFStatus,
   ItemObject,
+  ItemObjectValue,
   Outcome
 } from '../../../types';
 
@@ -35,7 +38,7 @@ export type cfActions =
       type: 'CF_SET_INPUT_DOMAIN';
       payload: {
         inputIndex: number;
-        domain: CFSearchInput['domain'];
+        domain: CFSearchInputUnit['domain'];
       };
     }
   | {
@@ -69,7 +72,13 @@ export const cfReducer = (state: CFState, action: cfActions): CFState => {
         ...state,
         searchDomains: state.searchDomains.map((input, index) =>
           index === action.payload.searchInputIndex
-            ? { ...input, fixed: !input.fixed }
+            ? {
+                ...input,
+                value: {
+                  ...input.value,
+                  fixed: !(input.value as CFSearchInputUnit).fixed
+                }
+              }
             : input
         )
       };
@@ -80,10 +89,10 @@ export const cfReducer = (state: CFState, action: cfActions): CFState => {
       const newState = {
         ...state,
         searchDomains: state.searchDomains.map(input =>
-          isInputTypeSupported(input)
+          isSearchInputTypeSupportedForCounterfactual(input)
             ? {
                 ...input,
-                fixed: !action.payload.selected
+                value: { ...input.value, fixed: !action.payload.selected }
               }
             : input
         )
@@ -98,7 +107,7 @@ export const cfReducer = (state: CFState, action: cfActions): CFState => {
           index === action.payload.inputIndex
             ? {
                 ...input,
-                domain: action.payload.domain
+                value: { ...input.value, domain: action.payload.domain }
               }
             : input
         )
@@ -159,37 +168,78 @@ export const cfInitState = (parameters: {
     },
     results: []
   };
-  initialState.goals = outcomes
-    .filter(outcome => outcome.evaluationStatus === 'SUCCEEDED')
-    .map(outcome => {
-      return {
-        id: outcome.outcomeId,
-        name: outcome.outcomeName,
-        typeRef: outcome.outcomeResult.typeRef,
-        value: outcome.outcomeResult.value,
-        originalValue: outcome.outcomeResult.value,
-        role: isOutcomeTypeSupported(outcome)
-          ? CFGoalRole.ORIGINAL
-          : CFGoalRole.UNSUPPORTED,
-        kind: outcome.outcomeResult.kind
-      };
-    });
-
+  initialState.goals = convertOutcomesToGoals(outcomes);
   initialState.searchDomains = convertInputToSearchDomain(inputs);
 
   return initialState;
 };
 
-const convertInputToSearchDomain = (inputs: ItemObject[]) => {
+const convertOutcomesToGoals = (outcomes: Outcome[]): CFGoal[] => {
+  return outcomes
+    .filter(outcome => outcome.evaluationStatus === 'SUCCEEDED')
+    .map(outcome => {
+      return {
+        id: outcome.outcomeId,
+        name: outcome.outcomeName,
+        role: isOutcomeTypeSupported(outcome)
+          ? CFGoalRole.ORIGINAL
+          : CFGoalRole.UNSUPPORTED,
+        value: outcome.outcomeResult,
+        originalValue: outcome.outcomeResult
+      };
+    });
+};
+
+const convertInputToSearchDomain = (inputs: ItemObject[]): CFSearchInput[] => {
   const addIsFixed = (input: ItemObject): CFSearchInput => {
-    if (!isInputTypeSupported(input)) {
-      return input;
+    const cfSearchInput = {
+      name: input.name,
+      value: { ...convertInputToSearchDomainValue(input.value) }
+    };
+    if (
+      cfSearchInput.value.kind === 'UNIT' &&
+      isInputTypeSupportedForCounterfactual(input)
+    ) {
+      return {
+        ...cfSearchInput,
+        value: { ...cfSearchInput.value, fixed: true }
+      };
     }
-    return { ...input, fixed: true };
+    return cfSearchInput;
   };
   return inputs.map(input => {
     return addIsFixed(input);
   });
+};
+
+const convertInputToSearchDomainValue = (
+  value: ItemObjectValue
+): CFSearchInputValue => {
+  switch (value.kind) {
+    case 'UNIT':
+      return {
+        kind: 'UNIT',
+        type: value.type,
+        originalValue: value
+      };
+    case 'COLLECTION':
+      return {
+        kind: 'COLLECTION',
+        type: value.type,
+        value: value.value.map(v => convertInputToSearchDomainValue(v))
+      };
+    case 'STRUCTURE':
+      return {
+        kind: 'STRUCTURE',
+        type: value.type,
+        value: new Map(
+          Array.from(Object.entries(value.value), ([key, value]) => [
+            key,
+            convertInputToSearchDomainValue(value)
+          ])
+        )
+      };
+  }
 };
 
 const updateCFStatus = (state: CFState): CFState => {
@@ -213,13 +263,17 @@ const areRequiredParametersSet = (state: CFState): boolean => {
 
 const areInputsSelected = (inputs: CFSearchInput[]) => {
   // filtering all non fixed inputs
-  const selectedInputs = inputs.filter(domain => domain.fixed === false);
+  const selectedInputValues: CFSearchInputUnit[] = inputs
+    .filter(input => input.value.kind === 'UNIT')
+    .map(input => input.value as CFSearchInputUnit)
+    .filter(input => input.fixed === false);
   // checking if all inputs have a domain specified, with the exception of
   // booleans (do not require one)
   return (
-    selectedInputs.length > 0 &&
-    selectedInputs.every(
-      input => input.domain || typeof input.value === 'boolean'
+    selectedInputValues.length > 0 &&
+    selectedInputValues.every(
+      inputValue =>
+        inputValue.domain || typeof inputValue.originalValue.value === 'boolean'
     )
   );
 };
@@ -236,13 +290,31 @@ const areGoalsSelected = (goals: CFGoal[]) => {
   );
 };
 
-export const isInputTypeSupported = (searchInput: CFSearchInput): boolean => {
+export const isInputTypeSupportedForCounterfactual = (
+  input: ItemObject
+): boolean => {
   //Structures, Collections and Strings are not supported
-  if (searchInput.kind === 'UNIT') {
-    switch (typeof searchInput.value) {
+  if (input.value.kind === 'UNIT') {
+    switch (typeof input.value.value) {
       case 'boolean':
       case 'number':
         return true;
+    }
+  }
+  return false;
+};
+
+export const isSearchInputTypeSupportedForCounterfactual = (
+  searchInput: CFSearchInput
+): boolean => {
+  //Structures, Collections and Strings are not supported
+  if (searchInput.value.kind === 'UNIT') {
+    if (searchInput.value.originalValue.kind === 'UNIT') {
+      switch (typeof searchInput.value.originalValue.value) {
+        case 'boolean':
+        case 'number':
+          return true;
+      }
     }
   }
   return false;
@@ -253,8 +325,8 @@ export const isInputConstraintSupported = (
 ): boolean => {
   //Structures, Collections and Strings are not supported. Constraints selection
   //not allowed for Booleans.
-  if (searchInput.kind === 'UNIT') {
-    switch (typeof searchInput.value) {
+  if (searchInput.value.kind === 'UNIT') {
+    switch (typeof searchInput.value.originalValue.value) {
       case 'number':
         return true;
     }

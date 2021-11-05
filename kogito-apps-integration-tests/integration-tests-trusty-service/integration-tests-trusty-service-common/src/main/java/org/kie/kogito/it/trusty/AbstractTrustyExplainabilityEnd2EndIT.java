@@ -16,7 +16,9 @@
 
 package org.kie.kogito.it.trusty;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,7 @@ import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.KogitoServiceContainer;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.trusty.service.common.requests.CounterfactualRequest;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
 import org.kie.kogito.trusty.service.common.responses.DecisionOutcomesResponse;
@@ -35,8 +38,13 @@ import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsRe
 import org.kie.kogito.trusty.service.common.responses.ExecutionsResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainCollectionValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainStructureValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainUnitValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainValue;
+import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.KafkaContainer;
@@ -264,7 +272,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                 .when()
                 .contentType(ContentType.JSON)
                 .body(new CounterfactualRequest(
-                        outcomes.getOutcomes().stream().map(DecisionOutcome::getOutcomeResult).collect(Collectors.toList()),
+                        outcomes.getOutcomes().stream().map(AbstractTrustyExplainabilityEnd2EndIT::toCounterfactualGoal).collect(Collectors.toList()),
                         inputs.getInputs().stream().map(AbstractTrustyExplainabilityEnd2EndIT::toCounterfactualSearchDomain).collect(Collectors.toList())))
                 .post("/executions/decisions/" + executionId + "/explanations/counterfactuals")
                 .then().statusCode(200)
@@ -274,22 +282,40 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
         assertNotNull(counterfactualRequestResponse.getCounterfactualId());
     }
 
-    private static CounterfactualSearchDomain toCounterfactualSearchDomain(TypedVariableWithValue input) {
-        switch (input.getKind()) {
+    private static NamedTypedValue toCounterfactualGoal(DecisionOutcome outcome) {
+        TypedValue value = outcome.getOutcomeResult();
+        return new NamedTypedValue(outcome.getOutcomeName(), value);
+    }
+
+    private static CounterfactualSearchDomain toCounterfactualSearchDomain(DecisionInput input) {
+        TypedValue value = input.getValue();
+        return new CounterfactualSearchDomain(input.getName(), toCounterfactualSearchDomainValue(value));
+    }
+
+    private static CounterfactualSearchDomainValue toCounterfactualSearchDomainValue(TypedValue value) {
+        switch (value.getKind()) {
             case COLLECTION:
-                return CounterfactualSearchDomain.buildCollection(input.getName(),
-                        input.getTypeRef(),
-                        input.getComponents().stream().map(AbstractTrustyExplainabilityEnd2EndIT::toCounterfactualSearchDomain).collect(Collectors.toList()),
-                        true,
-                        null);
+                Collection<CounterfactualSearchDomainValue> cfCollectionValues = value.toCollection()
+                        .getValue()
+                        .stream()
+                        .map(AbstractTrustyExplainabilityEnd2EndIT::toCounterfactualSearchDomainValue)
+                        .collect(Collectors.toList());
+                return new CounterfactualSearchDomainCollectionValue(value.getType(), cfCollectionValues);
             case STRUCTURE:
-                return CounterfactualSearchDomain.buildStructure(input.getName(),
-                        input.getTypeRef(),
-                        input.getComponents().stream().map(AbstractTrustyExplainabilityEnd2EndIT::toCounterfactualSearchDomain).collect(Collectors.toList()));
+                Map<String, CounterfactualSearchDomainValue> cfStructureValues = value.toStructure()
+                        .getValue()
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey,
+                                e -> toCounterfactualSearchDomainValue(e.getValue())));
+
+                return new CounterfactualSearchDomainStructureValue(value.getType(), cfStructureValues);
             case UNIT:
-                return CounterfactualSearchDomain.buildFixedUnit(input.getName(),
-                        input.getTypeRef());
+                return new CounterfactualSearchDomainUnitValue(value.getType(),
+                        value.getType(),
+                        Boolean.TRUE,
+                        null);
         }
-        throw new IllegalArgumentException("An unexpected TypedVariableWithValue.Kind detected. Unable to process.");
+        throw new IllegalArgumentException("An unexpected TypedValue.Kind detected. Unable to process.");
     }
 }

@@ -30,10 +30,10 @@ const CounterfactualOutcomeValue = (props: CounterfactualOutcomeProps) => {
   const { goal } = props;
 
   const value = useMemo(() => {
-    if (typeof goal.originalValue === 'boolean') {
-      return goal.originalValue ? 'True' : 'False';
+    if (typeof goal.originalValue.value === 'boolean') {
+      return goal.originalValue.value ? 'True' : 'False';
     } else {
-      return goal.originalValue;
+      return goal.originalValue.value;
     }
   }, [goal]);
 

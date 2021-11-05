@@ -6,11 +6,16 @@ import { CFDispatch } from '../../CounterfactualAnalysis/CounterfactualAnalysis'
 
 const input: CFSearchInput = {
   name: 'field',
-  kind: 'UNIT',
-  typeRef: 'number',
-  value: 123,
-  domain: { type: 'RANGE' },
-  components: null
+  value: {
+    kind: 'UNIT',
+    type: 'number',
+    domain: { type: 'RANGE' },
+    originalValue: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 123
+    }
+  }
 };
 
 const onClose = jest.fn();

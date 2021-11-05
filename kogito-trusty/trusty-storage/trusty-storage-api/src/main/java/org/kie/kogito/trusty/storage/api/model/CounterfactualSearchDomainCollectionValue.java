@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,42 +15,30 @@
  */
 package org.kie.kogito.trusty.storage.api.model;
 
+import java.util.Collection;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CounterfactualSearchDomain {
+public class CounterfactualSearchDomainCollectionValue extends CounterfactualSearchDomainValue {
 
-    public static final String NAME_FIELD = "name";
-    public static final String VALUE_FIELD = "value";
+    @JsonProperty("value")
+    private Collection<CounterfactualSearchDomainValue> value;
 
-    @JsonProperty(NAME_FIELD)
-    private String name;
-
-    @JsonProperty(VALUE_FIELD)
-    private CounterfactualSearchDomainValue value;
-
-    public CounterfactualSearchDomain() {
+    protected CounterfactualSearchDomainCollectionValue() {
     }
 
-    public CounterfactualSearchDomain(String name, CounterfactualSearchDomainValue value) {
-        this.name = name;
+    public CounterfactualSearchDomainCollectionValue(String type) {
+        super(Kind.COLLECTION, type);
+    }
+
+    public CounterfactualSearchDomainCollectionValue(String type, Collection<CounterfactualSearchDomainValue> value) {
+        super(Kind.COLLECTION, type);
         this.value = value;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public CounterfactualSearchDomainValue getValue() {
+    public Collection<CounterfactualSearchDomainValue> getValue() {
         return value;
-    }
-
-    public void setValue(CounterfactualSearchDomainValue value) {
-        this.value = value;
     }
 }

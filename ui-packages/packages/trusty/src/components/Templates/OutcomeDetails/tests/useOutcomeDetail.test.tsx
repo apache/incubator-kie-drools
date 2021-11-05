@@ -22,20 +22,20 @@ describe('useOutcomeDetail', () => {
         outcomeName: 'Risk Score',
         outcomeResult: {
           name: 'Risk Score',
-          typeRef: 'number',
+          type: 'number',
           value: 1,
           components: null
         },
         outcomeInputs: [
           {
             name: 'Asset Score',
-            typeRef: 'number',
+            type: 'number',
             value: 738,
             components: []
           },
           {
             name: 'Asset Amount',
-            typeRef: 'number',
+            type: 'number',
             value: 70000,
             components: []
           }

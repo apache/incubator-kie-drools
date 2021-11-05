@@ -25,7 +25,7 @@ describe('InputData', () => {
         inputs: [
           {
             name: 'Asset Score',
-            typeRef: 'number',
+            type: 'number',
             value: 738,
             components: []
           }

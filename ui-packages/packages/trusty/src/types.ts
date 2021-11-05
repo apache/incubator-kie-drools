@@ -39,29 +39,37 @@ export interface ExecutionRouteParams {
 
 export interface ItemObject {
   name: string;
-  kind: 'STRUCTURE' | 'UNIT' | 'COLLECTION';
-  typeRef: string;
+  value: ItemObjectValue;
+}
+
+export type ItemObjectValue =
+  | ItemObjectUnit
+  | ItemObjectCollection
+  | ItemObjectStructure;
+
+export interface ItemObjectUnit {
+  kind: 'UNIT';
+  type: string;
   value: string | number | boolean | Array<string | number | boolean> | null;
-  components: (ItemObject | ItemObject[])[] | null;
-  impact?: boolean | number;
-  score?: number;
 }
 
-export function isItemObjectArray(object: unknown): object is ItemObject[] {
-  return typeof object[0].name === 'string';
+export interface ItemObjectCollection {
+  kind: 'COLLECTION';
+  type: string;
+  value: ItemObjectValue[] | null;
 }
 
-export function isItemObjectMultiArray(
-  object: unknown
-): object is ItemObject[][] {
-  return Array.isArray(object[0]);
+export type ItemObjectMap = { [key: string]: ItemObjectValue };
+
+export interface ItemObjectStructure {
+  kind: 'STRUCTURE';
+  type: string;
+  value: ItemObjectMap;
 }
 
 export interface InputRow {
   inputLabel: string;
   inputValue?: ItemObject['value'];
-  hasEffect?: boolean | number;
-  score?: number;
   key: string;
   category: string;
 }
@@ -79,10 +87,10 @@ export type evaluationStatusStrings = keyof typeof evaluationStatus;
 export interface Outcome {
   outcomeId: string;
   outcomeName: string;
+  outcomeResult: ItemObjectValue;
   evaluationStatus: evaluationStatusStrings;
   hasErrors: boolean;
   messages: string[];
-  outcomeResult: ItemObject;
 }
 
 export interface FeatureScores {
@@ -126,6 +134,24 @@ export interface ModelData {
   model: string;
 }
 
+export interface CFSearchInput {
+  name: string;
+  value: CFSearchInputValue;
+}
+
+export type CFSearchInputValue =
+  | CFSearchInputUnit
+  | CFSearchInputCollection
+  | CFSearchInputStructure;
+
+export interface CFSearchInputUnit {
+  kind: 'UNIT';
+  type: string;
+  fixed?: boolean;
+  domain?: CFNumericalDomain | CFCategoricalDomain;
+  originalValue: ItemObject['value'];
+}
+
 export interface CFNumericalDomain {
   type: 'RANGE';
   lowerBound?: number;
@@ -137,9 +163,16 @@ export interface CFCategoricalDomain {
   categories: string[];
 }
 
-export interface CFSearchInput extends ItemObject {
-  fixed?: boolean;
-  domain?: CFNumericalDomain | CFCategoricalDomain;
+export interface CFSearchInputCollection {
+  kind: 'COLLECTION';
+  type: string;
+  value: Array<CFSearchInputValue> | null;
+}
+
+export interface CFSearchInputStructure {
+  kind: 'STRUCTURE';
+  type: string;
+  value: Map<string, CFSearchInputValue> | null;
 }
 
 export enum CFGoalRole {
@@ -149,11 +182,13 @@ export enum CFGoalRole {
   FLOATING
 }
 
-export type CFGoal = Pick<ItemObject, 'name' | 'kind' | 'typeRef' | 'value'> & {
-  role: CFGoalRole;
-  originalValue: ItemObject['value'];
+export interface CFGoal {
   id: string;
-};
+  name: string;
+  role: CFGoalRole;
+  value: ItemObjectValue;
+  originalValue: CFGoal['value'];
+}
 
 export type CFResult = Array<unknown>;
 
@@ -189,8 +224,8 @@ export interface CFAnalysisResult {
   solutionId: string;
   isValid: boolean;
   stage: 'INTERMEDIATE' | 'FINAL';
-  inputs: CFSearchInput[];
-  outputs: CFGoal[];
+  inputs: ItemObject[];
+  outputs: ItemObject[];
   sequenceId: number;
 }
 

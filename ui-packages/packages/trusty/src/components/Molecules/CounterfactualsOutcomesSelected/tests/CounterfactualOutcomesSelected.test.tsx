@@ -34,29 +34,47 @@ const goals: CFGoal[] = [
   {
     id: '1001',
     name: 'Score',
-    kind: 'UNIT',
-    typeRef: 'number',
-    value: 1,
-    originalValue: 0,
-    role: CFGoalRole.FIXED
+    role: CFGoalRole.FIXED,
+    value: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 1
+    },
+    originalValue: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 0
+    }
   },
   {
     id: '1002',
     name: 'Approval',
-    kind: 'UNIT',
-    typeRef: 'boolean',
-    value: true,
-    originalValue: false,
-    role: CFGoalRole.FIXED
+    role: CFGoalRole.FIXED,
+    value: {
+      kind: 'UNIT',
+      type: 'boolean',
+      value: true
+    },
+    originalValue: {
+      kind: 'UNIT',
+      type: 'boolean',
+      value: false
+    }
   },
   {
     id: '1003',
     name: 'Risk',
-    kind: 'UNIT',
-    typeRef: 'number',
-    value: 33,
-    originalValue: 33,
-    role: CFGoalRole.ORIGINAL
+    role: CFGoalRole.ORIGINAL,
+    value: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 33
+    },
+    originalValue: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 33
+    }
   }
 ];
 
@@ -64,10 +82,16 @@ const noGoals: CFGoal[] = [
   {
     id: '1003',
     name: 'Risk',
-    kind: 'UNIT',
-    typeRef: 'number',
-    value: 33,
-    originalValue: 33,
-    role: CFGoalRole.ORIGINAL
+    role: CFGoalRole.ORIGINAL,
+    value: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 33
+    },
+    originalValue: {
+      kind: 'UNIT',
+      type: 'number',
+      value: 33
+    }
   }
 ];

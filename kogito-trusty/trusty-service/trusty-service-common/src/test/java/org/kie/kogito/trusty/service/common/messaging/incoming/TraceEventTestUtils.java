@@ -19,15 +19,16 @@ package org.kie.kogito.trusty.service.common.messaging.incoming;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.tracing.decision.event.message.Message;
+import org.kie.kogito.tracing.decision.event.message.MessageExceptionField;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.Message;
-import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,19 +53,28 @@ public class TraceEventTestUtils {
     public static void assertDecisionInput(DecisionInput expected, DecisionInput actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
-        assertTypedVariable(expected.getValue(), actual.getValue());
+        assertTypedValue(expected.getValue(), actual.getValue());
     }
 
     public static void assertDecisionOutcome(DecisionOutcome expected, DecisionOutcome actual) {
         assertEquals(expected.getOutcomeId(), actual.getOutcomeId());
         assertEquals(expected.getOutcomeName(), actual.getOutcomeName());
-        assertTypedVariable(expected.getOutcomeResult(), actual.getOutcomeResult());
+        assertTypedValue(expected.getOutcomeResult(), actual.getOutcomeResult());
         assertEquals(expected.getEvaluationStatus(), actual.getEvaluationStatus());
-        assertList(expected.getOutcomeInputs(), actual.getOutcomeInputs(), TraceEventTestUtils::assertTypedVariable, TraceEventTestUtils::compareTypedVariable);
-        assertList(expected.getMessages(), actual.getMessages(), TraceEventTestUtils::assertMessage, TraceEventTestUtils::compareMessage);
+        assertList(expected.getOutcomeInputs().entrySet(),
+                actual.getOutcomeInputs().entrySet(),
+                TraceEventTestUtils::assertTypedValue,
+                TraceEventTestUtils::compareTypedValue);
+        assertList(expected.getMessages(),
+                actual.getMessages(),
+                TraceEventTestUtils::assertMessage,
+                TraceEventTestUtils::compareMessage);
     }
 
-    public static <T> void assertList(Collection<T> expected, Collection<T> actual, BiConsumer<T, T> itemAssertor, Comparator<? super T> comparator) {
+    public static <T> void assertList(Collection<T> expected,
+            Collection<T> actual,
+            BiConsumer<T, T> itemAssertor,
+            Comparator<? super T> comparator) {
         if (expected == null && actual == null
                 || expected == null && actual.isEmpty()
                 || actual == null && expected.isEmpty()) {
@@ -104,17 +114,25 @@ public class TraceEventTestUtils {
         assertMessageExceptionField(expected.getCause(), actual.getCause());
     }
 
-    public static void assertTypedVariable(TypedVariableWithValue expected, TypedVariableWithValue actual) {
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getTypeRef(), actual.getTypeRef());
-        assertEquals(expected.getValue(), actual.getValue());
+    public static void assertTypedValue(Map.Entry<String, TypedValue> expected,
+            Map.Entry<String, TypedValue> actual) {
+        assertEquals(expected.getKey(), actual.getKey());
+        assertTypedValue(expected.getValue(), actual.getValue());
+    }
+
+    public static void assertTypedValue(TypedValue expected,
+            TypedValue actual) {
+        assertEquals(expected.getType(), actual.getType());
+        assertEquals(expected.toUnit().getBaseType(), actual.toUnit().getBaseType());
+        assertEquals(expected.toUnit().getValue(), actual.toUnit().getValue());
     }
 
     public static int compareDecisionInput(DecisionInput expected, DecisionInput actual) {
         return new CompareToBuilder()
                 .append(expected.getId(), actual.getId())
                 .append(expected.getName(), actual.getName())
-                .append(expected.getValue(), actual.getValue(), toObjectComparator(TypedVariableWithValue.class, TraceEventTestUtils::compareTypedVariable))
+                .append(expected.getValue(), actual.getValue(), toObjectComparator(TypedValue.class,
+                        TraceEventTestUtils::compareTypedValue))
                 .toComparison();
     }
 
@@ -123,7 +141,8 @@ public class TraceEventTestUtils {
                 .append(expected.getOutcomeId(), actual.getOutcomeId())
                 .append(expected.getOutcomeName(), actual.getOutcomeName())
                 .append(expected.getEvaluationStatus(), actual.getEvaluationStatus())
-                .append(expected.getOutcomeResult(), actual.getOutcomeResult(), toObjectComparator(TypedVariableWithValue.class, TraceEventTestUtils::compareTypedVariable))
+                .append(expected.getOutcomeResult(), actual.getOutcomeResult(), toObjectComparator(TypedValue.class,
+                        TraceEventTestUtils::compareTypedValue))
                 .toComparison();
     }
 
@@ -136,10 +155,22 @@ public class TraceEventTestUtils {
                 .toComparison();
     }
 
-    public static int compareTypedVariable(TypedVariableWithValue expected, TypedVariableWithValue actual) {
+    public static int compareTypedValue(Map.Entry<String, TypedValue> expected,
+            Map.Entry<String, TypedValue> actual) {
         return new CompareToBuilder()
-                .append(expected.getTypeRef(), actual.getTypeRef())
-                .append(expected.getName(), actual.getName())
+                .append(expected.getKey(), actual.getKey())
+                .append(expected.getValue().getKind(), actual.getValue().getKind())
+                .append(expected.getValue().toUnit().getBaseType(), actual.getValue().toUnit().getBaseType())
+                .append(expected.getValue().getType(), actual.getValue().getType())
+                .toComparison();
+    }
+
+    public static int compareTypedValue(TypedValue expected,
+            TypedValue actual) {
+        return new CompareToBuilder()
+                .append(expected.getType(), actual.getType())
+                .append(expected.toUnit().getBaseType(), actual.toUnit().getBaseType())
+                .append(expected.toUnit().getValue(), actual.toUnit().getValue())
                 .toComparison();
     }
 

@@ -8,18 +8,20 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
   inputs={
     Array [
       Object {
-        "components": null,
-        "kind": "UNIT",
         "name": "Credit Score",
-        "typeRef": "number",
-        "value": 738,
+        "value": Object {
+          "kind": "UNIT",
+          "type": "number",
+          "value": 738,
+        },
       },
       Object {
-        "components": null,
-        "kind": "UNIT",
         "name": "Type",
-        "typeRef": "string",
-        "value": "Lease",
+        "value": Object {
+          "kind": "UNIT",
+          "type": "string",
+          "value": "Lease",
+        },
       },
     ]
   }
@@ -32,10 +34,8 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
         "outcomeId": "_c6e56793-68d0-4683-b34b-5e9d69e7d0d4",
         "outcomeName": "Risk Score",
         "outcomeResult": Object {
-          "components": null,
           "kind": "UNIT",
-          "name": "Risk Score",
-          "typeRef": "number",
+          "type": "number",
           "value": 1,
         },
       },
@@ -46,10 +46,8 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
         "outcomeId": "_46B5CA54-27CA-4950-B601-63F58BC3BDFE",
         "outcomeName": "canRequestLoan",
         "outcomeResult": Object {
-          "components": null,
           "kind": "UNIT",
-          "name": "canRequestLoan",
-          "typeRef": "boolean",
+          "type": "boolean",
           "value": false,
         },
       },
@@ -60,10 +58,8 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
         "outcomeId": "_047FFF53-0583-4FAD-B08F-8E1C077021D6",
         "outcomeName": "Asset Score",
         "outcomeResult": Object {
-          "components": null,
           "kind": "UNIT",
-          "name": "Asset Score",
-          "typeRef": "number",
+          "type": "number",
           "value": "33",
         },
       },
@@ -179,30 +175,48 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                             Array [
                                               Object {
                                                 "id": "_c6e56793-68d0-4683-b34b-5e9d69e7d0d4",
-                                                "kind": "UNIT",
                                                 "name": "Risk Score",
-                                                "originalValue": 1,
+                                                "originalValue": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "number",
+                                                  "value": 1,
+                                                },
                                                 "role": 1,
-                                                "typeRef": "number",
-                                                "value": 1,
+                                                "value": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "number",
+                                                  "value": 1,
+                                                },
                                               },
                                               Object {
                                                 "id": "_46B5CA54-27CA-4950-B601-63F58BC3BDFE",
-                                                "kind": "UNIT",
                                                 "name": "canRequestLoan",
-                                                "originalValue": false,
+                                                "originalValue": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "boolean",
+                                                  "value": false,
+                                                },
                                                 "role": 1,
-                                                "typeRef": "boolean",
-                                                "value": false,
+                                                "value": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "boolean",
+                                                  "value": false,
+                                                },
                                               },
                                               Object {
                                                 "id": "_047FFF53-0583-4FAD-B08F-8E1C077021D6",
-                                                "kind": "UNIT",
                                                 "name": "Asset Score",
-                                                "originalValue": "33",
+                                                "originalValue": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "number",
+                                                  "value": "33",
+                                                },
                                                 "role": 1,
-                                                "typeRef": "number",
-                                                "value": "33",
+                                                "value": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "number",
+                                                  "value": "33",
+                                                },
                                               },
                                             ]
                                           }
@@ -539,30 +553,48 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                     Array [
                                       Object {
                                         "id": "_c6e56793-68d0-4683-b34b-5e9d69e7d0d4",
-                                        "kind": "UNIT",
                                         "name": "Risk Score",
-                                        "originalValue": 1,
+                                        "originalValue": Object {
+                                          "kind": "UNIT",
+                                          "type": "number",
+                                          "value": 1,
+                                        },
                                         "role": 1,
-                                        "typeRef": "number",
-                                        "value": 1,
+                                        "value": Object {
+                                          "kind": "UNIT",
+                                          "type": "number",
+                                          "value": 1,
+                                        },
                                       },
                                       Object {
                                         "id": "_46B5CA54-27CA-4950-B601-63F58BC3BDFE",
-                                        "kind": "UNIT",
                                         "name": "canRequestLoan",
-                                        "originalValue": false,
+                                        "originalValue": Object {
+                                          "kind": "UNIT",
+                                          "type": "boolean",
+                                          "value": false,
+                                        },
                                         "role": 1,
-                                        "typeRef": "boolean",
-                                        "value": false,
+                                        "value": Object {
+                                          "kind": "UNIT",
+                                          "type": "boolean",
+                                          "value": false,
+                                        },
                                       },
                                       Object {
                                         "id": "_047FFF53-0583-4FAD-B08F-8E1C077021D6",
-                                        "kind": "UNIT",
                                         "name": "Asset Score",
-                                        "originalValue": "33",
+                                        "originalValue": Object {
+                                          "kind": "UNIT",
+                                          "type": "number",
+                                          "value": "33",
+                                        },
                                         "role": 1,
-                                        "typeRef": "number",
-                                        "value": "33",
+                                        "value": Object {
+                                          "kind": "UNIT",
+                                          "type": "number",
+                                          "value": "33",
+                                        },
                                       },
                                     ]
                                   }
@@ -1115,19 +1147,29 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                   inputs={
                                     Array [
                                       Object {
-                                        "components": null,
-                                        "fixed": true,
-                                        "kind": "UNIT",
                                         "name": "Credit Score",
-                                        "typeRef": "number",
-                                        "value": 738,
+                                        "value": Object {
+                                          "fixed": true,
+                                          "kind": "UNIT",
+                                          "originalValue": Object {
+                                            "kind": "UNIT",
+                                            "type": "number",
+                                            "value": 738,
+                                          },
+                                          "type": "number",
+                                        },
                                       },
                                       Object {
-                                        "components": null,
-                                        "kind": "UNIT",
                                         "name": "Type",
-                                        "typeRef": "string",
-                                        "value": "Lease",
+                                        "value": Object {
+                                          "kind": "UNIT",
+                                          "originalValue": Object {
+                                            "kind": "UNIT",
+                                            "type": "string",
+                                            "value": "Lease",
+                                          },
+                                          "type": "string",
+                                        },
                                       },
                                     ]
                                   }
@@ -1897,12 +1939,17 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                         onEditConstraint={[Function]}
                                                                         row={
                                                                           Object {
-                                                                            "components": null,
-                                                                            "fixed": true,
-                                                                            "kind": "UNIT",
                                                                             "name": "Credit Score",
-                                                                            "typeRef": "number",
-                                                                            "value": 738,
+                                                                            "value": Object {
+                                                                              "fixed": true,
+                                                                              "kind": "UNIT",
+                                                                              "originalValue": Object {
+                                                                                "kind": "UNIT",
+                                                                                "type": "number",
+                                                                                "value": 738,
+                                                                              },
+                                                                              "type": "number",
+                                                                            },
                                                                           }
                                                                         }
                                                                         rowIndex={0}
@@ -2120,11 +2167,16 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                         onEditConstraint={[Function]}
                                                                         row={
                                                                           Object {
-                                                                            "components": null,
-                                                                            "kind": "UNIT",
                                                                             "name": "Type",
-                                                                            "typeRef": "string",
-                                                                            "value": "Lease",
+                                                                            "value": Object {
+                                                                              "kind": "UNIT",
+                                                                              "originalValue": Object {
+                                                                                "kind": "UNIT",
+                                                                                "type": "string",
+                                                                                "value": "Lease",
+                                                                              },
+                                                                              "type": "string",
+                                                                            },
                                                                           }
                                                                         }
                                                                         rowIndex={1}

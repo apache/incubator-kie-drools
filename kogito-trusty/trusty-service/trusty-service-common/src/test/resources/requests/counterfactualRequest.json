@@ -1,48 +1,58 @@
 {
   "goals": [
     {
-      "kind":"UNIT",
       "name": "deposit",
-      "typeRef": "number",
-      "value": 5000
+      "value": {
+        "kind": "UNIT",
+        "type": "number",
+        "value": 5000
+      }
     },
     {
-      "kind":"UNIT",
       "name": "approved",
-      "typeRef": "boolean",
-      "value": true
+      "value": {
+        "kind": "UNIT",
+        "type": "boolean",
+        "value": true
+      }
     }
   ],
   "searchDomains": [
     {
-      "kind":"UNIT",
-      "fixed": true,
       "name": "age",
-      "typeRef": "number"
-    },
-    {
-      "kind":"UNIT",
-      "fixed": false,
-      "name": "income",
-      "typeRef": "number",
-      "domain": {
-        "type": "RANGE",
-        "lowerBound": 0,
-        "upperBound": 1000
+      "value": {
+        "kind": "UNIT",
+        "fixed": true,
+        "type": "number"
       }
     },
     {
-      "kind":"UNIT",
-      "fixed": false,
+      "name": "income",
+      "value": {
+        "kind": "UNIT",
+        "fixed": false,
+        "type": "number",
+        "domain": {
+          "type": "RANGE",
+          "lowerBound": 0,
+          "upperBound": 1000
+        }
+      }
+    },
+    {
       "name": "taxCode",
-      "typeRef": "string",
-      "domain": {
-        "type": "CATEGORICAL",
-        "categories": [
-          "A",
-          "B",
-          "C"
-        ]
+      "value": {
+        "kind": "UNIT",
+        "fixed": false,
+        "type": "string",
+        "domain": {
+          "type": "CATEGORICAL",
+          "categories": [
+            "A",
+            "B",
+            "C"
+          ]
+        }
       }
     }
   ]

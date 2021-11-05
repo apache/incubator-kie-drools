@@ -17,7 +17,6 @@
 package org.kie.kogito.trusty.service.common.api;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -40,7 +39,6 @@ import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsRe
 import org.kie.kogito.trusty.service.common.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.service.common.responses.ResponseUtils;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 
 @Path("executions/decisions")
@@ -143,7 +141,7 @@ public class DecisionsApiV1 {
 
     private Response extractStructuredInputsResponse(Decision decision) {
         if (decision.getInputs() != null) {
-            return Response.ok(new DecisionStructuredInputsResponse(decision.getInputs().stream().map(DecisionInput::getValue).collect(Collectors.toList()))).build();
+            return Response.ok(new DecisionStructuredInputsResponse(decision.getInputs())).build();
         }
         return buildBadRequestResponse();
     }

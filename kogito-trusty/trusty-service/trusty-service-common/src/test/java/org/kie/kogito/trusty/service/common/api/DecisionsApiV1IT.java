@@ -23,12 +23,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.tracing.decision.event.message.Message;
+import org.kie.kogito.tracing.decision.event.message.MessageCategory;
+import org.kie.kogito.tracing.decision.event.message.MessageExceptionField;
 import org.kie.kogito.tracing.decision.event.message.MessageLevel;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.DecisionOutcomesResponse;
 import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse;
@@ -37,9 +41,6 @@ import org.kie.kogito.trusty.service.common.responses.ExecutionType;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.Message;
-import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -199,8 +200,8 @@ class DecisionsApiV1IT {
         assertEquals(expected.getOutcomeId(), actual.getOutcomeId());
         assertEquals(expected.getOutcomeName(), actual.getOutcomeName());
         assertEquals(expected.getEvaluationStatus(), actual.getEvaluationStatus());
-        assertTypedVariableResponse(expected.getOutcomeResult(), actual.getOutcomeResult());
-        assertCollection(expected.getOutcomeInputs(), actual.getOutcomeInputs(), this::assertTypedVariableResponse);
+        assertTypedValueResponse(expected, actual);
+        assertCollection(expected.getOutcomeInputs().entrySet(), actual.getOutcomeInputs().entrySet(), this::assertTypedValueResponse);
         assertCollection(expected.getMessages(), actual.getMessages(), this::assertMessageResponse);
     }
 
@@ -212,7 +213,7 @@ class DecisionsApiV1IT {
 
     private void assertDecisionStructuredInputResponse(DecisionStructuredInputsResponse expected, DecisionStructuredInputsResponse actual) {
         assertNotNull(actual);
-        assertCollection(expected.getInputs(), actual.getInputs(), this::assertTypedVariableResponse);
+        assertCollection(expected.getInputs(), actual.getInputs(), this::assertTypedValueResponse);
     }
 
     private void assertExecutionHeaderResponse(ExecutionHeaderResponse expected, ExecutionHeaderResponse actual) {
@@ -247,12 +248,31 @@ class DecisionsApiV1IT {
         }
     }
 
-    private void assertTypedVariableResponse(TypedVariableWithValue expected, TypedVariableWithValue actual) {
+    private void assertTypedValueResponse(DecisionInput expected, DecisionInput actual) {
         assertNotNull(actual);
         assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getTypeRef(), actual.getTypeRef());
-        assertEquals(expected.getValue(), actual.getValue());
-        assertCollection(expected.getComponents(), actual.getComponents(), Assertions::assertEquals);
+        assertEquals(TypedValue.Kind.UNIT, actual.getValue().getKind());
+        assertEquals(expected.getValue().getKind(), actual.getValue().getKind());
+        assertEquals(expected.getValue().getType(), actual.getValue().getType());
+        assertEquals(expected.getValue().toUnit().getValue(), actual.getValue().toUnit().getValue());
+    }
+
+    private void assertTypedValueResponse(DecisionOutcome expected, DecisionOutcome actual) {
+        assertNotNull(actual);
+        assertEquals(expected.getOutcomeName(), actual.getOutcomeName());
+        assertEquals(TypedValue.Kind.UNIT, actual.getOutcomeResult().getKind());
+        assertEquals(expected.getOutcomeResult().getKind(), actual.getOutcomeResult().getKind());
+        assertEquals(expected.getOutcomeResult().getType(), actual.getOutcomeResult().getType());
+        assertEquals(expected.getOutcomeResult().toUnit().getValue(), actual.getOutcomeResult().toUnit().getValue());
+    }
+
+    private void assertTypedValueResponse(Map.Entry<String, TypedValue> expected, Map.Entry<String, TypedValue> actual) {
+        assertNotNull(actual);
+        assertEquals(expected.getKey(), actual.getKey());
+        assertEquals(TypedValue.Kind.UNIT, actual.getValue().getKind());
+        assertEquals(expected.getValue().getKind(), actual.getValue().getKind());
+        assertEquals(expected.getValue().getType(), actual.getValue().getType());
+        assertEquals(expected.getValue().toUnit().getValue(), actual.getValue().toUnit().getValue());
     }
 
     private Decision buildValidDecision(ListStatus inputsStatus, ListStatus outcomesStatus) throws Exception {
@@ -273,8 +293,8 @@ class DecisionsApiV1IT {
 
             case FULL:
                 decision.setInputs(List.of(
-                        new DecisionInput("1", "first", TypedVariableWithValue.buildUnit("first", "FirstInput", mapper.readTree("\"Hello\""))),
-                        new DecisionInput("2", "second", TypedVariableWithValue.buildUnit("second", "SecondInput", mapper.readTree("12345")))));
+                        new DecisionInput("1", "first", new UnitValue("string", "string", mapper.readTree("\"Hello\""))),
+                        new DecisionInput("2", "second", new UnitValue("number", "number", mapper.readTree("12345")))));
         }
 
         switch (outcomesStatus) {
@@ -286,10 +306,10 @@ class DecisionsApiV1IT {
                 decision.setOutcomes(List.of(
                         new DecisionOutcome(
                                 TEST_OUTCOME_ID, "ONE", "SUCCEEDED",
-                                TypedVariableWithValue.buildUnit("result", "ResType", mapper.readTree("\"The First Outcome\"")),
-                                List.of(),
+                                new UnitValue("string", "string", mapper.readTree("\"The First Outcome\"")),
+                                Collections.emptyMap(),
                                 List.of(new Message(
-                                        MessageLevel.WARNING, "INTERNAL", "TEST", "testSrc", "Test message",
+                                        MessageLevel.WARNING, MessageCategory.INTERNAL, "TEST", "testSrc", "Test message", null,
                                         new MessageExceptionField("TestException", "Test exception message",
                                                 new MessageExceptionField("TestExceptionCause", "Test exception cause message", null)))))));
         }
@@ -301,9 +321,9 @@ class DecisionsApiV1IT {
         ObjectMapper mapper = new ObjectMapper();
         return new DecisionOutcome(
                 TEST_OUTCOME_ID, "ONE", "SUCCEEDED",
-                new TypedVariableWithValue(TypedValue.Kind.UNIT, "result", "ResType", mapper.readTree("\"The First Outcome\""), null),
-                Collections.emptyList(),
-                List.of(new Message(MessageLevel.WARNING, "INTERNAL", "TEST", "testSrc", "Test message",
+                new UnitValue("string", "string", mapper.readTree("\"The First Outcome\"")),
+                Collections.emptyMap(),
+                List.of(new Message(MessageLevel.WARNING, MessageCategory.INTERNAL, "TEST", "testSrc", "Test message", null,
                         new MessageExceptionField("TestException", "Test exception message",
                                 new MessageExceptionField("TestExceptionCause", "Test exception cause message", null)))));
     }
@@ -329,8 +349,10 @@ class DecisionsApiV1IT {
             case FULL:
                 ObjectMapper mapper = new ObjectMapper();
                 return new DecisionStructuredInputsResponse(List.of(
-                        new TypedVariableWithValue(TypedValue.Kind.UNIT, "first", "FirstInput", mapper.readTree("\"Hello\""), null),
-                        new TypedVariableWithValue(TypedValue.Kind.UNIT, "second", "SecondInput", mapper.readTree("12345"), null)));
+                        new DecisionInput("first", "first",
+                                new UnitValue("string", "string", mapper.readTree("\"Hello\""))),
+                        new DecisionInput("second", "second",
+                                new UnitValue("number", "number", mapper.readTree("12345")))));
         }
         throw new IllegalStateException();
     }

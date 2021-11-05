@@ -69,7 +69,7 @@ const outcomes = {
       evaluationStatus: 'SUCCEEDED',
       outcomeResult: {
         name: 'Mortgage Approval',
-        typeRef: 'boolean',
+        type: 'boolean',
         value: true,
         components: []
       },
@@ -82,7 +82,7 @@ const outcomes = {
       evaluationStatus: 'SUCCEEDED',
       outcomeResult: {
         name: 'Risk Score',
-        typeRef: 'number',
+        type: 'number',
         value: 21.7031851958099,
         components: []
       },

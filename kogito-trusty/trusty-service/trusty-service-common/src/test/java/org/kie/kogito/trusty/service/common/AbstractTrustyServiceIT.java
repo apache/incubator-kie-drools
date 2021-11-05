@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
@@ -45,8 +45,8 @@ import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -58,6 +58,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.trusty.service.common.TypedValueTestUtils.buildGoalUnit;
+import static org.kie.kogito.trusty.service.common.TypedValueTestUtils.buildSearchDomainUnit;
 
 public abstract class AbstractTrustyServiceIT {
 
@@ -126,7 +128,7 @@ public abstract class AbstractTrustyServiceIT {
         storeExecution(executionId, 1591692950000L);
 
         Decision result = trustyService.getDecisionById(executionId);
-        Assertions.assertNull(result.getInputs().stream().findFirst().get().getValue().getComponents());
+        Assertions.assertTrue(result.getInputs().stream().findFirst().get().getValue().isUnit());
     }
 
     @Test
@@ -187,7 +189,7 @@ public abstract class AbstractTrustyServiceIT {
 
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
-        CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
@@ -210,7 +212,7 @@ public abstract class AbstractTrustyServiceIT {
 
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
-        CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
@@ -231,7 +233,7 @@ public abstract class AbstractTrustyServiceIT {
 
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
-        CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
@@ -257,7 +259,7 @@ public abstract class AbstractTrustyServiceIT {
 
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
-        CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
@@ -284,12 +286,12 @@ public abstract class AbstractTrustyServiceIT {
 
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
-        CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
-        TypedVariableWithValue goal1 = TypedVariableWithValue.buildUnit("outcome1", "number", new IntNode(25));
-        TypedVariableWithValue goal2 = TypedVariableWithValue.buildUnit("outcome2", "string", new TextNode("cheese"));
+        NamedTypedValue goal1 = buildGoalUnit("outcome1", "number", new IntNode(25));
+        NamedTypedValue goal2 = buildGoalUnit("outcome2", "string", new TextNode("cheese"));
 
         CounterfactualExplainabilityRequest request = trustyService.requestCounterfactuals(executionId, List.of(goal1, goal2), Collections.singletonList(searchDomain));
 
@@ -297,7 +299,7 @@ public abstract class AbstractTrustyServiceIT {
         assertEquals(request.getExecutionId(), executionId);
         assertNotNull(request.getCounterfactualId());
         assertEquals(2, request.getGoals().size());
-        List<TypedVariableWithValue> requestGoals = new ArrayList<>(request.getGoals());
+        List<NamedTypedValue> requestGoals = new ArrayList<>(request.getGoals());
         assertCounterfactualGoal(goal1, requestGoals.get(0));
         assertCounterfactualGoal(goal2, requestGoals.get(1));
 
@@ -306,15 +308,15 @@ public abstract class AbstractTrustyServiceIT {
         assertEquals(request.getExecutionId(), result.getExecutionId());
         assertEquals(request.getCounterfactualId(), result.getCounterfactualId());
         assertEquals(2, result.getGoals().size());
-        List<TypedVariableWithValue> resultGoals = new ArrayList<>(request.getGoals());
+        List<NamedTypedValue> resultGoals = new ArrayList<>(request.getGoals());
         assertCounterfactualGoal(goal1, resultGoals.get(0));
         assertCounterfactualGoal(goal2, resultGoals.get(1));
     }
 
-    private void assertCounterfactualGoal(TypedVariableWithValue expectedGoal, TypedVariableWithValue actualGoal) {
+    private void assertCounterfactualGoal(NamedTypedValue expectedGoal, NamedTypedValue actualGoal) {
         assertEquals(expectedGoal.getName(), actualGoal.getName());
-        assertEquals(expectedGoal.getTypeRef(), actualGoal.getTypeRef());
-        assertEquals(expectedGoal.getValue(), actualGoal.getValue());
+        assertEquals(expectedGoal.getValue().getType(), actualGoal.getValue().getType());
+        assertEquals(expectedGoal.getValue().toUnit().getValue(), actualGoal.getValue().toUnit().getValue());
     }
 
     @Test
@@ -324,7 +326,7 @@ public abstract class AbstractTrustyServiceIT {
 
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
-        CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
@@ -348,9 +350,9 @@ public abstract class AbstractTrustyServiceIT {
 
     private void assertCounterfactualSearchDomainRange(CounterfactualSearchDomain expectedSearchDomain, CounterfactualSearchDomain actualSearchDomain) {
         assertEquals(expectedSearchDomain.getName(), actualSearchDomain.getName());
-        assertEquals(expectedSearchDomain.getTypeRef(), actualSearchDomain.getTypeRef());
-        assertEquals(expectedSearchDomain.isFixed(), actualSearchDomain.isFixed());
-        assertCounterfactualDomainRange(expectedSearchDomain.getDomain(), actualSearchDomain.getDomain());
+        assertEquals(expectedSearchDomain.getValue().getType(), actualSearchDomain.getValue().getType());
+        assertEquals(expectedSearchDomain.getValue().toUnit().isFixed(), actualSearchDomain.getValue().toUnit().isFixed());
+        assertCounterfactualDomainRange(expectedSearchDomain.getValue().toUnit().getDomain(), actualSearchDomain.getValue().toUnit().getDomain());
     }
 
     private void assertCounterfactualDomainRange(CounterfactualDomain expectedDomain, CounterfactualDomain actualDomain) {
@@ -372,7 +374,9 @@ public abstract class AbstractTrustyServiceIT {
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
         Collection<JsonNode> categories = List.of(new TextNode("1"), new TextNode("2"));
-        CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test", "number", new CounterfactualDomainCategorical(categories));
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("test",
+                "number",
+                new CounterfactualDomainCategorical(categories));
 
         CounterfactualExplainabilityRequest request = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.singletonList(searchDomain));
 
@@ -394,9 +398,9 @@ public abstract class AbstractTrustyServiceIT {
 
     private void assertCounterfactualSearchDomainCategorical(CounterfactualSearchDomain expectedSearchDomain, CounterfactualSearchDomain actualSearchDomain) {
         assertEquals(expectedSearchDomain.getName(), actualSearchDomain.getName());
-        assertEquals(expectedSearchDomain.getTypeRef(), actualSearchDomain.getTypeRef());
-        assertEquals(expectedSearchDomain.isFixed(), actualSearchDomain.isFixed());
-        assertCounterfactualDomainCategorical(expectedSearchDomain.getDomain(), actualSearchDomain.getDomain());
+        assertEquals(expectedSearchDomain.getValue().getType(), actualSearchDomain.getValue().getType());
+        assertEquals(expectedSearchDomain.getValue().toUnit().isFixed(), actualSearchDomain.getValue().toUnit().isFixed());
+        assertCounterfactualDomainCategorical(expectedSearchDomain.getValue().toUnit().getDomain(), actualSearchDomain.getValue().toUnit().getDomain());
     }
 
     private void assertCounterfactualDomainCategorical(CounterfactualDomain expectedDomain, CounterfactualDomain actualDomain) {
@@ -430,7 +434,7 @@ public abstract class AbstractTrustyServiceIT {
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
         // For this test we're providing the correct structure for searchDomains but a sub-structure for goals.
-        CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
@@ -468,10 +472,14 @@ public abstract class AbstractTrustyServiceIT {
     public void testStoreExplainabilityResult_Counterfactual() {
         String executionId = "myCFExecution1Store";
 
-        TypedVariableWithValue input1 = TypedVariableWithValue.buildUnit("field1", "typeRef1", new IntNode(25));
-        TypedVariableWithValue input2 = TypedVariableWithValue.buildUnit("field2", "typeRef2", new IntNode(99));
-        TypedVariableWithValue output1 = TypedVariableWithValue.buildUnit("field3", "typeRef3", new IntNode(200));
-        TypedVariableWithValue output2 = TypedVariableWithValue.buildUnit("field4", "typeRef4", new IntNode(1000));
+        NamedTypedValue input1 = new NamedTypedValue("field1",
+                new UnitValue("typeRef1", "typeRef1", new IntNode(25)));
+        NamedTypedValue input2 = new NamedTypedValue("field2",
+                new UnitValue("typeRef2", "typeRef2", new IntNode(99)));
+        NamedTypedValue output1 = new NamedTypedValue("field3",
+                new UnitValue("typeRef3", "typeRef3", new IntNode(200)));
+        NamedTypedValue output2 = new NamedTypedValue("field4",
+                new UnitValue("typeRef4", "typeRef4", new IntNode(1000)));
 
         trustyService.storeExplainabilityResult(executionId,
                 new CounterfactualExplainabilityResult(executionId,
@@ -494,10 +502,14 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1Store";
         String counterfactualId = "myCFCounterfactualId";
 
-        TypedVariableWithValue input1 = TypedVariableWithValue.buildUnit("field1", "typeRef1", new IntNode(25));
-        TypedVariableWithValue input2 = TypedVariableWithValue.buildUnit("field2", "typeRef2", new IntNode(99));
-        TypedVariableWithValue output1 = TypedVariableWithValue.buildUnit("field3", "typeRef3", new IntNode(200));
-        TypedVariableWithValue output2 = TypedVariableWithValue.buildUnit("field4", "typeRef4", new IntNode(1000));
+        NamedTypedValue input1 = new NamedTypedValue("field1",
+                new UnitValue("typeRef1", "typeRef1", new IntNode(25)));
+        NamedTypedValue input2 = new NamedTypedValue("field2",
+                new UnitValue("typeRef2", "typeRef2", new IntNode(99)));
+        NamedTypedValue output1 = new NamedTypedValue("field3",
+                new UnitValue("typeRef3", "typeRef3", new IntNode(200)));
+        NamedTypedValue output2 = new NamedTypedValue("field4",
+                new UnitValue("typeRef4", "typeRef4", new IntNode(1000)));
 
         //First solution is the FINAL (for whatever reason, e.g. messaging delays, the INTERMEDIATE is received afterwards)
         trustyService.storeExplainabilityResult(executionId,
@@ -542,10 +554,14 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1Store";
         String counterfactualId = "myCFCounterfactualId";
 
-        TypedVariableWithValue input1 = TypedVariableWithValue.buildUnit("field1", "typeRef1", new IntNode(25));
-        TypedVariableWithValue input2 = TypedVariableWithValue.buildUnit("field2", "typeRef2", new IntNode(99));
-        TypedVariableWithValue output1 = TypedVariableWithValue.buildUnit("field3", "typeRef3", new IntNode(200));
-        TypedVariableWithValue output2 = TypedVariableWithValue.buildUnit("field4", "typeRef4", new IntNode(1000));
+        NamedTypedValue input1 = new NamedTypedValue("field1",
+                new UnitValue("typeRef1", "typeRef1", new IntNode(25)));
+        NamedTypedValue input2 = new NamedTypedValue("field2",
+                new UnitValue("typeRef2", "typeRef2", new IntNode(99)));
+        NamedTypedValue output1 = new NamedTypedValue("field3",
+                new UnitValue("typeRef3", "typeRef3", new IntNode(200)));
+        NamedTypedValue output2 = new NamedTypedValue("field4",
+                new UnitValue("typeRef4", "typeRef4", new IntNode(1000)));
 
         //First solution is the INTERMEDIATE then the FINAL
         trustyService.storeExplainabilityResult(executionId,
@@ -588,8 +604,8 @@ public abstract class AbstractTrustyServiceIT {
     private void storeExecution(String executionId, Long timestamp) {
         DecisionInput decisionInput = new DecisionInput();
         decisionInput.setId("inputId");
-        decisionInput.setName("inputName");
-        decisionInput.setValue(new TypedVariableWithValue(TypedValue.Kind.UNIT, "test", "number", JsonNodeFactory.instance.numberNode(10), null));
+        decisionInput.setName("test");
+        decisionInput.setValue(new UnitValue("number", "number", JsonNodeFactory.instance.numberNode(10)));
 
         Decision decision = new Decision();
         decision.setExecutionId(executionId);
@@ -605,18 +621,18 @@ public abstract class AbstractTrustyServiceIT {
     private void storeExecutionWithOutcomes(String executionId, Long timestamp) {
         DecisionInput decisionInput = new DecisionInput();
         decisionInput.setId("inputId");
-        decisionInput.setName("inputName");
-        decisionInput.setValue(new TypedVariableWithValue(TypedValue.Kind.UNIT, "test", "number", JsonNodeFactory.instance.numberNode(10), null));
+        decisionInput.setName("test");
+        decisionInput.setValue(new UnitValue("number", "number", JsonNodeFactory.instance.numberNode(10)));
 
         DecisionOutcome decisionOutcome1 = new DecisionOutcome();
         decisionOutcome1.setOutcomeId("outcomeId1");
-        decisionOutcome1.setOutcomeName("outputName1");
-        decisionOutcome1.setOutcomeResult(TypedVariableWithValue.buildUnit("outcome1", "number", JsonNodeFactory.instance.numberNode(20)));
+        decisionOutcome1.setOutcomeName("outcome1");
+        decisionOutcome1.setOutcomeResult(new UnitValue("number", "number", JsonNodeFactory.instance.numberNode(20)));
 
         DecisionOutcome decisionOutcome2 = new DecisionOutcome();
         decisionOutcome2.setOutcomeId("outcomeId2");
-        decisionOutcome2.setOutcomeName("outputName2");
-        decisionOutcome2.setOutcomeResult(TypedVariableWithValue.buildUnit("outcome2", "string", JsonNodeFactory.instance.textNode("food")));
+        decisionOutcome2.setOutcomeName("outcome2");
+        decisionOutcome2.setOutcomeResult(new UnitValue("string", "string", JsonNodeFactory.instance.textNode("food")));
 
         Decision decision = new Decision();
         decision.setExecutionId(executionId);

@@ -24,9 +24,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -75,8 +76,8 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
     public void testPurgeWhenResultSetSizeIsGreaterThanMinimum_WithDuplicateInputs() {
         CounterfactualExplainabilityResult result0 = makeResult(0, Collections.emptyList(), Collections.emptyList());
         CounterfactualExplainabilityResult result1 = makeResult(1, Collections.emptyList(), Collections.emptyList());
-        CounterfactualExplainabilityResult result2 = makeResult(2, List.of(makeTypedValue("a")), Collections.emptyList());
-        CounterfactualExplainabilityResult result3 = makeResult(3, List.of(makeTypedValue("a")), Collections.emptyList());
+        CounterfactualExplainabilityResult result2 = makeResult(2, List.of(makeCounterfactualInput("a")), Collections.emptyList());
+        CounterfactualExplainabilityResult result3 = makeResult(3, List.of(makeCounterfactualInput("a")), Collections.emptyList());
         when(query.execute()).thenReturn(List.of(result0, result1, result2, result3));
 
         manager.purge(COUNTERFACTUAL_ID, storage);
@@ -89,8 +90,8 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
     public void testPurgeWhenResultSetSizeIsGreaterThanMinimum_WithDuplicateInputs_FinalLast() {
         CounterfactualExplainabilityResult result0 = makeResult(0, Collections.emptyList(), Collections.emptyList());
         CounterfactualExplainabilityResult result1 = makeResult(1, Collections.emptyList(), Collections.emptyList());
-        CounterfactualExplainabilityResult result2 = makeResult(2, List.of(makeTypedValue("a")), Collections.emptyList());
-        CounterfactualExplainabilityResult result3 = makeResult(3, CounterfactualExplainabilityResult.Stage.FINAL, List.of(makeTypedValue("a")), Collections.emptyList());
+        CounterfactualExplainabilityResult result2 = makeResult(2, List.of(makeCounterfactualInput("a")), Collections.emptyList());
+        CounterfactualExplainabilityResult result3 = makeResult(3, CounterfactualExplainabilityResult.Stage.FINAL, List.of(makeCounterfactualInput("a")), Collections.emptyList());
         when(query.execute()).thenReturn(List.of(result0, result1, result2, result3));
 
         manager.purge(COUNTERFACTUAL_ID, storage);
@@ -103,8 +104,8 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
     public void testPurgeWhenResultSetSizeIsGreaterThanMinimum_WithDuplicateInputs_FinalPenultimate() {
         CounterfactualExplainabilityResult result0 = makeResult(0, Collections.emptyList(), Collections.emptyList());
         CounterfactualExplainabilityResult result1 = makeResult(1, Collections.emptyList(), Collections.emptyList());
-        CounterfactualExplainabilityResult result2 = makeResult(2, CounterfactualExplainabilityResult.Stage.FINAL, List.of(makeTypedValue("a")), Collections.emptyList());
-        CounterfactualExplainabilityResult result3 = makeResult(3, List.of(makeTypedValue("a")), Collections.emptyList());
+        CounterfactualExplainabilityResult result2 = makeResult(2, CounterfactualExplainabilityResult.Stage.FINAL, List.of(makeCounterfactualInput("a")), Collections.emptyList());
+        CounterfactualExplainabilityResult result3 = makeResult(3, List.of(makeCounterfactualInput("a")), Collections.emptyList());
         when(query.execute()).thenReturn(List.of(result0, result1, result2, result3));
 
         manager.purge(COUNTERFACTUAL_ID, storage);
@@ -115,10 +116,10 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
 
     @Test
     public void testPurgeWhenResultSetSizeIsGreaterThanMinimum_WithoutDuplicateInputs() {
-        CounterfactualExplainabilityResult result0 = makeResult(0, List.of(makeTypedValue("0")), Collections.emptyList());
-        CounterfactualExplainabilityResult result1 = makeResult(1, List.of(makeTypedValue("1")), Collections.emptyList());
-        CounterfactualExplainabilityResult result2 = makeResult(2, List.of(makeTypedValue("2")), Collections.emptyList());
-        CounterfactualExplainabilityResult result3 = makeResult(3, List.of(makeTypedValue("3")), Collections.emptyList());
+        CounterfactualExplainabilityResult result0 = makeResult(0, List.of(makeCounterfactualInput("0")), Collections.emptyList());
+        CounterfactualExplainabilityResult result1 = makeResult(1, List.of(makeCounterfactualInput("1")), Collections.emptyList());
+        CounterfactualExplainabilityResult result2 = makeResult(2, List.of(makeCounterfactualInput("2")), Collections.emptyList());
+        CounterfactualExplainabilityResult result3 = makeResult(3, List.of(makeCounterfactualInput("3")), Collections.emptyList());
         when(query.execute()).thenReturn(List.of(result0, result1, result2, result3));
 
         manager.purge(COUNTERFACTUAL_ID, storage);
@@ -130,8 +131,8 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
     public void testPurgeWhenResultSetSizeIsGreaterThanMinimum_WithDuplicateOutputs() {
         CounterfactualExplainabilityResult result0 = makeResult(0, Collections.emptyList(), Collections.emptyList());
         CounterfactualExplainabilityResult result1 = makeResult(1, Collections.emptyList(), Collections.emptyList());
-        CounterfactualExplainabilityResult result2 = makeResult(2, Collections.emptyList(), List.of(makeTypedValue("a")));
-        CounterfactualExplainabilityResult result3 = makeResult(3, Collections.emptyList(), List.of(makeTypedValue("a")));
+        CounterfactualExplainabilityResult result2 = makeResult(2, Collections.emptyList(), List.of(makeCounterfactualOutput("a")));
+        CounterfactualExplainabilityResult result3 = makeResult(3, Collections.emptyList(), List.of(makeCounterfactualOutput("a")));
         when(query.execute()).thenReturn(List.of(result0, result1, result2, result3));
 
         manager.purge(COUNTERFACTUAL_ID, storage);
@@ -142,10 +143,10 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
 
     @Test
     public void testPurgeWhenResultSetSizeIsGreaterThanMinimum_WithoutDuplicateOutputs() {
-        CounterfactualExplainabilityResult result0 = makeResult(0, Collections.emptyList(), List.of(makeTypedValue("0")));
-        CounterfactualExplainabilityResult result1 = makeResult(1, Collections.emptyList(), List.of(makeTypedValue("1")));
-        CounterfactualExplainabilityResult result2 = makeResult(2, Collections.emptyList(), List.of(makeTypedValue("2")));
-        CounterfactualExplainabilityResult result3 = makeResult(3, Collections.emptyList(), List.of(makeTypedValue("3")));
+        CounterfactualExplainabilityResult result0 = makeResult(0, Collections.emptyList(), List.of(makeCounterfactualOutput("0")));
+        CounterfactualExplainabilityResult result1 = makeResult(1, Collections.emptyList(), List.of(makeCounterfactualOutput("1")));
+        CounterfactualExplainabilityResult result2 = makeResult(2, Collections.emptyList(), List.of(makeCounterfactualOutput("2")));
+        CounterfactualExplainabilityResult result3 = makeResult(3, Collections.emptyList(), List.of(makeCounterfactualOutput("3")));
         when(query.execute()).thenReturn(List.of(result0, result1, result2, result3));
 
         manager.purge(COUNTERFACTUAL_ID, storage);
@@ -154,8 +155,8 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
     }
 
     private CounterfactualExplainabilityResult makeResult(long sequenceId,
-            Collection<TypedVariableWithValue> inputs,
-            Collection<TypedVariableWithValue> outputs) {
+            Collection<NamedTypedValue> inputs,
+            Collection<NamedTypedValue> outputs) {
         return makeResult(sequenceId,
                 CounterfactualExplainabilityResult.Stage.INTERMEDIATE,
                 inputs,
@@ -164,8 +165,8 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
 
     private CounterfactualExplainabilityResult makeResult(long sequenceId,
             CounterfactualExplainabilityResult.Stage stage,
-            Collection<TypedVariableWithValue> inputs,
-            Collection<TypedVariableWithValue> outputs) {
+            Collection<NamedTypedValue> inputs,
+            Collection<NamedTypedValue> outputs) {
         return new CounterfactualExplainabilityResult(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
                 UUID.randomUUID().toString(),
@@ -178,7 +179,11 @@ public class CounterfactualExplainabilityResultsManagerDuplicatesTest {
                 outputs);
     }
 
-    private TypedVariableWithValue makeTypedValue(final String name) {
-        return TypedVariableWithValue.buildUnit(name, "typeRef", new TextNode("value"));
+    private NamedTypedValue makeCounterfactualInput(final String name) {
+        return new NamedTypedValue(name, new UnitValue("typeRef", "typeRef", new TextNode("value")));
+    }
+
+    private NamedTypedValue makeCounterfactualOutput(final String name) {
+        return new NamedTypedValue(name, new UnitValue("typeRef", "typeRef", new TextNode("value")));
     }
 }

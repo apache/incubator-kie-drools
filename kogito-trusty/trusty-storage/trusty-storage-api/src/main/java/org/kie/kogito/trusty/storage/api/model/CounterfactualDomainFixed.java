@@ -15,18 +15,14 @@
  */
 package org.kie.kogito.trusty.storage.api.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+/**
+ * CounterfactualExplainer works on discrete lists of parameters; one for goals, one for search domains and one for whether the input is fixed.
+ * It is important these lists have equal amounts of entries as the index of elements in each list is the unifying identifier. Therefore,
+ * even though it is possible to define a search domain as fixed i.e. equal to the original input, a search domain is still required.
+ * This class acts as a place-holder to pad the list of search domains to ensure the integrity of indexes.
+ */
+public final class CounterfactualDomainFixed extends CounterfactualDomain {
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        property = CounterfactualDomain.TYPE_FIELD)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = CounterfactualDomainRange.class, name = CounterfactualDomainRange.TYPE),
-        @JsonSubTypes.Type(value = CounterfactualDomainCategorical.class, name = CounterfactualDomainCategorical.TYPE),
-        @JsonSubTypes.Type(value = CounterfactualDomainFixed.class, name = CounterfactualDomainFixed.TYPE),
-})
-public abstract class CounterfactualDomain {
+    public static final String TYPE = "FIXED";
 
-    public static final String TYPE_FIELD = "type";
 }

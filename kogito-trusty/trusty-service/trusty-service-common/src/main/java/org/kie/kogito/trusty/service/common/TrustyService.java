@@ -27,7 +27,7 @@ import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResul
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 /**
  * The trusty service interface.
@@ -126,7 +126,7 @@ public interface TrustyService {
      * @throws IllegalArgumentException Throws IllegalArgumentException the executionId is not present in the system.
      */
     CounterfactualExplainabilityRequest requestCounterfactuals(String executionId,
-            List<TypedVariableWithValue> goals,
+            List<NamedTypedValue> goals,
             List<CounterfactualSearchDomain> searchDomains);
 
     /**

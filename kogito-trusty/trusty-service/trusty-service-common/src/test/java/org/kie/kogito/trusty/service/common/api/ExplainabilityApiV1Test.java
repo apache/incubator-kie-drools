@@ -32,7 +32,7 @@ import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityReque
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -40,6 +40,8 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.trusty.service.common.TypedValueTestUtils.buildGoalUnit;
+import static org.kie.kogito.trusty.service.common.TypedValueTestUtils.buildSearchDomainUnit;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -146,11 +148,11 @@ public class ExplainabilityApiV1Test {
 
     @Test
     public void testGetCounterfactualResultsWhenExecutionDoesExist() {
-        TypedVariableWithValue goal = TypedVariableWithValue.buildUnit("unit",
+        NamedTypedValue goal = buildGoalUnit("unit",
                 "string",
                 new TextNode("hello"));
         CounterfactualSearchDomain searchDomain =
-                CounterfactualSearchDomain.buildSearchDomainUnit("unit",
+                buildSearchDomainUnit("unit",
                         "string",
                         new CounterfactualDomainCategorical(List.of(new TextNode("hello"), new TextNode("goodbye"))));
         when(trustyService.getCounterfactualRequest(anyString(), anyString()))
@@ -179,13 +181,12 @@ public class ExplainabilityApiV1Test {
 
     @Test
     public void testGetCounterfactualResultsWhenExecutionDoesExistAndResultsHaveBeenCreated() {
-        TypedVariableWithValue goal = TypedVariableWithValue.buildUnit("unit",
+        NamedTypedValue goal = buildGoalUnit("unit",
                 "string",
                 new TextNode("hello"));
-        CounterfactualSearchDomain searchDomain =
-                CounterfactualSearchDomain.buildSearchDomainUnit("unit",
-                        "string",
-                        new CounterfactualDomainCategorical(List.of(new TextNode("hello"), new TextNode("goodbye"))));
+        CounterfactualSearchDomain searchDomain = buildSearchDomainUnit("unit",
+                "string",
+                new CounterfactualDomainCategorical(List.of(new TextNode("hello"), new TextNode("goodbye"))));
 
         CounterfactualExplainabilityResult solution1 = new CounterfactualExplainabilityResult(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
@@ -234,5 +235,4 @@ public class ExplainabilityApiV1Test {
         assertEquals(solution1, resultsResponse.getSolutions().get(0));
         assertEquals(solution2, resultsResponse.getSolutions().get(1));
     }
-
 }

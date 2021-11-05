@@ -46,7 +46,7 @@ import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityReque
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 @Path("executions/decisions")
 public class ExplainabilityApiV1 {
@@ -109,7 +109,7 @@ public class ExplainabilityApiV1 {
                     required = true,
                     schema = @Schema(
                             implementation = org.kie.kogito.trusty.service.common.requests.CounterfactualRequest.class)) org.kie.kogito.trusty.service.common.requests.CounterfactualRequest request) {
-        List<TypedVariableWithValue> goals = request.getGoals();
+        List<NamedTypedValue> goals = request.getGoals();
         List<CounterfactualSearchDomain> searchDomains = request.getSearchDomains();
         return requestCounterfactualsForExecution(executionId, goals, searchDomains)
                 .map(obj -> new CounterfactualRequestResponse(obj.getExecutionId(),
@@ -121,7 +121,7 @@ public class ExplainabilityApiV1 {
     }
 
     private Optional<CounterfactualExplainabilityRequest> requestCounterfactualsForExecution(String executionId,
-            List<TypedVariableWithValue> goals,
+            List<NamedTypedValue> goals,
             List<CounterfactualSearchDomain> searchDomains) {
         try {
             return Optional.ofNullable(trustyService.requestCounterfactuals(executionId, goals, searchDomains));
@@ -208,5 +208,4 @@ public class ExplainabilityApiV1 {
             return Optional.empty();
         }
     }
-
 }

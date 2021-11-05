@@ -70,11 +70,11 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
 
     @JsonProperty(INPUTS_FIELD)
     @NotNull(message = "inputs object must be provided.")
-    private Collection<TypedVariableWithValue> inputs;
+    private Collection<NamedTypedValue> inputs;
 
     @JsonProperty(OUTPUTS_FIELD)
     @NotNull(message = "outputs object must be provided.")
-    private Collection<TypedVariableWithValue> outputs;
+    private Collection<NamedTypedValue> outputs;
 
     public CounterfactualExplainabilityResult() {
     }
@@ -87,8 +87,8 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
             String statusDetails,
             @NotNull Boolean isValid,
             @NotNull Stage stage,
-            @NotNull Collection<TypedVariableWithValue> inputs,
-            @NotNull Collection<TypedVariableWithValue> outputs) {
+            @NotNull Collection<NamedTypedValue> inputs,
+            @NotNull Collection<NamedTypedValue> outputs) {
         super(executionId, status, statusDetails);
         this.counterfactualId = Objects.requireNonNull(counterfactualId);
         this.solutionId = Objects.requireNonNull(solutionId);
@@ -119,11 +119,11 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
         return stage;
     }
 
-    public Collection<TypedVariableWithValue> getInputs() {
+    public Collection<NamedTypedValue> getInputs() {
         return inputs;
     }
 
-    public Collection<TypedVariableWithValue> getOutputs() {
+    public Collection<NamedTypedValue> getOutputs() {
         return outputs;
     }
 
@@ -151,11 +151,11 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
         this.stage = stage;
     }
 
-    public void setInputs(Collection<TypedVariableWithValue> inputs) {
+    public void setInputs(Collection<NamedTypedValue> inputs) {
         this.inputs = inputs;
     }
 
-    public void setOutputs(Collection<TypedVariableWithValue> outputs) {
+    public void setOutputs(Collection<NamedTypedValue> outputs) {
         this.outputs = outputs;
     }
 }

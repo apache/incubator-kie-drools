@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -36,7 +37,9 @@ import org.kie.kogito.explainability.api.CounterfactualSearchDomainDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
-import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.CollectionValue;
+import org.kie.kogito.tracing.typedvalue.StructureValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainabilityResultsManagerDuplicates;
 import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainabilityResultsManagerSlidingWindow;
 import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainerServiceHandler;
@@ -47,17 +50,21 @@ import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.messaging.outgoing.ExplainabilityRequestProducer;
 import org.kie.kogito.trusty.service.common.mocks.StorageImplMock;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainFixed;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainStructureValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainUnitValue;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.mockito.ArgumentCaptor;
 
@@ -243,19 +250,21 @@ public class TrustyServiceTest {
                 TEST_EXECUTION_ID, TEST_SOURCE_URL, TEST_SERVICE_URL, 1591692950000L, true,
                 null, "model", "modelNamespace",
                 List.of(
-                        new DecisionInput("1", "Input1", TypedVariableWithValue.buildCollection(
-                                "testList", "string", List.of(
-                                        TypedVariableWithValue.buildUnit(null, "string", toJsonNode("\"ONE\"")),
-                                        TypedVariableWithValue.buildUnit(null, "string", toJsonNode("\"TWO\""))))),
-                        new DecisionInput("2", "Input2", TypedVariableWithValue.buildStructure(
-                                "author", "Person", List.of(
-                                        TypedVariableWithValue.buildUnit("Name", "string", toJsonNode("\"George Orwell\"")),
-                                        TypedVariableWithValue.buildUnit("Age", "number", toJsonNode("45")))))),
+                        new DecisionInput("1", "Input1",
+                                new CollectionValue("string",
+                                        List.of(
+                                                new UnitValue("string", "string", toJsonNode("\"ONE\"")),
+                                                new UnitValue("string", "string", toJsonNode("\"TWO\""))))),
+                        new DecisionInput("2", "Input2",
+                                new StructureValue("Person",
+                                        Map.of(
+                                                "Name", new UnitValue("string", "string", toJsonNode("\"George Orwell\"")),
+                                                "Age", new UnitValue("number", "number", toJsonNode("45")))))),
                 List.of(
                         new DecisionOutcome(
                                 "OUT1", "Result", "SUCCEEDED",
-                                TypedVariableWithValue.buildUnit("Result", "string", toJsonNode("\"YES\"")),
-                                Collections.emptyList(), Collections.emptyList())));
+                                new UnitValue("string", "string", toJsonNode("\"YES\"")),
+                                Collections.emptyMap(), Collections.emptyList())));
 
         Storage<String, Decision> decisionStorageMock = mock(Storage.class);
         when(decisionStorageMock.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(false);
@@ -401,8 +410,17 @@ public class TrustyServiceTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void givenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStored() {
+        doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStoredTest(new CounterfactualDomainFixed());
+    }
+
+    @Test
+    void givenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStoredWithNullDomains() {
+        doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStoredTest(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    void doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStoredTest(CounterfactualDomain domain) {
         Storage<String, Decision> decisionStorage = mock(Storage.class);
         Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
         ArgumentCaptor<CounterfactualExplainabilityRequest> counterfactualArgumentCaptor = ArgumentCaptor.forClass(CounterfactualExplainabilityRequest.class);
@@ -415,17 +433,21 @@ public class TrustyServiceTest {
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
         trustyService.requestCounterfactuals(TEST_EXECUTION_ID,
-                List.of(TypedVariableWithValue.buildStructure("Fine", "tFine",
-                        List.of(TypedVariableWithValue.buildUnit("Amount", "number", new IntNode(0)),
-                                TypedVariableWithValue.buildUnit("Points", "number", new IntNode(0)))),
-                        TypedVariableWithValue.buildUnit("Should the driver be suspended?", "string", new TextNode("No"))),
-                List.of(CounterfactualSearchDomain.buildStructure("Violation", "tViolation",
-                        List.of(CounterfactualSearchDomain.buildFixedUnit("Type", "string"),
-                                CounterfactualSearchDomain.buildFixedUnit("Actual Speed", "number"),
-                                CounterfactualSearchDomain.buildFixedUnit("Speed Limit", "number"))),
-                        CounterfactualSearchDomain.buildStructure("Driver", "tDriver",
-                                List.of(CounterfactualSearchDomain.buildFixedUnit("Age", "number"),
-                                        CounterfactualSearchDomain.buildFixedUnit("Points", "number")))));
+                List.of(new NamedTypedValue("Fine",
+                        new StructureValue("tFine",
+                                Map.of("Amount", new UnitValue("number", "number", new IntNode(0)),
+                                        "Points", new UnitValue("number", "number", new IntNode(0))))),
+                        new NamedTypedValue("Should the driver be suspended?",
+                                new UnitValue("string", "string", new TextNode("No")))),
+                List.of(new CounterfactualSearchDomain("Violation",
+                        new CounterfactualSearchDomainStructureValue("tViolation",
+                                Map.of("Type", new CounterfactualSearchDomainUnitValue("string", "string", true, domain),
+                                        "Actual Speed", new CounterfactualSearchDomainUnitValue("number", "number", true, domain),
+                                        "Speed Limit", new CounterfactualSearchDomainUnitValue("number", "number", true, domain)))),
+                        new CounterfactualSearchDomain("Driver",
+                                new CounterfactualSearchDomainStructureValue("tDriver",
+                                        Map.of("Age", new CounterfactualSearchDomainUnitValue("number", "number", true, domain),
+                                                "Points", new CounterfactualSearchDomainUnitValue("number", "number", true, domain))))));
 
         verify(counterfactualStorage).put(anyString(), counterfactualArgumentCaptor.capture());
         CounterfactualExplainabilityRequest counterfactual = counterfactualArgumentCaptor.getValue();
@@ -436,6 +458,16 @@ public class TrustyServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void givenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmitted() {
+        doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmittedTest(new CounterfactualDomainFixed());
+    }
+
+    @Test
+    void givenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmittedWithNullDomains() {
+        doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmittedTest(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    void doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmittedTest(CounterfactualDomain domain) {
         Storage<String, Decision> decisionStorage = mock(Storage.class);
         Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
         ArgumentCaptor<BaseExplainabilityRequestDto> explainabilityEventArgumentCaptor = ArgumentCaptor.forClass(BaseExplainabilityRequestDto.class);
@@ -448,17 +480,26 @@ public class TrustyServiceTest {
         // The Goals structures must be comparable to the original decisions outcomes.
         // The Search Domain structures must be identical those of the original decision inputs.
         trustyService.requestCounterfactuals(TEST_EXECUTION_ID,
-                List.of(TypedVariableWithValue.buildStructure("Fine", "tFine",
-                        List.of(TypedVariableWithValue.buildUnit("Amount", "number", new IntNode(0)),
-                                TypedVariableWithValue.buildUnit("Points", "number", new IntNode(0)))),
-                        TypedVariableWithValue.buildUnit("Should the driver be suspended?", "string", new TextNode("No"))),
-                List.of(CounterfactualSearchDomain.buildStructure("Violation", "tViolation",
-                        List.of(CounterfactualSearchDomain.buildFixedUnit("Type", "string"),
-                                CounterfactualSearchDomain.buildFixedUnit("Actual Speed", "number"),
-                                CounterfactualSearchDomain.buildFixedUnit("Speed Limit", "number"))),
-                        CounterfactualSearchDomain.buildStructure("Driver", "tDriver",
-                                List.of(CounterfactualSearchDomain.buildFixedUnit("Age", "number"),
-                                        CounterfactualSearchDomain.buildFixedUnit("Points", "number")))));
+                List.of(new NamedTypedValue("Fine",
+                        new StructureValue("tFine",
+                                Map.of("Amount", new UnitValue("number", "number", new IntNode(0)),
+                                        "Points", new UnitValue("number", "number", new IntNode(0))))),
+                        new NamedTypedValue("Should the driver be suspended?",
+                                new UnitValue("string", "string", new TextNode("No")))),
+                List.of(new CounterfactualSearchDomain("Violation",
+                        new CounterfactualSearchDomainStructureValue("tViolation",
+                                Map.of("Type",
+                                        new CounterfactualSearchDomainUnitValue("string", "string", true, domain),
+                                        "Actual Speed",
+                                        new CounterfactualSearchDomainUnitValue("number", "number", true, domain),
+                                        "Speed Limit",
+                                        new CounterfactualSearchDomainUnitValue("number", "number", true, domain)))),
+                        new CounterfactualSearchDomain("Driver",
+                                new CounterfactualSearchDomainStructureValue("tDriver",
+                                        Map.of("Age",
+                                                new CounterfactualSearchDomainUnitValue("number", "number", true, domain),
+                                                "Points",
+                                                new CounterfactualSearchDomainUnitValue("number", "number", true, domain))))));
 
         verify(explainabilityRequestProducerMock).sendEvent(explainabilityEventArgumentCaptor.capture());
         BaseExplainabilityRequestDto event = explainabilityEventArgumentCaptor.getValue();
@@ -479,13 +520,12 @@ public class TrustyServiceTest {
                 TEST_EXECUTION_ID, TEST_SOURCE_URL, TEST_SERVICE_URL, 0L, true,
                 null, "model", "modelNamespace",
                 List.of(
-                        new DecisionInput("IN1", "yearsOfService", TypedVariableWithValue.buildUnit(
-                                "yearsOfService", "integer", new IntNode(10)))),
+                        new DecisionInput("IN1", "yearsOfService", new UnitValue("integer", "integer", new IntNode(10)))),
                 List.of(
                         new DecisionOutcome(
                                 "OUT1", "salary", "SUCCEEDED",
-                                TypedVariableWithValue.buildUnit("salary", "integer", new IntNode(1000)),
-                                Collections.emptyList(), Collections.emptyList())));
+                                new UnitValue("integer", "integer", new IntNode(1000)),
+                                Collections.emptyMap(), Collections.emptyList())));
 
         when(decisionStorage.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(true);
         when(trustyStorageServiceMock.getDecisionsStorage()).thenReturn(decisionStorage);
@@ -493,13 +533,11 @@ public class TrustyServiceTest {
         when(decisionStorage.get(eq(TEST_EXECUTION_ID))).thenReturn(decision);
 
         trustyService.requestCounterfactuals(TEST_EXECUTION_ID,
-                List.of(new TypedVariableWithValue(TypedValue.Kind.UNIT, "salary", "integer", new IntNode(2000), null)),
-                List.of(new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
-                        "yearsOfService",
-                        "integer",
-                        Collections.emptyList(),
-                        Boolean.FALSE,
-                        new CounterfactualDomainRange(new IntNode(10), new IntNode(30)))));
+                List.of(new NamedTypedValue("salary",
+                        new UnitValue("integer", "integer", new IntNode(2000)))),
+                List.of(new CounterfactualSearchDomain("yearsOfService",
+                        new CounterfactualSearchDomainUnitValue("integer", "integer", false,
+                                new CounterfactualDomainRange(new IntNode(10), new IntNode(30))))));
 
         verify(explainabilityRequestProducerMock).sendEvent(explainabilityEventArgumentCaptor.capture());
         BaseExplainabilityRequestDto event = explainabilityEventArgumentCaptor.getValue();
@@ -510,7 +548,7 @@ public class TrustyServiceTest {
         //Check original input value has been copied into CF request
         assertEquals(1, request.getOriginalInputs().size());
         assertTrue(request.getOriginalInputs().containsKey("yearsOfService"));
-        assertEquals(decision.getInputs().iterator().next().getValue().getValue().asInt(),
+        assertEquals(decision.getInputs().iterator().next().getValue().toUnit().getValue().asInt(),
                 request.getOriginalInputs().get("yearsOfService").toUnit().getValue().asInt());
 
         //Check CF goals have been copied into CF request

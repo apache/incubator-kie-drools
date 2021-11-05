@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import {
   ActionList,
   ActionListItem,
@@ -17,7 +17,11 @@ import {
   Title
 } from '@patternfly/react-core';
 import CounterfactualNumericalDomainEdit from '../CounterfactualNumericalDomainEdit/CounterfactualNumericalDomainEdit';
-import { CFNumericalDomain, CFSearchInput } from '../../../types';
+import {
+  CFNumericalDomain,
+  CFSearchInput,
+  CFSearchInputUnit
+} from '../../../types';
 import { CFDispatch } from '../CounterfactualAnalysis/CounterfactualAnalysis';
 
 type CounterfactualInputDomainEditProps = {
@@ -31,8 +35,15 @@ const CounterfactualInputDomainEdit = (
 ) => {
   const dispatch = useContext(CFDispatch);
   const { input, inputIndex, onClose } = props;
-  const [inputDomain, setInputDomain] = useState(input.domain);
   const [validation, setValidation] = useState({ isValid: true, message: '' });
+  const unit = useMemo(
+    () =>
+      input.value.kind === 'UNIT'
+        ? (input.value as CFSearchInputUnit)
+        : undefined,
+    [input]
+  );
+  const [inputDomain, setInputDomain] = useState(unit.domain);
 
   const handleApply = () => {
     const updatedValidation = validateDomain(inputDomain);
@@ -69,7 +80,7 @@ const CounterfactualInputDomainEdit = (
     setInputDomain(updatedDomain);
   };
 
-  const validateDomain = (domain: CFSearchInput['domain']) => {
+  const validateDomain = (domain: CFSearchInputUnit['domain']) => {
     if (domain && domain.type === 'RANGE') {
       return validateNumericDomain(domain);
     } else {
@@ -121,13 +132,13 @@ const CounterfactualInputDomainEdit = (
               <DescriptionListGroup>
                 <DescriptionListTerm>Data type</DescriptionListTerm>
                 <DescriptionListDescription>
-                  {input.typeRef}
+                  {unit.type}
                 </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>Original value</DescriptionListTerm>
                 <DescriptionListDescription>
-                  {input.value.toString()}
+                  {unit.originalValue.value.toString()}
                 </DescriptionListDescription>
               </DescriptionListGroup>
               {/* @kelvah: we do not have default constraints for now*/}
@@ -146,7 +157,7 @@ const CounterfactualInputDomainEdit = (
             </Title>
           </StackItem>
           <StackItem>
-            {typeof input.value === 'number' && (
+            {typeof unit.originalValue.value === 'number' && (
               <CounterfactualNumericalDomainEdit
                 inputDomain={inputDomain as CFNumericalDomain}
                 onUpdate={onNumericDomainUpdate}

@@ -18,6 +18,7 @@ package org.kie.kogito.trusty.service.common.handlers;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,10 +28,10 @@ import org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
-import org.kie.kogito.trusty.service.common.messaging.MessagingUtils;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,8 +78,16 @@ public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceH
                 dto.getStatusDetails(),
                 dto.isValid(),
                 stageFrom(dto.getStage()),
-                MessagingUtils.tracingTypedValueToModel(dto.getInputs()),
-                MessagingUtils.tracingTypedValueToModel(dto.getOutputs()));
+                dto.getInputs()
+                        .entrySet()
+                        .stream()
+                        .map(e -> new NamedTypedValue(e.getKey(), e.getValue()))
+                        .collect(Collectors.toList()),
+                dto.getOutputs()
+                        .entrySet()
+                        .stream()
+                        .map(e -> new NamedTypedValue(e.getKey(), e.getValue()))
+                        .collect(Collectors.toList()));
     }
 
     @Override
