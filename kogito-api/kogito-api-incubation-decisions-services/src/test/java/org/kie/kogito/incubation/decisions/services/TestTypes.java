@@ -36,10 +36,10 @@ public class TestTypes {
         // let's just make the compiler happy
         DecisionService svc = new DecisionService() {
             @Override
-            public DataContext evaluate(LocalId id, DataContext ctx) {
+            public ExtendedDataContext evaluate(LocalId id, DataContext ctx) {
                 // ... parses and resolves the id ...
                 // .. then evaluates ...
-                return ctx;
+                return ExtendedDataContext.ofData(ctx);
             }
         };
         MapDataContext ctx = MapDataContext.create();

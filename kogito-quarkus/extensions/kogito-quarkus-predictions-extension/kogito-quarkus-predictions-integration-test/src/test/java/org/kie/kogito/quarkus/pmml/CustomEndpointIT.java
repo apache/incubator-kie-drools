@@ -39,10 +39,9 @@ public class CustomEndpointIT {
                         "fld2", 2.0,
                         "fld3", "y"))
                 .post("/custom")
-                .peek()
                 .then()
                 .statusCode(200)
-                .body("fld4", is(52.5f));
+                .body("data.fld4", is(52.5f));
     }
 
 }

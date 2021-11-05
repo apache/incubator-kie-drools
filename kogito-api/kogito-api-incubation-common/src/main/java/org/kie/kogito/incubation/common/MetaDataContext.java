@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.incubation.predictions.services;
+package org.kie.kogito.incubation.common;
 
-import org.kie.kogito.incubation.common.DataContext;
-import org.kie.kogito.incubation.common.ExtendedDataContext;
-import org.kie.kogito.incubation.common.LocalId;
-
-public interface PredictionService {
-    ExtendedDataContext evaluate(LocalId decisionId, DataContext inputContext);
+public interface MetaDataContext {
 }

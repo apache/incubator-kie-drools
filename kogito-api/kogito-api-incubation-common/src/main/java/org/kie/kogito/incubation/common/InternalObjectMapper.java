@@ -42,6 +42,13 @@ public class InternalObjectMapper {
         if (MapLikeDataContext.class == type || MapDataContext.class == type) {
             return (T) MapDataContext.of(objectMapper.convertValue(self, Map.class));
         }
+        if (ExtendedDataContext.class == type) {
+            if (self instanceof DataContext) {
+                return (T) ExtendedDataContext.ofData((DataContext) self);
+            } else {
+                return (T) ExtendedDataContext.ofData(convertValue(self, MapDataContext.class));
+            }
+        }
         return objectMapper.convertValue(self, type);
     }
 

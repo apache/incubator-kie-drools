@@ -33,10 +33,10 @@ public class CustomEndpointIT {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(DMNIT.ADULT_PAYLOAD)
-                .post("/dmnModel")
+                .post("/custom")
                 .then()
                 .statusCode(200)
-                .body("d.Hello", Matchers.is("Hello Luca"));
+                .body("data.d.Hello", Matchers.is("Hello Luca"));
     }
 
 }

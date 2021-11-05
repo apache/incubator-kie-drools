@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.incubation.predictions.services;
+package org.kie.kogito.incubation.common;
 
-import org.kie.kogito.incubation.common.DataContext;
-import org.kie.kogito.incubation.common.ExtendedDataContext;
-import org.kie.kogito.incubation.common.LocalId;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public interface PredictionService {
-    ExtendedDataContext evaluate(LocalId decisionId, DataContext inputContext);
+/**
+ * An empty DataContext singleton
+ */
+@JsonSerialize // ensure Jackson won't complain even if it is an empty object
+public final class EmptyMetaDataContext implements MetaDataContext {
+    public static final MetaDataContext Instance = new EmptyMetaDataContext();
+
+    private EmptyMetaDataContext() {
+    }
 }
