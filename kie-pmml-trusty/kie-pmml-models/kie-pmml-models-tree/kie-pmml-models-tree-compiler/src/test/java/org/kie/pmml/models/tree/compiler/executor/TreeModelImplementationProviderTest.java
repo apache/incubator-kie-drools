@@ -24,11 +24,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
-import org.kie.pmml.models.tree.model.KiePMMLTreeModelWithSources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -74,12 +74,9 @@ public class TreeModelImplementationProviderTest {
                                                                        pmml,
                                                                        treeModel,
                                                                        new HasClassLoaderMock());
-        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
+        final KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertNotNull(retrieved);
-        assertTrue(retrieved instanceof KiePMMLTreeModelWithSources);
-        KiePMMLTreeModelWithSources retrievedWithSources = (KiePMMLTreeModelWithSources) retrieved;
-        assertTrue(retrievedWithSources instanceof Serializable);
-        final Map<String, String> sourcesMap = retrievedWithSources.getSourcesMap();
+        final Map<String, String> sourcesMap = retrieved.getSourcesMap();
         assertNotNull(sourcesMap);
         assertFalse(sourcesMap.isEmpty());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

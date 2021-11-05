@@ -24,11 +24,11 @@ import org.dmg.pmml.clustering.ClusteringModel;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
-import org.kie.pmml.models.clustering.model.KiePMMLClusteringModelWithSources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -82,15 +82,10 @@ public class ClusteringModelImplementationProviderTest {
                                                                        pmml,
                                                                        model,
                                                                        new HasClassLoaderMock());
-        KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
+        KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
 
         assertNotNull(retrieved);
-        assertTrue(retrieved instanceof KiePMMLClusteringModelWithSources);
-
-        KiePMMLClusteringModelWithSources retrievedWithSources = (KiePMMLClusteringModelWithSources) retrieved;
-        assertTrue(retrievedWithSources instanceof Serializable);
-
-        Map<String, String> sourcesMap = retrievedWithSources.getSourcesMap();
+        Map<String, String> sourcesMap = retrieved.getSourcesMap();
         assertNotNull(sourcesMap);
         assertFalse(sourcesMap.isEmpty());
 
