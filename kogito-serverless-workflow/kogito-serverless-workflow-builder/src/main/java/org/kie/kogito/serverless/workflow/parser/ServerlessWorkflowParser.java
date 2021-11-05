@@ -117,15 +117,21 @@ public class ServerlessWorkflowParser {
         return process;
     }
 
-    public static <T extends RuleFlowNodeContainerFactory<T, ?>> StartNodeFactory<T> messageStartNode(StartNodeFactory<T> nodeFactory,
-            EventDefinition eventDefinition) {
-        return nodeFactory
-                .name(eventDefinition.getName())
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> StartNodeFactory<T> messageStartNode(StartNodeFactory<T> nodeFactory, EventDefinition eventDefinition) {
+        return messageNode(nodeFactory, eventDefinition).trigger(JSON_NODE, DEFAULT_WORKFLOW_VAR);
+    }
+
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> EventNodeFactory<T> messageEventNode(EventNodeFactory<T> nodeFactory, EventDefinition eventDefinition) {
+        return messageNode(nodeFactory, eventDefinition).eventType("Message-" + eventDefinition.getType()).variableName(DEFAULT_WORKFLOW_VAR);
+    }
+
+    public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T messageNode(T nodeFactory, EventDefinition eventDefinition) {
+        return nodeFactory.name(eventDefinition.getName())
+                .metaData(Metadata.EVENT_TYPE, "message")
                 .metaData(Metadata.TRIGGER_MAPPING, DEFAULT_WORKFLOW_VAR)
                 .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage")
                 .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
-                .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
-                .trigger(JSON_NODE, DEFAULT_WORKFLOW_VAR);
+                .metaData(Metadata.MESSAGE_TYPE, JSON_NODE);
     }
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> SubProcessNodeFactory<T> subprocessNode(SubProcessNodeFactory<T> nodeFactory) {

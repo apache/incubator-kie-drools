@@ -21,6 +21,7 @@ import org.kie.kogito.serverless.workflow.parser.NodeIdGenerator;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.interfaces.State;
+import io.serverlessworkflow.api.states.CallbackState;
 import io.serverlessworkflow.api.states.DelayState;
 import io.serverlessworkflow.api.states.EventState;
 import io.serverlessworkflow.api.states.InjectState;
@@ -52,6 +53,8 @@ public class StateHandlerFactory {
                 return (StateHandler<S, T, RuleFlowProcessFactory>) new SwitchHandler<>((SwitchState) state, workflow, factory, idGenerator);
             case PARALLEL:
                 return (StateHandler<S, T, RuleFlowProcessFactory>) new ParallelHandler<>((ParallelState) state, workflow, factory, idGenerator);
+            case CALLBACK:
+                return (StateHandler<S, T, RuleFlowProcessFactory>) new CallbackHandler<>((CallbackState) state, workflow, factory, idGenerator);
             default:
                 return null;
         }

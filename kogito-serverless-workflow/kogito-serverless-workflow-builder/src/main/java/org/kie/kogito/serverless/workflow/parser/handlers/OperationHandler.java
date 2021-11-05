@@ -22,7 +22,7 @@ import org.kie.kogito.serverless.workflow.parser.NodeIdGenerator;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.states.OperationState;
 
-public class OperationHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends CompositeContextNodeHandler<OperationState, P> {
+public class OperationHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends CompositeContextNodeHandler<OperationState, P, CompositeContextNodeFactory<P>> {
 
     protected OperationHandler(OperationState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory, NodeIdGenerator idGenerator) {
         super(state, workflow, factory, idGenerator);
@@ -30,6 +30,6 @@ public class OperationHandler<P extends RuleFlowNodeContainerFactory<P, ?>> exte
 
     @Override
     public CompositeContextNodeFactory<P> makeNode() {
-        return handleActions(factory.compositeContextNode(idGenerator.getId()).name(state.getName()).autoComplete(true), workflow.getFunctions(), state.getActions());
+        return handleActions(state.getActions());
     }
 }

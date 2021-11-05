@@ -29,9 +29,8 @@ import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.OnEvents;
 import io.serverlessworkflow.api.states.EventState;
-import io.serverlessworkflow.api.workflow.Functions;
 
-public class EventHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends CompositeContextNodeHandler<EventState, P> {
+public class EventHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends CompositeContextNodeHandler<EventState, P, CompositeContextNodeFactory<P>> {
 
     protected EventHandler(EventState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
             NodeIdGenerator idGenerator) {
@@ -49,9 +48,8 @@ public class EventHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends 
 
     @Override
     public CompositeContextNodeFactory<P> makeNode() {
-        Functions workflowFunctions = workflow.getFunctions();
         OnEvents onEvent = state.getOnEvents().get(0);
-        CompositeContextNodeFactory<P> nodeFactory = handleActions(factory.compositeContextNode(idGenerator.getId()).name(state.getName()).autoComplete(true), workflowFunctions, onEvent.getActions());
+        CompositeContextNodeFactory<P> nodeFactory = handleActions(onEvent.getActions());
         List<String> onEventRefs = onEvent.getEventRefs();
         if (onEventRefs.size() == 1) {
             startFactory = ServerlessWorkflowParser.messageStartNode(factory.startNode(idGenerator.getId()), ServerlessWorkflowUtils
