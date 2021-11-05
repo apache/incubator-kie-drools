@@ -15,85 +15,19 @@
  */
 package org.kie.kogito.tracing.typedvalue;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.EXISTING_PROPERTY,
-        defaultImpl = TypedValue.Kind.class,
-        property = "kind",
-        visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = UnitValue.class, name = "UNIT"),
         @JsonSubTypes.Type(value = CollectionValue.class, name = "COLLECTION"),
         @JsonSubTypes.Type(value = StructureValue.class, name = "STRUCTURE")
 })
-public abstract class TypedValue {
+public abstract class TypedValue extends BaseTypedValue<CollectionValue, StructureValue, UnitValue> {
 
-    public enum Kind {
-        UNIT,
-        COLLECTION,
-        STRUCTURE
+    public TypedValue() {
     }
 
-    @JsonProperty("kind")
-    private Kind kind;
-
-    @JsonProperty("type")
-    private String type;
-
-    protected TypedValue() {
-    }
-
-    protected TypedValue(Kind kind, String type) {
-        this.kind = kind;
-        this.type = type;
-    }
-
-    public Kind getKind() {
-        return kind;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    @JsonIgnore
-    public boolean isCollection() {
-        return kind == Kind.COLLECTION;
-    }
-
-    public CollectionValue toCollection() {
-        if (!isCollection()) {
-            throw new IllegalStateException(String.format("Can't convert TypedValue of kind %s to COLLECTION", kind));
-        }
-        return (CollectionValue) this;
-    }
-
-    @JsonIgnore
-    public boolean isStructure() {
-        return kind == Kind.STRUCTURE;
-    }
-
-    public StructureValue toStructure() {
-        if (!isStructure()) {
-            throw new IllegalStateException(String.format("Can't convert TypedValue of kind %s to STRUCTURE", kind));
-        }
-        return (StructureValue) this;
-    }
-
-    @JsonIgnore
-    public boolean isUnit() {
-        return kind == Kind.UNIT;
-    }
-
-    public UnitValue toUnit() {
-        if (!isUnit()) {
-            throw new IllegalStateException(String.format("Can't convert TypedValue of kind %s to UNIT", kind));
-        }
-        return (UnitValue) this;
+    public TypedValue(Kind kind, String type) {
+        super(kind, type);
     }
 }

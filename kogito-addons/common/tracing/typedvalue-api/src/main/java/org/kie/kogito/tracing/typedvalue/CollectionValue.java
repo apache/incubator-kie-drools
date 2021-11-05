@@ -24,9 +24,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class CollectionValue extends TypedValue {
 
     @JsonProperty("value")
-    private Collection<TypedValue> value;
+    protected Collection<TypedValue> value;
 
-    private CollectionValue() {
+    protected CollectionValue() {
     }
 
     public CollectionValue(String type) {

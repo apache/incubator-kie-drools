@@ -27,12 +27,12 @@ public class UnitValue extends TypedValue {
 
     @JsonProperty("baseType")
     @JsonInclude(NON_NULL)
-    private String baseType;
+    protected String baseType;
 
     @JsonProperty("value")
-    private JsonNode value;
+    protected JsonNode value;
 
-    private UnitValue() {
+    protected UnitValue() {
     }
 
     public UnitValue(String type) {
