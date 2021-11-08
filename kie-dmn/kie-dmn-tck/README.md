@@ -33,7 +33,7 @@ New contributions to the DMN TCK are submitted in the form of classic GitHub pul
 
 The following workflow is suggested in order to keep tabs on new DMN TCK tests being proposed, in the scope of checking Drools DMN Engine behaviour:
 
-1. Identify an open PR at the DMN TCK which was not yet reviewed or commented on; check the PR against the latest Drools snapshot.  
+1. Identify an open PR at the DMN TCK which is not yet reviewed or commented on; check the PR against the latest Drools snapshot.  
 Avoid PR labeled with `Waiting on RTF` or similar, as that label designates that the TCK group has identified a potential problem with the Specification itself, which needs to be handled at the OMG’s RTF.
 
 2. If any test failure is detected, investigate the reason for the test failures: the failure could be due to Drools bug, or the test could be wrong according to the Specification.
