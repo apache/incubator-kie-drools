@@ -664,7 +664,10 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
                     result.resultType,
                     result.getFieldDeclarations());
         } else {
-            return result;
+            return DirectCompilerResult.of(
+                    Expressions.positive(result.getExpression()),
+                    result.resultType,
+                    result.getFieldDeclarations());
         }
     }
 
