@@ -75,7 +75,7 @@ import org.kie.internal.process.CorrelationKey;
 /**
  * Wrapper of ReteEvaluator so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
-public class ReteEvaluatorForRHS
+public class StatefulKnowledgeSessionForRHS
         implements KieSession,
                    InternalWorkingMemoryActions,
                    EventSupport,
@@ -84,7 +84,7 @@ public class ReteEvaluatorForRHS
 
     protected StatefulKnowledgeSessionImpl delegate;
 
-    public ReteEvaluatorForRHS(StatefulKnowledgeSessionImpl reteEvaluator) {
+    public StatefulKnowledgeSessionForRHS(StatefulKnowledgeSessionImpl reteEvaluator) {
         super();
         this.delegate = reteEvaluator;
     }
@@ -92,7 +92,7 @@ public class ReteEvaluatorForRHS
     /**
      * This should be used just by deserialization. Please avoid using this empty constructor in your code.
      */
-    public ReteEvaluatorForRHS() {
+    public StatefulKnowledgeSessionForRHS() {
     }
 
     @Override
