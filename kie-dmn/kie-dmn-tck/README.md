@@ -6,6 +6,8 @@ The Drools DMN Engine aim to support the DMN Specification at the best compatibi
 
 The purpose of this _additional module_ is to help increase the level of confidence of conformance to the DMN specification, with additional Drools DMN Engine conformance checks, contributed by the DMN TCK initiative.
 
+For more information about the DMN TCK: https://dmn-tck.github.io/tck/about.html
+
 ## Configuration
 
 The git coordinates of the DMN TCK repository are configured in the `pom.xml`.
