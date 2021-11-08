@@ -25,6 +25,7 @@ public final class Msg {
     public static final Message0 NULL_OR_UNKNOWN_OPERATOR = new Message0("Null or unknown operator");
     public static final Message1 UNKNOWN_VARIABLE_REFERENCE = new Message1("Unknown variable name '%s'");
     public static final Message0 NEGATING_A_NULL = new Message0("Negating a null");
+    public static final Message0 CANNOT_BE_SIGNED = new Message0("Cannot sign a value which is not a number");
     public static final Message1 ERROR_ACCESSING_QUALIFIED_NAME = new Message1("Error accessing qualified name: %s");
     public static final Message2 ERROR_EVALUATING_PATH_EXPRESSION = new Message2("Error evaluating path expression: %s. %s");
     public static final Message0 VALUE_NULL_EXPR_NOT_NULL_AND_NOT_UNARY_TEST_EVALUATING_THIS_NODE_AS_FALSE = new Message0("value == null, expr != null and not Unary test, Evaluating this node as FALSE.");

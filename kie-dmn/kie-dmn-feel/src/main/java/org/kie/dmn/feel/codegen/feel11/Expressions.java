@@ -103,8 +103,11 @@ public class Expressions {
     }
 
     public static Expression negate(Expression expression) {
-        EnclosedExpr e = castTo(BigDecimalT, expression);
-        return new MethodCallExpr(e, "negate");
+        return new MethodCallExpr(STDLIB, "negate", NodeList.nodeList(FeelCtx.FEELCTX, expression));
+    }
+
+    public static Expression positive(Expression expression) {
+        return new MethodCallExpr(STDLIB, "positive", NodeList.nodeList(FeelCtx.FEELCTX, expression));
     }
 
     public static MethodCallExpr binary(

@@ -61,7 +61,12 @@ public class SignedUnaryNode
     @Override
     public Object evaluate(EvaluationContext ctx) {
         if (expression == null) return null;
-        BigDecimal result = EvalHelper.getBigDecimalOrNull( expression.evaluate( ctx ) );
+        Object expressionResult = expression.evaluate( ctx );
+        if (expressionResult instanceof String) {
+            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CANNOT_BE_SIGNED)));
+            return null;
+        }
+        BigDecimal result = EvalHelper.getBigDecimalOrNull( expressionResult );
         if ( result == null ) {
             ctx.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.NEGATING_A_NULL)));
             return null;
