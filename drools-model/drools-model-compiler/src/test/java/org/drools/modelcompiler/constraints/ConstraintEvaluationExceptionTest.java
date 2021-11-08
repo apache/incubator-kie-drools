@@ -67,6 +67,24 @@ public class ConstraintEvaluationExceptionTest extends BaseModelTest {
         assertMessage("Error evaluating constraint 'age > 20' in [Rule \"\", \"R2\" in ] [Rule \"\" in sample1.drl]");
     }
 
+    @Test
+    public void testExceedMaxRuleDefs() {
+        initConstraintTestField("age > 20", "R1", "sample1.drl");
+        addRuleToConstraintTestField("R2", "sample1.drl");
+        addRuleToConstraintTestField("R3", "sample1.drl");
+        addRuleToConstraintTestField("R4", "sample1.drl");
+        addRuleToConstraintTestField("R5", "sample1.drl");
+        addRuleToConstraintTestField("R6", "sample1.drl");
+        addRuleToConstraintTestField("R7", "sample2.drl");
+        addRuleToConstraintTestField("R8", "sample2.drl");
+        addRuleToConstraintTestField("R9", "sample2.drl");
+        addRuleToConstraintTestField("R10", "sample3.drl");
+        addRuleToConstraintTestField("R11", "sample3.drl");
+
+        assertMessage("Error evaluating constraint 'age > 20' in [Rule \"R1\", \"R2\", \"R3\", \"R4\", \"R5\", \"R6\" in sample1.drl] [Rule \"R7\", \"R8\", \"R9\" in sample2.drl] [Rule \"R10\" in sample3.drl]" +
+                " and in more rules");
+    }
+
     private void initConstraintTestField(String constraint, String ruleName, String ruleFileName) {
         if (testRunType.isExecutableModel()) {
             predicateInformation = new PredicateInformation(constraint, ruleName, ruleFileName);

@@ -26,6 +26,6 @@ public class ConstraintEvaluationException extends RuntimeException {
     private static final long serialVersionUID = 7880877148568087603L;
 
     public ConstraintEvaluationException(PredicateInformation predicateInformation, Throwable cause) {
-        super(formatConstraintErrorMessage(predicateInformation.getStringConstraint(), predicateInformation.getRuleNameMap()), cause);
+        super(formatConstraintErrorMessage(predicateInformation.getStringConstraint(), predicateInformation.getRuleNameMap(), predicateInformation.isMoreThanMaxRuleDefs()), cause);
     }
 }
