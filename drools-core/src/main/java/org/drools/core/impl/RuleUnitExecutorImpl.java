@@ -233,21 +233,6 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     }
 
     @Override
-    public void fireUntilHalt() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void fireUntilHalt(AgendaFilter agendaFilter) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void halt() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public FactHandle insert(Object object) {
         return getDefaultEntryPoint().insert(object);
     }

@@ -33,13 +33,13 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.TimerService;
 import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.StatefulRuleSession;
 import org.kie.api.time.SessionClock;
 
-public interface ReteEvaluator extends StatefulRuleSession {
+public interface ReteEvaluator {
 
     ActivationsManager getActivationsManager();
 
@@ -120,7 +120,10 @@ public interface ReteEvaluator extends StatefulRuleSession {
 
     QueryResults getQueryResults(String queryName, Object... arguments);
 
-    void halt();
-
     void dispose();
+
+    int fireAllRules();
+    int fireAllRules(int max);
+    int fireAllRules(AgendaFilter agendaFilter);
+    int fireAllRules(AgendaFilter agendaFilter, int max);
 }

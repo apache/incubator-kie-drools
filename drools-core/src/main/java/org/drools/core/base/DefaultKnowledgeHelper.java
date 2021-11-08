@@ -488,7 +488,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public void halt() {
-        this.reteEvaluator.halt();
+        this.getWrappedEvaluator().halt();
     }
 
     public EntryPoint getEntryPoint(String id) {
