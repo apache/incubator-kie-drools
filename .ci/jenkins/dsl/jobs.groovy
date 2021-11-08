@@ -35,10 +35,7 @@ Map getMultijobPRConfig() {
             ], [
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
-                dependsOn: 'optaplanner',
-                env : [
-                    KOGITO_APPS_BUILD_MVN_OPTS: '-Poptaplanner-downstream'
-                ]
+                dependsOn: 'optaplanner'
             ], [
                 id: 'kogito-examples',
                 repository: 'kogito-examples',
@@ -74,7 +71,7 @@ def getJobParams(String jobName, String jobFolder, String jenkinsfileName, Strin
     return jobParams
 }
 
-// Optaplanner PR checks
+// Drools PR checks
 setupMultijobPrDefaultChecks()
 setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
@@ -146,7 +143,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('optaplanner-promote', jobFolder, "${JENKINS_PATH}/Jenkinsfile.promote", 'Optaplanner Promote')).with {
+    KogitoJobTemplate.createPipelineJob(this, getJobParams('drools-promote', jobFolder, "${JENKINS_PATH}/Jenkinsfile.promote", 'Drools Promote')).with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -177,27 +174,6 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
             env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
             env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
             env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-        }
-    }
-}
-
-void setupOptaPlannerTurtleTestsJob() {
-    def jobParams = getJobParams('optaplanner-turtle-tests', FolderUtils.getOtherFolder(this), "${JENKINS_PATH}/Jenkinsfile.turtle",
-            'Run OptaPlanner turtle tests on a weekly basis.')
-    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
-        properties {
-            pipelineTriggers {
-                triggers {
-                    cron {
-                        spec('H H * * 5') // Run every Friday.
-                    }
-                }
-            }
-        }
-
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Git branch to checkout')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or an organization.')
         }
     }
 }
