@@ -24,7 +24,11 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.kogito.incubation.common.*;
+import org.kie.kogito.incubation.common.DataContext;
+import org.kie.kogito.incubation.common.ExtendedDataContext;
+import org.kie.kogito.incubation.common.LocalId;
+import org.kie.kogito.incubation.common.MapDataContext;
+import org.kie.kogito.incubation.common.objectmapper.InternalObjectMapper;
 import org.kie.kogito.incubation.predictions.LocalPredictionId;
 import org.kie.kogito.incubation.predictions.services.PredictionService;
 import org.kie.kogito.prediction.PredictionModel;
@@ -57,7 +61,7 @@ public class QuarkusPredictionService implements PredictionService {
                 pmml4Result.getResultVariables().get(
                         pmml4Result.getResultObjectName()));
 
-        MapDataContext meta = MapDataContext.of(InternalObjectMapper.convertValue(pmml4Result, Map.class));
+        MapDataContext meta = MapDataContext.of(InternalObjectMapper.objectMapper().convertValue(pmml4Result, Map.class));
         MapDataContext data = MapDataContext.of(resultMap);
         return ExtendedDataContext.of(meta, data);
     }

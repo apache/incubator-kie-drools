@@ -20,6 +20,7 @@
     <module>kogito-events-api</module>
     <module>kogito-api</module>
     <module>kogito-api-incubation-common</module>
+    <module>kogito-api-incubation-common-objectmapper</module>
     <module>kogito-api-incubation-application</module>
     <module>kogito-api-incubation-processes</module>
     <module>kogito-api-incubation-processes-services</module>

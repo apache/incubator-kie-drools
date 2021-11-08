@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.incubation.common;
+package org.kie.kogito.core.rules.incubation.quarkus.support;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import javax.enterprise.context.ApplicationScoped;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.quarkus.jackson.ObjectMapperCustomizer;
 
 /**
- * An empty DataContext singleton
+ * Wraps and configures a custom ObjectMapper for DataSources
  */
-@JsonAutoDetect // ensure Jackson won't complain even if it is an empty object
-public final class EmptyMetaDataContext implements MetaDataContext {
-    public static final MetaDataContext Instance = new EmptyMetaDataContext();
+@ApplicationScoped
+class RuleUnitDataObjectCustomizer implements ObjectMapperCustomizer {
 
-    private EmptyMetaDataContext() {
+    @Override
+    public void customize(ObjectMapper objectMapper) {
+        objectMapper.registerModule(new RuleUnitDataJacksonModule());
     }
 }

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.incubation.common;
+package org.kie.kogito.incubation.common.objectmapper;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import java.util.ServiceLoader;
 
 /**
- * An empty DataContext singleton
+ * For internal use only.
+ * Provides a method to convert an object into a given type.
+ * This is an implementation detail. We may move this to a separate module in the future.
  */
-@JsonAutoDetect // ensure Jackson won't complain even if it is an empty object
-public final class EmptyMetaDataContext implements MetaDataContext {
-    public static final MetaDataContext Instance = new EmptyMetaDataContext();
+public interface InternalObjectMapper {
+    <T> T convertValue(Object self, Class<T> type);
 
-    private EmptyMetaDataContext() {
+    public static InternalObjectMapper objectMapper() {
+        return ServiceLoader.load(InternalObjectMapper.class).findFirst()
+                .orElseThrow(MissingInternalObjectMapper::new);
     }
 }

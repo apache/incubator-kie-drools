@@ -14,34 +14,38 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.incubation.common;
+package org.kie.kogito.incubation.common.objectmapper.quarkus;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import javax.enterprise.inject.spi.CDI;
+
+import org.kie.kogito.incubation.common.DataContext;
+import org.kie.kogito.incubation.common.ExtendedDataContext;
+import org.kie.kogito.incubation.common.MapDataContext;
+import org.kie.kogito.incubation.common.MapLikeDataContext;
+import org.kie.kogito.incubation.common.objectmapper.InternalObjectMapper;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * For internal use only.
- * Provides a method to convert an object into a given type.
- * This is an implementation detail. We may move this to a separate module in the future.
+ * This class bridges CDI to non-CDI classes by using <code>CDI.current().select()</code>
  */
-public class InternalObjectMapper {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+public class QuarkusInternalObjectMapper implements InternalObjectMapper {
 
-    static {
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-    }
-
-    public static <T> T convertValue(Object self, Class<T> type) {
+    @Override
+    public <T> T convertValue(Object self, Class<T> type) {
         if (type.isInstance(self)) {
             return type.cast(self);
         }
+
+        ObjectMapper objectMapper =
+                CDI.current().select(ObjectMapper.class).get();
+
         if (MapLikeDataContext.class == type || MapDataContext.class == type) {
             return (T) MapDataContext.of(objectMapper.convertValue(self, Map.class));
         }
+
         if (ExtendedDataContext.class == type) {
             if (self instanceof DataContext) {
                 return (T) ExtendedDataContext.ofData((DataContext) self);
@@ -49,9 +53,7 @@ public class InternalObjectMapper {
                 return (T) ExtendedDataContext.ofData(convertValue(self, MapDataContext.class));
             }
         }
-        return objectMapper.convertValue(self, type);
-    }
 
-    private InternalObjectMapper() {
+        return objectMapper.convertValue(self, type);
     }
 }

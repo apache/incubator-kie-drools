@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.incubation.common;
+package org.kie.kogito.incubation.common.objectmapper;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-
-/**
- * An empty DataContext singleton
- */
-@JsonAutoDetect // ensure Jackson won't complain even if it is an empty object
-public final class EmptyMetaDataContext implements MetaDataContext {
-    public static final MetaDataContext Instance = new EmptyMetaDataContext();
-
-    private EmptyMetaDataContext() {
+public class MissingInternalObjectMapper extends RuntimeException {
+    MissingInternalObjectMapper() {
+        super("Cannot find a valid implementation for org.kie.kogito.incubation.common.objectmapper.InternalObjectMapper");
     }
 }

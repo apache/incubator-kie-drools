@@ -25,38 +25,20 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kogito-api-incubation-common</artifactId>
+    <artifactId>kogito-api-incubation-common-objectmapper</artifactId>
     <packaging>jar</packaging>
 
-    <name>Kogito :: API :: Public API :: Incubation :: Common</name>
+    <name>Kogito :: API :: Public API :: Incubation :: Common Object Mapper</name>
     <description>The Kogito Public Common API (Incubation).</description>
 
     <properties>
-        <java.module.name>org.kie.kogito.api.incubation.common</java.module.name>
+        <java.module.name>org.kie.kogito.api.incubation.common.mapper</java.module.name>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-api-incubation-common-objectmapper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -89,7 +71,7 @@
                                     </bannedImports>
                                     <allowedImports>
                                         <!-- we always allow process.* as these will be movable to internal -->
-                                        <allowedImport>org.kie.kogito.incubation.common.**</allowedImport>
+                                        <allowedImport>org.kie.kogito.incubation.common.objectmapper.**</allowedImport>
                                     </allowedImports>
                                 </restrictImports>
                             </rules>

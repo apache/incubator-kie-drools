@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.kie.kogito.incubation.common.DataContext;
 import org.kie.kogito.incubation.common.Id;
 import org.kie.kogito.incubation.common.MapDataContext;
+import org.kie.kogito.incubation.common.objectmapper.InternalObjectMapper;
 import org.kie.kogito.incubation.rules.QueryId;
 import org.kie.kogito.incubation.rules.RuleUnitId;
 import org.kie.kogito.incubation.rules.services.RuleUnitService;
@@ -40,8 +41,6 @@ public class QuarkusRuleUnitService implements RuleUnitService {
 
     @Inject
     Instance<RuleUnits> ruleUnits;
-    @Inject
-    RuleUnitDataObjectMapper mapper;
 
     @Override
     public Stream<DataContext> evaluate(Id id, DataContext inputContext) {
@@ -57,13 +56,23 @@ public class QuarkusRuleUnitService implements RuleUnitService {
         }
 
         Map<String, Object> payload = inputContext.as(MapDataContext.class).toMap();
-        RuleUnitData ruleUnitData = mapper.convertValue(payload, ruleUnitId);
+        RuleUnitData ruleUnitData = this.convertValue(payload, ruleUnitId);
         RuleUnit<RuleUnitData> ruleUnit = ruleUnits.get().create((Class<RuleUnitData>) ruleUnitData.getClass());
         RuleUnitInstance<RuleUnitData> instance = ruleUnit.createInstance(ruleUnitData);
         List<Map<String, Object>> results = instance.executeQuery(queryId.queryId());
 
         return results.stream().map(MapDataContext::of);
 
+    }
+
+    private RuleUnitData convertValue(Map<String, Object> payload, RuleUnitId ruleUnitId) {
+        try {
+            // converts the identifier into a Class object for conversion
+            Class<RuleUnitData> type = (Class<RuleUnitData>) Thread.currentThread().getContextClassLoader().loadClass(ruleUnitId.ruleUnitId());
+            return InternalObjectMapper.objectMapper().convertValue(payload, type);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Cannot load class " + ruleUnitId.ruleUnitId(), e);
+        }
     }
 
 }
