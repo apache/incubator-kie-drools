@@ -28,31 +28,31 @@ jobs:
     name: Maven Build
     steps:
       - name: Clean Disk Space
-        uses: ginxo/kogito-pipelines/.ci/actions/ubuntu-disk-space@BXMSPROD-1540
+        uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
         if: ${{ matrix.os == 'ubuntu-latest' }}
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: ginxo/kogito-pipelines/.ci/actions/long-paths@BXMSPROD-1540
+        uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@main
       - name: Java and Maven Setup
-        uses: ginxo/kogito-pipelines/.ci/actions/java@BXMSPROD-1540
+        uses: kiegroup/kogito-pipelines/.ci/actions/java@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
       - name: Cache Maven
-        uses: ginxo/kogito-pipelines/.ci/actions/cache-maven@BXMSPROD-1540
+        uses: kiegroup/kogito-pipelines/.ci/actions/cache-maven@main
         with:
           key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
-        uses: ginxo/kogito-pipelines/.ci/actions/build-chain@BXMSPROD-1540
+        uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         with:
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           starting-project: kiegroup/optaplanner
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
-        uses: ginxo/kogito-pipelines/.ci/actions/surefire-report@BXMSPROD-1540
+        uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
         with:
           report_paths: '**/*-reports/TEST-*.xml'
