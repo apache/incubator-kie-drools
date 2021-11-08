@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-archetypes</artifactId>
-    <version>8.13.0.Beta</version>
+    <version>8.13.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-service-spring-boot-archetype</artifactId>
