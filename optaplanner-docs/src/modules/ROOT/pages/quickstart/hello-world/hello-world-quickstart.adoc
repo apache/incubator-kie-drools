@@ -171,17 +171,18 @@ def optaplannerVersion = "{project-version}"
 def logbackVersion = "1.2.3"
 
 group = "org.acme"
-version = "0.1.0-SNAPSHOT"
+version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "org.optaplanner:optaplanner-core:${optaplannerVersion}"
-    runtimeOnly "ch.qos.logback:logback-classic:${logbackVersion}"
+    implementation platform("org.optaplanner:optaplanner-bom:${optaplannerVersion}")
+    implementation "org.optaplanner:optaplanner-core"
+    testImplementation "org.optaplanner:optaplanner-test"
 
-    testImplementation "org.optaplanner:optaplanner-test:${optaplannerVersion}"
+    runtimeOnly "ch.qos.logback:logback-classic:${logbackVersion}"
 }
 
 java {

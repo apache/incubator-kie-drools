@@ -88,14 +88,17 @@ If you choose Maven, your `pom.xml` file has the following content:
 
     <properties>
         <java.version>{java-version}</java.version>
+        <version.org.optaplanner>{project-version}</version.org.optaplanner>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.optaplanner</groupId>
-                <artifactId>optaplanner-spring-boot-starter</artifactId>
-                <version>{project-version}</version>
+                <artifactId>optaplanner-bom</artifactId>
+                <version>${version.org.optaplanner}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -103,6 +106,10 @@ If you choose Maven, your `pom.xml` file has the following content:
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
         <dependency>
             <groupId>org.optaplanner</groupId>
@@ -113,12 +120,11 @@ If you choose Maven, your `pom.xml` file has the following content:
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.optaplanner</groupId>
+            <artifactId>optaplanner-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -143,8 +149,10 @@ plugins {
     id "java"
 }
 
+def optaplannerVersion = "{project-version}"
+
 group = "org.acme"
-version = "0.1.0-SNAPSHOT"
+version = "1.0-SNAPSHOT"
 sourceCompatibility = "11"
 
 repositories {
@@ -153,10 +161,12 @@ repositories {
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.optaplanner:optaplanner-spring-boot-starter:{project-version}"
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
-    }
+    implementation "org.springframework.boot:spring-boot-starter-data-rest"
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    implementation platform("org.optaplanner:optaplanner-bom:${optaplannerVersion}")
+    implementation "org.optaplanner:optaplanner-spring-boot-starter"
+    testImplementation("org.optaplanner:optaplanner-test")
 }
 
 test {

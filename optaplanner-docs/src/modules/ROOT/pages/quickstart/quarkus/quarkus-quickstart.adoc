@@ -86,16 +86,40 @@ $ mvn io.quarkus:quarkus-maven-plugin:{quarkus-version}:create \
 $ cd optaplanner-quickstart
 ----
 
-In Maven, your `pom.xml` file contains these dependencies:
+If you choose Maven, your `pom.xml` file has the following content:
 
 [source,xml,subs=attributes+]
 ----
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.acme</groupId>
+  <artifactId>optaplanner-quarkus-school-timetabling-quickstart</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.release>11</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <version.io.quarkus>{quarkus-version}</version.io.quarkus>
+    <version.org.optaplanner>{project-version}</version.org.optaplanner>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-universe-bom</artifactId>
-        <version>{quarkus-version}</version>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-bom</artifactId>
+        <version>${version.org.optaplanner}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -124,23 +148,89 @@ In Maven, your `pom.xml` file contains these dependencies:
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${version.io.quarkus}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
 ----
 
-//On the other hand, in Gradle, your `build.gradle` file contains these dependencies:
-//
-//[source,groovy,subs=attributes+]
-//----
-//dependencies {
-//    implementation enforcedPlatform("io.quarkus:quarkus-universe-bom:{quarkus-version}")
-//    implementation 'io.quarkus:quarkus-resteasy'
-//    implementation 'io.quarkus:quarkus-resteasy-jackson'
-//    implementation 'org.optaplanner:optaplanner-quarkus'
-//    implementation 'org.optaplanner:optaplanner-quarkus-jackson'
-//
-//    testImplementation 'io.quarkus:quarkus-junit5'
-//}
-//----
+On the other hand, in Gradle, your `build.gradle` file has this content:
+
+[source,groovy,subs=attributes+]
+----
+plugins {
+    id "java"
+    id "io.quarkus" version "{quarkus-version}"
+}
+
+def quarkusVersion = "{quarkus-version}"
+def optaplannerVersion = "{project-version}"
+
+group = "org.acme"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform("io.quarkus:quarkus-bom:${quarkusVersion}")
+    implementation "io.quarkus:quarkus-resteasy"
+    implementation "io.quarkus:quarkus-resteasy-jackson"
+    testImplementation "io.quarkus:quarkus-junit5"
+
+    implementation platform("org.optaplanner:optaplanner-bom:${optaplannerVersion}")
+    implementation "org.optaplanner:optaplanner-quarkus"
+    implementation "org.optaplanner:optaplanner-quarkus-jackson"
+    testImplementation "org.optaplanner:optaplanner-test"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+    options.compilerArgs << "-parameters"
+}
+
+compileTestJava {
+    options.encoding = "UTF-8"
+}
+
+test {
+    systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+}
+----
 
 include::../school-timetabling/school-timetabling-model.adoc[leveloffset=+1]
 include::../school-timetabling/school-timetabling-constraints.adoc[leveloffset=+1]
