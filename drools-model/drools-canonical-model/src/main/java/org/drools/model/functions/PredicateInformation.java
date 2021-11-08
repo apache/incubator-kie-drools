@@ -35,6 +35,9 @@ public class PredicateInformation {
     private final String stringConstraint;
     private final Set<RuleDef> ruleDefs = new TreeSet<>();
 
+    public static final int MAX_RULE_DEFS = Integer.getInteger("drools.predicateInformation.maxRuleDefs", 10);
+    private boolean moreThanMaxRuleDefs = false;
+
     public PredicateInformation(String stringConstraint, String... ruleNames) {
         this.stringConstraint = defaultToEmptyString(stringConstraint);
         addRuleNames(ruleNames);
@@ -54,8 +57,20 @@ public class PredicateInformation {
 
     public void addRuleNames(String... ruleNames) {
         for (int i = 0; i < ruleNames.length; i+=2) {
+            if (ruleDefs.size() >= MAX_RULE_DEFS) {
+                moreThanMaxRuleDefs = true;
+                break;
+            }
             ruleDefs.add(new RuleDef(defaultToEmptyString(ruleNames[i+1]), defaultToEmptyString(ruleNames[i])));
         }
+    }
+
+    public boolean isMoreThanMaxRuleDefs() {
+        return moreThanMaxRuleDefs;
+    }
+
+    public void setMoreThanMaxRuleDefs(boolean moreThanMaxRuleDefs) {
+        this.moreThanMaxRuleDefs = moreThanMaxRuleDefs;
     }
 
     public Map<String, Set<String>> getRuleNameMap() {
@@ -75,29 +90,28 @@ public class PredicateInformation {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null) {
             return false;
         }
-        PredicateInformation that = (PredicateInformation) o;
-        return Objects.equals(stringConstraint, that.stringConstraint) &&
-                Objects.equals(ruleDefs, that.ruleDefs);
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        PredicateInformation other = (PredicateInformation) obj;
+        return moreThanMaxRuleDefs == other.moreThanMaxRuleDefs && Objects.equals(ruleDefs, other.ruleDefs) && Objects.equals(stringConstraint, other.stringConstraint);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stringConstraint, ruleDefs);
+        return Objects.hash(moreThanMaxRuleDefs, ruleDefs, stringConstraint);
     }
 
     @Override
     public String toString() {
-        return "PredicateInformation{" +
-                "stringConstraint='" + stringConstraint + '\'' +
-                ", ruleNameMap='" + ruleDefs + '\'' +
-                '}';
+        return "PredicateInformation [stringConstraint=" + stringConstraint + ", ruleDefs=" + ruleDefs + ", moreThanMaxRuleDefs=" + moreThanMaxRuleDefs + "]";
     }
 
     public static class RuleDef implements Comparable<RuleDef> {

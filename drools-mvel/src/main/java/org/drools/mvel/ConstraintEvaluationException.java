@@ -23,6 +23,6 @@ public class ConstraintEvaluationException extends RuntimeException {
     private static final long serialVersionUID = -3413225194510143529L;
 
     public ConstraintEvaluationException(String expression, EvaluationContext evaluationContext, Throwable cause) {
-        super(formatConstraintErrorMessage(expression, evaluationContext.getRuleNameMap()), cause);
+        super(formatConstraintErrorMessage(expression, evaluationContext.getRuleNameMap(), evaluationContext.isMoreThanMaxRuleDefs()), cause);
     }
 }
