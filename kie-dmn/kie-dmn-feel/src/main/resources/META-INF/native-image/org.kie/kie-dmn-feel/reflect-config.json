@@ -603,6 +603,15 @@
         "allPublicClasses": true
     },
     {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.CeilingFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "org.kie.dmn.feel.runtime.functions.extended.CodeFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
@@ -657,6 +666,15 @@
         "allPublicClasses": true
     },
     {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.FloorFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "org.kie.dmn.feel.runtime.functions.extended.InvokeFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
@@ -667,6 +685,42 @@
     },
     {
         "name": "org.kie.dmn.feel.runtime.functions.extended.NowFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.RoundDownFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.RoundHalfDownFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.RoundHalfUpFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.RoundUpFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
         "allDeclaredMethods": true,

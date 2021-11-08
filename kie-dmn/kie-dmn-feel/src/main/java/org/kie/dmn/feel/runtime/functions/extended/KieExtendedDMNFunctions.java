@@ -50,6 +50,12 @@ public class KieExtendedDMNFunctions {
                                                                          ContextPutFunction.INSTANCE,
                                                                          ContextMergeFunction.INSTANCE,
                                                                          ContextFunction.INSTANCE,
+                                                                         FloorFunction.INSTANCE,
+                                                                         CeilingFunction.INSTANCE,
+                                                                         RoundUpFunction.INSTANCE,
+                                                                         RoundDownFunction.INSTANCE,
+                                                                         RoundHalfUpFunction.INSTANCE,
+                                                                         RoundHalfDownFunction.INSTANCE,
 
                                                                          // CQL based, two value logic functions
                                                                         NNAnyFunction.INSTANCE,
