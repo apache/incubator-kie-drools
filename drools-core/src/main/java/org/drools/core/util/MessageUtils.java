@@ -30,8 +30,12 @@ public class MessageUtils {
         return Optional.ofNullable(str).orElse("");
     }
 
-    public static String formatConstraintErrorMessage(String expression, Map<String, Set<String>> ruleNameMap) {
-        return String.format("Error evaluating constraint '%s' in %s", expression, formatRuleNameMap(ruleNameMap));
+    public static String formatConstraintErrorMessage(String expression, Map<String, Set<String>> ruleNameMap, boolean moreThanMaxRuleDefs) {
+        String baseMessage = "Error evaluating constraint '%s' in %s";
+        if (moreThanMaxRuleDefs) {
+            baseMessage += " and in more rules";
+        }
+        return String.format(baseMessage, expression, formatRuleNameMap(ruleNameMap));
     }
 
     public static String formatRuleNameMap(Map<String, Set<String>> ruleNameMap) {

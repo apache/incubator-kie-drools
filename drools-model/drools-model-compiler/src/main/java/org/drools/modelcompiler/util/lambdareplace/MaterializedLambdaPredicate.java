@@ -22,6 +22,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -98,7 +99,9 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
             addRuleNamesArguments.add(toStringLiteral(ruleDef.getRuleName()));
             addRuleNamesArguments.add(toStringLiteral(ruleDef.getFileName()));
         }
-
+        if (predicateInformation.isMoreThanMaxRuleDefs()) {
+            block.addStatement(new MethodCallExpr(infoExpr, "setMoreThanMaxRuleDefs", NodeList.nodeList(new BooleanLiteralExpr(true))));
+        }
         block.addStatement(new ReturnStmt(infoExpr));
         methodDeclaration.setBody(block);
     }

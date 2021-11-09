@@ -996,7 +996,14 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
         private Map<String, Set<String>> ruleNameMap = new HashMap<>();
 
+        public static final int MAX_RULE_DEFS = Integer.getInteger("drools.evaluationContext.maxRuleDefs", 10);
+        private boolean moreThanMaxRuleDefs = false;
+
         public void addContext(BuildContext buildContext) {
+            if (moreThanMaxRuleDefs || ruleNameMap.values().stream().flatMap(Collection::stream).count() >= MAX_RULE_DEFS) {
+                moreThanMaxRuleDefs = true;
+                return;
+            }
             RuleImpl rule = buildContext.getRule();
             String ruleName = defaultToEmptyString(rule.getName());
             String ruleFileName = defaultToEmptyString(rule.getResource() != null ? rule.getResource().getSourcePath() : null);
@@ -1004,6 +1011,10 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         public void mergeRuleNameMap(Map<String, Set<String>> otherMap) {
+            if (moreThanMaxRuleDefs || ruleNameMap.values().stream().flatMap(Collection::stream).count() >= MAX_RULE_DEFS) {
+                moreThanMaxRuleDefs = true;
+                return;
+            }
             otherMap.forEach((otherRuleFileName, otherRuleNameSet) -> {
                 ruleNameMap.merge(otherRuleFileName, otherRuleNameSet, (thisSet, otherSet) -> {
                     thisSet.addAll(otherSet);
@@ -1016,19 +1027,25 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             return ruleNameMap;
         }
 
+        public boolean isMoreThanMaxRuleDefs() {
+            return moreThanMaxRuleDefs;
+        }
+
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject(ruleNameMap);
+            out.writeBoolean(moreThanMaxRuleDefs);
         }
 
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             ruleNameMap = (Map<String, Set<String>>) in.readObject();
+            moreThanMaxRuleDefs = in.readBoolean();
         }
 
         @Override
         public String toString() {
-            return ruleNameMap.toString();
+            return "EvaluationContext [ruleNameMap=" + ruleNameMap + ", moreThanMaxRuleDefs=" + moreThanMaxRuleDefs + "]";
         }
     }
 }
