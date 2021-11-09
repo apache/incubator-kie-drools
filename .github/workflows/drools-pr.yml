@@ -37,13 +37,10 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@main
       - name: Java and Maven Setup
-        uses: kiegroup/kogito-pipelines/.ci/actions/java@main
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
-      - name: Cache Maven
-        uses: kiegroup/kogito-pipelines/.ci/actions/cache-maven@main
-        with:
           key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
