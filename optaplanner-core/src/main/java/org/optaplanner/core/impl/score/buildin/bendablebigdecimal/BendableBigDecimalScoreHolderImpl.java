@@ -44,7 +44,7 @@ public final class BendableBigDecimalScoreHolderImpl extends AbstractScoreHolder
     private BigDecimal[] softScores;
 
     public BendableBigDecimalScoreHolderImpl(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintMatchEnabled, BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize));
+        super(constraintMatchEnabled);
         hardScores = new BigDecimal[hardLevelsSize];
         Arrays.fill(hardScores, BigDecimal.ZERO);
         softScores = new BigDecimal[softLevelsSize];

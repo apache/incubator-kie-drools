@@ -30,7 +30,7 @@ public final class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
     private int score;
 
     protected SimpleScoreInliner(Map<Constraint, SimpleScore> constraintIdToWeightMap, boolean constraintMatchEnabled) {
-        super(constraintIdToWeightMap, constraintMatchEnabled, SimpleScore.ZERO);
+        super(constraintIdToWeightMap, constraintMatchEnabled);
     }
 
     @Override

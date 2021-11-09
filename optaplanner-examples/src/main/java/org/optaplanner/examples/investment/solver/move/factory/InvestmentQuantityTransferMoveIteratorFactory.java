@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.investment.solver.move.factory;
 
+import static org.optaplanner.examples.investment.solver.move.factory.InvestmentBiQuantityTransferMoveIteratorFactory.*;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,6 @@ import java.util.TreeMap;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
-import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
@@ -92,7 +93,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory
 
         @Override
         public InvestmentQuantityTransferMove next() {
-            long transferMillis = RandomUtils.nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
+            long transferMillis = nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
             Map.Entry<Long, AssetClassAllocation> lowerEntry = quantityMillisIncrementToAllocationMap
                     .lowerEntry(transferMillis);
             Map.Entry<Long, AssetClassAllocation> ceilingEntry = quantityMillisIncrementToAllocationMap

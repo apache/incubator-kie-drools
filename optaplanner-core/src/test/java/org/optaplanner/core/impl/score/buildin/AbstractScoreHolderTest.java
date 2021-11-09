@@ -115,7 +115,7 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
     }
 
     private AbstractScoreHolder<SimpleScore> buildScoreHolder(boolean constraintMatchEnabled) {
-        return new AbstractScoreHolder<SimpleScore>(constraintMatchEnabled, SimpleScore.ZERO) {
+        return new AbstractScoreHolder<SimpleScore>(constraintMatchEnabled) {
             @Override
             public void penalize(RuleContext kcontext) {
                 throw new UnsupportedOperationException();

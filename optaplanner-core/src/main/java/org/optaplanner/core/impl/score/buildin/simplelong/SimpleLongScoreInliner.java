@@ -31,7 +31,7 @@ public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> 
 
     protected SimpleLongScoreInliner(Map<Constraint, SimpleLongScore> constraintToWeightMap,
             boolean constraintMatchEnabled) {
-        super(constraintToWeightMap, constraintMatchEnabled, SimpleLongScore.ZERO);
+        super(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

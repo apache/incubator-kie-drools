@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 
@@ -76,7 +77,7 @@ public final class TestRandom extends Random {
 
     @Override
     public int nextInt() {
-        return nextInt(0);
+        return nextInt(Integer.MAX_VALUE);
     }
 
     @Override
@@ -106,62 +107,71 @@ public final class TestRandom extends Random {
 
     @Override
     public IntStream ints(long streamSize) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return ints(streamSize, 0, Integer.MAX_VALUE);
     }
 
     @Override
     public IntStream ints() {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return ints(toReturn.length);
     }
 
     @Override
     public IntStream ints(long streamSize, int randomNumberOrigin, int randomNumberBound) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return Stream.generate(this::nextInt)
+                .mapToInt(i -> i)
+                .filter(i -> i >= randomNumberOrigin && i < randomNumberBound)
+                .limit(streamSize);
     }
 
     @Override
     public IntStream ints(int randomNumberOrigin, int randomNumberBound) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return ints(toReturn.length, randomNumberOrigin, randomNumberBound);
     }
 
     @Override
     public LongStream longs(long streamSize) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return longs(streamSize, 0, Long.MAX_VALUE);
     }
 
     @Override
     public LongStream longs() {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return longs(toReturn.length);
     }
 
     @Override
     public LongStream longs(long streamSize, long randomNumberOrigin, long randomNumberBound) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return Stream.generate(this::nextLong)
+                .mapToLong(l -> l)
+                .filter(l -> l >= randomNumberOrigin && l < randomNumberBound)
+                .limit(streamSize);
     }
 
     @Override
     public LongStream longs(long randomNumberOrigin, long randomNumberBound) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return longs(toReturn.length, randomNumberOrigin, randomNumberBound);
     }
 
     @Override
     public DoubleStream doubles(long streamSize) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return doubles(streamSize, 0, Double.MAX_VALUE);
     }
 
     @Override
     public DoubleStream doubles() {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return doubles(toReturn.length);
     }
 
     @Override
     public DoubleStream doubles(long streamSize, double randomNumberOrigin, double randomNumberBound) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return Stream.generate(this::nextDouble)
+                .mapToDouble(d -> d)
+                .filter(d -> d >= randomNumberOrigin && d < randomNumberBound)
+                .limit(streamSize);
     }
 
     @Override
     public DoubleStream doubles(double randomNumberOrigin, double randomNumberBound) {
-        throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+        return doubles(toReturn.length, randomNumberOrigin, randomNumberBound);
     }
 
     public void reset(int... toReturn) {

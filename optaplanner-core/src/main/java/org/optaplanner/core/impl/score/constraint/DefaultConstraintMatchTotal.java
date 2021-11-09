@@ -16,11 +16,9 @@
 
 package org.optaplanner.core.impl.score.constraint;
 
-import static java.util.Comparator.comparing;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,27 +30,27 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> implements ConstraintMatchTotal<Score_>,
         Comparable<DefaultConstraintMatchTotal<Score_>> {
 
-    private static final Comparator<DefaultConstraintMatchTotal<?>> COMPARATOR =
-            comparing((DefaultConstraintMatchTotal<?> constraintMatchTotal) -> constraintMatchTotal.constraintPackage)
-                    .thenComparing(DefaultConstraintMatchTotal::getConstraintName);
-
     private final String constraintPackage;
     private final String constraintName;
+    private final String constraintId;
     private final Score_ constraintWeight;
 
     private final Set<ConstraintMatch<Score_>> constraintMatchSet = new LinkedHashSet<>();
     private Score_ score;
 
-    public DefaultConstraintMatchTotal(String constraintPackage, String constraintName, Score_ zeroScore) {
-        this(constraintPackage, constraintName, null, zeroScore);
-    }
-
-    public DefaultConstraintMatchTotal(String constraintPackage, String constraintName, Score_ constraintWeight,
-            Score_ zeroScore) {
+    public DefaultConstraintMatchTotal(String constraintPackage, String constraintName) {
         this.constraintPackage = requireNonNull(constraintPackage);
         this.constraintName = requireNonNull(constraintName);
-        this.constraintWeight = constraintWeight;
-        this.score = requireNonNull(zeroScore);
+        this.constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
+        this.constraintWeight = null;
+    }
+
+    public DefaultConstraintMatchTotal(String constraintPackage, String constraintName, Score_ constraintWeight) {
+        this.constraintPackage = requireNonNull(constraintPackage);
+        this.constraintName = requireNonNull(constraintName);
+        this.constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
+        this.constraintWeight = requireNonNull(constraintWeight);
+        this.score = constraintWeight.zero();
     }
 
     @Override
@@ -85,7 +83,7 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
     // ************************************************************************
 
     public ConstraintMatch<Score_> addConstraintMatch(List<Object> justificationList, Score_ score) {
-        this.score = this.score.add(score);
+        this.score = this.score == null ? score : this.score.add(score);
         ConstraintMatch<Score_> constraintMatch = new ConstraintMatch<>(constraintPackage, constraintName,
                 justificationList, score);
         constraintMatchSet.add(constraintMatch);
@@ -108,12 +106,12 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
 
     @Override
     public String getConstraintId() {
-        return ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
+        return constraintId;
     }
 
     @Override
     public int compareTo(DefaultConstraintMatchTotal<Score_> other) {
-        return COMPARATOR.compare(this, other);
+        return constraintId.compareTo(other.constraintId);
     }
 
     @Override

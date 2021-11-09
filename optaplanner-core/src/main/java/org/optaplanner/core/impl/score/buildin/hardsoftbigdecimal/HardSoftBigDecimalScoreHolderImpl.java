@@ -42,7 +42,7 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
     protected BigDecimal softScore = BigDecimal.ZERO;
 
     public HardSoftBigDecimalScoreHolderImpl(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, HardSoftBigDecimalScore.ZERO);
+        super(constraintMatchEnabled);
     }
 
     public BigDecimal getHardScore() {
@@ -61,7 +61,7 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
     public void configureConstraintWeight(Rule rule, HardSoftBigDecimalScore constraintWeight) {
         super.configureConstraintWeight(rule, constraintWeight);
         BigDecimalMatchExecutor matchExecutor;
-        if (constraintWeight.equals(HardSoftBigDecimalScore.ZERO)) {
+        if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {
             };
         } else if (constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {

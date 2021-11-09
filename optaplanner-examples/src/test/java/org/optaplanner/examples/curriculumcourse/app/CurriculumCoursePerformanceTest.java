@@ -18,11 +18,12 @@ package org.optaplanner.examples.curriculumcourse.app;
 
 import java.util.stream.Stream;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class CurriculumCoursePerformanceTest extends SolverPerformanceTest<CourseSchedule> {
+public class CurriculumCoursePerformanceTest extends SolverPerformanceTest<CourseSchedule, HardSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/curriculumcourse/unsolved/comp01_initialized.xml";
 
@@ -32,9 +33,9 @@ public class CurriculumCoursePerformanceTest extends SolverPerformanceTest<Cours
     }
 
     @Override
-    protected Stream<TestData> testData() {
+    protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/-66soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-82soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-66), EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-82), EnvironmentMode.FAST_ASSERT));
     }
 }

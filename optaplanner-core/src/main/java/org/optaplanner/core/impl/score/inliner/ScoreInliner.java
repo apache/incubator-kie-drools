@@ -34,16 +34,13 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
 
     private final Map<String, Score_> constraintIdToWeightMap;
     protected final boolean constraintMatchEnabled;
-    private final Score_ zeroScore;
     private final Map<String, DefaultConstraintMatchTotal<Score_>> constraintMatchTotalMap;
     private final Map<Object, DefaultIndictment<Score_>> indictmentMap;
 
-    protected ScoreInliner(Map<Constraint, Score_> constraintToWeightMap, boolean constraintMatchEnabled,
-            Score_ zeroScore) {
+    protected ScoreInliner(Map<Constraint, Score_> constraintToWeightMap, boolean constraintMatchEnabled) {
         this.constraintIdToWeightMap = Objects.requireNonNull(constraintToWeightMap).entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey().getConstraintId(), Map.Entry::getValue));
         this.constraintMatchEnabled = constraintMatchEnabled;
-        this.zeroScore = zeroScore;
         this.constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
         this.indictmentMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
     }
@@ -64,13 +61,13 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
         String constraintName = constraint.getConstraintName();
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(
                 constraint.getConstraintId(),
-                key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
+                key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
         ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, score);
         DefaultIndictment<Score_>[] indictments = justificationList.stream()
                 .distinct() // One match might have the same justification twice
                 .map(justification -> {
                     DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justification,
-                            key -> new DefaultIndictment<>(justification, zeroScore));
+                            key -> new DefaultIndictment<>(justification, constraintMatch.getScore().zero()));
                     indictment.addConstraintMatch(constraintMatch);
                     return indictment;
                 }).toArray(DefaultIndictment[]::new);
@@ -100,7 +97,7 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
 
     protected final Score_ getConstraintWeight(Constraint constraint) {
         Score_ constraintWeight = constraintIdToWeightMap.get(constraint.getConstraintId());
-        if (constraintWeight == null || constraintWeight.equals(zeroScore)) {
+        if (constraintWeight == null || constraintWeight.isZero()) {
             throw new IllegalArgumentException("Impossible state: The constraintWeight (" +
                     constraintWeight + ") cannot be zero, constraint (" + constraint +
                     ") should have been culled during node creation.");

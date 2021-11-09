@@ -112,7 +112,7 @@ public class TerminationFactory<Solution_> {
                 ScoreDefinition<Score_> scoreDefinition = configPolicy.getScoreDefinition();
                 Score_ unimprovedScoreDifferenceThreshold_ =
                         scoreDefinition.parseScore(terminationConfig.getUnimprovedScoreDifferenceThreshold());
-                if (unimprovedScoreDifferenceThreshold_.compareTo(scoreDefinition.getZeroScore()) <= 0) {
+                if (scoreDefinition.isNegativeOrZero(unimprovedScoreDifferenceThreshold_)) {
                     throw new IllegalStateException("The unimprovedScoreDifferenceThreshold ("
                             + terminationConfig.getUnimprovedScoreDifferenceThreshold() + ") must be positive.");
 

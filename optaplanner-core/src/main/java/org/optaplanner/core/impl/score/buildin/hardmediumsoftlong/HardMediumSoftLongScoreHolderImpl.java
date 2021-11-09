@@ -44,7 +44,7 @@ public final class HardMediumSoftLongScoreHolderImpl extends AbstractScoreHolder
     protected long softScore;
 
     public HardMediumSoftLongScoreHolderImpl(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, HardMediumSoftLongScore.ZERO);
+        super(constraintMatchEnabled);
     }
 
     public long getHardScore() {
@@ -67,7 +67,7 @@ public final class HardMediumSoftLongScoreHolderImpl extends AbstractScoreHolder
     public void configureConstraintWeight(Rule rule, HardMediumSoftLongScore constraintWeight) {
         super.configureConstraintWeight(rule, constraintWeight);
         LongMatchExecutor matchExecutor;
-        if (constraintWeight.equals(HardMediumSoftLongScore.ZERO)) {
+        if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, long matchWeight) -> {
             };
         } else if (constraintWeight.getMediumScore() == 0 && constraintWeight.getSoftScore() == 0) {

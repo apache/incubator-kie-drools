@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
@@ -135,6 +136,18 @@ public class HardMediumSoftLongScoreTest extends AbstractScoreTest {
     public void negate() {
         assertThat(HardMediumSoftLongScore.of(3L, -4L, 5L).negate()).isEqualTo(HardMediumSoftLongScore.of(-3L, 4L, -5L));
         assertThat(HardMediumSoftLongScore.of(-3L, 4L, -5L).negate()).isEqualTo(HardMediumSoftLongScore.of(3L, -4L, 5L));
+    }
+
+    @Test
+    public void zero() {
+        HardMediumSoftLongScore manualZero = HardMediumSoftLongScore.of(0, 0, 0);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
+            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            HardMediumSoftLongScore manualOne = HardMediumSoftLongScore.of(0, 0, 1);
+            softly.assertThat(manualOne.isZero())
+                    .isEqualTo(false);
+        });
     }
 
     @Test

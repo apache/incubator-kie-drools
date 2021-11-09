@@ -33,7 +33,7 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore> {
 
     public BendableScoreInliner(Map<Constraint, BendableScore> constraintToWeightMap, boolean constraintMatchEnabled,
             int hardLevelsSize, int softLevelsSize) {
-        super(constraintToWeightMap, constraintMatchEnabled, BendableScore.zero(hardLevelsSize, softLevelsSize));
+        super(constraintToWeightMap, constraintMatchEnabled);
         hardScores = new int[hardLevelsSize];
         softScores = new int[softLevelsSize];
     }

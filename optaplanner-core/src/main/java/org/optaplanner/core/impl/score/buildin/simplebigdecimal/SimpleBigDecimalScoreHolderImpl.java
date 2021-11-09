@@ -39,7 +39,7 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
     protected BigDecimal score = BigDecimal.ZERO;
 
     public SimpleBigDecimalScoreHolderImpl(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
+        super(constraintMatchEnabled);
     }
 
     public BigDecimal getScore() {
@@ -54,7 +54,7 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
     public void configureConstraintWeight(Rule rule, SimpleBigDecimalScore constraintWeight) {
         super.configureConstraintWeight(rule, constraintWeight);
         BigDecimalMatchExecutor matchExecutor;
-        if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
+        if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {
             };
         } else {

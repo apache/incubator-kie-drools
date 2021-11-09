@@ -21,9 +21,7 @@ import java.util.Random;
 
 import javax.swing.JTabbedPane;
 
-import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
@@ -36,9 +34,9 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/vehiclerouting/swingui/vehicleRoutingLogo.png";
 
-    private VehicleRoutingWorldPanel vehicleRoutingWorldPanel;
+    private final VehicleRoutingWorldPanel vehicleRoutingWorldPanel;
+    private final Random demandRandom = new Random(37);
 
-    private Random demandRandom = new Random(37);
     private Long nextLocationId = null;
 
     public VehicleRoutingPanel() {
@@ -64,7 +62,7 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
     private void resetNextLocationId() {
         long highestLocationId = 0L;
         for (Location location : getSolution().getLocationList()) {
-            if (highestLocationId < location.getId().longValue()) {
+            if (highestLocationId < location.getId()) {
                 highestLocationId = location.getId();
             }
         }
@@ -74,10 +72,6 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
     @Override
     public void updatePanel(VehicleRoutingSolution solution) {
         vehicleRoutingWorldPanel.updatePanel(solution);
-    }
-
-    public SolverAndPersistenceFrame getWorkflowFrame() {
-        return solverAndPersistenceFrame;
     }
 
     public void insertLocationAndCustomer(double longitude, double latitude) {
@@ -120,7 +114,9 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
             TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
             TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) solution.getDepotList().get(0);
             long windowTime = (timeWindowedDepot.getDueTime() - timeWindowedDepot.getReadyTime()) / 4L;
-            long readyTime = RandomUtils.nextLong(demandRandom, windowTime * 3L);
+            long readyTime = demandRandom.longs(0, windowTime * 3L)
+                    .findAny()
+                    .orElseThrow();
             newTimeWindowedCustomer.setReadyTime(readyTime);
             newTimeWindowedCustomer.setDueTime(readyTime + windowTime);
             newTimeWindowedCustomer.setServiceDuration(Math.min(10000L, windowTime / 2L));

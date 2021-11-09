@@ -23,39 +23,67 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
-import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 
 public final class TennisConstraintProvider implements ConstraintProvider {
 
-    private static <A> DefaultUniConstraintCollector<A, ?, LoadBalanceData> loadBalance(
+    private static <A> UniConstraintCollector<A, ?, LoadBalanceData> loadBalance(
             Function<A, Object> groupKey) {
-        return new DefaultUniConstraintCollector<>(
-                LoadBalanceData::new,
-                (resultContainer, a) -> {
+        return new UniConstraintCollector<A, LoadBalanceData, LoadBalanceData>() {
+
+            @Override
+            public Supplier<LoadBalanceData> supplier() {
+                return LoadBalanceData::new;
+            }
+
+            @Override
+            public BiFunction<LoadBalanceData, A, Runnable> accumulator() {
+                return (resultContainer, a) -> {
                     Object mapped = groupKey.apply(a);
                     return resultContainer.apply(mapped);
-                },
-                resultContainer -> resultContainer);
+                };
+            }
+
+            @Override
+            public Function<LoadBalanceData, LoadBalanceData> finisher() {
+                return Function.identity();
+            }
+        };
     }
 
-    private static <A, B> DefaultBiConstraintCollector<A, B, ?, LoadBalanceData> loadBalance(
+    private static <A, B> BiConstraintCollector<A, B, ?, LoadBalanceData> loadBalance(
             BiFunction<A, B, Object> groupKey) {
-        return new DefaultBiConstraintCollector<>(
-                LoadBalanceData::new,
-                (resultContainer, a, b) -> {
+        return new BiConstraintCollector<A, B, LoadBalanceData, LoadBalanceData>() {
+
+            @Override
+            public Supplier<LoadBalanceData> supplier() {
+                return LoadBalanceData::new;
+            }
+
+            @Override
+            public TriFunction<LoadBalanceData, A, B, Runnable> accumulator() {
+                return (resultContainer, a, b) -> {
                     Object mapped = groupKey.apply(a, b);
                     return resultContainer.apply(mapped);
-                },
-                resultContainer -> resultContainer);
+                };
+            }
+
+            @Override
+            public Function<LoadBalanceData, LoadBalanceData> finisher() {
+                return Function.identity();
+            }
+        };
     }
 
     @Override

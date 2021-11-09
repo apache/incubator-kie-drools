@@ -32,7 +32,7 @@ public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongSco
 
     protected HardSoftLongScoreInliner(Map<Constraint, HardSoftLongScore> constraintToWeightMap,
             boolean constraintMatchEnabled) {
-        super(constraintToWeightMap, constraintMatchEnabled, HardSoftLongScore.ZERO);
+        super(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

@@ -48,12 +48,13 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreExplanation;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -169,8 +170,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             readHeaderCell("Description");
         }
 
-        protected Score_ readScoreConstraintLine(
-                String constraintName, String constraintDescription) {
+        protected Score_ readScoreConstraintLine(String constraintName, String constraintDescription) {
             nextRow();
             readHeaderCell(constraintName);
             String scoreString = nextStringCell().getStringCellValue();
@@ -344,7 +344,6 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected final Solution_ solution;
         protected final Score_ score;
-        protected final ScoreDefinition<Score_> scoreDefinition;
         protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalsMap;
         protected final Map<Object, Indictment<Score_>> indictmentMap;
 
@@ -373,17 +372,12 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxWriter(Solution_ solution, String solverConfigResource) {
             this.solution = solution;
-            InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                    (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) SolverFactory
-                            .createFromXmlResource(solverConfigResource))
-                                    .getScoreDirectorFactory();
-            scoreDefinition = scoreDirectorFactory.getScoreDefinition();
-            try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
-                scoreDirector.setWorkingSolution(solution);
-                score = scoreDirector.calculateScore();
-                constraintMatchTotalsMap = scoreDirector.getConstraintMatchTotalMap();
-                indictmentMap = scoreDirector.getIndictmentMap();
-            }
+            SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
+            ScoreManager<Solution_, Score_> scoreManager = ScoreManager.create(solverFactory);
+            ScoreExplanation<Solution_, Score_> scoreExplanation = scoreManager.explainScore(solution);
+            score = scoreExplanation.getScore();
+            constraintMatchTotalsMap = scoreExplanation.getConstraintMatchTotalMap();
+            indictmentMap = scoreExplanation.getIndictmentMap();
         }
 
         public abstract Workbook write();
@@ -464,11 +458,11 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell("Description");
         }
 
-        protected void writeScoreConstraintLine(
-                String constraintName, Score_ constraintScore, String constraintDescription) {
+        protected void writeScoreConstraintLine(String constraintName, Score_ constraintScore,
+                String constraintDescription) {
             nextRow();
             nextHeaderCell(constraintName);
-            nextCell(scoreDefinition.getZeroScore().equals(constraintScore) ? disabledScoreStyle : scoreStyle)
+            nextCell(constraintScore.isZero() ? disabledScoreStyle : scoreStyle)
                     .setCellValue(constraintScore.toString());
             nextHeaderCell(constraintDescription);
         }

@@ -34,8 +34,7 @@ public final class BendableBigDecimalScoreInliner extends ScoreInliner<BendableB
 
     public BendableBigDecimalScoreInliner(Map<Constraint, BendableBigDecimalScore> constraintToWeightMap,
             boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintToWeightMap, constraintMatchEnabled,
-                BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize));
+        super(constraintToWeightMap, constraintMatchEnabled);
         hardScores = new BigDecimal[hardLevelsSize];
         Arrays.fill(hardScores, BigDecimal.ZERO);
         softScores = new BigDecimal[softLevelsSize];

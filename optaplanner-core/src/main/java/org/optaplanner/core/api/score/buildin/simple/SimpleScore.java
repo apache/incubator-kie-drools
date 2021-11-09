@@ -61,8 +61,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
      */
     @SuppressWarnings("unused")
     private SimpleScore() {
-        super(Integer.MIN_VALUE);
-        score = Integer.MIN_VALUE;
+        this(Integer.MIN_VALUE, Integer.MIN_VALUE);
     }
 
     private SimpleScore(int initScore, int score) {
@@ -128,6 +127,11 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     @Override
     public SimpleScore negate() {
         return new SimpleScore(-initScore, -score);
+    }
+
+    @Override
+    public SimpleScore zero() {
+        return SimpleScore.ZERO;
     }
 
     @Override

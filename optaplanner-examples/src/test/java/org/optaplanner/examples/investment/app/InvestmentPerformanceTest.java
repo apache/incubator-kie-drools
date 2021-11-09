@@ -18,11 +18,12 @@ package org.optaplanner.examples.investment.app;
 
 import java.util.stream.Stream;
 
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
-public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution> {
+public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution, HardSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/investment/unsolved/irrinki_1.xml";
 
@@ -32,9 +33,9 @@ public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentS
     }
 
     @Override
-    protected Stream<TestData> testData() {
+    protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/74775soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/74660soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(74775), EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(74660), EnvironmentMode.FAST_ASSERT));
     }
 }

@@ -25,7 +25,6 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
-import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
@@ -107,12 +106,12 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory
             } else if (secondTo == secondFrom) {
                 secondTo = allocationList.get(allocationListSize - 2);
             }
-            long firstTransferMillis = RandomUtils.nextLong(workingRandom, firstFrom.getQuantityMillis()) + 1L;
+            long firstTransferMillis = nextLong(workingRandom, firstFrom.getQuantityMillis()) + 1L;
             if (firstFrom == secondFrom && firstFrom.getQuantityMillis() == firstTransferMillis) {
                 // secondTransferMillis must never do a nextLong(0L) which would throw an IllegalArgumentException
                 firstTransferMillis--;
             }
-            long secondTransferMillis = RandomUtils.nextLong(workingRandom, secondFrom.getQuantityMillis()
+            long secondTransferMillis = nextLong(workingRandom, secondFrom.getQuantityMillis()
                     - (firstFrom == secondFrom ? firstTransferMillis : 0L)) + 1L;
             return CompositeMove.buildMove(new InvestmentQuantityTransferMove(firstFrom, firstTo, firstTransferMillis),
                     new InvestmentQuantityTransferMove(secondFrom, secondTo, secondTransferMillis));
@@ -123,6 +122,24 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory
             throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }
 
+    }
+
+    public static long nextLong(Random random, long n) {
+        // This code is based on java.util.Random#nextInt(int)'s javadoc.
+        if (n <= 0L) {
+            throw new IllegalArgumentException("n must be positive");
+        }
+        if (n < Integer.MAX_VALUE) {
+            return random.nextInt((int) n);
+        }
+
+        long bits;
+        long val;
+        do {
+            bits = (random.nextLong() << 1) >>> 1;
+            val = bits % n;
+        } while (bits - val + (n - 1L) < 0L);
+        return val;
     }
 
 }

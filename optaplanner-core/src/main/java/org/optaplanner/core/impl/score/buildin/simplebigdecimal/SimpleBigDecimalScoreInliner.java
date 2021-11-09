@@ -32,7 +32,7 @@ public final class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDe
 
     protected SimpleBigDecimalScoreInliner(Map<Constraint, SimpleBigDecimalScore> constraintToWeightMap,
             boolean constraintMatchEnabled) {
-        super(constraintToWeightMap, constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
+        super(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

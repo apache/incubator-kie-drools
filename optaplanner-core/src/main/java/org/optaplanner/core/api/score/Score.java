@@ -127,6 +127,21 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
     Score_ negate();
 
     /**
+     * Returns a Score, all levels of which are zero.
+     *
+     * @return never null
+     */
+    Score_ zero();
+
+    /**
+     *
+     * @return true when this {@link #equals(Object) is equal to} {@link #zero()}.
+     */
+    default boolean isZero() {
+        return this.equals(zero());
+    }
+
+    /**
      * Returns an array of numbers representing the Score. Each number represents 1 score level.
      * A greater score level uses a lower array index than a lesser score level.
      * <p>

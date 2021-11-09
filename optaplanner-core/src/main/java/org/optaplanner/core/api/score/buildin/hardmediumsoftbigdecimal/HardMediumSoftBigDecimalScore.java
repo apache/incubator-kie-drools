@@ -94,10 +94,7 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
      */
     @SuppressWarnings("unused")
     private HardMediumSoftBigDecimalScore() {
-        super(Integer.MIN_VALUE);
-        hardScore = null;
-        mediumScore = null;
-        softScore = null;
+        this(Integer.MIN_VALUE, null, null, null);
     }
 
     private HardMediumSoftBigDecimalScore(int initScore, BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
@@ -221,6 +218,11 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     @Override
     public HardMediumSoftBigDecimalScore negate() {
         return new HardMediumSoftBigDecimalScore(-initScore, hardScore.negate(), mediumScore.negate(), softScore.negate());
+    }
+
+    @Override
+    public HardMediumSoftBigDecimalScore zero() {
+        return HardMediumSoftBigDecimalScore.ZERO;
     }
 
     @Override

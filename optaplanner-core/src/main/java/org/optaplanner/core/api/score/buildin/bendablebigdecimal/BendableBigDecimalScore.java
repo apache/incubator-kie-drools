@@ -145,9 +145,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
      */
     @SuppressWarnings("unused")
     private BendableBigDecimalScore() {
-        super(Integer.MIN_VALUE);
-        hardScores = null;
-        softScores = null;
+        this(Integer.MIN_VALUE, null, null);
     }
 
     /**
@@ -155,7 +153,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
      * @param hardScores never null
      * @param softScores never null
      */
-    protected BendableBigDecimalScore(int initScore, BigDecimal[] hardScores, BigDecimal[] softScores) {
+    private BendableBigDecimalScore(int initScore, BigDecimal[] hardScores, BigDecimal[] softScores) {
         super(initScore);
         this.hardScores = hardScores;
         this.softScores = softScores;
@@ -342,6 +340,11 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
             newSoftScores[i] = softScores[i].negate();
         }
         return new BendableBigDecimalScore(-initScore, newHardScores, newSoftScores);
+    }
+
+    @Override
+    public BendableBigDecimalScore zero() {
+        return BendableBigDecimalScore.zero(getHardLevelsSize(), getSoftLevelsSize());
     }
 
     @Override

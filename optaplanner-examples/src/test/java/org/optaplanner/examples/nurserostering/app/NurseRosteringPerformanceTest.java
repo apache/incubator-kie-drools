@@ -18,11 +18,12 @@ package org.optaplanner.examples.nurserostering.app;
 
 import java.util.stream.Stream;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRoster> {
+public class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRoster, HardSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/nurserostering/unsolved/medium_late01_initialized.xml";
 
@@ -32,9 +33,9 @@ public class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRo
     }
 
     @Override
-    protected Stream<TestData> testData() {
+    protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/-568soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-689soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-568), EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-689), EnvironmentMode.FAST_ASSERT));
     }
 }

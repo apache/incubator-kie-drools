@@ -285,6 +285,51 @@
           "methodName": "ifNotExistsIncludingNullVars",
           "elementKind": "method",
           "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::zero()",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "Score",
+          "methodName": "zero",
+          "elementKind": "method",
+          "justification": "Score now knows its zero."
+        },
+        {
+          "code": "java.method.visibilityReduced",
+          "old": "method void org.optaplanner.core.api.score.buildin.bendable.BendableScore::<init>(int, int[], int[])",
+          "new": "method void org.optaplanner.core.api.score.buildin.bendable.BendableScore::<init>(int, int[], int[])",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.buildin.bendable",
+          "classSimpleName": "BendableScore",
+          "methodName": "<init>",
+          "elementKind": "constructor",
+          "justification": "Does not matter on a final class."
+        },
+        {
+          "code": "java.method.visibilityReduced",
+          "old": "method void org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore::<init>(int, java.math.BigDecimal[], java.math.BigDecimal[])",
+          "new": "method void org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore::<init>(int, java.math.BigDecimal[], java.math.BigDecimal[])",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.buildin.bendablebigdecimal",
+          "classSimpleName": "BendableBigDecimalScore",
+          "methodName": "<init>",
+          "elementKind": "constructor",
+          "justification": "Does not matter on a final class."
+        },
+        {
+          "code": "java.method.visibilityReduced",
+          "old": "method void org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore::<init>(int, long[], long[])",
+          "new": "method void org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore::<init>(int, long[], long[])",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.buildin.bendablelong",
+          "classSimpleName": "BendableLongScore",
+          "methodName": "<init>",
+          "elementKind": "constructor",
+          "justification": "Does not matter on a final class."
         }
       ]
     }

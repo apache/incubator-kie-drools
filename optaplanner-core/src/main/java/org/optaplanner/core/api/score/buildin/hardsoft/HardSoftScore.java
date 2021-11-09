@@ -76,9 +76,7 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> {
      */
     @SuppressWarnings("unused")
     private HardSoftScore() {
-        super(Integer.MIN_VALUE);
-        hardScore = Integer.MIN_VALUE;
-        softScore = Integer.MIN_VALUE;
+        this(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
     }
 
     private HardSoftScore(int initScore, int hardScore, int softScore) {
@@ -168,6 +166,11 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> {
     @Override
     public HardSoftScore negate() {
         return new HardSoftScore(-initScore, -hardScore, -softScore);
+    }
+
+    @Override
+    public HardSoftScore zero() {
+        return HardSoftScore.ZERO;
     }
 
     @Override

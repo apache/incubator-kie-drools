@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.bendable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
@@ -159,6 +160,18 @@ public class BendableScoreTest extends AbstractScoreTest {
     public void negateHSS() {
         assertThat(scoreDefinitionHSS.createScore(3, -4, 5).negate()).isEqualTo(scoreDefinitionHSS.createScore(-3, 4, -5));
         assertThat(scoreDefinitionHSS.createScore(-3, 4, -5).negate()).isEqualTo(scoreDefinitionHSS.createScore(3, -4, 5));
+    }
+
+    @Test
+    public void zero() {
+        BendableScore manualZero = BendableScore.zero(0, 1);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
+            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            BendableScore manualOne = BendableScore.ofSoft(0, 1, 0, 1);
+            softly.assertThat(manualOne.isZero())
+                    .isEqualTo(false);
+        });
     }
 
     @Test

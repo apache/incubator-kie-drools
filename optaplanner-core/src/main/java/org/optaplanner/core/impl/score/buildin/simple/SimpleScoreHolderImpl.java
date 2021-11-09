@@ -38,7 +38,7 @@ public final class SimpleScoreHolderImpl extends AbstractScoreHolder<SimpleScore
     protected int score;
 
     public SimpleScoreHolderImpl(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, SimpleScore.ZERO);
+        super(constraintMatchEnabled);
     }
 
     public int getScore() {
@@ -53,7 +53,7 @@ public final class SimpleScoreHolderImpl extends AbstractScoreHolder<SimpleScore
     public void configureConstraintWeight(Rule rule, SimpleScore constraintWeight) {
         super.configureConstraintWeight(rule, constraintWeight);
         IntMatchExecutor matchExecutor;
-        if (constraintWeight.equals(SimpleScore.ZERO)) {
+        if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, int matchWeight) -> {
             };
         } else {

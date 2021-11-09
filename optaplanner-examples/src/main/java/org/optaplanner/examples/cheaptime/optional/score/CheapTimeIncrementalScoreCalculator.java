@@ -544,17 +544,16 @@ public class CheapTimeIncrementalScoreCalculator
     @Override
     public Collection<ConstraintMatchTotal<HardMediumSoftLongScore>> getConstraintMatchTotals() {
         List<Resource> resourceList = cheapTimeSolution.getResourceList();
-        DefaultConstraintMatchTotal<HardMediumSoftLongScore> resourceCapacityMatchTotal = new DefaultConstraintMatchTotal<>(
-                CONSTRAINT_PACKAGE, "resourceCapacity", HardMediumSoftLongScore.ZERO);
-        DefaultConstraintMatchTotal<HardMediumSoftLongScore> spinUpDownMatchTotal = new DefaultConstraintMatchTotal<>(
-                CONSTRAINT_PACKAGE, "spinUpDown", HardMediumSoftLongScore.ZERO);
-        DefaultConstraintMatchTotal<HardMediumSoftLongScore> machineConsumptionMatchTotal = new DefaultConstraintMatchTotal<>(
-                CONSTRAINT_PACKAGE, "machineConsumption", HardMediumSoftLongScore.ZERO);
-        DefaultConstraintMatchTotal<HardMediumSoftLongScore> taskConsumptionMatchTotal = new DefaultConstraintMatchTotal<>(
-                CONSTRAINT_PACKAGE, "taskConsumption", HardMediumSoftLongScore.ZERO);
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> resourceCapacityMatchTotal =
+                new DefaultConstraintMatchTotal<>(CONSTRAINT_PACKAGE, "resourceCapacity");
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> spinUpDownMatchTotal =
+                new DefaultConstraintMatchTotal<>(CONSTRAINT_PACKAGE, "spinUpDown");
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> machineConsumptionMatchTotal =
+                new DefaultConstraintMatchTotal<>(CONSTRAINT_PACKAGE, "machineConsumption");
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> taskConsumptionMatchTotal =
+                new DefaultConstraintMatchTotal<>(CONSTRAINT_PACKAGE, "taskConsumption");
         DefaultConstraintMatchTotal<HardMediumSoftLongScore> minimizeTaskStartPeriodMatchTotal =
-                new DefaultConstraintMatchTotal<>(
-                        CONSTRAINT_PACKAGE, "minimizeTaskStartPeriod", HardMediumSoftLongScore.ZERO);
+                new DefaultConstraintMatchTotal<>(CONSTRAINT_PACKAGE, "minimizeTaskStartPeriod");
         long taskConsumptionWeight = mediumScore;
         for (Machine machine : cheapTimeSolution.getMachineList()) {
             for (int period = 0; period < globalPeriodRangeTo; period++) {

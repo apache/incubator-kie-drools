@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.math.BigDecimal;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
@@ -216,6 +217,18 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
                 .isEqualTo(scoreDefinitionHSS.createScore(MINUS_THREE, FOUR, MINUS_FIVE));
         assertThat(scoreDefinitionHSS.createScore(MINUS_THREE, FOUR, MINUS_FIVE).negate())
                 .isEqualTo(scoreDefinitionHSS.createScore(THREE, MINUS_FOUR, FIVE));
+    }
+
+    @Test
+    public void zero() {
+        BendableBigDecimalScore manualZero = BendableBigDecimalScore.zero(0, 1);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
+            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            BendableBigDecimalScore manualOne = BendableBigDecimalScore.ofSoft(0, 1, 0, BigDecimal.ONE);
+            softly.assertThat(manualOne.isZero())
+                    .isEqualTo(false);
+        });
     }
 
     @Test

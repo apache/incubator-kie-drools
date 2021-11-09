@@ -18,11 +18,12 @@ package org.optaplanner.examples.meetingscheduling.app;
 
 import java.util.stream.Stream;
 
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 
-public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<MeetingSchedule> {
+public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<MeetingSchedule, HardMediumSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/meetingscheduling/unsolved/50meetings-160timegrains-5rooms.xlsx";
 
@@ -32,9 +33,9 @@ public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<Meet
     }
 
     @Override
-    protected Stream<TestData> testData() {
+    protected Stream<TestData<HardMediumSoftScore>> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "-25hard/-100medium/-8166soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "-36hard/-64medium/-5921soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, HardMediumSoftScore.of(-25, -100, -8166), EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, HardMediumSoftScore.of(-36, -64, -5921), EnvironmentMode.FAST_ASSERT));
     }
 }

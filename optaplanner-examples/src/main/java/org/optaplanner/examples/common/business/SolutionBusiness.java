@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +39,6 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
@@ -48,9 +46,7 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -401,31 +397,4 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         doMove(move);
     }
 
-    public SwapMove<Solution_> createSwapMove(Object leftEntity, Object rightEntity) {
-        // TODO Solver should support building a SwapMove
-        SolutionDescriptor<Solution_> solutionDescriptor = guiScoreDirector.getSolutionDescriptor();
-        EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptor(leftEntity.getClass());
-        List<GenuineVariableDescriptor<Solution_>> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
-        if (entityDescriptor.hasAnyChainedGenuineVariables()) {
-            List<SingletonInverseVariableSupply> inverseVariableSupplyList = new ArrayList<>(variableDescriptorList.size());
-            SupplyManager<Solution_> supplyManager = guiScoreDirector.getSupplyManager();
-            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
-                SingletonInverseVariableSupply inverseVariableSupply;
-                if (variableDescriptor.isChained()) {
-                    inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
-                } else {
-                    inverseVariableSupply = null;
-                }
-                inverseVariableSupplyList.add(inverseVariableSupply);
-            }
-            return new ChainedSwapMove<>(variableDescriptorList, inverseVariableSupplyList, leftEntity, rightEntity);
-        } else {
-            return new SwapMove<>(variableDescriptorList, leftEntity, rightEntity);
-        }
-    }
-
-    public void doSwapMove(Object leftEntity, Object rightEntity) {
-        SwapMove<Solution_> move = createSwapMove(leftEntity, rightEntity);
-        doMove(move);
-    }
 }

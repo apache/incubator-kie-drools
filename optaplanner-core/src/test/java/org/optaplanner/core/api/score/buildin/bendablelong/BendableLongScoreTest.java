@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.bendablelong;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
@@ -163,6 +164,18 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                 .isEqualTo(scoreDefinitionHSS.createScore(-3000000000L, 4000000000L, -5000000000L));
         assertThat(scoreDefinitionHSS.createScore(-3000000000L, 4000000000L, -5000000000L).negate())
                 .isEqualTo(scoreDefinitionHSS.createScore(3000000000L, -4000000000L, 5000000000L));
+    }
+
+    @Test
+    public void zero() {
+        BendableLongScore manualZero = BendableLongScore.zero(0, 1);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
+            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            BendableLongScore manualOne = BendableLongScore.ofSoft(0, 1, 0, 1);
+            softly.assertThat(manualOne.isZero())
+                    .isEqualTo(false);
+        });
     }
 
     @Test

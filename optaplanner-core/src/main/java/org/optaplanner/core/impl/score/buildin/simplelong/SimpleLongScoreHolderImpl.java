@@ -39,7 +39,7 @@ public final class SimpleLongScoreHolderImpl extends AbstractScoreHolder<SimpleL
     protected long score;
 
     public SimpleLongScoreHolderImpl(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, SimpleLongScore.ZERO);
+        super(constraintMatchEnabled);
     }
 
     public long getScore() {
@@ -54,7 +54,7 @@ public final class SimpleLongScoreHolderImpl extends AbstractScoreHolder<SimpleL
     public void configureConstraintWeight(Rule rule, SimpleLongScore constraintWeight) {
         super.configureConstraintWeight(rule, constraintWeight);
         LongMatchExecutor matchExecutor;
-        if (constraintWeight.equals(SimpleLongScore.ZERO)) {
+        if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, long matchWeight) -> {
             };
         } else {

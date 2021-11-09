@@ -50,15 +50,13 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     protected final boolean constraintMatchEnabled;
     protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
     protected final Map<Object, Indictment<Score_>> indictmentMap;
-    protected final Score_ zeroScore;
 
-    protected AbstractScoreHolder(boolean constraintMatchEnabled, Score_ zeroScore) {
+    protected AbstractScoreHolder(boolean constraintMatchEnabled) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         // TODO Can we set the initial capacity of this map more accurately? For example: number of rules
         constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
         // TODO Can we set the initial capacity of this map more accurately by using entitySize?
         indictmentMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
-        this.zeroScore = zeroScore;
     }
 
     public boolean isConstraintMatchEnabled() {
@@ -94,7 +92,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
             String constraintName = rule.getName();
             String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
             constraintMatchTotalMap.put(constraintId,
-                    new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
+                    new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
         }
     }
 
@@ -124,7 +122,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
                     .map(justification -> {
                         DefaultIndictment<Score_> indictment =
                                 (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(justification,
-                                        k -> new DefaultIndictment<>(justification, zeroScore));
+                                        k -> new DefaultIndictment<>(justification, constraintMatch.getScore().zero()));
                         indictment.addConstraintMatch(constraintMatch);
                         return indictment;
                     }).collect(Collectors.toList());
@@ -139,7 +137,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
         String constraintName = rule.getName();
         String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
         return (DefaultConstraintMatchTotal<Score_>) constraintMatchTotalMap.computeIfAbsent(constraintId,
-                k -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, null, zeroScore));
+                k -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName));
     }
 
     /**

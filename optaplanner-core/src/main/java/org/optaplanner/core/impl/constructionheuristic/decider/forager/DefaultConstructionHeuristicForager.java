@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.constructionheuristic.decider.forager;
 
-import java.util.Comparator;
-
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
@@ -26,8 +24,6 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 public class DefaultConstructionHeuristicForager<Solution_> extends AbstractConstructionHeuristicForager<Solution_> {
 
     protected final ConstructionHeuristicPickEarlyType pickEarlyType;
-
-    protected final Comparator<Score> scoreComparator = Comparable::compareTo;
 
     protected long selectedMoveCount;
     protected ConstructionHeuristicMoveScope<Solution_> earlyPickedMoveScope;
@@ -60,8 +56,7 @@ public class DefaultConstructionHeuristicForager<Solution_> extends AbstractCons
     public void addMove(ConstructionHeuristicMoveScope<Solution_> moveScope) {
         selectedMoveCount++;
         checkPickEarly(moveScope);
-        if (maxScoreMoveScope == null
-                || scoreComparator.compare((Score) moveScope.getScore(), (Score) maxScoreMoveScope.getScore()) > 0) {
+        if (maxScoreMoveScope == null || moveScope.getScore().compareTo(maxScoreMoveScope.getScore()) > 0) {
             maxScoreMoveScope = moveScope;
         }
     }
@@ -73,7 +68,7 @@ public class DefaultConstructionHeuristicForager<Solution_> extends AbstractCons
             case FIRST_NON_DETERIORATING_SCORE:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                if (((Score) moveScope.getScore()).withInitScore(0).compareTo(lastStepScore.withInitScore(0)) >= 0) {
+                if (moveScope.getScore().withInitScore(0).compareTo(lastStepScore.withInitScore(0)) >= 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
@@ -85,7 +80,7 @@ public class DefaultConstructionHeuristicForager<Solution_> extends AbstractCons
             case FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD:
                 Score lastStepScore2 = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                Score lastStepScoreDifference = ((Score) moveScope.getScore()).withInitScore(0)
+                Score lastStepScoreDifference = moveScope.getScore().withInitScore(0)
                         .subtract(lastStepScore2.withInitScore(0));
                 if (lastStepScoreDifference.isFeasible()) {
                     earlyPickedMoveScope = moveScope;

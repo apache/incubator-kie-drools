@@ -16,26 +16,8 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
-import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
-import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
-import org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig;
-import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO;
 import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -60,57 +42,6 @@ public class NQueensApp extends CommonApp<NQueens> {
                         "No 2 queens must be able to attack each other.",
                 SOLVER_CONFIG, DATA_DIR_NAME,
                 NQueensPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected SolverFactory<NQueens> createSolverFactory() {
-        return createSolverFactoryByXml();
-    }
-
-    /**
-     * Normal way to create a {@link Solver}.
-     *
-     * @return never null
-     */
-    protected SolverFactory<NQueens> createSolverFactoryByXml() {
-        return SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-    }
-
-    /**
-     * Unused alternative. A way to create a {@link Solver} without using XML.
-     * <p>
-     * It is recommended to use {@link #createSolverFactoryByXml()} instead.
-     *
-     * @return never null
-     */
-    protected SolverFactory<NQueens> createSolverFactoryByApi() {
-        SolverConfig solverConfig = new SolverConfig();
-
-        solverConfig.setSolutionClass(NQueens.class);
-        solverConfig.setEntityClassList(Collections.singletonList(Queen.class));
-
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-        scoreDirectorFactoryConfig.setScoreDrlList(
-                Arrays.asList("org/optaplanner/examples/nqueens/optional/score/nQueensConstraints.drl"));
-        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
-
-        solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0"));
-        List<PhaseConfig> phaseConfigList = new ArrayList<>();
-
-        ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
-        constructionHeuristicPhaseConfig.setConstructionHeuristicType(
-                ConstructionHeuristicType.FIRST_FIT_DECREASING);
-        phaseConfigList.add(constructionHeuristicPhaseConfig);
-
-        LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
-        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        changeMoveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        localSearchPhaseConfig.setMoveSelectorConfig(changeMoveSelectorConfig);
-        localSearchPhaseConfig.setAcceptorConfig(new LocalSearchAcceptorConfig().withEntityTabuSize(5));
-        phaseConfigList.add(localSearchPhaseConfig);
-
-        solverConfig.setPhaseConfigList(phaseConfigList);
-        return SolverFactory.create(solverConfig);
     }
 
     @Override

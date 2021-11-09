@@ -33,7 +33,7 @@ public final class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftB
 
     protected HardSoftBigDecimalScoreInliner(Map<Constraint, HardSoftBigDecimalScore> constraintToWeightMap,
             boolean constraintMatchEnabled) {
-        super(constraintToWeightMap, constraintMatchEnabled, HardSoftBigDecimalScore.ZERO);
+        super(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

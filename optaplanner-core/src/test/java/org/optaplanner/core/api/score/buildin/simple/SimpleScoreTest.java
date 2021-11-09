@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.simple;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
@@ -100,6 +101,18 @@ public class SimpleScoreTest extends AbstractScoreTest {
     public void negate() {
         assertThat(SimpleScore.of(5).negate()).isEqualTo(SimpleScore.of(-5));
         assertThat(SimpleScore.of(-5).negate()).isEqualTo(SimpleScore.of(5));
+    }
+
+    @Test
+    public void zero() {
+        SimpleScore manualZero = SimpleScore.of(0);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
+            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            SimpleScore manualOne = SimpleScore.of(1);
+            softly.assertThat(manualOne.isZero())
+                    .isEqualTo(false);
+        });
     }
 
     @Test

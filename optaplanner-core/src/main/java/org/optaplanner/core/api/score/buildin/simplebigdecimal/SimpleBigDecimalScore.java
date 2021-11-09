@@ -63,8 +63,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
      */
     @SuppressWarnings("unused")
     private SimpleBigDecimalScore() {
-        super(Integer.MIN_VALUE);
-        score = null;
+        this(Integer.MIN_VALUE, null);
     }
 
     private SimpleBigDecimalScore(int initScore, BigDecimal score) {
@@ -144,6 +143,11 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     @Override
     public SimpleBigDecimalScore negate() {
         return new SimpleBigDecimalScore(-initScore, score.negate());
+    }
+
+    @Override
+    public SimpleBigDecimalScore zero() {
+        return SimpleBigDecimalScore.ZERO;
     }
 
     @Override

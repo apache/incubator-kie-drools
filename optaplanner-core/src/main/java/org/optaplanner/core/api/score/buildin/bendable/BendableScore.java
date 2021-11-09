@@ -132,9 +132,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
      */
     @SuppressWarnings("unused")
     private BendableScore() {
-        super(Integer.MIN_VALUE);
-        hardScores = null;
-        softScores = null;
+        this(Integer.MIN_VALUE, null, null);
     }
 
     /**
@@ -142,7 +140,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
      * @param hardScores never null
      * @param softScores never null
      */
-    protected BendableScore(int initScore, int[] hardScores, int[] softScores) {
+    private BendableScore(int initScore, int[] hardScores, int[] softScores) {
         super(initScore);
         this.hardScores = hardScores;
         this.softScores = softScores;
@@ -317,6 +315,11 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
             newSoftScores[i] = -softScores[i];
         }
         return new BendableScore(-initScore, newHardScores, newSoftScores);
+    }
+
+    @Override
+    public BendableScore zero() {
+        return BendableScore.zero(getHardLevelsSize(), getSoftLevelsSize());
     }
 
     @Override
