@@ -3306,7 +3306,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     /**
-     * lhsPattern := xpathPrimary |
+     * lhsPattern := xpathPrimary (OVER patternFilter)? |
      *               ( QUESTION? qualifiedIdentifier
      *                 LEFT_PAREN positionalConstraints? constraints? RIGHT_PAREN
      *                 (OVER patternFilter)? (FROM patternSource)? )
@@ -3329,6 +3329,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             pattern.constraint(expr);
             if ( label != null ) {
                 pattern.id(label, isUnification);
+            }
+            if (helper.validateIdentifierKey(DroolsSoftKeywords.OVER)) {
+                patternFilter(pattern);
             }
             return;
         }
@@ -3389,7 +3392,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
 
         if (helper.validateIdentifierKey(DroolsSoftKeywords.OVER)) {
-            //           || input.LA( 1 ) == DRL6Lexer.PIPE ) {
             patternFilter(pattern);
         }
 
