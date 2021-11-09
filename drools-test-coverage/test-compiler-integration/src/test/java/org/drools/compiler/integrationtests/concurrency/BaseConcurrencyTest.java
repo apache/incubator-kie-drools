@@ -50,10 +50,10 @@ public abstract class BaseConcurrencyTest {
 
         // Basically, what we want to test is "synced_till_eval"
 
-//        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "unsafe"); // fails with all tests with non-exec-model
-//      System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "safe_on_first"); // fails with ConsequenceWithAndOrConcurrencyTest, ConstraintWithAndOrConcurrencyTest, ConstraintWithAndOrJittingConcurrencyTest with non-exec-model
-        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "synced_till_eval"); // passes all tests
-//        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "fully_synced"); // passes all tests
+//        MvelEvaluator.setEvaluatorType( MvelEvaluator.EvaluatorType.THREAD_UNSAFE ); // fails with all tests with non-exec-model
+//        MvelEvaluator.setEvaluatorType( MvelEvaluator.EvaluatorType.THREAD_SAFE_ON_FIRST_EVAL ); // fails with ConsequenceWithAndOrConcurrencyTest, ConstraintWithAndOrConcurrencyTest, ConstraintWithAndOrJittingConcurrencyTest with non-exec-model
+        MvelEvaluator.setEvaluatorType( MvelEvaluator.EvaluatorType.SYNCHRONIZED_TILL_EVALUATED ); // passes all tests
+//        MvelEvaluator.setEvaluatorType( MvelEvaluator.EvaluatorType.FULLY_SYNCHRONIZED ); // passes all tests
 
         try {
             KieBase kieBase = null;
@@ -71,30 +71,26 @@ public abstract class BaseConcurrencyTest {
                 CountDownLatch latch = new CountDownLatch(THREADS);
                 for (int j = 0; j < REQUESTS; j++) {
                     KieBase finalKieBase = kieBase;
-                    executor.execute(new Runnable() {
+                    executor.execute(() -> {
+                        KieSession kSession = finalKieBase.newKieSession();
 
-                        public void run() {
-                            KieSession kSession = finalKieBase.newKieSession();
+                        setGlobal(kSession);
+                        insertFacts(kSession);
 
-                            setGlobal(kSession);
-                            insertFacts(kSession);
-
-                            try {
-                                latch.countDown();
-                                latch.await();
-                            } catch (InterruptedException e) {
-                                // ignore
-                            }
-
-                            try {
-                                kSession.fireAllRules();
-                            } catch (Exception e) {
-                                exceptions.add(e);
-                            } finally {
-                                kSession.dispose();
-                            }
+                        try {
+                            latch.countDown();
+                            latch.await();
+                        } catch (InterruptedException e) {
+                            // ignore
                         }
 
+                        try {
+                            kSession.fireAllRules();
+                        } catch (Exception e) {
+                            exceptions.add(e);
+                        } finally {
+                            kSession.dispose();
+                        }
                     });
                 }
 
@@ -113,7 +109,7 @@ public abstract class BaseConcurrencyTest {
             assertEquals(0, exceptions.size());
 
         } finally {
-            System.clearProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY);
+            MvelEvaluator.resetEvaluatorType();
         }
     }
 
