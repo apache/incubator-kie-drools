@@ -19,7 +19,7 @@ TCK repository URL: https://github.com/dmn-tck/tck
 default TCK branch: master
 ```
 
-## Testing stable DMN TCK tests locally
+## Testing *stable* DMN TCK tests locally
 
 You can test this module locally by making use of the appropriate maven profile `-Pdmn-tck`.
 
@@ -27,9 +27,12 @@ NOTE: no TCK tests will be run without enabling the appropriate Maven profile.
 
 Please reference the configuration of `pom.xml` for more details.
 
-## Testing new DMN TCK tests contributions (without `kie-dmn-tck`)
+## Testing *new* DMN TCK tests contributions (without `kie-dmn-tck`)
 
 New contributions to the DMN TCK are submitted in the form of classic GitHub pull requests, here: https://github.com/dmn-tck/tck/pulls
+
+New DMN TCK tests currently under discussion at the TCK initiative must be tested manually, by checking out the specific pull request locally.
+This `kie-dmn-tck` module will execute **stable DMN TCK tests** present on the default branch ONLY.
 
 The following workflow is suggested in order to keep tabs on new DMN TCK tests being proposed, in the scope of checking Drools DMN Engine behaviour:
 
