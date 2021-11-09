@@ -27,7 +27,7 @@ NOTE: no TCK tests will be run without enabling the appropriate Maven profile.
 
 Please reference the configuration of `pom.xml` for more details.
 
-## Testing new DMN TCK tests contributions
+## Testing new DMN TCK tests contributions (without `kie-dmn-tck`)
 
 New contributions to the DMN TCK are submitted in the form of classic GitHub pull requests, here: https://github.com/dmn-tck/tck/pulls
 
