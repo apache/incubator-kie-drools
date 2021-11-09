@@ -18,16 +18,19 @@ package org.kie.kogito.codegen.rules;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.drools.core.common.ReteEvaluator;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.conf.DefaultEntryPoint;
 import org.kie.kogito.conf.EntryPoint;
 import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.units.AbstractRuleUnitInstance;
 import org.kie.kogito.rules.units.EntryPointDataProcessor;
+import org.kie.kogito.rules.units.KieSessionBasedRuleUnitInstance;
+import org.kie.kogito.rules.units.ReteEvaluatorBasedRuleUnitInstance;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -47,6 +50,7 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.RULE_TYPE;
+import static org.kie.kogito.codegen.rules.RuleUnitGenerator.useLegacySession;
 
 public class RuleUnitInstanceGenerator implements RuleFileGenerator {
 
@@ -59,17 +63,28 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
     private final RuleUnitHelper ruleUnitHelper;
     private final List<String> queryClasses;
 
+    private final Class<?> unitInstanceAbstractClass;
+    private final Class<?> unitEvaluatorClass;
+
     public static String qualifiedName(String packageName, String typeName) {
         return packageName + "." + typeName + "RuleUnitInstance";
     }
 
-    public RuleUnitInstanceGenerator(RuleUnitDescription ruleUnitDescription, RuleUnitHelper ruleUnitHelper, List<String> queryClasses) {
+    public RuleUnitInstanceGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnitDescription, RuleUnitHelper ruleUnitHelper, List<String> queryClasses) {
         this.ruleUnitDescription = ruleUnitDescription;
         this.targetTypeName = ruleUnitDescription.getSimpleName() + "RuleUnitInstance";
         this.targetCanonicalName = ruleUnitDescription.getPackageName() + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.ruleUnitHelper = ruleUnitHelper;
         this.queryClasses = queryClasses;
+
+        if (useLegacySession(context)) {
+            unitInstanceAbstractClass = KieSessionBasedRuleUnitInstance.class;
+            unitEvaluatorClass = KieSession.class;
+        } else {
+            unitInstanceAbstractClass = ReteEvaluatorBasedRuleUnitInstance.class;
+            unitEvaluatorClass = ReteEvaluator.class;
+        }
     }
 
     @Override
@@ -97,7 +112,7 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
         methodDeclaration.setName("bind")
                 .addAnnotation("Override")
                 .addModifier(Modifier.Keyword.PROTECTED)
-                .addParameter(KieSession.class.getCanonicalName(), "runtime")
+                .addParameter(unitEvaluatorClass.getCanonicalName(), "evaluator")
                 .addParameter(ruleUnitDescription.getRuleUnitName(), "value")
                 .setType(void.class)
                 .setBody(methodBlock);
@@ -127,13 +142,13 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
                     MethodCallExpr drainInto = new MethodCallExpr(fieldAccessor, "subscribe")
                             .addArgument(new ObjectCreationExpr(null, StaticJavaParser.parseClassOrInterfaceType(EntryPointDataProcessor.class.getName()), NodeList.nodeList(
                                     new MethodCallExpr(
-                                            new NameExpr("runtime"), "getEntryPoint",
+                                            new NameExpr("evaluator"), "getEntryPoint",
                                             NodeList.nodeList(new StringLiteralExpr(entryPointName))))));
 
                     methodBlock.addStatement(drainInto);
                 }
 
-                MethodCallExpr setGlobalCall = new MethodCallExpr(new NameExpr("runtime"), "setGlobal");
+                MethodCallExpr setGlobalCall = new MethodCallExpr(new NameExpr("evaluator"), "setGlobal");
                 setGlobalCall.addArgument(new StringLiteralExpr(propertyName));
                 setGlobalCall.addArgument(new MethodCallExpr(new NameExpr("value"), methodName));
                 methodBlock.addStatement(setGlobalCall);
@@ -194,17 +209,17 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
                 .addModifier(Modifier.Keyword.PUBLIC);
         classDecl
                 .addExtendedType(
-                        new ClassOrInterfaceType(null, AbstractRuleUnitInstance.class.getCanonicalName())
+                        new ClassOrInterfaceType(null, unitInstanceAbstractClass.getCanonicalName())
                                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName)))
                 .addConstructor(Modifier.Keyword.PUBLIC)
                 .addParameter(RuleUnitGenerator.ruleUnitType(canonicalName), "unit")
                 .addParameter(canonicalName, "value")
-                .addParameter(KieSession.class.getCanonicalName(), "session")
+                .addParameter(unitEvaluatorClass.getCanonicalName(), "evaluator")
                 .setBody(new BlockStmt().addStatement(new MethodCallExpr(
                         "super",
                         new NameExpr("unit"),
                         new NameExpr("value"),
-                        new NameExpr("session"))));
+                        new NameExpr("evaluator"))));
         classDecl.addMember(bindMethod());
         if (!queryClasses.isEmpty()) {
             classDecl.addMember(createQueryMethod());

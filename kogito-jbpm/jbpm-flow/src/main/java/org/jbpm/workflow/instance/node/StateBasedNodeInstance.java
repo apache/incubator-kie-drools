@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 
 import org.drools.core.common.KogitoInternalAgenda;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.jbpm.process.core.ContextContainer;
@@ -437,7 +437,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             if ("processInstance".equals(declaration.getIdentifier())
                     || "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
                 Object value = declaration.getValue(
-                        ((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).getInternalWorkingMemory(),
+                        ((ReteEvaluator) getProcessInstance().getKnowledgeRuntime()),
                         activation.getTuple().get(declaration).getObject());
                 if (value instanceof ProcessInstance) {
                     return ((ProcessInstance) value).getStringId().equals(getProcessInstance().getStringId());

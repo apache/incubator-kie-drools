@@ -243,8 +243,8 @@ public class KieBaseImpl implements InternalKnowledgeBase {
     }
 
     @Override
-    public int getMemoryCount(String s) {
-        return delegate.getMemoryCount(s);
+    public int getMemoryCount() {
+        return delegate.getMemoryCount();
     }
 
     @Override

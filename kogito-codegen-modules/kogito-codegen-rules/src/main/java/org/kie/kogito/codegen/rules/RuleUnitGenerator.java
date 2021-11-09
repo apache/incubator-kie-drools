@@ -55,6 +55,8 @@ import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_
 
 public class RuleUnitGenerator implements RuleFileGenerator {
 
+    public static final String KOGITO_USE_LEGACY_SESSION = "kogito.uselegacysession";
+
     private final RuleUnitDescription ruleUnit;
     private final String ruleUnitPackageName;
     private final String typeName;
@@ -82,7 +84,11 @@ public class RuleUnitGenerator implements RuleFileGenerator {
                 .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
                 .withTargetTypeName(targetTypeName)
                 .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
-                .build(context, "RuleUnit");
+                .build(context, "RuleUnitOn" + (useLegacySession(context) ? "KieSession" : "ReteEvaluator"));
+    }
+
+    static boolean useLegacySession(KogitoBuildContext context) {
+        return "true".equalsIgnoreCase(context.getApplicationProperty(KOGITO_USE_LEGACY_SESSION).orElse("true"));
     }
 
     // override config for this rule unit with the given values
@@ -92,7 +98,7 @@ public class RuleUnitGenerator implements RuleFileGenerator {
     }
 
     public RuleUnitInstanceGenerator instance(RuleUnitHelper ruleUnitHelper, List<String> queryClasses) {
-        return new RuleUnitInstanceGenerator(ruleUnit, ruleUnitHelper, queryClasses);
+        return new RuleUnitInstanceGenerator(context, ruleUnit, ruleUnitHelper, queryClasses);
     }
 
     public List<QueryEndpointGenerator> queries() {

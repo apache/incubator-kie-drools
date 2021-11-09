@@ -18,11 +18,12 @@ package org.kie.kogito.rules.units;
 import java.io.InputStream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleUnitExecutorImpl;
 import org.drools.core.io.impl.InputStreamResource;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.kogito.Config;
 import org.kie.kogito.KogitoEngine;
@@ -60,9 +61,9 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
 
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addPackages(kBuilder.getKnowledgePackages());
-        KieSession kSession = kBase.newKieSession();
+        ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(kBase);
 
-        return new InterpretedRuleUnitInstance<>(this, data, kSession);
+        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator);
     }
 
     public static class DummyApplication implements org.kie.kogito.Application {

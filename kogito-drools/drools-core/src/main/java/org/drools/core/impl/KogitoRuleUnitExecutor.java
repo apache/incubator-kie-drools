@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,75 +15,38 @@
  */
 package org.drools.core.impl;
 
-import org.drools.core.KogitoWorkingMemory;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.DefaultKnowledgeHelper;
-import org.drools.core.base.StatefulKnowledgeSessionForRHS;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.kogito.factory.KogitoDefaultFactHandle;
 import org.drools.core.spi.AbstractProcessContext;
-import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.KogitoProcessContextImpl;
-import org.drools.core.time.KogitoTimerServiceFactory;
-import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.rules.RuleUnits;
 
-public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl implements KogitoWorkingMemory, KogitoProcessRuntime.Provider {
+public class KogitoRuleUnitExecutor extends RuleUnitExecutorImpl {
 
-    private Application application;
+    private final Application application;
 
-    public KogitoStatefulKnowledgeSessionImpl() {
+    public KogitoRuleUnitExecutor(InternalKnowledgeBase knowledgeBase, Application application) {
+        super(knowledgeBase);
+        this.application = application;
     }
 
-    public KogitoStatefulKnowledgeSessionImpl(long id, InternalKnowledgeBase kBase) {
-        super(id, kBase);
+    public KogitoRuleUnitExecutor(InternalKnowledgeBase knowledgeBase, SessionConfiguration sessionConfiguration, Application application) {
+        super(knowledgeBase, sessionConfiguration);
+        this.application = application;
     }
 
-    public KogitoStatefulKnowledgeSessionImpl(long id, InternalKnowledgeBase kBase, boolean initInitFactHandle, SessionConfiguration config, Environment environment) {
-        super(id, kBase, initInitFactHandle, config, environment);
-    }
-
-    public KogitoStatefulKnowledgeSessionImpl(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda,
-            Environment environment) {
-        super(id, kBase, handleFactory, propagationContext, config, agenda, environment);
-    }
-
-    @Override
-    public KogitoProcessRuntime getKogitoProcessRuntime() {
-        return ((KogitoProcessRuntime.Provider) getProcessRuntime()).getKogitoProcessRuntime();
-    }
-
-    @Override
-    protected TimerService createTimerService() {
-        return KogitoTimerServiceFactory.getTimerService(this.config);
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(Object processInstanceId) {
-        return getProcessInstance((String) processInstanceId);
-    }
-
-    @Override
-    public KogitoProcessInstance getProcessInstance(String processInstanceId) {
-        return getKogitoProcessRuntime().getProcessInstance(processInstanceId);
-    }
-
-    @Override
-    public KogitoProcessInstance getProcessInstance(String processInstanceId, boolean readonly) {
-        throw new UnsupportedOperationException();
+    public Application getApplication() {
+        return application;
     }
 
     @Override
@@ -91,26 +54,18 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
         return new RuleUnitKnowledgeHelper(this);
     }
 
-    public Application getApplication() {
-        return application;
-    }
-
-    public void setApplication(Application application) {
-        this.application = application;
-    }
-
     public static class RuleUnitKnowledgeHelper extends DefaultKnowledgeHelper {
 
-        private final KogitoStatefulKnowledgeSessionImpl kogitoSession;
+        private final KogitoRuleUnitExecutor executor;
 
-        public RuleUnitKnowledgeHelper(KogitoStatefulKnowledgeSessionImpl workingMemory) {
-            super(workingMemory);
-            this.kogitoSession = workingMemory;
+        public RuleUnitKnowledgeHelper(KogitoRuleUnitExecutor executor) {
+            super(executor);
+            this.executor = executor;
         }
 
         @Override
         public void run(String ruleUnitName) {
-            kogitoSession.getApplication().get(RuleUnits.class).getRegisteredInstance(ruleUnitName).fire();
+            executor.getApplication().get(RuleUnits.class).getRegisteredInstance(ruleUnitName).fire();
         }
 
         @Override
@@ -127,7 +82,7 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
                 return;
             }
 
-            ((InternalWorkingMemoryEntryPoint) h.getEntryPoint(kogitoSession)).update(h,
+            ((InternalWorkingMemoryEntryPoint) h.getEntryPoint(executor)).update(h,
                     ((InternalFactHandle) handle).getObject(),
                     mask,
                     modifiedClass,
@@ -155,7 +110,7 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
                 return;
             }
 
-            h.getEntryPoint(kogitoSession).delete(handle,
+            h.getEntryPoint(executor).delete(handle,
                     this.activation.getRule(),
                     this.activation.getTuple().getTupleSink(),
                     fhState);
@@ -169,32 +124,6 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
         @Override
         protected AbstractProcessContext createProcessContext() {
             return new KogitoProcessContextImpl(toStatefulKnowledgeSession());
-        }
-
-        @Override
-        protected KogitoReteEvaluatorForRHS toStatefulKnowledgeSession() {
-            return new KogitoReteEvaluatorForRHS((KogitoStatefulKnowledgeSessionImpl) reteEvaluator);
-        }
-    }
-
-    public static class KogitoReteEvaluatorForRHS extends StatefulKnowledgeSessionForRHS implements KogitoProcessRuntime.Provider {
-
-        public KogitoReteEvaluatorForRHS(KogitoStatefulKnowledgeSessionImpl delegate) {
-            super(delegate);
-        }
-
-        @Override
-        public ProcessInstance getProcessInstance(long id) {
-            throw new UnsupportedOperationException();
-        }
-
-        public ProcessInstance getProcessInstance(String id) {
-            return ((KogitoStatefulKnowledgeSessionImpl) delegate).getProcessInstance(id);
-        }
-
-        @Override
-        public KogitoProcessRuntime getKogitoProcessRuntime() {
-            return ((KogitoProcessRuntime.Provider) delegate).getKogitoProcessRuntime();
         }
     }
 }

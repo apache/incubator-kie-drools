@@ -15,13 +15,40 @@
  */
 package org.kie.kogito.rules.units;
 
-import org.kie.api.runtime.KieSession;
+import java.lang.reflect.Field;
+
+import org.drools.core.common.ReteEvaluator;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitData;
 
-public class InterpretedRuleUnitInstance<T extends RuleUnitData> extends AbstractRuleUnitInstance<T> {
+public class InterpretedRuleUnitInstance<T extends RuleUnitData> extends ReteEvaluatorBasedRuleUnitInstance<T> {
 
-    InterpretedRuleUnitInstance(RuleUnit<T> unit, T workingMemory, KieSession ksession) {
-        super(unit, workingMemory, ksession);
+    InterpretedRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator) {
+        super(unit, workingMemory, reteEvaluator);
+    }
+
+    protected void bind(ReteEvaluator reteEvaluator, T workingMemory) {
+        try {
+            for (Field f : workingMemory.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                Object v = f.get(workingMemory);
+                String dataSourceName = String.format(
+                        "%s.%s", workingMemory.getClass().getCanonicalName(), f.getName());
+                if (v instanceof DataSource) {
+                    DataSource<?> o = (DataSource<?>) v;
+                    EntryPoint ep = reteEvaluator.getEntryPoint(dataSourceName);
+                    o.subscribe(new EntryPointDataProcessor(ep));
+                }
+                try {
+                    reteEvaluator.setGlobal(dataSourceName, v);
+                } catch (RuntimeException e) {
+                    // ignore if the global doesn't exist
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new Error(e);
+        }
     }
 }

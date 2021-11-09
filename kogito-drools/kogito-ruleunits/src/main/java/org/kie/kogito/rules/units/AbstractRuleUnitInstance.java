@@ -15,46 +15,22 @@
  */
 package org.kie.kogito.rules.units;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.time.SessionClock;
-import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnitQuery;
 
-public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUnitInstance<T> {
+public abstract class AbstractRuleUnitInstance<E, T extends RuleUnitData> implements RuleUnitInstance<T> {
 
     private final T unitMemory;
     private final RuleUnit<T> unit;
-    private final KieSession runtime;
+    protected final E evaluator;
 
-    public AbstractRuleUnitInstance(RuleUnit<T> unit, T unitMemory, KieSession runtime) {
+    public AbstractRuleUnitInstance(RuleUnit<T> unit, T unitMemory, E evaluator) {
         this.unit = unit;
-        this.runtime = runtime;
+        this.evaluator = evaluator;
         this.unitMemory = unitMemory;
-        bind(runtime, unitMemory);
-    }
-
-    @Override
-    public int fire() {
-        return runtime.fireAllRules();
-    }
-
-    @Override
-    public void dispose() {
-        runtime.dispose();
-    }
-
-    @Override
-    public List<Map<String, Object>> executeQuery(String query) {
-        fire();
-        return runtime.getQueryResults(query).toList();
+        bind(evaluator, unitMemory);
     }
 
     @Override
@@ -75,36 +51,13 @@ public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUni
         return unit;
     }
 
-    @Override
-    public <C extends SessionClock> C getClock() {
-        return runtime.getSessionClock();
-    }
-
-    public T workingMemory() {
+    public T ruleUnitData() {
         return unitMemory;
     }
 
-    protected void bind(KieSession runtime, T workingMemory) {
-        try {
-            for (Field f : workingMemory.getClass().getDeclaredFields()) {
-                f.setAccessible(true);
-                Object v = null;
-                v = f.get(workingMemory);
-                String dataSourceName = String.format(
-                        "%s.%s", workingMemory.getClass().getCanonicalName(), f.getName());
-                if (v instanceof DataSource) {
-                    DataSource<?> o = (DataSource<?>) v;
-                    EntryPoint ep = runtime.getEntryPoint(dataSourceName);
-                    o.subscribe(new EntryPointDataProcessor(ep));
-                }
-                try {
-                    runtime.setGlobal(dataSourceName, v);
-                } catch (RuntimeException e) {
-                    // ignore if the global doesn't exist
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new Error(e);
-        }
+    public E getEvaluator() {
+        return evaluator;
     }
+
+    protected abstract void bind(E evaluator, T workingMemory);
 }
