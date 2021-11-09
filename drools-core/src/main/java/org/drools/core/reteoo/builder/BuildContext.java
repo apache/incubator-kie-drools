@@ -193,19 +193,19 @@ public class BuildContext {
     /**
      * Returns an Id for the next node
      */
-    public int getNextId() {
-        return kBase.getReteooBuilder().getIdGenerator().getNextId();
+    public int getNextNodeId() {
+        return kBase.getReteooBuilder().getNodeIdsGenerator().getNextId();
     }
 
-    public int getNextId(String topic) {
-        return kBase.getReteooBuilder().getIdGenerator().getNextId(topic);
+    public int getNextMemoryId() {
+        return kBase.getReteooBuilder().getMemoryIdsGenerator().getNextId();
     }
 
     /**
      * Method used to undo previous id assignment
      */
     public void releaseId(NetworkNode node) {
-        kBase.getReteooBuilder().getIdGenerator().releaseId(node);
+        kBase.getReteooBuilder().releaseId(node);
     }
 
     /**

@@ -27,10 +27,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.compiler.StockTick;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -39,6 +37,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.mvel.CommonTestMethodBase;
+import org.drools.mvel.compiler.StockTick;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -395,11 +395,11 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         public Boolean call() throws Exception {
             EntryPoint ep = ksession.getEntryPoint("EP" + index);
 
-            InternalWorkingMemory wm = ((NamedEntryPoint)ep).getInternalWorkingMemory();
+            ReteEvaluator reteEvaluator = ((NamedEntryPoint)ep).getReteEvaluator();
             ObjectTypeNode otn = ((NamedEntryPoint)ep).getEntryPointNode().getObjectTypeNodes().values().iterator().next();
             AlphaNode alpha = (AlphaNode)otn.getObjectSinkPropagator().getSinks()[0];
             BetaNode beta = (BetaNode)alpha.getObjectSinkPropagator().getSinks()[0];
-            BetaMemory memory = (BetaMemory) wm.getNodeMemory(beta);
+            BetaMemory memory = (BetaMemory) reteEvaluator.getNodeMemory(beta);
             memory.getSegmentMemory();
 
             for (int i = 0; i < 100; i++) {
@@ -694,14 +694,14 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         private void initPathMemories() {
             pathMemories = new PathMemory[3];
             NamedEntryPoint ep = (NamedEntryPoint)epManipulators[8].getEntryPoiny();
-            InternalWorkingMemory wm = ((NamedEntryPoint)ep).getInternalWorkingMemory();
-            ObjectTypeNode otn = ((NamedEntryPoint)ep).getEntryPointNode().getObjectTypeNodes().values().iterator().next();
+            ReteEvaluator reteEvaluator = ep.getReteEvaluator();
+            ObjectTypeNode otn = ep.getEntryPointNode().getObjectTypeNodes().values().iterator().next();
             AlphaNode alpha = (AlphaNode)otn.getObjectSinkPropagator().getSinks()[0];
             ObjectSink[] sinks = alpha.getObjectSinkPropagator().getSinks();
             for (int i = 0; i < sinks.length; i++) {
                 BetaNode beta = (BetaNode)sinks[i];
                 RuleTerminalNode rtn = (RuleTerminalNode)beta.getSinkPropagator().getSinks()[0];
-                pathMemories[i] =  ( PathMemory ) wm.getNodeMemory(rtn);
+                pathMemories[i] =  ( PathMemory ) reteEvaluator.getNodeMemory(rtn);
             }
         }
     }

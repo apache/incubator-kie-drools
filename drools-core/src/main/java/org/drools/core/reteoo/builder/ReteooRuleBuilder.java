@@ -179,7 +179,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         }
 
         ActivationListenerFactory factory = context.getKnowledgeBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
-        TerminalNode terminal = factory.createActivationListener( context.getNextId(),
+        TerminalNode terminal = factory.createActivationListener( context.getNextNodeId(),
                                                                   context.getTupleSource(),
                                                                   rule,
                                                                   subrule,

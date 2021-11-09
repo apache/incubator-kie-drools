@@ -386,7 +386,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
         final ObjectType newObjectType = node.getObjectType();
 
-        WorkingMemoryEntryPoint wmEntryPoint = workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
+        WorkingMemoryEntryPoint wmEntryPoint = workingMemory.getEntryPoint( this.entryPoint.getEntryPointId() );
 
         for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
             if ( objectTypeConf.getConcreteObjectTypeNode() != null && newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {

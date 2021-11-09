@@ -254,7 +254,7 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
         // remove all instance of the old class from the object stores
         for (InternalWorkingMemory wm : ctx.kBase.getWorkingMemories()) {
             for (EntryPoint ep : wm.getEntryPoints()) {
-                InternalWorkingMemoryEntryPoint wmEp = (InternalWorkingMemoryEntryPoint) wm.getWorkingMemoryEntryPoint(ep.getEntryPointId() );
+                InternalWorkingMemoryEntryPoint wmEp = (InternalWorkingMemoryEntryPoint) wm.getEntryPoint(ep.getEntryPointId() );
                 if ( wmEp.getObjectStore().clearClassStore( cls ) ) {
                     log.warn( "Class " + cls.getName() + " has been modified and therfore its old instances will no longer match" );
                 }

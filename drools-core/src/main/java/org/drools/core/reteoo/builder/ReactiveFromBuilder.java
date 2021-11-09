@@ -40,7 +40,7 @@ public class ReactiveFromBuilder implements ReteooComponentBuilder {
                                                                new AlphaNodeFieldConstraint[0];
 
         ReactiveFromNode node = context.getComponentFactory().getNodeFactoryService()
-                                       .buildReactiveFromNode(context.getNextId(),
+                                       .buildReactiveFromNode(context.getNextNodeId(),
                                                               from.getDataProvider(),
                                                               context.getTupleSource(),
                                                               alphaNodeFieldConstraints,

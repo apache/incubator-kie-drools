@@ -26,7 +26,6 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.phreak.PropagationList;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.kie.api.runtime.Channel;
@@ -153,13 +152,6 @@ public interface InternalWorkingMemory
     void notifyWaitOnRest();
 
     void cancelActivation(Activation activation, boolean declarativeAgenda);
-
-    default PropagationList getPropagationList() {
-        throw new UnsupportedOperationException();
-    }
-
-    default void onSuspend() { }
-    default void onResume() { }
 
     default boolean isThreadSafe() {
         return getSessionConfiguration().isThreadSafe();

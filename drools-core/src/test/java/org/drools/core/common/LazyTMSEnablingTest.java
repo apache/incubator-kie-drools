@@ -50,7 +50,7 @@ public class LazyTMSEnablingTest {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        tms = ((NamedEntryPoint)ksession.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        tms = ksession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ).getTruthMaintenanceSystem();
 
     }
 

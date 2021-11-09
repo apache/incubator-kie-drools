@@ -411,15 +411,15 @@ public class CompositeObjectSinkAdapterTest {
 	}
 
 	private AlphaNode createAlphaNode(AlphaNodeFieldConstraint lit) {
-		return new AlphaNode( buildContext.getNextId(),
+		return new AlphaNode( buildContext.getNextNodeId(),
                                             lit,
-                                            new MockObjectSource( buildContext.getNextId() ),
+                                            new MockObjectSource( buildContext.getNextNodeId() ),
                                             buildContext );
 	}
    
 
 	private MockBetaNode createBetaNode() {
-		return new MockBetaNode( buildContext.getNextId(),
+		return new MockBetaNode( buildContext.getNextNodeId(),
                                                     new MockBetaNode( ),
                                                     new MockObjectSource(),
                                                     buildContext );

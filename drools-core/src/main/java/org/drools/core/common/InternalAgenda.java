@@ -20,8 +20,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.phreak.PropagationList;
-import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.spi.InternalActivationGroup;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -151,22 +149,15 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
     void deactivate();
     boolean tryDeactivate();
 
-    void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified);
-
     Map<String,InternalActivationGroup> getActivationGroupsMap();
 
     int sizeOfRuleFlowGroup(String s);
 
     boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
 
-    void addPropagation(PropagationEntry propagationEntry );
     void notifyWaitOnRest();
     Iterator<PropagationEntry> getActionsIterator();
     boolean hasPendingPropagations();
 
     boolean isParallelAgenda();
-
-    default PropagationList getPropagationList() {
-        throw new UnsupportedOperationException();
-    }
 }

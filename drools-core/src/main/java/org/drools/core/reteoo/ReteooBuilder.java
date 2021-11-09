@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DroolsObjectInputStream;
@@ -44,8 +43,6 @@ import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.WindowDeclaration;
 import org.kie.api.definition.rule.Rule;
-
-import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -70,7 +67,8 @@ public class ReteooBuilder
 
     private transient RuleBuilder       ruleBuilder;
 
-    private IdGenerator                 idGenerator;
+    private IdGenerator nodeIdsGenerator = new IdGenerator(1);
+    private IdGenerator memoryIdsGenerator = new IdGenerator(1);
 
     // ------------------------------------------------------------
     // Constructors
@@ -90,8 +88,6 @@ public class ReteooBuilder
         this.queries = new HashMap<>();
         this.namedWindows = new HashMap<>();
 
-        //Set to 1 as Rete node is set to 0
-        this.idGenerator = new IdGenerator();
         this.ruleBuilder = kBase.getConfiguration().getComponentFactory().getRuleBuilderFactory().newRuleBuilder();
     }
 
@@ -117,28 +113,32 @@ public class ReteooBuilder
     }
 
     public void addEntryPoint( String id ) {
-        this.ruleBuilder.addEntryPoint( id,
-                                        this.kBase );
+        this.ruleBuilder.addEntryPoint( id, this.kBase );
     }
 
     public synchronized void addNamedWindow( WindowDeclaration window ) {
-        final WindowNode wnode = this.ruleBuilder.addWindowNode( window,
-                                                                 this.kBase );
+        final WindowNode wnode = this.ruleBuilder.addWindowNode( window, this.kBase );
 
-        this.namedWindows.put( window.getName(),
-                               wnode );
+        this.namedWindows.put( window.getName(), wnode );
     }
 
     public WindowNode getWindowNode( String name ) {
         return this.namedWindows.get( name );
     }
 
-    public IdGenerator getIdGenerator() {
-        return this.idGenerator;
+    public synchronized void releaseId(NetworkNode node) {
+        nodeIdsGenerator.releaseId( node.getId() );
+        if (node instanceof MemoryFactory) {
+            memoryIdsGenerator.releaseId( ( (MemoryFactory) node ).getMemoryId() );
+        }
     }
 
-    public synchronized TerminalNode[] getTerminalNodes(final RuleImpl rule) {
-        return getTerminalNodes( rule.getFullyQualifiedName() );
+    public IdGenerator getNodeIdsGenerator() {
+        return this.nodeIdsGenerator;
+    }
+
+    public IdGenerator getMemoryIdsGenerator() {
+        return this.memoryIdsGenerator;
     }
 
     public synchronized TerminalNode[] getTerminalNodes(final String ruleName) {
@@ -366,55 +366,18 @@ public class ReteooBuilder
         }
     }
 
-    public static class IdGenerator implements Externalizable {
-        private InternalIdGenerator defaultGenerator = new InternalIdGenerator( 1 );
-        private Map<String, InternalIdGenerator> generators = new ConcurrentHashMap<>();
-
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            defaultGenerator = (InternalIdGenerator) in.readObject();
-            generators = (Map<String, InternalIdGenerator>) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( defaultGenerator );
-            out.writeObject( generators );
-        }
-
-        public int getNextId() {
-            return defaultGenerator.getNextId();
-        }
-
-        public int getNextId(String topic) {
-            return generators.computeIfAbsent( topic, key -> new InternalIdGenerator( 1 ) ).getNextId();
-        }
-
-        public synchronized void releaseId(NetworkNode node) {
-            defaultGenerator.releaseId( node.getId() );
-            if (node instanceof MemoryFactory) {
-                generators.get( DEFAULT_RULE_UNIT ).releaseId( ( (MemoryFactory) node ).getMemoryId() );
-            }
-        }
-
-        public int getLastId() {
-            return defaultGenerator.getLastId();
-        }
-
-        public int getLastId(String topic) {
-            InternalIdGenerator gen = generators.get( topic );
-            return gen != null ? gen.getLastId() : 0;
-        }
-    }
-
-    private static class InternalIdGenerator implements Externalizable {
+     public static class IdGenerator implements Externalizable {
 
         private static final long serialVersionUID = 510l;
 
         private Queue<Integer>    recycledIds;
         private int               nextId;
 
-        public InternalIdGenerator() { }
+        public IdGenerator() {
+            this(1);
+        }
 
-        public InternalIdGenerator(final int firstId) {
+        public IdGenerator(final int firstId) {
             this.nextId = firstId;
             this.recycledIds = new ArrayDeque<>();
         }
@@ -459,7 +422,8 @@ public class ReteooBuilder
             droolsStream.writeObject( rules );
             droolsStream.writeObject( queries );
             droolsStream.writeObject( namedWindows );
-            droolsStream.writeObject( idGenerator );
+            droolsStream.writeObject( nodeIdsGenerator );
+            droolsStream.writeObject( memoryIdsGenerator );
         } finally {
             if ( bytes != null ) {
                 droolsStream.flush();
@@ -487,7 +451,8 @@ public class ReteooBuilder
             this.rules = (Map<String, TerminalNode[]>) droolsStream.readObject();
             this.queries = (Map<String, QueryTerminalNode[]>) droolsStream.readObject();
             this.namedWindows = (Map<String, WindowNode>) droolsStream.readObject();
-            this.idGenerator = (IdGenerator) droolsStream.readObject();
+            this.nodeIdsGenerator = (IdGenerator) droolsStream.readObject();
+            this.memoryIdsGenerator = (IdGenerator) droolsStream.readObject();
         } finally {
             if ( bytes != null ) {
                 droolsStream.close();

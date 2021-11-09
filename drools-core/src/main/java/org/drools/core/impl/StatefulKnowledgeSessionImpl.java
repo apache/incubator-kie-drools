@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -58,12 +57,10 @@ import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
@@ -82,20 +79,15 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
-import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
@@ -113,7 +105,6 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.index.TupleList;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -178,9 +169,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     protected Long    id;
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected NodeMemories nodeMemories;
-
-    protected InternalWorkingMemoryEntryPoint defaultEntryPoint;
+    private NodeMemories nodeMemories;
 
     /** Global values which are associated with this memory. */
     protected GlobalResolver globalResolver;
@@ -210,15 +199,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * This must be thread safe as it is incremented and read via different
      * EntryPoints
      */
-    protected AtomicLong propagationIdCounter;
+    private AtomicLong propagationIdCounter;
 
     private boolean sequential;
 
     private WorkItemManager workItemManager;
 
     private TimerService timerService;
-
-    protected Map<String, WorkingMemoryEntryPoint> entryPoints = new ConcurrentHashMap<String, WorkingMemoryEntryPoint>();
 
     protected InternalFactHandle initialFactHandle;
 
@@ -250,7 +237,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     // this is a counter of concurrent operations happening. When this counter is zero,
     // the engine is idle.
-    private AtomicInteger opCounter = new AtomicInteger(0);
+    private final AtomicInteger opCounter = new AtomicInteger(0);
+
+    private EntryPointsManager entryPointsManager;
 
     // ------------------------------------------------------------
     // Constructors
@@ -330,8 +319,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         init( config, environment, propagationContext );
 
         this.kBase = kBase;
+        this.entryPointsManager = new EntryPointsManager(this);
 
-        this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
+        this.nodeMemories = new ConcurrentNodeMemories(kBase);
         registerReceiveNodes(kBase.getReceiveNodes());
 
         RuleBaseConfiguration conf = kBase.getConfiguration();
@@ -342,8 +332,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.sequential = conf.isSequential();
 
-        initDefaultEntryPoint();
-        updateEntryPointsCache();
         if (initInitFactHandle) {
             this.initialFactHandle = initInitialFact(kBase, null);
         }
@@ -400,7 +388,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     @Override
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        return defaultEntryPoint.getTruthMaintenanceSystem();
+        return entryPointsManager.getDefaultEntryPoint().getTruthMaintenanceSystem();
     }
 
     @Override
@@ -426,15 +414,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public WorkingMemoryEntryPoint getEntryPoint(String name) {
-        return getWorkingMemoryEntryPoint(name);
+        return this.entryPointsManager.getEntryPoint(name);
     }
 
     public Collection<? extends org.kie.api.runtime.rule.EntryPoint> getEntryPoints() {
-        return this.entryPoints.values();
-    }
-
-    public Map<String, WorkingMemoryEntryPoint> getEntryPointMap() {
-        return this.entryPoints;
+        return this.entryPointsManager.getEntryPoints();
     }
 
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
@@ -508,7 +492,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             } catch (Exception e) { /* the logger was already closed, swallow */ }
         }
 
-        for (WorkingMemoryEntryPoint ep : this.entryPoints.values()) {
+        for (WorkingMemoryEntryPoint ep : this.entryPointsManager.getEntryPoints()) {
             ep.dispose();
         }
         for (AsyncReceiveNode.AsyncReceiveMemory receiveMemory : this.receiveNodeMemories) {
@@ -732,18 +716,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public InternalFactHandle initInitialFact(InternalKnowledgeBase kBase, MarshallerReaderContext context) {
-        return initInitialFact( kBase, defaultEntryPoint, defaultEntryPoint.getEntryPoint(), context );
-    }
-
-    public InternalFactHandle initInitialFact(InternalKnowledgeBase kBase, InternalWorkingMemoryEntryPoint entryPoint, EntryPointId epId, MarshallerReaderContext context) {
+        WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
         InitialFact initialFact = InitialFactImpl.getInstance();
-        InternalFactHandle handle = getFactHandleFactory().createDefaultFactHandle(0, initialFact, 0, entryPoint);
+        InternalFactHandle handle = getFactHandleFactory().createDefaultFactHandle(0, initialFact, 0, defaultEntryPoint);
 
-        ObjectTypeNode otn = entryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
+        ObjectTypeNode otn = defaultEntryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
             PropagationContextFactory ctxFact = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
             PropagationContext pctx = ctxFact.createPropagationContext( 0, PropagationContext.Type.INSERTION, null,
-                                                                        null, handle, epId, context );
+                                                                        null, handle, defaultEntryPoint.getEntryPoint(), context );
             otn.assertInitialFact( handle, pctx, this );
         }
 
@@ -787,12 +768,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             DroolsQuery queryObject = new DroolsQuery( queryName,
                                                        arguments,
                                                        getQueryListenerInstance(),
-                                                       false ,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       null );
+                                                       false );
 
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           null,
@@ -850,12 +826,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             DroolsQuery queryObject = new DroolsQuery( query,
                                                        arguments,
                                                        new OpenQueryViewChangedEventListenerAdapter( listener ),
-                                                       true,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       null);
+                                                       true);
             InternalFactHandle handle = this.handleFactory.newFactHandle(queryObject,
                                                                          null,
                                                                          this,
@@ -874,67 +845,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    protected QueryTerminalNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
-        ExecuteQuery executeQuery = new ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
+    private QueryTerminalNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
+        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
         addPropagation( executeQuery );
         return executeQuery.getResult();
-    }
-
-    private class ExecuteQuery extends PropagationEntry.PropagationEntryWithResult<QueryTerminalNode[]> {
-
-        private final String queryName;
-        private final DroolsQuery queryObject;
-        private final InternalFactHandle handle;
-        private final PropagationContext pCtx;
-        private final boolean calledFromRHS;
-
-        private ExecuteQuery( String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS ) {
-            this.queryName = queryName;
-            this.queryObject = queryObject;
-            this.handle = handle;
-            this.pCtx = pCtx;
-            this.calledFromRHS = calledFromRHS;
-        }
-
-        @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
-            QueryTerminalNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
-            if ( tnodes == null ) {
-                throw new RuntimeException( "Query '" + queryName + "' does not exist" );
-            }
-
-            QueryTerminalNode tnode = tnodes[0];
-
-            if (queryObject.getElements().length != tnode.getQuery().getParameters().length) {
-                throw new RuntimeException( "Query '" + queryName + "' has been invoked with a wrong number of arguments. Expected " +
-                        tnode.getQuery().getParameters().length + ", actual " + queryObject.getElements().length );
-            }
-
-            LeftTupleSource lts = tnode.getLeftTupleSource();
-            while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-                lts = lts.getLeftTupleSource();
-            }
-            LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
-            LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
-            if ( lmem.getSegmentMemory() == null ) {
-                SegmentUtilities.createSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
-            }
-
-            LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, StatefulKnowledgeSessionImpl.this, lmem, false, queryObject.isOpen() );
-
-            for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
-                RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
-                evaluator.getRuleExecutor().setDirty( true );
-                evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
-            }
-
-            done(tnodes);
-        }
-        
-        @Override
-        public boolean isCalledFromRHS() {
-        	return calledFromRHS;
-        }
     }
 
     public void closeLiveQuery(final InternalFactHandle factHandle) {
@@ -980,15 +894,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public EntryPointId getEntryPoint() {
-        return this.defaultEntryPoint.getEntryPoint();
+        return entryPointsManager.getDefaultEntryPoint().getEntryPoint();
     }
 
     @Override
     public ReteEvaluator getReteEvaluator() {
-        return this;
-    }
-
-    public InternalWorkingMemory getInternalWorkingMemory() {
         return this;
     }
 
@@ -1049,35 +959,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     // ------------------------------------------------------------
 
     public void updateEntryPointsCache() {
-        if (kBase.getAddedEntryNodeCache() != null) {
-            for (EntryPointNode addedNode : kBase.getAddedEntryNodeCache()) {
-                EntryPointId id = addedNode.getEntryPoint();
-                if (EntryPointId.DEFAULT.equals(id)) continue;
-                WorkingMemoryEntryPoint wmEntryPoint = createNamedEntryPoint(addedNode, id, this);
-                entryPoints.put(id.getEntryPointId(), wmEntryPoint);
-            }
-        }
-
-        if (kBase.getRemovedEntryNodeCache() != null) {
-            for (EntryPointNode removedNode : kBase.getRemovedEntryNodeCache()) {
-                entryPoints.remove(removedNode.getEntryPoint().getEntryPointId());
-            }
-        }
-    }
-
-    public NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id, StatefulKnowledgeSessionImpl wm) {
-        return kBase.getConfiguration().getComponentFactory().getNamedEntryPointFactory().createNamedEntryPoint(addedNode, id, wm);
-    }
-
-    protected void initDefaultEntryPoint() {
-        this.defaultEntryPoint = createDefaultEntryPoint();
-        this.entryPoints.clear();
-        this.entryPoints.put("DEFAULT", this.defaultEntryPoint);
-    }
-
-    protected InternalWorkingMemoryEntryPoint createDefaultEntryPoint() {
-        EntryPointNode epn = this.kBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
-        return createNamedEntryPoint(epn, EntryPointId.DEFAULT, this);
+        entryPointsManager.updateEntryPointsCache();
     }
 
     public SessionConfiguration getSessionConfiguration() {
@@ -1101,8 +983,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.propagationIdCounter.set(0);
         this.lastIdleTimestamp.set( -1 );
 
-        this.defaultEntryPoint.reset();
-        updateEntryPointsCache();
+        this.entryPointsManager.reset();
 
         this.timerService.reset();
 
@@ -1122,7 +1003,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
         this.agenda.clear();
 
-        for ( WorkingMemoryEntryPoint ep : this.entryPoints.values() ) {
+        for ( WorkingMemoryEntryPoint ep : this.entryPointsManager.getEntryPoints() ) {
             // clear the state for each entry point
             ep.reset();
         }
@@ -1400,20 +1281,20 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public Object getObject(FactHandle handle) {
         // the handle might have been disconnected, so reconnect if it has
         if ( ((InternalFactHandle)handle).isDisconnected() ) {
-            handle = this.defaultEntryPoint.getObjectStore().reconnect( (InternalFactHandle)handle );
+            handle = this.entryPointsManager.getDefaultEntryPoint().getObjectStore().reconnect( (InternalFactHandle)handle );
         }
-        return this.defaultEntryPoint.getObject(handle);
+        return this.entryPointsManager.getDefaultEntryPoint().getObject(handle);
     }
 
     public ObjectStore getObjectStore() {
-        return this.defaultEntryPoint.getObjectStore();
+        return this.entryPointsManager.getDefaultEntryPoint().getObjectStore();
     }
 
     /**
      * @see org.drools.core.WorkingMemory
      */
     public InternalFactHandle getFactHandle(final Object object) {
-        return (InternalFactHandle) this.defaultEntryPoint.getFactHandle(object);
+        return (InternalFactHandle) this.entryPointsManager.getDefaultEntryPoint().getFactHandle(object);
     }
 
     /**
@@ -1454,7 +1335,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public FactHandle insertAsync(final Object object) {
         checkAlive();
-        return defaultEntryPoint.insertAsync( object );
+        return entryPointsManager.getDefaultEntryPoint().insertAsync( object );
     }
 
     /**
@@ -1484,22 +1365,22 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     @Override
     public void updateTraits( InternalFactHandle h, BitMask mask, Class<?> modifiedClass, Activation activation ) {
-        this.defaultEntryPoint.getTraitHelper().updateTraits(h, mask, modifiedClass, activation );
+        this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().updateTraits(h, mask, modifiedClass, activation );
     }
 
     @Override
     public <T, K, X extends TraitableBean> Thing<K> shed( Activation activation, TraitableBean<K, X> core, Class<T> trait ) {
-        return this.defaultEntryPoint.getTraitHelper().shed(core, trait, activation);
+        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().shed(core, trait, activation);
     }
 
     @Override
     public <T, K> T don( Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean b, Mode[] modes ) {
-        return this.defaultEntryPoint.getTraitHelper().don(activation, core, traits, b, modes);
+        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().don(activation, core, traits, b, modes);
     }
 
     @Override
     public <T, K> T don( Activation activation, K core, Class<T> trait, boolean b, Mode[] modes ) {
-        return this.defaultEntryPoint.getTraitHelper().don(activation, core, trait, b, modes);
+        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().don(activation, core, trait, b, modes);
     }
 
     public FactHandle insert(final Object object,
@@ -1507,7 +1388,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                              final RuleImpl rule,
                              final TerminalNode terminalNode) {
         checkAlive();
-        return this.defaultEntryPoint.insert(object, dynamic, rule, terminalNode);
+        return this.entryPointsManager.getDefaultEntryPoint().insert(object, dynamic, rule, terminalNode);
     }
 
     public void retract(FactHandle handle) {
@@ -1533,14 +1414,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        TerminalNode terminalNode,
                        FactHandle.State fhState ) {
         checkAlive();
-        this.defaultEntryPoint.delete(factHandle,
-                                      rule,
-                                      terminalNode,
-                                      fhState);
+        this.entryPointsManager.getDefaultEntryPoint().delete(factHandle, rule, terminalNode, fhState);
     }
 
     public EntryPointNode getEntryPointNode() {
-        return this.defaultEntryPoint.getEntryPointNode();
+        return this.entryPointsManager.getDefaultEntryPoint().getEntryPointNode();
     }
 
     public void update(final FactHandle handle,
@@ -1556,9 +1434,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        Object object,
                        String... modifiedProperties) {
         checkAlive();
-        this.defaultEntryPoint.update(handle,
-                                      object,
-                                      modifiedProperties);
+        this.entryPointsManager.getDefaultEntryPoint().update(handle, object, modifiedProperties);
     }
 
     /**
@@ -1573,11 +1449,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        Class<?> modifiedClass,
                        final Activation activation) {
         checkAlive();
-        this.defaultEntryPoint.update(factHandle,
-                                      object,
-                                      mask,
-                                      modifiedClass,
-                                      activation);
+        this.entryPointsManager.getDefaultEntryPoint().update(factHandle, object, mask, modifiedClass, activation);
     }
 
     /**
@@ -1865,16 +1737,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return workItemManager;
     }
 
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        return this.entryPoints.get(name);
-    }
-
-    public Map<String, WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
-        return this.entryPoints;
-    }
-
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
-        return this.defaultEntryPoint.getObjectTypeConfigurationRegistry();
+        return this.entryPointsManager.getDefaultEntryPoint().getObjectTypeConfigurationRegistry();
     }
 
     public InternalFactHandle getInitialFactHandle() {
@@ -1925,7 +1789,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public long getTotalFactCount() {
         long result = 0;
-        for (WorkingMemoryEntryPoint ep : this.entryPoints.values()) {
+        for (WorkingMemoryEntryPoint ep : this.entryPointsManager.getEntryPoints()) {
             result += ep.getFactCount();
         }
         return result;
@@ -2050,11 +1914,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (declarativeAgenda && activation.getActivationFactHandle() != null) {
             getEntryPointNode().retractActivation( activation.getActivationFactHandle(), activation.getPropagationContext(), this );
         }
-    }
-
-    @Override
-    public PropagationList getPropagationList() {
-        return agenda.getPropagationList();
     }
 
     @Override
@@ -2189,82 +2048,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Start of utility methods used by droolsjbpm-tools
-    ///////////////////////////////////////////////////////////////////////////
-
-    public List iterateObjectsToList() {
-        List result = new ArrayList();
-        Iterator iterator = iterateObjects();
-        for (; iterator.hasNext(); ) {
-            result.add(iterator.next());
-        }
-        return result;
-    }
-
-    public List iterateNonDefaultEntryPointObjectsToList() {
-        List result = new ArrayList();
-        for (Map.Entry<String, WorkingMemoryEntryPoint> entry : entryPoints.entrySet()) {
-            WorkingMemoryEntryPoint entryPoint = entry.getValue();
-            if (entryPoint instanceof NamedEntryPoint) {
-                result.add(new EntryPointObjects(entry.getKey(),
-                                                 new ArrayList(entry.getValue().getObjects())));
-            }
-        }
-        return result;
-    }
-
-    private static class EntryPointObjects {
-        private String name;
-        private List   objects;
-
-        public EntryPointObjects(String name,
-                                 List objects) {
-            this.name = name;
-            this.objects = objects;
-        }
-    }
-
-    public Map.Entry[] getActivationParameters(long activationId) {
-        Activation[] activations = agenda.getAgendaGroupsManager().getActivations();
-        for (int i = 0; i < activations.length; i++) {
-            if (activations[i].getActivationNumber() == activationId) {
-                Map params = getActivationParameters(activations[i]);
-                return (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]);
-            }
-        }
-        return new Map.Entry[0];
-    }
-
-    public Map getActivationParameters(Activation activation) {
-        if (activation instanceof RuleAgendaItem) {
-            RuleAgendaItem ruleAgendaItem = (RuleAgendaItem)activation;
-            TupleList tupleList = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
-            Map result = new TreeMap();
-            int i = 0;
-            for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tuple.getNext()) {
-                Map params = getActivationParameters(tuple);
-                result.put("Parameters set [" + i++ + "]", (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]));
-            }
-            return result;
-        } else {
-            return getActivationParameters(activation.getTuple());
-        }
-    }
-
-    private Map getActivationParameters(Tuple tuple) {
-        Map result = new HashMap();
-        Declaration[] declarations = ((RuleTerminalNode) tuple.getTupleSink()).getAllDeclarations();
-
-        for (int i = 0; i < declarations.length; i++) {
-            InternalFactHandle handle = tuple.get(declarations[i]);
-            if (handle instanceof InternalFactHandle) {
-                result.put(declarations[i].getIdentifier(), declarations[i].getValue(this, handle));
-            }
-        }
-        return result;
-    }
-
     @Override
     public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeInstancesIds) {
         return getProcessRuntime().startProcessFromNodeIds(processId, params, nodeInstancesIds);
@@ -2274,9 +2057,4 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
         return getProcessRuntime().startProcessFromNodeIds(processId, key, params, nodeIds);
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // End of utility methods used by droolsjbpm-tools
-    ///////////////////////////////////////////////////////////////////////////
-
 }

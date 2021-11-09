@@ -33,7 +33,6 @@ import org.drools.core.base.TraitHelper;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -51,7 +50,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
@@ -77,7 +75,7 @@ public class NamedEntryPoint
     protected EntryPointId     entryPoint;
     protected EntryPointNode entryPointNode;
 
-    protected StatefulKnowledgeSessionImpl wm;
+    protected ReteEvaluator reteEvaluator;
 
     protected FactHandleFactory         handleFactory;
     protected PropagationContextFactory pctxFactory;
@@ -90,18 +88,18 @@ public class NamedEntryPoint
 
     protected NamedEntryPoint() {
         lock = null;
-        wm = null;
+        reteEvaluator = null;
     }
 
     public NamedEntryPoint(EntryPointId entryPoint,
                            EntryPointNode entryPointNode,
-                           StatefulKnowledgeSessionImpl wm) {
+                           ReteEvaluator reteEvaluator) {
         this.entryPoint = entryPoint;
         this.entryPointNode = entryPointNode;
-        this.wm = wm;
-        this.kBase = this.wm.getKnowledgeBase();
-        this.lock = wm.getSessionConfiguration().isThreadSafe() ? new ReentrantLock() : null;
-        this.handleFactory = this.wm.getFactHandleFactory();
+        this.reteEvaluator = reteEvaluator;
+        this.kBase = this.reteEvaluator.getKnowledgeBase();
+        this.lock = reteEvaluator.getSessionConfiguration().isThreadSafe() ? new ReentrantLock() : null;
+        this.handleFactory = this.reteEvaluator.getFactHandleFactory();
 
         RuleBaseConfiguration conf = this.kBase.getConfiguration();
         this.pctxFactory = conf.getComponentFactory().getPropagationContextFactory();
@@ -167,17 +165,17 @@ public class NamedEntryPoint
         }
 
         try {
-            this.wm.startOperation();
+            this.reteEvaluator.startOperation();
 
             ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( this.entryPoint, object );
 
-            final PropagationContext propagationContext = this.pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(),
+            final PropagationContext propagationContext = this.pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(),
                     PropagationContext.Type.INSERTION,
                     rule,
                     terminalNode,
                     null,
                     entryPoint);
-            if ( this.wm.isSequential() ) {
+            if ( this.reteEvaluator.isSequential() ) {
                 InternalFactHandle handle = createHandle( object, typeConf );
                 propagationContext.setFactHandle(handle);
                 insert( handle,
@@ -249,7 +247,7 @@ public class NamedEntryPoint
             }
             return handle;
         } finally {
-            this.wm.endOperation();
+            this.reteEvaluator.endOperation();
         }
 
     }
@@ -259,7 +257,7 @@ public class NamedEntryPoint
                        RuleImpl rule,
                        TerminalNode terminalNode,
                        ObjectTypeConf typeConf) {
-        PropagationContext pctx = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
+        PropagationContext pctx = pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                 rule, terminalNode, handle, entryPoint);
         insert( handle, object, rule, typeConf, pctx );
     }
@@ -271,30 +269,23 @@ public class NamedEntryPoint
                        PropagationContext pctx) {
         this.kBase.executeQueuedActions();
 
-        this.objectStore.addHandle( handle,
-                object );
-        this.entryPointNode.assertObject( handle,
-                pctx,
-                typeConf,
-                this.wm );
+        this.objectStore.addHandle( handle, object );
+        this.entryPointNode.assertObject( handle, pctx, typeConf, this.reteEvaluator );
 
-        this.wm.getRuleRuntimeEventSupport().fireObjectInserted(pctx,
-                handle,
-                object,
-                this.wm);
+        this.reteEvaluator.getRuleRuntimeEventSupport().fireObjectInserted(pctx, handle, object, this.reteEvaluator);
     }
 
     public FactHandle insertAsync(Object object) {
         ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( this.entryPoint, object );
 
-        PropagationContext pctx = this.pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(),
+        PropagationContext pctx = this.pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(),
                 PropagationContext.Type.INSERTION,
                 null, null, null, entryPoint);
         InternalFactHandle handle = createHandle( object, typeConf );
         pctx.setFactHandle(handle);
 
-        this.entryPointNode.assertObject( handle, pctx, typeConf, this.wm );
-        this.wm.getRuleRuntimeEventSupport().fireObjectInserted(pctx, handle, object, this.wm);
+        this.entryPointNode.assertObject( handle, pctx, typeConf, this.reteEvaluator );
+        this.reteEvaluator.getRuleRuntimeEventSupport().fireObjectInserted(pctx, handle, object, this.reteEvaluator);
         return handle;
     }
 
@@ -335,7 +326,7 @@ public class NamedEntryPoint
                                      final Activation activation) {
         lock();
         try {
-            this.wm.startOperation();
+            this.reteEvaluator.startOperation();
             try {
                 this.kBase.executeQueuedActions();
 
@@ -366,7 +357,7 @@ public class NamedEntryPoint
 
                 this.handleFactory.increaseFactHandleRecency(handle);
 
-                final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
+                final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                         activation == null ? null : activation.getRule(),
                         activation == null ? null : activation.getTuple().getTupleSink(),
                         handle, entryPoint, mask, modifiedClass, null);
@@ -403,7 +394,7 @@ public class NamedEntryPoint
 
                 update(handle, object, originalObject, typeConf, propagationContext);
             } finally {
-                this.wm.endOperation();
+                this.reteEvaluator.endOperation();
             }
         } finally {
             unlock();
@@ -415,16 +406,8 @@ public class NamedEntryPoint
     }
 
     public void update(InternalFactHandle handle, Object object, Object originalObject, ObjectTypeConf typeConf, PropagationContext propagationContext) {
-        this.entryPointNode.modifyObject( handle,
-                propagationContext,
-                typeConf,
-                this.wm );
-
-        this.wm.getRuleRuntimeEventSupport().fireObjectUpdated(propagationContext,
-                handle,
-                originalObject,
-                object,
-                this.wm);
+        this.entryPointNode.modifyObject( handle, propagationContext, typeConf, this.reteEvaluator );
+        this.reteEvaluator.getRuleRuntimeEventSupport().fireObjectUpdated(propagationContext, handle, originalObject, object, this.reteEvaluator);
     }
 
     public void retract(final FactHandle handle) {
@@ -455,7 +438,7 @@ public class NamedEntryPoint
 
         lock();
         try {
-            this.wm.startOperation();
+            this.reteEvaluator.startOperation();
             try {
                 this.kBase.executeQueuedActions();
 
@@ -483,7 +466,7 @@ public class NamedEntryPoint
                     deleteLogical(key);
                 }
             } finally {
-                this.wm.endOperation();
+                this.reteEvaluator.endOperation();
             }
         } finally {
             unlock();
@@ -547,24 +530,17 @@ public class NamedEntryPoint
     }
 
     public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, Activation activation, TerminalNode terminalNode) {
-        final PropagationContext propagationContext = pctxFactory.createPropagationContext( this.wm.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
+        final PropagationContext propagationContext = pctxFactory.createPropagationContext( this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
                 rule, terminalNode,
                 handle, this.entryPoint );
 
-        this.entryPointNode.retractObject( handle,
-                propagationContext,
-                typeConf,
-                this.wm );
+        this.entryPointNode.retractObject( handle, propagationContext, typeConf, this.reteEvaluator );
 
         afterRetract(handle, rule, terminalNode);
 
         this.objectStore.removeHandle( handle );
 
-
-        this.wm.getRuleRuntimeEventSupport().fireObjectRetracted(propagationContext,
-                handle,
-                object,
-                this.wm);
+        this.reteEvaluator.getRuleRuntimeEventSupport().fireObjectRetracted(propagationContext, handle, object, this.reteEvaluator);
         return propagationContext;
     }
 
@@ -642,10 +618,6 @@ public class NamedEntryPoint
         }
     }
 
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        return this.wm.getWorkingMemoryEntryPoint( name );
-    }
-
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return entryPointNode.getTypeConfReg();
     }
@@ -664,11 +636,7 @@ public class NamedEntryPoint
 
     @Override
     public ReteEvaluator getReteEvaluator() {
-        return this.wm;
-    }
-
-    public InternalWorkingMemory getInternalWorkingMemory() {
-        return this.wm;
+        return this.reteEvaluator;
     }
 
     public FactHandle getFactHandleByIdentity(final Object object) {
@@ -681,30 +649,22 @@ public class NamedEntryPoint
 
     @SuppressWarnings("unchecked")
     public <T extends FactHandle> Collection<T> getFactHandles() {
-        return new ObjectStoreWrapper( this.objectStore,
-                null,
-                ObjectStoreWrapper.FACT_HANDLE );
+        return new ObjectStoreWrapper( this.objectStore, null, ObjectStoreWrapper.FACT_HANDLE );
     }
 
     @SuppressWarnings("unchecked")
     public <T extends FactHandle> Collection<T> getFactHandles(org.kie.api.runtime.ObjectFilter filter) {
-        return new ObjectStoreWrapper( this.objectStore,
-                filter,
-                ObjectStoreWrapper.FACT_HANDLE );
+        return new ObjectStoreWrapper( this.objectStore, filter, ObjectStoreWrapper.FACT_HANDLE );
     }
 
     @SuppressWarnings("unchecked")
     public Collection<? extends Object> getObjects() {
-        return new ObjectStoreWrapper( this.objectStore,
-                null,
-                ObjectStoreWrapper.OBJECT );
+        return new ObjectStoreWrapper( this.objectStore, null, ObjectStoreWrapper.OBJECT );
     }
 
     @SuppressWarnings("unchecked")
     public Collection<? extends Object> getObjects(org.kie.api.runtime.ObjectFilter filter) {
-        return new ObjectStoreWrapper( this.objectStore,
-                filter,
-                ObjectStoreWrapper.OBJECT );
+        return new ObjectStoreWrapper( this.objectStore, filter, ObjectStoreWrapper.OBJECT );
     }
 
     public String getEntryPointId() {
@@ -717,10 +677,7 @@ public class NamedEntryPoint
 
     private InternalFactHandle createHandle(final Object object,
                                             ObjectTypeConf typeConf) {
-        return this.handleFactory.newFactHandle( object,
-                typeConf,
-                this.wm,
-                this );
+        return this.handleFactory.newFactHandle( object, typeConf, this.reteEvaluator, this );
     }
 
     public void propertyChange(final PropertyChangeEvent event) {
@@ -751,7 +708,7 @@ public class NamedEntryPoint
                 // even if they were also asserted into higher level OTNs as well
                 ObjectTypeNode otn = conf.getConcreteObjectTypeNode();
                 if (otn != null) {
-                    Iterator<InternalFactHandle> it = this.getInternalWorkingMemory().getNodeMemory(otn).iterator();
+                    Iterator<InternalFactHandle> it = this.reteEvaluator.getNodeMemory(otn).iterator();
                     while (it.hasNext()) {
                         removePropertyChangeListener(it.next(), false);
                     }
@@ -762,7 +719,7 @@ public class NamedEntryPoint
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
         if (tms == null) {
-            tms = new TruthMaintenanceSystem(wm, this);
+            tms = new TruthMaintenanceSystem(reteEvaluator, this);
         }
         return tms;
     }

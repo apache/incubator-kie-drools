@@ -44,7 +44,7 @@ public class FromBuilder
 
         NodeFactory nodeFactory = context.getComponentFactory().getNodeFactoryService();
         FromNode fromNode = from.isReactive() ?
-                            nodeFactory.buildReactiveFromNode( context.getNextId(),
+                            nodeFactory.buildReactiveFromNode( context.getNextNodeId(),
                                                                from.getDataProvider(),
                                                                context.getTupleSource(),
                                                                alphaNodeFieldConstraints,
@@ -52,7 +52,7 @@ public class FromBuilder
                                                                context.isTupleMemoryEnabled(),
                                                                context,
                                                                from ) :
-                            nodeFactory.buildFromNode( context.getNextId(),
+                            nodeFactory.buildFromNode( context.getNextNodeId(),
                                                        from.getDataProvider(),
                                                        context.getTupleSource(),
                                                        alphaNodeFieldConstraints,

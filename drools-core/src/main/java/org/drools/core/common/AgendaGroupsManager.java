@@ -38,7 +38,7 @@ import org.drools.core.spi.AgendaGroup;
 import org.kie.api.event.rule.MatchCancelledCause;
 
 public interface AgendaGroupsManager extends Externalizable {
-    void setWorkingMemory(InternalWorkingMemory workingMemory);
+    void setReteEvaluator(ReteEvaluator reteEvaluator);
 
     void reset(boolean clearForRecency);
 
@@ -81,13 +81,15 @@ public interface AgendaGroupsManager extends Externalizable {
 
     Activation[] getActivations();
 
+    InternalAgendaGroup getMainAgendaGroup();
+
     static AgendaGroupsManager create(InternalKnowledgeBase kBase, boolean initMain) {
         return kBase.hasMultipleAgendaGroups() || !kBase.getProcesses().isEmpty() ? new StackedAgendaGroupsManager(kBase, initMain) : new SimpleAgendaGroupsManager(kBase);
     }
 
     class SimpleAgendaGroupsManager implements AgendaGroupsManager {
         private InternalAgendaGroup mainAgendaGroup;
-        private InternalWorkingMemory workingMemory;
+        private ReteEvaluator reteEvaluator;
 
         public SimpleAgendaGroupsManager() { }
 
@@ -95,17 +97,27 @@ public interface AgendaGroupsManager extends Externalizable {
             this.mainAgendaGroup = kBase.getConfiguration().getAgendaGroupFactory().createAgendaGroup( AgendaGroup.MAIN, kBase);
         }
 
+        public SimpleAgendaGroupsManager(ReteEvaluator reteEvaluator) {
+            this(reteEvaluator.getKnowledgeBase());
+            setReteEvaluator(reteEvaluator);
+        }
+
         @Override
-        public void setWorkingMemory(InternalWorkingMemory workingMemory) {
-            this.workingMemory = workingMemory;
-            this.mainAgendaGroup.setWorkingMemory( workingMemory );
+        public void setReteEvaluator(ReteEvaluator reteEvaluator) {
+            this.reteEvaluator = reteEvaluator;
+            this.mainAgendaGroup.setReteEvaluator( reteEvaluator );
+        }
+
+        @Override
+        public InternalAgendaGroup getMainAgendaGroup() {
+            return mainAgendaGroup;
         }
 
         @Override
         public void reset(boolean clearForRecency) {
             mainAgendaGroup.visited();
             if (clearForRecency) {
-                mainAgendaGroup.setClearedForRecency(this.workingMemory.getFactHandleFactory().getRecency());
+                mainAgendaGroup.setClearedForRecency(this.reteEvaluator.getFactHandleFactory().getRecency());
             }
             mainAgendaGroup.reset();
         }
@@ -190,7 +202,7 @@ public interface AgendaGroupsManager extends Externalizable {
             }
             if ( !mainAgendaGroup.isActive() ) {
                 // only update recency, if not already active. It may be active already if the use called setFocus
-                mainAgendaGroup.setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+                mainAgendaGroup.setActivatedForRecency( this.reteEvaluator.getFactHandleFactory().getRecency() );
                 mainAgendaGroup.setActive( true );
             }
             return mainAgendaGroup;
@@ -263,6 +275,11 @@ public interface AgendaGroupsManager extends Externalizable {
             }
         }
 
+        @Override
+        public InternalAgendaGroup getMainAgendaGroup() {
+            return mainAgendaGroup;
+        }
+
         private void initMainAgendaGroup(InternalKnowledgeBase kBase) {
             this.mainAgendaGroup = agendaGroupFactory.createAgendaGroup( AgendaGroup.MAIN, kBase);
             this.agendaGroups.put( AgendaGroup.MAIN, this.mainAgendaGroup );
@@ -270,12 +287,13 @@ public interface AgendaGroupsManager extends Externalizable {
         }
 
         @Override
-        public void setWorkingMemory(InternalWorkingMemory workingMemory) {
-            this.workingMemory = workingMemory;
+        public void setReteEvaluator(ReteEvaluator reteEvaluator) {
+            // stacked agenda groups are supported only for InternalWorkingMemory
+            this.workingMemory = (InternalWorkingMemory) reteEvaluator;
             if (this.mainAgendaGroup == null) {
-                initMainAgendaGroup(workingMemory.getKnowledgeBase());
+                initMainAgendaGroup(reteEvaluator.getKnowledgeBase());
             }
-            this.mainAgendaGroup.setWorkingMemory( workingMemory );
+            this.mainAgendaGroup.setReteEvaluator( reteEvaluator );
         }
 
         private boolean isEmpty() {
@@ -435,7 +453,7 @@ public interface AgendaGroupsManager extends Externalizable {
                 agendaGroup = agendaGroupFactory.createAgendaGroup( name, kBase );
                 addAgendaGroup( agendaGroup );
 
-                agendaGroup.setWorkingMemory( workingMemory );
+                agendaGroup.setReteEvaluator( workingMemory );
             }
 
             return agendaGroup;

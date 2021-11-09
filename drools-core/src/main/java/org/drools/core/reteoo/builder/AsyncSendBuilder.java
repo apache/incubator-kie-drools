@@ -38,7 +38,7 @@ public class AsyncSendBuilder implements ReteooComponentBuilder {
 
         NodeFactory nodeFactory = context.getComponentFactory().getNodeFactoryService();
         AsyncSendNode sendNode =
-                nodeFactory.buildAsyncSendNode( context.getNextId(),
+                nodeFactory.buildAsyncSendNode( context.getNextNodeId(),
                                                 send.getDataProvider(),
                                                 context.getTupleSource(),
                                                 alphaNodeFieldConstraints,

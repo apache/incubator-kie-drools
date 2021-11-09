@@ -86,14 +86,14 @@ public class BetaNodeBuilder {
 
         EntryPointNode epn = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
 
-        ObjectTypeNode otn = nFactory.buildObjectTypeNode(buildContext.getNextId(),
+        ObjectTypeNode otn = nFactory.buildObjectTypeNode(buildContext.getNextNodeId(),
                                                           epn,
                                                           new ClassObjectType(leftType),
                                                           buildContext);
 
-        LeftInputAdapterNode leftInput = nFactory.buildLeftInputAdapterNode(buildContext.getNextId(), otn, buildContext, false);
+        LeftInputAdapterNode leftInput = nFactory.buildLeftInputAdapterNode(buildContext.getNextNodeId(), otn, buildContext, false);
 
-        ObjectSource rightInput = nFactory.buildObjectTypeNode(buildContext.getNextId(),
+        ObjectSource rightInput = nFactory.buildObjectTypeNode(buildContext.getNextNodeId(),
                                                                epn,
                                                                new ClassObjectType(rightType),
                                                                buildContext);

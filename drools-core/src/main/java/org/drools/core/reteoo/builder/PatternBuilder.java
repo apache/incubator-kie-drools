@@ -133,7 +133,7 @@ public class PatternBuilder
 
         if( ! behaviors.isEmpty() ) {
             // build the window node:
-            WindowNode wn = context.getComponentFactory().getNodeFactoryService().buildWindowNode( context.getNextId(),
+            WindowNode wn = context.getComponentFactory().getNodeFactoryService().buildWindowNode( context.getNextNodeId(),
                                                                                                    constraints.alphaConstraints,
                                                                                                    behaviors,
                                                                                                    context.getObjectSource(),
@@ -321,7 +321,7 @@ public class PatternBuilder
         for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
             context.pushRuleComponent( constraint );
             context.setObjectSource( utils.attachNode( context,
-                                                       context.getComponentFactory().getNodeFactoryService().buildAlphaNode( context.getNextId(),
+                                                       context.getComponentFactory().getNodeFactoryService().buildAlphaNode( context.getNextNodeId(),
                                                                                                                              constraint,
                                                                                                                              context.getObjectSource(),
                                                                                                                              context) ) );
@@ -341,7 +341,7 @@ public class PatternBuilder
             }
         }
 
-        ObjectTypeNode otn = context.getComponentFactory().getNodeFactoryService().buildObjectTypeNode( context.getNextId(),
+        ObjectTypeNode otn = context.getComponentFactory().getNodeFactoryService().buildObjectTypeNode( context.getNextNodeId(),
                                                  (EntryPointNode) context.getObjectSource(),
                                                  objectType,
                                                  context );

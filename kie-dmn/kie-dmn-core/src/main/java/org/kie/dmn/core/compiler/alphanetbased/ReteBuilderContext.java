@@ -46,7 +46,7 @@ public class ReteBuilderContext {
         Pattern pattern = new Pattern(1, objectType, "$ctx");
         declaration = pattern.getDeclaration();
 
-        otn = new ObjectTypeNode(buildContext.getNextId(), entryPoint, objectType, buildContext);
+        otn = new ObjectTypeNode(buildContext.getNextNodeId(), entryPoint, objectType, buildContext);
         buildContext.setObjectSource(otn);
     }
 }

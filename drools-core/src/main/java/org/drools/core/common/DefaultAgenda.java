@@ -47,7 +47,6 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ConsequenceException;
@@ -202,17 +201,14 @@ public class DefaultAgenda
                                        final PropagationContext context,
                                        RuleAgendaItem ruleAgendaItem,
                                        InternalAgendaGroup agendaGroup) {
-        rtnLeftTuple.init(activationCounter++,
-                          salience,
-                          context,
-                          ruleAgendaItem, agendaGroup);
+        rtnLeftTuple.init(activationCounter++, salience, context, ruleAgendaItem, agendaGroup);
         return rtnLeftTuple;
     }
 
     @Override
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
-        this.agendaGroupsManager.setWorkingMemory( workingMemory );
+        this.agendaGroupsManager.setReteEvaluator( workingMemory );
 
         if ( !workingMemory.getSessionConfiguration().isThreadSafe() ) {
             executionStateMachine = new UnsafeExecutionStateMachine();
@@ -232,7 +228,6 @@ public class DefaultAgenda
                new SynchronizedPropagationList( workingMemory );
     }
 
-    @Override
     public PropagationList getPropagationList() {
         return propagationList;
     }
@@ -292,7 +287,7 @@ public class DefaultAgenda
             throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
         }
         String group = activation.getRule().getActivationGroup();
-        if ( group != null && group.length() > 0 ) {
+        if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = getActivationGroup( group );
 
             // Don't allow lazy activations to activate, from before it's last trigger point
@@ -311,31 +306,8 @@ public class DefaultAgenda
     }
 
     @Override
-    public void insertAndStageActivation(final AgendaItem activation) {
-        if ( activationObjectTypeConf == null ) {
-            EntryPointId ep = workingMemory.getEntryPoint();
-            activationObjectTypeConf = workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() ).getObjectTypeConfigurationRegistry().getObjectTypeConf(activation );
-        }
-
-        InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
-        workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
-        activation.setActivationFactHandle( factHandle );
-    }
-
-    @Override
     public boolean isDeclarativeAgenda() {
         return declarativeAgenda;
-    }
-
-    @Override
-    public void modifyActivation(final AgendaItem activation,
-                                 boolean previouslyActive) {
-        // in Phreak this is only called for declarative agenda, on rule instances
-        InternalFactHandle factHandle = activation.getActivationFactHandle();
-        if ( factHandle != null ) {
-            // removes the declarative rule instance for the real rule instance
-            workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
-        }
     }
 
     @Override
@@ -680,14 +652,6 @@ public class DefaultAgenda
     @Override
     public String getFocusName() {
         return this.agendaGroupsManager.getFocusName();
-    }
-
-    @Override
-    public void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified) {
-        if (!ruleAgendaItem.isQueued()) {
-            ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem(this);
-        }
-        ruleAgendaItem.getRuleExecutor().addLeftTuple( justified.getTuple() );
     }
 
     @Override

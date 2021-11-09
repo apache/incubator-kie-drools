@@ -245,7 +245,7 @@ public class ProtobufInputMarshaller {
         }
 
         for ( ProtobufMessages.EntryPoint _ep : _session.getRuleData().getEntryPointList() ) {
-            EntryPoint wmep = ((StatefulKnowledgeSessionImpl)context.getWorkingMemory()).getEntryPointMap().get(_ep.getEntryPointId());
+            EntryPoint wmep = context.getWorkingMemory().getEntryPoint(_ep.getEntryPointId());
             readFactHandles( context,
                              _ep,
                              ((WorkingMemoryEntryPoint) wmep).getObjectStore(),
@@ -461,7 +461,7 @@ public class ProtobufInputMarshaller {
                                                                           ClassNotFoundException {
         InternalWorkingMemory wm = context.getWorkingMemory();
 
-        EntryPoint entryPoint = ((StatefulKnowledgeSessionImpl)context.getWorkingMemory()).getEntryPointMap().get(_ep.getEntryPointId());
+        EntryPoint entryPoint = context.getWorkingMemory().getEntryPoint(_ep.getEntryPointId());
         
         // load the handles
         for ( ProtobufMessages.FactHandle _handle : _ep.getHandleList() ) {
@@ -611,7 +611,7 @@ public class ProtobufInputMarshaller {
 
             if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                 // not yet added to the object stores
-                ((NamedEntryPoint) handle.getEntryPoint((( NamedEntryPoint ) wmep).getInternalWorkingMemory())).getObjectStore()
+                handle.getEntryPoint((( NamedEntryPoint ) wmep).getReteEvaluator()).getObjectStore()
                         .addHandle( handle, handle.getObject() );
                 // add handle to object type node
                 assertHandleIntoOTN( context,

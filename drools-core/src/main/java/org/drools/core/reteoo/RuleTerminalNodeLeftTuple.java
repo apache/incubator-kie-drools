@@ -24,6 +24,7 @@ import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
@@ -209,7 +210,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
         }
     }
 
-    public void removeAllBlockersAndBlocked(InternalAgenda agenda) {
+    public void removeAllBlockersAndBlocked(ActivationsManager activationsManager) {
         if (this.blockers != null) {
             // Iterate and remove this node's logical dependency list from each of it's blockers
             for (SimpleMode node = blockers.getFirst(); node != null; node = node.getNext()) {
@@ -226,7 +227,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
                 removeBlocked(dep);
                 RuleTerminalNodeLeftTuple justified = (RuleTerminalNodeLeftTuple) dep.getJustified();
                 if (justified.getBlockers().isEmpty() && justified.isActive()) {
-                    agenda.stageLeftTuple(ruleAgendaItem, justified);
+                    activationsManager.stageLeftTuple(ruleAgendaItem, justified);
 
                 }
                 dep = tmp;

@@ -67,7 +67,7 @@ public class AccumulateBuilder
         // if object source is null, then we need to adapt tuple source into a subnetwork
         if ( context.getObjectSource() == null ) {
             // attach right input adapter node to convert tuple source into an object source
-            RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextId(),
+            RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
                                                                                                                        context.getTupleSource(),
                                                                                                                        tupleSource,
                                                                                                                        context );
@@ -92,7 +92,7 @@ public class AccumulateBuilder
                                                                              context.getBetaconstraints(),
                                                                              false );
 
-        AccumulateNode accNode = nfactory.buildAccumulateNode(context.getNextId(),
+        AccumulateNode accNode = nfactory.buildAccumulateNode(context.getNextNodeId(),
                                                               context.getTupleSource(),
                                                               context.getObjectSource(),
                                                               resultAlphaConstraints.toArray(new AlphaNodeFieldConstraint[resultAlphaConstraints.size()]),

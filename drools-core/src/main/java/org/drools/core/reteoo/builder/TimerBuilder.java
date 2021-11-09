@@ -36,7 +36,7 @@ public class TimerBuilder
                                  null;
 
         context.setTupleSource( utils.attachNode( context,
-                                context.getComponentFactory().getNodeFactoryService().buildTimerNode( context.getNextId(),
+                                context.getComponentFactory().getNodeFactoryService().buildTimerNode( context.getNextNodeId(),
                                                                                                       timer,
                                                                                                       context.getRule().getCalendars(),
                                                                                                       declrs,

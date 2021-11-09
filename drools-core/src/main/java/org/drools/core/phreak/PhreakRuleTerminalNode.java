@@ -18,10 +18,12 @@ package org.drools.core.phreak;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.PropagationContext;
@@ -117,8 +119,15 @@ public class PhreakRuleTerminalNode {
 
         activationsManager.addItemToActivationGroup( rtnLeftTuple );
         if ( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
-            activationsManager.insertAndStageActivation( rtnLeftTuple );
+            insertAndStageActivation( reteEvaluator, rtnLeftTuple );
         }
+    }
+
+    private static void insertAndStageActivation(ReteEvaluator reteEvaluator, AgendaItem activation) {
+        ObjectTypeConf activationObjectTypeConf = reteEvaluator.getDefaultEntryPoint().getObjectTypeConfigurationRegistry().getObjectTypeConf(activation );
+        InternalFactHandle factHandle = reteEvaluator.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, reteEvaluator, reteEvaluator.getDefaultEntryPoint() );
+        reteEvaluator.getDefaultEntryPoint().getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), reteEvaluator );
+        activation.setActivationFactHandle( factHandle );
     }
 
     private static int getSalienceValue( TerminalNode rtnNode, RuleAgendaItem ruleAgendaItem, AgendaItem leftTuple, ReteEvaluator reteEvaluator ) {
@@ -205,7 +214,16 @@ public class PhreakRuleTerminalNode {
         }
 
         if( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled()) {
-            activationsManager.modifyActivation(rtnLeftTuple, rtnLeftTuple.isQueued());
+            modifyActivation(reteEvaluator, rtnLeftTuple);
+        }
+    }
+
+    private static void modifyActivation(ReteEvaluator reteEvaluator, AgendaItem activation) {
+        // in Phreak this is only called for declarative agenda, on rule instances
+        InternalFactHandle factHandle = activation.getActivationFactHandle();
+        if ( factHandle != null ) {
+            // removes the declarative rule instance for the real rule instance
+            reteEvaluator.getDefaultEntryPoint().getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), reteEvaluator );
         }
     }
 

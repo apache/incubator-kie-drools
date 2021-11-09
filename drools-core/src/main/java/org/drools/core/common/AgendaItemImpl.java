@@ -205,7 +205,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     }
 
     @Override
-    public void removeAllBlockersAndBlocked(InternalAgenda agenda) {
+    public void removeAllBlockersAndBlocked(ActivationsManager activationsManager) {
         if (this.blockers != null) {
             // Iterate and remove this node's logical dependency list from each of it's blockers
             for (LinkedListEntry<SimpleMode, LogicalDependency<SimpleMode>> node = blockers.getFirst(); node != null; node = node.getNext()) {
@@ -222,7 +222,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
                 removeBlocked(dep);
                 AgendaItem justified = (AgendaItem) dep.getJustified();
                 if (justified.getBlockers().isEmpty()) {
-                    agenda.stageLeftTuple(null,justified);
+                    activationsManager.stageLeftTuple(null,justified);
                 }
                 dep = tmp;
             }

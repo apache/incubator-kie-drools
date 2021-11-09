@@ -66,7 +66,7 @@ public class CollectBuilder
 
         // if object source is null, then we need to adapt tuple source into a subnetwork
         if ( context.getObjectSource() == null ) {
-            RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextId(),
+            RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
                                                                                                                        context.getTupleSource(),
                                                                                                                        tupleSource,
                                                                                                                        context );
@@ -100,7 +100,7 @@ public class CollectBuilder
                                                       sourcePattern.getRequiredDeclarations(),
                                                       new CollectAccumulator( collect, existSubNetwort ) );
 
-        AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
+        AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextNodeId(),
                                                                                                             context.getTupleSource(),
                                                                                                             context.getObjectSource(),
                                                                                                             resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),

@@ -16,10 +16,13 @@
 
 package org.drools.core.common;
 
+import java.util.Collection;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.event.RuleEventListenerSupport;
+import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -30,6 +33,10 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.TimerService;
 import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionClock;
 
 public interface ReteEvaluator {
@@ -37,6 +44,8 @@ public interface ReteEvaluator {
     ActivationsManager getActivationsManager();
 
     InternalKnowledgeBase getKnowledgeBase();
+
+    Collection<? extends EntryPoint> getEntryPoints();
 
     WorkingMemoryEntryPoint getEntryPoint(String name);
     default EntryPointId getDefaultEntryPointId() {
@@ -51,6 +60,9 @@ public interface ReteEvaluator {
     GlobalResolver getGlobalResolver();
     default Object getGlobal(String identifier) {
         return getGlobalResolver().resolveGlobal( identifier );
+    }
+    default void setGlobal(String identifier, Object value) {
+        getGlobalResolver().setGlobal(identifier, value);
     }
 
     default InternalFactHandle createFactHandle(Object object, ObjectTypeConf conf, WorkingMemoryEntryPoint wmEntryPoint ) {
@@ -72,16 +84,18 @@ public interface ReteEvaluator {
     long getNextPropagationIdCounter();
 
     default boolean isThreadSafe() {
-        return false;
+        return true;
     }
 
-    FactHandleClassStore getStoreForClass(Class<?> classType);
-
-    WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String entryPointId);
+    default FactHandleClassStore getStoreForClass(Class<?> clazz) {
+        return getDefaultEntryPoint().getObjectStore().getStoreForClass(clazz);
+    }
 
     SessionConfiguration getSessionConfiguration();
 
     RuleEventListenerSupport getRuleEventSupport();
+
+    RuleRuntimeEventSupport getRuleRuntimeEventSupport();
 
     Calendars getCalendars();
 
@@ -102,8 +116,14 @@ public interface ReteEvaluator {
         return new DefaultKnowledgeHelper( activation, this );
     }
 
-    void onSuspend();
-    void onResume();
+    FactHandle insert(Object object);
 
-    ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
+    QueryResults getQueryResults(String queryName, Object... arguments);
+
+    void dispose();
+
+    int fireAllRules();
+    int fireAllRules(int max);
+    int fireAllRules(AgendaFilter agendaFilter);
+    int fireAllRules(AgendaFilter agendaFilter, int max);
 }

@@ -418,11 +418,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void modifyActivation( AgendaItem activation, boolean previouslyActive ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.modifyActivation -> TODO" );
-    }
-
-    @Override
     public boolean isDeclarativeAgenda() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.isDeclarativeAgenda -> TODO" );
     }
@@ -462,11 +457,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public ActivationsFilter getActivationsFilter() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getActivationsFilter -> TODO" );
-    }
-
-    @Override
-    public void insertAndStageActivation( AgendaItem activation ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.insertAndStageActivation -> TODO" );
     }
 
     @Override
