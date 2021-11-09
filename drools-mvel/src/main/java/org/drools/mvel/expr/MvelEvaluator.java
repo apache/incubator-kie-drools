@@ -35,7 +35,7 @@ public class MvelEvaluator<T> {
 
     private static final EvaluatorType DEFAULT_EVALUATOR_TYPE = EvaluatorType.THREAD_UNSAFE;
 
-    private static final EvaluatorType EVALUATOR_TYPE = EvaluatorType.decode( System.getProperty(THREAD_SAFETY_PROPERTY, DEFAULT_EVALUATOR_TYPE.id) );
+    private static EvaluatorType EVALUATOR_TYPE = EvaluatorType.decode( System.getProperty(THREAD_SAFETY_PROPERTY, DEFAULT_EVALUATOR_TYPE.id) );
 
     private static final Logger logger = LoggerFactory.getLogger(MvelEvaluator.class);
 
@@ -81,6 +81,14 @@ public class MvelEvaluator<T> {
             }
             throw new UnsupportedOperationException("Unknown evaluator type: " + id);
         }
+    }
+
+    // only for testing purposes
+    public static void setEvaluatorType(EvaluatorType evaluatorType) {
+        EVALUATOR_TYPE = evaluatorType;
+    }
+    public static void resetEvaluatorType() {
+        EVALUATOR_TYPE = DEFAULT_EVALUATOR_TYPE;
     }
 
     private MvelEvaluator(Serializable expr) {
