@@ -17,9 +17,9 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
@@ -33,12 +33,9 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
     private final String varC;
     private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
 
-    private Declaration declarationA;
-    private Declaration declarationB;
-    private Declaration declarationC;
-    private int offsetToA;
-    private int offsetToB;
-    private int offsetToC;
+    private Function<Tuple, A> valueExtractorA;
+    private Function<Tuple, B> valueExtractorB;
+    private Function<Tuple, C> valueExtractorC;
 
     public TriAccumulator(Variable<A> varA, Variable<B> varB, Variable<C> varC,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
@@ -50,32 +47,25 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
     }
 
     @Override
-    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-        if (declarationA == null) {
-            init(leftTuple, innerDeclarations);
-        }
-
-        A a = extractValue(declarationA, offsetToA, leftTuple);
-        B b = extractValue(declarationB, offsetToB, leftTuple);
-        C c = extractValue(declarationC, offsetToC, leftTuple);
-        return accumulator.apply((ResultContainer_) context, a, b, c);
+    protected Runnable accumulate(ResultContainer_ context, Tuple leftTuple, InternalFactHandle handle,
+            Declaration[] innerDeclarations) {
+        A a = valueExtractorA.apply(leftTuple);
+        B b = valueExtractorB.apply(leftTuple);
+        C c = valueExtractorC.apply(leftTuple);
+        return accumulator.apply(context, a, b, c);
     }
 
-    private void init(Tuple leftTuple, Declaration[] innerDeclarations) {
+    @Override
+    protected void initialize(Tuple leftTuple, Declaration[] innerDeclarations) {
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
-                declarationA = declaration;
+                valueExtractorA = getValueExtractor(declaration, leftTuple);
             } else if (declaration.getBindingName().equals(varB)) {
-                declarationB = declaration;
+                valueExtractorB = getValueExtractor(declaration, leftTuple);
             } else if (declaration.getBindingName().equals(varC)) {
-                declarationC = declaration;
+                valueExtractorC = getValueExtractor(declaration, leftTuple);
             }
         }
-
-        offsetToA = findTupleOffset(declarationA, leftTuple);
-        offsetToB = findTupleOffset(declarationB, leftTuple);
-        offsetToC = findTupleOffset(declarationC, leftTuple);
     }
 
 }
