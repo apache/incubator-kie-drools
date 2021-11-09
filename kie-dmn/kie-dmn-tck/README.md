@@ -21,7 +21,7 @@ default TCK branch: master
 
 ## Testing stable DMN TCK tests locally
 
-You can test this module locally by making use of the appropriate maven profile `-Ddmn-tck`.
+You can test this module locally by making use of the appropriate maven profile `-Pdmn-tck`.
 
 NOTE: no TCK tests will be run without enabling the appropriate Maven profile.
 
