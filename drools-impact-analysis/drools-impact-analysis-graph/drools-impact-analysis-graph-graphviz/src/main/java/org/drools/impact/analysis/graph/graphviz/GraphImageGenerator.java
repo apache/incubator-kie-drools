@@ -142,8 +142,15 @@ public class GraphImageGenerator {
                 node = node.with(Color.RED, Style.FILLED);
             } else if (n.getStatus() == Node.Status.IMPACTED) {
                 node = node.with(Color.YELLOW, Style.FILLED);
+            } else if (n.getStatus() == Node.Status.TARGET) {
+                node = node.with(Color.ORANGE, Style.FILLED);
+            } else if (n.getStatus() == Node.Status.IMPACTING) {
+                node = node.with(Color.LIGHTBLUE, Style.FILLED);
             }
             for (Link l : n.getOutgoingLinks()) {
+                if (!nodeList.contains(l.getTarget())) {
+                    continue; // a sub map may have a link to a node which doesn't exist in the sub map
+                }
                 Style<ForNodeLink> style;
                 if (l.getReactivityType() == ReactivityType.POSITIVE) {
                     style = Style.SOLID;
