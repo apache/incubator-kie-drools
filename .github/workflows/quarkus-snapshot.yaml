@@ -64,6 +64,13 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
 
+      - name: Checkout drools repository
+        uses: actions/checkout@v2
+        with:
+          repository: kiegroup/drools
+          path: drools
+          ref: main
+
       - name: Checkout current repository on main
         uses: actions/checkout@v2
         with:
