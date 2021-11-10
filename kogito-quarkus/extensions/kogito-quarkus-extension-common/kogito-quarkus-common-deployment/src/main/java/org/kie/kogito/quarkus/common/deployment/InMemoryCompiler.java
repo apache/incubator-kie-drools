@@ -29,7 +29,7 @@ import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.bootstrap.model.AppDependency;
+import io.quarkus.maven.dependency.ResolvedDependency;
 
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.toClassName;
 
@@ -47,7 +47,7 @@ public class InMemoryCompiler {
 
     public InMemoryCompiler(
             Collection<Path> classesPaths,
-            Collection<AppDependency> userDependencies,
+            Collection<ResolvedDependency> userDependencies,
             boolean useDebugSymbols) {
         javaCompiler = JavaParserCompiler.getCompiler();
         compilerSettings = javaCompiler.createDefaultSettings();
@@ -59,8 +59,8 @@ public class InMemoryCompiler {
         for (Path classPath : classesPaths) {
             compilerSettings.addClasspath(classPath.toFile());
         }
-        for (AppDependency i : userDependencies) {
-            compilerSettings.addClasspath(i.getArtifact().getPaths().getSinglePath().toFile());
+        for (ResolvedDependency i : userDependencies) {
+            compilerSettings.addClasspath(i.getResolvedPaths().getSinglePath().toFile());
         }
     }
 

@@ -52,7 +52,6 @@ import org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf;
 import org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.bootstrap.model.AppDependency;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
@@ -69,6 +68,7 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
+import io.quarkus.maven.dependency.ResolvedDependency;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
@@ -111,7 +111,7 @@ public class ProcessesAssetsProcessor {
             BuildProducer<ServiceProviderBuildItem> serviceProviderBuildItemBuildProducer) {
 
         // configure the application generator
-        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), null, curateOutcomeBuildItem.getEffectiveModel().getAppArtifact());
+        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), null, curateOutcomeBuildItem.getApplicationModel().getAppArtifact());
         if (context.getAddonsConfig().usePersistence()) {
             indexDependency.produce(new IndexDependencyBuildItem("com.google.protobuf", "protobuf-java"));
             resource.produce(new NativeImageResourceBuildItem("kogito-types.proto"));
@@ -152,7 +152,7 @@ public class ProcessesAssetsProcessor {
         IndexView aggregatedIndex = generateAggregatedIndex(combinedIndexBuildItem.getIndex(), generatedKogitoClasses);
 
         // configure the application generator
-        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), aggregatedIndex, curateOutcomeBuildItem.getEffectiveModel().getAppArtifact());
+        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), aggregatedIndex, curateOutcomeBuildItem.getApplicationModel().getAppArtifact());
 
         Collection<GeneratedFile> generatedFiles = new ArrayList<>(generatePersistenceInfo(
                 context,
@@ -191,7 +191,7 @@ public class ProcessesAssetsProcessor {
 
         validateGeneratedFileTypes(persistenceGeneratedFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.RESOURCE));
 
-        List<AppDependency> dependencies = curateOutcomeBuildItem.getEffectiveModel().getUserDependencies();
+        Collection<ResolvedDependency> dependencies = curateOutcomeBuildItem.getApplicationModel().getRuntimeDependencies();
         compileGeneratedSources(context, dependencies, persistenceGeneratedFiles, useDebugSymbols)
                 .forEach(generatedBeans::produce);
 

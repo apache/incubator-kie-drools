@@ -42,11 +42,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.bootstrap.model.AppArtifact;
-import io.quarkus.bootstrap.model.AppDependency;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.maven.dependency.Dependency;
+import io.quarkus.maven.dependency.ResolvedDependency;
 
 import static java.util.stream.Collectors.toList;
 
@@ -75,7 +75,7 @@ public class KogitoQuarkusResourceUtils {
                     System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito/"),
                     "target/generated-sources/kogito/");
 
-    public static KogitoBuildContext kogitoBuildContext(Iterable<Path> paths, IndexView index, AppArtifact appArtifact) {
+    public static KogitoBuildContext kogitoBuildContext(Iterable<Path> paths, IndexView index, Dependency appArtifact) {
         // scan and parse paths
         AppPaths.BuildTool buildTool;
         if (System.getProperty("org.gradle.appname") == null) {
@@ -147,7 +147,7 @@ public class KogitoQuarkusResourceUtils {
 
     public static Collection<GeneratedBeanBuildItem> compileGeneratedSources(
             KogitoBuildContext context,
-            List<AppDependency> dependencies,
+            Collection<ResolvedDependency> dependencies,
             Collection<GeneratedFile> generatedFiles,
             boolean useDebugSymbols) throws IOException {
         Collection<GeneratedFile> javaFiles =
