@@ -1,3 +1,7 @@
+# This file is a placeholder that is replaced by antora-template.yml during a release.
+# Please note that some AsciiDoc attributes might be missing if you build the docs from this branch.
 name: optaplanner
 title: OptaPlanner User Guide
 version: latest
+nav:
+  - modules/ROOT/nav.adoc
