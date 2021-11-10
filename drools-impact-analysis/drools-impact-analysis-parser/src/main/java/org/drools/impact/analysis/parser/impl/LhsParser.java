@@ -42,6 +42,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintExpression
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
+import org.drools.modelcompiler.util.PatternUtil;
 
 import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralString;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.literalToValue;
@@ -80,6 +81,9 @@ public class LhsParser {
     }
 
     private Pattern parsePattern( RuleContext context, PatternDescr patternDescr, boolean positive ) {
+        if (context.getRuleUnitDescr() != null) {
+            patternDescr = PatternUtil.normalizeOOPathPattern(patternDescr, context);
+        }
         String type = patternDescr.getObjectType();
         Class<?> patternClass;
         try {
