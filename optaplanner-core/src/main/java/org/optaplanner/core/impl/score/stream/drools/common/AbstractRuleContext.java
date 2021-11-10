@@ -29,7 +29,6 @@ import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.view.ViewItem;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
@@ -77,8 +76,6 @@ abstract class AbstractRuleContext {
             List<RuleItemBuilder<?>> ruleItemBuilderList = new ArrayList<>(viewItems);
             ruleItemBuilderList.add(consequenceBuilder.apply(constraint, scoreImpacterGlobal));
             return rule(constraint.getConstraintPackage(), constraint.getConstraintName())
-                    .metadata(DroolsConstraintStreamScoreDirectorFactory.CONSTRAINT_ID_RULE_METADATA_KEY,
-                            constraint.getConstraintId())
                     .build(ruleItemBuilderList.toArray(new RuleItemBuilder[0]));
         };
     }

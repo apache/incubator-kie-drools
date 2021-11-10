@@ -48,9 +48,9 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
-    protected KieSession session;
-    protected AgendaFilter agendaFilter;
-    protected ScoreInliner<Score_> scoreInliner;
+    private KieSession session;
+    private AgendaFilter agendaFilter;
+    private ScoreInliner<Score_> scoreInliner;
 
     public DroolsConstraintStreamScoreDirector(
             DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
@@ -126,10 +126,12 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     @Override
     public void close() {
         super.close();
-        session.dispose();
-        session = null;
-        agendaFilter = null;
-        scoreInliner = null;
+        if (session != null) {
+            session.dispose();
+            session = null;
+            agendaFilter = null;
+            scoreInliner = null;
+        }
     }
 
     // ************************************************************************

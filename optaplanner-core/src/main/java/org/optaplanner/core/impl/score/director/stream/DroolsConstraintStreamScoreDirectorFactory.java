@@ -17,9 +17,10 @@
 package org.optaplanner.core.impl.score.director.stream;
 
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 import static org.drools.model.DSL.globalOf;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -63,10 +64,7 @@ import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
-    public static final String CONSTRAINT_ID_RULE_METADATA_KEY = "constraintStreamsConstraintId";
-
     private final KieBaseDescriptor<Solution_> kieBaseDescriptor;
-    private final Score_ zeroScore;
     private final boolean droolsAlphaNetworkCompilationEnabled;
 
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
@@ -96,7 +94,6 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
             KieBaseDescriptor<Solution_> kieBaseDescriptor, boolean droolsAlphaNetworkCompilationEnabled) {
         super(solutionDescriptor);
         this.kieBaseDescriptor = Objects.requireNonNull(kieBaseDescriptor);
-        this.zeroScore = (Score_) solutionDescriptor.getScoreDefinition().getZeroScore();
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
@@ -151,15 +148,21 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
         ScoreInliner<Score_> scoreInliner =
                 scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
-        constraintToWeightMap.forEach((constraint, weight) -> {
-            if (Objects.equals(weight, zeroScore)) {
-                return;
+        Set<String> disabledConstraints = new HashSet<>();
+        for (Map.Entry<DroolsConstraint<Solution_>, Score_> entry : constraintToWeightMap.entrySet()) {
+            DroolsConstraint<Solution_> constraint = entry.getKey();
+            Score_ constraintWeight = entry.getValue();
+            if (constraintWeight.isZero()) {
+                disabledConstraints.add(constraint.getConstraintId());
+            } else {
+                String globalName = kieBaseDescriptor.getConstraintToGlobalMap().get(constraint).getName();
+                kieSession.setGlobal(globalName, scoreInliner.buildWeightedScoreImpacter(constraint));
             }
-            String globalName = kieBaseDescriptor.getConstraintToGlobalMap().get(constraint).getName();
-            kieSession.setGlobal(globalName, scoreInliner.buildWeightedScoreImpacter(constraint));
-        });
+        }
         // Return only the inliner as that holds the work product of the individual impacters.
-        return new SessionDescriptor<>(kieSession, new ConstraintDisablingAgendaFilter(constraintToWeightMap), scoreInliner);
+        AgendaFilter agendaFilter =
+                disabledConstraints.isEmpty() ? null : new ConstraintDisablingAgendaFilter(Set.copyOf(disabledConstraints));
+        return new SessionDescriptor<>(kieSession, scoreInliner, agendaFilter);
     }
 
     private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {
@@ -180,36 +183,22 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         return droolsAlphaNetworkCompilationEnabled;
     }
 
-    private final class ConstraintDisablingAgendaFilter implements AgendaFilter {
+    private static final class ConstraintDisablingAgendaFilter implements AgendaFilter {
 
         private final Set<String> disabledConstraintIdSet;
+        private final Map<Rule, Boolean> ruleEnabledCache = new HashMap<>();
 
-        public ConstraintDisablingAgendaFilter(Map<DroolsConstraint<Solution_>, Score_> constraintToWeightMap) {
-            this.disabledConstraintIdSet = constraintToWeightMap.entrySet()
-                    .stream()
-                    .filter(entry -> Objects.equals(entry.getValue(), zeroScore))
-                    .map(Map.Entry::getKey)
-                    .map(Constraint::getConstraintId)
-                    .collect(toSet());
+        public ConstraintDisablingAgendaFilter(Set<String> disabledConstraintIdSet) {
+            this.disabledConstraintIdSet = Objects.requireNonNull(disabledConstraintIdSet);
         }
 
         @Override
         public boolean accept(Match match) {
-            if (disabledConstraintIdSet.isEmpty()) {
-                return true;
-            }
             Rule rule = match.getRule();
-            /*
-             * We identify the rule by its constraint ID, which we pre-calculated during rule creation.
-             * The alternative is to pay string concat penalty (packageName + name) to calculate the ID on every match.
-             * Since this code is on the hot path, this optimization was confirmed to bring considerable benefits.
-             */
-            String constraintId = (String) Objects.requireNonNull(
-                    rule.getMetaData().get(CONSTRAINT_ID_RULE_METADATA_KEY),
-                    () -> "Impossible state: Rule ("
-                            + ConstraintMatchTotal.composeConstraintId(rule.getPackageName(), rule.getName())
-                            + ") has no constraint ID.");
-            return !disabledConstraintIdSet.contains(constraintId);
+            return ruleEnabledCache.computeIfAbsent(rule, r -> {
+                String constraintId = ConstraintMatchTotal.composeConstraintId(r.getPackageName(), r.getName());
+                return !disabledConstraintIdSet.contains(constraintId);
+            });
         }
     }
 
