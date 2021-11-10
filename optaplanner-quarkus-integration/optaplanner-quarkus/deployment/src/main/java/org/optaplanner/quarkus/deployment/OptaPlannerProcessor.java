@@ -71,6 +71,7 @@ import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
 import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -490,8 +491,18 @@ class OptaPlannerProcessor {
             boolean isKogitoExtensionPresent = capabilities.isPresent("kogito-rules");
             if (!isKogitoExtensionPresent) {
                 throw new IllegalStateException(
-                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not on the classpath.\n"
+                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not "
+                                + "on the classpath.\n"
                                 + "Maybe add the dependency org.kie.kogito:kogito-quarkus-rules"
+                                + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
+            }
+            // TODO: Remove this check when https://issues.redhat.com/browse/KOGITO-6236 is resolved.
+            boolean isResteasyJacksonExtensionPresent = capabilities.isPresent(Capability.RESTEASY_JSON_JACKSON);
+            if (!isResteasyJacksonExtensionPresent) {
+                throw new IllegalStateException(
+                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules requires "
+                                + "also io.quarkus:quarkus-resteasy-jackson to be on the classpath.\n"
+                                + "Maybe add the dependency io.quarkus:quarkus-resteasy-jackson"
                                 + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
         }

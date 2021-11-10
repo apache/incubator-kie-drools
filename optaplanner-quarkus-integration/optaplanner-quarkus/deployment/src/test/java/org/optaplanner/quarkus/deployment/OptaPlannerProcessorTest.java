@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 import org.jboss.jandex.IndexView;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,12 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 
 import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.Capability;
 
 class OptaPlannerProcessorTest {
+
+    // TODO: Remove the Capability.RESTEASY_JSON_JACKSON after https://issues.redhat.com/browse/KOGITO-6236 is resolved.
+    private final static Set<String> KOGITO_CAPABILITIES = Set.of("kogito-rules", Capability.RESTEASY_JSON_JACKSON);
 
     @Test
     void customScoreDrl_overrides_solverConfig() {
@@ -42,7 +47,7 @@ class OptaPlannerProcessorTest {
         OptaPlannerProcessor optaPlannerProcessor = mockOptaPlannerProcessor();
         when(optaPlannerProcessor.constraintsDrl()).thenReturn(Optional.of("some.drl"));
 
-        Capabilities capabilities = new Capabilities(Collections.singleton("kogito-rules"));
+        Capabilities capabilities = new Capabilities(KOGITO_CAPABILITIES);
         optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig, capabilities);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList()).containsExactly("some.drl");
     }
@@ -57,7 +62,7 @@ class OptaPlannerProcessorTest {
         when(optaPlannerProcessor.defaultConstraintsDrl())
                 .thenReturn(Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL));
 
-        Capabilities capabilities = new Capabilities(Collections.singleton("kogito-rules"));
+        Capabilities capabilities = new Capabilities(KOGITO_CAPABILITIES);
         optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig, capabilities);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
                 .containsExactly("config_constraints.drl");
@@ -72,7 +77,7 @@ class OptaPlannerProcessorTest {
         when(optaPlannerProcessor.defaultConstraintsDrl())
                 .thenReturn(Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL));
 
-        Capabilities capabilities = new Capabilities(Collections.singleton("kogito-rules"));
+        Capabilities capabilities = new Capabilities(KOGITO_CAPABILITIES);
         optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig, capabilities);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
                 .containsExactly(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
@@ -110,7 +115,7 @@ class OptaPlannerProcessorTest {
         when(optaPlannerProcessor.defaultConstraintsDrl())
                 .thenReturn(Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL));
 
-        Capabilities capabilities = new Capabilities(Collections.singleton("kogito-rules"));
+        Capabilities capabilities = new Capabilities(KOGITO_CAPABILITIES);
         assertThatCode(() -> optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig,
                 capabilities))
                         .isInstanceOf(IllegalStateException.class)
