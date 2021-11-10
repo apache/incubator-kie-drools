@@ -22,49 +22,31 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         java-version: [11]
+        maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Maven Build
     steps:
-      - name: Disk space report before modification
-        shell: bash
-        run: |
-          echo "Available storage:"
-          df -h
-      # Inspired to maximize-build-space action https://github.com/easimon/maximize-build-space
-      - name: Free disk space (remove dotnet, android and haskell)
-        shell: bash
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-      - name: Disk space report after modification
-        shell: bash
-        run: |
-          echo "Available storage:"
-          df -h
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Clean Disk Space
+        uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Support long paths
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@main
+      - name: Java and Maven Setup
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
-      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
-      - name: Cache Maven packages
-        uses: actions/cache@v2
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Build Chain
+        uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build Chain ${{ matrix.java-version }}
-        id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.6.13
-        with:
-          definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
+          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           starting-project: kiegroup/kogito-runtimes
-      - name: Publish Test Report
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Surefire Report
+        uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
-        uses: ScaCap/action-surefire-report@v1.0.10
         with:
-          fail_on_test_failures: true
-          fail_if_no_tests: false
-          skip_publishing: true
           report_paths: '**/*-reports/TEST-*.xml'
