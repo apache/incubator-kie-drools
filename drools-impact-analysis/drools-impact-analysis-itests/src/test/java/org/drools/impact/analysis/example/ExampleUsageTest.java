@@ -103,6 +103,15 @@ public class ExampleUsageTest {
         System.out.println("--- toFlatText ---");
         String flatText = TextReporter.toFlatText(impactedSubGraph);
         System.out.println(flatText);
+
+        // Graph.resetNodeStatus() reset all nodes status to NONE so that you can reuse the instance for another filtering
+        graph.resetNodeStatus();
+
+        // Backward analysis. View which rules affect StatusCheck_11
+        Graph impactingSubGraph = impactFilter.filterImpactingNodes(graph, "org.drools.impact.analysis.example.StatusCheck_11");
+
+        // target node and impacting nodes
+        generateSvg(impactingSubGraph, "example-impacting-sub-graph");
     }
 
     /*
