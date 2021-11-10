@@ -35,6 +35,7 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 import org.drools.modelcompiler.util.StreamUtils;
+import org.drools.mvel.parser.printer.PrintUtil;
 
 import static java.util.Optional.ofNullable;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -200,7 +201,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         if(asUnificationTypedExpression(left).isPresent() || asUnificationTypedExpression(right).isPresent()) {
             constraint = originalDrlConstraint;
         } else if (expr != null) {
-            constraint = expr.toString();
+            constraint = PrintUtil.printNode(expr);
         } else {
             constraint = left.toString();
         }

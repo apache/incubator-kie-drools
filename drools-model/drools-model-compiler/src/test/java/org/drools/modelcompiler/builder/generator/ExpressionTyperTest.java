@@ -30,6 +30,7 @@ import org.drools.modelcompiler.inlinecast.ICB;
 import org.drools.modelcompiler.inlinecast.ICC;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -213,7 +214,7 @@ public class ExpressionTyperTest {
         final DrlxExpression expr = DrlxParseUtil.parseExpression("address#InternationalAddress.state");
         final MethodCallExpr expected = StaticJavaParser.parseExpression("((org.drools.modelcompiler.domain.InternationalAddress)_this.getAddress()).getState()");
 
-        assertEquals(expected.toString(),  toTypedExpression(expr.getExpr().toString(), Person.class).getExpression().toString());
+        assertEquals(PrintUtil.printNode(expected), toTypedExpression(PrintUtil.printNode(expr.getExpr()), Person.class).getExpression().toString());
     }
 
     @Test

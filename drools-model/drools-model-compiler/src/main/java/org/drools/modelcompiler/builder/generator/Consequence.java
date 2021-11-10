@@ -86,7 +86,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.GET_CHAN
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 public class Consequence {
 
@@ -312,7 +312,7 @@ public class Consequence {
         ModifyCompiler modifyCompiler = new ModifyCompiler();
         CompiledBlockResult compile = modifyCompiler.compile(addCurlyBracesToBlock(consequence));
 
-        return printConstraint(compile.statementResults());
+        return printNode(compile.statementResults());
     }
 
     private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs) {

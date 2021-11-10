@@ -109,20 +109,20 @@ abstract class MaterializedLambda {
     }
 
     private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {
-        compilationUnit.addImport(new ImportDeclaration(new Name(ruleClassName), true, true));
+        compilationUnit.getImports().add(new ImportDeclaration(new Name(ruleClassName), true, true));
         for (String i : imports) {
-            compilationUnit.addImport( new ImportDeclaration(new Name(i), false, false ) );
+            compilationUnit.getImports().add( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String si : staticImports) {
             String replace = si;
             if (si.endsWith(".*")) { // JP doesn't want the * in the import
                 replace = si.replace(".*", "");
-                compilationUnit.addImport(new ImportDeclaration(new Name(replace), true, true));
+                compilationUnit.getImports().add(new ImportDeclaration(new Name(replace), true, true));
             } else {
-                compilationUnit.addImport(new ImportDeclaration(new Name(replace), true, false));
+                compilationUnit.getImports().add(new ImportDeclaration(new Name(replace), true, false));
             }
         }
-        compilationUnit.addImport(new ImportDeclaration(new Name("org.drools.modelcompiler.dsl.pattern.D"), false, false));
+        compilationUnit.getImports().add(new ImportDeclaration(new Name("org.drools.modelcompiler.dsl.pattern.D"), false, false));
     }
 
     private void parseParameters() {

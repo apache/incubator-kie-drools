@@ -31,6 +31,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.Name;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvel2.CompiledJavaEvaluator;
 import org.drools.mvelcompiler.CompiledResult;
 import org.drools.mvelcompiler.ConstraintCompiler;
@@ -87,7 +88,7 @@ public class Evaluator {
     private Map<String, Class<?>> compileEvaluatorClass(ClassLoader classLoader, CompilationUnit evaluatorCompilationUnit, String javaFQN) {
         Map<String, String> sources = Collections.singletonMap(
                 javaFQN,
-                evaluatorCompilationUnit.toString()
+                PrintUtil.printNode(evaluatorCompilationUnit)
         );
         return KieMemoryCompiler.compile(sources, classLoader);
     }
