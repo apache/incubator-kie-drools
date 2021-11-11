@@ -343,9 +343,9 @@ public class DecisionRestResourceGenerator {
     }
 
     private void addMonitoringImports(CompilationUnit cu) {
-        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector"), false, false));
-        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.DMNResultMetricsBuilder"), false, false));
-        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollectorProvider"), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector"), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.DMNResultMetricsBuilder"), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollectorProvider"), false, false));
     }
 
     private void addMonitoringFields(ClassOrInterfaceDeclaration template) {

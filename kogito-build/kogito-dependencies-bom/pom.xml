@@ -26,7 +26,7 @@
     <version.net.thisptr.jackson-jq>1.0.0-preview.20210928</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>1.0.0</version.io.quarkiverse.jackson-jq> 
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
-    <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
+    <version.com.github.javaparser>3.23.1</version.com.github.javaparser>
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
     <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>

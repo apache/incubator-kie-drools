@@ -148,7 +148,7 @@ public class ProjectRuntimeGenerator {
         for (Map.Entry<String, BlockStmt> entry : modelMethod.getkSessionConfs().entrySet()) {
             StringLiteralExpr sessionName = new StringLiteralExpr(entry.getKey());
             SwitchEntry switchEntry = new SwitchEntry(new NodeList<>(sessionName), SwitchEntry.Type.STATEMENT_GROUP, new NodeList<>(entry.getValue()));
-            switchEntry.addStatement(new BreakStmt().setValue(null));
+            switchEntry.addStatement(new BreakStmt());
             switchStmt.getEntries().add(switchEntry);
         }
     }

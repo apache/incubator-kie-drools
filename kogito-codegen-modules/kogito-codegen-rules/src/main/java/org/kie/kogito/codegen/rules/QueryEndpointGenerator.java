@@ -148,7 +148,7 @@ public class QueryEndpointGenerator extends AbstractQueryEntrypointGenerator {
     }
 
     private void addMonitoringToResource(CompilationUnit cu, ClassOrInterfaceDeclaration clazz, MethodDeclaration[] methods, String nameURL) {
-        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollectorProvider"), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollectorProvider"), false, false));
         FieldDeclaration field = clazz.addField("SystemMetricsCollectorProvider", "systemMetricsCollectorProvider");
         if (context.hasDI()) {
             context.getDependencyInjectionAnnotator().withInjection(field);

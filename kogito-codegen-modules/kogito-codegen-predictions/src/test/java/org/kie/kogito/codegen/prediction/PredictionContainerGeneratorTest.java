@@ -71,7 +71,6 @@ class PredictionContainerGeneratorTest {
                 .stream()
                 .map(pmmlResource -> "\"" + pmmlResource.getModelPath() + "\"")
                 .collect(Collectors.joining(", "));
-        expected = String.format("init(%s);", expected);
         assertTrue(retrievedString.contains(expected));
 
     }

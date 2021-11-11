@@ -91,8 +91,8 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.printer.PrettyPrintVisitor;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import com.github.javaparser.printer.DefaultPrettyPrinterVisitor;
+import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
@@ -469,7 +469,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         try {
                             resolveVariablesType(unit, knownVariables);
                         } catch (UnsolvedSymbolException ex) {
-                            PrettyPrintVisitor v1 = new PrettyPrintVisitor(new PrettyPrinterConfiguration());
+                            DefaultPrettyPrinterVisitor v1 = new DefaultPrettyPrinterVisitor(new DefaultPrinterConfiguration());
                             blockStmt.accept(v1, null);
                             LOGGER.error("\n" + v1);
                             //Small hack to extract the variable name causing the issue
