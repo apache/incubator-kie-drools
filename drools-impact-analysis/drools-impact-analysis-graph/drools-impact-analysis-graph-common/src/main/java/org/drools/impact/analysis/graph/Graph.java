@@ -37,7 +37,7 @@ public class Graph {
     /**
      * Set all nodes status to NONE
      */
-    public void resetNodeStatus() {
+    void resetNodeStatus() {
         this.nodeMap.values().stream().forEach(node -> node.setStatus(Node.Status.NONE));
     }
 

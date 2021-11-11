@@ -104,8 +104,7 @@ public class ExampleUsageTest {
         String flatText = TextReporter.toFlatText(impactedSubGraph);
         System.out.println(flatText);
 
-        // Graph.resetNodeStatus() reset all nodes status to NONE so that you can reuse the instance for another filtering
-        graph.resetNodeStatus();
+        // Reusing the Graph instance for another filtering is allowed. All nodes status are reset to NONE implicitly
 
         // Backward analysis. View which rules affect StatusCheck_11
         Graph impactingSubGraph = impactFilter.filterImpactingNodes(graph, "org.drools.impact.analysis.example.StatusCheck_11");

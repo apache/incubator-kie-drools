@@ -65,7 +65,7 @@ public class ImpactAnalysisHelper {
      * @return sub graph which contains only changed node and impacted nodes
      */
     public Graph filterImpactedNodes(Graph graph, Node changedNode) {
-
+        graph.resetNodeStatus(); // reset node status implicitly
         Collection<Node> impactedNodes = new HashSet<>();
         collectImpactedNodes(changedNode, impactedNodes);
         changedNode.setStatus(Status.CHANGED);
@@ -115,7 +115,7 @@ public class ImpactAnalysisHelper {
      * @return sub graph which contains only target node and impacting nodes
      */
     public Graph filterImpactingNodes(Graph graph, Node targetNode) {
-
+        graph.resetNodeStatus(); // reset node status implicitly
         Collection<Node> impactingNodes = new HashSet<>();
         collectImpactingNodes(targetNode, impactingNodes);
         targetNode.setStatus(Status.TARGET);
