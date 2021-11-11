@@ -28,7 +28,7 @@ public interface RuleUnitInstance<T extends RuleUnitData> {
 
     int fire();
 
-    List<Map<String, Object>> executeQuery(String query);
+    List<Map<String, Object>> executeQuery(String query, Object... arguments);
 
     <Q> Q executeQuery(Class<? extends RuleUnitQuery<Q>> query);
 

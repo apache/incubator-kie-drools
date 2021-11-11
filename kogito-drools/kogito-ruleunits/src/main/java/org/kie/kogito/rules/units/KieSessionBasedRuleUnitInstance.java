@@ -40,9 +40,9 @@ public abstract class KieSessionBasedRuleUnitInstance<T extends RuleUnitData> ex
     }
 
     @Override
-    public List<Map<String, Object>> executeQuery(String query) {
+    public List<Map<String, Object>> executeQuery(String query, Object... arguments) {
         fire();
-        return evaluator.getQueryResults(query).toList();
+        return evaluator.getQueryResults(query, arguments).toList();
     }
 
     @Override
