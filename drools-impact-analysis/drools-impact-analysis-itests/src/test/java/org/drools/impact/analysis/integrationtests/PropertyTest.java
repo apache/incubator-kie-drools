@@ -89,4 +89,45 @@ public class PropertyTest extends AbstractGraphTest {
 
         generatePng(graph);
     }
+
+    @Test
+    public void testUnaryBoolean() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R1 when\n" +
+                     "  $p : Person(age >= 20)\n" +
+                     "then\n" +
+                     "  modify ($p) {setEmployed(true)};\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person(age < 20)\n" +
+                     "then\n" +
+                     "  modify ($p) {setEmployed(false)};\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  $p : Person(employed)\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R4 when\n" +
+                     "  $p : Person(!employed)\n" +
+                     "then\n" +
+                     "end\n";
+
+        Person person = new Person("John", 30);
+        person.setEmployed(false);
+        runRule(str, person);
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R4", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R2", "mypkg.R3", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
+
+        generatePng(graph);
+    }
 }

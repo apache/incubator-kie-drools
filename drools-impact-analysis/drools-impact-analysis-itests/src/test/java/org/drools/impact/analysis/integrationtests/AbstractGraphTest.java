@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
@@ -32,6 +33,7 @@ import org.junit.rules.TestName;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
@@ -90,6 +92,12 @@ public class AbstractGraphTest {
      */
     protected void runRule(String drl, Object... facts) {
         final KieSession ksession = RuleExecutionHelper.getKieSession(drl);
+        ksession.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                logger.info(event.getMatch().getRule().getName() + " : fired");
+            }
+        });
         for (Object fact : facts) {
             ksession.insert(fact);
         }
