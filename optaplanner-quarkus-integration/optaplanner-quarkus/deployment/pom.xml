@@ -77,12 +77,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-legacy-api</artifactId>
     </dependency>
-    <!-- TODO: Remove this dependency when https://issues.redhat.com/browse/KOGITO-6236 is resolved. -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jackson</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>

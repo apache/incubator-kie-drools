@@ -496,15 +496,6 @@ class OptaPlannerProcessor {
                                 + "Maybe add the dependency org.kie.kogito:kogito-quarkus-rules"
                                 + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
-            // TODO: Remove this check when https://issues.redhat.com/browse/KOGITO-6236 is resolved.
-            boolean isResteasyJacksonExtensionPresent = capabilities.isPresent(Capability.RESTEASY_JSON_JACKSON);
-            if (!isResteasyJacksonExtensionPresent) {
-                throw new IllegalStateException(
-                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules requires "
-                                + "also io.quarkus:quarkus-resteasy-jackson to be on the classpath.\n"
-                                + "Maybe add the dependency io.quarkus:quarkus-resteasy-jackson"
-                                + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
-            }
         }
 
         if (solverConfig.getScoreDirectorFactoryConfig().getKieBaseConfigurationProperties() != null) {

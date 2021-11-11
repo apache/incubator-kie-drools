@@ -36,8 +36,7 @@ import io.quarkus.deployment.Capability;
 
 class OptaPlannerProcessorTest {
 
-    // TODO: Remove the Capability.RESTEASY_JSON_JACKSON after https://issues.redhat.com/browse/KOGITO-6236 is resolved.
-    private final static Set<String> KOGITO_CAPABILITIES = Set.of("kogito-rules", Capability.RESTEASY_JSON_JACKSON);
+    private final static Set<String> KOGITO_CAPABILITIES = Set.of("kogito-rules");
 
     @Test
     void customScoreDrl_overrides_solverConfig() {
