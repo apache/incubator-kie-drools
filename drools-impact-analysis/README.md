@@ -112,3 +112,11 @@ StatusCheck_11[+]
 StatusCheck_12[+]
 StatusCheck_13[+]
 ```
+
+* You can also view backward relationship. Use `ImpactAnalysisHelper.filterImpactingNodes` and specify the target rule so you can view rules which impacts on it. Orange node is a *target* rule. Light blue nodes are *impacting* rules.
+
+```java
+        Graph impactingSubGraph = impactFilter.filterImpactingNodes(graph, "org.drools.impact.analysis.example.StatusCheck_11");
+```
+
+![example5](example5.svg)
