@@ -18,8 +18,6 @@ package org.drools.core.command.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -27,6 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
 import org.drools.core.base.RuleNameEqualsAgendaFilter;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
@@ -74,7 +73,6 @@ public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<Execu
     private static final long serialVersionUID = 510l;
 
     @XmlAttribute
-    @XStreamAsAttribute
     private String lookup;
 
     @XmlElements({

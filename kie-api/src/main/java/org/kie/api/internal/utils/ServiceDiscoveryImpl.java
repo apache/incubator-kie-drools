@@ -51,7 +51,7 @@ public class ServiceDiscoveryImpl {
             "drools-alphanetwork-compiler", "drools-beliefs", "drools-compiler", "drools-core", "drools-decisiontables",
             "drools-metric", "drools-model-compiler", "drools-mvel", "drools-persistence-jpa",
             "drools-scorecards", "drools-serialization-protobuf", "drools-traits", "drools-workbench-models-guided-dtable",
-            "drools-workbench-models-guided-scorecard", "drools-workbench-models-guided-template",
+            "drools-workbench-models-guided-scorecard", "drools-workbench-models-guided-template", "drools-xml-support",
             "jbpm-bpmn2", "jbpm-case-mgmt-cmmn", "jbpm-flow", "jbpm-flow-builder", "jbpm-human-task-jpa",
             "kie-ci", "kie-dmn-core", "kie-dmn-jpmml", "kie-internal", "kie-pmml", "kie-pmml-evaluator-assembler",
             "kie-pmml-evaluator-core", "kie-server-services-jbpm-cluster"

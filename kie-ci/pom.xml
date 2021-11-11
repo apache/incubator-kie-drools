@@ -44,7 +44,12 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-serialization-protobuf</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-xml-support</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>

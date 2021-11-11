@@ -156,6 +156,7 @@
     <module>drools-ecj</module>
     <module>drools-compiler</module>
     <module>drools-mvel</module>
+    <module>drools-xml-support</module>
     <module>drools-legacy-test-util</module>
     <module>drools-serialization-protobuf</module>
     <module>drools-beliefs</module>

@@ -18,17 +18,16 @@ import java.io.IOException;
 
 import org.drools.core.rule.DialectRuntimeData;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.Drools;
 import org.drools.core.util.MVELExecutor;
 import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface CoreComponentsBuilder {
 
-    boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
-
     String NO_MVEL = "You're trying to compile a Drools asset without mvel. Please add the module org.drools:drools-mvel to your classpath.";
 
     static <T> T throwExceptionForMissingMvel() {
-        if (IS_NATIVE_IMAGE) {
+        if (Drools.isNativeImage()) {
             return null;
         }
         throw new RuntimeException(NO_MVEL);
@@ -44,10 +43,6 @@ public interface CoreComponentsBuilder {
 
     static boolean present() {
         return Holder.cBuilder != null;
-    }
-
-    static boolean isNativeImage() {
-        return IS_NATIVE_IMAGE;
     }
 
     InternalReadAccessor getReadAcessor( String className, String expr, boolean typesafe, Class<?> returnType );
