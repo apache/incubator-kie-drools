@@ -198,18 +198,21 @@ pipeline {
                     dir("$websiteRepository-bot") {
                         String prBranchName = createWebsitePrBranch(websiteRepository)
 
-                        // Update versions in links on the website.
+                        // Update versions in links on the website and in the docs.
                         sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
 
                         // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
                         String optaplannerRoot = "$WORKSPACE/optaplanner"
                         String optaplannerWebsiteModule = 'optaplanner-website-root'
                         String optaplannerWebsiteXsd = "$optaplannerWebsiteModule/content/xsd"
+                        String optaplannerWebsiteDocs = 'optaplanner-website-docs'
                         sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd $optaplannerWebsiteXsd/solver/solver-8.xsd"
                         sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd $optaplannerWebsiteXsd/benchmark/benchmark-8.xsd"
 
                         // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh "git add $optaplannerWebsiteXsd/\\*.xsd $optaplannerWebsiteModule/data/pom.yml" }, prBranchName, 'main')
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}",
+                                { sh "git add $optaplannerWebsiteXsd/\\*.xsd $optaplannerWebsiteModule/data/pom.yml $optaplannerWebsiteDocs/antora-playbook.yml" },
+                                prBranchName, 'main')
                     }
                     dir(websiteRepository) {
                         checkoutRepo(websiteRepository, 'main')
