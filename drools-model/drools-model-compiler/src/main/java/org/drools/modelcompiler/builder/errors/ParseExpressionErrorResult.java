@@ -48,7 +48,7 @@ public class ParseExpressionErrorResult extends DroolsError {
 
     @Override
     public String getMessage() {
-        return "Unable to Analyse Expression " + PrintUtil.printConstraint(expr) + ":";
+        return "Unable to Analyse Expression " + PrintUtil.printNode(expr) + ":";
     }
 
     @Override

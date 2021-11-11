@@ -29,8 +29,9 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.Name;
-import com.github.javaparser.printer.PrettyPrinter;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import com.github.javaparser.printer.DefaultPrettyPrinter;
+import com.github.javaparser.printer.configuration.DefaultConfigurationOption;
+import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -55,20 +56,20 @@ public class JavaParserCompiler {
                                                       JavaDialectConfiguration.createEclipseCompiler() :
                                                       JavaDialectConfiguration.createDefaultCompiler();
 
-    private static final PrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
+    private static final DefaultPrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
 
     public static JavaCompiler getCompiler() {
         return JAVA_COMPILER;
     }
 
-    private static PrettyPrinter createPrettyPrinter() {
-        PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
-        config.setColumnAlignParameters( true );
-        config.setColumnAlignFirstMethodChain( true );
-        return new PrettyPrinter( config );
+    private static DefaultPrettyPrinter createPrettyPrinter() {
+        DefaultPrinterConfiguration config = new DefaultPrinterConfiguration();
+        config.addOption(new DefaultConfigurationOption(DefaultPrinterConfiguration.ConfigOption.COLUMN_ALIGN_PARAMETERS, true));
+        config.addOption(new DefaultConfigurationOption(DefaultPrinterConfiguration.ConfigOption.COLUMN_ALIGN_FIRST_METHOD_CHAIN, true));
+        return new DefaultPrettyPrinter( config );
     }
 
-    public static PrettyPrinter getPrettyPrinter() {
+    public static DefaultPrettyPrinter getPrettyPrinter() {
         return PRETTY_PRINTER;
     }
 
@@ -138,10 +139,10 @@ public class JavaParserCompiler {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( pkgName );
         for (String i : imports) {
-            cu.addImport( new ImportDeclaration(new Name(i), false, false ) );
+            cu.getImports().add( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String i : staticImports) {
-            cu.addImport( new ImportDeclaration(new Name(i), true, false ) );
+            cu.getImports().add( new ImportDeclaration(new Name(i), true, false ) );
         }
         cu.addType(pojo);
         return getPrettyPrinter().print(cu);

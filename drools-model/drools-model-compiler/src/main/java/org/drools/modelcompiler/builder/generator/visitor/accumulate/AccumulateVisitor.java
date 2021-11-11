@@ -82,7 +82,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambda;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 public class AccumulateVisitor {
 
@@ -303,7 +303,7 @@ public class AccumulateVisitor {
         }
 
         SingleDrlxParseSuccess drlxParseResult = (SingleDrlxParseSuccess) ConstraintParser.defaultConstraintParser(context, context.getPackageModel())
-                .drlxParse(patternType, paramExprBindingId, printConstraint(parameterConverted));
+                .drlxParse(patternType, paramExprBindingId, printNode(parameterConverted));
 
         if (inputPattern != null) {
             drlxParseResult.setAccumulateBinding( inputPattern.getIdentifier() );

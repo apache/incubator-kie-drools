@@ -39,10 +39,13 @@ import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.PatternExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.TextBlockLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.YieldStmt;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils.NullType;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
@@ -131,6 +134,21 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         } else {
             return simpleNameAsField(n, arg);
         }
+    }
+
+    @Override
+    public TypedExpression visit(YieldStmt n, Context arg) {
+        return null;
+    }
+
+    @Override
+    public TypedExpression visit(TextBlockLiteralExpr n, Context arg) {
+        return null;
+    }
+
+    @Override
+    public TypedExpression visit(PatternExpr n, Context arg) {
+        return null;
     }
 
     private TypedExpression simpleNameAsFirstNode(SimpleName n) {

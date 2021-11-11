@@ -1,14 +1,14 @@
 /*
  * Copyright (C) 2007-2010 Júlio Vilmar Gesser.
- * Copyright (C) 2011, 2013-2016 The JavaParser Team.
+ * Copyright (C) 2011, 2013-2021 The JavaParser Team.
  * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * This file is part of JavaParser.
  *
  * JavaParser can be used either under the terms of
  * a) the GNU Lesser General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  * b) the terms of the Apache License
  *
  * You should have received a copy of both licenses in LICENCE.LGPL and
@@ -24,12 +24,9 @@
 
 package org.drools.mvel.parser;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
-
+// MVEL: should use JP JavaToken here
 import com.github.javaparser.JavaToken;
+
 import com.github.javaparser.Problem;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.ArrayCreationLevel;
@@ -37,20 +34,14 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.comments.CommentsCollection;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.expr.ArrayCreationExpr;
-import com.github.javaparser.ast.expr.ArrayInitializerExpr;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ArrayType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import com.github.javaparser.utils.Pair;
+
+import java.util.*;
 
 import static com.github.javaparser.GeneratedJavaParserConstants.EOF;
 import static com.github.javaparser.ast.type.ArrayType.unwrapArrayTypes;
@@ -70,6 +61,8 @@ abstract class GeneratedMvelParserBase {
     abstract JavaToken token();
 
     abstract Token getNextToken();
+
+    abstract Token getToken(final int index);
 
     ////
 
@@ -178,9 +171,20 @@ abstract class GeneratedMvelParserBase {
         return null;
     }
 
+    /**
+     * Get the token that starts the NodeList l
+     */
+    JavaToken nodeListBegin(NodeList<?> l) {
+        if (!storeTokens || l.isEmpty()) {
+            return JavaToken.INVALID;
+        }
+        return l.get(0).getTokenRange().get().getBegin();
+    }
+
     /* Sets the kind of the last matched token to newKind */
     void setTokenKind(int newKind) {
-        org.drools.mvel.parser.JavaToken token = (org.drools.mvel.parser.JavaToken)token();
+        // MVEL: setKind is private
+        org.drools.mvel.parser.JavaToken token = (org.drools.mvel.parser.JavaToken) token();
         token.setKind(newKind);
     }
 
@@ -212,11 +216,45 @@ abstract class GeneratedMvelParserBase {
         problems.add(new Problem(makeMessageForParseException(p), tokenRange, p));
         return tokenRange;
     }
+    /* Called from within a catch block to skip forward to a known token,
+        and report the occurred exception as a problem. */
+    TokenRange recoverStatement(int recoveryTokenType, int lBraceType, int rBraceType, ParseException p) {
+        JavaToken begin = null;
+        if (p.currentToken != null) {
+            begin = token();
+        }
+        int level = 0;
+        Token t;
+        do {
+            Token nextToken = getToken(1);
+            if (nextToken != null && nextToken.kind == rBraceType && level == 0) {
+                TokenRange tokenRange = range(begin, token());
+                problems.add(new Problem(makeMessageForParseException(p), tokenRange, p));
+                return tokenRange;
+            }
+            t = getNextToken();
+            if (t.kind == lBraceType) {
+                level++;
+            } else if (t.kind == rBraceType) {
+                level--;
+            }
+        } while (!(t.kind == recoveryTokenType && level == 0) && t.kind != EOF);
+
+        JavaToken end = token();
+
+        TokenRange tokenRange = null;
+        if (begin != null && end != null) {
+            tokenRange = range(begin, end);
+        }
+
+        problems.add(new Problem(makeMessageForParseException(p), tokenRange, p));
+        return tokenRange;
+    }
 
     /**
-     * Quickly create a new NodeList
+     * Quickly create a new, empty, NodeList
      */
-    <T extends Node> NodeList<T> emptyList() {
+    <T extends Node> NodeList<T> emptyNodeList() {
         return new NodeList<>();
     }
 
@@ -228,6 +266,27 @@ abstract class GeneratedMvelParserBase {
             list = new NodeList<>();
         }
         list.add(obj);
+        return list;
+    }
+
+    /**
+     * Add obj to list only when list is not null
+     */
+    <T extends Node> NodeList<T> addWhenNotNull(NodeList<T> list, T obj) {
+        if (obj == null) {
+            return list;
+        }
+        return add(list, obj);
+    }
+
+    /**
+     * Add obj to list at position pos
+     */
+    <T extends Node> NodeList<T> prepend(NodeList<T> list, T obj) {
+        if (list == null) {
+            list = new NodeList<>();
+        }
+        list.addFirst(obj);
         return list;
     }
 
@@ -285,7 +344,6 @@ abstract class GeneratedMvelParserBase {
         return ret;
     }
 
-
     /**
      * Throws together an ArrayCreationExpr from a lot of pieces
      */
@@ -305,9 +363,8 @@ abstract class GeneratedMvelParserBase {
         Pair<Type, List<ArrayType.ArrayBracketPair>> partialParts = unwrapArrayTypes(partialType);
         Type elementType = partialParts.a;
         List<ArrayType.ArrayBracketPair> leftMostBrackets = partialParts.b;
-        return wrapInArrayTypes(elementType, leftMostBrackets, additionalBrackets).clone();
+        return wrapInArrayTypes(elementType, additionalBrackets, leftMostBrackets).clone();
     }
-
 
     /**
      * This is the code from ParseException.initialise, modified to be more horizontal.
@@ -330,8 +387,6 @@ abstract class GeneratedMvelParserBase {
         for (String option : sortedOptions) {
             expected.append(" ").append(option);
         }
-
-        sb.append("");
 
         Token token = exception.currentToken.next;
         for (int i = 0; i < maxExpectedTokenSequenceLength; i++) {
@@ -364,5 +419,41 @@ abstract class GeneratedMvelParserBase {
                     .append(expected.toString());
         }
         return sb.toString();
+    }
+
+    /**
+     * Converts a NameExpr or a FieldAccessExpr scope to a Name.
+     */
+    Name scopeToName(Expression scope) {
+        if (scope.isNameExpr()) {
+            SimpleName simpleName = scope.asNameExpr().getName();
+            return new Name(simpleName.getTokenRange().orElse(null), null, simpleName.getIdentifier());
+        }
+        if (scope.isFieldAccessExpr()) {
+            FieldAccessExpr fieldAccessExpr = scope.asFieldAccessExpr();
+            return new Name(fieldAccessExpr.getTokenRange().orElse(null), scopeToName(fieldAccessExpr.getScope()), fieldAccessExpr.getName().getIdentifier());
+
+        }
+        throw new IllegalStateException("Unexpected expression type: " + scope.getClass().getSimpleName());
+    }
+
+    String unquote(String s) {
+        return s.substring(1, s.length() - 1);
+    }
+
+    String unTripleQuote(String s) {
+        int start = 3;
+        // Skip over the first end of line too:
+        if (s.charAt(start) == '\r') {
+            start++;
+        }
+        if (s.charAt(start) == '\n') {
+            start++;
+        }
+        return s.substring(start, s.length() - 3);
+    }
+
+    void setYieldSupported() {
+        getTokenSource().setYieldSupported();
     }
 }

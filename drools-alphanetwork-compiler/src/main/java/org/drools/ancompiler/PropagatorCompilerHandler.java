@@ -289,7 +289,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
     }
 
     private void addBreakStatement(SwitchEntry switchEntry) {
-        switchEntry.getStatements().add(new BreakStmt().setValue(null));
+        switchEntry.getStatements().add(new BreakStmt());
     }
 
     public BlockStmt getCurrentBlockStatement() {
@@ -374,7 +374,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
 
         switchEntry.setStatements(nodeList(
                 new ExpressionStmt(callExtractedMethod),
-                new BreakStmt().setValue(null)
+                new BreakStmt()
         ));
 
         extractedMethods.add(extractedMethod);

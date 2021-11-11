@@ -35,7 +35,7 @@ import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.metamodel.BinaryExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
-import com.github.javaparser.printer.Printable;
+import com.github.javaparser.printer.Stringable;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
@@ -43,7 +43,7 @@ import static com.github.javaparser.utils.Utils.assertNotNull;
 
 public final class HalfBinaryExpr extends Expression {
 
-    public enum Operator implements Printable {
+    public enum Operator implements Stringable {
 
         EQUALS("=="), NOT_EQUALS("!="), LESS("<"), GREATER(">"), LESS_EQUALS("<="), GREATER_EQUALS(">=");
 

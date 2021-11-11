@@ -279,7 +279,7 @@ public class DrlxParseUtil {
             return Class.class;
         }
 
-        throw new RuntimeException("Unknown expression type: " + PrintUtil.printConstraint(expr));
+        throw new RuntimeException("Unknown expression type: " + PrintUtil.printNode(expr));
     }
 
     private static java.lang.reflect.Type expressionTypeNameExpr(RuleContext context, Collection<String> usedDeclarations, String nameAsString) {
@@ -458,9 +458,9 @@ public class DrlxParseUtil {
         @Override
         public String toString() {
             return "RemoveRootNodeResult{" +
-                    "rootNode=" + rootNode.map(PrintUtil::printConstraint) +
-                    ", withoutRootNode=" + PrintUtil.printConstraint(withoutRootNode) +
-                    ", firstChild=" + PrintUtil.printConstraint(firstChild) +
+                    "rootNode=" + rootNode.map(PrintUtil::printNode) +
+                    ", withoutRootNode=" + PrintUtil.printNode(withoutRootNode) +
+                    ", firstChild=" + PrintUtil.printNode(firstChild) +
                     '}';
         }
 
@@ -473,9 +473,9 @@ public class DrlxParseUtil {
                 return false;
             }
             RemoveRootNodeResult that = (RemoveRootNodeResult) o;
-            return Objects.equals(rootNode.map(PrintUtil::printConstraint), that.rootNode.map(PrintUtil::printConstraint)) &&
-                    Objects.equals(PrintUtil.printConstraint(withoutRootNode), PrintUtil.printConstraint(that.withoutRootNode)) &&
-                    Objects.equals(PrintUtil.printConstraint(firstChild), PrintUtil.printConstraint(that.firstChild));
+            return Objects.equals(rootNode.map(PrintUtil::printNode), that.rootNode.map(PrintUtil::printNode)) &&
+                    Objects.equals(PrintUtil.printNode(withoutRootNode), PrintUtil.printNode(that.withoutRootNode)) &&
+                    Objects.equals(PrintUtil.printNode(firstChild), PrintUtil.printNode(that.firstChild));
         }
 
         @Override

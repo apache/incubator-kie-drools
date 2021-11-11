@@ -76,7 +76,7 @@ public class OOPathExprGenerator {
             OOPathChunk chunk = chunks.get(i);
             if (chunk.isPassive()) {
                 if (passive) {
-                    context.addCompilationError(new InvalidExpressionErrorResult("Invalid oopath expression '" + ooPathExpr + "': It is not possible to have 2 non-reactive parts in the same oopath"));
+                    context.addCompilationError(new InvalidExpressionErrorResult("Invalid oopath expression '" + PrintUtil.printNode(ooPathExpr) + "': It is not possible to have 2 non-reactive parts in the same oopath"));
                     break;
                 }
                 passive = true;
@@ -149,7 +149,7 @@ public class OOPathExprGenerator {
         } else {
             Class<?> finalFieldType = fieldType;
             final List<DrlxParseResult> conditionParseResult = conditions.stream().map((DrlxExpression c) ->
-                    ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, PrintUtil.printConstraint(c))
+                    ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, PrintUtil.printNode(c))
             ).collect(Collectors.toList());
             toPatternExpr(bindingId, conditionParseResult, patternParseResult, fieldType);
         }

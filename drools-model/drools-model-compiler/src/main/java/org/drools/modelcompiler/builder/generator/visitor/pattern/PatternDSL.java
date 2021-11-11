@@ -62,7 +62,7 @@ import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
 import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 public abstract class PatternDSL implements DSLNode {
 
@@ -152,11 +152,11 @@ public abstract class PatternDSL implements DSLNode {
             String expression = constraintExpression.getExpression();
             if (drlxParseResult.isSuccess() && (( DrlxParseSuccess ) drlxParseResult).isRequiresSplit() && (( DrlxParseSuccess ) drlxParseResult).getExpr().isBinaryExpr()) {
                 BinaryExpr expr = ((DrlxParseSuccess) drlxParseResult).getExpr().asBinaryExpr();
-                String leftExpression = printConstraint(((SingleDrlxParseSuccess) drlxParseResult).getLeft().getExpression());
+                String leftExpression = printNode(((SingleDrlxParseSuccess) drlxParseResult).getLeft().getExpression());
                 DrlxParseResult leftExpressionReparsed = constraintParser.drlxParse(patternType, patternIdentifier, leftExpression, isPositional);
                 patternConstraintParseResultsPerConstraintDescr.add(new PatternConstraintParseResult(leftExpression, patternIdentifier, leftExpressionReparsed));
 
-                String rightExpression = printConstraint(((SingleDrlxParseSuccess) drlxParseResult).getRight().getExpression());
+                String rightExpression = printNode(((SingleDrlxParseSuccess) drlxParseResult).getRight().getExpression());
                 DrlxParseResult rightExpressionReparsed = constraintParser.drlxParse(patternType, patternIdentifier, rightExpression, isPositional);
                 DrlxParseResult normalizedParseResult = ConstraintUtil.normalizeConstraint(rightExpressionReparsed);
                 patternConstraintParseResultsPerConstraintDescr.add(new PatternConstraintParseResult(rightExpression, patternIdentifier, normalizedParseResult));
@@ -207,7 +207,7 @@ public abstract class PatternDSL implements DSLNode {
 
         implicitCastExpression.ifPresent(ce -> {
             if(!hasInstanceOfExpr) {
-                String instanceOfExpression = printConstraint(ce);
+                String instanceOfExpression = printNode(ce);
                 DrlxParseResult instanceOfExpressionParsed = constraintParser.drlxParse(patternType, patternIdentifier, instanceOfExpression, false);
                 patternConstraintParseResults.add(0, new PatternConstraintParseResult(instanceOfExpression, patternIdentifier, instanceOfExpressionParsed));
             }
@@ -234,7 +234,7 @@ public abstract class PatternDSL implements DSLNode {
         List<Expression> newNullSafeExpressions = reverseDistinct(nullSafeExpressions);
 
         newNullSafeExpressions.forEach(expr -> {
-            String nullSafeExpression = printConstraint(expr);
+            String nullSafeExpression = printNode(expr);
             DrlxParseResult nullSafeExpressionParsed = constraintParser.drlxParse(patternType, patternIdentifier, nullSafeExpression, false);
             patternConstraintParseResults.add(0, new PatternConstraintParseResult(nullSafeExpression, patternIdentifier, nullSafeExpressionParsed));
         });

@@ -145,7 +145,7 @@ public class FromVisitor {
         List<String> bindingIds = new ArrayList<>();
 
         for (Expression argument : parsedExpression.getArguments()) {
-            final String argumentName = PrintUtil.printConstraint(argument);
+            final String argumentName = PrintUtil.printNode(argument);
             if (contextHasDeclaration(argumentName)) {
                 bindingIds.add(argumentName);
                 fromCall.addArgument( context.getVarExpr(argumentName));
