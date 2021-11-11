@@ -103,6 +103,14 @@ public class ExampleUsageTest {
         System.out.println("--- toFlatText ---");
         String flatText = TextReporter.toFlatText(impactedSubGraph);
         System.out.println(flatText);
+
+        // Reusing the Graph instance for another filtering is allowed. All nodes status are reset to NONE implicitly
+
+        // Backward analysis. View which rules affect StatusCheck_11
+        Graph impactingSubGraph = impactFilter.filterImpactingNodes(graph, "org.drools.impact.analysis.example.StatusCheck_11");
+
+        // target node and impacting nodes
+        generateSvg(impactingSubGraph, "example-impacting-sub-graph");
     }
 
     /*

@@ -34,6 +34,13 @@ public class Graph {
         this.nodeMap = nodeMap;
     }
 
+    /**
+     * Set all nodes status to NONE
+     */
+    void resetNodeStatus() {
+        this.nodeMap.values().stream().forEach(node -> node.setStatus(Node.Status.NONE));
+    }
+
     @Override
     public String toString() {
         return "Graph [nodeMap=" + nodeMap + "]";
