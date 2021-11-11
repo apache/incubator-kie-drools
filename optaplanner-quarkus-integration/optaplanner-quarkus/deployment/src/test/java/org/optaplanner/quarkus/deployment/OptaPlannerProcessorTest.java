@@ -32,7 +32,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 
 import io.quarkus.deployment.Capabilities;
-import io.quarkus.deployment.Capability;
 
 class OptaPlannerProcessorTest {
 
