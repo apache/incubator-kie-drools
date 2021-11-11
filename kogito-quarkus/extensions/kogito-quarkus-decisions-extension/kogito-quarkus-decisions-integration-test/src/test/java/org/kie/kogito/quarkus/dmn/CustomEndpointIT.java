@@ -36,7 +36,7 @@ public class CustomEndpointIT {
                 .post("/custom")
                 .then()
                 .statusCode(200)
-                .body("data.d.Hello", Matchers.is("Hello Luca"));
+                .body("data.d.Hello", Matchers.is("Certidão Hello Luca"));
     }
 
 }

@@ -66,7 +66,7 @@ public class DMNIT {
                 .post("/dmnModel")
                 .then()
                 .statusCode(200)
-                .body("d.Hello", is("Hello Luca"));
+                .body("d.Hello", is("Certidão Hello Luca"));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class DMNIT {
                 .post("/dmnModel/dmnresult")
                 .then()
                 .statusCode(200)
-                .body("dmnContext.d.Hello", is("Hello Luca"));
+                .body("dmnContext.d.Hello", is("Certidão Hello Luca"));
     }
 
     @Test

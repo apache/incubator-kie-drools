@@ -16,6 +16,8 @@
 package org.kie.kogito.dmn;
 
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -28,9 +30,12 @@ import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.decision.DecisionConfig;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.decision.DecisionModels;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDecisionModels implements DecisionModels {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDecisionModels.class);
     private static final boolean CAN_PLATFORM_CLASSLOAD = org.kie.dmn.feel.util.ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD;
     private static DMNRuntime dmnRuntime = null;
     private static ExecutionIdSupplier execIdSupplier = null;
@@ -68,17 +73,35 @@ public abstract class AbstractDecisionModels implements DecisionModels {
         gav = app.config().get(ConfigBean.class).getGav().orElse(KogitoGAV.EMPTY_GAV);
     }
 
+    @Deprecated
     protected static java.io.InputStreamReader readResource(java.io.InputStream stream) {
+        Charset defaultEncoding = Charset.defaultCharset();
+        return readResource(stream, defaultEncoding.name());
+    }
+
+    protected static java.io.InputStreamReader readResource(java.io.InputStream stream, String encoding) {
         if (CAN_PLATFORM_CLASSLOAD) {
-            return new java.io.InputStreamReader(stream);
+            return isrWithEncodingOrFallback(stream, encoding);
         }
 
         try {
             byte[] bytes = org.drools.core.util.IoUtils.readBytesFromInputStream(stream);
             java.io.ByteArrayInputStream byteArrayInputStream = new java.io.ByteArrayInputStream(bytes);
-            return new java.io.InputStreamReader(byteArrayInputStream);
+            return isrWithEncodingOrFallback(byteArrayInputStream, encoding);
         } catch (java.io.IOException e) {
             throw new java.io.UncheckedIOException(e);
+        }
+    }
+
+    /**
+     * Create an InputStreamReader using the supplied encoding, or otherwise fallback to the default constructor using the default encoding.
+     */
+    private static java.io.InputStreamReader isrWithEncodingOrFallback(java.io.InputStream stream, String encoding) {
+        try {
+            return new java.io.InputStreamReader(stream, encoding);
+        } catch (UnsupportedEncodingException e) {
+            LOG.warn("Unable to create Reader using encoding {}, will use fallback Reader.", encoding);
+            return new java.io.InputStreamReader(stream);
         }
     }
 }
