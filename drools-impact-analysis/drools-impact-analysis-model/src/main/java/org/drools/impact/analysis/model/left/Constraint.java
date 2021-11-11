@@ -32,6 +32,14 @@ public class Constraint {
         UNKNOWN;
     }
 
+    public Constraint() {}
+
+    public Constraint(Type type, String property, Object value) {
+        this.type = type;
+        this.property = property;
+        this.value = value;
+    }
+
     public Type getType() {
         return type;
     }
