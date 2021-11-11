@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.cloudevents.CloudEventUtils;
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +39,10 @@ public class ExplainabilityRequestProducer {
 
     private final BroadcastProcessor<String> eventSubject = BroadcastProcessor.create();
 
-    public void sendEvent(BaseExplainabilityRequestDto request) {
+    public void sendEvent(BaseExplainabilityRequest request) {
         LOGGER.info("Sending explainability request with id {}", request.getExecutionId());
         Optional<String> optPayload = CloudEventUtils
-                .build(request.getExecutionId(), URI_PRODUCER, request, BaseExplainabilityRequestDto.class)
+                .build(request.getExecutionId(), URI_PRODUCER, request, BaseExplainabilityRequest.class)
                 .flatMap(CloudEventUtils::encode);
         if (optPayload.isPresent()) {
             eventSubject.onNext(optPayload.get());

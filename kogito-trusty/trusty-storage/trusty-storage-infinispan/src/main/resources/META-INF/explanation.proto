@@ -1,0 +1,36 @@
+package org.kie.kogito.explainability.api;
+
+/* @Indexed */
+message LIMEExplainabilityResult {
+    /* @Field(store = Store.YES) */
+    optional string executionId = 1;
+
+    optional string rawObject = 2;
+}
+
+/* @Indexed */
+message CounterfactualExplainabilityRequest {
+
+    /* @Field(store = Store.YES) */
+    optional string executionId = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string counterfactualId = 2;
+
+    optional string rawObject = 3;
+}
+
+/* @Indexed */
+message CounterfactualExplainabilityResult {
+
+    /* @Field(store = Store.YES) */
+    optional string executionId = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string counterfactualId = 2;
+
+    /* @Field(store = Store.YES) @SortableField */
+    optional string sequenceId = 3;
+
+    optional string rawObject = 4;
+}

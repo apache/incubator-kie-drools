@@ -24,12 +24,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.CloudEventUtils;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 
 import io.cloudevents.CloudEvent;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -54,16 +53,16 @@ public class ExplainabilityResultConsumerIT {
 
     KafkaTestClient kafkaClient;
 
-    public static CloudEvent buildExplainabilityCloudEvent(BaseExplainabilityResultDto resultDto) {
+    public static CloudEvent buildExplainabilityCloudEvent(BaseExplainabilityResult result) {
         return CloudEventUtils.build(
-                resultDto.getExecutionId(),
+                result.getExecutionId(),
                 URI.create("explainabilityResult/test"),
-                resultDto,
-                BaseExplainabilityResultDto.class).orElseThrow(IllegalStateException::new);
+                result,
+                BaseExplainabilityResult.class).orElseThrow(IllegalStateException::new);
     }
 
-    public static String buildCloudEventJsonString(BaseExplainabilityResultDto resultDto) {
-        return CloudEventUtils.encode(buildExplainabilityCloudEvent(resultDto)).orElseThrow(IllegalStateException::new);
+    public static String buildCloudEventJsonString(BaseExplainabilityResult result) {
+        return CloudEventUtils.encode(buildExplainabilityCloudEvent(result)).orElseThrow(IllegalStateException::new);
     }
 
     @BeforeEach
@@ -84,10 +83,9 @@ public class ExplainabilityResultConsumerIT {
 
         doNothing().when(trustyService).storeExplainabilityResult(eq(executionId), any(BaseExplainabilityResult.class));
 
-        kafkaClient.produce(buildCloudEventJsonString(LIMEExplainabilityResultDto.buildSucceeded(executionId, Collections.emptyMap())),
+        kafkaClient.produce(buildCloudEventJsonString(LIMEExplainabilityResult.buildSucceeded(executionId, Collections.emptyList())),
                 KafkaConstants.TRUSTY_EXPLAINABILITY_RESULT_TOPIC);
 
         verify(trustyService, timeout(3000).times(1)).storeExplainabilityResult(any(String.class), any(BaseExplainabilityResult.class));
     }
-
 }

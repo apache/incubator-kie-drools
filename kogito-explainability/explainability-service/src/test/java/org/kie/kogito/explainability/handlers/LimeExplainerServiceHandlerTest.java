@@ -24,13 +24,14 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.PredictionProviderFactory;
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.explainability.api.ExplainabilityStatus;
-import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
-import org.kie.kogito.explainability.api.ModelIdentifierDto;
-import org.kie.kogito.explainability.api.SaliencyDto;
+import org.kie.kogito.explainability.api.LIMEExplainabilityRequest;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
+import org.kie.kogito.explainability.api.ModelIdentifier;
+import org.kie.kogito.explainability.api.NamedTypedValue;
+import org.kie.kogito.explainability.api.SaliencyModel;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureImportance;
@@ -41,9 +42,6 @@ import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
-import org.kie.kogito.explainability.models.LIMEExplainabilityRequest;
-import org.kie.kogito.explainability.models.ModelIdentifier;
 import org.kie.kogito.tracing.typedvalue.CollectionValue;
 import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
@@ -67,8 +65,6 @@ public class LimeExplainerServiceHandlerTest {
 
     private static final ModelIdentifier MODEL_IDENTIFIER = new ModelIdentifier("resourceType", "resourceId");
 
-    private static final ModelIdentifierDto MODEL_IDENTIFIER_DTO = new ModelIdentifierDto("resourceType", "resourceId");
-
     private LimeExplainer explainer;
 
     private LimeExplainerServiceHandler handler;
@@ -88,36 +84,12 @@ public class LimeExplainerServiceHandlerTest {
     }
 
     @Test
-    public void testSupportsDo() {
-        assertTrue(handler.supportsDto(LIMEExplainabilityRequestDto.class));
-        assertFalse(handler.supportsDto(BaseExplainabilityRequestDto.class));
-    }
-
-    @Test
-    public void testExplainabilityRequestFrom() {
-        LIMEExplainabilityRequestDto requestDto = new LIMEExplainabilityRequestDto(EXECUTION_ID,
-                SERVICE_URL,
-                MODEL_IDENTIFIER_DTO,
-                Collections.emptyMap(),
-                Collections.emptyMap());
-
-        LIMEExplainabilityRequest request = handler.explainabilityRequestFrom(requestDto);
-
-        assertEquals(requestDto.getExecutionId(), request.getExecutionId());
-        assertEquals(requestDto.getServiceUrl(), request.getServiceUrl());
-        assertEquals(requestDto.getModelIdentifier().getResourceId(), request.getModelIdentifier().getResourceId());
-        assertEquals(requestDto.getModelIdentifier().getResourceType(), request.getModelIdentifier().getResourceType());
-        assertEquals(requestDto.getInputs(), request.getInputs());
-        assertEquals(requestDto.getOutputs(), request.getOutputs());
-    }
-
-    @Test
     public void testGetPredictionWithEmptyDefinition() {
         LIMEExplainabilityRequest request = new LIMEExplainabilityRequest(EXECUTION_ID,
                 SERVICE_URL,
                 MODEL_IDENTIFIER,
-                Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyList(),
+                Collections.emptyList());
 
         Prediction prediction = handler.getPrediction(request);
         assertTrue(prediction instanceof SimplePrediction);
@@ -133,18 +105,18 @@ public class LimeExplainerServiceHandlerTest {
         LIMEExplainabilityRequest request = new LIMEExplainabilityRequest(EXECUTION_ID,
                 SERVICE_URL,
                 MODEL_IDENTIFIER,
-                Map.of("input1",
-                        new UnitValue("number", new IntNode(20)),
-                        "input2",
-                        new StructureValue("number", Map.of("input2b", new UnitValue("number", new IntNode(55)))),
-                        "input3",
-                        new CollectionValue("number", List.of(new UnitValue("number", new IntNode(100))))),
-                Map.of("output1",
-                        new UnitValue("number", new IntNode(20)),
-                        "output2",
-                        new StructureValue("number", Map.of("output2b", new UnitValue("number", new IntNode(55)))),
-                        "output3",
-                        new CollectionValue("number", List.of(new UnitValue("number", new IntNode(100))))));
+                List.of(new NamedTypedValue("input1",
+                        new UnitValue("number", "number", new IntNode(20))),
+                        new NamedTypedValue("input2",
+                                new StructureValue("number", Map.of("input2b", new UnitValue("number", new IntNode(55))))),
+                        new NamedTypedValue("input3",
+                                new CollectionValue("number", List.of(new UnitValue("number", new IntNode(100)))))),
+                List.of(new NamedTypedValue("output1",
+                        new UnitValue("number", "number", new IntNode(20))),
+                        new NamedTypedValue("output2",
+                                new StructureValue("number", Map.of("output2b", new UnitValue("number", new IntNode(55))))),
+                        new NamedTypedValue("output3",
+                                new CollectionValue("number", List.of(new UnitValue("number", new IntNode(100)))))));
 
         Prediction prediction = handler.getPrediction(request);
 
@@ -218,57 +190,56 @@ public class LimeExplainerServiceHandlerTest {
     }
 
     @Test
-    public void testCreateSucceededResultDto() {
+    public void testCreateSucceededResult() {
         LIMEExplainabilityRequest request = new LIMEExplainabilityRequest(EXECUTION_ID,
                 SERVICE_URL,
                 MODEL_IDENTIFIER,
-                Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyList(),
+                Collections.emptyList());
 
         Map<String, Saliency> saliencies = Map.of("s1",
                 new Saliency(new Output("salary", Type.NUMBER),
                         List.of(new FeatureImportance(new Feature("age", Type.NUMBER, new Value(25.0)), 5.0),
                                 new FeatureImportance(new Feature("dependents", Type.NUMBER, new Value(2)), -11.0))));
 
-        BaseExplainabilityResultDto base = handler.createSucceededResultDto(request, saliencies);
-        assertTrue(base instanceof LIMEExplainabilityResultDto);
-        LIMEExplainabilityResultDto result = (LIMEExplainabilityResultDto) base;
+        BaseExplainabilityResult base = handler.createSucceededResult(request, saliencies);
+        assertTrue(base instanceof LIMEExplainabilityResult);
+        LIMEExplainabilityResult result = (LIMEExplainabilityResult) base;
 
         assertEquals(ExplainabilityStatus.SUCCEEDED, result.getStatus());
         assertEquals(EXECUTION_ID, result.getExecutionId());
         assertEquals(1, result.getSaliencies().size());
-        assertTrue(result.getSaliencies().containsKey("s1"));
 
-        SaliencyDto dto = result.getSaliencies().get("s1");
-        assertEquals(2, dto.getFeatureImportance().size());
-        assertEquals("age", dto.getFeatureImportance().get(0).getFeatureName());
-        assertEquals(5.0, dto.getFeatureImportance().get(0).getScore());
-        assertEquals("dependents", dto.getFeatureImportance().get(1).getFeatureName());
-        assertEquals(-11.0, dto.getFeatureImportance().get(1).getScore());
+        SaliencyModel saliencyModel = result.getSaliencies().iterator().next();
+        assertEquals(2, saliencyModel.getFeatureImportance().size());
+        assertEquals("age", saliencyModel.getFeatureImportance().get(0).getFeatureName());
+        assertEquals(5.0, saliencyModel.getFeatureImportance().get(0).getFeatureScore());
+        assertEquals("dependents", saliencyModel.getFeatureImportance().get(1).getFeatureName());
+        assertEquals(-11.0, saliencyModel.getFeatureImportance().get(1).getFeatureScore());
     }
 
     @Test
-    public void testCreateIntermediateResultDto() {
+    public void testCreateIntermediateResult() {
         LIMEExplainabilityRequest request = new LIMEExplainabilityRequest(EXECUTION_ID,
                 SERVICE_URL,
                 MODEL_IDENTIFIER,
-                Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyList(),
+                Collections.emptyList());
 
-        assertThrows(UnsupportedOperationException.class, () -> handler.createIntermediateResultDto(request, null));
+        assertThrows(UnsupportedOperationException.class, () -> handler.createIntermediateResult(request, null));
     }
 
     @Test
-    public void testCreateFailedResultDto() {
+    public void testCreateFailedResult() {
         LIMEExplainabilityRequest request = new LIMEExplainabilityRequest(EXECUTION_ID,
                 SERVICE_URL,
                 MODEL_IDENTIFIER,
-                Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyList(),
+                Collections.emptyList());
 
-        BaseExplainabilityResultDto base = handler.createFailedResultDto(request, new NullPointerException("Something went wrong"));
-        assertTrue(base instanceof LIMEExplainabilityResultDto);
-        LIMEExplainabilityResultDto result = (LIMEExplainabilityResultDto) base;
+        BaseExplainabilityResult base = handler.createFailedResult(request, new NullPointerException("Something went wrong"));
+        assertTrue(base instanceof LIMEExplainabilityResult);
+        LIMEExplainabilityResult result = (LIMEExplainabilityResult) base;
 
         assertEquals(ExplainabilityStatus.FAILED, result.getStatus());
         assertEquals("Something went wrong", result.getStatusDetails());

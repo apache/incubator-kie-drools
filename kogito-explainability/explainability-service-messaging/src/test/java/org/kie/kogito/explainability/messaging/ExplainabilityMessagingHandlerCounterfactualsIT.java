@@ -19,10 +19,10 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -39,32 +39,32 @@ class ExplainabilityMessagingHandlerCounterfactualsIT extends BaseExplainability
     protected static final Long MAX_RUNNING_TIME_SECONDS = 60L;
 
     @Override
-    protected BaseExplainabilityRequestDto buildRequest() {
-        return new CounterfactualExplainabilityRequestDto(EXECUTION_ID,
-                COUNTERFACTUAL_ID,
+    protected BaseExplainabilityRequest buildRequest() {
+        return new CounterfactualExplainabilityRequest(EXECUTION_ID,
                 SERVICE_URL,
-                MODEL_IDENTIFIER_DTO,
-                Collections.emptyMap(),
-                Collections.emptyMap(),
-                Collections.emptyMap(),
+                MODEL_IDENTIFIER,
+                COUNTERFACTUAL_ID,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 MAX_RUNNING_TIME_SECONDS);
     }
 
     @Override
-    protected BaseExplainabilityResultDto buildResult() {
-        return CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
+    protected BaseExplainabilityResult buildResult() {
+        return CounterfactualExplainabilityResult.buildSucceeded(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
                 SOLUTION_ID,
                 0L,
                 Boolean.TRUE,
-                CounterfactualExplainabilityResultDto.Stage.FINAL,
-                Collections.emptyMap(),
-                Collections.emptyMap());
+                CounterfactualExplainabilityResult.Stage.FINAL,
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
     @Override
-    protected void assertResult(BaseExplainabilityResultDto result) {
-        assertTrue(result instanceof CounterfactualExplainabilityResultDto);
+    protected void assertResult(BaseExplainabilityResult result) {
+        assertTrue(result instanceof CounterfactualExplainabilityResult);
     }
 
     @Override
@@ -73,15 +73,15 @@ class ExplainabilityMessagingHandlerCounterfactualsIT extends BaseExplainability
     }
 
     @Override
-    protected void mockExplainAsyncInvocationWithIntermediateResults(Consumer<BaseExplainabilityResultDto> callback) {
-        CounterfactualExplainabilityResultDto intermediateResult = CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
+    protected void mockExplainAsyncInvocationWithIntermediateResults(Consumer<BaseExplainabilityResult> callback) {
+        CounterfactualExplainabilityResult intermediateResult = CounterfactualExplainabilityResult.buildSucceeded(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
                 SOLUTION_ID,
                 0L,
                 Boolean.TRUE,
-                CounterfactualExplainabilityResultDto.Stage.INTERMEDIATE,
-                Collections.emptyMap(),
-                Collections.emptyMap());
+                CounterfactualExplainabilityResult.Stage.INTERMEDIATE,
+                Collections.emptyList(),
+                Collections.emptyList());
         callback.accept(intermediateResult);
     }
 }

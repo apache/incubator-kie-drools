@@ -22,9 +22,9 @@ import java.util.function.Consumer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,15 +41,15 @@ public class ExplanationServiceImpl implements ExplanationService {
     }
 
     @Override
-    public CompletionStage<BaseExplainabilityResultDto> explainAsync(BaseExplainabilityRequest request) {
+    public CompletionStage<BaseExplainabilityResult> explainAsync(BaseExplainabilityRequest request) {
         return explainAsync(request,
-                baseExplainabilityResultDto -> {
+                baseExplainabilityResult -> {
                     /* NOP */});
     }
 
     @Override
-    public CompletionStage<BaseExplainabilityResultDto> explainAsync(BaseExplainabilityRequest request,
-            Consumer<BaseExplainabilityResultDto> intermediateResultConsumer) {
+    public CompletionStage<BaseExplainabilityResult> explainAsync(BaseExplainabilityRequest request,
+            Consumer<BaseExplainabilityResult> intermediateResultConsumer) {
         LOG.debug("Explainability request {} with executionId {} for model {}:{}",
                 request.getClass().getSimpleName(),
                 request.getExecutionId(),

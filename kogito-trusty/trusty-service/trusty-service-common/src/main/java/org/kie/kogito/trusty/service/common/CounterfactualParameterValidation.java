@@ -21,13 +21,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainValue;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.tracing.typedvalue.BaseTypedValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainValue;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 public class CounterfactualParameterValidation {
 

@@ -20,16 +20,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.explainability.api.CounterfactualDomain;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainStructureValue;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitValue;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainStructureValue;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainUnitValue;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

@@ -20,8 +20,8 @@ import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

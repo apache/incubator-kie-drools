@@ -16,15 +16,19 @@
 package org.kie.kogito.explainability;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.microprofile.context.ThreadContext;
+import org.kie.kogito.explainability.api.HasNameValue;
+import org.kie.kogito.explainability.api.ModelIdentifier;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PredictionInput;
@@ -32,7 +36,6 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
-import org.kie.kogito.explainability.models.ModelIdentifier;
 import org.kie.kogito.explainability.models.PredictInput;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.slf4j.Logger;
@@ -52,14 +55,14 @@ public class RemotePredictionProvider implements PredictionProvider {
     private static final Logger LOG = LoggerFactory.getLogger(RemotePredictionProvider.class);
 
     private final ModelIdentifier modelIdentifier;
-    private final Map<String, TypedValue> predictionOutputs;
+    private final Collection<? extends HasNameValue<TypedValue>> predictionOutputs;
     private final ThreadContext threadContext;
     private final Executor asyncExecutor;
     private final WebClient client;
 
     public RemotePredictionProvider(String serviceUrl,
             ModelIdentifier modelIdentifier,
-            Map<String, TypedValue> predictionOutputs,
+            Collection<? extends HasNameValue<TypedValue>> predictionOutputs,
             Vertx vertx,
             ThreadContext threadContext,
             Executor asyncExecutor) {
@@ -92,6 +95,7 @@ public class RemotePredictionProvider implements PredictionProvider {
         }
         List<Output> resultOutputs = toOutputList(mainObj.getJsonObject("result"));
         List<String> resultOutputNames = resultOutputs.stream().map(Output::getName).collect(toList());
+        Map<String, TypedValue> mappedOutputs = predictionOutputs.stream().collect(Collectors.toMap(HasNameValue::getName, HasNameValue::getValue));
 
         // It's possible that some outputs are missing in the response from the prediction service
         // (e.g. when the generated perturbed inputs don't make sense and a decision is skipped).
@@ -102,8 +106,8 @@ public class RemotePredictionProvider implements PredictionProvider {
         // the explainer happy.
         List<Output> outputs = Stream.concat(
                 resultOutputs.stream()
-                        .filter(output -> predictionOutputs.containsKey(output.getName())),
-                predictionOutputs.keySet().stream()
+                        .filter(output -> mappedOutputs.containsKey(output.getName())),
+                mappedOutputs.keySet().stream()
                         .filter(key -> !resultOutputNames.contains(key))
                         .map(key -> new Output(key, Type.UNDEFINED, new Value(null), 1d)))
                 .collect(toList());
@@ -139,7 +143,8 @@ public class RemotePredictionProvider implements PredictionProvider {
         return map;
     }
 
-    protected CompletableFuture<List<PredictionOutput>> sendPredictRequest(List<PredictionInput> inputs, ModelIdentifier modelIdentifier) {
+    protected CompletableFuture<List<PredictionOutput>> sendPredictRequest(List<PredictionInput> inputs,
+            ModelIdentifier modelIdentifier) {
         List<PredictInput> piList = inputs.stream()
                 .map(input -> new PredictInput(modelIdentifier, toMap(input.getFeatures())))
                 .collect(toList());

@@ -18,21 +18,20 @@ package org.kie.kogito.explainability.handlers;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 
 /**
  * A local explainability handler that delegates explanation to a {@link LocalExplainer} and handles assembly
- * of the {@link BaseExplainabilityResultDto} for both success and failure states of explanation calculation.
+ * of the {@link BaseExplainabilityResult} for both success and failure states of explanation calculation.
  *
  * @param <T> the type of local explanation generated
  * @param <R> the type of the local explanation request
  */
-public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityRequest, D extends BaseExplainabilityRequestDto>
+public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityRequest>
         extends LocalExplainer<T> {
 
     /**
@@ -41,26 +40,7 @@ public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityReq
      * @param type The Trusty Service request type.
      * @return true if the implementation supports the type of explanation.
      */
-    // See https://issues.redhat.com/browse/FAI-457
-    // We will not need the overloaded generic class when we only have one type of DTO
     <U extends BaseExplainabilityRequest> boolean supports(Class<U> type);
-
-    /**
-     * Checks whether an implementation supports a type of explanation.
-     *
-     * @param type The Explainability Service result type.
-     * @return true if the implementation supports the type of explanation.
-     */
-    // See https://issues.redhat.com/browse/FAI-457
-    <U extends BaseExplainabilityRequestDto> boolean supportsDto(Class<U> type);
-
-    /**
-     * Converts the result from the Explainability Service to that used by Trusty Service.
-     *
-     * @param dto The request coming from the Trusty Service
-     * @return The request used by Explainability Service
-     */
-    R explainabilityRequestFrom(D dto);
 
     /**
      * Gets a Prediction object from the request for the LocalExplainer. It should contain all the necessary
@@ -83,49 +63,49 @@ public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityReq
      * Requests calculation of an explanation decorated with both "success" and "failure" result handlers.
      * See:
      * - {@link LocalExplainer#explainAsync}
-     * - {@link LocalExplainerServiceHandler#createSucceededResultDto(BaseExplainabilityRequest, Object)}
-     * - {@link LocalExplainerServiceHandler#createFailedResultDto(BaseExplainabilityRequest, Throwable)}
+     * - {@link LocalExplainerServiceHandler#createSucceededResult(BaseExplainabilityRequest, Object)}
+     * - {@link LocalExplainerServiceHandler#createFailedResult(BaseExplainabilityRequest, Throwable)}
      *
      * @param request The explanation request.
      * @param intermediateResultsConsumer A consumer for intermediate results provided by the explainer.
      * @return
      */
-    default CompletableFuture<BaseExplainabilityResultDto> explainAsyncWithResults(R request,
-            Consumer<BaseExplainabilityResultDto> intermediateResultsConsumer) {
+    default CompletableFuture<BaseExplainabilityResult> explainAsyncWithResults(R request,
+            Consumer<BaseExplainabilityResult> intermediateResultsConsumer) {
         Prediction prediction = getPrediction(request);
         PredictionProvider predictionProvider = getPredictionProvider(request);
         return explainAsync(prediction,
                 predictionProvider,
-                s -> intermediateResultsConsumer.accept(createIntermediateResultDto(request, s)))
-                        .thenApply(input -> createSucceededResultDto(request, input))
-                        .exceptionally(e -> createFailedResultDto(request, e));
+                s -> intermediateResultsConsumer.accept(createIntermediateResult(request, s)))
+                        .thenApply(input -> createSucceededResult(request, input))
+                        .exceptionally(e -> createFailedResult(request, e));
     }
 
     /**
-     * Creates a DTO containing the "success" information for an explanation calculation.
+     * Creates a result containing the "success" information for an explanation calculation.
      *
      * @param request The original request.
      * @param result The result from the LocalExplainer calculation.
      * @return
      */
-    BaseExplainabilityResultDto createSucceededResultDto(R request, T result);
+    BaseExplainabilityResult createSucceededResult(R request, T result);
 
     /**
-     * Creates a DTO containing the "failed" information for an explanation calculation.
+     * Creates a result containing the "failed" information for an explanation calculation.
      *
      * @param request The original request.
      * @param throwable The exception thrown during calculation.
      * @return
      */
-    BaseExplainabilityResultDto createFailedResultDto(R request, Throwable throwable);
+    BaseExplainabilityResult createFailedResult(R request, Throwable throwable);
 
     /**
-     * Creates a DTO containing the "intermediate" information for an explanation calculation.
+     * Creates a result containing the "intermediate" information for an explanation calculation.
      *
      * @param request The original request.
      * @param result The intermediate result from the LocalExplainer calculation.
      * @return
      */
-    BaseExplainabilityResultDto createIntermediateResultDto(R request, T result);
+    BaseExplainabilityResult createIntermediateResult(R request, T result);
 
 }

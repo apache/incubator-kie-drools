@@ -45,7 +45,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import org.kie.kogito.trusty.service.common.TrustyService;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
+import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.service.common.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.service.common.responses.ExecutionsResponse;
@@ -182,7 +182,7 @@ public class ExecutionsApiV1 {
         try {
             Optional<Decision> decision = retrieveDecision(executionId);
             //TODO GAV components are provided but unused. See https://issues.redhat.com/browse/FAI-239
-            return decision.map(d -> trustyService.getModelById(new ModelIdentifier(null, null, null, d.getExecutedModelName(), d.getExecutedModelNamespace())));
+            return decision.map(d -> trustyService.getModelById(new ModelMetadata(null, null, null, d.getExecutedModelName(), d.getExecutedModelNamespace())));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

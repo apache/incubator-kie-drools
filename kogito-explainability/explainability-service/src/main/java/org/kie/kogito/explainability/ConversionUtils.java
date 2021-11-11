@@ -27,11 +27,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto;
-import org.kie.kogito.explainability.api.CounterfactualDomainDto;
-import org.kie.kogito.explainability.api.CounterfactualDomainFixedDto;
-import org.kie.kogito.explainability.api.CounterfactualDomainRangeDto;
-import org.kie.kogito.explainability.api.CounterfactualSearchDomainDto;
+import org.kie.kogito.explainability.api.CounterfactualDomain;
+import org.kie.kogito.explainability.api.CounterfactualDomainCategorical;
+import org.kie.kogito.explainability.api.CounterfactualDomainRange;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainValue;
+import org.kie.kogito.explainability.api.HasNameValue;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.Output;
@@ -54,20 +56,24 @@ import io.vertx.core.json.JsonObject;
 
 public class ConversionUtils {
 
-    private ConversionUtils() {
-        // prevent initialization
+    ////////////////////////////
+    // TO EXPLAINABILITY MODEL
+    ////////////////////////////
+
+    /*
+     * ---------------------------------------
+     * Feature conversion
+     * ---------------------------------------
+     */
+    public static List<Feature> toFeatureList(Collection<? extends HasNameValue<TypedValue>> values) {
+        return toList(values, ConversionUtils::toFeature);
     }
 
-    protected static Feature toFeature(String name, Object value) {
-        if (value instanceof JsonObject) {
-            return FeatureFactory.newCompositeFeature(name, toFeatureList((JsonObject) value));
-        }
-        return toTypeValuePair(value)
-                .map(p -> new Feature(name, p.getLeft(), p.getRight()))
-                .orElse(null);
+    static Feature toFeature(HasNameValue<TypedValue> hnv) {
+        return toFeature(hnv.getName(), hnv.getValue());
     }
 
-    public static Feature toFeature(String name, TypedValue value) {
+    static Feature toFeature(String name, TypedValue value) {
         if (value.isUnit()) {
             return toTypeValuePair(value.toUnit().getValue())
                     .map(p -> new Feature(name, p.getLeft(), p.getRight()))
@@ -81,15 +87,11 @@ public class ConversionUtils {
         }
     }
 
-    public static Boolean toFeatureConstraint(String name, CounterfactualSearchDomainDto domain) {
-        if (domain.isUnit()) {
-            return domain.toUnit().isFixed();
-        } else {
-            throw new IllegalArgumentException(String.format("Unsupported CounterfactualSearchDomain kind %s", domain.getKind()));
-        }
+    static List<Feature> toFeatureList(Map<String, TypedValue> values) {
+        return toList(values, ConversionUtils::toFeature);
     }
 
-    protected static List<Feature> toFeatureList(String name, CollectionValue collectionValue) {
+    static List<Feature> toFeatureList(String name, CollectionValue collectionValue) {
         Collection<TypedValue> values = collectionValue.getValue();
         List<Feature> list = new ArrayList<>(values.size());
         int index = 0;
@@ -100,93 +102,29 @@ public class ConversionUtils {
         return list;
     }
 
-    public static List<Feature> toFeatureList(JsonObject mainObj) {
-        return toList(mainObj, ConversionUtils::toFeature);
+    /*
+     * ---------------------------------------
+     * Output conversion
+     * ---------------------------------------
+     */
+    public static List<Output> toOutputList(Collection<? extends HasNameValue<TypedValue>> values) {
+        return toList(values, hnv -> toOutput(hnv.getName(), hnv.getValue()));
     }
 
-    public static List<Feature> toFeatureList(Map<String, TypedValue> values) {
-        return toList(values, ConversionUtils::toFeature);
-    }
-
-    public static List<Boolean> toFeatureConstraintList(Map<String, CounterfactualSearchDomainDto> searchDomains) {
-        return toList(searchDomains, ConversionUtils::toFeatureConstraint);
-    }
-
-    public static <T> List<T> toList(JsonObject mainObj, BiFunction<String, Object, T> unitConverter) {
-        if (mainObj == null) {
-            return Collections.emptyList();
-        }
-        return mainObj.stream()
-                .map(entry -> unitConverter.apply(entry.getKey(), entry.getValue()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
-    public static <T, V> List<T> toList(Map<String, V> values, BiFunction<String, V, T> unitConverter) {
-        if (values == null) {
-            return Collections.emptyList();
-        }
-        return values.entrySet().stream()
-                .map(entry -> unitConverter.apply(entry.getKey(), entry.getValue()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
-    protected static Output toOutput(String name, Object value) {
-        if (value instanceof JsonObject) {
-            return new Output(name, Type.COMPOSITE, new Value(toOutputList((JsonObject) value)), 1d);
-        }
-        return toTypeValuePair(value)
-                .map(p -> new Output(name, p.getLeft(), p.getRight(), 1d))
-                .orElse(null);
-    }
-
-    public static Output toOutput(String name, TypedValue value) {
+    static Output toOutput(String name, TypedValue value) {
         if (value.isUnit()) {
             return toTypeValuePair(value.toUnit().getValue())
                     .map(p -> new Output(name, p.getLeft(), p.getRight(), 1d))
                     .orElse(null);
         } else if (value.isStructure()) {
-            return new Output(name, Type.COMPOSITE, new Value(toOutputList(value.toStructure().getValue())), 1d);
+            return new Output(name, Type.COMPOSITE, new Value(toOutputListForStructure(value.toStructure().getValue())), 1d);
         } else if (value.isCollection()) {
-            return new Output(name, Type.COMPOSITE, new Value(toOutputList(name, value.toCollection())), 1d);
+            return new Output(name, Type.COMPOSITE, new Value(toOutputListForCollection(name, value.toCollection())), 1d);
         }
         return null;
     }
 
-    protected static List<Output> toOutputList(String name, CollectionValue collectionValue) {
-        Collection<TypedValue> values = collectionValue.getValue();
-        List<Output> list = new ArrayList<>(values.size());
-        int index = 0;
-        for (TypedValue typedValue : values) {
-            list.add(toOutput(name + "_" + index, typedValue));
-            index++;
-        }
-        return list;
-    }
-
-    public static List<Output> toOutputList(JsonObject mainObj) {
-        return toList(mainObj, ConversionUtils::toOutput);
-    }
-
-    public static List<Output> toOutputList(Map<String, TypedValue> values) {
-        return toList(values, ConversionUtils::toOutput);
-    }
-
-    protected static Optional<Pair<Type, Value>> toTypeValuePair(Object value) {
-        if (value instanceof Boolean) {
-            return Optional.of(Pair.of(Type.BOOLEAN, new Value(value)));
-        }
-        if (value instanceof Number) {
-            return Optional.of(Pair.of(Type.NUMBER, new Value(((Number) value).doubleValue())));
-        }
-        if (value instanceof String) {
-            return Optional.of(Pair.of(Type.TEXT, new Value(value)));
-        }
-        return Optional.empty();
-    }
-
-    public static Optional<Pair<Type, Value>> toTypeValuePair(JsonNode jsonValue) {
+    static Optional<Pair<Type, Value>> toTypeValuePair(JsonNode jsonValue) {
         if (jsonValue.isBoolean()) {
             return Optional.of(Pair.of(Type.BOOLEAN, new Value(jsonValue.asBoolean())));
         }
@@ -199,17 +137,31 @@ public class ConversionUtils {
         return Optional.empty();
     }
 
+    static List<Output> toOutputListForStructure(Map<String, TypedValue> values) {
+        return toList(values, ConversionUtils::toOutput);
+    }
+
+    static List<Output> toOutputListForCollection(String name, CollectionValue collectionValue) {
+        Collection<TypedValue> values = collectionValue.getValue();
+        List<Output> list = new ArrayList<>(values.size());
+        int index = 0;
+        for (TypedValue typedValue : values) {
+            list.add(toOutput(name + "_" + index, typedValue));
+            index++;
+        }
+        return list;
+    }
+
     /*
      * ---------------------------------------
      * Counterfactual Search Domain conversion
      * ---------------------------------------
      */
-
-    public static List<FeatureDomain> toFeatureDomainList(Map<String, CounterfactualSearchDomainDto> searchDomains) {
-        return toList(searchDomains, ConversionUtils::toFeatureDomain);
+    public static List<FeatureDomain> toFeatureDomainList(Collection<CounterfactualSearchDomain> searchDomains) {
+        return toList(searchDomains, hnv -> toFeatureDomain(hnv.getValue()));
     }
 
-    public static FeatureDomain toFeatureDomain(String name, CounterfactualSearchDomainDto domain) {
+    public static FeatureDomain toFeatureDomain(CounterfactualSearchDomainValue domain) {
         if (domain.isUnit()) {
             return toCounterfactualSearchDomain(domain.toUnit().getDomain())
                     .orElseThrow(() -> new IllegalArgumentException(String.format("Unsupported CounterfactualSearchDomain type %s", domain.getClass().getName())));
@@ -218,63 +170,133 @@ public class ConversionUtils {
         }
     }
 
-    private static Optional<FeatureDomain> toCounterfactualSearchDomain(CounterfactualDomainDto domain) {
-        if (domain instanceof CounterfactualDomainRangeDto) {
-            CounterfactualDomainRangeDto range = (CounterfactualDomainRangeDto) domain;
+    static Optional<FeatureDomain> toCounterfactualSearchDomain(CounterfactualDomain domain) {
+        if (Objects.isNull(domain)) {
+            return Optional.of(EmptyFeatureDomain.create());
+        } else if (domain instanceof CounterfactualDomainRange) {
+            CounterfactualDomainRange range = (CounterfactualDomainRange) domain;
             JsonNode lb = range.getLowerBound();
             JsonNode ub = range.getUpperBound();
             if (lb.isNumber() && ub.isNumber()) {
                 return Optional.of(NumericalFeatureDomain.create(range.getLowerBound().asDouble(), range.getUpperBound().asDouble()));
             } else {
-                throw new IllegalArgumentException(String.format("Unsupported CounterfactualDomainRangeDto [%s, %s]", lb.asText(), ub.asText()));
+                throw new IllegalArgumentException(String.format("Unsupported CounterfactualDomainRange [%s, %s]", lb.asText(), ub.asText()));
             }
-        } else if (domain instanceof CounterfactualDomainCategoricalDto) {
-            CounterfactualDomainCategoricalDto categorical = (CounterfactualDomainCategoricalDto) domain;
+        } else if (domain instanceof CounterfactualDomainCategorical) {
+            CounterfactualDomainCategorical categorical = (CounterfactualDomainCategorical) domain;
             Collection<JsonNode> jsonCategories = categorical.getCategories();
             String[] categories = new String[jsonCategories.size()];
             if (jsonCategories.stream().allMatch(JsonNode::isTextual)) {
                 jsonCategories.stream().map(JsonNode::asText).collect(Collectors.toList()).toArray(categories);
                 return Optional.of(CategoricalFeatureDomain.create(categories));
             } else {
-                throw new IllegalArgumentException(String.format("Unsupported CounterfactualDomainCategoricalDto [%s]", String.join(", ", categories)));
+                throw new IllegalArgumentException(String.format("Unsupported CounterfactualDomainCategorical [%s]", String.join(", ", categories)));
             }
-        } else if (domain instanceof CounterfactualDomainFixedDto) {
-            return Optional.of(EmptyFeatureDomain.create());
+        }
+
+        return Optional.empty();
+    }
+
+    public static List<Boolean> toFeatureConstraintList(Collection<CounterfactualSearchDomain> searchDomains) {
+        return toList(searchDomains, hnv -> toFeatureConstraint(hnv.getValue()));
+    }
+
+    static Boolean toFeatureConstraint(CounterfactualSearchDomainValue domain) {
+        if (domain.isUnit()) {
+            return domain.toUnit().isFixed();
+        } else {
+            throw new IllegalArgumentException(String.format("Unsupported CounterfactualSearchDomain kind %s", domain.getKind()));
+        }
+    }
+
+    /*
+     * ---------------------------------------
+     * JSON conversion
+     * ---------------------------------------
+     */
+    public static List<Output> toOutputList(JsonObject mainObj) {
+        return toList(mainObj, ConversionUtils::toOutput);
+    }
+
+    static Output toOutput(String name, Object value) {
+        if (value instanceof JsonObject) {
+            return new Output(name, Type.COMPOSITE, new Value(toOutputList((JsonObject) value)), 1d);
+        }
+        return toTypeValuePair(value)
+                .map(p -> new Output(name, p.getLeft(), p.getRight(), 1d))
+                .orElse(null);
+    }
+
+    static Optional<Pair<Type, Value>> toTypeValuePair(Object value) {
+        if (value instanceof Boolean) {
+            return Optional.of(Pair.of(Type.BOOLEAN, new Value(value)));
+        }
+        if (value instanceof Number) {
+            return Optional.of(Pair.of(Type.NUMBER, new Value(((Number) value).doubleValue())));
+        }
+        if (value instanceof String) {
+            return Optional.of(Pair.of(Type.TEXT, new Value(value)));
         }
         return Optional.empty();
     }
 
     /*
-     * ------------------
-     * Results conversion
-     * ------------------
+     * ---------------------------------------
+     * List conversion
+     * ---------------------------------------
      */
-    public static Map<String, TypedValue> fromFeatureList(List<Feature> features) {
-        return toMap(features, ConversionUtils::toTypeValuePair);
-    }
-
-    private static <T, V> Map<String, V> toMap(List<T> values, Function<T, Pair<String, V>> unitConverter) {
+    static <R, T> List<R> toList(Collection<T> values,
+            Function<T, R> unitConverter) {
         if (values == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
         return values.stream()
                 .map(unitConverter)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+                .collect(Collectors.toList());
     }
 
-    private static Pair<String, TypedValue> toTypeValuePair(Feature feature) {
-        return Pair.of(feature.getName(), toTypedValue(feature));
+    static <T, V> List<T> toList(Map<String, V> values, BiFunction<String, V, T> unitConverter) {
+        if (values == null) {
+            return Collections.emptyList();
+        }
+        return values.entrySet().stream()
+                .map(entry -> unitConverter.apply(entry.getKey(), entry.getValue()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-    private static TypedValue toTypedValue(Feature feature) {
+    static <T> List<T> toList(JsonObject mainObj, BiFunction<String, Object, T> unitConverter) {
+        if (mainObj == null) {
+            return Collections.emptyList();
+        }
+        return mainObj.stream()
+                .map(entry -> unitConverter.apply(entry.getKey(), entry.getValue()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    ////////////////////////////
+    // FROM EXPLAINABILITY MODEL
+    ////////////////////////////
+
+    /*
+     * ---------------------------------------
+     * Feature conversion
+     * ---------------------------------------
+     */
+    public static List<NamedTypedValue> fromFeatureList(List<Feature> features) {
+        return toList(features, f -> new NamedTypedValue(f.getName(), toTypedValue(f)));
+    }
+
+    static TypedValue toTypedValue(Feature feature) {
         String name = feature.getName();
         Type type = feature.getType();
         Value value = feature.getValue();
         return toTypedValue(name, type, value);
     }
 
-    private static TypedValue toTypedValue(String name, Type type, Value value) {
+    static TypedValue toTypedValue(String name, Type type, Value value) {
         Object underlyingObject = value.getUnderlyingObject();
         if (type.equals(Type.BOOLEAN)) {
             if (underlyingObject instanceof Boolean) {
@@ -292,19 +314,19 @@ public class ConversionUtils {
         throw new IllegalArgumentException(String.format("Unable to convert '%s' with Type '%s' and Value '%s'", name, type, value));
     }
 
-    public static Map<String, TypedValue> fromOutputs(List<Output> outputs) {
-        return toMap(outputs, ConversionUtils::toTypeValuePair);
+    /*
+     * ---------------------------------------
+     * Output conversion
+     * ---------------------------------------
+     */
+    public static List<NamedTypedValue> fromOutputs(List<Output> outputs) {
+        return toList(outputs, o -> new NamedTypedValue(o.getName(), toTypedValue(o)));
     }
 
-    private static Pair<String, TypedValue> toTypeValuePair(Output output) {
-        return Pair.of(output.getName(), toTypedValue(output));
-    }
-
-    private static TypedValue toTypedValue(Output output) {
+    static TypedValue toTypedValue(Output output) {
         String name = output.getName();
         Type type = output.getType();
         Value value = output.getValue();
-        Object underlyingObject = value.getUnderlyingObject();
         return toTypedValue(name, type, value);
     }
 

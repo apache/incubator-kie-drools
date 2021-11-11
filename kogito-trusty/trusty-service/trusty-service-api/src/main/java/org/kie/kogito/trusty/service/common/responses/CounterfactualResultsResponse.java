@@ -19,12 +19,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.ModelIdentifier;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,12 +44,22 @@ public class CounterfactualResultsResponse extends CounterfactualExplainabilityR
     }
 
     public CounterfactualResultsResponse(@NotNull String executionId,
+            @NotBlank String serviceUrl,
+            @NotNull ModelIdentifier modelIdentifier,
             @NotNull String counterfactualId,
+            @NotNull Collection<NamedTypedValue> originalInputs,
             @NotNull Collection<NamedTypedValue> goals,
             @NotNull Collection<CounterfactualSearchDomain> searchDomains,
             Long maxRunningTimeSeconds,
             @NotNull List<CounterfactualExplainabilityResult> solutions) {
-        super(executionId, counterfactualId, goals, searchDomains, maxRunningTimeSeconds);
+        super(executionId,
+                serviceUrl,
+                modelIdentifier,
+                counterfactualId,
+                originalInputs,
+                goals,
+                searchDomains,
+                maxRunningTimeSeconds);
         this.solutions = Objects.requireNonNull(solutions);
     }
 

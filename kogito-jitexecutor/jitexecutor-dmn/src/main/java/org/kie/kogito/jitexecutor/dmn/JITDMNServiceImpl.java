@@ -33,6 +33,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.explainability.Config;
+import org.kie.kogito.explainability.api.FeatureImportanceModel;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.FeatureImportance;
@@ -43,8 +44,7 @@ import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.jitexecutor.dmn.requests.MultipleResourcesPayload;
 import org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
-import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
-import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
+import org.kie.kogito.trusty.service.common.responses.SaliencyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,19 +116,18 @@ public class JITDMNServiceImpl implements JITDMNService {
                     new SalienciesResponse(EXPLAINABILITY_FAILED, EXPLAINABILITY_FAILED_MESSAGE, null));
         }
 
-        List<SaliencyModel> saliencyModelResponse = buildSalienciesResponse(dmnEvaluator.getDmnModel(), saliencyMap);
+        List<SaliencyResponse> saliencyModelResponse = buildSalienciesResponse(dmnEvaluator.getDmnModel(), saliencyMap);
 
         return new DMNResultWithExplanation(
                 new KogitoDMNResult(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult),
                 new SalienciesResponse(EXPLAINABILITY_SUCCEEDED, null, saliencyModelResponse));
     }
 
-    private List<SaliencyModel> buildSalienciesResponse(DMNModel dmnModel, Map<String, Saliency> saliencyMap) {
-        List<SaliencyModel> saliencyModelResponse = new ArrayList<>();
+    private List<SaliencyResponse> buildSalienciesResponse(DMNModel dmnModel, Map<String, Saliency> saliencyMap) {
+        List<SaliencyResponse> saliencyModelResponse = new ArrayList<>();
         for (Map.Entry<String, Saliency> entry : saliencyMap.entrySet()) {
             DecisionNode decisionByName = dmnModel.getDecisionByName(entry.getKey());
-            saliencyModelResponse.add(new SaliencyModel(
-                    decisionByName.getId(),
+            saliencyModelResponse.add(new SaliencyResponse(decisionByName.getId(),
                     decisionByName.getName(),
                     entry.getValue().getPerFeatureImportance().stream()
                             .map(JITDMNServiceImpl::featureImportanceModelToResponse)

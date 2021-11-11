@@ -95,7 +95,6 @@ export interface Outcome {
 
 export interface FeatureScores {
   featureName: string;
-  featureId: string;
   featureScore: number;
 }
 

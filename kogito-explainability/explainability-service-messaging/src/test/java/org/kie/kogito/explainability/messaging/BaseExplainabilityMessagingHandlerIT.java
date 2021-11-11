@@ -30,10 +30,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.ExplanationService;
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.ModelIdentifierDto;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.ModelIdentifier;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.slf4j.Logger;
@@ -61,7 +60,7 @@ abstract class BaseExplainabilityMessagingHandlerIT {
 
     protected static final String EXECUTION_ID = "idException";
     protected static final String SERVICE_URL = "http://localhost:8080";
-    protected static final ModelIdentifierDto MODEL_IDENTIFIER_DTO = new ModelIdentifierDto("dmn", "namespace:name");
+    protected static final ModelIdentifier MODEL_IDENTIFIER = new ModelIdentifier("dmn", "namespace:name");
 
     @InjectMock
     protected ExplanationService explanationService;
@@ -88,8 +87,8 @@ abstract class BaseExplainabilityMessagingHandlerIT {
 
     @Test
     void explainabilityRequestIsProcessedAndAResultMessageIsSent() throws Exception {
-        BaseExplainabilityRequestDto request = buildRequest();
-        BaseExplainabilityResultDto result = buildResult();
+        BaseExplainabilityRequest request = buildRequest();
+        BaseExplainabilityResult result = buildResult();
 
         when(explanationService.explainAsync(any(BaseExplainabilityRequest.class), any()))
                 .thenReturn(CompletableFuture.completedFuture(result));
@@ -104,7 +103,7 @@ abstract class BaseExplainabilityMessagingHandlerIT {
             LOGGER.info("Received from kafka: {}", s);
             CloudEventUtils.decode(s).ifPresent((CloudEvent cloudEvent) -> {
                 try {
-                    BaseExplainabilityResultDto event = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityResultDto.class);
+                    BaseExplainabilityResult event = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityResult.class);
                     assertNotNull(event);
                     assertResult(event);
                     countDownLatch.countDown();
@@ -123,12 +122,12 @@ abstract class BaseExplainabilityMessagingHandlerIT {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     void explainabilityRequestIsProcessedAndAnIntermediateMessageIsSent() throws Exception {
-        BaseExplainabilityRequestDto request = buildRequest();
-        BaseExplainabilityResultDto result = buildResult();
+        BaseExplainabilityRequest request = buildRequest();
+        BaseExplainabilityResult result = buildResult();
 
         doAnswer(i -> {
             Object parameter = i.getArguments()[1];
-            Consumer<BaseExplainabilityResultDto> consumer = (Consumer) parameter;
+            Consumer<BaseExplainabilityResult> consumer = (Consumer) parameter;
             mockExplainAsyncInvocationWithIntermediateResults(consumer);
             return CompletableFuture.completedFuture(result);
 
@@ -144,7 +143,7 @@ abstract class BaseExplainabilityMessagingHandlerIT {
             LOGGER.info("Received from kafka: {}", s);
             CloudEventUtils.decode(s).ifPresent((CloudEvent cloudEvent) -> {
                 try {
-                    BaseExplainabilityResultDto event = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityResultDto.class);
+                    BaseExplainabilityResult event = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityResult.class);
                     assertNotNull(event);
                     assertResult(event);
                     countDownLatch.countDown();
@@ -160,13 +159,13 @@ abstract class BaseExplainabilityMessagingHandlerIT {
         kafkaClient.shutdown();
     }
 
-    protected abstract BaseExplainabilityRequestDto buildRequest();
+    protected abstract BaseExplainabilityRequest buildRequest();
 
-    protected abstract BaseExplainabilityResultDto buildResult();
+    protected abstract BaseExplainabilityResult buildResult();
 
-    protected abstract void assertResult(BaseExplainabilityResultDto result);
+    protected abstract void assertResult(BaseExplainabilityResult result);
 
     protected abstract int getTotalExpectedEventCountWithIntermediateResults();
 
-    protected abstract void mockExplainAsyncInvocationWithIntermediateResults(Consumer<BaseExplainabilityResultDto> callback);
+    protected abstract void mockExplainAsyncInvocationWithIntermediateResults(Consumer<BaseExplainabilityResult> callback);
 }

@@ -23,11 +23,10 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto;
-import org.kie.kogito.explainability.api.CounterfactualDomainDto;
-import org.kie.kogito.explainability.api.CounterfactualDomainFixedDto;
-import org.kie.kogito.explainability.api.CounterfactualDomainRangeDto;
-import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto;
+import org.kie.kogito.explainability.api.CounterfactualDomain;
+import org.kie.kogito.explainability.api.CounterfactualDomainCategorical;
+import org.kie.kogito.explainability.api.CounterfactualDomainRange;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitValue;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Type;
@@ -61,22 +60,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConversionUtilsTest {
-
-    @Test
-    void toFeatureObject() {
-        Feature name = ConversionUtils.toFeature("name", 10d);
-        assertNotNull(name);
-        assertEquals("name", name.getName());
-        assertEquals(Type.NUMBER, name.getType());
-        assertEquals(10d, name.getValue().getUnderlyingObject());
-
-        JsonObject jsonObject = new JsonObject(singletonMap("key", 10d));
-        Feature output = ConversionUtils.toFeature("output", jsonObject);
-        assertNotNull(output);
-        assertEquals("output", output.getName());
-        assertEquals(Type.COMPOSITE, output.getType());
-        assertEquals(10d, name.getValue().getUnderlyingObject());
-    }
 
     @Test
     void toFeatureTypedValue() {
@@ -258,10 +241,11 @@ class ConversionUtilsTest {
 
     @Test
     void testToFeatureDomain_UnitRangeInteger() {
-        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("employmentAge",
-                new CounterfactualSearchDomainUnitDto("int",
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain(
+                new CounterfactualSearchDomainUnitValue("int",
+                        "int",
                         true,
-                        new CounterfactualDomainRangeDto(IntNode.valueOf(18),
+                        new CounterfactualDomainRange(IntNode.valueOf(18),
                                 IntNode.valueOf(65))));
         assertTrue(featureDomain instanceof NumericalFeatureDomain);
         NumericalFeatureDomain numericalFeatureDomain = (NumericalFeatureDomain) featureDomain;
@@ -272,10 +256,11 @@ class ConversionUtilsTest {
 
     @Test
     void testToFeatureDomain_UnitRangeDouble() {
-        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("temperature",
-                new CounterfactualSearchDomainUnitDto("double",
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain(
+                new CounterfactualSearchDomainUnitValue("double",
+                        "double",
                         true,
-                        new CounterfactualDomainRangeDto(DoubleNode.valueOf(-273.15),
+                        new CounterfactualDomainRange(DoubleNode.valueOf(-273.15),
                                 DoubleNode.valueOf(Double.MAX_VALUE))));
 
         assertTrue(featureDomain instanceof NumericalFeatureDomain);
@@ -287,27 +272,30 @@ class ConversionUtilsTest {
 
     @Test
     void testToFeatureDomain_UnitRangeString() {
-        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain("lettersOfTheAlphabet",
-                new CounterfactualSearchDomainUnitDto("string",
+        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain(
+                new CounterfactualSearchDomainUnitValue("string",
+                        "string",
                         true,
-                        new CounterfactualDomainRangeDto(TextNode.valueOf("A"),
+                        new CounterfactualDomainRange(TextNode.valueOf("A"),
                                 TextNode.valueOf("Z")))));
     }
 
     @Test
     void testToFeatureDomain_UnitCategoricalNumber() {
-        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain("numberOfFingers",
-                new CounterfactualSearchDomainUnitDto("string",
+        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain(
+                new CounterfactualSearchDomainUnitValue("string",
+                        "string",
                         true,
-                        new CounterfactualDomainCategoricalDto(List.of(IntNode.valueOf(1), IntNode.valueOf(2))))));
+                        new CounterfactualDomainCategorical(List.of(IntNode.valueOf(1), IntNode.valueOf(2))))));
     }
 
     @Test
     void testToFeatureDomain_UnitCategoricalString() {
-        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("zebraStripes",
-                new CounterfactualSearchDomainUnitDto("string",
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain(
+                new CounterfactualSearchDomainUnitValue("string",
+                        "string",
                         true,
-                        new CounterfactualDomainCategoricalDto(List.of(TextNode.valueOf("Black"), TextNode.valueOf("White")))));
+                        new CounterfactualDomainCategorical(List.of(TextNode.valueOf("Black"), TextNode.valueOf("White")))));
         assertTrue(featureDomain instanceof CategoricalFeatureDomain);
         CategoricalFeatureDomain categoricalFeatureDomain = (CategoricalFeatureDomain) featureDomain;
         assertEquals(2, categoricalFeatureDomain.getCategories().size());
@@ -318,28 +306,31 @@ class ConversionUtilsTest {
 
     @Test
     void testToFeatureDomain_UnitFixedNumber() {
-        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("numberOfFingers",
-                new CounterfactualSearchDomainUnitDto("integer",
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain(
+                new CounterfactualSearchDomainUnitValue("integer",
+                        "integer",
                         true,
-                        new CounterfactualDomainFixedDto()));
+                        null));
         assertTrue(featureDomain instanceof EmptyFeatureDomain);
     }
 
     @Test
-    void testToFeatureDomain_UnitFixed() {
-        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("zebraStripes",
-                new CounterfactualSearchDomainUnitDto("string",
+    void testToFeatureDomain_UnitFixedString() {
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain(
+                new CounterfactualSearchDomainUnitValue("string",
+                        "string",
                         true,
-                        new CounterfactualDomainFixedDto()));
+                        null));
         assertTrue(featureDomain instanceof EmptyFeatureDomain);
     }
 
     @Test
     void testToFeatureDomain_UnitNull() {
-        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain("numberOfFingers",
-                new CounterfactualSearchDomainUnitDto("integer",
+        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain(
+                new CounterfactualSearchDomainUnitValue("integer",
+                        "integer",
                         true,
-                        new CounterfactualDomainDto() {
+                        new CounterfactualDomain() {
                             //New (unsupported) domain type
                         })));
     }

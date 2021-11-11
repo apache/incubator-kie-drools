@@ -24,15 +24,16 @@ import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.api.CounterfactualDomainCategorical;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.ExplainabilityStatus;
+import org.kie.kogito.explainability.api.ModelIdentifier;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualResultsResponse;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -50,6 +51,8 @@ import static org.mockito.Mockito.when;
 public class ExplainabilityApiV1Test {
 
     private static final String EXECUTION_ID = "executionId";
+
+    private static final String SERVICE_URL = "serviceUrl";
 
     private static final String COUNTERFACTUAL_ID = "counterfactualId";
 
@@ -84,7 +87,10 @@ public class ExplainabilityApiV1Test {
     @Test
     public void testRequestCounterfactualsWhenExecutionDoesExist() {
         when(trustyService.requestCounterfactuals(anyString(), any(), any())).thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
+                SERVICE_URL,
+                new ModelIdentifier("resourceType", "resourceIdentifier"),
                 COUNTERFACTUAL_ID,
+                Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 MAX_RUNNING_TIME_SECONDS));
@@ -117,7 +123,10 @@ public class ExplainabilityApiV1Test {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testGetAllCounterfactualsWhenExecutionDoesExist() {
         when(trustyService.getCounterfactualRequests(anyString())).thenReturn(List.of(new CounterfactualExplainabilityRequest(EXECUTION_ID,
+                SERVICE_URL,
+                new ModelIdentifier("resourceType", "resourceIdentifier"),
                 COUNTERFACTUAL_ID,
+                Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 MAX_RUNNING_TIME_SECONDS)));
@@ -157,7 +166,10 @@ public class ExplainabilityApiV1Test {
                         new CounterfactualDomainCategorical(List.of(new TextNode("hello"), new TextNode("goodbye"))));
         when(trustyService.getCounterfactualRequest(anyString(), anyString()))
                 .thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
+                        SERVICE_URL,
+                        new ModelIdentifier("resourceType", "resourceIdentifier"),
                         COUNTERFACTUAL_ID,
+                        Collections.emptyList(),
                         List.of(goal),
                         List.of(searchDomain),
                         MAX_RUNNING_TIME_SECONDS));
@@ -211,7 +223,10 @@ public class ExplainabilityApiV1Test {
 
         when(trustyService.getCounterfactualRequest(anyString(), anyString()))
                 .thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
+                        SERVICE_URL,
+                        new ModelIdentifier("resourceType", "resourceIdentifier"),
                         COUNTERFACTUAL_ID,
+                        Collections.emptyList(),
                         List.of(goal),
                         List.of(searchDomain),
                         MAX_RUNNING_TIME_SECONDS));

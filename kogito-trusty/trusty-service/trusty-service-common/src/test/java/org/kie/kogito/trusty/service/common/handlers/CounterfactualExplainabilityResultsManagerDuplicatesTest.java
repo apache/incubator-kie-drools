@@ -22,12 +22,12 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.ExplainabilityStatus;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;

@@ -17,6 +17,8 @@ package org.kie.kogito.explainability.models;
 
 import java.util.Map;
 
+import org.kie.kogito.explainability.api.ModelIdentifier;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

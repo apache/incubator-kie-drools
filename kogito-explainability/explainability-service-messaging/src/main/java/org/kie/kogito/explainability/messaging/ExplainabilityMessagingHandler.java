@@ -30,10 +30,9 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.ExplanationService;
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,23 +85,21 @@ public class ExplainabilityMessagingHandler {
 
     @SuppressWarnings("unchecked")
     private CompletionStage<Void> handleCloudEvent(CloudEvent cloudEvent) {
-        BaseExplainabilityRequestDto requestDto = null;
+        BaseExplainabilityRequest request = null;
         try {
             if (cloudEvent.getData() != null) {
-                requestDto = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityRequestDto.class);
+                request = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityRequest.class);
             }
         } catch (IOException e) {
             LOGGER.error("Unable to deserialize CloudEvent data as ExplainabilityRequest", e);
             return CompletableFuture.completedFuture(null);
         }
-        if (requestDto == null) {
+        if (request == null) {
             LOGGER.error("Received CloudEvent with id {} from {} with empty data", cloudEvent.getId(), cloudEvent.getSource());
             return CompletableFuture.completedFuture(null);
         }
 
         LOGGER.info("Received CloudEvent with id {} from {}", cloudEvent.getId(), cloudEvent.getSource());
-
-        BaseExplainabilityRequest request = explainerServiceHandlerRegistry.explainabilityRequestFrom(requestDto);
 
         return explanationService
                 .explainAsync(request, this::sendEvent)
@@ -110,7 +107,7 @@ public class ExplainabilityMessagingHandler {
     }
 
     // Outgoing
-    public Void sendEvent(BaseExplainabilityResultDto result) {
+    public Void sendEvent(BaseExplainabilityResult result) {
         //This should never happen but let's protect against it 
         if (Objects.isNull(result)) {
             LOGGER.info("Request received to send null result. Skipping.");
@@ -121,7 +118,7 @@ public class ExplainabilityMessagingHandler {
                 result.getClass().getSimpleName(),
                 result.getExecutionId());
         Optional<String> optPayload = CloudEventUtils
-                .build(result.getExecutionId(), URI_PRODUCER, result, BaseExplainabilityResultDto.class)
+                .build(result.getExecutionId(), URI_PRODUCER, result, BaseExplainabilityResult.class)
                 .flatMap(CloudEventUtils::encode);
         if (optPayload.isPresent()) {
             eventSubject.onNext(optPayload.get());

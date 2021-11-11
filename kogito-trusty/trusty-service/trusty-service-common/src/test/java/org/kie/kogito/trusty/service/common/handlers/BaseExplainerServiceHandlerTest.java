@@ -17,9 +17,8 @@ package org.kie.kogito.trusty.service.common.handlers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
@@ -27,11 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public abstract class BaseExplainerServiceHandlerTest<H extends ExplainerServiceHandler<R, D>, R extends BaseExplainabilityResult, D extends BaseExplainabilityResultDto> {
+public abstract class BaseExplainerServiceHandlerTest<H extends ExplainerServiceHandler<R>, R extends BaseExplainabilityResult> {
 
     protected static final String EXECUTION_ID = "executionId";
-
-    protected static final String FAILURE_MESSAGE = "Something went wrong";
 
     protected H handler;
 
@@ -59,20 +56,12 @@ public abstract class BaseExplainerServiceHandlerTest<H extends ExplainerService
 
     protected abstract Class<R> getResult();
 
-    protected abstract Class<D> getResultDto();
-
     protected abstract void setupMockStorage();
 
     @Test
     public void testExplainabilityResult() {
         assertTrue(handler.supports(getResult()));
         assertFalse(handler.supports(BaseExplainabilityResult.class));
-    }
-
-    @Test
-    public void testExplainabilityResultDto() {
-        assertTrue(handler.supportsDto(getResultDto()));
-        assertFalse(handler.supportsDto(BaseExplainabilityResultDto.class));
     }
 
     @Test
@@ -86,10 +75,4 @@ public abstract class BaseExplainerServiceHandlerTest<H extends ExplainerService
 
     @Test
     public abstract void testStoreExplainabilityResultById_WhenNotAlreadyStored();
-
-    @Test
-    public abstract void testExplainabilityResultFrom_Success();
-
-    @Test
-    public abstract void testExplainabilityResultFrom_Failure();
 }

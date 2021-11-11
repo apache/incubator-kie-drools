@@ -18,9 +18,6 @@ package org.kie.kogito.trusty.service.common.responses;
 
 import java.util.List;
 
-import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,16 +36,14 @@ public class SalienciesResponse {
 
     @JsonProperty("saliencies")
     @JsonInclude(NON_NULL)
-    private List<SaliencyModel> saliencies;
+    private List<SaliencyResponse> saliencies;
 
     private SalienciesResponse() {
     }
 
-    public SalienciesResponse(LIMEExplainabilityResult explainabilityResult) {
-        this(explainabilityResult.getStatus().name(), explainabilityResult.getStatusDetails(), explainabilityResult.getSaliencies());
-    }
-
-    public SalienciesResponse(String status, String statusDetails, List<SaliencyModel> saliencies) {
+    public SalienciesResponse(String status,
+            String statusDetails,
+            List<SaliencyResponse> saliencies) {
         this.status = status;
         this.statusDetails = statusDetails;
         this.saliencies = saliencies;
@@ -62,7 +57,7 @@ public class SalienciesResponse {
         return statusDetails;
     }
 
-    public List<SaliencyModel> getSaliencies() {
+    public List<SaliencyResponse> getSaliencies() {
         return saliencies;
     }
 }

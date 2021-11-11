@@ -27,12 +27,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.ExplanationService;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
-import org.kie.kogito.explainability.api.ModelIdentifierDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.LIMEExplainabilityRequest;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
+import org.kie.kogito.explainability.api.ModelIdentifier;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -59,7 +59,6 @@ public class ExplainabilityMessagingHandlerTest {
     void setup() {
         explanationService = mock(ExplanationService.class);
         LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistry = mock(LocalExplainerServiceHandlerRegistry.class);
-        when(explainerServiceHandlerRegistry.explainabilityRequestFrom(any())).thenReturn(mock(BaseExplainabilityRequest.class));
         handler = new ExplainabilityMessagingHandler(explanationService, explainerServiceHandlerRegistry);
         handler.objectMapper = MAPPER;
     }
@@ -68,7 +67,7 @@ public class ExplainabilityMessagingHandlerTest {
     void testCorrectCloudEvent() throws InterruptedException, ExecutionException, TimeoutException {
         Message<String> message = mockMessage(buildCorrectExplainabilityRequestEvent());
         when(explanationService.explainAsync(any(BaseExplainabilityRequest.class), any()))
-                .thenReturn(completedFuture(mockExplainabilityResultDto()));
+                .thenReturn(completedFuture(mockExplainabilityResult()));
         testNumberOfInvocations(message, 1);
     }
 
@@ -94,8 +93,8 @@ public class ExplainabilityMessagingHandlerTest {
         return message;
     }
 
-    private BaseExplainabilityResultDto mockExplainabilityResultDto() {
-        return LIMEExplainabilityResultDto.buildSucceeded(UUID.randomUUID().toString(), Collections.emptyMap());
+    private BaseExplainabilityResult mockExplainabilityResult() {
+        return LIMEExplainabilityResult.buildSucceeded(UUID.randomUUID().toString(), Collections.emptyList());
     }
 
     private void testNumberOfInvocations(Message<String> message, int wantedNumberOfServiceInvocations) throws InterruptedException, ExecutionException, TimeoutException {
@@ -108,8 +107,12 @@ public class ExplainabilityMessagingHandlerTest {
     }
 
     private String buildCorrectExplainabilityRequestEvent() {
-        ModelIdentifierDto modelIdentifierDto = new ModelIdentifierDto("dmn", "namespace:name");
+        ModelIdentifier modelIdentifier = new ModelIdentifier("dmn", "namespace:name");
         return ExplainabilityCloudEventBuilder
-                .buildCloudEventJsonString(new LIMEExplainabilityRequestDto("test", "http://localhost:8080", modelIdentifierDto, Collections.emptyMap(), Collections.emptyMap()));
+                .buildCloudEventJsonString(new LIMEExplainabilityRequest("test",
+                        "http://localhost:8080",
+                        modelIdentifier,
+                        Collections.emptyList(),
+                        Collections.emptyList()));
     }
 }

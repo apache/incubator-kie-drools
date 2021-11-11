@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.explainability.handlers;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -24,12 +25,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.kogito.explainability.PredictionProviderFactory;
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.FeatureImportanceDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
-import org.kie.kogito.explainability.api.SaliencyDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.FeatureImportanceModel;
+import org.kie.kogito.explainability.api.LIMEExplainabilityRequest;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
+import org.kie.kogito.explainability.api.NamedTypedValue;
+import org.kie.kogito.explainability.api.SaliencyModel;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
@@ -37,16 +39,12 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
-import org.kie.kogito.explainability.models.LIMEExplainabilityRequest;
-import org.kie.kogito.explainability.models.ModelIdentifier;
-import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import static org.kie.kogito.explainability.ConversionUtils.toFeatureList;
 import static org.kie.kogito.explainability.ConversionUtils.toOutputList;
 
 @ApplicationScoped
-public class LimeExplainerServiceHandler implements LocalExplainerServiceHandler<Map<String, Saliency>, LIMEExplainabilityRequest, LIMEExplainabilityRequestDto> {
+public class LimeExplainerServiceHandler implements LocalExplainerServiceHandler<Map<String, Saliency>, LIMEExplainabilityRequest> {
 
     private final LimeExplainer explainer;
     private final PredictionProviderFactory predictionProviderFactory;
@@ -64,21 +62,6 @@ public class LimeExplainerServiceHandler implements LocalExplainerServiceHandler
     }
 
     @Override
-    public <T extends BaseExplainabilityRequestDto> boolean supportsDto(Class<T> type) {
-        return LIMEExplainabilityRequestDto.class.isAssignableFrom(type);
-    }
-
-    @Override
-    public LIMEExplainabilityRequest explainabilityRequestFrom(LIMEExplainabilityRequestDto dto) {
-        return new LIMEExplainabilityRequest(
-                dto.getExecutionId(),
-                dto.getServiceUrl(),
-                ModelIdentifier.from(dto.getModelIdentifier()),
-                dto.getInputs(),
-                dto.getOutputs());
-    }
-
-    @Override
     public PredictionProvider getPredictionProvider(LIMEExplainabilityRequest request) {
         return predictionProviderFactory.createPredictionProvider(request.getServiceUrl(),
                 request.getModelIdentifier(),
@@ -87,8 +70,8 @@ public class LimeExplainerServiceHandler implements LocalExplainerServiceHandler
 
     @Override
     public Prediction getPrediction(LIMEExplainabilityRequest request) {
-        Map<String, TypedValue> inputs = request.getInputs();
-        Map<String, TypedValue> outputs = request.getOutputs();
+        Collection<NamedTypedValue> inputs = request.getInputs();
+        Collection<NamedTypedValue> outputs = request.getOutputs();
 
         PredictionInput input = new PredictionInput(toFeatureList(inputs));
         PredictionOutput output = new PredictionOutput(toOutputList(outputs));
@@ -96,25 +79,26 @@ public class LimeExplainerServiceHandler implements LocalExplainerServiceHandler
     }
 
     @Override
-    public BaseExplainabilityResultDto createSucceededResultDto(LIMEExplainabilityRequest request,
+    public BaseExplainabilityResult createSucceededResult(LIMEExplainabilityRequest request,
             Map<String, Saliency> result) {
-        return LIMEExplainabilityResultDto.buildSucceeded(
+        return LIMEExplainabilityResult.buildSucceeded(
                 request.getExecutionId(),
-                result.entrySet().stream().collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> new SaliencyDto(e.getValue().getPerFeatureImportance().stream()
-                                .map(fi -> new FeatureImportanceDto(fi.getFeature().getName(), fi.getScore()))
-                                .collect(Collectors.toList())))));
+                result.entrySet().stream()
+                        .map(e -> new SaliencyModel(e.getKey(), e.getValue().getPerFeatureImportance().stream()
+                                .map(f -> new FeatureImportanceModel(f.getFeature().getName(),
+                                        f.getScore()))
+                                .collect(Collectors.toList())))
+                        .collect(Collectors.toList()));
     }
 
     @Override
-    public BaseExplainabilityResultDto createIntermediateResultDto(LIMEExplainabilityRequest request, Map<String, Saliency> result) {
+    public BaseExplainabilityResult createIntermediateResult(LIMEExplainabilityRequest request, Map<String, Saliency> result) {
         throw new UnsupportedOperationException("Intermediate results are not supported by LIME.");
     }
 
     @Override
-    public BaseExplainabilityResultDto createFailedResultDto(LIMEExplainabilityRequest request, Throwable throwable) {
-        return LIMEExplainabilityResultDto.buildFailed(request.getExecutionId(), throwable.getMessage());
+    public BaseExplainabilityResult createFailedResult(LIMEExplainabilityRequest request, Throwable throwable) {
+        return LIMEExplainabilityResult.buildFailed(request.getExecutionId(), throwable.getMessage());
     }
 
     @Override

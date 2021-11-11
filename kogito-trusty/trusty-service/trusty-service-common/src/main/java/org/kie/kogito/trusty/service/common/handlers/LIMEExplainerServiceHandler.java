@@ -15,31 +15,18 @@
  */
 package org.kie.kogito.trusty.service.common.handlers;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.FeatureImportanceDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
-import org.kie.kogito.explainability.api.SaliencyDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
-import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class LIMEExplainerServiceHandler extends BaseExplainerServiceHandler<LIMEExplainabilityResult, LIMEExplainabilityResultDto> {
+public class LIMEExplainerServiceHandler extends BaseExplainerServiceHandler<LIMEExplainabilityResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LIMEExplainerServiceHandler.class);
 
@@ -55,46 +42,6 @@ public class LIMEExplainerServiceHandler extends BaseExplainerServiceHandler<LIM
     @Override
     public <T extends BaseExplainabilityResult> boolean supports(Class<T> type) {
         return LIMEExplainabilityResult.class.isAssignableFrom(type);
-    }
-
-    @Override
-    public <T extends BaseExplainabilityResultDto> boolean supportsDto(Class<T> type) {
-        return LIMEExplainabilityResultDto.class.isAssignableFrom(type);
-    }
-
-    @Override
-    public LIMEExplainabilityResult explainabilityResultFrom(LIMEExplainabilityResultDto dto, Decision decision) {
-        Map<String, String> outcomeNameToIdMap = decision == null
-                ? Collections.emptyMap()
-                : decision.getOutcomes().stream().collect(Collectors.toUnmodifiableMap(DecisionOutcome::getOutcomeName, DecisionOutcome::getOutcomeId));
-
-        List<SaliencyModel> saliencies = dto.getSaliencies() == null
-                ? Collections.emptyList()
-                : dto.getSaliencies().entrySet().stream()
-                        .map(e -> saliencyFrom(outcomeNameToIdMap.get(e.getKey()), e.getKey(), e.getValue()))
-                        .collect(Collectors.toList());
-        return new LIMEExplainabilityResult(dto.getExecutionId(),
-                statusFrom(dto.getStatus()),
-                dto.getStatusDetails(),
-                saliencies);
-    }
-
-    private SaliencyModel saliencyFrom(String outcomeId, String outcomeName, SaliencyDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        List<FeatureImportanceModel> featureImportanceModel = dto.getFeatureImportance() == null ? null
-                : dto.getFeatureImportance().stream()
-                        .map(this::featureImportanceFrom)
-                        .collect(Collectors.toList());
-        return new SaliencyModel(outcomeId, outcomeName, featureImportanceModel);
-    }
-
-    private FeatureImportanceModel featureImportanceFrom(FeatureImportanceDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        return new FeatureImportanceModel(dto.getFeatureName(), dto.getScore());
     }
 
     @Override
@@ -115,5 +62,4 @@ public class LIMEExplainerServiceHandler extends BaseExplainerServiceHandler<LIM
         storage.put(executionId, result);
         LOG.info("Stored LIME explainability result for execution {}", executionId);
     }
-
 }

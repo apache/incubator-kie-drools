@@ -30,11 +30,18 @@ import javax.enterprise.inject.Instance;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.CounterfactualDomainRangeDto;
-import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.CounterfactualSearchDomainDto;
-import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualDomain;
+import org.kie.kogito.explainability.api.CounterfactualDomainRange;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainStructureValue;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitValue;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainValue;
+import org.kie.kogito.explainability.api.ExplainabilityStatus;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.tracing.typedvalue.CollectionValue;
@@ -46,25 +53,14 @@ import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainerServ
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandler;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
 import org.kie.kogito.trusty.service.common.handlers.LIMEExplainerServiceHandler;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
+import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.messaging.outgoing.ExplainabilityRequestProducer;
 import org.kie.kogito.trusty.service.common.mocks.StorageImplMock;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainFixed;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainStructureValue;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainUnitValue;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.mockito.ArgumentCaptor;
 
@@ -103,7 +99,7 @@ public class TrustyServiceTest {
     private TrustyServiceImpl trustyService;
     private LIMEExplainerServiceHandler limeExplainerServiceHandler;
     private CounterfactualExplainerServiceHandler counterfactualExplainerServiceHandler;
-    private Instance<ExplainerServiceHandler<?, ?>> explanationHandlers;
+    private Instance<ExplainerServiceHandler<?>> explanationHandlers;
 
     private static JsonNode toJsonNode(String jsonString) throws JsonProcessingException {
         return MAPPER.reader().readTree(jsonString);
@@ -309,7 +305,7 @@ public class TrustyServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void givenAModelWhenStoreModelIsCalledMoreThanOnceForSameModelThenExceptionIsThrown() {
-        ModelIdentifier modelIdentifier = buildDmnModelIdentifier();
+        ModelMetadata modelIdentifier = buildDmnModelIdentifier();
         String model = TEST_MODEL;
         Storage storageMock = mock(Storage.class);
 
@@ -323,7 +319,7 @@ public class TrustyServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void givenAModelWhenAModelIsStoredAndRetrievedByIdThenTheOriginalObjectIsReturned() {
-        ModelIdentifier modelIdentifier = buildDmnModelIdentifier();
+        ModelMetadata modelIdentifier = buildDmnModelIdentifier();
         String model = TEST_MODEL;
         Storage storageMock = new StorageImplMock(String.class);
 
@@ -339,7 +335,7 @@ public class TrustyServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void whenAModelIsNotStoredAndRetrievedByIdThenExceptionIsThrown() {
-        ModelIdentifier modelIdentifier = buildDmnModelIdentifier();
+        ModelMetadata modelIdentifier = buildDmnModelIdentifier();
         Storage storageMock = mock(Storage.class);
 
         when(storageMock.containsKey(modelIdentifier.getIdentifier())).thenReturn(false);
@@ -411,7 +407,7 @@ public class TrustyServiceTest {
 
     @Test
     void givenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStored() {
-        doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStoredTest(new CounterfactualDomainFixed());
+        doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStoredTest(new CounterfactualDomainRange(new IntNode(10), new IntNode(20)));
     }
 
     @Test
@@ -456,9 +452,8 @@ public class TrustyServiceTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void givenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmitted() {
-        doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmittedTest(new CounterfactualDomainFixed());
+        doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmittedTest(new CounterfactualDomainRange(new IntNode(10), new IntNode(20)));
     }
 
     @Test
@@ -470,7 +465,7 @@ public class TrustyServiceTest {
     void doGivenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmittedTest(CounterfactualDomain domain) {
         Storage<String, Decision> decisionStorage = mock(Storage.class);
         Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
-        ArgumentCaptor<BaseExplainabilityRequestDto> explainabilityEventArgumentCaptor = ArgumentCaptor.forClass(BaseExplainabilityRequestDto.class);
+        ArgumentCaptor<BaseExplainabilityRequest> explainabilityEventArgumentCaptor = ArgumentCaptor.forClass(BaseExplainabilityRequest.class);
 
         when(decisionStorage.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(true);
         when(trustyStorageServiceMock.getDecisionsStorage()).thenReturn(decisionStorage);
@@ -502,10 +497,10 @@ public class TrustyServiceTest {
                                                 new CounterfactualSearchDomainUnitValue("number", "number", true, domain))))));
 
         verify(explainabilityRequestProducerMock).sendEvent(explainabilityEventArgumentCaptor.capture());
-        BaseExplainabilityRequestDto event = explainabilityEventArgumentCaptor.getValue();
+        BaseExplainabilityRequest event = explainabilityEventArgumentCaptor.getValue();
         assertNotNull(event);
-        assertTrue(event instanceof CounterfactualExplainabilityRequestDto);
-        CounterfactualExplainabilityRequestDto request = (CounterfactualExplainabilityRequestDto) event;
+        assertTrue(event instanceof CounterfactualExplainabilityRequest);
+        CounterfactualExplainabilityRequest request = (CounterfactualExplainabilityRequest) event;
         assertEquals(TEST_EXECUTION_ID, request.getExecutionId());
     }
 
@@ -514,7 +509,7 @@ public class TrustyServiceTest {
     void givenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventHasCorrectPayload() {
         Storage<String, Decision> decisionStorage = mock(Storage.class);
         Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
-        ArgumentCaptor<BaseExplainabilityRequestDto> explainabilityEventArgumentCaptor = ArgumentCaptor.forClass(BaseExplainabilityRequestDto.class);
+        ArgumentCaptor<BaseExplainabilityRequest> explainabilityEventArgumentCaptor = ArgumentCaptor.forClass(BaseExplainabilityRequest.class);
 
         Decision decision = new Decision(
                 TEST_EXECUTION_ID, TEST_SOURCE_URL, TEST_SERVICE_URL, 0L, true,
@@ -540,35 +535,37 @@ public class TrustyServiceTest {
                                 new CounterfactualDomainRange(new IntNode(10), new IntNode(30))))));
 
         verify(explainabilityRequestProducerMock).sendEvent(explainabilityEventArgumentCaptor.capture());
-        BaseExplainabilityRequestDto event = explainabilityEventArgumentCaptor.getValue();
-        CounterfactualExplainabilityRequestDto request = (CounterfactualExplainabilityRequestDto) event;
+        BaseExplainabilityRequest event = explainabilityEventArgumentCaptor.getValue();
+        CounterfactualExplainabilityRequest request = (CounterfactualExplainabilityRequest) event;
         assertEquals(TEST_EXECUTION_ID, request.getExecutionId());
         assertEquals(TEST_SERVICE_URL, request.getServiceUrl());
 
         //Check original input value has been copied into CF request
         assertEquals(1, request.getOriginalInputs().size());
-        assertTrue(request.getOriginalInputs().containsKey("yearsOfService"));
+        assertTrue(request.getOriginalInputs().stream().anyMatch(i -> i.getName().equals("yearsOfService")));
+        //It is safe to use the iterator unchecked as the collection only contains one item
         assertEquals(decision.getInputs().iterator().next().getValue().toUnit().getValue().asInt(),
-                request.getOriginalInputs().get("yearsOfService").toUnit().getValue().asInt());
+                request.getOriginalInputs().iterator().next().getValue().toUnit().getValue().asInt());
 
         //Check CF goals have been copied into CF request
         assertEquals(1, request.getGoals().size());
-        assertTrue(request.getGoals().containsKey("salary"));
-        assertEquals(2000,
-                request.getGoals().get("salary").toUnit().getValue().asInt());
+        assertTrue(request.getGoals().stream().anyMatch(g -> g.getName().equals("salary")));
+        //It is safe to use the iterator unchecked as the collection only contains one item
+        assertEquals(2000, request.getGoals().iterator().next().getValue().toUnit().getValue().asInt());
 
         //Check CF search domains have been copied into CF request
         assertEquals(1, request.getSearchDomains().size());
-        assertTrue(request.getSearchDomains().containsKey("yearsOfService"));
-        CounterfactualSearchDomainDto searchDomain = request.getSearchDomains().get("yearsOfService");
-        assertTrue(searchDomain instanceof CounterfactualSearchDomainUnitDto);
+        assertTrue(request.getSearchDomains().stream().anyMatch(sd -> sd.getName().equals("yearsOfService")));
+        //It is safe to use the iterator unchecked as the collection only contains one item
+        CounterfactualSearchDomainValue searchDomain = request.getSearchDomains().iterator().next().getValue();
+        assertTrue(searchDomain instanceof CounterfactualSearchDomainUnitValue);
 
-        CounterfactualSearchDomainUnitDto unit = (CounterfactualSearchDomainUnitDto) searchDomain;
+        CounterfactualSearchDomainUnitValue unit = (CounterfactualSearchDomainUnitValue) searchDomain;
         assertFalse(unit.isFixed());
         assertNotNull(unit.getDomain());
-        assertTrue(unit.getDomain() instanceof CounterfactualDomainRangeDto);
+        assertTrue(unit.getDomain() instanceof CounterfactualDomainRange);
 
-        CounterfactualDomainRangeDto range = (CounterfactualDomainRangeDto) unit.getDomain();
+        CounterfactualDomainRange range = (CounterfactualDomainRange) unit.getDomain();
         assertEquals(10, range.getLowerBound().asInt());
         assertEquals(30, range.getUpperBound().asInt());
 
@@ -665,7 +662,7 @@ public class TrustyServiceTest {
         return new DMNModelWithMetadata("groupId", "artifactId", "modelVersion", "dmnVersion", "name", "namespace", model);
     }
 
-    private ModelIdentifier buildDmnModelIdentifier() {
-        return new ModelIdentifier("groupId", "artifactId", "version", "name", "namespace");
+    private ModelMetadata buildDmnModelIdentifier() {
+        return new ModelMetadata("groupId", "artifactId", "version", "name", "namespace");
     }
 }

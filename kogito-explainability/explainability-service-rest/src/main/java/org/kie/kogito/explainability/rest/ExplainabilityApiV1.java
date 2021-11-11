@@ -33,9 +33,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.kie.kogito.explainability.ExplanationService;
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 
 import io.smallrye.mutiny.Uni;
 
@@ -57,14 +56,13 @@ public class ExplainabilityApiV1 {
     @Path("/explain")
     @APIResponses(value = {
             @APIResponse(description = "Retrieve the explainability for a given decision.", responseCode = "200",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = BaseExplainabilityRequestDto.class))),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = BaseExplainabilityRequest.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
     })
     @Operation(summary = "Retrieve the explainability for a given decision.", description = "Retrieve the explainability for a given decision.")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> explain(@Valid BaseExplainabilityRequestDto requestDto) {
-        BaseExplainabilityRequest request = explainerServiceHandlerRegistry.explainabilityRequestFrom(requestDto);
+    public Uni<Response> explain(@Valid BaseExplainabilityRequest request) {
         CompletionStage<Response> result = explanationService.explainAsync(request)
                 .thenApply(x -> Response.ok(x).build());
 

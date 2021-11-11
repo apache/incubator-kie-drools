@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.ModelIdentifierDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.LIMEExplainabilityRequest;
+import org.kie.kogito.explainability.api.ModelIdentifier;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,26 +41,42 @@ class ExplainabilityApiV1IT {
 
     @Test
     void testEndpointWithRequest() throws JsonProcessingException {
-        ModelIdentifierDto modelIdentifierDto = new ModelIdentifierDto("dmn", "namespace:name");
+        ModelIdentifier modelIdentifier = new ModelIdentifier("dmn", "namespace:name");
 
-        String body = MAPPER.writeValueAsString(new LIMEExplainabilityRequestDto(executionId, serviceUrl, modelIdentifierDto, Collections.emptyMap(), Collections.emptyMap()));
+        String body = MAPPER.writeValueAsString(new LIMEExplainabilityRequest(executionId,
+                serviceUrl,
+                modelIdentifier,
+                Collections.emptyList(),
+                Collections.emptyList()));
 
-        BaseExplainabilityResultDto result = given()
+        BaseExplainabilityResult result = given()
                 .contentType(ContentType.JSON)
                 .body(body)
                 .when()
                 .post("/v1/explain")
-                .as(BaseExplainabilityResultDto.class);
+                .as(BaseExplainabilityResult.class);
 
         assertEquals(executionId, result.getExecutionId());
     }
 
     @Test
     void testEndpointWithBadRequests() throws JsonProcessingException {
-        LIMEExplainabilityRequestDto[] badRequests = new LIMEExplainabilityRequestDto[] {
-                new LIMEExplainabilityRequestDto(executionId, serviceUrl, new ModelIdentifierDto("", "test"), Collections.emptyMap(), Collections.emptyMap()),
-                new LIMEExplainabilityRequestDto(executionId, serviceUrl, new ModelIdentifierDto("test", ""), Collections.emptyMap(), Collections.emptyMap()),
-                new LIMEExplainabilityRequestDto(executionId, "", new ModelIdentifierDto("test", "test"), Collections.emptyMap(), Collections.emptyMap()),
+        LIMEExplainabilityRequest[] badRequests = new LIMEExplainabilityRequest[] {
+                new LIMEExplainabilityRequest(executionId,
+                        serviceUrl,
+                        new ModelIdentifier("", "test"),
+                        Collections.emptyList(),
+                        Collections.emptyList()),
+                new LIMEExplainabilityRequest(executionId,
+                        serviceUrl,
+                        new ModelIdentifier("test", ""),
+                        Collections.emptyList(),
+                        Collections.emptyList()),
+                new LIMEExplainabilityRequest(executionId,
+                        "",
+                        new ModelIdentifier("test", "test"),
+                        Collections.emptyList(),
+                        Collections.emptyList()),
         };
 
         for (int i = 0; i < badRequests.length; i++) {

@@ -19,15 +19,15 @@ package org.kie.kogito.trusty.service.common;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.NamedTypedValue;
+import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 /**
  * The trusty service interface.
@@ -101,20 +101,20 @@ public interface TrustyService {
     /**
      * Stores a Model definition.
      *
-     * @param modelIdentifier The model identifier.
+     * @param modelMetadata The model metadata.
      * @param dmnModelWithMetadata The DMNModel to be stored.
      * @throws IllegalArgumentException Throws IllegalArgumentException in case the model is already present in the system.
      */
-    void storeModel(ModelIdentifier modelIdentifier, DMNModelWithMetadata dmnModelWithMetadata);
+    void storeModel(ModelMetadata modelMetadata, DMNModelWithMetadata dmnModelWithMetadata);
 
     /**
      * Gets a model by model id.
      *
-     * @param modelIdentifier The model identifier.
+     * @param modelMetadata The model metadata.
      * @return The model definition.
      * @throws IllegalArgumentException Throws IllegalArgumentException in case the modelId is not present in the system.
      */
-    DMNModelWithMetadata getModelById(ModelIdentifier modelIdentifier);
+    DMNModelWithMetadata getModelById(ModelMetadata modelMetadata);
 
     /**
      * Requests calculation of the Counterfactuals for an execution.

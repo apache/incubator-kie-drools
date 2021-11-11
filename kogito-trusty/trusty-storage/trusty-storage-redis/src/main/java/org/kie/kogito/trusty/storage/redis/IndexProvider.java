@@ -20,9 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.persistence.redis.index.RedisCreateIndexEvent;
 import org.kie.kogito.persistence.redis.index.RedisIndexManager;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
 import io.quarkus.runtime.Startup;
 import io.redisearch.Schema;
 
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest.EXECUTION_ID_FIELD;
+import static org.kie.kogito.explainability.api.BaseExplainabilityRequest.EXECUTION_ID_FIELD;
+import static org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.COUNTERFACTUAL_REQUESTS_STORAGE;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.COUNTERFACTUAL_RESULTS_STORAGE;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.DECISIONS_STORAGE;

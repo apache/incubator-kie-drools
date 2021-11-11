@@ -19,8 +19,8 @@ package org.kie.kogito.trusty.service.common.messaging.outgoing;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.ModelIdentifierDto;
+import org.kie.kogito.explainability.api.LIMEExplainabilityRequest;
+import org.kie.kogito.explainability.api.ModelIdentifier;
 
 import io.smallrye.mutiny.helpers.test.AssertSubscriber;
 
@@ -35,11 +35,11 @@ class ExplainabilityRequestProducerTest {
         ExplainabilityRequestProducer producer = new ExplainabilityRequestProducer();
         producer.getEventPublisher().subscribe(subscriber);
 
-        producer.sendEvent(new LIMEExplainabilityRequestDto(
+        producer.sendEvent(new LIMEExplainabilityRequest(
                 "executionId", "http://localhost:8080/model",
-                new ModelIdentifierDto("dmn", "modelNamespace:model"),
-                Collections.emptyMap(),
-                Collections.emptyMap()));
+                new ModelIdentifier("dmn", "modelNamespace:model"),
+                Collections.emptyList(),
+                Collections.emptyList()));
 
         assertEquals(1, subscriber.getItems().size());
     }

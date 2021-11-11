@@ -235,69 +235,6 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.CounterfactualDomain",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
     "name": "org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -317,51 +254,6 @@
   },
   {
     "name": "org.kie.kogito.trusty.storage.api.model.ExecutionType",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.SaliencyModel",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -443,7 +335,7 @@
   },
 
   {
-    "name": "org.kie.kogito.explainability.api.BaseExplainabilityRequestDto",
+    "name": "org.kie.kogito.explainability.api.BaseExplainabilityRequest",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -452,7 +344,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.BaseExplainabilityResultDto",
+    "name": "org.kie.kogito.explainability.api.BaseExplainabilityResult",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -461,7 +353,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualDomain",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -470,7 +362,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualDomainDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualDomainFixed",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -479,7 +371,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualDomainFixedDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualDomainRange",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -488,7 +380,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualDomainRangeDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualDomainCategorical",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -497,7 +389,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualExplainabilityRequestDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -506,7 +398,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualExplainabilityResult",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -515,7 +407,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualSearchDomainCollectionDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualSearchDomain",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -524,7 +416,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualSearchDomainDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualSearchDomainUnit",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -533,7 +425,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualSearchDomainStructureDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualSearchDomainStructure",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -542,7 +434,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto",
+    "name": "org.kie.kogito.explainability.api.CounterfactualSearchDomainCollection",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -560,7 +452,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.FeatureImportanceDto",
+    "name": "org.kie.kogito.explainability.api.FeatureImportanceModel",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -569,7 +461,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto",
+    "name": "org.kie.kogito.explainability.api.LIMEExplainabilityRequest",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -578,7 +470,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.LIMEExplainabilityResultDto",
+    "name": "org.kie.kogito.explainability.api.LIMEExplainabilityResult",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -587,7 +479,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.ModelIdentifierDto",
+    "name": "org.kie.kogito.explainability.api.ModelIdentifier",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -596,7 +488,7 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.SaliencyDto",
+    "name": "org.kie.kogito.explainability.api.SaliencyModel",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,

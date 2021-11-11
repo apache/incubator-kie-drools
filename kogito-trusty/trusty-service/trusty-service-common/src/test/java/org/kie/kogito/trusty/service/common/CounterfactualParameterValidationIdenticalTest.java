@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
+import org.kie.kogito.explainability.api.CounterfactualDomainRange;
 
 import com.fasterxml.jackson.databind.node.IntNode;
 

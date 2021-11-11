@@ -21,9 +21,9 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,5 +63,4 @@ public class CounterfactualExplainabilityResultsManagerSlidingWindow implements 
             storage.remove(solutionId);
         }
     }
-
 }

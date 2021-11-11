@@ -76,7 +76,7 @@ public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
     protected void internalHandleCloudEvent(CloudEvent cloudEvent, ModelEvent payload) {
         final DecisionModelMetadata decisionModelMetadata = payload.getDecisionModelMetadata();
         if (decisionModelMetadata.getType().equals(DecisionModelMetadata.Type.DMN)) {
-            ModelIdentifier identifier = new ModelIdentifier(payload.getGav().getGroupId(),
+            ModelMetadata identifier = new ModelMetadata(payload.getGav().getGroupId(),
                     payload.getGav().getArtifactId(),
                     payload.getGav().getVersion(),
                     payload.getName(),

@@ -15,6 +15,10 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>explainability-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>trusty-storage-common</artifactId>
     </dependency>
     <dependency>

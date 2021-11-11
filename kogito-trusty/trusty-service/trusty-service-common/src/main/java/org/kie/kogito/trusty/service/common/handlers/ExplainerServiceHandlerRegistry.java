@@ -22,21 +22,19 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 
 @ApplicationScoped
 public class ExplainerServiceHandlerRegistry {
 
-    private Instance<ExplainerServiceHandler<?, ?>> explanationHandlers;
+    private Instance<ExplainerServiceHandler<?>> explanationHandlers;
 
     protected ExplainerServiceHandlerRegistry() {
         //CDI proxy
     }
 
     @Inject
-    public ExplainerServiceHandlerRegistry(@Any Instance<ExplainerServiceHandler<?, ?>> explanationHandlers) {
+    public ExplainerServiceHandlerRegistry(@Any Instance<ExplainerServiceHandler<?>> explanationHandlers) {
         this.explanationHandlers = explanationHandlers;
     }
 
@@ -48,7 +46,7 @@ public class ExplainerServiceHandlerRegistry {
      * @return The result of an explanation.
      */
     public <T extends BaseExplainabilityResult> T getExplainabilityResultById(String executionId, Class<T> type) {
-        ExplainerServiceHandler<?, ?> explanationHandler = getLocalExplainer(type)
+        ExplainerServiceHandler<?> explanationHandler = getLocalExplainer(type)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Explainability result for '%s' is not supported", type.getName())));
 
         return cast(explanationHandler.getExplainabilityResultById(executionId));
@@ -62,47 +60,19 @@ public class ExplainerServiceHandlerRegistry {
      */
     public <T extends BaseExplainabilityResult> void storeExplainabilityResult(String executionId, T result) {
         T type = cast(result);
-        ExplainerServiceHandler<?, ?> explanationHandler =
+        ExplainerServiceHandler<?> explanationHandler =
                 getLocalExplainer(type.getClass())
                         .orElseThrow(() -> new IllegalArgumentException(String.format("Explainability result for '%s' is not supported", type.getClass().getName())));
 
         explanationHandler.storeExplainabilityResult(executionId, cast(result));
     }
 
-    /**
-     * Converts the result from the Explainability Service to that used by Trusty Service.
-     *
-     * @param dto The result from the Explainability Service
-     * @param decision The decision for which the explaination was requested
-     * @return The result used by Trusty Service
-     */
-    public <T extends BaseExplainabilityResultDto> BaseExplainabilityResult explainabilityResultFrom(T dto, Decision decision) {
-        if (dto == null) {
-            return null;
-        }
-
-        ExplainerServiceHandler<?, ?> explanationHandler =
-                getLocalExplainerDto(dto.getClass()).orElseThrow(() -> new IllegalArgumentException(String.format("Explainability result for '%s' is not supported", dto.getClass().getName())));
-
-        return explanationHandler.explainabilityResultFrom(castDto(dto), decision);
-    }
-
-    private <T extends BaseExplainabilityResult> Optional<ExplainerServiceHandler<?, ?>> getLocalExplainer(Class<T> type) {
+    private <T extends BaseExplainabilityResult> Optional<ExplainerServiceHandler<?>> getLocalExplainer(Class<T> type) {
         return this.explanationHandlers.stream().filter(handler -> handler.supports(type)).findFirst();
-    }
-
-    private <T extends BaseExplainabilityResultDto> Optional<ExplainerServiceHandler<?, ?>> getLocalExplainerDto(Class<T> type) {
-        return this.explanationHandlers.stream().filter(handler -> handler.supportsDto(type)).findFirst();
     }
 
     @SuppressWarnings("unchecked")
     private <T extends BaseExplainabilityResult> T cast(BaseExplainabilityResult type) {
         return (T) type;
     }
-
-    @SuppressWarnings("unchecked")
-    private <T extends BaseExplainabilityResultDto> T castDto(BaseExplainabilityResultDto type) {
-        return (T) type;
-    }
-
 }

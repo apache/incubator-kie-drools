@@ -21,12 +21,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.api.CounterfactualDomainRange;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitValue;
+import org.kie.kogito.explainability.api.ModelIdentifier;
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainUnitValue;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -35,6 +36,12 @@ public class CounterfactualExplainabilityRequestMarshallerTest extends Marshalle
 
     @Test
     public void testWriteAndRead() throws IOException {
+        ModelIdentifier modelIdentifier = new ModelIdentifier("resourceType", "resourceId");
+        List<NamedTypedValue> originalInputs = Collections.singletonList(new NamedTypedValue("unitIn",
+                new UnitValue("number",
+                        "number",
+                        JsonNodeFactory.instance.numberNode(10))));
+
         List<NamedTypedValue> goals = Collections.singletonList(new NamedTypedValue("unitIn",
                 new UnitValue("number",
                         "number",
@@ -46,7 +53,13 @@ public class CounterfactualExplainabilityRequestMarshallerTest extends Marshalle
                                 Boolean.TRUE,
                                 new CounterfactualDomainRange(JsonNodeFactory.instance.numberNode(0), JsonNodeFactory.instance.numberNode(10)))));
 
-        CounterfactualExplainabilityRequest request = new CounterfactualExplainabilityRequest("executionId", "counterfactualId", goals, searchDomains, 60L);
+        CounterfactualExplainabilityRequest request = new CounterfactualExplainabilityRequest("executionId",
+                "serviceUrl",
+                modelIdentifier,
+                "counterfactualId",
+                originalInputs,
+                goals,
+                searchDomains, 60L);
         CounterfactualExplainabilityRequestMarshaller marshaller = new CounterfactualExplainabilityRequestMarshaller(new ObjectMapper());
 
         marshaller.writeTo(writer, request);

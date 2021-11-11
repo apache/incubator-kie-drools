@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.trusty.service.common.handlers;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -23,18 +22,15 @@ import javax.enterprise.inject.Instance;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -66,7 +62,7 @@ public class ExplainerServiceHandlerRegistryTest {
         counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(trustyStorage,
                 mock(CounterfactualExplainabilityResultsManagerSlidingWindow.class),
                 mock(CounterfactualExplainabilityResultsManagerDuplicates.class)));
-        Instance<ExplainerServiceHandler<?, ?>> explanationHandlers = mock(Instance.class);
+        Instance<ExplainerServiceHandler<?>> explanationHandlers = mock(Instance.class);
         when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler, counterfactualExplainerServiceHandler));
         registry = new ExplainerServiceHandlerRegistry(explanationHandlers);
 
@@ -95,15 +91,6 @@ public class ExplainerServiceHandlerRegistryTest {
         registry.storeExplainabilityResult(EXECUTION_ID, result);
 
         verify(limeExplainerServiceHandler).storeExplainabilityResult(eq(EXECUTION_ID), eq(result));
-    }
-
-    @Test
-    public void testLIME_explainabilityResultFrom() {
-        LIMEExplainabilityResultDto dto = LIMEExplainabilityResultDto.buildSucceeded(EXECUTION_ID, Collections.emptyMap());
-
-        assertTrue(registry.explainabilityResultFrom(dto, decision) instanceof LIMEExplainabilityResult);
-
-        verify(limeExplainerServiceHandler).explainabilityResultFrom(eq(dto), eq(decision));
     }
 
     @Test
@@ -164,21 +151,5 @@ public class ExplainerServiceHandlerRegistryTest {
         registry.storeExplainabilityResult(EXECUTION_ID, result);
 
         verify(counterfactualExplainerServiceHandler).storeExplainabilityResult(eq(EXECUTION_ID), eq(result));
-    }
-
-    @Test
-    public void testCounterfactual_explainabilityResultFrom() {
-        CounterfactualExplainabilityResultDto dto = CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
-                COUNTERFACTUAL_ID,
-                SOLUTION_ID,
-                0L,
-                true,
-                CounterfactualExplainabilityResultDto.Stage.FINAL,
-                Collections.emptyMap(),
-                Collections.emptyMap());
-
-        assertTrue(registry.explainabilityResultFrom(dto, decision) instanceof CounterfactualExplainabilityResult);
-
-        verify(counterfactualExplainerServiceHandler).explainabilityResultFrom(eq(dto), eq(decision));
     }
 }

@@ -15,12 +15,10 @@
  */
 package org.kie.kogito.trusty.service.common.handlers;
 
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
-public abstract class BaseExplainerServiceHandler<R extends BaseExplainabilityResult, D extends BaseExplainabilityResultDto> implements ExplainerServiceHandler<R, D> {
+public abstract class BaseExplainerServiceHandler<R extends BaseExplainabilityResult> implements ExplainerServiceHandler<R> {
 
     protected TrustyStorageService storageService;
 
@@ -31,12 +29,4 @@ public abstract class BaseExplainerServiceHandler<R extends BaseExplainabilityRe
     protected BaseExplainerServiceHandler(TrustyStorageService storageService) {
         this.storageService = storageService;
     }
-
-    protected ExplainabilityStatus statusFrom(org.kie.kogito.explainability.api.ExplainabilityStatus status) {
-        if (org.kie.kogito.explainability.api.ExplainabilityStatus.SUCCEEDED.equals(status)) {
-            return ExplainabilityStatus.SUCCEEDED;
-        }
-        return ExplainabilityStatus.FAILED;
-    }
-
 }

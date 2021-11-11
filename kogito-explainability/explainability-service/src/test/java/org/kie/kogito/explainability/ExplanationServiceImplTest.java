@@ -25,12 +25,13 @@ import javax.enterprise.inject.Instance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.explainability.api.ExplainabilityStatus;
-import org.kie.kogito.explainability.api.FeatureImportanceDto;
-import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
-import org.kie.kogito.explainability.api.SaliencyDto;
+import org.kie.kogito.explainability.api.FeatureImportanceModel;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
+import org.kie.kogito.explainability.api.NamedTypedValue;
+import org.kie.kogito.explainability.api.SaliencyModel;
 import org.kie.kogito.explainability.handlers.CounterfactualExplainerServiceHandler;
 import org.kie.kogito.explainability.handlers.LimeExplainerServiceHandler;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
@@ -38,7 +39,6 @@ import org.kie.kogito.explainability.local.counterfactual.CounterfactualExplaine
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -75,7 +75,7 @@ class ExplanationServiceImplTest {
     CounterfactualExplainerServiceHandler cfExplainerServiceHandlerMock;
     LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistryMock;
     PredictionProvider predictionProviderMock;
-    Consumer<BaseExplainabilityResultDto> callbackMock;
+    Consumer<BaseExplainabilityResult> callbackMock;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
@@ -112,31 +112,30 @@ class ExplanationServiceImplTest {
     }
 
     @SuppressWarnings("unchecked")
-    void testLIMEExplainAsyncSuccess(ThrowingSupplier<BaseExplainabilityResultDto> invocation) {
+    void testLIMEExplainAsyncSuccess(ThrowingSupplier<BaseExplainabilityResult> invocation) {
         when(instance.stream()).thenReturn(Stream.of(limeExplainerServiceHandlerMock));
         when(limeExplainerMock.explainAsync(any(Prediction.class),
                 eq(predictionProviderMock),
                 any(Consumer.class)))
                         .thenReturn(CompletableFuture.completedFuture(SALIENCY_MAP));
 
-        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(invocation);
+        BaseExplainabilityResult result = assertDoesNotThrow(invocation);
 
-        assertNotNull(resultDto);
-        assertTrue(resultDto instanceof LIMEExplainabilityResultDto);
-        LIMEExplainabilityResultDto limeResultDto = (LIMEExplainabilityResultDto) resultDto;
+        assertNotNull(result);
+        assertTrue(result instanceof LIMEExplainabilityResult);
+        LIMEExplainabilityResult limeResult = (LIMEExplainabilityResult) result;
 
-        assertEquals(EXECUTION_ID, limeResultDto.getExecutionId());
-        assertSame(ExplainabilityStatus.SUCCEEDED, limeResultDto.getStatus());
-        assertNull(limeResultDto.getStatusDetails());
-        assertEquals(SALIENCY_MAP.size(), limeResultDto.getSaliencies().size());
-        assertTrue(limeResultDto.getSaliencies().containsKey("key"));
+        assertEquals(EXECUTION_ID, limeResult.getExecutionId());
+        assertSame(ExplainabilityStatus.SUCCEEDED, limeResult.getStatus());
+        assertNull(limeResult.getStatusDetails());
+        assertEquals(SALIENCY_MAP.size(), limeResult.getSaliencies().size());
 
-        SaliencyDto saliencyDto = limeResultDto.getSaliencies().get("key");
-        assertEquals(SALIENCY.getPerFeatureImportance().size(), saliencyDto.getFeatureImportance().size());
+        SaliencyModel saliency = limeResult.getSaliencies().iterator().next();
+        assertEquals(SALIENCY.getPerFeatureImportance().size(), saliency.getFeatureImportance().size());
 
-        FeatureImportanceDto featureImportanceDto1 = saliencyDto.getFeatureImportance().get(0);
-        assertEquals(FEATURE_IMPORTANCE_1.getFeature().getName(), featureImportanceDto1.getFeatureName());
-        assertEquals(FEATURE_IMPORTANCE_1.getScore(), featureImportanceDto1.getScore(), 0.01);
+        FeatureImportanceModel featureImportance1 = saliency.getFeatureImportance().get(0);
+        assertEquals(FEATURE_IMPORTANCE_1.getFeature().getName(), featureImportance1.getFeatureName());
+        assertEquals(FEATURE_IMPORTANCE_1.getScore(), featureImportance1.getFeatureScore(), 0.01);
     }
 
     @Test
@@ -154,31 +153,31 @@ class ExplanationServiceImplTest {
     }
 
     @SuppressWarnings("unchecked")
-    void testCounterfactualsExplainAsyncSuccess(ThrowingSupplier<BaseExplainabilityResultDto> invocation) {
+    void testCounterfactualsExplainAsyncSuccess(ThrowingSupplier<BaseExplainabilityResult> invocation) {
         when(instance.stream()).thenReturn(Stream.of(cfExplainerServiceHandlerMock));
 
         when(cfExplainerMock.explainAsync(any(Prediction.class),
                 eq(predictionProviderMock),
                 any(Consumer.class))).thenReturn(CompletableFuture.completedFuture(COUNTERFACTUAL_RESULT));
 
-        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(invocation);
+        BaseExplainabilityResult result = assertDoesNotThrow(invocation);
 
-        assertNotNull(resultDto);
-        assertTrue(resultDto instanceof CounterfactualExplainabilityResultDto);
-        CounterfactualExplainabilityResultDto counterfactualResultDto = (CounterfactualExplainabilityResultDto) resultDto;
+        assertNotNull(result);
+        assertTrue(result instanceof CounterfactualExplainabilityResult);
+        CounterfactualExplainabilityResult counterfactualResult = (CounterfactualExplainabilityResult) result;
 
-        assertEquals(EXECUTION_ID, counterfactualResultDto.getExecutionId());
-        assertEquals(COUNTERFACTUAL_ID, counterfactualResultDto.getCounterfactualId());
-        assertSame(ExplainabilityStatus.SUCCEEDED, counterfactualResultDto.getStatus());
-        assertNull(counterfactualResultDto.getStatusDetails());
-        assertEquals(COUNTERFACTUAL_RESULT.getEntities().size(), counterfactualResultDto.getInputs().size());
-        assertEquals(COUNTERFACTUAL_RESULT.getOutput().size(), counterfactualResultDto.getOutputs().size());
-        assertTrue(counterfactualResultDto.getOutputs().containsKey("output1"));
+        assertEquals(EXECUTION_ID, counterfactualResult.getExecutionId());
+        assertEquals(COUNTERFACTUAL_ID, counterfactualResult.getCounterfactualId());
+        assertSame(ExplainabilityStatus.SUCCEEDED, counterfactualResult.getStatus());
+        assertNull(counterfactualResult.getStatusDetails());
+        assertEquals(COUNTERFACTUAL_RESULT.getEntities().size(), counterfactualResult.getInputs().size());
+        assertEquals(COUNTERFACTUAL_RESULT.getOutput().size(), counterfactualResult.getOutputs().size());
+        assertTrue(counterfactualResult.getOutputs().stream().anyMatch(o -> o.getName().equals("output1")));
 
-        TypedValue value = counterfactualResultDto.getOutputs().get("output1");
-        assertTrue(value.isUnit());
-        assertEquals(Double.class.getSimpleName(), value.toUnit().getType());
-        assertEquals(555.0, value.toUnit().getValue().asDouble());
+        NamedTypedValue value = counterfactualResult.getOutputs().iterator().next();
+        assertTrue(value.getValue().isUnit());
+        assertEquals(Double.class.getSimpleName(), value.getValue().toUnit().getType());
+        assertEquals(555.0, value.getValue().toUnit().getValue().asDouble());
     }
 
     @Test
@@ -217,17 +216,17 @@ class ExplanationServiceImplTest {
                 any(Consumer.class)))
                         .thenThrow(exception);
 
-        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(() -> explanationService.explainAsync(LIME_REQUEST, callbackMock)
+        BaseExplainabilityResult result = assertDoesNotThrow(() -> explanationService.explainAsync(LIME_REQUEST, callbackMock)
                 .toCompletableFuture()
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
 
-        assertNotNull(resultDto);
-        assertTrue(resultDto instanceof LIMEExplainabilityResultDto);
-        LIMEExplainabilityResultDto exceptionResultDto = (LIMEExplainabilityResultDto) resultDto;
+        assertNotNull(result);
+        assertTrue(result instanceof LIMEExplainabilityResult);
+        LIMEExplainabilityResult exceptionResult = (LIMEExplainabilityResult) result;
 
-        assertEquals(EXECUTION_ID, exceptionResultDto.getExecutionId());
-        assertSame(ExplainabilityStatus.FAILED, exceptionResultDto.getStatus());
-        assertEquals(errorMessage, exceptionResultDto.getStatusDetails());
+        assertEquals(EXECUTION_ID, exceptionResult.getExecutionId());
+        assertSame(ExplainabilityStatus.FAILED, exceptionResult.getStatus());
+        assertEquals(errorMessage, exceptionResult.getStatusDetails());
     }
 
     @Test
@@ -242,17 +241,17 @@ class ExplanationServiceImplTest {
                 any(Consumer.class)))
                         .thenThrow(exception);
 
-        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(() -> explanationService.explainAsync(COUNTERFACTUAL_REQUEST, callbackMock)
+        BaseExplainabilityResult result = assertDoesNotThrow(() -> explanationService.explainAsync(COUNTERFACTUAL_REQUEST, callbackMock)
                 .toCompletableFuture()
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
 
-        assertNotNull(resultDto);
-        assertTrue(resultDto instanceof CounterfactualExplainabilityResultDto);
-        CounterfactualExplainabilityResultDto exceptionResultDto = (CounterfactualExplainabilityResultDto) resultDto;
+        assertNotNull(result);
+        assertTrue(result instanceof CounterfactualExplainabilityResult);
+        CounterfactualExplainabilityResult exceptionResult = (CounterfactualExplainabilityResult) result;
 
-        assertEquals(EXECUTION_ID, exceptionResultDto.getExecutionId());
-        assertSame(ExplainabilityStatus.FAILED, exceptionResultDto.getStatus());
-        assertEquals(errorMessage, exceptionResultDto.getStatusDetails());
+        assertEquals(EXECUTION_ID, exceptionResult.getExecutionId());
+        assertSame(ExplainabilityStatus.FAILED, exceptionResult.getStatus());
+        assertEquals(errorMessage, exceptionResult.getStatusDetails());
     }
 
     @Test
@@ -261,12 +260,12 @@ class ExplanationServiceImplTest {
 
         when(limeExplainerMock.explainAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(SALIENCY_MAP));
 
-        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(() -> explanationService.explainAsync(LIME_REQUEST, callbackMock)
+        BaseExplainabilityResult result = assertDoesNotThrow(() -> explanationService.explainAsync(LIME_REQUEST, callbackMock)
                 .toCompletableFuture()
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
 
-        assertNotNull(resultDto);
-        assertTrue(resultDto instanceof LIMEExplainabilityResultDto);
+        assertNotNull(result);
+        assertTrue(result instanceof LIMEExplainabilityResult);
     }
 
     @Test
@@ -275,11 +274,11 @@ class ExplanationServiceImplTest {
 
         when(cfExplainerMock.explainAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(COUNTERFACTUAL_RESULT));
 
-        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(() -> explanationService.explainAsync(COUNTERFACTUAL_REQUEST, callbackMock)
+        BaseExplainabilityResult result = assertDoesNotThrow(() -> explanationService.explainAsync(COUNTERFACTUAL_REQUEST, callbackMock)
                 .toCompletableFuture()
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
 
-        assertNotNull(resultDto);
-        assertTrue(resultDto instanceof CounterfactualExplainabilityResultDto);
+        assertNotNull(result);
+        assertTrue(result instanceof CounterfactualExplainabilityResult);
     }
 }

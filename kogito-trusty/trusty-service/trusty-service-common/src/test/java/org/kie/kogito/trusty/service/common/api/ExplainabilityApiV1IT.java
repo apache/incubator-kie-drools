@@ -16,6 +16,7 @@
 
 package org.kie.kogito.trusty.service.common.api;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -26,27 +27,32 @@ import java.util.stream.Collectors;
 import javax.ws.rs.core.MediaType;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualDomainCategorical;
+import org.kie.kogito.explainability.api.CounterfactualDomainRange;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainValue;
+import org.kie.kogito.explainability.api.ExplainabilityStatus;
+import org.kie.kogito.explainability.api.FeatureImportanceModel;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
+import org.kie.kogito.explainability.api.ModelIdentifier;
+import org.kie.kogito.explainability.api.NamedTypedValue;
+import org.kie.kogito.explainability.api.SaliencyModel;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualResultsResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomainValue;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
-import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
-import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
+import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.mockito.ArgumentCaptor;
 import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.IntNode;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
@@ -73,7 +79,11 @@ class ExplainabilityApiV1IT {
 
     private static final String TEST_EXECUTION_ID = "executionId";
 
+    private static final String TEST_SERVICE_URL = "serviceUrl";
+
     private static final String TEST_COUNTERFACTUAL_ID = "counterfactualId";
+
+    private static final Long TEST_MAX_RUNNING_TIME_SECONDS = 60L;
 
     private static final CounterfactualExplainabilityResult SOLUTION1 = new CounterfactualExplainabilityResult(TEST_EXECUTION_ID,
             TEST_COUNTERFACTUAL_ID,
@@ -105,16 +115,25 @@ class ExplainabilityApiV1IT {
                 ExplainabilityStatus.SUCCEEDED,
                 null,
                 List.of(
-                        new SaliencyModel("O1", "Output1", List.of(
-                                new FeatureImportanceModel("Feature1", 0.49384),
-                                new FeatureImportanceModel("Feature2", -0.1084))),
-                        new SaliencyModel("O2", "Output2", List.of(
-                                new FeatureImportanceModel("Feature1", 0.0),
-                                new FeatureImportanceModel("Feature2", 0.70293)))));
+                        new SaliencyModel("Output1",
+                                List.of(
+                                        new FeatureImportanceModel("Feature1", 0.49384),
+                                        new FeatureImportanceModel("Feature2", -0.1084))),
+                        new SaliencyModel("Output2",
+                                List.of(
+                                        new FeatureImportanceModel("Feature1", 0.0),
+                                        new FeatureImportanceModel("Feature2", 0.70293)))));
     }
 
     private static CounterfactualExplainabilityRequest buildValidCounterfactual() {
-        return new CounterfactualExplainabilityRequest(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID);
+        return new CounterfactualExplainabilityRequest(TEST_EXECUTION_ID,
+                TEST_SERVICE_URL,
+                new ModelIdentifier("resourceType", "resourceIdentifier"),
+                TEST_COUNTERFACTUAL_ID,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                TEST_MAX_RUNNING_TIME_SECONDS);
     }
 
     private static List<CounterfactualExplainabilityResult> buildValidCounterfactualResults() {
@@ -124,6 +143,30 @@ class ExplainabilityApiV1IT {
     @Test
     void testSalienciesWithExplainabilityResult() {
         mockServiceWithExplainabilityResult();
+
+        Decision decision = new Decision(TEST_EXECUTION_ID,
+                "sourceUrl",
+                "serviceUrl",
+                0L,
+                true,
+                "executorName",
+                "executorModelName",
+                "executorModelNamespace",
+                new ArrayList<>(),
+                new ArrayList<>());
+        decision.getOutcomes().add(new DecisionOutcome("outcomeId1",
+                "Output1",
+                ExplainabilityStatus.SUCCEEDED.name(),
+                new UnitValue("type", new IntNode(1)),
+                Collections.emptyMap(),
+                Collections.emptyList()));
+        decision.getOutcomes().add(new DecisionOutcome("outcomeId2",
+                "Output2",
+                ExplainabilityStatus.SUCCEEDED.name(),
+                new UnitValue("type2", new IntNode(2)),
+                Collections.emptyMap(),
+                Collections.emptyList()));
+        when(executionService.getDecisionById(eq(TEST_EXECUTION_ID))).thenReturn(decision);
 
         SalienciesResponse response = given().filter(new ResponseLoggingFilter())
                 .when().get("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/saliencies")

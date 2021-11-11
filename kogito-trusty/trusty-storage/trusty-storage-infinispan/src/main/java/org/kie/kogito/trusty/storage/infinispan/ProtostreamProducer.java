@@ -36,6 +36,7 @@ public class ProtostreamProducer {
     FileDescriptorSource kogitoTypesDescriptor() throws IOException {
         FileDescriptorSource source = new FileDescriptorSource();
         source.addProtoFile("decision.proto", Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/decision.proto"));
+        source.addProtoFile("explanation.proto", Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/explanation.proto"));
         return source;
     }
 

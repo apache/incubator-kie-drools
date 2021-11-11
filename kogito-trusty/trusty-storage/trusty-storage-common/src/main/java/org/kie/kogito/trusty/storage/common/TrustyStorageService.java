@@ -16,12 +16,12 @@
 
 package org.kie.kogito.trusty.storage.common;
 
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 
 public interface TrustyStorageService {
 

@@ -44,7 +44,7 @@ public class ModelIdentifierTest {
             final String name,
             final String namespace,
             final String expected) {
-        ModelIdentifier modelIdentifier = new ModelIdentifier(groupId,
+        ModelMetadata modelIdentifier = new ModelMetadata(groupId,
                 artifactId,
                 version,
                 name,

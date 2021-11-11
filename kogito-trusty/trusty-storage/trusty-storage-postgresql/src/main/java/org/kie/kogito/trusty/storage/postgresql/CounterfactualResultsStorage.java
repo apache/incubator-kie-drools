@@ -18,8 +18,8 @@ package org.kie.kogito.trusty.storage.postgresql;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.persistence.postgresql.model.CacheEntityRepository;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

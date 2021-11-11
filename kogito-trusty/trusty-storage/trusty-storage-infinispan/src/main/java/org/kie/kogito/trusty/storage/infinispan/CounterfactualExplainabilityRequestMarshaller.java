@@ -17,7 +17,7 @@ package org.kie.kogito.trusty.storage.infinispan;
 
 import java.io.IOException;
 
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -18,26 +18,21 @@ package org.kie.kogito.trusty.service.common.handlers;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
-import org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceHandler<CounterfactualExplainabilityResult, CounterfactualExplainabilityResultDto> {
+public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceHandler<CounterfactualExplainabilityResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CounterfactualExplainerServiceHandler.class);
 
@@ -61,33 +56,6 @@ public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceH
     @Override
     public <T extends BaseExplainabilityResult> boolean supports(Class<T> type) {
         return CounterfactualExplainabilityResult.class.isAssignableFrom(type);
-    }
-
-    @Override
-    public <T extends BaseExplainabilityResultDto> boolean supportsDto(Class<T> type) {
-        return CounterfactualExplainabilityResultDto.class.isAssignableFrom(type);
-    }
-
-    @Override
-    public CounterfactualExplainabilityResult explainabilityResultFrom(CounterfactualExplainabilityResultDto dto, Decision decision) {
-        return new CounterfactualExplainabilityResult(dto.getExecutionId(),
-                dto.getCounterfactualId(),
-                dto.getSolutionId(),
-                dto.getSequenceId(),
-                statusFrom(dto.getStatus()),
-                dto.getStatusDetails(),
-                dto.isValid(),
-                stageFrom(dto.getStage()),
-                dto.getInputs()
-                        .entrySet()
-                        .stream()
-                        .map(e -> new NamedTypedValue(e.getKey(), e.getValue()))
-                        .collect(Collectors.toList()),
-                dto.getOutputs()
-                        .entrySet()
-                        .stream()
-                        .map(e -> new NamedTypedValue(e.getKey(), e.getValue()))
-                        .collect(Collectors.toList()));
     }
 
     @Override
@@ -126,9 +94,5 @@ public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceH
 
         LOG.info("Purging Counterfactual Explainability results storage for Counterfactual {}", counterfactualId);
         explainabilityResultsManagerSlidingWindow.purge(counterfactualId, storage);
-    }
-
-    private CounterfactualExplainabilityResult.Stage stageFrom(CounterfactualExplainabilityResultDto.Stage stage) {
-        return stage.equals(CounterfactualExplainabilityResultDto.Stage.FINAL) ? CounterfactualExplainabilityResult.Stage.FINAL : CounterfactualExplainabilityResult.Stage.INTERMEDIATE;
     }
 }

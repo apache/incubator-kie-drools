@@ -29,24 +29,24 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.api.CounterfactualDomain;
+import org.kie.kogito.explainability.api.CounterfactualDomainCategorical;
+import org.kie.kogito.explainability.api.CounterfactualDomainRange;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
+import org.kie.kogito.explainability.api.ExplainabilityStatus;
+import org.kie.kogito.explainability.api.FeatureImportanceModel;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
+import org.kie.kogito.explainability.api.NamedTypedValue;
+import org.kie.kogito.explainability.api.SaliencyModel;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
+import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
-import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.NamedTypedValue;
-import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -460,8 +460,7 @@ public abstract class AbstractTrustyServiceIT {
                 new LIMEExplainabilityResult(executionId,
                         ExplainabilityStatus.SUCCEEDED,
                         "status",
-                        List.of(new SaliencyModel("outcomeId",
-                                "outcomeName",
+                        List.of(new SaliencyModel("outcomeName",
                                 List.of(new FeatureImportanceModel("feature", 1.0))))));
 
         LIMEExplainabilityResult result = trustyService.getExplainabilityResultById(executionId, LIMEExplainabilityResult.class);
@@ -648,7 +647,7 @@ public abstract class AbstractTrustyServiceIT {
 
     private void storeModel(String model) {
         DMNModelWithMetadata dmnModelWithMetadata = new DMNModelWithMetadata("groupId", "artifactId", "modelVersion", "dmnVersion", "name", "namespace", model);
-        ModelIdentifier identifier = new ModelIdentifier("groupId",
+        ModelMetadata identifier = new ModelMetadata("groupId",
                 "artifactId",
                 "version",
                 "name",
@@ -657,7 +656,7 @@ public abstract class AbstractTrustyServiceIT {
     }
 
     private DMNModelWithMetadata getModel() {
-        ModelIdentifier identifier = new ModelIdentifier("groupId",
+        ModelMetadata identifier = new ModelMetadata("groupId",
                 "artifactId",
                 "version",
                 "name",
