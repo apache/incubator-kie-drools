@@ -24,7 +24,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 public class CompiledBlockResult implements CompiledResult{
 
@@ -36,7 +36,7 @@ public class CompiledBlockResult implements CompiledResult{
     }
 
     public String resultAsString() {
-        return printConstraint(statementResults());
+        return printNode(statementResults());
     }
 
     @Override

@@ -738,7 +738,7 @@ public class PackageModel {
         results.withClass(cuRulesMethod);
         cuRulesMethod.setPackageDeclaration(name);
         manageImportForCompilationUnit(cuRulesMethod);
-        cuRulesMethod.addImport(name + "." + rulesFileName, true, true);
+        cuRulesMethod.getImports().add(new ImportDeclaration(new Name(name + "." + rulesFileName), true, true));
         return cuRulesMethod.addClass(className);
     }
 
@@ -767,9 +767,9 @@ public class PackageModel {
         CompilationUnit cu = new CompilationUnit();
         results.withClass(cu);
         cu.setPackageDeclaration(name);
-        cu.addImport(new ImportDeclaration(new Name(Arrays.class.getCanonicalName()), false, false));
-        cu.addImport(new ImportDeclaration(new Name(List.class.getCanonicalName()), false, false));
-        cu.addImport(new ImportDeclaration(new Name(Rule.class.getCanonicalName()), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name(Arrays.class.getCanonicalName()), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name(List.class.getCanonicalName()), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name(Rule.class.getCanonicalName()), false, false));
         String currentRulesMethodClassName = rulesFileName + "Rules" + index;
         ClassOrInterfaceDeclaration rulesClass = cu.addClass(currentRulesMethodClassName);
         rulesClass.addImplementedType(RulesSupplier.class);
@@ -787,18 +787,18 @@ public class PackageModel {
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
         // fixed part
-        cu.addImport(new ImportDeclaration(new Name("org.drools.modelcompiler.dsl.pattern.D"), false, false));
-        cu.addImport(new ImportDeclaration(new Name("org.drools.model.Index.ConstraintType"), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name("org.drools.modelcompiler.dsl.pattern.D"), false, false));
+        cu.getImports().add(new ImportDeclaration(new Name("org.drools.model.Index.ConstraintType"), false, false));
 
         // imports from DRL:
         for ( String i : imports ) {
             if ( i.equals(name+".*") ) {
                 continue; // skip same-package star import.
             }
-            cu.addImport( new ImportDeclaration(new Name(i), false, false ) );
+            cu.getImports().add( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String i : staticImports) {
-            cu.addImport( new ImportDeclaration(new Name(i), true, false ) );
+            cu.getImports().add( new ImportDeclaration(new Name(i), true, false ) );
         }
     }
 

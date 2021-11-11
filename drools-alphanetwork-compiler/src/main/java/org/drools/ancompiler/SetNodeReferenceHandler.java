@@ -145,7 +145,7 @@ public class SetNodeReferenceHandler {
 
             SwitchEntry se = new SwitchEntry(nodeList(
                     new IntegerLiteralExpr(n.getId())),
-                                             SwitchEntry.Type.BLOCK,
+                                             SwitchEntry.Type.STATEMENT_GROUP,
                                              nodeList(assignStmt, new ReturnStmt(new BooleanLiteralExpr(true))));
             entries.add(se);
         }

@@ -66,6 +66,7 @@ import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.CompiledExpressionResult;
 import org.drools.mvelcompiler.ConstraintCompiler;
 
@@ -94,7 +95,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOr
 import static org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess.createMultipleDrlxParseSuccess;
 import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 /**
  * Parses the MVEL String Constraint and compiles it to a Java Expression
@@ -165,7 +166,7 @@ public class ConstraintParser {
     private void addDeclaration(DrlxExpression drlx, SingleDrlxParseSuccess singleResult, String bindId) {
         DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprTypeBeforeCoercion() );
         if (drlx.getExpr() instanceof NameExpr) {
-            decl.setBoundVariable( drlx.getExpr().toString() );
+            decl.setBoundVariable( PrintUtil.printNode(drlx.getExpr()) );
         }
         singleResult.setExprBinding( bindId );
         Type exprType = singleResult.getExprType();
@@ -195,9 +196,9 @@ public class ConstraintParser {
 
     private Optional<DrlxParseFail> validateVariable(Expression drlxExpr, boolean hasBind) {
         if (!skipVariableValidation && drlxExpr instanceof MethodCallExpr && hasBind) {
-            return drlxExpr.findAll(NameExpr.class, ne -> context.hasDeclaration(ne.toString()))
+            return drlxExpr.findAll(NameExpr.class, ne -> context.hasDeclaration(PrintUtil.printNode(ne)))
                     .stream()
-                    .map(n -> new DrlxParseFail(new VariableUsedInBindingError(n.toString(), drlxExpr.toString())))
+                    .map(n -> new DrlxParseFail(new VariableUsedInBindingError(PrintUtil.printNode(n), PrintUtil.printNode(drlxExpr))))
                     .findFirst();
         }
         return Optional.empty();
@@ -365,11 +366,11 @@ public class ConstraintParser {
             NodeList<Expression> arguments = methodCallExpr.getArguments();
             List<String> usedDeclarations = new ArrayList<>();
             for (Expression arg : arguments) {
-                String argString = printConstraint(arg);
+                String argString = printNode(arg);
                 if (arg instanceof DrlNameExpr && !argString.equals(THIS_PLACEHOLDER)) {
                     usedDeclarations.add(argString);
                 } else if (arg instanceof CastExpr ) {
-                    String s = printConstraint(((CastExpr) arg).getExpression());
+                    String s = printNode(((CastExpr) arg).getExpression());
                     usedDeclarations.add(s);
                 } else if (arg instanceof MethodCallExpr) {
                     TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
@@ -420,7 +421,7 @@ public class ConstraintParser {
         } else if (context.hasDeclaration( expression )) {
             Optional<DeclarationSpec> declarationSpec = context.getDeclarationById(expression);
             if (declarationSpec.isPresent()) {
-                return new SingleDrlxParseSuccess(patternType, bindingId, context.getVarExpr(printConstraint(drlxExpr)), declarationSpec.get().getDeclarationClass() ).setIsPredicate(true);
+                return new SingleDrlxParseSuccess(patternType, bindingId, context.getVarExpr(printNode(drlxExpr)), declarationSpec.get().getDeclarationClass() ).setIsPredicate(true);
             } else {
                 throw new IllegalArgumentException("Cannot find declaration specification by specified expression " + expression + "!");
             }
@@ -693,7 +694,7 @@ public class ConstraintParser {
         if (expr instanceof FieldAccessExpr ) {
             return getExpressionSymbol( (( FieldAccessExpr ) expr).getScope() );
         }
-        return printConstraint(expr);
+        return printNode(expr);
     }
 
     private SpecialComparisonResult getEqualityExpression(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
@@ -827,7 +828,7 @@ public class ConstraintParser {
 
         ConstraintCompiler constraintCompiler = createConstraintCompiler(context, originalPatternType);
 
-        CompiledExpressionResult compiledBlockResult = constraintCompiler.compileExpression(arg.toString());
+        CompiledExpressionResult compiledBlockResult = constraintCompiler.compileExpression(PrintUtil.printNode(arg));
 
         arg = compiledBlockResult.getExpression();
 

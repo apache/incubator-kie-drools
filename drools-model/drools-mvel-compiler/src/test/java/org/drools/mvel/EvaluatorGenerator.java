@@ -39,6 +39,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import org.drools.core.util.StringUtils;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.CompiledResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +97,7 @@ public class EvaluatorGenerator {
     }
 
     private void logGenerateClass() {
-        LOG.debug(template.toString());
+        LOG.debug(PrintUtil.printNode(template));
     }
 
     // Simulate "Last expression is a return statement"

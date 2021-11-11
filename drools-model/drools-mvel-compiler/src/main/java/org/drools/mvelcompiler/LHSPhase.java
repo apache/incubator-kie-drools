@@ -60,7 +60,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.core.util.ClassUtils.getSetter;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 /**
  * This phase processes the left hand side of a MVEL target expression, if present, such as
@@ -94,7 +94,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
         TypedExpression typedExpression = n.accept(this, null);
         if (typedExpression == null) {
-            throw new MvelCompilerException("Type check of " + printConstraint(n) + " failed.");
+            throw new MvelCompilerException("Type check of " + printNode(n) + " failed.");
         }
         logger.debug("LHS phase completed");
         return typedExpression;
@@ -104,7 +104,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     public TypedExpression visit(DrlNameExpr n, Void arg) {
         logPhase("DrlNameExpr {}", n);
 
-        String variableName = printConstraint(n);
+        String variableName = printNode(n);
         Optional<Declaration> declaration = mvelCompilerContext.findDeclarations(variableName);
 
         return declaration.<TypedExpression>map(d -> new SimpleNameTExpr(n.getNameAsString(), d.getClazz()))
@@ -140,7 +140,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
     private Optional<TypedExpression> tryParseAsArithmeticExpression(FieldAccessExpr n, TypedExpression scope) {
         Optional<Node> optParentAssignExpr = n.getParentNode().filter(p -> p instanceof AssignExpr);
-        String setterName = printConstraint(n.getName());
+        String setterName = printNode(n.getName());
 
         return optParentAssignExpr.flatMap(parentAssignExpr -> findAccessorsAndConvert(scope, setterName, (AssignExpr) parentAssignExpr));
     }
@@ -238,7 +238,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
     private Optional<TypedExpression> tryParseItAsMap(FieldAccessExpr n, TypedExpression scope) {
         return scope.getType().flatMap(scopeType -> {
-            String getterName = printConstraint(n.getName());
+            String getterName = printNode(n.getName());
 
             return ofNullable(getAccessor((Class<?>) scopeType, getterName))
                     .filter(t -> Map.class.isAssignableFrom(t.getReturnType()))
@@ -248,7 +248,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
     private Optional<TypedExpression> tryParseItAsSetter(FieldAccessExpr n, TypedExpression scope, Class<?> setterArgumentType) {
         return scope.getType().flatMap(scopeType -> {
-            String setterName = printConstraint(n.getName());
+            String setterName = printNode(n.getName());
             Optional<Method> optAccessor =
                     ofNullable(getSetter((Class<?>) scopeType, setterName, setterArgumentType))
                     .map(Optional::of)
@@ -374,7 +374,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
     private void logPhase(String phase, Node statement) {
         if(logger.isDebugEnabled()) {
-            logger.debug(phase, printConstraint(statement));
+            logger.debug(phase, printNode(statement));
         }
     }
 

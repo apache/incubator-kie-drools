@@ -41,15 +41,13 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
-import org.drools.mvel.parser.printer.ConstraintPrintVisitor;
 
 import static com.github.javaparser.Problem.PROBLEM_BY_BEGIN_POSITION;
 import static com.github.javaparser.utils.Utils.assertNotNull;
+import static org.drools.mvel.parser.ParseStart.BLOCK;
 import static org.drools.mvel.parser.ParseStart.CLASS_OR_INTERFACE_TYPE;
 import static org.drools.mvel.parser.ParseStart.EXPLICIT_CONSTRUCTOR_INVOCATION_STMT;
 import static org.drools.mvel.parser.ParseStart.EXPRESSION;
-import static org.drools.mvel.parser.ParseStart.BLOCK;
 import static org.drools.mvel.parser.ParseStart.NAME;
 import static org.drools.mvel.parser.ParseStart.SIMPLE_NAME;
 import static org.drools.mvel.parser.ParseStart.TYPE;
@@ -68,13 +66,6 @@ public final class MvelParser {
 
     private GeneratedMvelParser astParser = null;
     private static ParserConfiguration staticConfiguration = new ParserConfiguration();
-
-    static {
-        PrettyPrinterConfiguration prettyPrinterConfiguration = new PrettyPrinterConfiguration();
-        // This is to support toString() on new Nodes in this parser
-        prettyPrinterConfiguration.setVisitorFactory(ConstraintPrintVisitor::new);
-        Node.setToStringPrettyPrinterConfiguration(prettyPrinterConfiguration);
-    }
 
     /**
      * Instantiate the parser with default configuration. Note that parsing can also be done with the static methods on

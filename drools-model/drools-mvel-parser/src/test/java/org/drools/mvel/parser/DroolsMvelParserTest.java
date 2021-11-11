@@ -56,7 +56,7 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.junit.Test;
 
 import static org.drools.mvel.parser.DrlxParser.parseExpression;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -88,38 +88,38 @@ public class DroolsMvelParserTest {
     public void testBinaryWithNewLine() {
         Expression or = parseExpression(parser, "(addresses == 2 ||\n" +
                 "                   addresses == 3  )").getExpr();
-        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
+        assertEquals("(addresses == 2 || addresses == 3)", printNode(or));
 
         Expression and = parseExpression(parser, "(addresses == 2 &&\n addresses == 3  )").getExpr();
-        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
+        assertEquals("(addresses == 2 && addresses == 3)", printNode(and));
     }
 
     @Test
     public void testBinaryWithWindowsNewLine() {
         Expression or = parseExpression(parser, "(addresses == 2 ||\r\n" +
                 "                   addresses == 3  )").getExpr();
-        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
+        assertEquals("(addresses == 2 || addresses == 3)", printNode(or));
 
         Expression and = parseExpression(parser, "(addresses == 2 &&\r\n addresses == 3  )").getExpr();
-        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
+        assertEquals("(addresses == 2 && addresses == 3)", printNode(and));
     }
 
     @Test
     public void testBinaryWithNewLineBeginning() {
         Expression or = parseExpression(parser, "(" + newLine() + "addresses == 2 || addresses == 3  )").getExpr();
-        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
+        assertEquals("(addresses == 2 || addresses == 3)", printNode(or));
 
         Expression and = parseExpression(parser, "(" + newLine() + "addresses == 2 && addresses == 3  )").getExpr();
-        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
+        assertEquals("(addresses == 2 && addresses == 3)", printNode(and));
     }
 
     @Test
     public void testBinaryWithNewLineEnd() {
         Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 " + newLine() + ")").getExpr();
-        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
+        assertEquals("(addresses == 2 || addresses == 3)", printNode(or));
 
         Expression and = parseExpression(parser, "(addresses == 2 && addresses == 3 " + newLine() + ")").getExpr();
-        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
+        assertEquals("(addresses == 2 && addresses == 3)", printNode(and));
     }
 
     @Test
@@ -127,54 +127,54 @@ public class DroolsMvelParserTest {
         String andExpr = "(addresses == 2" + newLine() + "&& addresses == 3  )";
         MvelParser mvelParser1 = new MvelParser(new ParserConfiguration(), true);
         Expression and2 = mvelParser1.parse(GeneratedMvelParser::Expression, new StringProvider(andExpr)).getResult().get();
-        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
+        assertEquals("(addresses == 2 && addresses == 3)", printNode(and2));
 
         String orExpr = "(addresses == 2" + newLine() + "|| addresses == 3  )";
         MvelParser mvelParser2 = new MvelParser(new ParserConfiguration(), false);
         Expression or2 = mvelParser2.parse(GeneratedMvelParser::Expression, new StringProvider(orExpr)).getResult().get();
-        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
+        assertEquals("(addresses == 2 || addresses == 3)", printNode(or2));
     }
 
     @Test
     public void testParseSafeCastExpr() {
         String expr = "this instanceof Person && ((Person) this).name == \"Mark\"";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
     public void testParseInlineCastExpr() {
         String expr = "this#Person.name == \"Mark\"";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
     public void testParseInlineCastExpr2() {
         String expr = "address#com.pkg.InternationalAddress.state.length == 5";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
     public void testParseInlineCastExpr3() {
         String expr = "address#org.drools.mvel.compiler.LongAddress.country.substring(1)";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
     public void testParseInlineCastExpr4() {
         String expr = "address#com.pkg.InternationalAddress.getState().length == 5";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
     public void testParseNullSafeFieldAccessExpr() {
         String expr = "person!.name == \"Mark\"";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -182,21 +182,21 @@ public class DroolsMvelParserTest {
         String expr = "this after $a";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof PointFreeExpr);
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
     public void testDotFreeEnclosed() {
         String expr = "(this after $a)";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
     public void testDotFreeEnclosedWithNameExpr() {
         String expr = "(something after $a)";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
 
@@ -204,18 +204,18 @@ public class DroolsMvelParserTest {
     public void testLiteral() {
         String bigDecimalLiteral = "bigInteger < (50B)";
         Expression bigDecimalExpr = parseExpression( parser, bigDecimalLiteral ).getExpr();
-        assertEquals(bigDecimalLiteral, printConstraint(bigDecimalExpr));
+        assertEquals(bigDecimalLiteral, printNode(bigDecimalExpr));
 
         String bigIntegerLiteral = "bigInteger == (50I)";
         Expression bigIntegerExpr = parseExpression( parser, bigIntegerLiteral ).getExpr();
-        assertEquals(bigIntegerLiteral, printConstraint(bigIntegerExpr));
+        assertEquals(bigIntegerLiteral, printNode(bigIntegerExpr));
     }
 
     @Test
     public void testBigDecimalLiteral() {
         String bigDecimalLiteralWithDecimals = "12.111B";
         Expression bigDecimalExprWithDecimals = parseExpression( parser, bigDecimalLiteralWithDecimals ).getExpr();
-        assertEquals(bigDecimalLiteralWithDecimals, printConstraint(bigDecimalExprWithDecimals));
+        assertEquals(bigDecimalLiteralWithDecimals, printNode(bigDecimalExprWithDecimals));
     }
 
     @Test
@@ -223,7 +223,7 @@ public class DroolsMvelParserTest {
         String expr = "this after $a || this after $b";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof BinaryExpr);
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -232,7 +232,7 @@ public class DroolsMvelParserTest {
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof PointFreeExpr);
         assertFalse(((PointFreeExpr)expression).isNegated());
-        assertEquals("this after[5ms,8ms] $a", printConstraint(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
+        assertEquals("this after[5ms,8ms] $a", printNode(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
     }
 
     @Test
@@ -241,7 +241,7 @@ public class DroolsMvelParserTest {
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof PointFreeExpr);
         assertFalse(((PointFreeExpr)expression).isNegated());
-        assertEquals("this after[5s,*] $a", printConstraint(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
+        assertEquals("this after[5s,*] $a", printNode(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
     }
 
     @Test
@@ -250,7 +250,7 @@ public class DroolsMvelParserTest {
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof PointFreeExpr);
         assertFalse(((PointFreeExpr)expression).isNegated());
-        assertEquals("this after[*,*,*,2s] $a", printConstraint(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
+        assertEquals("this after[*,*,*,2s] $a", printNode(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
     }
 
 
@@ -260,7 +260,7 @@ public class DroolsMvelParserTest {
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertThat(expression, instanceOf(PointFreeExpr.class));
         assertTrue(((PointFreeExpr)expression).isNegated());
-        assertEquals("this not after[5ms,8ms] $a", printConstraint(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
+        assertEquals("this not after[5ms,8ms] $a", printNode(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
     }
 
     @Test
@@ -268,7 +268,7 @@ public class DroolsMvelParserTest {
         String expr = "this after[5ms,8d] $a";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof PointFreeExpr);
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -276,7 +276,7 @@ public class DroolsMvelParserTest {
         String expr = "this includes[1s,1m,1h,1d] $a";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof PointFreeExpr);
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -284,7 +284,7 @@ public class DroolsMvelParserTest {
         String expr = "includes[1s,1m,1h,1d] $a";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertThat(expression, instanceOf(HalfPointFreeExpr.class));
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test(expected = ParseProblemException.class)
@@ -299,7 +299,7 @@ public class DroolsMvelParserTest {
         DrlxExpression drlx = parseExpression( parser, expr );
         Expression expression = drlx.getExpr();
         assertTrue(expression instanceof OOPathExpr);
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
     }
 
     @Test
@@ -308,7 +308,7 @@ public class DroolsMvelParserTest {
         DrlxExpression drlx = parseExpression( parser, expr );
         Expression expression = drlx.getExpr();
         assertTrue(expression instanceof OOPathExpr);
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
     }
 
     @Test
@@ -317,7 +317,7 @@ public class DroolsMvelParserTest {
         DrlxExpression drlx = parseExpression( parser, expr );
         Expression expression = drlx.getExpr();
         assertTrue(expression instanceof OOPathExpr);
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
     }
 
     @Test
@@ -327,7 +327,7 @@ public class DroolsMvelParserTest {
         assertEquals("$toy", drlx.getBind().asString());
         Expression expression = drlx.getExpr();
         assertTrue(expression instanceof OOPathExpr);
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
     }
 
     @Test
@@ -342,28 +342,28 @@ public class DroolsMvelParserTest {
         final BinaryExpr secondChunkFirstCondition = (BinaryExpr) secondChunk.getConditions().get(0).getExpr();
         final DrlNameExpr rightName = (DrlNameExpr) ((FieldAccessExpr)secondChunkFirstCondition.getRight()).getScope();
         assertEquals(2, rightName.getBackReferencesCount());
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
     }
 
     @Test
     public void testMapInitializationEmpty() {
         String expr = "countItems([])";
         DrlxExpression drlx = parseExpression( parser, expr );
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
     }
 
     @Test
     public void testMapInitializationLiteralAsArgument() {
         String expr = "countItems([123 : 456, 789 : 1011])";
         DrlxExpression drlx = parseExpression( parser, expr );
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
     }
 
     @Test
     public void testParseTemporalLiteral() {
         String expr = "5s";
         TemporalLiteralExpr drlx = DrlxParser.parseTemporalLiteral(expr);
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
         assertEquals(1, drlx.getChunks().size());
         TemporalLiteralChunkExpr chunk0 = (TemporalLiteralChunkExpr) drlx.getChunks().get(0);
         assertEquals(5, chunk0.getValue());
@@ -374,7 +374,7 @@ public class DroolsMvelParserTest {
     public void testParseTemporalLiteralOf2Chunks() {
         String expr = "1m5s";
         TemporalLiteralExpr drlx = DrlxParser.parseTemporalLiteral(expr);
-        assertEquals(expr, printConstraint(drlx));
+        assertEquals(expr, printNode(drlx));
         assertEquals(2, drlx.getChunks().size());
         TemporalLiteralChunkExpr chunk0 = (TemporalLiteralChunkExpr) drlx.getChunks().get(0);
         assertEquals(1, chunk0.getValue());
@@ -389,7 +389,7 @@ public class DroolsMvelParserTest {
         String expr = "this in ()";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof PointFreeExpr);
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -398,7 +398,7 @@ public class DroolsMvelParserTest {
         String expr = "== \"Mark\"";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertTrue(expression instanceof HalfBinaryExpr);
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -706,7 +706,7 @@ public class DroolsMvelParserTest {
         String expr = "name matches \"[a-z]*\"";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertThat(expression, instanceOf(PointFreeExpr.class));
-        assertEquals("name matches \"[a-z]*\"", printConstraint(expression));
+        assertEquals("name matches \"[a-z]*\"", printNode(expression));
         PointFreeExpr e = (PointFreeExpr)expression;
         assertEquals("matches", e.getOperator().asString());
         assertEquals("name", toString(e.getLeft()));
@@ -717,7 +717,7 @@ public class DroolsMvelParserTest {
     public void implicitOperatorWithRegexps() {
         String expr = "name matches \"[a-z]*\" || matches \"pippo\"";
         Expression expression = parseExpression(parser, expr).getExpr();
-        assertEquals("name matches \"[a-z]*\" || matches \"pippo\"", printConstraint(expression));
+        assertEquals("name matches \"[a-z]*\" || matches \"pippo\"", printNode(expression));
     }
 
     @Test
@@ -725,7 +725,7 @@ public class DroolsMvelParserTest {
         String expr = "matches \"[A-Z]*\"";
         Expression expression = parseExpression(parser, expr).getExpr();
         assertThat(expression, instanceOf(HalfPointFreeExpr.class));
-        assertEquals("matches \"[A-Z]*\"", printConstraint(expression));
+        assertEquals("matches \"[A-Z]*\"", printNode(expression));
     }
 
     @Test
@@ -733,7 +733,7 @@ public class DroolsMvelParserTest {
         String expr = "not matches \"[A-Z]*\"";
         Expression expression = parseExpression(parser, expr).getExpr();
         assertThat(expression, instanceOf(HalfPointFreeExpr.class));
-        assertEquals("not matches \"[A-Z]*\"", printConstraint(expression));
+        assertEquals("not matches \"[A-Z]*\"", printNode(expression));
     }
 
     @Test
@@ -757,11 +757,11 @@ public class DroolsMvelParserTest {
     public void halfPointFreeMVEL() {
         String expr = "this str[startsWith] \"M\" || str[startsWith] \"E\"";
         Expression expression = parseExpression(parser, expr).getExpr();
-        assertEquals("this str[startsWith] \"M\" || str[startsWith] \"E\"", printConstraint(expression));
+        assertEquals("this str[startsWith] \"M\" || str[startsWith] \"E\"", printNode(expression));
 
         Expression expression2 = parseExpression(parser, "str[startsWith] \"E\"").getExpr();
         assertThat(expression2, instanceOf(HalfPointFreeExpr.class));
-        assertEquals("str[startsWith] \"E\"", printConstraint(expression2));
+        assertEquals("str[startsWith] \"E\"", printNode(expression2));
     }
 
 
@@ -769,14 +769,14 @@ public class DroolsMvelParserTest {
     public void testLambda() {
         String expr = "x -> y";
         DrlxExpression expression = parseExpression(parser, expr);
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
     public void testLambdaParameter() {
         String expr = "($p).setCanDrinkLambda(() -> true)";
         DrlxExpression expression = parseExpression(parser, expr);
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -786,7 +786,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    modify ($p) { name = \"Luca\", age = \"35\" };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test(expected = ParseProblemException.class)
@@ -802,7 +802,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    modify ($p) { name = \"Luca\" };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -812,7 +812,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    modify ($p) { setAge(1) };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -822,7 +822,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    modify ($p) { setAge(1), setAge(2), setAge(3), setAge(4) };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -832,7 +832,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    modify ($s) {  };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -843,7 +843,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    modify ($p) { setAge($p.getAge() + 1) };" + newLine() +
                              "}"
-                , printConstraint(expression));
+                , printNode(expression));
     }
 
 
@@ -855,7 +855,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    modify ((BooleanEvent) $toEdit.get(0)) {  };" + newLine() +
                              "}"
-                , printConstraint(expression));
+                , printNode(expression));
     }
     
     
@@ -866,7 +866,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    with ($p) { name = \"Luca\", age = \"35\" };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test(expected = ParseProblemException.class)
@@ -882,7 +882,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    with ($p) { name = \"Luca\" };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -892,7 +892,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    with ($p) { setAge(1) };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -902,7 +902,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    with ($s) {  };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -913,7 +913,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    with ($p) { setAge($p.getAge() + 1) };" + newLine() +
                              "}"
-                , printConstraint(expression));
+                , printNode(expression));
     }
 
 
@@ -925,7 +925,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    with ((BooleanEvent) $toEdit.get(0)) {  };" + newLine() +
                              "}"
-                , printConstraint(expression));
+                , printNode(expression));
     }
 
     @Test
@@ -935,7 +935,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    with (s1 = new Some()) {  };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -949,7 +949,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    a();" + newLine() +
                              "    b();" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -963,7 +963,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    delete($person);" + newLine() +
                              "    delete($pet);" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -977,7 +977,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    delete($person);" + newLine() +
                              "    delete($pet);" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -992,7 +992,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    delete($person);" + newLine() +
                              "    delete($pet);" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -1006,7 +1006,7 @@ public class DroolsMvelParserTest {
         assertEquals("{" + newLine() +
                              "    delete($person);" + newLine() +
                              "    delete($pet);" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
 
@@ -1017,7 +1017,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    delete($person);" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -1027,7 +1027,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    delete($person);" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -1041,7 +1041,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    setAge(47);" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -1054,19 +1054,19 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    func(x);" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
     public void newLineInFunctionCall2() {
         Expression expression = MvelParser.parseExpression("func(x," + newLine() + " 2)");
-        assertEquals("func(x, 2)", printConstraint(expression));
+        assertEquals("func(x, 2)", printNode(expression));
     }
 
     @Test
     public void newLineInFunctionCall3() {
         Expression expression = MvelParser.parseExpression("func(x" + newLine() + ", 2)");
-        assertEquals("func(x, 2)", printConstraint(expression));
+        assertEquals("func(x, 2)", printNode(expression));
     }
 
     @Test
@@ -1088,7 +1088,7 @@ public class DroolsMvelParserTest {
                              "    globalA.add(\"A\");" + newLine() +
                              "    modify ($p) { setAge(47) };" + newLine() +
                              "    globalB.add(\"B\");" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
 
     }
 
@@ -1098,7 +1098,7 @@ public class DroolsMvelParserTest {
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
                              "    modify ($p) { setCanDrinkLambda(() -> true) };" + newLine() +
-                             "}", printConstraint(expression));
+                             "}", printNode(expression));
     }
 
     @Test
@@ -1106,7 +1106,7 @@ public class DroolsMvelParserTest {
         String expr = "money == new BigInteger(\"3\")";
 
         Expression expression = parseExpression(parser, expr).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -1114,7 +1114,7 @@ public class DroolsMvelParserTest {
         String expr = "new Object[] { \"getMessageId\", ($s != null ? $s : \"42103\") }";
 
         Expression expression = parseExpression(parser, expr).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
 
@@ -1123,7 +1123,7 @@ public class DroolsMvelParserTest {
     String expr = "functions.arrayContainsInstanceWithParameters((Object[]) $f.getPersons())";
 
         Expression expression = parseExpression(parser, expr).getExpr();
-        assertEquals(expr, printConstraint(expression));
+        assertEquals(expr, printNode(expression));
     }
 
     @Test
@@ -1138,25 +1138,24 @@ public class DroolsMvelParserTest {
         assertFalse("Parsing should break at newline", r.isSuccessful());
     }
 
-        @Test
-        public void testLineBreakAtTheEndOfStatementWithoutSemicolon() {
-            String expr =
-                    "{  Person p2 = new Person(\"John\");\n" +
-                    "  p2.age = 30\n" + // a line break at the end of the statement without a semicolon
-                    "insert(p2);\n }";
+    @Test
+    public void testLineBreakAtTheEndOfStatementWithoutSemicolon() {
+        String expr =
+                "{  Person p2 = new Person(\"John\");\n" +
+                "  p2.age = 30\n" + // a line break at the end of the statement without a semicolon
+                "insert(p2);\n }";
 
-            MvelParser mvelParser = new MvelParser(new ParserConfiguration(), true);
-            ParseResult<BlockStmt> r = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr));
-            BlockStmt blockStmt = r.getResult().get();
-            assertEquals("Should parse 3 statements", 3, blockStmt.getStatements().size());
-
-        }
+        MvelParser mvelParser = new MvelParser(new ParserConfiguration(), true);
+        ParseResult<BlockStmt> r = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr));
+        BlockStmt blockStmt = r.getResult().get();
+        assertEquals("Should parse 3 statements", 3, blockStmt.getStatements().size());
+    }
 
     private void testMvelSquareOperator(String wholeExpression, String operator, String left, String right, boolean isNegated) {
         String expr = wholeExpression;
         Expression expression = parseExpression(parser, expr ).getExpr();
         assertThat(expression, instanceOf(PointFreeExpr.class));
-        assertEquals(wholeExpression, printConstraint(expression));
+        assertEquals(wholeExpression, printNode(expression));
         PointFreeExpr e = (PointFreeExpr)expression;
         assertEquals(operator, e.getOperator().asString());
         assertEquals(left, toString(e.getLeft()));
@@ -1165,7 +1164,7 @@ public class DroolsMvelParserTest {
     }
 
     private String toString(Node n) {
-        return PrintUtil.printConstraint(n);
+        return PrintUtil.printNode(n);
     }
 
     private String newLine() {

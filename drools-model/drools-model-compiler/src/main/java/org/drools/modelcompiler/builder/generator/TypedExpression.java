@@ -202,7 +202,7 @@ public class TypedExpression {
             return false;
         }
         TypedExpression that = (TypedExpression) o;
-        return Objects.equals(PrintUtil.printConstraint(expression), PrintUtil.printConstraint(that.expression)) &&
+        return Objects.equals(PrintUtil.printNode(expression), PrintUtil.printNode(that.expression)) &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(fieldName, that.fieldName);
     }
