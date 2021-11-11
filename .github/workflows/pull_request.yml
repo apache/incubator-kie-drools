@@ -11,7 +11,7 @@ on:
 jobs:
   build-chain:
     concurrency:
-      group: pull_request-${{ github.head_ref }}
+      group: pull_request-${{ github.head_ref }}-${{ matrix.os }}-${{ matrix.java-version }}
       cancel-in-progress: true
     strategy:
       matrix:
