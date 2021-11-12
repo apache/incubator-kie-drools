@@ -1,21 +1,19 @@
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ContextImpl;
-import org.kie.api.runtime.Context;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import org.drools.core.command.impl.ContextImpl;
+import org.kie.api.runtime.Context;
 
 
 public class ConversationContextManager {
 
     private Map<String, Context> conversationContexts;
 
-    private long counter;
-
     public ConversationContextManager() {
-        conversationContexts = new HashMap<String, Context>();
+        conversationContexts = new HashMap<>();
     }
 
     public void startConversation(RequestContextImpl requestContext) {
@@ -31,10 +29,6 @@ public class ConversationContextManager {
             throw new RuntimeException("Conversation cannot be found");
         }
         requestContext.setConversationContext(ctx);
-    }
-
-    public void leaveConversation(RequestContextImpl requestContext, String conversationId) {
-        throw new UnsupportedOperationException("Need to implement");
     }
 
     public void endConversation(RequestContextImpl requestContext, String conversationId) {
