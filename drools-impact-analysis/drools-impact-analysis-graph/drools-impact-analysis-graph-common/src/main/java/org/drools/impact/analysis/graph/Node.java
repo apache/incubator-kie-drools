@@ -27,13 +27,15 @@ public class Node {
     public enum Status {
         NONE,
         CHANGED,
-        IMPACTED
+        IMPACTED,
+        TARGET,
+        IMPACTING
     }
 
     private String packageName;
     private String ruleName;
     private Optional<Rule> rule;
-    protected Status status;
+    protected Status status = Status.NONE;
 
     private Set<Link> incomingLinks;
     private Set<Link> outgoingLinks;

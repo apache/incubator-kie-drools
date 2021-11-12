@@ -37,76 +37,73 @@ import static org.junit.Assert.assertNull;
 
 public class ImpactAnalysisTest extends AbstractGraphTest {
 
+    private static final String ORDER_RULES = "package mypkg;\n" +
+                                              "import " + Order.class.getCanonicalName() + ";" +
+                                              "\n" +
+                                              "rule R1\n" +
+                                              "  when\n" +
+                                              "    $o : Order(customerMembershipRank > 5)\n" +
+                                              "  then\n" +
+                                              "    modify($o) {\n" +
+                                              "      setDiscount(1000);\n" +
+                                              "    }\n" +
+                                              "end\n" +
+                                              "\n" +
+                                              "rule R2\n" +
+                                              "  when\n" +
+                                              "    $o : Order(customerAge > 60)\n" +
+                                              "  then\n" +
+                                              "    modify($o) {\n" +
+                                              "      setDiscount(2000);\n" +
+                                              "    }\n" +
+                                              "end\n" +
+                                              "\n" +
+                                              "rule R3\n" +
+                                              "  when\n" +
+                                              "    $o : Order(itemPrice < 2000, discount >= 2000)\n" +
+                                              "  then\n" +
+                                              "    modify($o) {\n" +
+                                              "      setStatus(\"Too much discount\");\n" +
+                                              "    }\n" +
+                                              "end\n" +
+                                              "\n" +
+                                              "rule R4\n" +
+                                              "  when\n" +
+                                              "    $o : Order(itemPrice > 5000)\n" +
+                                              "  then\n" +
+                                              "    modify($o) {\n" +
+                                              "      setStatus(\"Exclusive order\");\n" +
+                                              "    }\n" +
+                                              "end\n" +
+                                              "\n" +
+                                              "rule R5\n" +
+                                              "  when\n" +
+                                              "    $o : Order(status == \"Too much discount\")\n" +
+                                              "  then\n" +
+                                              "    modify($o) {\n" +
+                                              "      setDiscount(500);\n" +
+                                              "    }\n" +
+                                              "end\n" +
+                                              "\n" +
+                                              "rule R6\n" +
+                                              "  when\n" +
+                                              "    Order(status == \"Exclusive order\")\n" +
+                                              "  then\n" +
+                                              "    // Do some work...\n" +
+                                              "end";
+
     @Test
     public void testOrderRules() {
-        String str =
-                "package mypkg;\n" +
-                     "import " + Order.class.getCanonicalName() + ";" +
-                     "\n" +
-                     "rule R1\n" +
-                     "  when\n" +
-                     "    $o : Order(customerMembershipRank > 5)\n" +
-                     "  then\n" +
-                     "    modify($o) {\n" +
-                     "      setDiscount(1000);\n" +
-                     "    }\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule R2\n" +
-                     "  when\n" +
-                     "    $o : Order(customerAge > 60)\n" +
-                     "  then\n" +
-                     "    modify($o) {\n" +
-                     "      setDiscount(2000);\n" +
-                     "    }\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule R3\n" +
-                     "  when\n" +
-                     "    $o : Order(itemPrice < 2000, discount >= 2000)\n" +
-                     "  then\n" +
-                     "    modify($o) {\n" +
-                     "      setStatus(\"Too much discount\");\n" +
-                     "    }\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule R4\n" +
-                     "  when\n" +
-                     "    $o : Order(itemPrice > 5000)\n" +
-                     "  then\n" +
-                     "    modify($o) {\n" +
-                     "      setStatus(\"Exclusive order\");\n" +
-                     "    }\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule R5\n" +
-                     "  when\n" +
-                     "    $o : Order(status == \"Too much discount\")\n" +
-                     "  then\n" +
-                     "    modify($o) {\n" +
-                     "      setDiscount(500);\n" +
-                     "    }\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule R6\n" +
-                     "  when\n" +
-                     "    Order(status == \"Exclusive order\")\n" +
-                     "  then\n" +
-                     "    // Do some work...\n" +
-                     "end";
-
-        AnalysisModel analysisModel = new ModelBuilder().build(str);
+        AnalysisModel analysisModel = new ModelBuilder().build(ORDER_RULES);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
         generatePng(graph, "_all");
 
-        // Assuming that "modify" action in R2 is changed 
-        Node changedNode = graph.getNodeMap().get("mypkg.R2"); // modify action in R2
-
+        // View rules which are impacted by R2
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
-        Graph impactedSubGraph = impactFilter.filterImpactedNodes(graph, changedNode);
+        Graph impactedSubGraph = impactFilter.filterImpactedNodes(graph, "mypkg.R2");
 
         generatePng(impactedSubGraph, "_impactedSubGraph");
 
@@ -120,7 +117,6 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R6").getStatus());
 
         // TextReporter test
-
         System.out.println("--- toHierarchyText ---");
         String hierarchyText = TextReporter.toHierarchyText(impactedSubGraph);
         System.out.println(hierarchyText);
@@ -139,5 +135,52 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
                                                                 "R3[+]",
                                                                 "R6[+]",
                                                                 "R5[+]");
+    }
+
+    @Test
+    public void testOrderRulesBackward() {
+        AnalysisModel analysisModel = new ModelBuilder().build(ORDER_RULES);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        // View rules which impact R5
+        ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
+        Graph impactingSubGraph = impactFilter.filterImpactingNodes(graph, "mypkg.R5");
+
+        generatePng(impactingSubGraph, "_impactingSubGraph");
+
+        generatePng(graph, "_impacting");
+
+        assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R1").getStatus());
+        assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R2").getStatus());
+        assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R3").getStatus());
+        assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R4").getStatus());
+        assertEquals(Status.TARGET, impactingSubGraph.getNodeMap().get("mypkg.R5").getStatus());
+        assertNull(impactingSubGraph.getNodeMap().get("mypkg.R6"));
+
+        // TextReporter test
+        System.out.println("--- toHierarchyText ---");
+        String hierarchyText = TextReporter.toHierarchyText(impactingSubGraph);
+        System.out.println(hierarchyText);
+        List<String> lines = Arrays.asList(hierarchyText.split(System.lineSeparator()));
+        Assertions.assertThat(lines).containsExactlyInAnyOrder("R1[!]",
+                                                               INDENT + "R3[!]",
+                                                               INDENT + INDENT + "R5[@]",
+                                                               INDENT + INDENT + INDENT + "(R3)",
+                                                               "R2[!]",
+                                                               INDENT + "(R3)",
+                                                               "R4[!]",
+                                                               INDENT + "(R5)");
+
+        System.out.println("--- toFlatText ---");
+        String flatText = TextReporter.toFlatText(impactingSubGraph);
+        System.out.println(flatText);
+        List<String> lines2 = Arrays.asList(flatText.split(System.lineSeparator()));
+        Assertions.assertThat(lines2).containsExactlyInAnyOrder("R1[!]",
+                                                                "R2[!]",
+                                                                "R3[!]",
+                                                                "R4[!]",
+                                                                "R5[@]");
     }
 }

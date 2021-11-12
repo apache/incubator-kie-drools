@@ -43,6 +43,7 @@ public class ImpactAnalysisHelper {
     }
 
     /**
+     * Forward graph of impact analysis. Collect impacted nodes from a changed node.
      * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
      * @param graph
      * @param name of changedNode (= rule name)
@@ -57,13 +58,14 @@ public class ImpactAnalysisHelper {
     }
 
     /**
+     * Forward graph of impact analysis. Collect impacted nodes from a changed node.
      * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
      * @param graph
      * @param changedNode
      * @return sub graph which contains only changed node and impacted nodes
      */
     public Graph filterImpactedNodes(Graph graph, Node changedNode) {
-
+        graph.resetNodeStatus(); // reset node status implicitly
         Collection<Node> impactedNodes = new HashSet<>();
         collectImpactedNodes(changedNode, impactedNodes);
         changedNode.setStatus(Status.CHANGED);
@@ -88,5 +90,49 @@ public class ImpactAnalysisHelper {
         Map<String, Node> subMap = new HashMap<>();
         impactedNodes.stream().map(node -> node.getId()).forEach(id -> subMap.put(id, nodeMap.get(id)));
         return subMap;
+    }
+
+    /**
+     * Backward graph of impact analysis. Collect impacting nodes from a target node.
+     * Set targetNode status to Status.IMPACTED and impacting nodes status to Status.IMPACTING
+     * @param graph
+     * @param name of targetNode (= rule name)
+     * @return sub graph which contains only target node and impacting nodes
+     */
+    public Graph filterImpactingNodes(Graph graph, String targetNodeName) {
+        Node targetNode = graph.getNodeMap().get(targetNodeName);
+        if (targetNode == null) {
+            throw new RuntimeException("Cannot find a node : name = " + targetNodeName);
+        }
+        return filterImpactingNodes(graph, targetNode);
+    }
+
+    /**
+     * Backward graph of impact analysis. Collect impacting nodes from a target node.
+     * Set targetNode status to Status.TARGET and impacting nodes status to Status.IMPACTING
+     * @param graph
+     * @param targetNode
+     * @return sub graph which contains only target node and impacting nodes
+     */
+    public Graph filterImpactingNodes(Graph graph, Node targetNode) {
+        graph.resetNodeStatus(); // reset node status implicitly
+        Collection<Node> impactingNodes = new HashSet<>();
+        collectImpactingNodes(targetNode, impactingNodes);
+        targetNode.setStatus(Status.TARGET);
+
+        Map<String, Node> nodeMap = graph.getNodeMap();
+        Map<String, Node> subMap = getSubMap(nodeMap, impactingNodes);
+
+        return new Graph(subMap);
+    }
+
+    private void collectImpactingNodes(Node targetNode, Collection<Node> impactingNodes) {
+        targetNode.setStatus(Status.IMPACTING);
+        impactingNodes.add(targetNode);
+        targetNode.getIncomingLinks().stream()
+                   .filter(link -> linkFilter.accept(link.getReactivityType()))
+                   .map(Link::getSource)
+                   .filter(node -> !impactingNodes.contains(node))
+                   .forEach(node -> collectImpactingNodes(node, impactingNodes));
     }
 }
