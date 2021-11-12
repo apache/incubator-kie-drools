@@ -71,11 +71,9 @@ let formActions: FormAction[];
 
 // Clearing unneeded assignments to avoid issues on Uniforms Autoform
 delete ApplyForVisaForm.properties.trip.input;
-delete ApplyForVisaForm.properties.trip.output;
 delete ApplyForVisaForm.properties.traveller.input;
 delete ApplyForVisaForm.properties.traveller.output;
 delete ApplyForVisaForm.properties.visaApplication.input;
-delete ApplyForVisaForm.properties.visaApplication.output;
 
 describe('FormRenderer test', () => {
   beforeEach(() => {

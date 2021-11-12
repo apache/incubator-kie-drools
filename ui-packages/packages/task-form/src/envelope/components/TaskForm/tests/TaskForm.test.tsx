@@ -144,5 +144,20 @@ describe('TaskForm Test', () => {
     expect(taskFormRenderer.exists()).toBeTruthy();
     expect(taskFormRenderer.props().enabled).toBeFalsy();
     expect(taskFormRenderer.props().formData).toStrictEqual(formData);
+
+    const formSchema = taskFormRenderer.props().formSchema;
+
+    expect(_.get(formSchema, 'properties.trip.input')).toBeUndefined();
+    expect(_.get(formSchema, 'properties.traveller.input')).toBeUndefined();
+    expect(_.get(formSchema, 'properties.traveller.output')).toBeUndefined();
+    expect(
+      _.get(formSchema, 'properties.visaApplication.input')
+    ).toBeUndefined();
+
+    expect(_.get(formSchema, 'properties.trip.uniforms.disabled')).toBeTruthy();
+    expect(_.get(formSchema, 'properties.traveller.uniforms')).toBeUndefined();
+    expect(
+      _.get(formSchema, 'properties.visaApplication.uniforms.disabled')
+    ).toBeTruthy();
   });
 });

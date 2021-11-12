@@ -107,8 +107,6 @@ exports[`TaskForm Test Task Form rendering 1`] = `
       ],
       "properties": Object {
         "traveller": Object {
-          "input": true,
-          "output": true,
           "properties": Object {
             "address": Object {
               "properties": Object {
@@ -148,8 +146,6 @@ exports[`TaskForm Test Task Form rendering 1`] = `
           "type": "object",
         },
         "trip": Object {
-          "input": true,
-          "output": false,
           "properties": Object {
             "begin": Object {
               "format": "date-time",
@@ -170,10 +166,11 @@ exports[`TaskForm Test Task Form rendering 1`] = `
             },
           },
           "type": "object",
+          "uniforms": Object {
+            "disabled": true,
+          },
         },
         "visaApplication": Object {
-          "input": true,
-          "output": false,
           "properties": Object {
             "city": Object {
               "type": "string",
@@ -198,6 +195,9 @@ exports[`TaskForm Test Task Form rendering 1`] = `
             },
           },
           "type": "object",
+          "uniforms": Object {
+            "disabled": true,
+          },
         },
       },
       "type": "object",
@@ -244,8 +244,6 @@ exports[`TaskForm Test Task Form rendering 1`] = `
         ],
         "properties": Object {
           "traveller": Object {
-            "input": true,
-            "output": true,
             "properties": Object {
               "address": Object {
                 "properties": Object {
@@ -285,8 +283,6 @@ exports[`TaskForm Test Task Form rendering 1`] = `
             "type": "object",
           },
           "trip": Object {
-            "input": true,
-            "output": false,
             "properties": Object {
               "begin": Object {
                 "format": "date-time",
@@ -307,10 +303,11 @@ exports[`TaskForm Test Task Form rendering 1`] = `
               },
             },
             "type": "object",
+            "uniforms": Object {
+              "disabled": true,
+            },
           },
           "visaApplication": Object {
-            "input": true,
-            "output": false,
             "properties": Object {
               "city": Object {
                 "type": "string",
@@ -335,6 +332,9 @@ exports[`TaskForm Test Task Form rendering 1`] = `
               },
             },
             "type": "object",
+            "uniforms": Object {
+              "disabled": true,
+            },
           },
         },
         "type": "object",

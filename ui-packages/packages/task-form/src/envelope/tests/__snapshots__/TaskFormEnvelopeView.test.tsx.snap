@@ -140,7 +140,6 @@ exports[`TaskFormEnvelopeView tests Custom Task Form 1`] = `
           },
           "trip": Object {
             "input": true,
-            "output": false,
             "properties": Object {
               "begin": Object {
                 "format": "date-time",
@@ -164,7 +163,6 @@ exports[`TaskFormEnvelopeView tests Custom Task Form 1`] = `
           },
           "visaApplication": Object {
             "input": true,
-            "output": false,
             "properties": Object {
               "city": Object {
                 "type": "string",
@@ -439,7 +437,6 @@ exports[`TaskFormEnvelopeView tests Task Form 1`] = `
           },
           "trip": Object {
             "input": true,
-            "output": false,
             "properties": Object {
               "begin": Object {
                 "format": "date-time",
@@ -463,7 +460,6 @@ exports[`TaskFormEnvelopeView tests Task Form 1`] = `
           },
           "visaApplication": Object {
             "input": true,
-            "output": false,
             "properties": Object {
               "city": Object {
                 "type": "string",

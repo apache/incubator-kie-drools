@@ -53,7 +53,6 @@ exports[`EmptyTaskForm Test Empty form completed task rendering 1`] = `
         },
         "trip": Object {
           "input": true,
-          "output": false,
           "properties": Object {
             "begin": Object {
               "format": "date-time",
@@ -77,7 +76,6 @@ exports[`EmptyTaskForm Test Empty form completed task rendering 1`] = `
         },
         "visaApplication": Object {
           "input": true,
-          "output": false,
           "properties": Object {
             "city": Object {
               "type": "string",
@@ -247,7 +245,6 @@ exports[`EmptyTaskForm Test Empty form rendering 1`] = `
         },
         "trip": Object {
           "input": true,
-          "output": false,
           "properties": Object {
             "begin": Object {
               "format": "date-time",
@@ -271,7 +268,6 @@ exports[`EmptyTaskForm Test Empty form rendering 1`] = `
         },
         "visaApplication": Object {
           "input": true,
-          "output": false,
           "properties": Object {
             "city": Object {
               "type": "string",

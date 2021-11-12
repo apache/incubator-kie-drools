@@ -38,8 +38,7 @@ export const ApplyForVisaForm = {
           type: 'boolean'
         }
       },
-      input: true,
-      output: false
+      input: true
     },
     traveller: {
       type: 'object',
@@ -87,8 +86,7 @@ export const ApplyForVisaForm = {
         passportNumber: { type: 'string' },
         nationality: { type: 'string' }
       },
-      input: true,
-      output: false
+      input: true
     }
   },
   phases: ['complete', 'release']

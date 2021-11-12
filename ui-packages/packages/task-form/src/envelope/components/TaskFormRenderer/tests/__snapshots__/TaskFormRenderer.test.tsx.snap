@@ -53,7 +53,6 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
         },
         "trip": Object {
           "input": true,
-          "output": false,
           "properties": Object {
             "begin": Object {
               "format": "date-time",
@@ -77,7 +76,6 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
         },
         "visaApplication": Object {
           "input": true,
-          "output": false,
           "properties": Object {
             "city": Object {
               "type": "string",
@@ -202,7 +200,6 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
             },
             "trip": Object {
               "input": true,
-              "output": false,
               "properties": Object {
                 "begin": Object {
                   "format": "date-time",
@@ -226,7 +223,6 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
             },
             "visaApplication": Object {
               "input": true,
-              "output": false,
               "properties": Object {
                 "city": Object {
                   "type": "string",

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import isEmpty from 'lodash/isEmpty';
@@ -27,7 +27,10 @@ import { TaskFormDriver } from '../../../api';
 import { TaskFormSchema } from '../../../types';
 import EmptyTaskForm from '../EmptyTaskForm/EmptyTaskForm';
 import TaskFormRenderer from '../TaskFormRenderer/TaskFormRenderer';
-import { readSchemaAssignments } from '../utils/TaskFormDataUtils';
+import {
+  readSchemaAssignments,
+  TaskDataAssignments
+} from '../utils/TaskFormDataUtils';
 
 export interface TaskFormProps {
   userTask: UserTaskInstance;
@@ -50,6 +53,13 @@ const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
 }) => {
   const [formData, setFormData] = useState<any>(null);
   const [formState, setFormState] = useState<State>(State.READY);
+  const [taskFormAssignments, setTaskFormAssignments] = useState<
+    TaskDataAssignments
+  >();
+
+  useEffect(() => {
+    setTaskFormAssignments(readSchemaAssignments(schema));
+  }, []);
 
   if (formState === State.SUBMITTING) {
     return (
@@ -81,8 +91,6 @@ const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
         setFormData(data);
 
         const payload = {};
-
-        const taskFormAssignments = readSchemaAssignments(schema);
 
         taskFormAssignments.outputs.forEach(output => {
           if (has(data, output)) {
