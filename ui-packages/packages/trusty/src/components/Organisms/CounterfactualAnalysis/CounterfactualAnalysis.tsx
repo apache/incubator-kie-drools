@@ -4,13 +4,21 @@ import {
   DrawerContent,
   DrawerContentBody,
   DrawerPanelContent,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
   Flex,
   FlexItem,
   PageSection,
   Stack,
   StackItem,
+  Text,
+  TextContent,
+  TextVariants,
   Title
 } from '@patternfly/react-core';
+import { OutlinedMehIcon } from '@patternfly/react-icons';
 import {
   cfActions,
   cfInitState,
@@ -19,7 +27,6 @@ import {
 import CounterfactualInputDomainEdit from '../CounterfactualInputDomainEdit/CounterfactualInputDomainEdit';
 import CounterfactualOutcomesSelected from '../../Molecules/CounterfactualsOutcomesSelected/CounterfactualOutcomesSelected';
 import CounterfactualExecutionInfo from '../../Molecules/CounterfactualExecutionInfo/CounterfactualExecutionInfo';
-import CounterfactualHint from '../../Molecules/CounterfactualHint/CounterfactualHint';
 import CounterfactualCompletedMessage from '../../Molecules/CounterfactualCompletedMessage/CounterfactualCompletedMessage';
 import CounterfactualToolbar from '../CounterfactualToolbar/CounterfactualToolbar';
 import CounterfactualTable from '../CounterfactualTable/CounterfactualTable';
@@ -191,29 +198,54 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
                           )}
                         </Flex>
                       </StackItem>
-                      <CounterfactualHint
-                        isVisible={
-                          state.status.executionStatus ===
-                          CFExecutionStatus.NOT_STARTED
-                        }
-                      />
+                      {state.status.executionStatus ===
+                        CFExecutionStatus.NOT_STARTED && (
+                        <StackItem className={'counterfactual__hint'}>
+                          <TextContent>
+                            <Text component={TextVariants.p}>
+                              Select a desired counterfactual outcome; one or
+                              more data types, and modify the input constraints.
+                            </Text>
+                          </TextContent>
+                        </StackItem>
+                      )}
                       <CounterfactualCompletedMessage status={state.status} />
-                      <StackItem isFilled={true} style={{ overflow: 'hidden' }}>
-                        <CounterfactualToolbar
-                          status={state.status}
-                          goals={state.goals}
-                          onRunAnalysis={onRunAnalysis}
-                          onSetupNewAnalysis={onSetupNewAnalysis}
-                          maxRunningTimeSeconds={maxRunningTimeSeconds}
-                        />
-                        <CounterfactualTable
-                          inputs={state.searchDomains}
-                          results={state.results}
-                          status={state.status}
-                          onOpenInputDomainEdit={handleInputDomainEdit}
-                          containerWidth={containerWidth}
-                        />
-                      </StackItem>
+                      {containerWidth <= 880 && (
+                        <EmptyState
+                          variant={EmptyStateVariant.xs}
+                          className={'counterfactual__unsupported-screen-size'}
+                        >
+                          <EmptyStateIcon icon={OutlinedMehIcon} />
+                          <Title headingLevel="h4" size="md">
+                            Screen size not supported
+                          </Title>
+                          <EmptyStateBody>
+                            This is an experimental feature and it only supports
+                            larger screen sizes at the moment.
+                          </EmptyStateBody>
+                        </EmptyState>
+                      )}
+                      {containerWidth > 880 && (
+                        <StackItem
+                          isFilled={true}
+                          style={{ overflow: 'hidden' }}
+                        >
+                          <CounterfactualToolbar
+                            status={state.status}
+                            goals={state.goals}
+                            onRunAnalysis={onRunAnalysis}
+                            onSetupNewAnalysis={onSetupNewAnalysis}
+                            maxRunningTimeSeconds={maxRunningTimeSeconds}
+                          />
+                          <CounterfactualTable
+                            inputs={state.searchDomains}
+                            results={state.results}
+                            status={state.status}
+                            onOpenInputDomainEdit={handleInputDomainEdit}
+                            containerWidth={containerWidth}
+                          />
+                        </StackItem>
+                      )}
                     </Stack>
                   </section>
                 </PageSection>

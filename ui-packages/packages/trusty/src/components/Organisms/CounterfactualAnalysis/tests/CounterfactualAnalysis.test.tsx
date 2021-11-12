@@ -110,15 +110,7 @@ describe('CounterfactualAnalysis', () => {
       />
     );
 
-    expect(wrapper.find('CounterfactualHint')).toHaveLength(1);
-    expect(wrapper.find('CounterfactualHint Hint')).toHaveLength(1);
-
-    wrapper
-      .find('CounterfactualHint button#hint-kebab-toggle')
-      .simulate('click');
-    wrapper.find('CounterfactualHint #hint-close button').simulate('click');
-
-    expect(wrapper.find('CounterfactualHint Hint')).toHaveLength(0);
+    expect(wrapper.find('div.counterfactual__hint')).toHaveLength(1);
   });
 
   test('handles input selection, constraints change and outcome selection', async () => {
@@ -594,6 +586,30 @@ describe('CounterfactualAnalysis', () => {
 
     expect(constraintButton.text()).toMatch('Constraint');
     expect(constraintButton.props()['isDisabled']).toBeTruthy();
+  });
+
+  test('displays a warning message for unsupported low screen sizes', () => {
+    (useCounterfactualExecution as jest.Mock).mockReturnValue({
+      runCFAnalysis,
+      cfResults: undefined
+    });
+    const wrapper = mount(
+      <CounterfactualAnalysis
+        inputs={inputs}
+        outcomes={outcomes}
+        executionId={executionId}
+        containerHeight={900}
+        containerWidth={700}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+
+    expect(
+      wrapper.find('div.counterfactual__unsupported-screen-size')
+    ).toHaveLength(1);
+    expect(wrapper.find('CounterfactualToolbar')).toHaveLength(0);
+    expect(wrapper.find('CounterfactualTable')).toHaveLength(0);
   });
 });
 

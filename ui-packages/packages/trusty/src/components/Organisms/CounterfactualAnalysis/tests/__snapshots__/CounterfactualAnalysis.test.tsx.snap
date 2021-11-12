@@ -1,5 +1,358 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CounterfactualAnalysis displays a warning message for unsupported low screen sizes 1`] = `
+<CounterfactualAnalysis
+  containerHeight={900}
+  containerWidth={700}
+  executionId="b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
+  inputs={
+    Array [
+      Object {
+        "name": "Credit Score",
+        "value": Object {
+          "kind": "UNIT",
+          "type": "number",
+          "value": 738,
+        },
+      },
+      Object {
+        "name": "Type",
+        "value": Object {
+          "kind": "UNIT",
+          "type": "string",
+          "value": "Lease",
+        },
+      },
+    ]
+  }
+  outcomes={
+    Array [
+      Object {
+        "evaluationStatus": "SUCCEEDED",
+        "hasErrors": false,
+        "messages": Array [],
+        "outcomeId": "_c6e56793-68d0-4683-b34b-5e9d69e7d0d4",
+        "outcomeName": "Risk Score",
+        "outcomeResult": Object {
+          "kind": "UNIT",
+          "type": "number",
+          "value": 1,
+        },
+      },
+      Object {
+        "evaluationStatus": "SUCCEEDED",
+        "hasErrors": false,
+        "messages": Array [],
+        "outcomeId": "_46B5CA54-27CA-4950-B601-63F58BC3BDFE",
+        "outcomeName": "canRequestLoan",
+        "outcomeResult": Object {
+          "kind": "UNIT",
+          "type": "boolean",
+          "value": false,
+        },
+      },
+      Object {
+        "evaluationStatus": "SUCCEEDED",
+        "hasErrors": false,
+        "messages": Array [],
+        "outcomeId": "_047FFF53-0583-4FAD-B08F-8E1C077021D6",
+        "outcomeName": "Asset Score",
+        "outcomeResult": Object {
+          "kind": "UNIT",
+          "type": "number",
+          "value": "33",
+        },
+      },
+    ]
+  }
+>
+  <Drawer
+    className="counterfactual__drawer"
+    isExpanded={false}
+  >
+    <div
+      className="pf-c-drawer counterfactual__drawer"
+    >
+      <DrawerContent
+        panelContent={
+          <DrawerPanelContent
+            widths={
+              Object {
+                "default": "width_33",
+              }
+            }
+          />
+        }
+        style={
+          Object {
+            "height": 900,
+          }
+        }
+      >
+        <DrawerMain>
+          <div
+            className="pf-c-drawer__main"
+          >
+            <div
+              className="pf-c-drawer__content"
+              style={
+                Object {
+                  "height": 900,
+                }
+              }
+            >
+              <DrawerContentBody
+                style={
+                  Object {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "height": "100%",
+                  }
+                }
+              >
+                <div
+                  className="pf-c-drawer__body"
+                  style={
+                    Object {
+                      "display": "flex",
+                      "flexDirection": "column",
+                      "height": "100%",
+                    }
+                  }
+                >
+                  <PageSection
+                    isFilled={true}
+                    variant="light"
+                  >
+                    <section
+                      className="pf-c-page__main-section pf-m-light pf-m-fill"
+                    >
+                      <section
+                        className="counterfactual__section"
+                      >
+                        <Stack
+                          hasGutter={true}
+                        >
+                          <div
+                            className="pf-l-stack pf-m-gutter"
+                          >
+                            <StackItem>
+                              <div
+                                className="pf-l-stack__item"
+                              >
+                                <Flex
+                                  spaceItems={
+                                    Object {
+                                      "default": "spaceItemsXl",
+                                    }
+                                  }
+                                >
+                                  <div
+                                    className="pf-l-flex pf-m-space-items-xl"
+                                  >
+                                    <FlexItem>
+                                      <div
+                                        className=""
+                                      >
+                                        <Title
+                                          headingLevel="h3"
+                                          size="2xl"
+                                        >
+                                          <h3
+                                            className="pf-c-title pf-m-2xl"
+                                          >
+                                            Counterfactual analysis
+                                          </h3>
+                                        </Title>
+                                      </div>
+                                    </FlexItem>
+                                    <FlexItem>
+                                      <div
+                                        className=""
+                                      >
+                                        <CounterfactualOutcomesSelected
+                                          goals={
+                                            Array [
+                                              Object {
+                                                "id": "_c6e56793-68d0-4683-b34b-5e9d69e7d0d4",
+                                                "name": "Risk Score",
+                                                "originalValue": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "number",
+                                                  "value": 1,
+                                                },
+                                                "role": 1,
+                                                "value": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "number",
+                                                  "value": 1,
+                                                },
+                                              },
+                                              Object {
+                                                "id": "_46B5CA54-27CA-4950-B601-63F58BC3BDFE",
+                                                "name": "canRequestLoan",
+                                                "originalValue": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "boolean",
+                                                  "value": false,
+                                                },
+                                                "role": 1,
+                                                "value": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "boolean",
+                                                  "value": false,
+                                                },
+                                              },
+                                              Object {
+                                                "id": "_047FFF53-0583-4FAD-B08F-8E1C077021D6",
+                                                "name": "Asset Score",
+                                                "originalValue": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "number",
+                                                  "value": "33",
+                                                },
+                                                "role": 1,
+                                                "value": Object {
+                                                  "kind": "UNIT",
+                                                  "type": "number",
+                                                  "value": "33",
+                                                },
+                                              },
+                                            ]
+                                          }
+                                        />
+                                      </div>
+                                    </FlexItem>
+                                  </div>
+                                </Flex>
+                              </div>
+                            </StackItem>
+                            <StackItem
+                              className="counterfactual__hint"
+                            >
+                              <div
+                                className="pf-l-stack__item counterfactual__hint"
+                              >
+                                <TextContent>
+                                  <div
+                                    className="pf-c-content"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-18"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        Select a desired counterfactual outcome; one or more data types, and modify the input constraints.
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </TextContent>
+                              </div>
+                            </StackItem>
+                            <CounterfactualCompletedMessage
+                              status={
+                                Object {
+                                  "executionStatus": 2,
+                                  "isDisabled": true,
+                                  "lastExecutionTime": null,
+                                }
+                              }
+                            />
+                            <EmptyState
+                              className="counterfactual__unsupported-screen-size"
+                              variant="xs"
+                            >
+                              <div
+                                className="pf-c-empty-state pf-m-xs counterfactual__unsupported-screen-size"
+                              >
+                                <div
+                                  className="pf-c-empty-state__content"
+                                >
+                                  <EmptyStateIcon
+                                    icon={[Function]}
+                                  >
+                                    <OutlinedMehIcon
+                                      aria-hidden="true"
+                                      className="pf-c-empty-state__icon"
+                                      color="currentColor"
+                                      noVerticalAlign={false}
+                                      size="sm"
+                                    >
+                                      <svg
+                                        aria-hidden="true"
+                                        aria-labelledby={null}
+                                        className="pf-c-empty-state__icon"
+                                        fill="currentColor"
+                                        height="1em"
+                                        role="img"
+                                        style={
+                                          Object {
+                                            "verticalAlign": "-0.125em",
+                                          }
+                                        }
+                                        viewBox="0 0 496 512"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200-89.7 200-200 200zm-80-216c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm160-64c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32zm8 144H160c-13.2 0-24 10.8-24 24s10.8 24 24 24h176c13.2 0 24-10.8 24-24s-10.8-24-24-24z"
+                                        />
+                                      </svg>
+                                    </OutlinedMehIcon>
+                                  </EmptyStateIcon>
+                                  <Title
+                                    headingLevel="h4"
+                                    size="md"
+                                  >
+                                    <h4
+                                      className="pf-c-title pf-m-md"
+                                    >
+                                      Screen size not supported
+                                    </h4>
+                                  </Title>
+                                  <EmptyStateBody>
+                                    <div
+                                      className="pf-c-empty-state__body"
+                                    >
+                                      This is an experimental feature and it only supports larger screen sizes at the moment.
+                                    </div>
+                                  </EmptyStateBody>
+                                </div>
+                              </div>
+                            </EmptyState>
+                          </div>
+                        </Stack>
+                      </section>
+                    </section>
+                  </PageSection>
+                </div>
+              </DrawerContentBody>
+            </div>
+            <DrawerPanelContent
+              widths={
+                Object {
+                  "default": "width_33",
+                }
+              }
+            >
+              <div
+                className="pf-c-drawer__panel pf-m-width-33"
+                hidden={true}
+                onTransitionEnd={[Function]}
+              />
+            </DrawerPanelContent>
+          </div>
+        </DrawerMain>
+      </DrawerContent>
+    </div>
+  </Drawer>
+</CounterfactualAnalysis>
+`;
+
 exports[`CounterfactualAnalysis renders correctly 1`] = `
 <CounterfactualAnalysis
   containerHeight={900}
@@ -227,302 +580,33 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                 </Flex>
                               </div>
                             </StackItem>
-                            <CounterfactualHint
-                              isVisible={true}
+                            <StackItem
+                              className="counterfactual__hint"
                             >
-                              <StackItem>
-                                <div
-                                  className="pf-l-stack__item"
-                                >
-                                  <Hint
-                                    actions={
-                                      <Dropdown
-                                        dropdownItems={
-                                          Array [
-                                            <DropdownItem
-                                              component={
-                                                <button
-                                                  onClick={[Function]}
-                                                >
-                                                  Close
-                                                </button>
-                                              }
-                                              id="hint-close"
-                                            />,
-                                            <DropdownItem
-                                              href="https://docs.jboss.org/kogito/release/1.4.0/html_single/#con-audit-console_kogito-dmn-models"
-                                              icon={
-                                                <ExternalLinkAltIcon
-                                                  color="currentColor"
-                                                  noVerticalAlign={false}
-                                                  size="sm"
-                                                />
-                                              }
-                                              target="_blank"
-                                            >
-                                              Learn More
-                                            </DropdownItem>,
-                                          ]
-                                        }
-                                        isOpen={false}
-                                        isPlain={true}
-                                        position="right"
-                                        toggle={
-                                          <KebabToggle
-                                            id="hint-kebab-toggle"
-                                            onToggle={[Function]}
-                                          />
-                                        }
-                                      />
-                                    }
+                              <div
+                                className="pf-l-stack__item counterfactual__hint"
+                              >
+                                <TextContent>
+                                  <div
+                                    className="pf-c-content"
                                   >
-                                    <div
-                                      className="pf-c-hint"
+                                    <Text
+                                      component="p"
                                     >
-                                      <div
-                                        className="pf-c-hint__actions"
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-1"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
                                       >
-                                        <Dropdown
-                                          dropdownItems={
-                                            Array [
-                                              <DropdownItem
-                                                component={
-                                                  <button
-                                                    onClick={[Function]}
-                                                  >
-                                                    Close
-                                                  </button>
-                                                }
-                                                id="hint-close"
-                                              />,
-                                              <DropdownItem
-                                                href="https://docs.jboss.org/kogito/release/1.4.0/html_single/#con-audit-console_kogito-dmn-models"
-                                                icon={
-                                                  <ExternalLinkAltIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                  />
-                                                }
-                                                target="_blank"
-                                              >
-                                                Learn More
-                                              </DropdownItem>,
-                                            ]
-                                          }
-                                          isOpen={false}
-                                          isPlain={true}
-                                          position="right"
-                                          toggle={
-                                            <KebabToggle
-                                              id="hint-kebab-toggle"
-                                              onToggle={[Function]}
-                                            />
-                                          }
-                                        >
-                                          <DropdownWithContext
-                                            autoFocus={true}
-                                            className=""
-                                            direction="down"
-                                            dropdownItems={
-                                              Array [
-                                                <DropdownItem
-                                                  component={
-                                                    <button
-                                                      onClick={[Function]}
-                                                    >
-                                                      Close
-                                                    </button>
-                                                  }
-                                                  id="hint-close"
-                                                />,
-                                                <DropdownItem
-                                                  href="https://docs.jboss.org/kogito/release/1.4.0/html_single/#con-audit-console_kogito-dmn-models"
-                                                  icon={
-                                                    <ExternalLinkAltIcon
-                                                      color="currentColor"
-                                                      noVerticalAlign={false}
-                                                      size="sm"
-                                                    />
-                                                  }
-                                                  target="_blank"
-                                                >
-                                                  Learn More
-                                                </DropdownItem>,
-                                              ]
-                                            }
-                                            isGrouped={false}
-                                            isOpen={false}
-                                            isPlain={true}
-                                            menuAppendTo="inline"
-                                            onSelect={[Function]}
-                                            position="right"
-                                            toggle={
-                                              <KebabToggle
-                                                id="hint-kebab-toggle"
-                                                onToggle={[Function]}
-                                              />
-                                            }
-                                          >
-                                            <div
-                                              className="pf-c-dropdown pf-m-align-right"
-                                              data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                                              data-ouia-component-type="PF4/Dropdown"
-                                              data-ouia-safe={true}
-                                            >
-                                              <KebabToggle
-                                                aria-haspopup={true}
-                                                getMenuRef={[Function]}
-                                                id="hint-kebab-toggle"
-                                                isOpen={false}
-                                                isPlain={true}
-                                                key=".0"
-                                                onEnter={[Function]}
-                                                onToggle={[Function]}
-                                                parentRef={
-                                                  Object {
-                                                    "current": <div
-                                                      class="pf-c-dropdown pf-m-align-right"
-                                                      data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                                                      data-ouia-component-type="PF4/Dropdown"
-                                                      data-ouia-safe="true"
-                                                    >
-                                                      <button
-                                                        aria-expanded="false"
-                                                        aria-haspopup="true"
-                                                        aria-label="Actions"
-                                                        class="pf-c-dropdown__toggle pf-m-plain"
-                                                        id="hint-kebab-toggle"
-                                                        type="button"
-                                                      >
-                                                        <svg
-                                                          aria-hidden="true"
-                                                          fill="currentColor"
-                                                          height="1em"
-                                                          role="img"
-                                                          style="vertical-align: -0.125em;"
-                                                          viewBox="0 0 192 512"
-                                                          width="1em"
-                                                        >
-                                                          <path
-                                                            d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                                          />
-                                                        </svg>
-                                                      </button>
-                                                    </div>,
-                                                  }
-                                                }
-                                              >
-                                                <Toggle
-                                                  aria-haspopup={true}
-                                                  aria-label="Actions"
-                                                  bubbleEvent={false}
-                                                  className=""
-                                                  getMenuRef={[Function]}
-                                                  id="hint-kebab-toggle"
-                                                  isActive={false}
-                                                  isDisabled={false}
-                                                  isOpen={false}
-                                                  isPlain={true}
-                                                  isPrimary={false}
-                                                  isSplitButton={false}
-                                                  onEnter={[Function]}
-                                                  onToggle={[Function]}
-                                                  parentRef={
-                                                    Object {
-                                                      "current": <div
-                                                        class="pf-c-dropdown pf-m-align-right"
-                                                        data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                                                        data-ouia-component-type="PF4/Dropdown"
-                                                        data-ouia-safe="true"
-                                                      >
-                                                        <button
-                                                          aria-expanded="false"
-                                                          aria-haspopup="true"
-                                                          aria-label="Actions"
-                                                          class="pf-c-dropdown__toggle pf-m-plain"
-                                                          id="hint-kebab-toggle"
-                                                          type="button"
-                                                        >
-                                                          <svg
-                                                            aria-hidden="true"
-                                                            fill="currentColor"
-                                                            height="1em"
-                                                            role="img"
-                                                            style="vertical-align: -0.125em;"
-                                                            viewBox="0 0 192 512"
-                                                            width="1em"
-                                                          >
-                                                            <path
-                                                              d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                                            />
-                                                          </svg>
-                                                        </button>
-                                                      </div>,
-                                                    }
-                                                  }
-                                                >
-                                                  <button
-                                                    aria-expanded={false}
-                                                    aria-haspopup={true}
-                                                    aria-label="Actions"
-                                                    className="pf-c-dropdown__toggle pf-m-plain"
-                                                    disabled={false}
-                                                    id="hint-kebab-toggle"
-                                                    onClick={[Function]}
-                                                    onKeyDown={[Function]}
-                                                    type="button"
-                                                  >
-                                                    <EllipsisVIcon
-                                                      color="currentColor"
-                                                      noVerticalAlign={false}
-                                                      size="sm"
-                                                    >
-                                                      <svg
-                                                        aria-hidden={true}
-                                                        aria-labelledby={null}
-                                                        fill="currentColor"
-                                                        height="1em"
-                                                        role="img"
-                                                        style={
-                                                          Object {
-                                                            "verticalAlign": "-0.125em",
-                                                          }
-                                                        }
-                                                        viewBox="0 0 192 512"
-                                                        width="1em"
-                                                      >
-                                                        <path
-                                                          d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                                        />
-                                                      </svg>
-                                                    </EllipsisVIcon>
-                                                  </button>
-                                                </Toggle>
-                                              </KebabToggle>
-                                            </div>
-                                          </DropdownWithContext>
-                                        </Dropdown>
-                                      </div>
-                                      <HintTitle>
-                                        <div
-                                          className="pf-c-hint__title"
-                                        >
-                                          Create a counterfactual
-                                        </div>
-                                      </HintTitle>
-                                      <HintBody>
-                                        <div
-                                          className="pf-c-hint__body"
-                                        >
-                                          Select a desired counterfactual outcome; one or more data types, and modify the input constraints.
-                                        </div>
-                                      </HintBody>
-                                    </div>
-                                  </Hint>
-                                </div>
-                              </StackItem>
-                            </CounterfactualHint>
+                                        Select a desired counterfactual outcome; one or more data types, and modify the input constraints.
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </TextContent>
+                              </div>
+                            </StackItem>
                             <CounterfactualCompletedMessage
                               status={
                                 Object {

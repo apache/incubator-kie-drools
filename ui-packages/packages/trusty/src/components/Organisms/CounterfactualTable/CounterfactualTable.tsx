@@ -14,21 +14,10 @@ import {
   Thead,
   Tr
 } from '@patternfly/react-table';
-import {
-  Bullseye,
-  Button,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
-  Label,
-  Skeleton,
-  Title
-} from '@patternfly/react-core';
+import { Button, Label, Skeleton } from '@patternfly/react-core';
 import {
   AngleLeftIcon,
   AngleRightIcon,
-  GhostIcon,
   PlusCircleIcon,
   StarIcon
 } from '@patternfly/react-icons';
@@ -118,9 +107,9 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
   };
 
   const onScrollUpdate = useCallback(() => {
-    const width = scrollbars.current.getClientWidth();
-    const scrollWidth = scrollbars.current.getScrollWidth();
-    const currentPosition = scrollbars.current.getScrollLeft();
+    const width = scrollbars.current?.getClientWidth();
+    const scrollWidth = scrollbars.current?.getScrollWidth();
+    const currentPosition = scrollbars.current?.getScrollLeft();
 
     if (scrollWidth === width) {
       setIsScrollDisabled({ prev: true, next: true });
@@ -215,17 +204,6 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
 
   return (
     <>
-      {containerWidth <= 880 && (
-        <Bullseye>
-          <EmptyState variant={EmptyStateVariant.xs}>
-            <EmptyStateIcon icon={GhostIcon} />
-            <Title headingLevel="h4" size="md">
-              CF implementation for mobile phones
-            </Title>
-            <EmptyStateBody>workin on it</EmptyStateBody>
-          </EmptyState>
-        </Bullseye>
-      )}
       {containerWidth > 880 && (
         <div className="cf-table-outer-container">
           <div className="cf-table-inner-container">
