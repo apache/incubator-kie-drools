@@ -2,7 +2,9 @@ import { cfInitState, cfReducer, CFState } from '../counterfactualReducer';
 import {
   CFExecutionStatus,
   CFGoalRole,
-  CFSearchInputUnit
+  CFSearchInputStructure,
+  CFSearchInputUnit,
+  ItemObjectUnit
 } from '../../../../types';
 
 const initialState: CFState = {
@@ -151,6 +153,53 @@ describe('InitialStateMapping', () => {
     expect(
       (initialState.searchDomains[0].value as CFSearchInputUnit).fixed
     ).toBeUndefined();
+  });
+
+  test('SearchDomain::Object::JSON.stringify', () => {
+    const checks = object => {
+      const i2 = (object.searchDomains[0].value as CFSearchInputStructure)
+        .value['i2'];
+      expect(i2).not.toBeUndefined();
+      expect(i2.type).toEqual('string');
+      expect(i2.kind).toEqual('UNIT');
+
+      const i2Unit = i2 as CFSearchInputUnit;
+      expect(i2Unit.fixed).toBeUndefined();
+      expect(i2Unit.domain).toBeUndefined();
+      expect(i2Unit.originalValue.type).toEqual('string');
+      expect(i2Unit.originalValue.kind).toEqual('UNIT');
+      const i2UnitOriginalValue = i2Unit.originalValue as ItemObjectUnit;
+      expect(i2UnitOriginalValue.value).toEqual('value');
+    };
+
+    // See https://issues.redhat.com/browse/FAI-662. In addition to the NPE in the Java code;
+    // Axios HTTPClient was failing to stringify use of ES6 Map object defining the CFSearchInputStructure.
+    // This lead to an additional error where the Search Domain structure differed from that for the
+    // original inputs and Counterfactual execution was terminated.
+    const initialState = cfInitState({
+      inputs: [
+        {
+          name: 'i1',
+          value: {
+            kind: 'STRUCTURE',
+            type: 'tStructure',
+            value: {
+              i2: {
+                kind: 'UNIT',
+                type: 'string',
+                value: 'value'
+              }
+            }
+          }
+        }
+      ],
+      outcomes: []
+    });
+    checks(initialState);
+
+    // Round-trip to string and object to check it can be stringified correctly.
+    const json = JSON.stringify(initialState);
+    checks(JSON.parse(json));
   });
 
   test('SearchDomain::fixed::Collection', () => {

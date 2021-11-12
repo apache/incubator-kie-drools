@@ -215,6 +215,7 @@ const convertInputToSearchDomain = (inputs: ItemObject[]): CFSearchInput[] => {
 const convertInputToSearchDomainValue = (
   value: ItemObjectValue
 ): CFSearchInputValue => {
+  const map = {};
   switch (value.kind) {
     case 'UNIT':
       return {
@@ -229,15 +230,14 @@ const convertInputToSearchDomainValue = (
         value: value.value.map(v => convertInputToSearchDomainValue(v))
       };
     case 'STRUCTURE':
+      Object.entries(value.value).forEach(([key, value]) => {
+        map[key] = convertInputToSearchDomainValue(value);
+      });
+
       return {
         kind: 'STRUCTURE',
         type: value.type,
-        value: new Map(
-          Array.from(Object.entries(value.value), ([key, value]) => [
-            key,
-            convertInputToSearchDomainValue(value)
-          ])
-        )
+        value: map
       };
   }
 };
