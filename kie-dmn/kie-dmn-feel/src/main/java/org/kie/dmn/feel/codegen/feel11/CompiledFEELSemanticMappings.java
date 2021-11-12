@@ -78,7 +78,7 @@ public class CompiledFEELSemanticMappings {
         if (range instanceof Range) {
             try {
                 return ((Range) range).includes(param);
-            } catch (ClassCastException e) {
+            } catch (Exception e) {
                 // e.g. java.base/java.time.Duration cannot be cast to java.base/java.time.Period
                 ctx.notifyEvt(() -> new ASTEventBase(
                         FEELEvent.Severity.ERROR,
