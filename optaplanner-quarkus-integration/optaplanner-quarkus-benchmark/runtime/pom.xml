@@ -11,7 +11,7 @@
 
   <artifactId>optaplanner-quarkus-benchmark</artifactId>
   <name>OptaPlanner Quarkus Benchmark - Runtime</name>
-  <description>Benchmark an OptaPlanner project to tweak the solver configuration for speed and scalability.</description>
+  <description>Benchmark an OptaPlanner project to power tweak the solver configuration for speed and scalability.</description>
 
   <properties>
     <java.module.name>org.optaplanner.quarkus.benchmark</java.module.name>
