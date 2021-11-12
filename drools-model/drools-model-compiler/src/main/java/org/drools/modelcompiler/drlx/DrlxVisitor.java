@@ -19,6 +19,7 @@ import org.drools.mvel.parser.ast.expr.RuleDeclaration;
 import org.drools.mvel.parser.ast.expr.RuleItem;
 import org.drools.mvel.parser.ast.expr.RulePattern;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
+import org.drools.mvel.parser.printer.PrintUtil;
 
 public class DrlxVisitor implements DrlVoidVisitor<Void> {
 
@@ -64,11 +65,11 @@ public class DrlxVisitor implements DrlVoidVisitor<Void> {
                 if (p.getBind() == null) {
                     pat.constraint(p.getExpr().toString());
                 } else {
-                    pat.id(p.getBind().toString(), false).constraint(p.getExpr().toString());
+                    pat.id(p.getBind().toString(), false).constraint(PrintUtil.printNode(p.getExpr()));
                 }
             } else if (item instanceof RuleConsequence) {
                 RuleConsequence c = (RuleConsequence) item;
-                ruleDescrBuilder.rhs(c.getStatement().toString());
+                ruleDescrBuilder.rhs(PrintUtil.printNode(c.getStatement()));
             } else {
                 throw new IllegalArgumentException(item.getClass().getCanonicalName());
             }
