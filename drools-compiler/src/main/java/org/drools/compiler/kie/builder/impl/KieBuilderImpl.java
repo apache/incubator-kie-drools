@@ -258,7 +258,9 @@ public class KieBuilderImpl
     }
 
     void updateKieModuleMetaInfo() {
-        CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
+        if (hasXmlSupport()) {
+            CompilationCacheProvider.get().writeKieModuleMetaInfo(kModule, trgMfs);
+        }
     }
 
     public static String getCompilationCachePath( ReleaseId releaseId,
