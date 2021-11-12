@@ -43,9 +43,6 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.withLegacyApi;
 
 public class IncrementalRuleCodegenTest {
@@ -118,8 +115,8 @@ public class IncrementalRuleCodegenTest {
                 new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/multiunit").listFiles());
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnit.java")));
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnitInstance.java")));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnit.java"));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnitInstance.java"));
     }
 
     @ParameterizedTest
@@ -130,12 +127,12 @@ public class IncrementalRuleCodegenTest {
                 Paths.get(RESOURCE_PATH + "/org/kie/kogito/codegen/rules"));
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnit.java")));
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnitInstance.java")));
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnit.java")));
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnitInstance.java")));
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/singleton/SingletonRuleUnit.java")));
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/singleton/SingletonRuleUnitInstance.java")));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnit.java"));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnitInstance.java"));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnit.java"));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnitInstance.java"));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/singleton/SingletonRuleUnit.java"));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/singleton/SingletonRuleUnitInstance.java"));
     }
 
     @ParameterizedTest
@@ -162,8 +159,8 @@ public class IncrementalRuleCodegenTest {
                 new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/myunit").listFiles());
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnit.java")));
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnitInstance.java")));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnit.java"));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnitInstance.java"));
     }
 
     @ParameterizedTest
@@ -188,7 +185,7 @@ public class IncrementalRuleCodegenTest {
         IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/drools/simple/broken.drl"));
-        assertThrows(RuleCodegenError.class, incrementalRuleCodegen.withHotReloadMode()::generate);
+        assertThatThrownBy(incrementalRuleCodegen.withHotReloadMode()::generate).isInstanceOf(RuleCodegenError.class);
     }
 
     @ParameterizedTest
@@ -198,7 +195,7 @@ public class IncrementalRuleCodegenTest {
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/kie/kogito/codegen/brokenrules/brokenunit/ABrokenUnit.drl"));
 
-        assertThrows(RuleCodegenError.class, incrementalRuleCodegen.withHotReloadMode()::generate);
+        assertThatThrownBy(incrementalRuleCodegen.withHotReloadMode()::generate).isInstanceOf(RuleCodegenError.class);
     }
 
     @ParameterizedTest
@@ -208,7 +205,7 @@ public class IncrementalRuleCodegenTest {
         IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.xls"));
-        assertThrows(MissingDecisionTableDependencyError.class, incrementalRuleCodegen.withHotReloadMode()::generate);
+        assertThatThrownBy(incrementalRuleCodegen.withHotReloadMode()::generate).isInstanceOf(MissingDecisionTableDependencyError.class);
     }
 
     @ParameterizedTest
@@ -226,7 +223,7 @@ public class IncrementalRuleCodegenTest {
         int expectedDashboards = contextBuilder.build().hasRESTForGenerator(incrementalRuleCodegen) ? 3 : 1; // The domain dashboard to monitor the RuleUnit is always generated.
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertEquals(expectedDashboards, generatedFiles.stream().filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE)).count());
+        assertThat(generatedFiles.stream().filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE))).hasSize(expectedDashboards);
     }
 
     @ParameterizedTest
@@ -266,9 +263,25 @@ public class IncrementalRuleCodegenTest {
                 .hasMessageContaining("kogito-legacy-api");
     }
 
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void noObjectMapperWhenNoRest(KogitoBuildContext.Builder contextBuilder) {
+        IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
+                contextBuilder,
+                new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/myunit").listFiles());
+
+        Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        assertThat(generatedFiles).hasSizeGreaterThan(0);
+        if (contextBuilder.build().hasRESTGloballyAvailable()) {
+            assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().endsWith("KogitoObjectMapper.java"));
+        } else {
+            assertThat(generatedFiles.stream()).noneMatch(f -> f.relativePath().endsWith("KogitoObjectMapper.java"));
+        }
+    }
+
     private void assertHasLegacyApiFiles(Collection<GeneratedFile> generatedFiles) {
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().endsWith("/ProjectModel.java")));
-        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().endsWith("/ProjectRuntime.java")));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().endsWith("/ProjectModel.java"));
+        assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().endsWith("/ProjectRuntime.java"));
     }
 
     private IncrementalRuleCodegen getIncrementalRuleCodegenFromFiles(KogitoBuildContext.Builder contextBuilder, File... resources) {
@@ -320,8 +333,8 @@ public class IncrementalRuleCodegenTest {
     }
 
     private static void assertRules(int expectedRules, int expectedPackages, int actualGeneratedFiles) {
-        assertEquals(expectedRules +
-                expectedPackages * 2, // package descriptor for rules + package metadata
-                actualGeneratedFiles);
+        int expectedFiles = expectedRules +
+                expectedPackages * 2; // package descriptor for rules + package metadata
+        assertThat(actualGeneratedFiles).isEqualTo(expectedFiles);
     }
 }

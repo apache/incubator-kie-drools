@@ -83,7 +83,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     public static final String TEMPLATE_RULE_FOLDER = "/class-templates/rules/";
     public static final String GENERATOR_NAME = "rules";
     private static final Logger LOGGER = LoggerFactory.getLogger(IncrementalRuleCodegen.class);
-    private static final GeneratedFileType JSON_MAPPER_TYPE = GeneratedFileType.of("JSON_MAPPER", GeneratedFileType.Category.SOURCE);
 
     public static IncrementalRuleCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         List<Resource> generatedRules = resources.stream()
@@ -299,12 +298,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private void generateRuleUnits(List<DroolsError> errors, List<GeneratedFile> generatedFiles) {
         RuleUnitHelper ruleUnitHelper = new RuleUnitHelper();
 
-        if (context().hasDI()) {
+        if (context().hasRESTForGenerator(this)) {
             TemplatedGenerator generator = TemplatedGenerator.builder()
                     .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
                     .build(context(), "KogitoObjectMapper");
 
-            generatedFiles.add(new GeneratedFile(JSON_MAPPER_TYPE,
+            generatedFiles.add(new GeneratedFile(REST_TYPE,
                     generator.generatedFilePath(),
                     generator.compilationUnitOrThrow().toString()));
         }
