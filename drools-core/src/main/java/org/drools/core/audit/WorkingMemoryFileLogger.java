@@ -129,7 +129,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger implements KieR
                 clear();
             }
 
-            XMLSupport.get().writeToXml(writer, log);
+            writer.write( XMLSupport.get().toXml(log) + "\n" );
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {

@@ -127,10 +127,7 @@ public class KieSessionModelImpl
         return name;
     }
 
-    public KieSessionModel setName(String name) {
-        if (kBase != null) {
-            kBase.changeKSessionName(this, this.name, name);
-        }
+    public KieSessionModel setNameForUnmarshalling(String name) {
         this.name = name;
         return this;
     }
@@ -282,6 +279,13 @@ public class KieSessionModelImpl
 
     @Override
     public String toString() {
-        return "KieSessionModel [name=" + name + ", clockType=" + clockType + "]";
+        return "KieSessionModelImpl{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", clockType=" + clockType +
+                ", kBase=" + kBase.getName() +
+                ", isDefault=" + isDefault +
+                ", threadSafe=" + threadSafe +
+                '}';
     }
 }

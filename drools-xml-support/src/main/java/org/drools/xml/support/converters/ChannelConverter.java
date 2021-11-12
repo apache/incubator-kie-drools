@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.xml.support.converters;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -16,39 +31,12 @@ public class ChannelConverter extends AbstractXStreamConverter {
         ChannelModelImpl channel = (ChannelModelImpl) value;
         writer.addAttribute("name", channel.getName());
         writer.addAttribute("type", channel.getType());
-            /* TODO make qualifiers working properly before readd them to the xml
-            QualifierModelImpl qualifier = (QualifierModelImpl)channel.getQualifierModel();
-            if (qualifier != null) {
-                if (qualifier.isSimple()) {
-                    writer.addAttribute("qualifier", qualifier.getType());
-                } else {
-                    writeObject(writer, context, "qualifier", qualifier);
-                }
-            }
-            */
     }
 
     public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
         final ChannelModelImpl channel = new ChannelModelImpl();
         channel.setName(reader.getAttribute("name"));
         channel.setType(reader.getAttribute("type"));
-            /* TODO make qualifiers working properly before readd them to the xml
-            String qualifierType = reader.getAttribute("qualifier");
-            if (qualifierType != null) {
-                channel.newQualifierModel(qualifierType);
-            }
-
-            readNodes( reader, new AbstractXStreamConverter.NodeReader() {
-                public void onNode(HierarchicalStreamReader reader,
-                                   String name,
-                                   String value) {
-                    if ( "qualifier".equals( name ) ) {
-                        QualifierModelImpl qualifier = readObject(reader, context, QualifierModelImpl.class);
-                        channel.setQualifierModel(qualifier);
-                    }
-                }
-            } );
-            */
         return channel;
     }
 }

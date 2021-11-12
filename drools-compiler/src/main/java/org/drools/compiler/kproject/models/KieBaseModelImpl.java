@@ -193,10 +193,7 @@ public class KieBaseModelImpl
         return name;
     }
 
-    public KieBaseModel setName(String name) {
-        if (kModule != null) {
-            ((KieModuleModelImpl) kModule).changeKBaseName(this, this.name, name);
-        }
+    public KieBaseModel setNameForUnmarshalling(String name) {
         this.name = name;
         return this;
     }
