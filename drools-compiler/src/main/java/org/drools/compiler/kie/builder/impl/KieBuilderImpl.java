@@ -68,7 +68,7 @@ import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.Drools.hasXSTream;
+import static org.drools.core.util.Drools.hasXmlSupport;
 import static org.drools.core.util.StringUtils.codeAwareIndexOf;
 
 public class KieBuilderImpl
@@ -258,7 +258,9 @@ public class KieBuilderImpl
     }
 
     void updateKieModuleMetaInfo() {
-        CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
+        if (hasXmlSupport()) {
+            CompilationCacheProvider.get().writeKieModuleMetaInfo(kModule, trgMfs);
+        }
     }
 
     public static String getCompilationCachePath( ReleaseId releaseId,
@@ -280,7 +282,7 @@ public class KieBuilderImpl
         if ( buildContext.getMessages().filterMessages( Level.ERROR ).isEmpty() ) {
             InternalKieModule kModule = kProject.getInternalKieModule();
             if ( trgMfs != null ) {
-                if (hasXSTream()) {
+                if (hasXmlSupport()) {
                     CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
                 }
                 kProject.writeProjectOutput(trgMfs, buildContext);
@@ -633,7 +635,7 @@ public class KieBuilderImpl
 
         }
 
-        if ( kModuleModel != null && hasXSTream() ) {
+        if ( kModuleModel != null && hasXmlSupport() ) {
             trgMfs.write( KieModuleModelImpl.KMODULE_JAR_PATH,
                           kModuleModel.toXML().getBytes( IoUtils.UTF8_CHARSET ),
                           true );

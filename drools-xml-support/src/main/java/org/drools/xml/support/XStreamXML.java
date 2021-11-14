@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.runtime.help.impl;
+package org.drools.xml.support;
 
 import java.util.ArrayList;
 import java.util.Arrays;

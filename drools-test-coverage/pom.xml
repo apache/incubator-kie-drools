@@ -22,6 +22,7 @@
     <module>test-suite</module>
     <module>test-compiler-integration</module>
     <module>test-integration-nomvel</module>
+    <module>test-integration-noxml</module>
   </modules>
 
 </project>

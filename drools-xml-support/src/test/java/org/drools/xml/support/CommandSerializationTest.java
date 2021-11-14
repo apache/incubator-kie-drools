@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.command.runtime.rule;
+package org.drools.xml.support;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -30,10 +30,10 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClassObjectSerializationFilter;
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
@@ -47,6 +47,21 @@ import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
+import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
+import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaGroupCommand;
+import org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand;
+import org.drools.core.command.runtime.rule.DeleteCommand;
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.command.runtime.rule.FireUntilHaltCommand;
+import org.drools.core.command.runtime.rule.GetObjectCommand;
+import org.drools.core.command.runtime.rule.GetObjectsCommand;
+import org.drools.core.command.runtime.rule.InsertElementsCommand;
+import org.drools.core.command.runtime.rule.InsertObjectCommand;
+import org.drools.core.command.runtime.rule.ModifyCommand;
+import org.drools.core.command.runtime.rule.QueryCommand;
+import org.drools.core.command.runtime.rule.UpdateCommand;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.xml.jaxb.util.JaxbListWrapper;
@@ -56,11 +71,11 @@ import org.kie.api.command.Setter;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class CommandSerializationTest {

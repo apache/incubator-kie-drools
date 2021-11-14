@@ -52,6 +52,11 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-xml-support</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.kie</groupId>
@@ -117,4 +122,32 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>ban-blacklisted-dependencies</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes combine.children="append">
+                                        <exclude>org.drools:drools-mvel</exclude>
+                                    </excludes>
+                                </bannedDependencies>
+                            </rules>
+                            <fail>${enforcer.failOnBannedDependencies}</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

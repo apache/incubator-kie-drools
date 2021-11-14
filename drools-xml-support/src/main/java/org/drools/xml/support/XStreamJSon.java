@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.runtime.help.impl;
+package org.drools.xml.support;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +57,11 @@ import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.runtime.help.impl.CommandsObjectContainer;
+import org.drools.core.runtime.help.impl.ObjectsObjectContainer;
+import org.drools.core.runtime.help.impl.ParameterContainer;
+import org.drools.core.runtime.help.impl.RowItemContainer;
+import org.drools.core.runtime.help.impl.WorkItemResultsContainer;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.util.StringUtils;

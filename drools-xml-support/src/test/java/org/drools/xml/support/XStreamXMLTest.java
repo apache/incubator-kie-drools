@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.core.runtime.help.impl;
+package org.drools.xml.support;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +43,7 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
+import static org.kie.utll.xml.XStreamUtils.createTrustingXStream;
 
 public class XStreamXMLTest {
 
@@ -51,7 +51,7 @@ public class XStreamXMLTest {
 
     @Before
     public void setup() {
-        xstream = createNonTrustingXStream();
+        xstream = createTrustingXStream();
         xstream = XStreamXML.newXStreamMarshaller(xstream);
     }
 
@@ -217,17 +217,17 @@ public class XStreamXMLTest {
         Assert.assertEquals(
                 "<execution-results>\n" +
                 "  <result identifier=\"message1\">\n" +
-                "    <org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
+                "    <org.drools.xml.support.XStreamXMLTest_-Message>\n" +
                 "      <msg>Hello World!</msg>\n" +
-                "    </org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
+                "    </org.drools.xml.support.XStreamXMLTest_-Message>\n" +
                 "  </result>\n" +
                 "  <result identifier=\"message2\">\n" +
-                "    <org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
+                "    <org.drools.xml.support.XStreamXMLTest_-Message>\n" +
                 "      <msg>Hello World again!</msg>\n" +
-                "    </org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
+                "    </org.drools.xml.support.XStreamXMLTest_-Message>\n" +
                 "  </result>\n" +
-                "  <fact-handle identifier=\"first\" external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
-                "  <fact-handle identifier=\"second\" external-form=\"0:2:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
+                "  <fact-handle identifier=\"first\" external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.xml.support.XStreamXMLTest$Message\"/>\n" +
+                "  <fact-handle identifier=\"second\" external-form=\"0:2:10:10:20:null:NON_TRAIT:org.drools.xml.support.XStreamXMLTest$Message\"/>\n" +
                 "</execution-results>",
                 xmlString );
 
@@ -275,8 +275,8 @@ public class XStreamXMLTest {
                 "<execution-results>\n" +
                         "  <result identifier=\"facts\">\n" +
                         "    <list>\n" +
-                        "      <fact-handle external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
-                        "      <fact-handle external-form=\"0:2:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
+                        "      <fact-handle external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.xml.support.XStreamXMLTest$Message\"/>\n" +
+                        "      <fact-handle external-form=\"0:2:10:10:20:null:NON_TRAIT:org.drools.xml.support.XStreamXMLTest$Message\"/>\n" +
                         "    </list>\n" +
                         "  </result>\n" +
                         "</execution-results>",
@@ -316,10 +316,10 @@ public class XStreamXMLTest {
                                     + "  </identifiers>\n"
                                     + "  <row>\n"
                                     + "    <identifier id=\"greeting\">\n"
-                                    + "      <org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n"
+                                    + "      <org.drools.xml.support.XStreamXMLTest_-Message>\n"
                                     + "        <msg>Hello World!</msg>\n"
-                                    + "      </org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n"
-                                    + "      <fact-handle external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n"
+                                    + "      </org.drools.xml.support.XStreamXMLTest_-Message>\n"
+                                    + "      <fact-handle external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.xml.support.XStreamXMLTest$Message\"/>\n"
                                     + "    </identifier>\n"
                                     + "  </row>\n"
                                     + "</query-results>";

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.util;
+package org.drools.xml.support.converters;
 
 import java.util.ArrayList;
 import java.util.HashMap;

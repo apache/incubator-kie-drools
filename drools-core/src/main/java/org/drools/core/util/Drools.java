@@ -22,10 +22,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.core.base.CoreComponentsBuilder;
-
-import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
+import org.drools.core.base.XMLSupport;
 
 public class Drools {
+
+    private static final boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
 
     private static Pattern VERSION_PAT = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)([\\.-](.*))?");
 
@@ -113,24 +114,11 @@ public class Drools {
         return CoreComponentsBuilder.present();
     }
 
+    public static boolean hasXmlSupport() {
+        return XMLSupport.present();
+    }
+
     public static boolean isNativeImage() {
-        return CoreComponentsBuilder.isNativeImage();
-    }
-
-    public static boolean hasXSTream() {
-        return XSTreamChekcer.HAS_XSTREAM;
-    }
-
-    private static class XSTreamChekcer {
-        private static final boolean HAS_XSTREAM = checkXStream();
-
-        private static boolean checkXStream() {
-            try {
-                createNonTrustingXStream();
-                return true;
-            } catch (Throwable e){
-                return false;
-            }
-        }
+        return IS_NATIVE_IMAGE;
     }
 }

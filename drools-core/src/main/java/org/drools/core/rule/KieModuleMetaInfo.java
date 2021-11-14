@@ -19,20 +19,9 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
-import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
+import org.drools.core.base.XMLSupport;
 
 public class KieModuleMetaInfo implements Serializable {
-
-    private static class Marshaller {
-        private static final XStream xStream = createNonTrustingXStream( new DomDriver() );
-
-        static {
-            xStream.setClassLoader( KieModuleMetaInfo.class.getClassLoader() );
-        }
-    }
 
     private Map<String, TypeMetaInfo> typeMetaInfos;
     private Map<String, Set<String>> rulesByPackage;
@@ -45,11 +34,11 @@ public class KieModuleMetaInfo implements Serializable {
     }
 
     public String marshallMetaInfos() {
-        return Marshaller.xStream.toXML(this);
+        return XMLSupport.get().toXml(XMLSupport.options().withClassLoader(KieModuleMetaInfo.class.getClassLoader()), this);
     }
 
     public static KieModuleMetaInfo unmarshallMetaInfos(String s) {
-        return (KieModuleMetaInfo)Marshaller.xStream.fromXML(s);
+        return XMLSupport.get().fromXml(XMLSupport.options().withClassLoader(KieModuleMetaInfo.class.getClassLoader()), s);
     }
 
     public Map<String, TypeMetaInfo> getTypeMetaInfos() {

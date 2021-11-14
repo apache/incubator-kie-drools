@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.runtime.help.impl;
+package org.drools.xml.support;
 
 import com.thoughtworks.xstream.XStream;
 import org.drools.core.command.runtime.AdvanceSessionTimeCommand;

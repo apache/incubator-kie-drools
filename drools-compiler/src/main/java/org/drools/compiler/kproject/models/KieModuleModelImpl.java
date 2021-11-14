@@ -21,12 +21,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.base.XMLSupport;
 import org.drools.core.util.StringUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.memorycompiler.resources.KiePath;
-
-import static org.drools.compiler.kproject.models.KieModuleMarshaller.MARSHALLER;
 
 public class KieModuleModelImpl implements KieModuleModel {
 
@@ -115,11 +114,11 @@ public class KieModuleModelImpl implements KieModuleModel {
         kBases.put(newName, kieBase);
     }
 
-    Map<String, String> getConfProps() {
+    public Map<String, String> getConfProps() {
         return confProps;
     }
 
-    void setConfProps( Map<String, String> confProps ) {
+    public void setConfProps( Map<String, String> confProps ) {
         this.confProps = confProps;
     }
 
@@ -136,23 +135,23 @@ public class KieModuleModelImpl implements KieModuleModel {
                     "         xmlns=\"http://www.drools.org/xsd/kmodule\""; // missed end >, so we can cater for />
 
     public String toXML() {
-        String xml = MARSHALLER.toXML(this);
+        String xml = XMLSupport.get().kieModuleMarshaller().toXML(this);
         return KMODULE_XSD + xml.substring("<kmodule".length());  // missed end >, so we can cater for />
     }
 
     public static KieModuleModel fromXML(InputStream kModuleStream) {
-        return MARSHALLER.fromXML(kModuleStream);
+        return (KieModuleModel) XMLSupport.get().kieModuleMarshaller().fromXML(kModuleStream);
     }
 
     public static KieModuleModel fromXML(java.io.File kModuleFile) {
-        return MARSHALLER.fromXML(kModuleFile);
+        return (KieModuleModel) XMLSupport.get().kieModuleMarshaller().fromXML(kModuleFile);
     }
 
     public static KieModuleModel fromXML(URL kModuleUrl) {
-        return MARSHALLER.fromXML(kModuleUrl);
+        return (KieModuleModel) XMLSupport.get().kieModuleMarshaller().fromXML(kModuleUrl);
     }
 
     public static KieModuleModel fromXML(String kModuleString) {
-        return MARSHALLER.fromXML(kModuleString);
+        return (KieModuleModel) XMLSupport.get().kieModuleMarshaller().fromXML(kModuleString);
     }
 }

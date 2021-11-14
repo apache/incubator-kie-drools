@@ -40,6 +40,11 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-xml-support</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-legacy-test-util</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
