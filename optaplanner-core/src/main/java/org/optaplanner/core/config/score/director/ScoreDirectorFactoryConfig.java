@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.core.util.Drools;
 import org.kie.api.KieBase;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -390,7 +390,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         }
         boolean ancEnabledValue = Objects.requireNonNullElse(getDroolsAlphaNetworkCompilationEnabled(), true);
         if (ancEnabledValue) { // ANC does not work in native images.
-            return !CoreComponentsBuilder.isNativeImage();
+            return !Drools.isNativeImage();
         } else {
             return false;
         }

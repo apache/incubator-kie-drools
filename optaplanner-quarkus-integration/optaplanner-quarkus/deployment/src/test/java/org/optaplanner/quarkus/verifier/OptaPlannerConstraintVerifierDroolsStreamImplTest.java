@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
-import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.core.util.Drools;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Assertions;
@@ -51,7 +51,7 @@ public class OptaPlannerConstraintVerifierDroolsStreamImplTest {
         Assertions.assertEquals(ConstraintStreamImplType.DROOLS,
                 ((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
                         .getConstraintStreamImplType());
-        Assertions.assertEquals(!CoreComponentsBuilder.isNativeImage(),
+        Assertions.assertEquals(!Drools.isNativeImage(),
                 ((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
                         .isDroolsAlphaNetworkCompilationEnabled());
         TestdataQuarkusSolution solution = new TestdataQuarkusSolution();

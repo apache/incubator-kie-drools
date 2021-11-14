@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.core.util.Drools;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -59,7 +59,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     }
 
     public boolean isDroolsAlphaNetworkCompilationEnabled() {
-        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabled, !CoreComponentsBuilder.isNativeImage());
+        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabled, !Drools.isNativeImage());
     }
 
     @Override
