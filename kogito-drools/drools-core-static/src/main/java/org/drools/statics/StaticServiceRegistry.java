@@ -63,6 +63,8 @@ public class StaticServiceRegistry implements ServiceRegistry {
         registerService("org.drools.core.marshalling.impl.ProcessMarshallerFactoryService", "org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl", false);
         registerService("org.drools.core.runtime.process.ProcessRuntimeFactoryService", "org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl", false);
 
+        registerService("org.drools.core.base.XMLSupport", "org.drools.xml.support.XMLSupportImpl", false);
+
         constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.drools.core.time.impl.JDKTimerService"));
 
         // pmml
