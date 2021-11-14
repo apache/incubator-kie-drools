@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.validator.Java8Validator;
+import com.github.javaparser.ast.validator.language_level_validations.Java8Validator;
 import com.github.javaparser.ast.validator.ProblemReporter;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;

@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import com.github.javaparser.printer.configuration.DefaultConfigurationOption;
+import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.AbstractValidatorTest;
 import org.kie.dmn.validation.ValidatorUtil;
@@ -33,10 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
 
@@ -92,12 +93,12 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
         }
         LOG.debug(sbGaps.toString());
 
-        PrettyPrinterConfiguration prettyPrintConfig = new PrettyPrinterConfiguration();
-        prettyPrintConfig.setColumnAlignFirstMethodChain(true);
-        prettyPrintConfig.setColumnAlignParameters(true);
+        DefaultPrinterConfiguration printConfig = new DefaultPrinterConfiguration();
+        printConfig.addOption(new DefaultConfigurationOption(DefaultPrinterConfiguration.ConfigOption.COLUMN_ALIGN_PARAMETERS, true));
+        printConfig.addOption(new DefaultConfigurationOption(DefaultPrinterConfiguration.ConfigOption.COLUMN_ALIGN_FIRST_METHOD_CHAIN, true));
 
         Expression printGaps = DTAnalysisMeta.printGaps(analysis);
-        LOG.debug("\n" + printGaps.toString(prettyPrintConfig));
+        LOG.debug("\n" + printGaps.toString(printConfig));
 
         StringBuilder sbOverlaps = new StringBuilder("\nOverlaps:\n");
         for (Overlap overlap : analysis.getOverlaps()) {
@@ -107,6 +108,6 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
         LOG.debug(sbOverlaps.toString());
 
         Expression printOverlaps = DTAnalysisMeta.printOverlaps(analysis);
-        LOG.debug("\n" + printOverlaps.toString(prettyPrintConfig));
+        LOG.debug("\n" + printOverlaps.toString(printConfig));
     }
 }

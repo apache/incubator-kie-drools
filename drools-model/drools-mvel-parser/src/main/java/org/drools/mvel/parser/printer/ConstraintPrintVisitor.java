@@ -31,8 +31,11 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
-import com.github.javaparser.printer.PrettyPrintVisitor;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import com.github.javaparser.printer.DefaultPrettyPrinterVisitor;
+import com.github.javaparser.printer.configuration.ConfigurationOption;
+import com.github.javaparser.printer.configuration.DefaultConfigurationOption;
+import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
+import com.github.javaparser.printer.configuration.PrinterConfiguration;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
@@ -61,11 +64,11 @@ import org.drools.mvel.parser.ast.expr.WithStatement;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
 import static com.github.javaparser.utils.Utils.isNullOrEmpty;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
-public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoidVisitor<Void> {
+public class ConstraintPrintVisitor extends DefaultPrettyPrinterVisitor implements DrlVoidVisitor<Void> {
 
-    public ConstraintPrintVisitor(PrettyPrinterConfiguration prettyPrinterConfiguration) {
+    public ConstraintPrintVisitor(PrinterConfiguration prettyPrinterConfiguration) {
         super(prettyPrinterConfiguration);
     }
 
@@ -319,7 +322,7 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(Statement::isExpressionStmt)
-                .map(n -> printConstraint(n.asExpressionStmt().getExpression()))
+                .map(n -> printNode(n.asExpressionStmt().getExpression()))
                 .collect(Collectors.joining(", "));
 
         printer.print(expressionWithComma);
@@ -338,7 +341,7 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(Statement::isExpressionStmt)
-                .map(n -> printConstraint(n.asExpressionStmt().getExpression()))
+                .map(n -> printNode(n.asExpressionStmt().getExpression()))
                 .collect(Collectors.joining(", "));
 
         printer.print(expressionWithComma);
@@ -371,7 +374,9 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
     public void printArguments(final NodeList<Expression> args, final Void arg) {
         printer.print("(");
         if (!isNullOrEmpty(args)) {
-            boolean columnAlignParameters = (args.size() > 1) && configuration.isColumnAlignParameters();
+            boolean columnAlignParameters = (args.size() > 1) &&
+                    configuration.get(new DefaultConfigurationOption(DefaultPrinterConfiguration.ConfigOption.COLUMN_ALIGN_PARAMETERS))
+                                    .map(ConfigurationOption::asBoolean).orElse(false);
             if (columnAlignParameters) {
                 printer.indentWithAlignTo(printer.getCursor().column);
             }

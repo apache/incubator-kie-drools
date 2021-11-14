@@ -6,15 +6,20 @@ import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.modules.ModuleDeclaration;
 import org.drools.compiler.lang.ParseException;
-import org.drools.compiler.lang.api.*;
+import org.drools.compiler.lang.api.CEDescrBuilder;
+import org.drools.compiler.lang.api.DescrFactory;
+import org.drools.compiler.lang.api.ImportDescrBuilder;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.compiler.lang.api.PatternDescrBuilder;
+import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.mvel.parser.ast.expr.RuleConsequence;
 import org.drools.mvel.parser.ast.expr.RuleDeclaration;
 import org.drools.mvel.parser.ast.expr.RuleItem;
 import org.drools.mvel.parser.ast.expr.RulePattern;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
+import org.drools.mvel.parser.printer.PrintUtil;
 
 public class DrlxVisitor implements DrlVoidVisitor<Void> {
 
@@ -60,11 +65,11 @@ public class DrlxVisitor implements DrlVoidVisitor<Void> {
                 if (p.getBind() == null) {
                     pat.constraint(p.getExpr().toString());
                 } else {
-                    pat.id(p.getBind().toString(), false).constraint(p.getExpr().toString());
+                    pat.id(p.getBind().toString(), false).constraint(PrintUtil.printNode(p.getExpr()));
                 }
             } else if (item instanceof RuleConsequence) {
                 RuleConsequence c = (RuleConsequence) item;
-                ruleDescrBuilder.rhs(c.getStatement().toString());
+                ruleDescrBuilder.rhs(PrintUtil.printNode(c.getStatement()));
             } else {
                 throw new IllegalArgumentException(item.getClass().getCanonicalName());
             }

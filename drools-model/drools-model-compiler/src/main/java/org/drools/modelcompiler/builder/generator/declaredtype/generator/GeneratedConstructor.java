@@ -24,8 +24,8 @@ import java.util.Optional;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithConstructors;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -39,7 +39,7 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.generator.
 
 public interface GeneratedConstructor {
 
-    static GeneratedConstructor factory(NodeWithConstructors<?> generatedClass,
+    static GeneratedConstructor factory(TypeDeclaration<?> generatedClass,
                                         List<? extends FieldDefinition> typeDeclarationFields) {
         if (typeDeclarationFields.size() < 65) {
             return new FullArgumentConstructor(generatedClass, typeDeclarationFields, true, true);
@@ -48,7 +48,7 @@ public interface GeneratedConstructor {
         }
     }
 
-    static GeneratedConstructor factoryEnum(NodeWithConstructors<?> generatedClass,
+    static GeneratedConstructor factoryEnum(TypeDeclaration<?> generatedClass,
                                             List<FieldDefinition> typeDeclarationFields) {
         if (typeDeclarationFields.size() < 65) {
             return new FullArgumentConstructor(generatedClass, typeDeclarationFields, false, false);
@@ -62,12 +62,12 @@ public interface GeneratedConstructor {
 
 class FullArgumentConstructor implements GeneratedConstructor {
 
-    private final NodeWithConstructors<?> generatedClass;
+    private final TypeDeclaration<?> generatedClass;
     private final boolean shouldCallSuper;
     private final boolean publicConstructor;
     private List<? extends FieldDefinition> typeDeclarationFields;
 
-    FullArgumentConstructor(NodeWithConstructors<?> generatedClass,
+    FullArgumentConstructor(TypeDeclaration<?> generatedClass,
                             List<? extends FieldDefinition> typeDeclarationFields,
                             boolean publicConstructor,
                             boolean shouldCallSuper) {

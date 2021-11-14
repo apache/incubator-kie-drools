@@ -56,7 +56,7 @@ class PatternAccumulateConstraint implements DSLNode {
         Map<String, List<BaseDescr>> constraintsByVar = new HashMap<>();
         for (BaseDescr constraint : constraintDescrs) {
             Set<String> exprIds = DrlxParseUtil.parseExpression( constraint.getText() ).getExpr()
-                    .findAll( DrlNameExpr.class ).stream().map(PrintUtil::printConstraint).collect(toSet() );
+                    .findAll( DrlNameExpr.class ).stream().map(PrintUtil::printNode).collect(toSet() );
             for (AccumulateDescr.AccumulateFunctionCallDescr accFunc : source.getFunctions()) {
                 if ( exprIds.contains( accFunc.getBind() ) ) {
                     constraintsByVar.computeIfAbsent( accFunc.getBind(), s -> new ArrayList<>() ).add(constraint);
