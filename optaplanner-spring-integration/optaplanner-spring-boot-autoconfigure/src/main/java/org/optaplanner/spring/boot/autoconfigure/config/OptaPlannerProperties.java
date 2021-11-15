@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.autoconfigure;
+package org.optaplanner.spring.boot.autoconfigure.config;
 
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -28,16 +28,14 @@ public class OptaPlannerProperties {
     public static final String DEFAULT_SOLVER_CONFIG_URL = "solverConfig.xml";
     public static final String DEFAULT_CONSTRAINTS_DRL_URL = "constraints.drl";
     public static final String SCORE_DRL_PROPERTY = "optaplanner.score-drl";
-    public static final String DEFAULT_BENCHMARK_RESULT_DIRECTORY = "target/benchmarks";
-    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG_URL = "solverBenchmarkConfig.xml";
 
     @NestedConfigurationProperty
     private SolverManagerProperties solverManager;
 
     /**
      * A classpath resource to read the solver configuration XML.
-     * Defaults to "{@link #DEFAULT_SOLVER_CONFIG_URL}".
-     * If this property isn't specified, that solverConfig.xml is optional.
+     * Defaults to {@value #DEFAULT_SOLVER_CONFIG_URL}.
+     * If this property isn't specified, that {@value #DEFAULT_SOLVER_CONFIG_URL} file is optional.
      */
     private String solverConfigXml;
 

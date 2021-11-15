@@ -47,6 +47,7 @@ import org.optaplanner.spring.boot.autoconfigure.chained.constraints.TestdataCha
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringEntity;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringObject;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringSolution;
+import org.optaplanner.spring.boot.autoconfigure.config.OptaPlannerProperties;
 import org.optaplanner.spring.boot.autoconfigure.gizmo.GizmoSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.NoConstraintsSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.NormalSpringTestConfiguration;

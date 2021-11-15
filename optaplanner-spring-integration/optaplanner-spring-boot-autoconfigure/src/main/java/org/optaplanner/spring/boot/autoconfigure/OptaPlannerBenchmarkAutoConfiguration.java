@@ -22,6 +22,8 @@ import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.spring.boot.autoconfigure.config.BenchmarkProperties;
+import org.optaplanner.spring.boot.autoconfigure.config.OptaPlannerProperties;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -62,12 +64,12 @@ public class OptaPlannerBenchmarkAutoConfiguration
             }
             benchmarkConfig = PlannerBenchmarkConfig
                     .createFromXmlResource(optaPlannerProperties.getBenchmark().getSolverBenchmarkConfigXml(), beanClassLoader);
-        } else if (beanClassLoader.getResource(OptaPlannerProperties.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL) != null) {
+        } else if (beanClassLoader.getResource(BenchmarkProperties.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL) != null) {
             benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(
                     OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL, beanClassLoader);
         } else {
             benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig);
-            benchmarkConfig.setBenchmarkDirectory(new File(OptaPlannerProperties.DEFAULT_BENCHMARK_RESULT_DIRECTORY));
+            benchmarkConfig.setBenchmarkDirectory(new File(BenchmarkProperties.DEFAULT_BENCHMARK_RESULT_DIRECTORY));
         }
 
         if (optaPlannerProperties.getBenchmark() != null && optaPlannerProperties.getBenchmark().getResultDirectory() != null) {
@@ -75,7 +77,7 @@ public class OptaPlannerBenchmarkAutoConfiguration
         }
 
         if (benchmarkConfig.getBenchmarkDirectory() == null) {
-            benchmarkConfig.setBenchmarkDirectory(new File(OptaPlannerProperties.DEFAULT_BENCHMARK_RESULT_DIRECTORY));
+            benchmarkConfig.setBenchmarkDirectory(new File(BenchmarkProperties.DEFAULT_BENCHMARK_RESULT_DIRECTORY));
         }
 
         if (optaPlannerProperties.getBenchmark() != null && optaPlannerProperties.getBenchmark().getSolver() != null) {

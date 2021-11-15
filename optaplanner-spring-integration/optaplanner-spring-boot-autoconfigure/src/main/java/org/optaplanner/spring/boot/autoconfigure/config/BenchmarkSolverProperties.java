@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.autoconfigure;
+package org.optaplanner.spring.boot.autoconfigure.config;
 
-public class SolverManagerProperties {
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-    /**
-     * The number of solvers that run in parallel. This directly influences CPU consumption.
-     * Defaults to "AUTO".
-     * Other options include a number or formula based on the available processor count.
-     */
-    private String parallelSolverCount;
+public class BenchmarkSolverProperties {
+
+    @NestedConfigurationProperty
+    private TerminationProperties termination;
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    public String getParallelSolverCount() {
-        return parallelSolverCount;
+    public TerminationProperties getTermination() {
+        return termination;
     }
 
-    public void setParallelSolverCount(String parallelSolverCount) {
-        this.parallelSolverCount = parallelSolverCount;
+    public void setTermination(TerminationProperties termination) {
+        this.termination = termination;
     }
 
 }
