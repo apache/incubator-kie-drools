@@ -243,7 +243,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
 
         try {
             if ( command instanceof BatchExecutionCommand ) {
-                ((RegistryContext) context).register( ExecutionResultImpl.class, new ExecutionResultImpl() );
+                context.register( ExecutionResultImpl.class, new ExecutionResultImpl() );
             }
 
             ((StatefulKnowledgeSessionImpl) ksession).startBatchExecution();
@@ -265,7 +265,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
                 ksession.fireAllRules();
             }
             if ( command instanceof BatchExecutionCommand ) {
-                return (T) ((RegistryContext) context).lookup( ExecutionResultImpl.class );
+                return (T) context.lookup( ExecutionResultImpl.class );
             } else {
                 return (T) o;
             }

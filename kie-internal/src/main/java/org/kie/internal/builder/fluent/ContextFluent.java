@@ -68,8 +68,6 @@ public interface ContextFluent<T, E>{
 
     T joinConversation(String uuid);
 
-    T leaveConversation();
-
     T endConversation(String uuid);
 
     /**
