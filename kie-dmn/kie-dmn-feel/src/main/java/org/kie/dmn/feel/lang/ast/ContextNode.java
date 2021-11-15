@@ -16,17 +16,21 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.kie.dmn.feel.util.EvalHelper;
-
-import java.util.*;
+import org.kie.dmn.feel.util.Msg;
 
 public class ContextNode
         extends BaseNode {
@@ -62,6 +66,10 @@ public class ContextNode
             Map<String, Object> c = new LinkedHashMap<>();
             for( ContextEntryNode cen : entries ) {
                 String name = EvalHelper.normalizeVariableName( cen.evaluateName( ctx ) );
+                if (c.containsKey(name)) {
+                    ctx.notifyEvt( astEvent( FEELEvent.Severity.ERROR, Msg.createMessage( Msg.DUPLICATE_KEY_CTX, name)) );
+                    return null;
+                }
                 Object value = cen.evaluate( ctx );
                 if( value instanceof CustomFEELFunction ) {
                     // helpful for debugging
