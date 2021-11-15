@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.printer.PrettyPrinter;
+import com.github.javaparser.printer.DefaultPrettyPrinter;
 import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.drools.modelcompiler.util.lambdareplace.NonExternalisedLambdaFoundException;
 
@@ -40,7 +40,7 @@ public class RuleWriter {
     public static final String DROOLS_CHECK_NON_EXTERNALISED_LAMBDA = "drools.check.nonExternalisedLambda";
     private static boolean checkNonExternalisedLambda = Boolean.parseBoolean(System.getProperty(DROOLS_CHECK_NON_EXTERNALISED_LAMBDA, "false"));
 
-    private final PrettyPrinter prettyPrinter = getPrettyPrinter();
+    private final DefaultPrettyPrinter prettyPrinter = getPrettyPrinter();
 
     private final CompilationUnit generatedPojo;
     private final PackageModel pkgModel;

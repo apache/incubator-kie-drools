@@ -67,7 +67,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaPar
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 public abstract class AbstractExpressionBuilder {
 
@@ -133,7 +133,7 @@ public abstract class AbstractExpressionBuilder {
             return expression;
         }
 
-        context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+        context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printNode(expression)));
         return expression;
     }
 

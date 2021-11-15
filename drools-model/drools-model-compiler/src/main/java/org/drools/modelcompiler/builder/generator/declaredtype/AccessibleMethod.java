@@ -184,7 +184,7 @@ public class AccessibleMethod {
     }
 
     private SwitchEntry switchEntry(String statement) {
-        return new SwitchEntry(nodeList(), SwitchEntry.Type.EXPRESSION, nodeList(parseStatement(statement)));
+        return new SwitchEntry(nodeList(), SwitchEntry.Type.STATEMENT_GROUP, nodeList(parseStatement(statement)));
     }
 
     private SwitchEntry stringSwitchExpression(String caseLabel, String... statements) {
@@ -192,7 +192,7 @@ public class AccessibleMethod {
         for (String statement : statements) {
             switchStatements.add(parseStatement(statement));
         }
-        return new SwitchEntry(nodeList(toStringLiteral(caseLabel)), SwitchEntry.Type.EXPRESSION, switchStatements);
+        return new SwitchEntry(nodeList(toStringLiteral(caseLabel)), SwitchEntry.Type.STATEMENT_GROUP, switchStatements);
     }
 
     private boolean superClassIsAccessibleFact(Class<?> superClass) {

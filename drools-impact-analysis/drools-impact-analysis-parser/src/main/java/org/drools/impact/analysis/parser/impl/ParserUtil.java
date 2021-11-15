@@ -16,6 +16,7 @@ package org.drools.impact.analysis.parser.impl;
 
 import java.util.Optional;
 
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -42,6 +43,9 @@ public class ParserUtil {
         if (literalExpr instanceof DoubleLiteralExpr ) {
             return literalExpr.asDoubleLiteralExpr().asDouble();
         }
+        if (literalExpr instanceof BooleanLiteralExpr ) {
+            return literalExpr.asBooleanLiteralExpr().getValue();
+        }
         return null;
     }
 
@@ -57,6 +61,9 @@ public class ParserUtil {
         }
         if (literalExpr instanceof DoubleLiteralExpr ) {
             return Double.class;
+        }
+        if (literalExpr instanceof BooleanLiteralExpr ) {
+            return Boolean.class;
         }
         return null;
     }
@@ -86,6 +93,6 @@ public class ParserUtil {
     }
 
     public static boolean isLiteral(Class<?> clazz) {
-        return clazz == String.class || clazz == Integer.class || clazz == Long.class || clazz == Double.class;
+        return clazz == String.class || clazz == Integer.class || clazz == Long.class || clazz == Double.class || clazz == Boolean.class;
     }
 }

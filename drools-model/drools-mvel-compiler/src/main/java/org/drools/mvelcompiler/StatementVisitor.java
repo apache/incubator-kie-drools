@@ -32,6 +32,7 @@ import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.WhileStmt;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.ast.BlockStmtT;
 import org.drools.mvelcompiler.ast.DoStmtT;
 import org.drools.mvelcompiler.ast.ForEachDowncastStmtT;
@@ -78,7 +79,7 @@ public class StatementVisitor implements DrlGenericVisitor<TypedExpression, Void
 
         Optional<TypedExpression> convertedToDowncastStmt =
                 iterable.toNameExpr()
-                        .map(Object::toString)
+                        .map(PrintUtil::printNode)
                         .flatMap(mvelCompilerContext::findDeclarations)
                         .filter(this::isDeclarationIterable)
                         .map(d -> toForEachDowncastStmtT(n, arg));
@@ -96,7 +97,7 @@ public class StatementVisitor implements DrlGenericVisitor<TypedExpression, Void
 
     private ForEachDowncastStmtT toForEachDowncastStmtT(ForEachStmt n, Void arg) {
         TypedExpression child = this.visit((BlockStmt) n.getBody(), arg);
-        return new ForEachDowncastStmtT(n.getVariable(), n.getIterable().asNameExpr().toString(), child);
+        return new ForEachDowncastStmtT(n.getVariable(), PrintUtil.printNode(n.getIterable().asNameExpr()), child);
     }
 
     @Override

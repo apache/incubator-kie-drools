@@ -26,7 +26,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 public class CompiledExpressionResult implements CompiledResult {
 
@@ -48,7 +48,7 @@ public class CompiledExpressionResult implements CompiledResult {
     }
 
     public String resultAsString() {
-        return printConstraint(expression);
+        return printNode(expression);
     }
 
     @Override

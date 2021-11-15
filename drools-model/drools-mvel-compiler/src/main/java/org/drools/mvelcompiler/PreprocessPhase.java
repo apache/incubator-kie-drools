@@ -44,11 +44,12 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
 import org.drools.mvel.parser.ast.expr.WithStatement;
+import org.drools.mvel.parser.printer.PrintUtil;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 /**
  * This phase transforms modify and with statements in valid Java code
@@ -228,7 +229,7 @@ public class PreprocessPhase {
                 rootMcExpr.setScope(enclosed);
 
                 if (scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
-                    result.addUsedBinding(printConstraint(scope));
+                    result.addUsedBinding(printNode(scope));
                 }
 
                 return new ExpressionStmt(mcExpr);
@@ -248,7 +249,7 @@ public class PreprocessPhase {
             }
         }
         if (failOnEmptyRootScope) {
-            throw new MvelCompilerException( "Invalid modify statement: " + mcExpr );
+            throw new MvelCompilerException( "Invalid modify statement: " + PrintUtil.printNode(mcExpr) );
         }
         return null;
     }
@@ -256,7 +257,7 @@ public class PreprocessPhase {
     private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {
         DrlNameExpr originalFieldAccess = (DrlNameExpr) assignExpr.getTarget();
         String propertyName = originalFieldAccess.getName().asString();
-        result.addUsedBinding(printConstraint(scope));
+        result.addUsedBinding(printNode(scope));
 
         FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
         assignExpr.setTarget(fieldAccessWithScope);

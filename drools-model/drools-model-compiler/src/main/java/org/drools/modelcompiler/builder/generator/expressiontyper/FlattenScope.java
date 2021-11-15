@@ -35,6 +35,7 @@ import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
+import org.drools.mvel.parser.printer.PrintUtil;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
@@ -133,7 +134,7 @@ public class FlattenScope {
     private static boolean isFullyQualifiedClassName( TypeResolver typeResolver, Expression scope ) {
         if (scope instanceof FieldAccessExpr ) {
             try {
-                typeResolver.resolveType( scope.toString() );
+                typeResolver.resolveType( PrintUtil.printNode(scope) );
                 return true;
             } catch (ClassNotFoundException e) {
                 // ignore
