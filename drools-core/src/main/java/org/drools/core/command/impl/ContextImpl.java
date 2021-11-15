@@ -18,8 +18,8 @@ package org.drools.core.command.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.runtime.Context;
@@ -28,9 +28,11 @@ import org.kie.internal.command.RegistryContext;
 
 public class ContextImpl implements RegistryContext {
 
+    public static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
+
     public static final String        REGISTRY = "__REGISTRY__";
 
-    private final Map<String, Object> map = new ConcurrentHashMap<String, Object>();
+    private final Map<String, Object> map = new ConcurrentHashMap<>();
 
     private final ContextManager      manager;
 
@@ -39,7 +41,7 @@ public class ContextImpl implements RegistryContext {
     private final Context             delegate;
 
     public ContextImpl() {
-        this( UUID.randomUUID().toString(), new ContextManagerImpl() );
+        this( "Context_" + ID_GENERATOR.incrementAndGet(), new ContextManagerImpl() );
     }
 
     public ContextImpl(String name,
