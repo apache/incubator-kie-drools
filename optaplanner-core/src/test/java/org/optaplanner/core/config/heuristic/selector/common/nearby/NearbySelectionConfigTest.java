@@ -186,7 +186,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setBlockDistributionUniformDistributionProbability(probability);
 
         assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .isEqualToComparingFieldByField(new BlockDistributionNearbyRandom(minimum, maximum, sizeRatio, probability));
+                .usingRecursiveComparison()
+                .isEqualTo(new BlockDistributionNearbyRandom(minimum, maximum, sizeRatio, probability));
     }
 
     @Test
@@ -196,7 +197,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setLinearDistributionSizeMaximum(maximum);
 
         assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .isEqualToComparingFieldByField(new LinearDistributionNearbyRandom(maximum));
+                .usingRecursiveComparison()
+                .isEqualTo(new LinearDistributionNearbyRandom(maximum));
     }
 
     @Test
@@ -206,7 +208,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(maximum);
 
         assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .isEqualToComparingFieldByField(new ParabolicDistributionNearbyRandom(maximum));
+                .usingRecursiveComparison()
+                .isEqualTo(new ParabolicDistributionNearbyRandom(maximum));
     }
 
     @Test
@@ -228,7 +231,8 @@ public class NearbySelectionConfigTest {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
 
         assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .isEqualToComparingFieldByField(new LinearDistributionNearbyRandom(Integer.MAX_VALUE));
+                .usingRecursiveComparison()
+                .isEqualTo(new LinearDistributionNearbyRandom(Integer.MAX_VALUE));
     }
 
     private NearbySelectionConfig buildNearbySelectionConfig() {
