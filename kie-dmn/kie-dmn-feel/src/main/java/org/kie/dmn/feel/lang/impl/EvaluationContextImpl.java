@@ -71,7 +71,7 @@ public class EvaluationContextImpl implements EvaluationContext {
     @Override
     public EvaluationContext current() {
         EvaluationContextImpl ec = new EvaluationContextImpl(eventsManager);
-        ec.stack = (ArrayDeque<ExecutionFrame>) stack.clone();
+        ec.stack = (ArrayDeque<ExecutionFrame>) stack.clone(); // Cast needed by GWT
         ec.rootClassLoader = this.rootClassLoader;
         ec.dmnRuntime = this.dmnRuntime;
         ec.performRuntimeTypeCheck = this.performRuntimeTypeCheck;

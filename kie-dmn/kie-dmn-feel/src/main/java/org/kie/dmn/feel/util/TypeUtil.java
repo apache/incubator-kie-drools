@@ -29,6 +29,7 @@ import java.time.chrono.ChronoPeriod;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,8 +37,8 @@ import java.util.Set;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
-import org.kie.dmn.feel.runtime.functions.DateFunction;
 import org.kie.dmn.feel.runtime.functions.TimeFunction;
+import org.kie.dmn.feel.runtime.functions.extended.DateFunction;
 
 public final class TypeUtil {
 
@@ -123,9 +124,9 @@ public final class TypeUtil {
 
     public static String formatDate(final LocalDate date, final boolean wrapForCodeUsage) {
         if (wrapForCodeUsage) {
-            return "date( \"" + RegexpUtil.FEEL_DATE.format(date) + "\" )";
+            return "date( \"" + DateFunction.FEEL_DATE.format(date) + "\" )";
         } else {
-            return RegexpUtil.FEEL_DATE.format(date);
+            return DateFunction.FEEL_DATE.format(date);
         }
     }
 

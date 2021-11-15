@@ -32,6 +32,7 @@ import java.util.TimeZone;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.extended.DateFunction;
 import org.kie.dmn.feel.util.RegexpUtil;
 
 public class DateAndTimeFunction
@@ -43,12 +44,12 @@ public class DateAndTimeFunction
     public static final DateTimeFormatter REGION_DATETIME_FORMATTER;
     static {
         FEEL_DATE_TIME = new DateTimeFormatterBuilder().parseCaseInsensitive()
-                                                       .append(RegexpUtil.FEEL_DATE)
+                                                       .append(DateFunction.FEEL_DATE)
                                                        .appendLiteral('T')
                                                        .append(TimeFunction.FEEL_TIME)
                                                        .toFormatter();
         REGION_DATETIME_FORMATTER = new DateTimeFormatterBuilder().parseCaseInsensitive()
-                                                                 .append(RegexpUtil.FEEL_DATE)
+                                                                 .append(DateFunction.FEEL_DATE)
                                                                  .appendLiteral('T')
                                                                  .append(DateTimeFormatter.ISO_LOCAL_TIME)
                                                                  .appendLiteral("@")

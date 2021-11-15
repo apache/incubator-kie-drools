@@ -51,7 +51,7 @@ public class Method {
     }
 
     public Class<?> getReturnType() {
-        return FEELFnResult.class; // TODO debug to see what this is
+        return FEELFnResult.class;
     }
 
     public Class<?>[] getParameterTypes() {
@@ -66,7 +66,7 @@ public class Method {
     }
 
     public Annotation[][] getParameterAnnotations() {
-        return null; // TODO debug to see what this is
+        return null;
     }
 
     public int getModifiers() {
@@ -74,6 +74,6 @@ public class Method {
     }
 
     public Parameter[] getParameters() {
-        return new Parameter[0];// TODO make these NamedParameter?
+        return new Parameter[0];
     }
 }

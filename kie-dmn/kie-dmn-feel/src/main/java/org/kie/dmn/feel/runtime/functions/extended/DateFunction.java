@@ -26,8 +26,10 @@ public class DateFunction extends BaseFEELFunction {
 
     public static final DateFunction INSTANCE = new DateFunction();
 
-    private static final Pattern BEGIN_YEAR = Pattern.compile("^-?(([1-9]\\d\\d\\d+)|(0\\d\\d\\d))-"); // FEEL spec, "specified by XML Schema Part 2 Datatypes", hence: yearFrag ::= '-'? (([1-9] digit digit digit+)) | ('0' digit digit digit))
-    private static final DateTimeFormatter FEEL_DATE;
+    public static final String BEGIN_YEAR_PATTERN = "^-?(([1-9]\\d\\d\\d+)|(0\\d\\d\\d))-"; // FEEL spec, "specified by XML Schema Part 2 Datatypes", hence: yearFrag ::= '-'? (([1-9] digit digit digit+)) | ('0' digit digit digit))
+
+    private static final Pattern BEGIN_YEAR = Pattern.compile(BEGIN_YEAR_PATTERN);
+    public static final DateTimeFormatter FEEL_DATE;
 
     static {
         FEEL_DATE = new DateTimeFormatterBuilder().appendValue(YEAR, 4, 9, SignStyle.NORMAL)

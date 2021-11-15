@@ -50,4 +50,8 @@ public class ClassUtil {
     public static Method[] getDeclaredMethods(final Class<? extends BaseFEELFunction> clazz) {
         return clazz.getDeclaredMethods();
     }
+
+    public static ClassLoader getClassLoader(final Class<?> clazz) {
+        return clazz.getClassLoader();
+    }
 }

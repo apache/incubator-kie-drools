@@ -79,4 +79,8 @@ public class ClassUtil {
 
         return result.toArray(new Method[result.size()]);
     }
+
+    public static ClassLoader getClassLoader(final Class<?> clazz) {
+        return null;
+    }
 }

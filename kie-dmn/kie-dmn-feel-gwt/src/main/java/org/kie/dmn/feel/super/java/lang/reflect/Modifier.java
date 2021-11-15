@@ -19,6 +19,12 @@ public class Modifier {
 
     public static final int PUBLIC = 0x00000001;
 
+    /**
+     * Return true if the integer argument includes the public modifier, false otherwise.
+     *
+     * @param mod – a set of modifiers
+     * @return true if mod includes the public modifier; false otherwise.
+     */
     public static boolean isPublic(int mod) {
         return (mod & PUBLIC) != 0;
     }

@@ -454,7 +454,7 @@ public class EvalHelper {
         LOG.trace( "getGenericAccessor({}, {})", clazz, field );
 
         AccessorCacheKey accessorCacheKey =
-                new AccessorCacheKey( clazz.getClassLoader(), clazz.getCanonicalName(), field );
+                new AccessorCacheKey( ClassUtil.getClassLoader(clazz), clazz.getCanonicalName(), field );
 
         return accessorCache.computeIfAbsent(accessorCacheKey, key ->
             Stream.of( ClassUtil.getMethods(clazz) )
