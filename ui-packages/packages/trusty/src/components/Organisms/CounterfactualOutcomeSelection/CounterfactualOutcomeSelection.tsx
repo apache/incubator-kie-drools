@@ -54,7 +54,7 @@ const CounterfactualOutcomeSelection = (
       let updatedRole = CFGoalRole.FLOATING;
       if (updatedGoal.role !== CFGoalRole.FLOATING) {
         updatedRole = CFGoalRole.FIXED;
-        if (updatedGoal.value === updatedGoal.originalValue) {
+        if (updatedGoal.value.value === updatedGoal.originalValue.value) {
           updatedRole = CFGoalRole.ORIGINAL;
         }
       }
@@ -92,7 +92,7 @@ const CounterfactualOutcomeSelection = (
             id="confirm-outcome-selection"
             key="confirm"
             variant="primary"
-            aria-label="Run counterfactual analysis"
+            aria-label="Confirm outcome selection"
             onClick={handleApply}
           >
             Confirm
@@ -115,7 +115,7 @@ const CounterfactualOutcomeSelection = (
               id="confirm-outcome-selection"
               key="confirm"
               variant="primary"
-              aria-label="Run counterfactual analysis"
+              aria-label="Confirm outcome selection"
               isAriaDisabled={!isDesiredOutcomeDefined()}
             >
               Confirm
