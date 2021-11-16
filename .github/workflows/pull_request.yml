@@ -30,7 +30,7 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
-          key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
         uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/build-chain@main
         with:
