@@ -16,24 +16,16 @@
 
 package org.kie.kogito.core.rules.incubation.quarkus.support;
 
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.kogito.incubation.common.DataContext;
 import org.kie.kogito.incubation.common.Id;
-import org.kie.kogito.incubation.common.MapDataContext;
-import org.kie.kogito.incubation.common.objectmapper.InternalObjectMapper;
-import org.kie.kogito.incubation.rules.QueryId;
-import org.kie.kogito.incubation.rules.RuleUnitId;
 import org.kie.kogito.incubation.rules.services.RuleUnitService;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitData;
-import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnits;
 
 @ApplicationScoped
@@ -41,38 +33,16 @@ public class QuarkusRuleUnitService implements RuleUnitService {
 
     @Inject
     Instance<RuleUnits> ruleUnits;
+    RuleUnitServiceImpl delegate;
+
+    @PostConstruct
+    void startup() {
+        this.delegate = new RuleUnitServiceImpl(ruleUnits.get());
+    }
 
     @Override
     public Stream<DataContext> evaluate(Id id, DataContext inputContext) {
-        RuleUnitId ruleUnitId;
-        QueryId queryId;
-        if (id instanceof QueryId) {
-            queryId = (QueryId) id;
-            ruleUnitId = queryId.ruleUnitId();
-        } else {
-            // LocalDecisionId.parse(decisionId);
-            throw new IllegalArgumentException(
-                    "Not a valid query id " + id.toLocalId());
-        }
-
-        Map<String, Object> payload = inputContext.as(MapDataContext.class).toMap();
-        RuleUnitData ruleUnitData = this.convertValue(payload, ruleUnitId);
-        RuleUnit<RuleUnitData> ruleUnit = ruleUnits.get().create((Class<RuleUnitData>) ruleUnitData.getClass());
-        RuleUnitInstance<RuleUnitData> instance = ruleUnit.createInstance(ruleUnitData);
-        List<Map<String, Object>> results = instance.executeQuery(queryId.queryId());
-
-        return results.stream().map(MapDataContext::of);
-
-    }
-
-    private RuleUnitData convertValue(Map<String, Object> payload, RuleUnitId ruleUnitId) {
-        try {
-            // converts the identifier into a Class object for conversion
-            Class<RuleUnitData> type = (Class<RuleUnitData>) Thread.currentThread().getContextClassLoader().loadClass(ruleUnitId.ruleUnitId());
-            return InternalObjectMapper.objectMapper().convertValue(payload, type);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Cannot load class " + ruleUnitId.ruleUnitId(), e);
-        }
+        return this.delegate.evaluate(id, inputContext);
     }
 
 }

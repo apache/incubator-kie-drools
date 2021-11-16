@@ -16,53 +16,30 @@
 
 package org.kie.kogito.core.prediction.incubation.quarkus.support;
 
-import java.util.Collections;
-import java.util.Map;
-
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.kie.api.pmml.PMML4Result;
 import org.kie.kogito.incubation.common.DataContext;
 import org.kie.kogito.incubation.common.ExtendedDataContext;
 import org.kie.kogito.incubation.common.LocalId;
-import org.kie.kogito.incubation.common.MapDataContext;
-import org.kie.kogito.incubation.common.objectmapper.InternalObjectMapper;
-import org.kie.kogito.incubation.predictions.LocalPredictionId;
 import org.kie.kogito.incubation.predictions.services.PredictionService;
-import org.kie.kogito.prediction.PredictionModel;
 import org.kie.kogito.prediction.PredictionModels;
-import org.kie.pmml.api.runtime.PMMLContext;
 
 @ApplicationScoped
 public class QuarkusPredictionService implements PredictionService {
     @Inject
     Instance<PredictionModels> predictionModels;
+    PredictionServiceImpl delegate;
+
+    @PostConstruct
+    void startup() {
+        this.delegate = new PredictionServiceImpl(predictionModels.get());
+    }
 
     @Override
     public ExtendedDataContext evaluate(LocalId predictionId, DataContext inputContext) {
-        LocalPredictionId localPredictionId;
-        if (predictionId instanceof LocalPredictionId) {
-            localPredictionId = (LocalPredictionId) predictionId;
-        } else {
-            // LocalDecisionId.parse(predictionId);
-            throw new IllegalArgumentException(
-                    "Not a valid prediction id " + predictionId.toLocalId());
-        }
-        PredictionModel predictionModel =
-                predictionModels.get().getPredictionModel(localPredictionId.name());
-
-        PMMLContext ctx = predictionModel.newContext(inputContext.as(MapDataContext.class).toMap());
-
-        PMML4Result pmml4Result = predictionModel.evaluateAll(ctx);
-        Map<String, Object> resultMap = Collections.singletonMap(
-                pmml4Result.getResultObjectName(),
-                pmml4Result.getResultVariables().get(
-                        pmml4Result.getResultObjectName()));
-
-        MapDataContext meta = MapDataContext.of(InternalObjectMapper.objectMapper().convertValue(pmml4Result, Map.class));
-        MapDataContext data = MapDataContext.of(resultMap);
-        return ExtendedDataContext.of(meta, data);
+        return delegate.evaluate(predictionId, inputContext);
     }
 }
