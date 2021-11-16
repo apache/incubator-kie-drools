@@ -42,6 +42,7 @@ jobs:
       - name: Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         with:
+          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/%{process.env.GITHUB_BASE_REF.replace(/(\d*)\.(.*)\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           starting-project: kiegroup/optaplanner
           github-token: "${{ secrets.GITHUB_TOKEN }}"
