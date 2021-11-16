@@ -27,6 +27,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.printer.DefaultPrettyPrinter;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -133,6 +134,12 @@ public class JavaParserUtils {
     }
 
     public static boolean equalsNode(Node node1, Node node2) {
-        return node1.toString().equals(node2.toString());
+        String s1 = printNode(node1);
+        String s2 = printNode(node2);
+        return s1.equals(s2);
+    }
+
+    public static String printNode(Node node) {
+        return new DefaultPrettyPrinter().print(node);
     }
 }
