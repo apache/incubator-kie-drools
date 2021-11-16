@@ -19,7 +19,6 @@ package org.drools.core.world.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.command.GetDefaultValue;
 import org.drools.core.command.impl.ContextImpl;
 import org.kie.api.command.Command;
 import org.kie.api.command.ExecutableCommand;
@@ -27,21 +26,17 @@ import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
 
-public class ContextManagerImpl
-        implements ContextManager, GetDefaultValue, CommandExecutor {
-
+public class ContextManagerImpl implements ContextManager, CommandExecutor {
 
     private Context root;
-    private Map<String, Context> contexts;
+    private final Map<String, Context> contexts;
 
     public static String ROOT = "ROOT";
 
     private CommandExecutionHandler executionHandler = new DefaultCommandExecutionHandler();
 
-    private Object lastReturnValue;
-
     public ContextManagerImpl() {
-        this( new HashMap<String, Context>() );
+        this( new HashMap<>() );
     }
 
     public ContextManagerImpl( Map<String, Context> contexts ) {
@@ -82,12 +77,8 @@ public class ContextManagerImpl
         return this.root;
     }
 
-    public Object getLastReturnValue() {
-        return this.lastReturnValue;
-    }
-
-    public static interface CommandExecutionHandler {
-        public Object execute( ExecutableCommand command,
+    public interface CommandExecutionHandler {
+        Object execute( ExecutableCommand command,
                                Context context );
     }
 
@@ -98,18 +89,6 @@ public class ContextManagerImpl
                                Context context ) {
             return command.execute( context );
         }
-    }
-
-    public Object getObject() {
-        return lastReturnValue;
-    }
-
-    public ContextManager getContextManager() {
-        return this;
-    }
-
-    public String getName() {
-        return root.getName();
     }
 
     public Object get( String identifier ) {

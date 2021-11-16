@@ -18,7 +18,6 @@ package org.drools.core.fluent.impl;
 
 import org.drools.core.command.EndConversationCommand;
 import org.drools.core.command.JoinConversationCommand;
-import org.drools.core.command.LeaveConversationCommand;
 import org.drools.core.command.OutCommand;
 import org.drools.core.command.StartConversationCommand;
 import org.kie.api.command.ExecutableCommand;
@@ -127,12 +126,6 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
     @Override
     public T joinConversation(String uuid) {
         fluentCtx.addCommand(new JoinConversationCommand(uuid));
-        return (T) this;
-    }
-
-    @Override
-    public T leaveConversation() {
-        fluentCtx.addCommand(new LeaveConversationCommand());
         return (T) this;
     }
 
