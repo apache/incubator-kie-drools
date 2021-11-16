@@ -29,16 +29,16 @@ const Counterfactual = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { containerWidth, containerHeight } = useCFSizes(containerRef.current);
 
-  const noSupportedInputs = useMemo(() => {
+  const hasAnyUnsupportedInput = useMemo(() => {
     if (inputData.status !== RemoteDataStatus.SUCCESS) {
       return false;
     }
     return (
-      inputData.data.find(input => input.value.kind === 'UNIT') === undefined
+      inputData.data.find(input => input.value.kind !== 'UNIT') !== undefined
     );
   }, [inputData]);
 
-  const noSupportedSearchDomain = useMemo(() => {
+  const hasOnlyStringInputs = useMemo(() => {
     if (inputData.status !== RemoteDataStatus.SUCCESS) {
       return false;
     }
@@ -49,7 +49,7 @@ const Counterfactual = () => {
     return units.every(input => typeof input.value.value === 'string');
   }, [inputData]);
 
-  const noSupportedOutcomes = useMemo(() => {
+  const hasOnlyUnsupportedOutcomes = useMemo(() => {
     if (outcomesData.status !== RemoteDataStatus.SUCCESS) {
       return false;
     }
@@ -62,39 +62,43 @@ const Counterfactual = () => {
 
   const isSupported = useMemo(
     () =>
-      !(noSupportedInputs || noSupportedOutcomes || noSupportedSearchDomain),
-    [noSupportedInputs, noSupportedOutcomes, noSupportedSearchDomain]
+      !(
+        hasAnyUnsupportedInput ||
+        hasOnlyUnsupportedOutcomes ||
+        hasOnlyStringInputs
+      ),
+    [hasAnyUnsupportedInput, hasOnlyUnsupportedOutcomes, hasOnlyStringInputs]
   );
 
   const messages = useMemo(() => {
     const messages: CFSupportMessage[] = [];
-    if (noSupportedSearchDomain) {
+    if (hasOnlyStringInputs) {
       messages.push({
-        id: 'message-outcomes',
+        id: 'message-inputs-string',
         message:
           'All of the model inputs are strings and cannot have search domains defined, which is unsupported.'
       });
-    } else if (noSupportedInputs && noSupportedOutcomes) {
+    } else if (hasAnyUnsupportedInput && hasOnlyUnsupportedOutcomes) {
       messages.push({
         id: 'message-inputs-and-outcomes',
         message:
-          'All model inputs and outcomes are structured data types, which are unsupported.'
+          'At least one model input and all outcomes are either a structure or collection, which are unsupported.'
       });
-    } else if (noSupportedInputs) {
+    } else if (hasAnyUnsupportedInput) {
       messages.push({
         id: 'message-inputs',
         message:
-          'All model inputs are structured data types, which are unsupported.'
+          'At least one model input is either a structure or collection, which are unsupported.'
       });
-    } else if (noSupportedOutcomes) {
+    } else if (hasOnlyUnsupportedOutcomes) {
       messages.push({
         id: 'message-outcomes',
         message:
-          'All model outcomes are structured data types, which are unsupported.'
+          'All model outcomes are either a structure or collection, which are unsupported.'
       });
     }
     return messages;
-  }, [noSupportedInputs, noSupportedOutcomes, noSupportedSearchDomain]);
+  }, [hasAnyUnsupportedInput, hasOnlyUnsupportedOutcomes, hasOnlyStringInputs]);
 
   return (
     <>

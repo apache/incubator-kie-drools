@@ -32,7 +32,10 @@ const simpleInputData = [
       type: 'string',
       value: 'Cheddar'
     }
-  },
+  }
+];
+
+const structuredInput = [
   {
     name: 'Property',
     value: {
@@ -296,23 +299,6 @@ const simpleInputData = [
           }
         }
       ]
-    }
-  }
-];
-
-const structuredInput = [
-  {
-    name: 'Structured input 1',
-    value: {
-      kind: 'STRUCTURE',
-      type: 'tStructure',
-      value: {
-        'Structure1 field1': {
-          kind: 'UNIT',
-          type: 'tField1',
-          value: 'value'
-        }
-      }
     }
   }
 ];
