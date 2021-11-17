@@ -30,6 +30,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>process-serialization-protobuf</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -60,10 +64,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jboss.jandex</groupId>
-        <artifactId>jandex-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

@@ -43,6 +43,8 @@ import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
+import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusProcessIdFactory;
+import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStraightThroughProcessService;
 import org.kie.kogito.quarkus.common.deployment.InMemoryClassLoader;
 import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedClassesBuildItem;
 import org.kie.kogito.serialization.process.ObjectMarshallerStrategy;
@@ -51,6 +53,7 @@ import org.kie.kogito.serialization.process.protobuf.KogitoProcessInstanceProtob
 import org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf;
 import org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf;
 
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -133,6 +136,11 @@ public class ProcessesAssetsProcessor {
                 "org.kie.kogito.event.Topic",
                 "org.kie.kogito.event.CloudEventMeta",
                 "org.kie.kogito.jobs.api.Job");
+    }
+
+    @BuildStep
+    public AdditionalBeanBuildItem additionalBeans() {
+        return AdditionalBeanBuildItem.builder().addBeanClasses(QuarkusStraightThroughProcessService.class, QuarkusProcessIdFactory.class).build();
     }
 
     /**

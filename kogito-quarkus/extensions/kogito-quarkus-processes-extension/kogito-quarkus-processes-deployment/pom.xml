@@ -22,6 +22,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-processes</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-devservices-common</artifactId>
+    </dependency>
     <!-- codegen dependencies -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
