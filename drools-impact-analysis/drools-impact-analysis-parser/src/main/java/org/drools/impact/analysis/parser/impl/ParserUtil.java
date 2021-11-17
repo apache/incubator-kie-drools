@@ -14,9 +14,13 @@
 
 package org.drools.impact.analysis.parser.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -24,15 +28,24 @@ import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
 
 public class ParserUtil {
 
     public static Object literalToValue( LiteralExpr literalExpr) {
         if (literalExpr instanceof StringLiteralExpr ) {
             return literalExpr.asStringLiteralExpr().asString();
+        }
+        if (literalExpr instanceof CharLiteralExpr ) {
+            return literalExpr.asCharLiteralExpr().asChar();
         }
         if (literalExpr instanceof IntegerLiteralExpr ) {
             return literalExpr.asIntegerLiteralExpr().asInt();
@@ -45,6 +58,36 @@ public class ParserUtil {
         }
         if (literalExpr instanceof BooleanLiteralExpr ) {
             return literalExpr.asBooleanLiteralExpr().getValue();
+        }
+        if (literalExpr instanceof BigDecimalLiteralExpr) {
+            return ((BigDecimalLiteralExpr)literalExpr).asBigDecimal();
+        }
+        if (literalExpr instanceof BigIntegerLiteralExpr) {
+            return ((BigIntegerLiteralExpr)literalExpr).asBigInteger();
+        }
+        return null;
+    }
+
+    public static Object objectCreationExprToValue(ObjectCreationExpr objectCreationExpr, RuleContext context) {
+        // Only a few classes/constructors are handled. Otherwise, value becomes null so a link would be UNKNOWN. To be enhanced : DROOLS-6711
+        ClassOrInterfaceType type = objectCreationExpr.getType();
+        Class<?> clazz = getClassFromType(context.getTypeResolver(), type);
+        if (clazz.equals(BigDecimal.class)) {
+            NodeList<Expression> arguments = objectCreationExpr.getArguments();
+            Optional<Object> opt = arguments.stream()
+                                            .findFirst()
+                                            .filter(StringLiteralExpr.class::isInstance)
+                                            .map(literalExpr -> literalExpr.asStringLiteralExpr().asString())
+                                            .map(BigDecimal::new);
+            return opt.orElse(null);
+        } else if (clazz.equals(BigInteger.class)) {
+            NodeList<Expression> arguments = objectCreationExpr.getArguments();
+            Optional<Object> opt = arguments.stream()
+                                            .findFirst()
+                                            .filter(StringLiteralExpr.class::isInstance)
+                                            .map(literalExpr -> literalExpr.asStringLiteralExpr().asString())
+                                            .map(BigInteger::new);
+            return opt.orElse(null);
         }
         return null;
     }
@@ -94,5 +137,15 @@ public class ParserUtil {
 
     public static boolean isLiteral(Class<?> clazz) {
         return clazz == String.class || clazz == Integer.class || clazz == Long.class || clazz == Double.class || clazz == Boolean.class;
+    }
+
+    public static Expression stripEnclosedAndCast(Expression expr) {
+        if (expr.isEnclosedExpr()) {
+            expr = expr.asEnclosedExpr().getInner();
+        }
+        if (expr.isCastExpr()) {
+            expr = expr.asCastExpr().getExpression();
+        }
+        return expr;
     }
 }

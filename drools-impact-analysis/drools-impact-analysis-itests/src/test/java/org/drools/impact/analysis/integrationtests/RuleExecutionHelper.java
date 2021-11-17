@@ -114,7 +114,7 @@ public class RuleExecutionHelper {
         public final String content;
 
         public KieFile(int index, String content) {
-            this(String.format("src/main/resources/r%d.drl", index), content);
+            this(String.format("src/main/resources/mypkg/r%d.drl", index), content);
         }
 
         public KieFile(String path, String content) {
