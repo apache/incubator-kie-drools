@@ -27,6 +27,7 @@ import org.drools.core.reteoo.SegmentMemory;
 
 import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
 import static org.drools.core.phreak.AddRemoveRule.forceFlushWhenRiaNode;
+import static org.drools.core.reteoo.NodeTypeEnums.hasNodeMemory;
 
 public class SegmentPropagator {
 
@@ -116,7 +117,7 @@ public class SegmentPropagator {
         }
     }
 
-    public static void updateChildLeftTupleDuringInsert(LeftTuple childLeftTuple,
+    private static void updateChildLeftTupleDuringInsert(LeftTuple childLeftTuple,
                                                         TupleSets<LeftTuple> stagedLeftTuples,
                                                         TupleSets<LeftTuple> trgLeftTuples) {
         switch ( childLeftTuple.getStagedType() ) {
@@ -128,7 +129,12 @@ public class SegmentPropagator {
             case LeftTuple.UPDATE:
                 throw new IllegalStateException("It should not be possible that an existing udpate is staged, when an insert is later requested.");
         }
-        trgLeftTuples.addInsert( childLeftTuple );
+
+        if ( hasNodeMemory( childLeftTuple.getTupleSink() ) ) {
+            trgLeftTuples.addInsert(childLeftTuple);
+        } else {
+            trgLeftTuples.addUpdate(childLeftTuple);
+        }
     }
 
     private static void processPeerDeletes( TupleSets<LeftTuple> leftTuples, LeftTuple leftTuple, SegmentMemory firstSmem ) {
