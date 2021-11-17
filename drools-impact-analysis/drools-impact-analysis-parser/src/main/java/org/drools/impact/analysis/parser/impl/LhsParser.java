@@ -45,6 +45,8 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 
 import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralString;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.literalToValue;
+import static org.drools.impact.analysis.parser.impl.ParserUtil.objectCreationExprToValue;
+import static org.drools.impact.analysis.parser.impl.ParserUtil.stripEnclosedAndCast;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isBooleanBoxedUnboxed;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 
@@ -155,16 +157,20 @@ public class LhsParser {
     }
 
     private Constraint parseExpressionInConstraint( RuleContext context, Constraint constraint, TypedExpression expr ) {
-        if (expr.getExpression() instanceof MethodCallExpr) {
-            if (isThisExpression( (( MethodCallExpr ) expr.getExpression()).getScope().orElse( null ) )) {
+        Expression expression = expr.getExpression();
+        expression = stripEnclosedAndCast(expression);
+        if (expression.isMethodCallExpr()) {
+            if (isThisExpression( expression.asMethodCallExpr().getScope().orElse( null ) )) {
                 constraint.setProperty( expr.getFieldName() );
             } else {
                 constraint = processMapProperty(context, constraint, expr);
             }
-        } else if (expr.getExpression().isLiteralExpr()) {
-            constraint.setValue( literalToValue( expr.getExpression().asLiteralExpr() ) );
-        } else if (expr.getExpression().isNameExpr() && expr.getExpression().asNameExpr().getNameAsString().equals("_this")) {
+        } else if (expression.isLiteralExpr()) {
+            constraint.setValue( literalToValue( expression.asLiteralExpr() ) );
+        } else if (expression.isNameExpr() && expression.asNameExpr().getNameAsString().equals("_this")) {
             constraint.setProperty("this");
+        } else if (expression.isObjectCreationExpr()) {
+            constraint.setValue(objectCreationExprToValue(expression.asObjectCreationExpr(), context));
         }
         return constraint;
     }
