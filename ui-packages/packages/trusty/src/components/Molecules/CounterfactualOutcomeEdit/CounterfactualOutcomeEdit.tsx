@@ -130,6 +130,8 @@ const CounterfactualOutcomeNumber = (props: CounterfactualOutcomeEditProps) => {
   const { goal, index, onUpdateGoal } = props;
   const [numberValue, setNumberValue] = useState<number>();
 
+  const decimalPlaces = goal.value.value.toString().split('.')[1]?.length || 0;
+
   const touchSpinWidth = useMemo(() => String(goal.value).length + 2, [
     goal.value
   ]);
@@ -142,7 +144,7 @@ const CounterfactualOutcomeNumber = (props: CounterfactualOutcomeEditProps) => {
       ...goal,
       value: {
         ...(goal.value as ItemObjectUnit),
-        value: (goal.value.value as number) - 1
+        value: Number(((goal.value.value as number) - 1).toFixed(decimalPlaces))
       }
     });
   };
@@ -168,7 +170,7 @@ const CounterfactualOutcomeNumber = (props: CounterfactualOutcomeEditProps) => {
       ...goal,
       value: {
         ...(goal.value as ItemObjectUnit),
-        value: (goal.value.value as number) + 1
+        value: Number(((goal.value.value as number) + 1).toFixed(decimalPlaces))
       }
     });
   };
