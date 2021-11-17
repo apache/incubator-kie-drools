@@ -27,10 +27,10 @@ type Mutation {
         potentialGroups: [String!], potentialUsers: [String!], inputParams: String): String
     UserTaskInstanceCommentCreate(taskId: String, user: String, groups: [String], comment: String): String
     UserTaskInstanceAttachmentCreate(taskId: String, user: String, groups: [String], name: String, uri: String): String
-    UserTaskInstanceCommentUpdate(user:String, groups:[String],commentId: String, comment: String):String
-    UserTaskInstanceCommentDelete(user:String, groups:[String],commentId: String):String
-    UserTaskInstanceAttachmentUpdate(user:String, groups:[String],attachmentId: String,  name: String, uri: String):String
-    UserTaskInstanceAttachmentDelete(user:String, groups:[String], attachmentId: String):String
+    UserTaskInstanceCommentUpdate(user:String, groups:[String],commentId: String, comment: String): String
+    UserTaskInstanceCommentDelete(user:String, groups:[String],commentId: String): String
+    UserTaskInstanceAttachmentUpdate(user:String, groups:[String],attachmentId: String,  name: String, uri: String): String
+    UserTaskInstanceAttachmentDelete(user:String, groups:[String], attachmentId: String): String
 }
 
 type ProcessInstance {
