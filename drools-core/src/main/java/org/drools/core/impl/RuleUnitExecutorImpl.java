@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.drools.core.InitialFact;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -43,7 +42,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
@@ -103,8 +101,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
     private void initInitialFact(InternalKnowledgeBase kBase) {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
-        InitialFact initialFact = InitialFactImpl.getInstance();
-        InternalFactHandle handle = getFactHandleFactory().createDefaultFactHandle(0, initialFact, 0, defaultEntryPoint);
+        InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
 
         ObjectTypeNode otn = defaultEntryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
