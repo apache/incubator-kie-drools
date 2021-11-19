@@ -16,11 +16,12 @@
 package org.kie.kogito.monitoring.core.common;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 
 public class MonitoringRegistry {
 
-    private static CompositeMeterRegistry compositeMeterRegistry = new CompositeMeterRegistry();
+    private static CompositeMeterRegistry compositeMeterRegistry = Metrics.globalRegistry;
 
     private MonitoringRegistry() {
     }

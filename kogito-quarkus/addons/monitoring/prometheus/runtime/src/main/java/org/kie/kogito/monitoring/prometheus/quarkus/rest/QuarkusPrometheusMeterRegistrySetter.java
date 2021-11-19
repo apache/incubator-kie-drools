@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.monitoring.prometheus.common.rest;
+package org.kie.kogito.monitoring.prometheus.quarkus.rest;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.kie.kogito.monitoring.prometheus.common.PrometheusRegistryProvider;
 
-public abstract class MetricsResource {
+import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.quarkus.runtime.Startup;
 
-    public String scrape() {
-        return PrometheusRegistryProvider.getPrometheusMeterRegistry().scrape();
+/**
+ * This class is needed to inject context-original PrometheusMeterRegistry.
+ */
+@Startup
+@Singleton
+public class QuarkusPrometheusMeterRegistrySetter {
+
+    @Inject
+    public void init(PrometheusMeterRegistry registry) {
+        PrometheusRegistryProvider.setPrometheusMeterRegistry(registry);
     }
+
 }

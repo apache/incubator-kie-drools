@@ -19,6 +19,10 @@
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-monitoring-prometheus</artifactId>
     </dependency>

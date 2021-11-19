@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.monitoring.prometheus.common.rest;
+package org.kie.kogito.monitoring.prometheus.springboot.rest;
 
 import org.kie.kogito.monitoring.prometheus.common.PrometheusRegistryProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 
-public abstract class MetricsResource {
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 
-    public String scrape() {
-        return PrometheusRegistryProvider.getPrometheusMeterRegistry().scrape();
+/**
+ * This class is needed to inject context-original PrometheusMeterRegistry.
+ */
+@Configuration
+public class SpringbootPrometheusMeterRegistrySetter {
+
+    @Autowired
+    public void init(PrometheusMeterRegistry registry) {
+        PrometheusRegistryProvider.setPrometheusMeterRegistry(registry);
     }
+
 }

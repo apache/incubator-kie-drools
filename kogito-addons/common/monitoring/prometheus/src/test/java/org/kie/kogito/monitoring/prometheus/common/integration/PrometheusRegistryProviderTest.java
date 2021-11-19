@@ -22,10 +22,16 @@ import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
 import org.kie.kogito.monitoring.prometheus.common.PrometheusRegistryProvider;
 
+import io.micrometer.prometheus.PrometheusConfig;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
+
 public class PrometheusRegistryProviderTest {
 
     @Test
     public void prometheusMetricsAreExported() {
+        PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+        MonitoringRegistry.addRegistry(registry);
+        PrometheusRegistryProvider.setPrometheusMeterRegistry(registry);
         SystemMetricsCollector systemMetricsCollector = new SystemMetricsCollector(KogitoGAV.EMPTY_GAV, MonitoringRegistry.getDefaultMeterRegistry());
         systemMetricsCollector.registerElapsedTimeSampleMetrics("endpoint", 1);
         Assertions.assertTrue(PrometheusRegistryProvider.getPrometheusMeterRegistry().scrape().contains("api_execution_elapsed_seconds"));
