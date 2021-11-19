@@ -5,7 +5,7 @@ let hit = 0;
 let executionId = null;
 let cfResults = [];
 let baseId = 0;
-
+let searchDomains;
 const maxRunningTimeSeconds = 30;
 
 module.exports = (req, res, next) => {
@@ -14,6 +14,9 @@ module.exports = (req, res, next) => {
     if (req.path === '/counterfactuals') {
       const query = req.query;
       if (req.method === 'POST') {
+        searchDomains = req.body.searchDomains.filter(
+          domain => domain.value.fixed === false
+        );
         try {
           return _send.call(
             this,
@@ -35,23 +38,31 @@ module.exports = (req, res, next) => {
         hit++;
         if (hit === 1) {
           for (let i = 0; i < 10; i++) {
-            cfResults.unshift(getResult(query.executionId, baseId, false));
+            cfResults.unshift(
+              getResult(query.executionId, baseId, searchDomains, false)
+            );
             baseId++;
           }
         }
         if (hit === 2) {
           for (let i = 0; i < 15; i++) {
-            cfResults.unshift(getResult(query.executionId, baseId, false));
+            cfResults.unshift(
+              getResult(query.executionId, baseId, searchDomains, false)
+            );
             baseId++;
           }
           cfResults.splice(15 - cfResults.length);
         }
         if (hit === 3) {
           for (let i = 0; i < 8; i++) {
-            cfResults.unshift(getResult(query.executionId, baseId, false));
+            cfResults.unshift(
+              getResult(query.executionId, baseId, searchDomains, false)
+            );
             baseId++;
           }
-          cfResults.unshift(getResult(query.executionId, baseId, true));
+          cfResults.unshift(
+            getResult(query.executionId, baseId, searchDomains, true)
+          );
           cfResults.splice(15 - cfResults.length);
           executionId = null;
         }
@@ -75,7 +86,7 @@ module.exports = (req, res, next) => {
   next();
 };
 
-function getResult(executionId, baseId, isFinal) {
+function getResult(executionId, baseId, searchDomains, isFinal) {
   return {
     ...interim,
     executionId,
@@ -83,25 +94,36 @@ function getResult(executionId, baseId, isFinal) {
     stage: isFinal ? 'FINAL' : 'INTERMEDIATE',
     inputs: inputData
       .find(data => data.executionId === executionId)
-      .inputs.map((input, index) => {
-        if (index === 0) {
+      .inputs.map(input => {
+        if (
+          searchDomains.filter(domain => domain.name === input.name).length > 0
+        ) {
           return {
             ...input,
             value: {
               ...input.value,
-              value: Math.floor(
-                Math.random() *
-                  input.value.value *
-                  0.2 *
-                  (Math.random() > 0.5 ? 1 : -1) +
-                  input.value.value
-              )
+              value: getChangedValue(input)
             }
           };
         }
         return input;
       })
   };
+}
+
+function getChangedValue(input) {
+  switch (input.value.type) {
+    case 'number':
+      return getRandomNumber(input.value.value);
+    case 'boolean':
+      return !input.value.value;
+  }
+}
+function getRandomNumber(originalValue) {
+  return Math.floor(
+    Math.random() * originalValue * 0.2 * (Math.random() > 0.5 ? 1 : -1) +
+      originalValue
+  );
 }
 
 const interim = {

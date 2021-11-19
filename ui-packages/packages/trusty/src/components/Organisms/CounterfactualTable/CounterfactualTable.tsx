@@ -432,8 +432,8 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                                       : ''
                                   }
                                   ${
-                                    value !== row.value &&
-                                    row.value.kind === 'UNIT'
+                                    row.value.kind === 'UNIT' &&
+                                    value !== row.value.originalValue.value
                                       ? 'cf-table__result-value--changed'
                                       : 'cf-table__result-value'
                                   }
@@ -468,7 +468,10 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                             status.executionStatus ===
                               CFExecutionStatus.NOT_STARTED && (
                               <>
-                                <Td className="cf-table__no-result-cell">
+                                <Td
+                                  dataLabel={'Counterfactual Result'}
+                                  className="cf-table__no-result-cell"
+                                >
                                   No available results
                                 </Td>
                               </>

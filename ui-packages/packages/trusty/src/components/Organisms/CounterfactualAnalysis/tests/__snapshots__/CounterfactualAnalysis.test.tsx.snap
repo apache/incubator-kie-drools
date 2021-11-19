@@ -2142,13 +2142,16 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                 </Td>
                                                                 <Td
                                                                   className="cf-table__no-result-cell"
+                                                                  dataLabel="Counterfactual Result"
                                                                 >
                                                                   <TdBase
                                                                     className="cf-table__no-result-cell"
+                                                                    dataLabel="Counterfactual Result"
                                                                     innerRef={null}
                                                                   >
                                                                     <td
                                                                       className="cf-table__no-result-cell"
+                                                                      data-label="Counterfactual Result"
                                                                     >
                                                                       No available results
                                                                     </td>
@@ -2298,13 +2301,16 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                 </Td>
                                                                 <Td
                                                                   className="cf-table__no-result-cell"
+                                                                  dataLabel="Counterfactual Result"
                                                                 >
                                                                   <TdBase
                                                                     className="cf-table__no-result-cell"
+                                                                    dataLabel="Counterfactual Result"
                                                                     innerRef={null}
                                                                   >
                                                                     <td
                                                                       className="cf-table__no-result-cell"
+                                                                      data-label="Counterfactual Result"
                                                                     >
                                                                       No available results
                                                                     </td>
