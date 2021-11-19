@@ -20,7 +20,7 @@ import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.traits.core.factmodel.TripleBasedStruct;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
-import org.drools.core.util.TripleStore;
+import org.drools.traits.core.factmodel.TripleStore;
 
 import java.util.ArrayList;
 import java.util.Collection;

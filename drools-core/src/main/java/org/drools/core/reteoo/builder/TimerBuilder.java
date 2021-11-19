@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo.builder;
 
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.time.impl.BaseTimer;
@@ -36,7 +37,7 @@ public class TimerBuilder
                                  null;
 
         context.setTupleSource( utils.attachNode( context,
-                                context.getComponentFactory().getNodeFactoryService().buildTimerNode( context.getNextNodeId(),
+                CoreComponentFactory.get().getNodeFactoryService().buildTimerNode( context.getNextNodeId(),
                                                                                                       timer,
                                                                                                       context.getRule().getCalendars(),
                                                                                                       declrs,

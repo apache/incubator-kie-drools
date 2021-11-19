@@ -28,15 +28,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.TraitDisabledHelper;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
@@ -102,7 +101,7 @@ public class NamedEntryPoint
         this.handleFactory = this.reteEvaluator.getFactHandleFactory();
 
         RuleBaseConfiguration conf = this.kBase.getConfiguration();
-        this.pctxFactory = conf.getComponentFactory().getPropagationContextFactory();
+        this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
         this.objectStore = isEqualityBehaviour || conf.isMutabilityEnabled() ?
                 new ClassAwareObjectStore( isEqualityBehaviour, this.lock ) :
@@ -724,9 +723,8 @@ public class NamedEntryPoint
         return tms;
     }
 
-    @Override
     public TraitHelper getTraitHelper() {
-        return new TraitDisabledHelper();
+        throw new UnsupportedOperationException("In order to use traits you must add the drools-traits module to your classpath");
     }
 
     public PropagationContextFactory getPctxFactory() {

@@ -44,13 +44,13 @@ import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.traits.compiler.CommonTraitTest;
@@ -197,7 +197,7 @@ public class TraitTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kb );
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
-        TraitFactoryImpl tFactory = (TraitFactoryImpl) kb.getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -394,7 +394,7 @@ public class TraitTest extends CommonTraitTest {
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactoryImpl.setMode(mode, kb );
-        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -473,7 +473,7 @@ public class TraitTest extends CommonTraitTest {
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitFactoryImpl.setMode(mode, kb );
-        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
 
         try {
@@ -601,7 +601,7 @@ public class TraitTest extends CommonTraitTest {
         kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactoryImpl.setMode(mode, kb );
 
-        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -683,7 +683,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         TraitFactoryImpl.setMode(mode, kb );
-        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -806,7 +806,7 @@ public class TraitTest extends CommonTraitTest {
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitFactoryImpl.setMode(mode, kb );
-        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
 
         try {
@@ -869,7 +869,7 @@ public class TraitTest extends CommonTraitTest {
         kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactoryImpl.setMode(mode, kb );
 
-        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -966,7 +966,7 @@ public class TraitTest extends CommonTraitTest {
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactoryImpl.setMode(mode, kb );
-        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -1984,7 +1984,7 @@ public class TraitTest extends CommonTraitTest {
         }
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages(kbuilder.getKnowledgePackages());
-        TraitFactoryImpl traitBuilder = (TraitFactoryImpl) kb.getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl traitBuilder = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
         TraitFactoryImpl.setMode(mode, kb );
 
         try {
@@ -2202,7 +2202,7 @@ public class TraitTest extends CommonTraitTest {
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        TraitRegistryImpl tr = (TraitRegistryImpl) kbase.getConfiguration().getComponentFactory().getTraitRegistry();
+        TraitRegistryImpl tr = (TraitRegistryImpl) RuntimeComponentFactory.get().getTraitRegistry(kbase);
         System.out.println( tr.getHierarchy() );
 
 
@@ -5375,7 +5375,7 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeBase.addPackages( kb2.getKnowledgePackages() );
 
-        HierarchyEncoder<String> hier = ( (KnowledgeBaseImpl) knowledgeBase ).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+        HierarchyEncoder<String> hier = RuntimeComponentFactory.get().getTraitRegistry(knowledgeBase).getHierarchy();
         BitSet b = (BitSet) hier.getCode( "org.drools.test.B" ).clone();
         BitSet c = (BitSet) hier.getCode( "org.drools.test.C" ).clone();
 
@@ -5736,7 +5736,7 @@ public class TraitTest extends CommonTraitTest {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        HierarchyEncoder<String> hier = ( (KnowledgeBaseImpl) kbase ).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+        HierarchyEncoder<String> hier = RuntimeComponentFactory.get().getTraitRegistry(((InternalKnowledgeBase) kbase)).getHierarchy();
         BitSet a = (BitSet) hier.getCode( "org.drools.test.A" ).clone();
         BitSet b = (BitSet) hier.getCode( "org.drools.test.B" ).clone();
         BitSet c = (BitSet) hier.getCode( "org.drools.test.C" ).clone();
@@ -6213,6 +6213,7 @@ public class TraitTest extends CommonTraitTest {
 
         KieHelper helper = new KieHelper();
         KieBase kieBase = helper.addContent( drl, ResourceType.DRL ).getKieContainer().getKieBase();
+        TraitFactoryImpl.setMode(mode, kieBase );
 
         KieSession kSession = kieBase.newKieSession();
         kSession.fireAllRules();

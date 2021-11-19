@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
+import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJob;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;

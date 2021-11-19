@@ -29,7 +29,6 @@ import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -103,8 +102,6 @@ public class BuildContext {
     private boolean                          attachPQN;
     private boolean                          terminated;
 
-    private final KieComponentFactory        componentFactory;
-
     private String                           consequenceName;
 
     public BuildContext(final InternalKnowledgeBase kBase) {
@@ -113,7 +110,6 @@ public class BuildContext {
         this.objectTypeNodeMemoryEnabled = true;
         this.currentEntryPoint = EntryPointId.DEFAULT;
         this.attachPQN = true;
-        this.componentFactory = kBase.getConfiguration().getComponentFactory();
         this.emptyForAllBetaConstraints = false;
     }
 
@@ -423,10 +419,6 @@ public class BuildContext {
 
     void setAttachPQN(final boolean attachPQN) {
         this.attachPQN = attachPQN;
-    }
-
-    public KieComponentFactory getComponentFactory() {
-        return componentFactory;
     }
 
     boolean isTerminated() {

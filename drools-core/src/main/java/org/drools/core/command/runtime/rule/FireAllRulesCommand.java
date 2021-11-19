@@ -21,8 +21,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -98,11 +98,11 @@ public class FireAllRulesCommand implements ExecutableCommand<Integer>, Identifi
         KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
         int fired;
         if ( max != -1 && agendaFilter != null ) {
-            fired = ((StatefulKnowledgeSessionImpl) ksession).fireAllRules( agendaFilter, max );
+            fired = ksession.fireAllRules( agendaFilter, max );
         } else if ( max != -1 ) {
             fired = ksession.fireAllRules( max );
         } else if ( agendaFilter != null ) {
-            fired = ((StatefulKnowledgeSessionImpl) ksession).fireAllRules( agendaFilter );
+            fired = ksession.fireAllRules( agendaFilter );
         } else {
             fired = ksession.fireAllRules();
         }

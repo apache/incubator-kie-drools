@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -52,7 +51,7 @@ public class GetIdCommand
 
     public Long execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        final Long identifier = ((StatefulKnowledgeSessionImpl)ksession).getIdentifier();
+        final Long identifier = ksession.getIdentifier();
 
         if ( this.outIdentifier != null ) {
             ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,

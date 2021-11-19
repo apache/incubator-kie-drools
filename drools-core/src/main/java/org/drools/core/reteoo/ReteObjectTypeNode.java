@@ -40,7 +40,7 @@ public class ReteObjectTypeNode extends ObjectTypeNode {
         // might have already added facts matching this ObjectTypeNode
         // to working memories
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+            PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
             final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION,
                                                                                                null, null, null);
             propagationContext.setEntryPoint( ((EntryPointNode) this.source).getEntryPoint() );

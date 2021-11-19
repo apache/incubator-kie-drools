@@ -23,6 +23,7 @@ import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.rule.Accumulate;
@@ -66,7 +67,7 @@ public class CollectBuilder
 
         // if object source is null, then we need to adapt tuple source into a subnetwork
         if ( context.getObjectSource() == null ) {
-            RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
+            RightInputAdapterNode riaNode = CoreComponentFactory.get().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
                                                                                                                        context.getTupleSource(),
                                                                                                                        tupleSource,
                                                                                                                        context );
@@ -100,7 +101,7 @@ public class CollectBuilder
                                                       sourcePattern.getRequiredDeclarations(),
                                                       new CollectAccumulator( collect, existSubNetwort ) );
 
-        AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextNodeId(),
+        AccumulateNode accNode = CoreComponentFactory.get().getNodeFactoryService().buildAccumulateNode( context.getNextNodeId(),
                                                                                                             context.getTupleSource(),
                                                                                                             context.getObjectSource(),
                                                                                                             resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),

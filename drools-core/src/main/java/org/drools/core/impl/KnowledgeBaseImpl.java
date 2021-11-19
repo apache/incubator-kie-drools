@@ -39,7 +39,6 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
@@ -51,14 +50,15 @@ import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
@@ -72,7 +72,6 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.util.TripleStore;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
@@ -121,18 +120,13 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
 
     private transient ClassLoader rootClassLoader;
 
-    /**
-     * The fact handle factory.
-     */
-    private FactHandleFactory factHandleFactory;
-
     private transient Map<String, Class<?>> globals;
 
     private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<>();
 
     private KieBaseEventSupport eventSupport = new KieBaseEventSupport(this);
 
-    private final transient Set<StatefulKnowledgeSessionImpl> statefulSessions = ConcurrentHashMap.newKeySet();
+    private final transient Set<InternalWorkingMemory> statefulSessions = ConcurrentHashMap.newKeySet();
 
     // lock for entire rulebase, used for dynamic updates
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -144,8 +138,6 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
     private transient Rete rete;
     private ReteooBuilder reteooBuilder;
     private final transient Map<Integer, SegmentMemory.Prototype> segmentProtos = new ConcurrentHashMap<>();
-
-    private KieComponentFactory kieComponentFactory;
 
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
@@ -191,11 +183,6 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         this.globals = new HashMap<>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
-        kieComponentFactory = getConfiguration().getComponentFactory();
-
-        this.factHandleFactory = kieComponentFactory.getFactHandleFactoryService();
-        kieComponentFactory.initTraitFactory(this);
-        kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
 
@@ -313,7 +300,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
     }
 
     public KieSessionsPool newKieSessionsPool( int initialSize) {
-        return new KieSessionsPoolImpl(this, initialSize);
+        return RuntimeComponentFactory.get().createSessionsPool(this, initialSize);
     }
 
     public KieSession newKieSession() {
@@ -324,7 +311,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         return newKieSession(conf, environment, false);
     }
 
-    KieSession newKieSession(KieSessionConfiguration conf, Environment environment, boolean fromPool) {
+    public KieSession newKieSession(KieSessionConfiguration conf, Environment environment, boolean fromPool) {
         // NOTE if you update here, you'll also need to update the JPAService
         if ( conf == null ) {
             conf = getSessionConfiguration();
@@ -342,45 +329,26 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
 
         readLock();
         try {
-            return internalCreateStatefulKnowledgeSession( environment, sessionConfig, fromPool );
+            return (KieSession) RuntimeComponentFactory.get().createStatefulSession(this, environment, sessionConfig, fromPool );
         } finally {
             readUnlock();
         }
     }
 
-    @Override
-    public StatefulKnowledgeSessionImpl createSession(long id, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
-        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) kieComponentFactory.getWorkingMemoryFactory()
-                .createWorkingMemory( id, this, handleFactory, propagationContext, config, agenda, environment );
-        return internalInitSession( config, session );
-    }
-
-    public StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( Environment environment, SessionConfiguration sessionConfig, boolean fromPool ) {
-        if (fromPool || sessionPool == null) {
-            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) kieComponentFactory.getWorkingMemoryFactory()
-                    .createWorkingMemory( nextWorkingMemoryCounter(), this, sessionConfig, environment );
-            return internalInitSession( sessionConfig, session );
-        }
-        return (StatefulKnowledgeSessionImpl) sessionPool.newKieSession( sessionConfig );
-    }
-
-    private StatefulKnowledgeSessionImpl internalInitSession( SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session ) {
-        if ( sessionConfig.isKeepReference() ) {
-            addStatefulSession(session);
-        }
-        return session;
+    public KieSessionsPool getSessionPool() {
+        return sessionPool;
     }
 
     public Collection<? extends KieSession> getKieSessions() {
-        return Collections.unmodifiableSet( statefulSessions );
+        return (Collection<? extends KieSession>) (Object) Collections.unmodifiableSet( statefulSessions );
     }
 
     public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
-        return new StatelessKnowledgeSessionImpl( this, conf );
+        return RuntimeComponentFactory.get().createStatelessSession( this, conf );
     }
 
     public StatelessKieSession newStatelessKieSession() {
-        return new StatelessKnowledgeSessionImpl( this, null );
+        return RuntimeComponentFactory.get().createStatelessSession( this, null );
     }
 
     public Collection<KiePackage> getKiePackages() {
@@ -406,21 +374,19 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         return this.id;
     }
 
-    public void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession) {
+    public void disposeStatefulSession(InternalWorkingMemory statefulSession) {
         this.statefulSessions.remove(statefulSession);
         if (kieContainer != null) {
-            kieContainer.disposeSession( statefulSession );
+            kieContainer.disposeSession( (KieSession) statefulSession );
         }
     }
 
     public FactHandleFactory newFactHandleFactory() {
-        return this.factHandleFactory.newInstance();
+        return RuntimeComponentFactory.get().getFactHandleFactoryService().newInstance();
     }
 
-    public FactHandleFactory newFactHandleFactory(long id,
-                                                  long counter) {
-        return this.factHandleFactory.newInstance(id,
-                                                  counter);
+    public FactHandleFactory newFactHandleFactory(long id, long counter) {
+        return RuntimeComponentFactory.get().getFactHandleFactoryService().newInstance(id, counter);
     }
 
     public Collection<Process> getProcesses() {
@@ -630,7 +596,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
 
             InternalKnowledgePackage pkg = this.pkgs.get( newPkg.getName() );
             if ( pkg == null ) {
-                pkg = kieComponentFactory.createKnowledgePackage(newPkg.getName());
+                pkg = CoreComponentFactory.get().createKnowledgePackage(newPkg.getName());
 
                 // @TODO we really should have a single root cache
                 pkg.setClassFieldAccessorCache( this.classFieldAccessorCache );
@@ -1107,7 +1073,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         this.rete = new Rete( this );
         this.reteooBuilder = new ReteooBuilder( this );
 
-        NodeFactory nodeFactory = kieComponentFactory.getNodeFactoryService();
+        NodeFactory nodeFactory = CoreComponentFactory.get().getNodeFactoryService();
 
         // always add the default entry point
         EntryPointNode epn = nodeFactory.buildEntryPointNode(this.reteooBuilder.getNodeIdsGenerator().getNextId(),
@@ -1411,7 +1377,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         }
     }
 
-    public void addStatefulSession( StatefulKnowledgeSessionImpl wm ) {
+    public void addStatefulSession( InternalWorkingMemory wm ) {
         this.statefulSessions.add( wm );
     }
 
@@ -1479,12 +1445,8 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
         return entryPointIds;
     }
 
-    public TripleStore getTripleStore() {
-        return this.getConfiguration().getComponentFactory().getTripleStore();
-    }
-
     public TraitRegistry getTraitRegistry() {
-        return this.getConfiguration().getComponentFactory().getTraitRegistry();
+        return RuntimeComponentFactory.get().getTraitRegistry(this);
     }
 
     public boolean removeObjectsGeneratedFromResource(Resource resource) {

@@ -16,8 +16,12 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.rule.Accumulate;
@@ -25,9 +29,6 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccumulateBuilder
         implements
@@ -67,7 +68,7 @@ public class AccumulateBuilder
         // if object source is null, then we need to adapt tuple source into a subnetwork
         if ( context.getObjectSource() == null ) {
             // attach right input adapter node to convert tuple source into an object source
-            RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
+            RightInputAdapterNode riaNode = CoreComponentFactory.get().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
                                                                                                                        context.getTupleSource(),
                                                                                                                        tupleSource,
                                                                                                                        context );
@@ -83,7 +84,7 @@ public class AccumulateBuilder
             context.setBetaconstraints( betaConstraints ); // Empty list ensures EmptyBetaConstraints is assigned
         }
 
-        NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
+        NodeFactory nfactory = CoreComponentFactory.get().getNodeFactoryService();
 
         final BetaConstraints resultsBinder = utils.createBetaNodeConstraint( context,
                                                                               resultBetaConstraints,

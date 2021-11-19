@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo.builder;
 
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.RuleConditionElement;
 
@@ -34,7 +35,7 @@ public class EvalBuilder
         context.pushRuleComponent( rce );
 
         context.setTupleSource( utils.attachNode( context,
-                                                  context.getComponentFactory()
+                CoreComponentFactory.get()
                                                          .getNodeFactoryService()
                                                          .buildEvalNode( context.getNextNodeId(),
                                                                          context.getTupleSource(),

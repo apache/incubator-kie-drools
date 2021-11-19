@@ -16,83 +16,42 @@
 
 package org.drools.traits.core.reteoo;
 
-import org.drools.core.base.TraitHelper;
-import org.drools.core.common.InternalWorkingMemoryActions;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.drools.core.common.NamedEntryPointFactory;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassBuilderFactory;
+import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.traits.core.base.TraitHelperImpl;
+import org.drools.runtime.factory.KieComponentFactory;
 import org.drools.traits.core.common.TraitNamedEntryPointFactory;
-import org.drools.traits.core.definitions.impl.TraitKnowledgePackageImpl;
 import org.drools.traits.core.factmodel.TraitClassBuilderFactory;
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
-import org.drools.traits.core.factmodel.TraitProxyImpl;
-import org.drools.traits.core.factmodel.TraitRegistryImpl;
 
 public class TraitKieComponentFactory extends KieComponentFactory {
 
-    private NodeFactory nodeFactory = TraitPhreakNodeFactory.getInstance();
+    private final TraitFactHandleFactory traitFactHandleFactory = new TraitFactHandleFactory();
+
+    private final Map<InternalKnowledgeBase, TraitFactoryImpl> traitFactoryCache = new WeakHashMap<>(new IdentityHashMap<>());
+
+    private final TraitClassBuilderFactory traitClassBuilderFactory = new TraitClassBuilderFactory();
 
     @Override
-    public NodeFactory getNodeFactoryService() {
-        return nodeFactory;
-    }
-
-    public void setNodeFactoryProvider(NodeFactory provider) {
-        nodeFactory = provider;
-    }
-
-    private Class<?> baseTraitProxyClass = TraitProxyImpl.class;
-
-    @Override
-    public Class<?> getBaseTraitProxyClass() {
-        return baseTraitProxyClass;
-    }
-
-    private TraitFactory traitFactory;
-
-    @Override
-    public TraitFactory initTraitFactory(InternalKnowledgeBase knowledgeBase) {
-        if(traitFactory == null) {
-            traitFactory = new TraitFactoryImpl<>(knowledgeBase);
-        }
-        return traitFactory;
+    public TraitFactoryImpl getTraitFactory(InternalKnowledgeBase knowledgeBase) {
+        return traitFactoryCache.computeIfAbsent(knowledgeBase, TraitFactoryImpl::new);
     }
 
     @Override
-    public TraitFactory getTraitFactory() {
-        return traitFactory;
+    public TraitRegistry getTraitRegistry(InternalKnowledgeBase knowledgeBase) {
+        return getTraitFactory(knowledgeBase).getTraitRegistry();
     }
-
-    public void setTraitFactory(TraitFactory tf) {
-        traitFactory = tf;
-    }
-
-    private TraitRegistry traitRegistry;
-
-    @Override
-    public TraitRegistry getTraitRegistry() {
-        if(traitRegistry == null) {
-            traitRegistry = new TraitRegistryImpl();
-        }
-        return traitRegistry;
-    }
-
-    private TraitClassBuilderFactory traitClassBuilderFactory = new TraitClassBuilderFactory();
 
     @Override
     public ClassBuilderFactory getClassBuilderFactory() {
         return traitClassBuilderFactory;
     }
-
-    private TraitFactHandleFactory traitFactHandleFactory = new TraitFactHandleFactory();
 
     @Override
     public FactHandleFactory getFactHandleFactoryService() {
@@ -102,15 +61,5 @@ public class TraitKieComponentFactory extends KieComponentFactory {
     @Override
     public NamedEntryPointFactory getNamedEntryPointFactory() {
         return new TraitNamedEntryPointFactory();
-    }
-
-    @Override
-    public TraitHelper createTraitHelper(InternalWorkingMemoryActions workingMemory, InternalWorkingMemoryEntryPoint nep) {
-        return new TraitHelperImpl(workingMemory, nep);
-    }
-
-    @Override
-    public InternalKnowledgePackage createKnowledgePackage(String name) {
-        return new TraitKnowledgePackageImpl(name);
     }
 }

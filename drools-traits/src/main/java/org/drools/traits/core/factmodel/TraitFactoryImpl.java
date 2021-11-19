@@ -27,28 +27,28 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.KieComponentFactory;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.HierarchyEncoder;
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
 import org.mvel2.asm.Opcodes;
 
-public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable,
-                                                                                                                        TraitFactory {
+public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable, TraitFactory {
 
     private transient InternalKnowledgeBase kBase;
 
     private transient Set<String> runtimeClasses;
 
+    private transient TraitRegistryImpl traitRegistry;
+
+    private TripleStore tripleStore;
+
     public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
-        KieComponentFactory rcf = ((InternalKnowledgeBase) kBase).getConfiguration().getComponentFactory();
-        setMode( newMode, rcf );
+        setMode( newMode, kBase, RuntimeComponentFactory.get() );
     }
 
     public static TraitFactoryImpl getTraitBuilderForKnowledgeBase( KieBase kb ) {
-        return (TraitFactoryImpl) ((InternalKnowledgeBase) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        return (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(((InternalKnowledgeBase) kb));
     }
 
     public TraitFactoryImpl() {
@@ -74,12 +74,11 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
         return kBase.getRootClassLoader();
     }
 
-    protected KieComponentFactory getComponentFactory() {
-        return kBase.getConfiguration().getComponentFactory();
-    }
-
-    protected TraitRegistryImpl getTraitRegistry() {
-        return (TraitRegistryImpl) kBase.getTraitRegistry();
+    public TraitRegistryImpl getTraitRegistry() {
+        if (traitRegistry == null) {
+            traitRegistry = new TraitRegistryImpl();
+        }
+        return traitRegistry;
     }
 
     protected HierarchyEncoder getHierarchyEncoder() {
@@ -88,11 +87,14 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
     }
 
     protected TripleStore getTripleStore() {
-        return kBase.getTripleStore();
+        if (tripleStore == null) {
+            tripleStore = new TripleStore();
+        }
+        return tripleStore;
     }
 
     protected TripleFactory getTripleFactory() {
-        return getComponentFactory().getTripleFactory();
+        return TripleFactoryImpl.INSTANCE;
     }
 
     protected ClassFieldAccessorStore getClassFieldAccessorStore() {
@@ -103,10 +105,6 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
             kBase.getPackagesMap().put(PACKAGE, traitPackage );
         }
         return traitPackage.getClassFieldAccessorStore();
-    }
-
-    public void setRuleBase( InternalKnowledgeBase kBase ) {
-        this.kBase = kBase;
     }
 
     @Override

@@ -24,6 +24,7 @@ import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
@@ -65,7 +66,7 @@ public class TruthMaintenanceSystem {
         this.equalityKeyMap.setComparator( EqualityKeyComparator.getInstance() );
 
 
-        defaultBeliefSystem = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getBeliefSystemFactory().createBeliefSystem(reteEvaluator.getSessionConfiguration().getBeliefSystemType(), ep, this);
+        defaultBeliefSystem = RuntimeComponentFactory.get().getBeliefSystemFactory().createBeliefSystem(reteEvaluator.getSessionConfiguration().getBeliefSystemType(), ep, this);
     }
 
     public ObjectHashMap getEqualityKeyMap() {

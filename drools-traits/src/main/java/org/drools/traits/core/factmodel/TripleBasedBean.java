@@ -16,9 +16,6 @@
 
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleStore;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;

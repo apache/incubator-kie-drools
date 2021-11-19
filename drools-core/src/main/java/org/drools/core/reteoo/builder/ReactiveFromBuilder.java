@@ -15,14 +15,15 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.List;
+
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.rule.From;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
-
-import java.util.List;
 
 public class ReactiveFromBuilder implements ReteooComponentBuilder {
 
@@ -39,7 +40,7 @@ public class ReactiveFromBuilder implements ReteooComponentBuilder {
                                                                context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ) :
                                                                new AlphaNodeFieldConstraint[0];
 
-        ReactiveFromNode node = context.getComponentFactory().getNodeFactoryService()
+        ReactiveFromNode node = CoreComponentFactory.get().getNodeFactoryService()
                                        .buildReactiveFromNode(context.getNextNodeId(),
                                                               from.getDataProvider(),
                                                               context.getTupleSource(),

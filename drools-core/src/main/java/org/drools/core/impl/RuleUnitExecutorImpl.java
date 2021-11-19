@@ -43,6 +43,7 @@ import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FactHandleFactory;
@@ -105,7 +106,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
         ObjectTypeNode otn = defaultEntryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
-            PropagationContextFactory ctxFact = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+            PropagationContextFactory ctxFact = RuntimeComponentFactory.get().getPropagationContextFactory();
             PropagationContext pctx = ctxFact.createPropagationContext( 0, PropagationContext.Type.INSERTION, null,
                     null, handle, defaultEntryPoint.getEntryPoint(), null );
             otn.assertInitialFact( handle, pctx, this );

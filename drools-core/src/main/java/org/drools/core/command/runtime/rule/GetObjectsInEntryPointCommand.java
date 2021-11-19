@@ -19,14 +19,11 @@ package org.drools.core.command.runtime.rule;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -90,18 +87,6 @@ public class GetObjectsInEntryPointCommand
         }
 
         return col;
-    }
-
-    public Collection< ? extends Object > getObjects(StatefulKnowledgeSessionImpl session) {
-        return new ObjectStoreWrapper( session.getObjectStore(),
-                                       null,
-                                       ObjectStoreWrapper.OBJECT );
-    }
-
-    public Collection< ? extends Object > getObjects(StatefulKnowledgeSessionImpl session, ObjectFilter filter) {
-        return new ObjectStoreWrapper( session.getObjectStore(),
-                                       filter,
-                                       ObjectStoreWrapper.OBJECT );
     }
 
     public String toString() {

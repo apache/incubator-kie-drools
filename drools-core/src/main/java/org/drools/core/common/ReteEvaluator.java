@@ -20,14 +20,13 @@ import java.util.Collection;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;
@@ -109,11 +108,7 @@ public interface ReteEvaluator {
     default void endOperation() { }
 
     default KnowledgeHelper createKnowledgeHelper() {
-        return new DefaultKnowledgeHelper( this );
-    }
-
-    default KnowledgeHelper createKnowledgeHelper(Activation activation) {
-        return new DefaultKnowledgeHelper( activation, this );
+        return RuntimeComponentFactory.get().createKnowledgeHelper(this);
     }
 
     FactHandle insert(Object object);

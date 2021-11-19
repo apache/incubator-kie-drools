@@ -592,7 +592,7 @@ public class MVELDialect
         for (String op : analysis.getBoundIdentifiers().getOperators().keySet()) {
             strList.add(op);
             ids.add(op);
-            resolvedInputs.put(op, context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass());
+            resolvedInputs.put(op, context.getConfiguration().getCompilerComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass());
         }
         EvaluatorWrapper[] operators = new EvaluatorWrapper[strList.size()];
         for (int i = 0; i < operators.length; i++) {

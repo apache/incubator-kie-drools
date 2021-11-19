@@ -38,14 +38,15 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssertAction;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
+import org.drools.core.impl.WorkingMemoryReteAssertAction;
+import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.ActivationKey;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.MarshallingHelper;
 import org.drools.core.marshalling.impl.ProcessMarshaller;
 import org.drools.core.marshalling.impl.TupleKey;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.Drools;
@@ -160,7 +161,7 @@ public class PersisterHelper extends MarshallingHelper {
 
         InternalKnowledgeBase kBase = context.getKnowledgeBase();
         if (kBase != null) {
-            TraitFactory traitFactory = kBase.getConfiguration().getComponentFactory().getTraitFactory();
+            TraitFactory traitFactory = RuntimeComponentFactory.get().getTraitFactory(kBase);
             if (traitFactory != null) {
                 writeRuntimeDefinedClasses(traitFactory, context, _header);
             }

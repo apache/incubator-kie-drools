@@ -19,8 +19,6 @@ package org.drools.traits.core.factmodel;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.util.Triple;
-import org.drools.core.util.TripleFactory;
 import org.kie.api.runtime.rule.Variable;
 
 import java.io.Externalizable;

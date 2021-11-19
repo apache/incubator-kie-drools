@@ -25,6 +25,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.EntryPointId;
 
 public class EntryPointsManager {
@@ -56,7 +57,7 @@ public class EntryPointsManager {
     }
 
     public NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id) {
-        return kBase.getConfiguration().getComponentFactory().getNamedEntryPointFactory().createNamedEntryPoint(addedNode, id, reteEvaluator);
+        return RuntimeComponentFactory.get().getNamedEntryPointFactory().createNamedEntryPoint(addedNode, id, reteEvaluator);
     }
 
     public void updateEntryPointsCache() {

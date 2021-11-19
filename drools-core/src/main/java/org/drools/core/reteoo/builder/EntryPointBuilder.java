@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo.builder;
 
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.RuleConditionElement;
@@ -39,7 +40,7 @@ public class EntryPointBuilder
         
         EntryPointNode epn = context.getKnowledgeBase().getRete().getEntryPointNode( entry );
         if( epn == null ) {
-            NodeFactory nFactory = context.getComponentFactory().getNodeFactoryService();
+            NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
             context.setObjectSource( utils.attachNode( context,
                                                        nFactory.buildEntryPointNode( context.getNextNodeId(),
                                                                                      context.getKnowledgeBase().getRete(),

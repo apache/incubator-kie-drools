@@ -28,7 +28,7 @@ import java.util.Properties;
 
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.reteoo.KieComponentFactory;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
@@ -67,7 +67,6 @@ import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.reteoo.KieComponentFactory.createKieComponentFactory;
 import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.MemoryUtil.hasPermGen;
 
@@ -176,8 +175,6 @@ public class RuleBaseConfiguration
 
     private transient ClassLoader classLoader;
 
-    private KieComponentFactory componentFactory;
-
     private int sessionPoolSize;
 
     private static class DefaultRuleBaseConfigurationHolder {
@@ -218,7 +215,6 @@ public class RuleBaseConfiguration
         out.writeObject(eventProcessingMode);
         out.writeBoolean(classLoaderCacheEnabled);
         out.writeBoolean(declarativeAgenda);
-        out.writeObject(componentFactory);
         out.writeInt(sessionPoolSize);
         out.writeBoolean(mutabilityEnabled);
     }
@@ -252,7 +248,6 @@ public class RuleBaseConfiguration
         eventProcessingMode = (EventProcessingOption) in.readObject();
         classLoaderCacheEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
-        componentFactory = (KieComponentFactory) in.readObject();
         sessionPoolSize = in.readInt();
         mutabilityEnabled = in.readBoolean();
     }
@@ -439,8 +434,6 @@ public class RuleBaseConfiguration
     }
     
     private void init(Properties properties) {
-        this.componentFactory = createKieComponentFactory();
-
         this.immutable = false;
 
         this.chainedProperties = ChainedProperties.getChainedProperties( this.classLoader );
@@ -721,7 +714,7 @@ public class RuleBaseConfiguration
     }
 
     public AgendaGroupFactory getAgendaGroupFactory() {
-        return getComponentFactory().getAgendaGroupFactory();
+        return RuntimeComponentFactory.get().getAgendaGroupFactory();
     }
 
     public SequentialAgenda getSequentialAgenda() {
@@ -907,14 +900,6 @@ public class RuleBaseConfiguration
         this.classLoader = ProjectClassLoader.getClassLoader( classLoader,
                                                               getClass(),
                                                               isClassLoaderCacheEnabled());
-    }
-
-    public KieComponentFactory getComponentFactory() {
-        return componentFactory;
-    }
-
-    public void setComponentFactory(KieComponentFactory componentFactory) {
-        this.componentFactory = componentFactory;
     }
 
     /**

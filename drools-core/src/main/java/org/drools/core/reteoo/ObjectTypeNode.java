@@ -37,7 +37,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
+import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;

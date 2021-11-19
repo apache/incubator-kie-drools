@@ -40,18 +40,17 @@ import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.reteoo.KieComponentFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.HierarchyEncoder;
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleStore;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.asm.ClassFieldInspectorImpl;
+import org.kie.api.KieBase;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-public abstract class AbstractTraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes,
-                                                                                                   Externalizable {
+public abstract class AbstractTraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes, Externalizable {
 
     protected VirtualPropertyMode mode = VirtualPropertyMode.MAP;
 
@@ -63,28 +62,29 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
     protected Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<>();
 
+    private final static TraitClassBuilderFactory traitClassBuilderFactory = new TraitClassBuilderFactory();
+
     public AbstractTraitFactory() {
     }
 
-    protected static void setMode(VirtualPropertyMode newMode, KieComponentFactory rcf) {
-        TraitClassBuilderFactory cbf = (TraitClassBuilderFactory) rcf.getClassBuilderFactory();
-        TraitFactoryImpl traitFactory = (TraitFactoryImpl) rcf.getTraitFactory();
+    protected static void setMode(VirtualPropertyMode newMode, KieBase kBase, RuntimeComponentFactory rcf) {
+        TraitFactoryImpl traitFactory = (TraitFactoryImpl) rcf.getTraitFactory(((InternalKnowledgeBase) kBase));
         traitFactory.mode = newMode;
         switch (newMode) {
             case MAP:
-                if (!(cbf.getPropertyWrapperBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
-                    cbf.setPropertyWrapperBuilder(new TraitMapPropertyWrapperClassBuilderImpl());
+                if (!(traitClassBuilderFactory.getPropertyWrapperBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
+                    traitClassBuilderFactory.setPropertyWrapperBuilder(new TraitMapPropertyWrapperClassBuilderImpl());
                 }
-                if (!(cbf.getTraitProxyBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
-                    cbf.setTraitProxyBuilder(new TraitMapProxyClassBuilderImpl());
+                if (!(traitClassBuilderFactory.getTraitProxyBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
+                    traitClassBuilderFactory.setTraitProxyBuilder(new TraitMapProxyClassBuilderImpl());
                 }
                 break;
             case TRIPLES:
-                if (!(cbf.getPropertyWrapperBuilder() instanceof TraitTriplePropertyWrapperClassBuilderImpl)) {
-                    cbf.setPropertyWrapperBuilder(new TraitTriplePropertyWrapperClassBuilderImpl());
+                if (!(traitClassBuilderFactory.getPropertyWrapperBuilder() instanceof TraitTriplePropertyWrapperClassBuilderImpl)) {
+                    traitClassBuilderFactory.setPropertyWrapperBuilder(new TraitTriplePropertyWrapperClassBuilderImpl());
                 }
-                if (!(cbf.getTraitProxyBuilder() instanceof TraitTripleProxyClassBuilderImpl)) {
-                    cbf.setTraitProxyBuilder(new TraitTripleProxyClassBuilderImpl());
+                if (!(traitClassBuilderFactory.getTraitProxyBuilder() instanceof TraitTripleProxyClassBuilderImpl)) {
+                    traitClassBuilderFactory.setTraitProxyBuilder(new TraitTripleProxyClassBuilderImpl());
                 }
                 break;
             default:
@@ -230,9 +230,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         String proxyName = getProxyName(tdef, cdef);
         String wrapperName = getPropertyWrapperName(tdef, cdef);
 
-        KieComponentFactory rcf = getComponentFactory();
-
-        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) rcf.getClassBuilderFactory().getPropertyWrapperBuilder();
+        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) traitClassBuilderFactory.getPropertyWrapperBuilder();
 
         propWrapperBuilder.init(tdef, getTraitRegistry());
         try {
@@ -242,9 +240,9 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             e.printStackTrace();
         }
 
-        TraitProxyClassBuilder proxyBuilder = ((TraitClassBuilderFactory) rcf.getClassBuilderFactory()).getTraitProxyBuilder();
+        TraitProxyClassBuilder proxyBuilder = traitClassBuilderFactory.getTraitProxyBuilder();
 
-        proxyBuilder.init(tdef, rcf.getBaseTraitProxyClass(), getTraitRegistry());
+        proxyBuilder.init(tdef, TraitProxyImpl.class, getTraitRegistry());
         try {
             byte[] proxy = proxyBuilder.buildClass(cdef, getRootClassLoader());
             registerAndLoadTypeDefinition(proxyName, proxy);
@@ -542,8 +540,6 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     protected abstract Class<?> registerAndLoadTypeDefinition(String proxyName, byte[] proxy) throws ClassNotFoundException;
 
     protected abstract ClassLoader getRootClassLoader();
-
-    protected abstract KieComponentFactory getComponentFactory();
 
     protected abstract TraitRegistryImpl getTraitRegistry();
 

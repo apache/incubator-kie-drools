@@ -105,7 +105,7 @@ public class RuleBuildContext extends PackageBuildContext {
             dialect.init(ruleDescr);
         }
 
-        this.compilerFactory = kBuilder.getBuilderConfiguration().getComponentFactory();
+        this.compilerFactory = kBuilder.getBuilderConfiguration().getCompilerComponentFactory();
         this.declarationResolver = new DeclarationScopeResolver(kBuilder.getGlobals(), getPkg());
     }
 

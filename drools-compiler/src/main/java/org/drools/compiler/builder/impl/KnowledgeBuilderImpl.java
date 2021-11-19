@@ -121,6 +121,7 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.DescrResource;
 import org.drools.core.io.impl.ReaderResource;
 import org.drools.core.io.internal.InternalResource;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.JavaDialectRuntimeData;
@@ -968,7 +969,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         InternalKnowledgePackage pkg;
         if (this.kBase == null || (pkg = this.kBase.getPackage(packageDescr.getName())) == null) {
             // there is no rulebase or it does not define this package so define it
-            pkg = configuration.getKieComponentFactory().createKnowledgePackage((packageDescr.getName()));
+            pkg = CoreComponentFactory.get().createKnowledgePackage((packageDescr.getName()));
             pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(this.rootClassLoader));
 
             // if there is a rulebase then add the package.
