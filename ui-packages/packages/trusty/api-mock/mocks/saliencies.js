@@ -14,7 +14,9 @@ const outcomes = [
   '_859bea4f-dfc4-480e-96f2-1a756d54b84b',
   '_d361c79e-8c06-4504-bdb2-d6b90b915166',
   '_ff34378e-fe90-4c58-9f7f-b9ce5767a415',
-  '_1CFF8C35-4EB2-351E-874C-DB27A2A424C0'
+  '_1CFF8C35-4EB2-351E-874C-DB27A2A424C0',
+  '_11145678-9012-3456-7890-123456789012',
+  '_12345678-9012-3456-7890-123456789012'
 ];
 const features = [
   'Monthly Tax Payment',
@@ -45,7 +47,13 @@ outcomes.forEach(item => {
     outcomeId: item,
     featureImportance: []
   };
-  for (let i = 0; i <= features.length - 1; i++) {
+  // simulating an outcome with few features scores that doesn't need
+  // the "complete chart" dialog. The targeted outcome is "Risk Score" from
+  // the decision with the so called twoSimpleOutcomes
+  // ("Mortgage approval" and "Risk score")
+  const featuresCount =
+    item === '_9CFF8C35-4EB3-451E-874C-DB27A5A424C0' ? 4 : features.length - 1;
+  for (let i = 0; i <= featuresCount; i++) {
     const feature = {
       featureName: features[i],
       featureId: faker.random.uuid(),

@@ -58,6 +58,8 @@ const useFeaturesScores = (
                 ? negativeFeatures.slice(negativeFeatures.length - 5)
                 : negativeFeatures)
             ]);
+          } else {
+            setTopFeaturesScoresBySign([]);
           }
         }
       }
