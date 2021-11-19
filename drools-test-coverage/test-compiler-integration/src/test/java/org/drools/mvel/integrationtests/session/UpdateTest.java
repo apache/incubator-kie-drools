@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.mvel.compiler.Address;
+import org.drools.mvel.compiler.Asset;
+import org.drools.mvel.compiler.AssetCard;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.IndexedNumber;
 import org.drools.mvel.compiler.OuterClass;
@@ -507,5 +509,68 @@ public class UpdateTest {
         verify(ael, times(2)).afterMatchFired(any(org.kie.api.event.rule.AfterMatchFiredEvent.class));
         // no cancellations should have happened
         verify(ael, never()).matchCancelled(any(org.kie.api.event.rule.MatchCancelledEvent.class));
+    }
+
+    @Test(timeout = 10000)
+    public void testSwapChild() {
+        // DROOLS-6684
+        final String str = "package org.drools.mvel.compiler;\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "import " + Asset.class.getCanonicalName() + "\n" +
+                           "import " + AssetCard.class.getCanonicalName() + "\n" +
+                           "\n" +
+                           "rule R1\n" +
+                           "    no-loop\n" +
+                           "when\n" +
+                           "    $p : Person(name == \"Mario\") @watch(age)\n" +
+                           "    $as : Asset()\n" +
+                           "    $ac : AssetCard(parent == $as, groupCode != \"A\") \n" +
+                           "then\n" +
+                           "    System.out.println(\"Rule \" + drools.getRule().getName() + \"; \" + $ac);\n" +
+                           "    modify($p){setAge(10)}\n" +
+                           "end\n" +
+                           "\n" +
+                           "rule R2\n" +
+                           "    no-loop\n" +
+                           "when\n" +
+                           "    $p : Person(name == \"Mario\") @watch(age)\n" +
+                           "    $as : Asset()\n" +
+                           "    $ac : AssetCard(parent == $as, groupCode == \"A\") \n" +
+                           "then\n" +
+                           "    System.out.println(\"Rule \" + drools.getRule().getName() + \"; \" + $ac);\n" +
+                           "    modify($p){setAge(10)}\n" +
+                           "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
+
+        Asset asset = new Asset();
+
+        AssetCard assetCard = new AssetCard(1);
+        assetCard.setParent(asset);
+        assetCard.setGroupCode("A");
+        asset.setAssetCard(assetCard);
+
+        Person p = new Person("Mario", 20);
+
+        ksession.insert(asset);
+        FactHandle assetCardFh = ksession.insert(assetCard);
+        ksession.insert(p);
+
+        assertEquals(1, ksession.fireAllRules());
+
+        //----------------------
+
+        AssetCard assetCard2 = new AssetCard(2);
+        assetCard2.setParent(asset);
+        assetCard2.setGroupCode("A");
+        asset.setAssetCard(assetCard2);
+
+        ksession.delete(assetCardFh);
+        ksession.insert(assetCard2);
+
+        assertEquals(1, ksession.fireAllRules());
+
+        ksession.dispose();
     }
 }
