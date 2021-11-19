@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELContextsTest extends BaseFEELTest {
@@ -70,6 +71,7 @@ public class FEELContextsTest extends BaseFEELTest {
                 {"{a:{p:{x:10,y:5}},b : a.p.x*10+a.p.y*10}.b", BigDecimal.valueOf( 150 ), null},
                 {"{a:{p:{x:10,y:5}},b : a.p.y < a.p.x and a.p.x > a.p.y }.b", Boolean.TRUE, null},
                 {"{a:{p:{x:10,y:5}},b : a.p.y < a.p.x or a.p.y <= a.p.x }.b", Boolean.TRUE, null},
+                {"{a: 1, b: 2, a: 3}", null, FEELEvent.Severity.ERROR},
         };
         return addAdditionalParameters(cases, false);
     }

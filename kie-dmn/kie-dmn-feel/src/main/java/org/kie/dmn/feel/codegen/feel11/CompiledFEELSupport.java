@@ -81,6 +81,14 @@ public class CompiledFEELSupport {
         }
 
         public ContextBuilder setEntry(String key, Object value) {
+            if (resultContext == null) {
+                return this;
+            }
+            if (resultContext.containsKey(key)) {
+                evaluationContext.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.DUPLICATE_KEY_CTX, key), null));
+                resultContext = null;
+                return this;
+            }
             resultContext.put(key, value);
             evaluationContext.setValue(key, value);
             return this;
