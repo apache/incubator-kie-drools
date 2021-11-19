@@ -126,7 +126,7 @@ image::KogitoMicroservices/license-validation-dmn-businessrule-data.png[Image of
 Similar to the license validation task, the traffic violation task represents the task of calling a DMN service. The properties that are required to set the DMN service task include `Rule Language`, which must be set as `DMN`. Also, you must set the values for the `Namespace`, `Decision Name`, and `DMN Model Name` properties as defined in the DMN model, such as `TrafficViolation.dmn`. For example, the traffic violations example consists of the following values for the DMN service task (traffic violation task):
 
 * Rule Language: `DMN`
-* Namespace: `https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF`
+* Namespace: `https://kiegroup.org/dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF`
 * Decision Name: `Traffic Violation`
 * DMN Model Name: `Traffic Violation`
 
