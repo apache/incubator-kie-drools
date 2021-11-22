@@ -31,7 +31,7 @@ public class KogitoMongoDBContainer extends MongoDBContainer implements TestReso
 
     public static final String NAME = "mongodb";
     public static final int MONGODB_INTERNAL_PORT = 27018;
-    public static final String DEFAULT_IMAGE = "mongo:4.0.10";
+    public static final String DEFAULT_IMAGE = "mongo:4.4.10";
     public static final String MONGODB_PROPERTY = CONTAINER_NAME_PREFIX + NAME;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoMongoDBContainer.class);

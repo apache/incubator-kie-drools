@@ -35,7 +35,6 @@ public class KogitoOracleSqlContainer extends OracleContainer implements TestRes
     public static final String ORACLE_CONNECTION_URI = "kogito.persistence.oracle.connection.uri";
 
     public KogitoOracleSqlContainer() {
-        super("oracleinanutshell/oracle-xe-11g");
         withLogConsumer(getLogger());
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);

@@ -34,7 +34,7 @@ public class KogitoPostgreSqlContainer extends PostgreSQLContainer<KogitoPostgre
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoPostgreSqlContainer.class);
 
     public KogitoPostgreSqlContainer() {
-        super("postgres:9.6.12");
+        super("postgres:13.4-alpine3.14");
         withLogConsumer(getLogger());
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
