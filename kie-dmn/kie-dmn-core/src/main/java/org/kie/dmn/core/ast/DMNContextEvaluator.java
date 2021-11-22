@@ -19,8 +19,10 @@ package org.kie.dmn.core.ast;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
@@ -75,11 +77,23 @@ public class DMNContextEvaluator
         result.setContext( dmnContext );
 
         try {
+            Set<String> visitedNames = new LinkedHashSet<>();
             for ( ContextEntryDef ed : entries ) {
                 try {
                     String entryVarId = getEntryVarId(ed);
                     String entryExprId = getEntryExprId(ed);
                     DMNRuntimeEventManagerUtils.fireBeforeEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, result );
+                    if (visitedNames.contains(ed.getName())) {
+                        MsgUtil.reportMessage(logger,
+                                              DMNMessage.Severity.ERROR,
+                                              contextDef,
+                                              result,
+                                              null,
+                                              null,
+                                              Msg.DUPLICATE_CONTEXT_ENTRY,
+                                              ed.getName());
+                        return new EvaluatorResultImpl(results, ResultType.FAILURE);
+                    }
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
                     if ( er.getResultType() == ResultType.SUCCESS ) {
                         Object value = er.getResult();
@@ -113,6 +127,7 @@ public class DMNContextEvaluator
                         
                         results.put( ed.getName(), value );
                         dmnContext.set( ed.getName(), value );
+                        visitedNames.add(ed.getName());
                         DMNRuntimeEventManagerUtils.fireAfterEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, value, result );
                     } else {
                         MsgUtil.reportMessage( logger,
