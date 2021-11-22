@@ -460,5 +460,59 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("importing Decision").getResult(), is(new BigDecimal(3)));
     }
+
+    @Test
+    public void testImportAliasedWithDots() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("ComparatorModel.dmn",
+                                                                                       this.getClass(),
+                                                                                       "Import_ComparatorModel_and_alias_with_dots.dmn");
+
+        final DMNModel importedModel = runtime.getModel("https://kiegroup.org/dmn/_33A94A92-E771-4ED3-8C20-A76EA13D6A2E",
+                                                        "ComparatorModel");
+        assertThat(importedModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
+
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_5774C21E-74F2-41D8-9AC6-FE0DAEA5C3DB",
+                                                   "Import_ComparatorModel_and_alias_with_dots");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = runtime.newContext();
+        context.set("A", new BigDecimal(2));
+        context.set("B", new BigDecimal(1));
+
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("Is A Bigger?").getResult(), is(true));
+    }
+
+    @Test
+    public void testImportContainingDotsAndAliasedWithDots() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("ComparatorModelNamedWithDots.dmn",
+                                                                                       this.getClass(),
+                                                                                       "Import_ComparatorModelNamedWithDots_and_alias_with_dots.dmn");
+
+        final DMNModel importedModel = runtime.getModel("https://kiegroup.org/dmn/_F0CCDEC6-F439-421B-8259-87878AC367C9",
+                                                        "ComparatorModelNamedWithDots");
+        assertThat(importedModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
+
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_8DC3A181-D49E-4752-A898-AB04C2B2A856",
+                                                   "Import_ComparatorModelNamedWithDots_and_alias_with_dots");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = runtime.newContext();
+        context.set("A", new BigDecimal(2));
+        context.set("B", new BigDecimal(1));
+
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("Is A Bigger?").getResult(), is(true));
+    }
 }
 
