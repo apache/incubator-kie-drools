@@ -178,7 +178,6 @@
                 <artifactId>hibernate-types-55</artifactId>
                 <version>${version.com.vladmihalcea.hibernate-types-55}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
