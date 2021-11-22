@@ -24,7 +24,7 @@ exports[`ItemDescriptor component tests snapshot testing for buisness key null 1
     </span>
   </Tooltip>
   <div
-    id="kogito-consoles-tooltip-a1e139d5-4e77-48c9-84ae-34578e904e5a"
+    id="kogito-consoles-tooltip-a1e139d5-4e77-48c9-84ae-34578e904e5a-0.5"
   />
 </Fragment>
 `;
@@ -46,7 +46,7 @@ exports[`ItemDescriptor component tests snapshot testing for business key availa
     </span>
   </Tooltip>
   <div
-    id="kogito-consoles-tooltip-a1e139d5-4e77-48c9-84ae-34578e904e5a"
+    id="kogito-consoles-tooltip-a1e139d5-4e77-48c9-84ae-34578e904e5a-0.5"
   />
 </Fragment>
 `;

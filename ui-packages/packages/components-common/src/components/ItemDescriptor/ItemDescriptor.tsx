@@ -39,7 +39,9 @@ const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  const tooltipContainerId = `kogito-consoles-tooltip-${itemDescription.id}`;
+  const tooltipContainerId = `kogito-consoles-tooltip-${
+    itemDescription.id
+  }-${Math.random()}`;
 
   const idStringModifier = (strId: string) => {
     return (

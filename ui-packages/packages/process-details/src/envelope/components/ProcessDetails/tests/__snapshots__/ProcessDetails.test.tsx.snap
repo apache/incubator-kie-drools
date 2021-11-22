@@ -360,7 +360,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                           </Popper>
                         </Tooltip>
                         <div
-                          id="kogito-consoles-tooltip-a1e139d5-4e77-48c9-84ae-34578e904e5a"
+                          id="kogito-consoles-tooltip-a1e139d5-4e77-48c9-84ae-34578e904e5a-0.5"
                         />
                       </ItemDescriptor>
                     </h2>

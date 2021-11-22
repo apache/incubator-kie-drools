@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useImperativeHandle, useState } from 'react';
+import React, { useImperativeHandle, useState } from 'react';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import {
   CodeEditor,
@@ -25,11 +25,13 @@ import {
   PlayIcon,
   RedoIcon,
   SaveIcon,
-  UndoIcon
+  UndoIcon,
+  CopyIcon
 } from '@patternfly/react-icons';
 import { Form } from '../../../api';
 import { useFormDetailsContext } from '../contexts/FormDetailsContext';
 import { ResizableContent } from '../FormDetails/FormDetails';
+import cloneDeep from 'lodash/cloneDeep';
 import '../styles.css';
 
 export interface FormEditorProps {
@@ -37,10 +39,8 @@ export interface FormEditorProps {
   isSource?: boolean;
   isConfig?: boolean;
   formContent: Form;
-  contentChange: Form;
   code: string;
   setFormContent: (formContent: Form) => void;
-  setContentChange: (contentChange: Form) => void;
   saveFormContent: (formContent: Form) => void;
 }
 
@@ -55,8 +55,6 @@ export const FormEditor = React.forwardRef<
       formContent,
       setFormContent,
       saveFormContent,
-      contentChange,
-      setContentChange,
       isSource = false,
       isConfig = false,
       ouiaId,
@@ -95,6 +93,7 @@ export const FormEditor = React.forwardRef<
     };
 
     const editorDidMount = (editor, monaco): void => {
+      /* istanbul ignore else */
       if (isSource && formType.toLowerCase() === 'tsx') {
         monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
           jsx: 'react'
@@ -105,24 +104,26 @@ export const FormEditor = React.forwardRef<
           noSyntaxValidation: false
         });
       }
+      editor.addCommand(
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
+        function() {
+          onSaveForm();
+        }
+      );
       setMonacoEditor(editor);
     };
 
-    const handleChange = (value): void => {
-      if (Object.keys(formContent)[0].length > 0 && isSource) {
-        const temp: Form = formContent;
-        temp.source = value;
-        setContentChange({ ...formContent, ...temp });
-      } else {
-        const temp: Form = formContent;
-        temp.configuration['resources'] = JSON.parse(value);
-        setContentChange({ ...formContent, ...temp });
-      }
-    };
-
     const onExecuteCode = (): void => {
-      appContext.updateContent(contentChange);
-      setFormContent(contentChange);
+      const tempContent: Form = cloneDeep(formContent);
+      const value = monacoEditor.getValue();
+      if (Object.keys(formContent)[0].length > 0 && isSource) {
+        tempContent.source = value;
+      } else {
+        tempContent.configuration['resources'] = JSON.parse(value);
+      }
+      const content = { ...formContent, ...tempContent };
+      appContext.updateContent(content);
+      setFormContent(content);
     };
 
     const onSaveForm = (): void => {
@@ -130,52 +131,60 @@ export const FormEditor = React.forwardRef<
     };
 
     const onUndoChanges = (): void => {
+      /* istanbul ignore else */
       if (monacoEditor !== null) {
         monacoEditor.focus();
-        document.execCommand('undo');
+        monacoEditor.trigger('whatever...', 'undo');
       }
     };
 
     const onRedoChanges = (): void => {
+      /* istanbul ignore else */
       if (monacoEditor !== null) {
         monacoEditor.focus();
-        document.execCommand('redo');
+        monacoEditor.trigger('whatever...', 'redo');
       }
     };
 
-    const isVisible = useCallback(() => {
-      return contentChange && contentChange.source.length > 0;
-    }, [contentChange]);
+    const onCopyCode = (): void => {
+      /* istanbul ignore else */
+      if (monacoEditor !== null) {
+        monacoEditor.focus();
+        monacoEditor.trigger('source', 'editor.action.clipboardCopyAction');
+      }
+    };
 
     const customControl = (
       <>
+        <CodeEditorControl
+          icon={<PlayIcon />}
+          aria-label="Execute form"
+          toolTipText="Execute form"
+          onClick={onExecuteCode}
+        />
+        <CodeEditorControl
+          icon={<UndoIcon />}
+          aria-label="Undo changes"
+          toolTipText="Undo changes"
+          onClick={onUndoChanges}
+        />
+        <CodeEditorControl
+          icon={<RedoIcon />}
+          aria-label="Redo changes"
+          toolTipText="Redo changes"
+          onClick={onRedoChanges}
+        />
+        <CodeEditorControl
+          icon={<CopyIcon />}
+          aria-label="Copy to clipboard"
+          toolTipText="Copy to clipboard"
+          onClick={onCopyCode}
+        />
         <CodeEditorControl
           icon={<SaveIcon />}
           aria-label="Save form"
           toolTipText="Save form"
           onClick={() => onSaveForm()}
-          isVisible={isVisible()}
-        />
-        <CodeEditorControl
-          icon={<PlayIcon className="pf-global--primary-color--100" />}
-          aria-label="Execute form"
-          toolTipText="Execute form"
-          onClick={onExecuteCode}
-          isVisible={isVisible()}
-        />
-        <CodeEditorControl
-          icon={<UndoIcon className="pf-global--primary-color--100" />}
-          aria-label="Undo changes"
-          toolTipText="Undo changes"
-          onClick={onUndoChanges}
-          isVisible={isVisible()}
-        />
-        <CodeEditorControl
-          icon={<RedoIcon className="pf-global--primary-color--100" />}
-          aria-label="Redo changes"
-          toolTipText="Redo changes"
-          onClick={onRedoChanges}
-          isVisible={isVisible()}
         />
       </>
     );
@@ -183,7 +192,6 @@ export const FormEditor = React.forwardRef<
     return (
       <div {...componentOuiaProps(ouiaId, 'form-view', ouiaSafe)}>
         <CodeEditor
-          isCopyEnabled
           isDarkTheme={false}
           isLineNumbersVisible={true}
           isReadOnly={false}
@@ -192,9 +200,8 @@ export const FormEditor = React.forwardRef<
           customControls={customControl}
           code={code}
           language={getFormLanguage()}
-          height="600px"
+          height="700px"
           onEditorDidMount={editorDidMount}
-          onChange={handleChange}
         />
       </div>
     );

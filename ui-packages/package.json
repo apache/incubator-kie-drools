@@ -27,7 +27,7 @@
     "@kogito-apps/management-console": "file:packages/management-console",
     "@kogito-tooling/envelope": "^0.8.6",
     "@kogito-tooling/envelope-bus": "^0.8.6",
-    "@patternfly/react-code-editor": "4.2.92",
+    "@patternfly/react-code-editor": "4.3.22",
     "@patternfly/react-core": "4.135.0",
     "@patternfly/react-icons": "4.11.0",
     "@patternfly/react-styles": "4.11.0",

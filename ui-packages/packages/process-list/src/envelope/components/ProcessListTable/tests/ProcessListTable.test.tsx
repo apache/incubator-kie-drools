@@ -49,6 +49,10 @@ jest.mock('@kogito-apps/components-common', () => ({
   }
 }));
 
+const mockMath = Object.create(global.Math);
+mockMath.random = () => 0.5;
+global.Math = mockMath;
+
 jest.mock('@kogito-apps/management-console-shared', () => ({
   ...jest.requireActual('@kogito-apps/management-console-shared'),
   ProcessInfo: () => {

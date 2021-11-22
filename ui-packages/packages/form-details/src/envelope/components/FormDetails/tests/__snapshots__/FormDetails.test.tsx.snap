@@ -237,6 +237,7 @@ exports[`form details tests render form details - config 1`] = `
                           style={
                             Object {
                               "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                              "padding": "0px",
                             }
                           }
                         />
@@ -262,6 +263,7 @@ exports[`form details tests render form details - config 1`] = `
                             style={
                               Object {
                                 "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                                "padding": "0px",
                               }
                             }
                           />
@@ -284,6 +286,7 @@ exports[`form details tests render form details - config 1`] = `
                           style={
                             Object {
                               "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                              "padding": "0px",
                             }
                           }
                         >
@@ -292,6 +295,7 @@ exports[`form details tests render form details - config 1`] = `
                             style={
                               Object {
                                 "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                                "padding": "0px",
                               }
                             }
                           />
@@ -316,6 +320,7 @@ exports[`form details tests render form details - config 1`] = `
                           style={
                             Object {
                               "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                              "padding": "0px",
                             }
                           }
                         >
@@ -324,7 +329,6 @@ exports[`form details tests render form details - config 1`] = `
   \\"scripts\\": {},
   \\"styles\\": {}
 }"
-                            contentChange={null}
                             formContent={
                               Object {
                                 "configuration": Object {
@@ -344,7 +348,6 @@ exports[`form details tests render form details - config 1`] = `
                             }
                             isConfig={true}
                             saveFormContent={[Function]}
-                            setContentChange={[Function]}
                             setFormContent={[Function]}
                           />
                         </DrawerContentBody>
@@ -370,6 +373,7 @@ exports[`form details tests render form details - config 1`] = `
                             style={
                               Object {
                                 "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                                "padding": "0px",
                               }
                             }
                           >
@@ -378,7 +382,6 @@ exports[`form details tests render form details - config 1`] = `
   \\"scripts\\": {},
   \\"styles\\": {}
 }"
-                              contentChange={null}
                               formContent={
                                 Object {
                                   "configuration": Object {
@@ -398,7 +401,6 @@ exports[`form details tests render form details - config 1`] = `
                               }
                               isConfig={true}
                               saveFormContent={[Function]}
-                              setContentChange={[Function]}
                               setFormContent={[Function]}
                             />
                           </DrawerContentBody>
@@ -421,6 +423,7 @@ exports[`form details tests render form details - config 1`] = `
                           style={
                             Object {
                               "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                              "padding": "0px",
                             }
                           }
                         >
@@ -429,6 +432,7 @@ exports[`form details tests render form details - config 1`] = `
                             style={
                               Object {
                                 "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                                "padding": "0px",
                               }
                             }
                           >
@@ -437,7 +441,6 @@ exports[`form details tests render form details - config 1`] = `
   \\"scripts\\": {},
   \\"styles\\": {}
 }"
-                              contentChange={null}
                               formContent={
                                 Object {
                                   "configuration": Object {
@@ -457,7 +460,6 @@ exports[`form details tests render form details - config 1`] = `
                               }
                               isConfig={true}
                               saveFormContent={[Function]}
-                              setContentChange={[Function]}
                               setFormContent={[Function]}
                             />
                           </div>
@@ -796,12 +798,12 @@ exports[`form details tests render form details - source 1`] = `
                           style={
                             Object {
                               "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                              "padding": "0px",
                             }
                           }
                         >
                           <MockedFormEditor
                             code="html source code"
-                            contentChange={null}
                             formContent={
                               Object {
                                 "configuration": Object {
@@ -822,7 +824,6 @@ exports[`form details tests render form details - source 1`] = `
                             formType="HTML"
                             isSource={true}
                             saveFormContent={[Function]}
-                            setContentChange={[Function]}
                             setFormContent={[Function]}
                           />
                         </DrawerContentBody>
@@ -848,12 +849,12 @@ exports[`form details tests render form details - source 1`] = `
                             style={
                               Object {
                                 "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                                "padding": "0px",
                               }
                             }
                           >
                             <MockedFormEditor
                               code="html source code"
-                              contentChange={null}
                               formContent={
                                 Object {
                                   "configuration": Object {
@@ -874,7 +875,6 @@ exports[`form details tests render form details - source 1`] = `
                               formType="HTML"
                               isSource={true}
                               saveFormContent={[Function]}
-                              setContentChange={[Function]}
                               setFormContent={[Function]}
                             />
                           </DrawerContentBody>
@@ -897,6 +897,7 @@ exports[`form details tests render form details - source 1`] = `
                           style={
                             Object {
                               "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                              "padding": "0px",
                             }
                           }
                         >
@@ -905,12 +906,12 @@ exports[`form details tests render form details - source 1`] = `
                             style={
                               Object {
                                 "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                                "padding": "0px",
                               }
                             }
                           >
                             <MockedFormEditor
                               code="html source code"
-                              contentChange={null}
                               formContent={
                                 Object {
                                   "configuration": Object {
@@ -931,7 +932,6 @@ exports[`form details tests render form details - source 1`] = `
                               formType="HTML"
                               isSource={true}
                               saveFormContent={[Function]}
-                              setContentChange={[Function]}
                               setFormContent={[Function]}
                             />
                           </div>
@@ -956,6 +956,7 @@ exports[`form details tests render form details - source 1`] = `
                           style={
                             Object {
                               "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                              "padding": "0px",
                             }
                           }
                         />
@@ -981,6 +982,7 @@ exports[`form details tests render form details - source 1`] = `
                             style={
                               Object {
                                 "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                                "padding": "0px",
                               }
                             }
                           />
@@ -1003,6 +1005,7 @@ exports[`form details tests render form details - source 1`] = `
                           style={
                             Object {
                               "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                              "padding": "0px",
                             }
                           }
                         >
@@ -1011,6 +1014,7 @@ exports[`form details tests render form details - source 1`] = `
                             style={
                               Object {
                                 "background": "var(--pf-c-page__main-section--BackgroundColor)",
+                                "padding": "0px",
                               }
                             }
                           />

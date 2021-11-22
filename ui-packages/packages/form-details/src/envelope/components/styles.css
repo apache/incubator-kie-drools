@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-.pf-c-code-editor__controls > button:nth-child(2) {
+.pf-c-code-editor__controls > button:nth-child(1) {
     color: #06c !important;
 }
 

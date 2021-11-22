@@ -1,25 +1,545 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FormEditor test Test copy option 1`] = `
+<FormDetailsContextProvider>
+  <ForwardRef
+    code="<React.FC><div><span>1</span></div></React.FC>"
+    formContent={
+      Object {
+        "configuration": Object {
+          "resources": Object {
+            "scripts": Object {},
+            "styles": Object {},
+          },
+          "schema": "json schema",
+        },
+        "formInfo": Object {
+          "lastModified": 2020-07-11T18:30:00.000Z,
+          "name": "form1",
+          "type": "HTML",
+        },
+        "source": "<div><span>1</span></div>",
+      }
+    }
+    formType="tsx"
+    isSource={true}
+    saveFormContent={[MockFunction]}
+    setFormContent={[MockFunction]}
+  >
+    <div
+      data-ouia-component-type="form-view"
+      data-ouia-safe={true}
+    >
+      <CodeEditor
+        code="<React.FC><div><span>1</span></div></React.FC>"
+        customControls={
+          <React.Fragment>
+            <CodeEditorControl
+              aria-label="Execute form"
+              icon={
+                <PlayIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Execute form"
+            />
+            <CodeEditorControl
+              aria-label="Undo changes"
+              icon={
+                <UndoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Undo changes"
+            />
+            <CodeEditorControl
+              aria-label="Redo changes"
+              icon={
+                <RedoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Redo changes"
+            />
+            <CodeEditorControl
+              aria-label="Copy to clipboard"
+              icon={
+                <CopyIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Copy to clipboard"
+            />
+            <CodeEditorControl
+              aria-label="Save form"
+              icon={
+                <SaveIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Save form"
+            />
+          </React.Fragment>
+        }
+        height="700px"
+        isDarkTheme={false}
+        isLanguageLabelVisible={true}
+        isLineNumbersVisible={true}
+        isMinimapVisible={false}
+        isReadOnly={false}
+        language="typescript"
+        onEditorDidMount={[Function]}
+      >
+        <MockedComponent />
+      </CodeEditor>
+    </div>
+  </ForwardRef>
+</FormDetailsContextProvider>
+`;
+
+exports[`FormEditor test Test execute option - configuration 1`] = `
+<FormDetailsContextProvider>
+  <ForwardRef
+    code="<React.FC><div><span>1</span></div></React.FC>"
+    formContent={
+      Object {
+        "configuration": Object {
+          "resources": Object {
+            "scripts": Object {},
+            "styles": Object {},
+          },
+          "schema": "json schema",
+        },
+        "formInfo": Object {
+          "lastModified": 2020-07-11T18:30:00.000Z,
+          "name": "form1",
+          "type": "HTML",
+        },
+        "source": "<div><span>1</span></div>",
+      }
+    }
+    formType="tsx"
+    isSource={false}
+    saveFormContent={[MockFunction]}
+    setFormContent={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "configuration": Object {
+                "resources": Object {
+                  "scripts": Object {
+                    "bootstrap.min.js": "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js",
+                    "jquery.js": "https://code.jquery.com/jquery-3.2.1.slim.min.js",
+                    "popper.js": "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js",
+                  },
+                  "styles": Object {
+                    "bootstrap.min.css": " https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
+                  },
+                },
+                "schema": "json schema",
+              },
+              "formInfo": Object {
+                "lastModified": 2020-07-11T18:30:00.000Z,
+                "name": "form1",
+                "type": "HTML",
+              },
+              "source": "<div><span>1</span></div>",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
+  >
+    <div
+      data-ouia-component-type="form-view"
+      data-ouia-safe={true}
+    >
+      <CodeEditor
+        code="<React.FC><div><span>1</span></div></React.FC>"
+        customControls={
+          <React.Fragment>
+            <CodeEditorControl
+              aria-label="Execute form"
+              icon={
+                <PlayIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Execute form"
+            />
+            <CodeEditorControl
+              aria-label="Undo changes"
+              icon={
+                <UndoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Undo changes"
+            />
+            <CodeEditorControl
+              aria-label="Redo changes"
+              icon={
+                <RedoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Redo changes"
+            />
+            <CodeEditorControl
+              aria-label="Copy to clipboard"
+              icon={
+                <CopyIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Copy to clipboard"
+            />
+            <CodeEditorControl
+              aria-label="Save form"
+              icon={
+                <SaveIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Save form"
+            />
+          </React.Fragment>
+        }
+        height="700px"
+        isDarkTheme={false}
+        isLanguageLabelVisible={true}
+        isLineNumbersVisible={true}
+        isMinimapVisible={false}
+        isReadOnly={false}
+        onEditorDidMount={[Function]}
+      >
+        <MockedComponent />
+      </CodeEditor>
+    </div>
+  </ForwardRef>
+</FormDetailsContextProvider>
+`;
+
+exports[`FormEditor test Test execute option - source content 1`] = `
+<FormDetailsContextProvider>
+  <ForwardRef
+    code="<React.FC><div><span>1</span></div></React.FC>"
+    formContent={
+      Object {
+        "configuration": Object {
+          "resources": Object {
+            "scripts": Object {},
+            "styles": Object {},
+          },
+          "schema": "json schema",
+        },
+        "formInfo": Object {
+          "lastModified": 2020-07-11T18:30:00.000Z,
+          "name": "form1",
+          "type": "HTML",
+        },
+        "source": "<div><span>1</span></div>",
+      }
+    }
+    formType="tsx"
+    isSource={true}
+    saveFormContent={[MockFunction]}
+    setFormContent={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "configuration": Object {
+                "resources": Object {
+                  "scripts": Object {},
+                  "styles": Object {},
+                },
+                "schema": "json schema",
+              },
+              "formInfo": Object {
+                "lastModified": 2020-07-11T18:30:00.000Z,
+                "name": "form1",
+                "type": "HTML",
+              },
+              "source": "<React.FC><div><span>2</span></div></React.FC>",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
+  >
+    <div
+      data-ouia-component-type="form-view"
+      data-ouia-safe={true}
+    >
+      <CodeEditor
+        code="<React.FC><div><span>1</span></div></React.FC>"
+        customControls={
+          <React.Fragment>
+            <CodeEditorControl
+              aria-label="Execute form"
+              icon={
+                <PlayIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Execute form"
+            />
+            <CodeEditorControl
+              aria-label="Undo changes"
+              icon={
+                <UndoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Undo changes"
+            />
+            <CodeEditorControl
+              aria-label="Redo changes"
+              icon={
+                <RedoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Redo changes"
+            />
+            <CodeEditorControl
+              aria-label="Copy to clipboard"
+              icon={
+                <CopyIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Copy to clipboard"
+            />
+            <CodeEditorControl
+              aria-label="Save form"
+              icon={
+                <SaveIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Save form"
+            />
+          </React.Fragment>
+        }
+        height="700px"
+        isDarkTheme={false}
+        isLanguageLabelVisible={true}
+        isLineNumbersVisible={true}
+        isMinimapVisible={false}
+        isReadOnly={false}
+        language="typescript"
+        onEditorDidMount={[Function]}
+      >
+        <MockedComponent />
+      </CodeEditor>
+    </div>
+  </ForwardRef>
+</FormDetailsContextProvider>
+`;
+
+exports[`FormEditor test Test save option 1`] = `
+<FormDetailsContextProvider>
+  <ForwardRef
+    code="<React.FC><div><span>1</span></div></React.FC>"
+    formContent={
+      Object {
+        "configuration": Object {
+          "resources": Object {
+            "scripts": Object {},
+            "styles": Object {},
+          },
+          "schema": "json schema",
+        },
+        "formInfo": Object {
+          "lastModified": 2020-07-11T18:30:00.000Z,
+          "name": "form1",
+          "type": "HTML",
+        },
+        "source": "<div><span>1</span></div>",
+      }
+    }
+    formType="tsx"
+    isSource={true}
+    saveFormContent={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "configuration": Object {
+                "resources": Object {
+                  "scripts": Object {},
+                  "styles": Object {},
+                },
+                "schema": "json schema",
+              },
+              "formInfo": Object {
+                "lastModified": 2020-07-11T18:30:00.000Z,
+                "name": "form1",
+                "type": "HTML",
+              },
+              "source": "<div><span>1</span></div>",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    setFormContent={[MockFunction]}
+  >
+    <div
+      data-ouia-component-type="form-view"
+      data-ouia-safe={true}
+    >
+      <CodeEditor
+        code="<React.FC><div><span>1</span></div></React.FC>"
+        customControls={
+          <React.Fragment>
+            <CodeEditorControl
+              aria-label="Execute form"
+              icon={
+                <PlayIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Execute form"
+            />
+            <CodeEditorControl
+              aria-label="Undo changes"
+              icon={
+                <UndoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Undo changes"
+            />
+            <CodeEditorControl
+              aria-label="Redo changes"
+              icon={
+                <RedoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Redo changes"
+            />
+            <CodeEditorControl
+              aria-label="Copy to clipboard"
+              icon={
+                <CopyIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Copy to clipboard"
+            />
+            <CodeEditorControl
+              aria-label="Save form"
+              icon={
+                <SaveIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Save form"
+            />
+          </React.Fragment>
+        }
+        height="700px"
+        isDarkTheme={false}
+        isLanguageLabelVisible={true}
+        isLineNumbersVisible={true}
+        isMinimapVisible={false}
+        isReadOnly={false}
+        language="typescript"
+        onEditorDidMount={[Function]}
+      >
+        <MockedComponent />
+      </CodeEditor>
+    </div>
+  </ForwardRef>
+</FormDetailsContextProvider>
+`;
+
 exports[`FormEditor test call refresh 1`] = `
 <ForwardRef
   code="{\\"1\\":\\"1\\",\\"2\\":\\"2\\"}"
-  contentChange={
-    Object {
-      "configuration": Object {
-        "resources": Object {
-          "scripts": Object {},
-          "styles": Object {},
-        },
-        "schema": "json schema",
-      },
-      "formInfo": Object {
-        "lastModified": 2020-07-11T18:30:00.000Z,
-        "name": "form1",
-        "type": "HTML",
-      },
-      "source": "<div><span>1</span><span>2</span></div>",
-    }
-  }
   formContent={
     Object {
       "configuration": Object {
@@ -39,7 +559,6 @@ exports[`FormEditor test call refresh 1`] = `
   }
   isConfig={true}
   saveFormContent={[MockFunction]}
-  setContentChange={[MockFunction]}
   setFormContent={[MockFunction]}
 >
   <div
@@ -51,6 +570,54 @@ exports[`FormEditor test call refresh 1`] = `
       customControls={
         <React.Fragment>
           <CodeEditorControl
+            aria-label="Execute form"
+            icon={
+              <PlayIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Execute form"
+          />
+          <CodeEditorControl
+            aria-label="Undo changes"
+            icon={
+              <UndoIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Undo changes"
+          />
+          <CodeEditorControl
+            aria-label="Redo changes"
+            icon={
+              <RedoIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Redo changes"
+          />
+          <CodeEditorControl
+            aria-label="Copy to clipboard"
+            icon={
+              <CopyIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Copy to clipboard"
+          />
+          <CodeEditorControl
             aria-label="Save form"
             icon={
               <SaveIcon
@@ -59,63 +626,18 @@ exports[`FormEditor test call refresh 1`] = `
                 size="sm"
               />
             }
-            isVisible={true}
             onClick={[Function]}
             toolTipText="Save form"
           />
-          <CodeEditorControl
-            aria-label="Execute form"
-            icon={
-              <PlayIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Execute form"
-          />
-          <CodeEditorControl
-            aria-label="Undo changes"
-            icon={
-              <UndoIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Undo changes"
-          />
-          <CodeEditorControl
-            aria-label="Redo changes"
-            icon={
-              <RedoIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Redo changes"
-          />
         </React.Fragment>
       }
-      height="600px"
-      isCopyEnabled={true}
+      height="700px"
       isDarkTheme={false}
       isLanguageLabelVisible={true}
       isLineNumbersVisible={true}
       isMinimapVisible={false}
       isReadOnly={false}
       language="json"
-      onChange={[Function]}
       onEditorDidMount={[Function]}
     >
       <MockedComponent />
@@ -127,23 +649,6 @@ exports[`FormEditor test call refresh 1`] = `
 exports[`FormEditor test render config 1`] = `
 <ForwardRef
   code="{\\"1\\":\\"1\\",\\"2\\":\\"2\\"}"
-  contentChange={
-    Object {
-      "configuration": Object {
-        "resources": Object {
-          "scripts": Object {},
-          "styles": Object {},
-        },
-        "schema": "json schema",
-      },
-      "formInfo": Object {
-        "lastModified": 2020-07-11T18:30:00.000Z,
-        "name": "form1",
-        "type": "HTML",
-      },
-      "source": "<div><span>1</span><span>2</span></div>",
-    }
-  }
   formContent={
     Object {
       "configuration": Object {
@@ -163,7 +668,6 @@ exports[`FormEditor test render config 1`] = `
   }
   isConfig={true}
   saveFormContent={[MockFunction]}
-  setContentChange={[MockFunction]}
   setFormContent={[MockFunction]}
 >
   <div
@@ -175,6 +679,54 @@ exports[`FormEditor test render config 1`] = `
       customControls={
         <React.Fragment>
           <CodeEditorControl
+            aria-label="Execute form"
+            icon={
+              <PlayIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Execute form"
+          />
+          <CodeEditorControl
+            aria-label="Undo changes"
+            icon={
+              <UndoIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Undo changes"
+          />
+          <CodeEditorControl
+            aria-label="Redo changes"
+            icon={
+              <RedoIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Redo changes"
+          />
+          <CodeEditorControl
+            aria-label="Copy to clipboard"
+            icon={
+              <CopyIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Copy to clipboard"
+          />
+          <CodeEditorControl
             aria-label="Save form"
             icon={
               <SaveIcon
@@ -183,63 +735,18 @@ exports[`FormEditor test render config 1`] = `
                 size="sm"
               />
             }
-            isVisible={true}
             onClick={[Function]}
             toolTipText="Save form"
           />
-          <CodeEditorControl
-            aria-label="Execute form"
-            icon={
-              <PlayIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Execute form"
-          />
-          <CodeEditorControl
-            aria-label="Undo changes"
-            icon={
-              <UndoIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Undo changes"
-          />
-          <CodeEditorControl
-            aria-label="Redo changes"
-            icon={
-              <RedoIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Redo changes"
-          />
         </React.Fragment>
       }
-      height="600px"
-      isCopyEnabled={true}
+      height="700px"
       isDarkTheme={false}
       isLanguageLabelVisible={true}
       isLineNumbersVisible={true}
       isMinimapVisible={false}
       isReadOnly={false}
       language="json"
-      onChange={[Function]}
       onEditorDidMount={[Function]}
     >
       <MockedComponent />
@@ -251,23 +758,6 @@ exports[`FormEditor test render config 1`] = `
 exports[`FormEditor test render source - html 1`] = `
 <ForwardRef
   code="<div><span>1</span></div>"
-  contentChange={
-    Object {
-      "configuration": Object {
-        "resources": Object {
-          "scripts": Object {},
-          "styles": Object {},
-        },
-        "schema": "json schema",
-      },
-      "formInfo": Object {
-        "lastModified": 2020-07-11T18:30:00.000Z,
-        "name": "form1",
-        "type": "HTML",
-      },
-      "source": "<div><span>1</span><span>2</span></div>",
-    }
-  }
   formContent={
     Object {
       "configuration": Object {
@@ -288,7 +778,6 @@ exports[`FormEditor test render source - html 1`] = `
   formType="html"
   isSource={true}
   saveFormContent={[MockFunction]}
-  setContentChange={[MockFunction]}
   setFormContent={[MockFunction]}
 >
   <div
@@ -300,6 +789,54 @@ exports[`FormEditor test render source - html 1`] = `
       customControls={
         <React.Fragment>
           <CodeEditorControl
+            aria-label="Execute form"
+            icon={
+              <PlayIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Execute form"
+          />
+          <CodeEditorControl
+            aria-label="Undo changes"
+            icon={
+              <UndoIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Undo changes"
+          />
+          <CodeEditorControl
+            aria-label="Redo changes"
+            icon={
+              <RedoIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Redo changes"
+          />
+          <CodeEditorControl
+            aria-label="Copy to clipboard"
+            icon={
+              <CopyIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            onClick={[Function]}
+            toolTipText="Copy to clipboard"
+          />
+          <CodeEditorControl
             aria-label="Save form"
             icon={
               <SaveIcon
@@ -308,63 +845,18 @@ exports[`FormEditor test render source - html 1`] = `
                 size="sm"
               />
             }
-            isVisible={true}
             onClick={[Function]}
             toolTipText="Save form"
           />
-          <CodeEditorControl
-            aria-label="Execute form"
-            icon={
-              <PlayIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Execute form"
-          />
-          <CodeEditorControl
-            aria-label="Undo changes"
-            icon={
-              <UndoIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Undo changes"
-          />
-          <CodeEditorControl
-            aria-label="Redo changes"
-            icon={
-              <RedoIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Redo changes"
-          />
         </React.Fragment>
       }
-      height="600px"
-      isCopyEnabled={true}
+      height="700px"
       isDarkTheme={false}
       isLanguageLabelVisible={true}
       isLineNumbersVisible={true}
       isMinimapVisible={false}
       isReadOnly={false}
       language="html"
-      onChange={[Function]}
       onEditorDidMount={[Function]}
     >
       <MockedComponent />
@@ -374,126 +866,113 @@ exports[`FormEditor test render source - html 1`] = `
 `;
 
 exports[`FormEditor test render source - tsx 1`] = `
-<ForwardRef
-  code="<React.FC><div><span>1</span></div></React.FC>"
-  contentChange={
-    Object {
-      "configuration": Object {
-        "resources": Object {
-          "scripts": Object {},
-          "styles": Object {},
+<FormDetailsContextProvider>
+  <ForwardRef
+    code="<React.FC><div><span>1</span></div></React.FC>"
+    formContent={
+      Object {
+        "configuration": Object {
+          "resources": Object {
+            "scripts": Object {},
+            "styles": Object {},
+          },
+          "schema": "json schema",
         },
-        "schema": "json schema",
-      },
-      "formInfo": Object {
-        "lastModified": 2020-07-11T18:30:00.000Z,
-        "name": "form1",
-        "type": "HTML",
-      },
-      "source": "<div><span>1</span><span>2</span></div>",
-    }
-  }
-  formContent={
-    Object {
-      "configuration": Object {
-        "resources": Object {
-          "scripts": Object {},
-          "styles": Object {},
+        "formInfo": Object {
+          "lastModified": 2020-07-11T18:30:00.000Z,
+          "name": "form1",
+          "type": "HTML",
         },
-        "schema": "json schema",
-      },
-      "formInfo": Object {
-        "lastModified": 2020-07-11T18:30:00.000Z,
-        "name": "form1",
-        "type": "HTML",
-      },
-      "source": "<div><span>1</span></div>",
-    }
-  }
-  formType="tsx"
-  isSource={true}
-  saveFormContent={[MockFunction]}
-  setContentChange={[MockFunction]}
-  setFormContent={[MockFunction]}
->
-  <div
-    data-ouia-component-type="form-view"
-    data-ouia-safe={true}
-  >
-    <CodeEditor
-      code="<React.FC><div><span>1</span></div></React.FC>"
-      customControls={
-        <React.Fragment>
-          <CodeEditorControl
-            aria-label="Save form"
-            icon={
-              <SaveIcon
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Save form"
-          />
-          <CodeEditorControl
-            aria-label="Execute form"
-            icon={
-              <PlayIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Execute form"
-          />
-          <CodeEditorControl
-            aria-label="Undo changes"
-            icon={
-              <UndoIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Undo changes"
-          />
-          <CodeEditorControl
-            aria-label="Redo changes"
-            icon={
-              <RedoIcon
-                className="pf-global--primary-color--100"
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            }
-            isVisible={true}
-            onClick={[Function]}
-            toolTipText="Redo changes"
-          />
-        </React.Fragment>
+        "source": "<div><span>1</span></div>",
       }
-      height="600px"
-      isCopyEnabled={true}
-      isDarkTheme={false}
-      isLanguageLabelVisible={true}
-      isLineNumbersVisible={true}
-      isMinimapVisible={false}
-      isReadOnly={false}
-      language="typescript"
-      onChange={[Function]}
-      onEditorDidMount={[Function]}
+    }
+    formType="tsx"
+    isSource={true}
+    saveFormContent={[MockFunction]}
+    setFormContent={[MockFunction]}
+  >
+    <div
+      data-ouia-component-type="form-view"
+      data-ouia-safe={true}
     >
-      <MockedComponent />
-    </CodeEditor>
-  </div>
-</ForwardRef>
+      <CodeEditor
+        code="<React.FC><div><span>1</span></div></React.FC>"
+        customControls={
+          <React.Fragment>
+            <CodeEditorControl
+              aria-label="Execute form"
+              icon={
+                <PlayIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Execute form"
+            />
+            <CodeEditorControl
+              aria-label="Undo changes"
+              icon={
+                <UndoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Undo changes"
+            />
+            <CodeEditorControl
+              aria-label="Redo changes"
+              icon={
+                <RedoIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Redo changes"
+            />
+            <CodeEditorControl
+              aria-label="Copy to clipboard"
+              icon={
+                <CopyIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Copy to clipboard"
+            />
+            <CodeEditorControl
+              aria-label="Save form"
+              icon={
+                <SaveIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              onClick={[Function]}
+              toolTipText="Save form"
+            />
+          </React.Fragment>
+        }
+        height="700px"
+        isDarkTheme={false}
+        isLanguageLabelVisible={true}
+        isLineNumbersVisible={true}
+        isMinimapVisible={false}
+        isReadOnly={false}
+        language="typescript"
+        onEditorDidMount={[Function]}
+      >
+        <MockedComponent />
+      </CodeEditor>
+    </div>
+  </ForwardRef>
+</FormDetailsContextProvider>
 `;

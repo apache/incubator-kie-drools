@@ -157,7 +157,7 @@ exports[`TaskDescription test Render task description with task des 1`] = `
           </Popper>
         </Tooltip>
         <div
-          id="kogito-consoles-tooltip-45a73767-5da3-49bf-9c40-d533c3e77ef3"
+          id="kogito-consoles-tooltip-45a73767-5da3-49bf-9c40-d533c3e77ef3-0.5"
         />
       </ItemDescriptor>
     </strong>

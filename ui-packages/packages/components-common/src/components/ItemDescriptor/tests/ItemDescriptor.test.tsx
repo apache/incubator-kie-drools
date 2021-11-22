@@ -28,6 +28,10 @@ const item2 = {
   id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
   name: 'HotelBooking'
 };
+
+const mockMath = Object.create(global.Math);
+mockMath.random = () => 0.5;
+global.Math = mockMath;
 describe('ItemDescriptor component tests', () => {
   it('snapshot testing for business key available', () => {
     const wrapper = shallow(<ItemDescriptor itemDescription={item1} />);

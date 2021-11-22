@@ -39,6 +39,9 @@ jest.mock('../../ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger');
 
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 
+const mockMath = Object.create(global.Math);
+mockMath.random = () => 0.5;
+global.Math = mockMath;
 describe('ProcessDetails tests', () => {
   describe('ProcessDetails tests with success results', () => {
     const data: ProcessInstance = {

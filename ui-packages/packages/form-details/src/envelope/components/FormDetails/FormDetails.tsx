@@ -54,7 +54,6 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [formContent, setFormContent] = useState<Form>(null);
-  const [contentChange, setContentChange] = useState<Form>(null);
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const editorResize = useRef<ResizableContent>();
@@ -148,6 +147,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
               >
                 <DrawerContentBody
                   style={{
+                    padding: '0px',
                     background:
                       'var(--pf-c-page__main-section--BackgroundColor)'
                   }}
@@ -157,8 +157,6 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                       code={getSource()}
                       formContent={formContent}
                       setFormContent={setFormContent}
-                      contentChange={contentChange}
-                      setContentChange={setContentChange}
                       saveFormContent={saveForm}
                       isSource
                       formType={getType()}
@@ -175,6 +173,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
               >
                 <DrawerContentBody
                   style={{
+                    padding: '0px',
                     background:
                       'var(--pf-c-page__main-section--BackgroundColor)'
                   }}
@@ -184,8 +183,6 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                       code={getConfig()}
                       formContent={formContent}
                       setFormContent={setFormContent}
-                      contentChange={contentChange}
-                      setContentChange={setContentChange}
                       saveFormContent={saveForm}
                       isConfig
                       ref={editorResize}

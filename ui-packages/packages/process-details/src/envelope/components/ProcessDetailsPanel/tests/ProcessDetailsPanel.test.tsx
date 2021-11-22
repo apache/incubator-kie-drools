@@ -27,6 +27,11 @@ Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 const driver = new TestProcessDetailsDriver(
   '2d962eef-45b8-48a9-ad4e-9cde0ad6af89'
 );
+
+const mockMath = Object.create(global.Math);
+mockMath.random = () => 0.5;
+global.Math = mockMath;
+
 const processInstance1: ProcessInstance = {
   id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af89',
   processId: '',
