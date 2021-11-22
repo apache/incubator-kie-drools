@@ -265,9 +265,12 @@ powerExpression
     ;
 
 filterPathExpression
+@init {
+    int count = 0;
+}
     :   unaryExpression
     |   n0=filterPathExpression LBRACK {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} RBRACK
-    |   n1=filterPathExpression DOT {helper.asd($n1.ctx, this); helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();}
+    |   n1=filterPathExpression DOT {count = helper.fphStart($n1.ctx, this); helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution(); helper.fphEnd(count);}
     ;
 
 unaryExpression
