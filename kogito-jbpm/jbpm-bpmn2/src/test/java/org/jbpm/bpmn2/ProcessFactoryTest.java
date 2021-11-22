@@ -33,9 +33,13 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.bpmn2.BpmnProcess;
+import org.kie.kogito.process.bpmn2.BpmnProcesses;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.ruleflow.core.Metadata.CANCEL_ACTIVITY;
@@ -49,6 +53,8 @@ import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
@@ -409,7 +415,9 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
         final RuleFlowProcess process = factory.validate().getProcess();
 
-        final LightProcessRuntime processRuntime = LightProcessRuntime.of(null, Collections.singletonList(process), new LightProcessRuntimeServiceProvider());
+        Application application = mock(Application.class);
+        when(application.get(Processes.class)).thenReturn(new BpmnProcesses().addProcess(new BpmnProcess(process)));
+        final LightProcessRuntime processRuntime = LightProcessRuntime.of(application, Collections.singletonList(process), new LightProcessRuntimeServiceProvider());
 
         processRuntime.getKogitoWorkItemManager().registerWorkItemHandler(task, new ExceptionOnPurposeHandler());
 

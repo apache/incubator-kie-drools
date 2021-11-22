@@ -30,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobNotFoundException;
 import org.mockito.ArgumentCaptor;
@@ -112,7 +113,7 @@ public class VertxJobsServiceTest {
     void testScheduleProcessInstanceJob(@Mock HttpRequest<Buffer> request) {
         when(webClient.post(anyString())).thenReturn(request);
 
-        ProcessInstanceJobDescription processInstanceJobDescription = ProcessInstanceJobDescription.of(123,
+        ProcessInstanceJobDescription processInstanceJobDescription = ProcessInstanceJobDescription.of(new TimerJobId(123l),
                 ExactExpirationTime.now(),
                 "processInstanceId",
                 "processId");

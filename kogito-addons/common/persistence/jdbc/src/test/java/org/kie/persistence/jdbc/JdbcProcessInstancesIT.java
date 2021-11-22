@@ -44,7 +44,7 @@ class JdbcProcessInstancesIT extends TestHelper {
     @MethodSource("datasources")
     void testBasicTaskFlow(DataSource dataSource) {
         var factory = new TestProcessInstancesFactory(dataSource, false);
-        BpmnProcess process = createProcess(factory, null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
                 .singletonMap("test", "test")));
         processInstance.start();
@@ -80,7 +80,7 @@ class JdbcProcessInstancesIT extends TestHelper {
     @MethodSource("datasources")
     void testBasicFlow(DataSource dataSource) {
         var factory = new TestProcessInstancesFactory(dataSource, false);
-        BpmnProcess process = createProcess(factory, null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
                 .singletonMap("test",
                         "test")));

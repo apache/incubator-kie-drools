@@ -113,7 +113,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
                         "  </header>\n" +
                         "\n" +
                         "  <nodes>\n" +
-                        "    <forEach id=\"2\" name=\"ForEach\" variableName=\"item\" collectionExpression=\"collection\" >\n" +
+                        "    <forEach id=\"2\" name=\"ForEach\" variableName=\"item\" collectionExpression=\"collection\" isSequential=\"false\">\n" +
                         "      <nodes>\n" +
                         "        <workItem id=\"1\" name=\"Log\" >\n" +
                         "          <work name=\"Log\" >\n" +

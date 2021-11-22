@@ -309,6 +309,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
                 for (FieldInfo pd : modelClazz.fields()) {
 
                     if (pd.type().name().toString().startsWith("java.lang")
+                            || pd.type().name().toString().startsWith("java.util")
                             || pd.type().name().toString().equals(Date.class.getCanonicalName())) {
                         continue;
                     }

@@ -56,7 +56,7 @@ public class ProcessInstanceWorkUnit<T> implements WorkUnit<ProcessInstance<T>> 
 
     @Override
     public Integer priority() {
-        return 10;
+        return WorkUnit.HIGH_PRIORITY;
     }
 
     @Override

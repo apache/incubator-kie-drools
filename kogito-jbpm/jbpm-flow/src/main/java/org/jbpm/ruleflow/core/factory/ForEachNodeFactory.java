@@ -25,6 +25,7 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     public static final String METHOD_COLLECTION_EXPRESSION = "collectionExpression";
     public static final String METHOD_OUTPUT_COLLECTION_EXPRESSION = "outputCollectionExpression";
     public static final String METHOD_OUTPUT_VARIABLE = "outputVariable";
+    public static final String METHOD_SEQUENTIAL = "sequential";
 
     public ForEachNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, new ForEachNode(), id);
@@ -57,6 +58,11 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
 
     public ForEachNodeFactory<T> waitForCompletion(boolean waitForCompletion) {
         getForEachNode().setWaitForCompletion(waitForCompletion);
+        return this;
+    }
+
+    public ForEachNodeFactory<T> sequential(boolean sequential) {
+        getForEachNode().setSequential(sequential);
         return this;
     }
 }

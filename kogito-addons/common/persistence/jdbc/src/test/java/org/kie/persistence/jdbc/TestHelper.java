@@ -26,7 +26,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.testcontainers.KogitoOracleSqlContainer;
@@ -77,9 +76,9 @@ public class TestHelper {
         System.clearProperty(ORACLE_TIMEZONE_PROPERTY);
     }
 
-    public static BpmnProcess createProcess(TestProcessInstancesFactory factory, ProcessConfig config, String fileName) {
+    public static BpmnProcess createProcess(TestProcessInstancesFactory factory, String fileName) {
 
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
         process.setProcessInstancesFactory(factory);
         process.configure();
         process.instances().values(ProcessInstanceReadMode.MUTABLE).forEach(p -> p.abort());

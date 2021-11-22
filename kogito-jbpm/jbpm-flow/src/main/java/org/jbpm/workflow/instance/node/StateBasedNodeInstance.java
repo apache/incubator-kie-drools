@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
@@ -56,8 +57,11 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.jobs.JobId;
+import org.kie.kogito.jobs.JobIdResolver;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +95,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             JobsService jobService = ((KogitoProcessRuntime.Provider) getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getKogitoProcessRuntime().getJobsService();
             for (Timer timer : timers.keySet()) {
                 ProcessInstanceJobDescription jobDescription =
-                        ProcessInstanceJobDescription.of(timer.getId(),
+                        ProcessInstanceJobDescription.of(new TimerJobId(timer.getId()),
                                 createTimerInstance(timer),
                                 getProcessInstance().getStringId(),
                                 getProcessInstance().getRootProcessInstanceId(),
@@ -477,10 +481,10 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     public Map<String, String> extractTimerEventInformation() {
         if (getTimerInstances() != null) {
             for (String id : getTimerInstances()) {
-                String[] ids = id.split("_");
+                JobId jobId = JobIdResolver.resolve(id).decode(id);
 
                 for (Timer entry : getEventBasedNode().getTimers().keySet()) {
-                    if (entry.getId() == Long.valueOf(ids[1])) {
+                    if (Objects.equals(entry.getId(), jobId.correlationId())) {
                         Map<String, String> properties = new HashMap<>();
                         properties.put("TimerID", id);
                         properties.put("Delay", entry.getDelay());

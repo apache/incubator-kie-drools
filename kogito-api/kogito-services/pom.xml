@@ -43,8 +43,7 @@
       <artifactId>kogito-events-api</artifactId>
       <optional>true</optional>
     </dependency>
-    
-    
+
     <!-- test -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

@@ -19,26 +19,36 @@ import java.util.function.Consumer;
 
 import org.kie.kogito.uow.WorkUnit;
 
-public class BaseWorkUnit implements WorkUnit<Object> {
+public class BaseWorkUnit<T> implements WorkUnit<T> {
 
-    private Object data;
-    private Consumer<Object> action;
-    private Consumer<Object> compensation;
+    private T data;
+    private Consumer<T> action;
+    private Consumer<T> compensation;
+    private Integer priority;
 
-    public BaseWorkUnit(Object data, Consumer<Object> action) {
-        this.data = data;
-        this.action = action;
+    public BaseWorkUnit(T data, Consumer<T> action) {
+        this(data, action, null);
     }
 
-    public BaseWorkUnit(Object data, Consumer<Object> action, Consumer<Object> compensation) {
+    public BaseWorkUnit(T data, Consumer<T> action, Consumer<T> compensation) {
+        this(data, action, compensation, DEFAULT_PRIORITY);
+    }
+
+    public BaseWorkUnit(T data, Consumer<T> action, Consumer<T> compensation, Integer priority) {
         this.data = data;
         this.action = action;
         this.compensation = compensation;
+        this.priority = priority;
     }
 
     @Override
-    public Object data() {
+    public T data() {
         return data;
+    }
+
+    @Override
+    public Integer priority() {
+        return priority;
     }
 
     @Override
@@ -52,5 +62,4 @@ public class BaseWorkUnit implements WorkUnit<Object> {
             compensation.accept(data());
         }
     }
-
 }

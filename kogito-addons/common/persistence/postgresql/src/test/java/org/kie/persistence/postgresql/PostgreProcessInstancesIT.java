@@ -26,7 +26,6 @@ import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.persistence.postgresql.PostgreProcessInstances;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
@@ -67,8 +66,8 @@ class PostgreProcessInstancesIT {
         container.stop();
     }
 
-    private BpmnProcess createProcess(ProcessConfig config, String fileName) {
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
+    private BpmnProcess createProcess(String fileName) {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
         process.setProcessInstancesFactory(new PostgreProcessInstancesFactory(client));
         process.configure();
         process.instances().values(ProcessInstanceReadMode.MUTABLE).forEach(p -> p.abort());
@@ -81,7 +80,7 @@ class PostgreProcessInstancesIT {
 
     @Test
     void testBasicFlow() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
 

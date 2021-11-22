@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.io.impl.ClassPathResource;
@@ -39,14 +42,18 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.StaticApplication;
+import org.kie.kogito.StaticConfig;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
+import org.kie.kogito.process.bpmn2.BpmnProcesses;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
@@ -54,6 +61,7 @@ import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
@@ -62,6 +70,7 @@ import org.kie.memorycompiler.resources.KiePath;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
@@ -465,6 +474,49 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
                 .containsValue("test.SubProcess");
     }
 
+    @Test
+    public void testAsyncExecution() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("async/AsyncProcess.bpmn")).get(0);
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.process());
+        String content = metaData.getGeneratedClassModel().toString();
+        assertThat(content).isNotNull();
+        log(content);
+
+        Map<String, String> classData = Collections.singletonMap("com.example.AsyncProcessProcess", content);
+        CountDownLatch latch = new CountDownLatch(1);
+        String mainThread = Thread.currentThread().getName();
+        AtomicReference<String> workItemThread = new AtomicReference<>();
+        KogitoWorkItemHandler workItemHandler = new KogitoWorkItemHandler() {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+                workItemThread.set(Thread.currentThread().getName());
+                manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap("response", "hello " + workItem.getParameter("name")));
+                latch.countDown();
+            }
+
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+                latch.countDown();
+            }
+        };
+
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("org.jbpm.bpmn2.objects.HelloService_hello_3_Handler", workItemHandler));
+        ProcessInstance i = UnitOfWorkExecutor.executeInUnitOfWork(process.getApplication().unitOfWorkManager(), () -> {
+            ProcessInstance<BpmnVariables> processInstance = processes.get("AsyncProcess").createInstance(BpmnVariables.create(Collections.singletonMap("name", "Tiago")));
+            processInstance.start();
+            assertEquals(STATE_ACTIVE, processInstance.status());
+            return processInstance;
+        });
+
+        //since the tasks as async, possibly executed in different threads.
+        latch.await(5, TimeUnit.SECONDS);
+
+        assertEquals(STATE_COMPLETED, i.status());
+        BpmnVariables variables = (BpmnVariables) i.variables();
+        assertEquals(variables.get("greeting"), "hello Tiago");
+        assertNotEquals(mainThread, workItemThread.get());
+    }
+
     /*
      * Helper methods
      */
@@ -499,6 +551,9 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
         TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
         Map<String, BpmnProcess> processes = new HashMap<>();
+        BpmnProcesses bpmnProcesses = new BpmnProcesses();
+        StaticApplication application = new StaticApplication(new StaticConfig(null, config), bpmnProcesses);
+
         for (String className : classData.keySet()) {
             Class<?> processClass = Class.forName(className, true, cl);
 
@@ -506,7 +561,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
             Process process = (Process) processMethod.invoke(null);
             assertThat(process).isNotNull();
 
-            processes.put(process.getId(), new BpmnProcess(process, config));
+            processes.put(process.getId(), new BpmnProcess(process, config, application));
         }
 
         return processes;

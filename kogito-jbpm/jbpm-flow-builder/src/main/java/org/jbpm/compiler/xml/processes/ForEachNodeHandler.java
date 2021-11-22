@@ -90,6 +90,9 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
         if ("false".equals(waitForCompletion)) {
             forEachNode.setWaitForCompletion(false);
         }
+        final String isSequential = element.getAttribute("isSequential");
+        if ("false".equals(isSequential)) {
+            forEachNode.setSequential(false);
+        }
     }
-
 }

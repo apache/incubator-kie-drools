@@ -45,6 +45,7 @@ public class ForEachNode extends CompositeContextNode {
     private String outputCollectionExpression;
     private String completionConditionExpression;
     private boolean waitForCompletion = true;
+    private boolean sequential = true;
 
     public ForEachNode() {
         // Split
@@ -52,7 +53,7 @@ public class ForEachNode extends CompositeContextNode {
         split.setName("ForEachSplit");
         split.setMetaData("hidden", true);
         split.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:split");
-        super.addNode(split);
+        super.addNode(split);//Node ID 1
         super.linkIncomingConnections(
                 Node.CONNECTION_DEFAULT_TYPE,
                 new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
@@ -61,7 +62,7 @@ public class ForEachNode extends CompositeContextNode {
         compositeNode.setName("ForEachComposite");
         compositeNode.setMetaData("hidden", true);
         compositeNode.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:composite");
-        super.addNode(compositeNode);
+        super.addNode(compositeNode);//Node ID 2
         VariableScope variableScope = new VariableScope();
         compositeNode.addContext(variableScope);
         compositeNode.setDefaultContext(variableScope);
@@ -70,16 +71,16 @@ public class ForEachNode extends CompositeContextNode {
         join.setName("ForEachJoin");
         join.setMetaData("hidden", true);
         join.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:join");
-        super.addNode(join);
+        super.addNode(join);//Node ID 3
         super.linkOutgoingConnections(
                 new CompositeNode.NodeAndType(join, Node.CONNECTION_DEFAULT_TYPE),
                 Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
-                super.getNode(1), Node.CONNECTION_DEFAULT_TYPE,
+                super.getNode(ForEachSplitNode.NODE_ID), Node.CONNECTION_DEFAULT_TYPE,
                 getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
                 getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE,
-                super.getNode(3), Node.CONNECTION_DEFAULT_TYPE);
+                super.getNode(ForEachJoinNode.NODE_ID), Node.CONNECTION_DEFAULT_TYPE);
     }
 
     public String getVariableName() {
@@ -244,10 +245,12 @@ public class ForEachNode extends CompositeContextNode {
 
     public static class ForEachSplitNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
+        public static long NODE_ID = 1;
     }
 
     public static class ForEachJoinNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
+        public static long NODE_ID = 3;
     }
 
     @Override
@@ -298,5 +301,13 @@ public class ForEachNode extends CompositeContextNode {
     public void setCompletionConditionExpression(
             String completionConditionExpression) {
         this.completionConditionExpression = completionConditionExpression;
+    }
+
+    public boolean isSequential() {
+        return sequential;
+    }
+
+    public void setSequential(boolean sequential) {
+        this.sequential = sequential;
     }
 }

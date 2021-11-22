@@ -36,6 +36,7 @@ import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.humantask.Reassignment;
+import org.jbpm.workflow.core.node.AsyncEventNodeInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
@@ -58,6 +59,7 @@ import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.serialization.process.MarshallerWriterContext;
+import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.AsyncEventNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.CompositeContextNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.DynamicNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.EventNodeInstanceContent;
@@ -243,6 +245,8 @@ public class ProtobufProcessInstanceWriter {
             return buildJoinInstance((JoinInstance) nodeInstance);
         } else if (nodeInstance instanceof TimerNodeInstance) {
             return buildTimerNodeInstance((TimerNodeInstance) nodeInstance);
+        } else if (nodeInstance instanceof AsyncEventNodeInstance) {
+            return buildAsyncEventNodeInstance((AsyncEventNodeInstance) nodeInstance);
         } else if (nodeInstance instanceof EventNodeInstance) {
             return buildEventNodeInstance();
         } else if (nodeInstance instanceof MilestoneNodeInstance) {
@@ -262,6 +266,14 @@ public class ProtobufProcessInstanceWriter {
         }
     }
 
+    private Any buildAsyncEventNodeInstance(AsyncEventNodeInstance nodeInstance) {
+        AsyncEventNodeInstanceContent.Builder builder = AsyncEventNodeInstanceContent.newBuilder();
+        if (nodeInstance.getJobId() != null) {
+            builder.setJobId(nodeInstance.getJobId());
+        }
+        return Any.pack(builder.build());
+    }
+
     private Any buildRuleSetNodeInstance(RuleSetNodeInstance nodeInstance) {
         RuleSetNodeInstanceContent.Builder ruleSet = RuleSetNodeInstanceContent.newBuilder();
         ruleSet.setRuleFlowGroup(nodeInstance.getRuleFlowGroup());
@@ -272,19 +284,26 @@ public class ProtobufProcessInstanceWriter {
     private Any buildForEachNodeInstance(ForEachNodeInstance nodeInstance) {
         ForEachNodeInstanceContent.Builder foreachBuilder = ForEachNodeInstanceContent.newBuilder();
 
-        foreachBuilder.addAllTimerInstanceId(nodeInstance.getTimerInstances());
+        List<String> timerInstances = nodeInstance.getTimerInstances();
+        if (timerInstances != null) {
+            foreachBuilder.addAllTimerInstanceId(timerInstances);
+        }
         List<NodeInstance> nodeInstances = nodeInstance.getNodeInstances().stream().filter(CompositeContextNodeInstance.class::isInstance).collect(Collectors.toList());
+
         List<ContextInstance> exclusiveGroupInstances = nodeInstance.getContextInstances(ExclusiveGroup.EXCLUSIVE_GROUP);
         VariableScopeInstance variableScopeInstance = (VariableScopeInstance) nodeInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
-        List<Map.Entry<String, Object>> variables = new ArrayList<>(variableScopeInstance.getVariables().entrySet());
+        List<Map.Entry<String, Object>> variables = (variableScopeInstance != null) ? new ArrayList<>(variableScopeInstance.getVariables().entrySet()) : Collections.emptyList();
         List<Map.Entry<String, Integer>> iterationlevels = new ArrayList<>(nodeInstance.getIterationLevels().entrySet());
         foreachBuilder.setContext(buildWorkflowContext(nodeInstances, exclusiveGroupInstances, variables, iterationlevels));
 
+        foreachBuilder
+                .setTotalInstances(nodeInstance.getTotalInstances())
+                .setExecutedInstances(nodeInstance.getExecutedInstances())
+                .setHasAsyncInstances(nodeInstance.getHasAsyncInstances());
         return Any.pack(foreachBuilder.build());
     }
 
     private Any buildLambdaSubProcessNodeInstance(LambdaSubProcessNodeInstance nodeInstance) {
-
         LambdaSubProcessNodeInstanceContent.Builder builder = LambdaSubProcessNodeInstanceContent.newBuilder();
         builder.setProcessInstanceId(nodeInstance.getProcessInstanceId());
         List<String> timerInstances = nodeInstance.getTimerInstances();
@@ -404,7 +423,6 @@ public class ProtobufProcessInstanceWriter {
     private WorkItemNodeInstanceContent.Builder buildWorkItemNodeInstanceBuilder(WorkItemNodeInstance nodeInstance) {
         WorkItemNodeInstanceContent.Builder builder = WorkItemNodeInstanceContent.newBuilder();
 
-        builder.setWorkItemId(nodeInstance.getWorkItemId());
         List<String> timerInstances = nodeInstance.getTimerInstances();
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
@@ -414,7 +432,8 @@ public class ProtobufProcessInstanceWriter {
         }
         KogitoWorkItem workItem = nodeInstance.getWorkItem();
 
-        builder.setName(workItem.getName())
+        builder.setWorkItemId(nodeInstance.getWorkItemId())
+                .setName(workItem.getName())
                 .setState(workItem.getState())
                 .setPhaseId(workItem.getPhaseId())
                 .setPhaseStatus(workItem.getPhaseStatus())

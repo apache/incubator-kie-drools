@@ -37,7 +37,7 @@ class JdbcProcessInstancesWithLockIT extends TestHelper {
     @MethodSource("datasources")
     public void testUpdate(DataSource dataSource) {
         var factory = new TestProcessInstancesFactory(dataSource, true);
-        BpmnProcess process = createProcess(factory, null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
 
@@ -69,7 +69,7 @@ class JdbcProcessInstancesWithLockIT extends TestHelper {
     @MethodSource("datasources")
     public void testRemove(DataSource dataSource) {
         var factory = new TestProcessInstancesFactory(dataSource, true);
-        BpmnProcess process = createProcess(factory, null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
 

@@ -38,6 +38,7 @@ import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.timer.TimerInstance;
@@ -128,7 +129,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
             for (DeadlineInfo<T> deadline : deadlines) {
                 for (ScheduleInfo info : deadline.getScheduleInfo()) {
                     timers.put(getJobsService().scheduleProcessInstanceJob(ProcessInstanceJobDescription.of(
-                            -1L,
+                            new TimerJobId(-1L),
                             DeadlineHelper.getExpirationTime(info),
                             pi.getStringId(),
                             pi.getRootProcessInstanceId(),

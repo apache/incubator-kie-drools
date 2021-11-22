@@ -381,9 +381,19 @@ public class PersistenceGenerator extends AbstractGenerator {
                     fqnProtoStreamMarshaller.replace('.', '/') + JAVA,
                     parsedClazzFile.toString()));
 
+            String objectMarshallerStrategyServiceDescriptor = "";
+            try {
+                //try to find an existing ObjectMarshallerStrategy descriptor in the classpath to be appended to the ProtoStream generated one
+                objectMarshallerStrategyServiceDescriptor =
+                        IOUtils.toString(getClass().getResourceAsStream("/META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy"), "UTF-8");
+            } catch (Exception e) {
+                LOGGER.warn("No existing ObjectMarshallerStrategy found the the classpath to be included with the ProtoS generated one for SPI.");
+            }
+            objectMarshallerStrategyServiceDescriptor += "\n" + fqnProtoStreamMarshaller + "\n";
+
             generatedFiles.add(new GeneratedFile(GeneratedFileType.RESOURCE,
                     "META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy",
-                    fqnProtoStreamMarshaller + "\n"));
+                    objectMarshallerStrategyServiceDescriptor));
         }
         return generatedFiles;
     }

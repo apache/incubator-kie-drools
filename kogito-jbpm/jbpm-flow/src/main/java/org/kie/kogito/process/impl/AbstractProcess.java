@@ -73,8 +73,9 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
         this(new LightProcessRuntimeServiceProvider());
     }
 
-    protected AbstractProcess(ProcessConfig config) {
+    protected AbstractProcess(ProcessConfig config, Application application) {
         this(new ConfiguredProcessServices(config));
+        this.app = application;
     }
 
     protected AbstractProcess(ProcessRuntimeServiceProvider services) {

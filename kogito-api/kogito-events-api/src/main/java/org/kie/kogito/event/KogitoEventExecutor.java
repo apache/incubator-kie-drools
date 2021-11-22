@@ -19,8 +19,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class KogitoEventExecutor {
 
@@ -31,18 +33,30 @@ public class KogitoEventExecutor {
     public static final String DEFAULT_QUEUE_SIZE = "1";
     public static final String QUEUE_SIZE_PROPERTY = "kogito.quarkus.events.threads.queueSize";
     public static final String BEAN_NAME = "kogito-event-executor";
+    public static final String THREAD_NAME = "kogito-event-executor";
 
     public static ExecutorService getEventExecutor() {
         return getEventExecutor(DEFAULT_MAX_THREADS_INT, DEFAULT_QUEUE_SIZE_INT);
     }
 
     public static ExecutorService getEventExecutor(int numOfThreads, int blockQueueSize) {
+        return getEventExecutor(numOfThreads, blockQueueSize, KogitoEventExecutor.THREAD_NAME);
+    }
+
+    public static ExecutorService getEventExecutor(int numOfThreads, int blockQueueSize, String threadNamePrefix) {
         BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<>(blockQueueSize);
         RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
-        return new ThreadPoolExecutor(1, numOfThreads, 1L, TimeUnit.MINUTES, blockingQueue, rejectedExecutionHandler);
+        AtomicInteger counter = new AtomicInteger(0);
+        ThreadFactory threadFactory = runnable -> {
+            String threadName = threadNamePrefix + "-" + counter.getAndIncrement();
+            Thread th = new Thread(runnable);
+            th.setName(threadName);
+            th.setDaemon(true);
+            return th;
+        };
+        return new ThreadPoolExecutor(1, numOfThreads, 1L, TimeUnit.MINUTES, blockingQueue, threadFactory, rejectedExecutionHandler);
     }
 
     private KogitoEventExecutor() {
     }
-
 }

@@ -16,8 +16,6 @@
 
 package org.kie.kogito.jobs.management.quarkus;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -31,11 +29,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.Sig;
-import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.timer.TimerInstance;
+import org.kie.services.jobs.impl.TriggerJobCommand;
 
 @Path("/management/jobs")
 public class CallbackJobsServiceResource {
@@ -62,20 +57,9 @@ public class CallbackJobsServiceResource {
             return Response.status(Status.NOT_FOUND).entity("Process with id " + processId + " not found").build();
         }
 
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);
-            if (processInstanceFound.isPresent()) {
-                ProcessInstance<?> processInstance = processInstanceFound.get();
-                String[] ids = timerId.split("_");
-                processInstance.send(Sig.of("timerTriggered", TimerInstance.with(Long.parseLong(ids[1]), timerId, limit)));
-            } else {
-                return Response.status(Status.NOT_FOUND).entity("Process instance with id " + processInstanceId + " not found").build();
-            }
-
-            return Response.status(Status.OK).build();
-
-        });
+        return new TriggerJobCommand(processInstanceId, timerId, limit, process, application.unitOfWorkManager()).execute()
+                ? Response.status(Status.OK).build()
+                : Response.status(Status.NOT_FOUND).entity("Process instance with id " + processInstanceId + " not found").build();
 
     }
-
 }

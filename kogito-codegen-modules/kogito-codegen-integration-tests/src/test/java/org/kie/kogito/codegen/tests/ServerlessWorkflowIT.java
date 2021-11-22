@@ -63,7 +63,7 @@ public class ServerlessWorkflowIT extends AbstractCodegenIT {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("SmallDelay", 1);
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("End", 1);
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("function");

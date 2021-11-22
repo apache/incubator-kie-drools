@@ -650,6 +650,7 @@ public class ProcessStateTest extends AbstractBaseTest {
                         "\n" +
                         "</process>");
         builder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
+
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);

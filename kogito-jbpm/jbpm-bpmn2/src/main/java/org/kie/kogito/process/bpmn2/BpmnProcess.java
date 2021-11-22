@@ -24,10 +24,16 @@ import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.AbstractProcess;
+import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
+import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 
 public class BpmnProcess extends AbstractProcess<BpmnVariables> {
 
@@ -35,13 +41,21 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
 
     private final Process process;
 
+    private Application application;
+
     public BpmnProcess(Process p) {
         process = p;
     }
 
-    public BpmnProcess(Process p, ProcessConfig config) {
-        super(config);
-        process = p;
+    public BpmnProcess(Process process, ProcessConfig config, Application application) {
+        super(config, application);
+        this.process = process;
+        application.get(BpmnProcesses.class).addProcess(this);
+        this.application = application;
+    }
+
+    public Application getApplication() {
+        return application;
     }
 
     @Override
@@ -98,7 +112,8 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     }
 
     public static List<BpmnProcess> from(Resource... resource) {
-        return from(null, resource);
+        return from(new StaticProcessConfig(new DefaultWorkItemHandlerConfig(), new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()), null),
+                resource);
     }
 
     public static List<BpmnProcess> from(ProcessConfig config, Resource... resources) {

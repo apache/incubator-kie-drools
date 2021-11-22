@@ -73,7 +73,7 @@ import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.services.jobs.impl.InMemoryJobService;
+import org.kie.services.jobs.impl.LegacyInMemoryJobService;
 
 public class ProcessRuntimeImpl extends AbstractProcessRuntime {
 
@@ -95,7 +95,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         initProcessInstanceManager();
         initSignalManager();
         unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
-        jobService = new InMemoryJobService(kogitoProcessRuntime, unitOfWorkManager);
+        jobService = new LegacyInMemoryJobService(kogitoProcessRuntime, unitOfWorkManager);
         this.processEventSupport = new KogitoProcessEventSupportImpl(unitOfWorkManager);
         if (isActive()) {
             initProcessEventListeners();
@@ -115,7 +115,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         initProcessInstanceManager();
         initSignalManager();
         unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
-        jobService = new InMemoryJobService(kogitoProcessRuntime, unitOfWorkManager);
+        jobService = new LegacyInMemoryJobService(kogitoProcessRuntime, unitOfWorkManager);
         this.processEventSupport = new KogitoProcessEventSupportImpl(unitOfWorkManager);
         if (isActive()) {
             initProcessEventListeners();

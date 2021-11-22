@@ -28,19 +28,13 @@ import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.persistence.filesystem.FileSystemProcessInstances;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
-import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
-import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
-import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
@@ -60,8 +54,8 @@ class FileSystemProcessInstancesTest {
 
     private SecurityPolicy securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
 
-    private BpmnProcess createProcess(ProcessConfig config, String fileName) {
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
+    private BpmnProcess createProcess(String fileName) {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
         process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
         process.configure();
         process.instances().values(ProcessInstanceReadMode.MUTABLE).forEach(p -> p.abort());
@@ -70,7 +64,7 @@ class FileSystemProcessInstancesTest {
 
     @Test
     void testFindByIdReadMode() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask-Script.bpmn2");
+        BpmnProcess process = createProcess("BPMN2-UserTask-Script.bpmn2");
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
         for (Node node : ((WorkflowProcess) process.process()).getNodes()) {
             if (node instanceof ActionNode) {
@@ -112,7 +106,7 @@ class FileSystemProcessInstancesTest {
 
     @Test
     void testValuesReadMode() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
 
@@ -126,7 +120,7 @@ class FileSystemProcessInstancesTest {
 
     @Test
     void testBasicFlow() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
 
@@ -160,7 +154,7 @@ class FileSystemProcessInstancesTest {
 
     @Test
     void testBasicFlowWithStartFrom() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.startFrom("_2");
 
@@ -188,14 +182,13 @@ class FileSystemProcessInstancesTest {
 
     @Test
     void testBasicFlowControlledByUnitOfWork() {
-        UnitOfWorkManager uowManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
-        ProcessConfig config = new StaticProcessConfig(new DefaultWorkItemHandlerConfig(), new DefaultProcessEventListenerConfig(), uowManager, null);
-        BpmnProcess process = createProcess(config, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
         process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
         process.configure();
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
+        UnitOfWorkManager uowManager = process.getApplication().unitOfWorkManager();
         UnitOfWork uow = uowManager.newUnitOfWork();
         uow.start();
 

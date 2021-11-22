@@ -16,15 +16,10 @@
 
 package org.kie.kogito.jobs.management.springboot;
 
-import java.util.Optional;
-
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.Sig;
-import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.timer.TimerInstance;
+import org.kie.services.jobs.impl.TriggerJobCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,16 +54,9 @@ public class CallbackJobsServiceResource {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Process with id " + processId + " not found");
         }
 
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);
-            if (processInstanceFound.isPresent()) {
-                ProcessInstance<?> processInstance = processInstanceFound.get();
-                String[] ids = timerId.split("_");
-                processInstance.send(Sig.of("timerTriggered", TimerInstance.with(Long.parseLong(ids[1]), timerId, limit)));
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Process instance with id " + processInstanceId + " not found");
-            }
-            return ResponseEntity.ok().build();
-        });
+        return new TriggerJobCommand(processInstanceId, timerId, limit, process, application.unitOfWorkManager()).execute()
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Process instance with id " + processInstanceId + " not found");
+
     }
 }

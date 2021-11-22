@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.AsyncEventNode;
+import org.jbpm.workflow.core.node.AsyncEventNodeInstance;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
@@ -70,6 +72,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
+import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 
 public class NodeInstanceFactoryRegistry {
@@ -178,6 +181,11 @@ public class NodeInstanceFactoryRegistry {
             return factory(
                     ThrowLinkNodeInstance::new);
         }
+        if (AsyncEventNode.class == clazz) {
+            return factory(
+                    AsyncEventNodeInstance::new);
+        }
+
         return this.registry.get(clazz);
     }
 
@@ -205,6 +213,8 @@ public class NodeInstanceFactoryRegistry {
             uniqueId = node.getId() + "";
         }
         nodeInstance.setMetaData(UNIQUE_ID, uniqueId);
+        nodeInstance.setMetaData(CUSTOM_ASYNC, node.getMetaData().get(CUSTOM_ASYNC));
+
         int level = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getLevelForNode(uniqueId);
         nodeInstance.setLevel(level);
         return nodeInstance;

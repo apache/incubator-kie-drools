@@ -17,6 +17,7 @@ package org.kie.kogito.services.uow;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,7 +88,7 @@ public class CollectingUnitOfWork implements UnitOfWork {
 
     protected Collection<WorkUnit<?>> sorted() {
         List<WorkUnit<?>> sortedCollectedWork = new ArrayList<>(collectedWork);
-        sortedCollectedWork.sort((u1, u2) -> u1.priority().compareTo(u2.priority()));
+        sortedCollectedWork.sort(Comparator.comparing(WorkUnit::priority));
 
         return sortedCollectedWork;
     }

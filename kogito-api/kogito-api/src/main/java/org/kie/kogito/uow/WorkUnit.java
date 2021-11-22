@@ -23,6 +23,10 @@ import java.util.function.Consumer;
  */
 public interface WorkUnit<T> {
 
+    int HIGH_PRIORITY = 10;
+    int DEFAULT_PRIORITY = 100;
+    int LOW_PRIORITY = 1000;
+
     /**
      * Returns data attached to the work unit
      * 
@@ -48,7 +52,7 @@ public interface WorkUnit<T> {
      * @return property as positive number
      */
     default Integer priority() {
-        return 100;
+        return DEFAULT_PRIORITY;
     }
 
     /**
@@ -58,7 +62,7 @@ public interface WorkUnit<T> {
      * @param action work to be executed on given data
      * @return WorkUnit populated with data and action
      */
-    public static <S> WorkUnit<S> create(S data, Consumer<S> action) {
+    static <S> WorkUnit<S> create(S data, Consumer<S> action) {
         return new WorkUnit<S>() {
 
             @Override
@@ -83,7 +87,7 @@ public interface WorkUnit<T> {
      * @param compensation revert action to be performed upon cancellation
      * @return WorkUnit populated with data, action and compensation
      */
-    public static <S> WorkUnit<S> create(S data, Consumer<S> action, Consumer<S> compensation) {
+    static <S> WorkUnit<S> create(S data, Consumer<S> action, Consumer<S> compensation) {
         return new WorkUnit<S>() {
 
             @Override

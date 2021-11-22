@@ -29,6 +29,9 @@ import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.kogito.Application;
+import org.kie.kogito.StaticApplication;
+import org.kie.kogito.StaticConfig;
 import org.kie.kogito.process.ProcessConfig;
 
 public class BpmnProcessCompiler {
@@ -56,6 +59,9 @@ public class BpmnProcessCompiler {
 
     public List<BpmnProcess> from(ProcessConfig config, Resource... resources) {
         try {
+            BpmnProcesses bpmnProcesses = new BpmnProcesses();
+            StaticApplication application = new StaticApplication(new StaticConfig(null, config), bpmnProcesses);
+
             List<Process> processes = new ArrayList<>();
             XmlProcessReader xmlReader = new XmlProcessReader(
                     getSemanticModules(),
@@ -65,19 +71,19 @@ public class BpmnProcessCompiler {
             for (Resource resource : resources) {
                 processes.addAll(xmlReader.read(resource.getReader()));
             }
-            List<BpmnProcess> bpmnProcesses = processes.stream()
-                    .map(p -> create(p, config))
+            List<BpmnProcess> bpmnProcessesList = processes.stream()
+                    .map(p -> create(p, config, application))
                     .collect(Collectors.toList());
 
-            bpmnProcesses.forEach(p -> {
+            bpmnProcessesList.forEach(p -> {
 
                 for (Node node : ((WorkflowProcess) p.process()).getNodesRecursively()) {
 
-                    processNode(node, bpmnProcesses);
+                    processNode(node, bpmnProcessesList);
                 }
             });
 
-            return (List<BpmnProcess>) bpmnProcesses;
+            return bpmnProcessesList;
         } catch (Exception e) {
             throw new BpmnProcessReaderException(e);
         }
@@ -87,8 +93,8 @@ public class BpmnProcessCompiler {
 
     }
 
-    protected BpmnProcess create(Process process, ProcessConfig config) {
-        return config == null ? new BpmnProcess(process) : new BpmnProcess(process, config);
+    protected BpmnProcess create(Process process, ProcessConfig config, Application application) {
+        return config == null ? new BpmnProcess(process) : new BpmnProcess(process, config, application);
     }
 
     protected void processNode(Node node, List<BpmnProcess> bpmnProcesses) {

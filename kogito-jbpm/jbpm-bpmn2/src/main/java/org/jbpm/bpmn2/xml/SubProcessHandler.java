@@ -80,6 +80,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
                 ForEachNode forEachNode = new ForEachNode();
                 forEachNode.setId(node.getId());
                 forEachNode.setName(node.getName());
+                forEachNode.setSequential(Boolean.parseBoolean(((Element) xmlNode).getAttribute("isSequential")));
 
                 forEachNode.setAutoComplete(((CompositeContextNode) node).isAutoComplete());
 

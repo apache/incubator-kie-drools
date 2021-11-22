@@ -31,6 +31,7 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
@@ -38,7 +39,8 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ProcessMarshallingTest extends AbstractBaseTest {
 
@@ -252,23 +254,21 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         list.add("three");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("list", list);
-        kruntime.startProcess("com.sample.ruleflow", parameters);
+        KogitoProcessInstance kogitoProcessInstance = kruntime.startProcess("com.sample.ruleflow", parameters);
 
         assertEquals(1, kruntime.getKogitoProcessInstances().size());
-        assertEquals(3, handler.getWorkItems().size());
-
-        List<KogitoWorkItem> workItems = new ArrayList<>(handler.getWorkItems());
-        handler.reset();
-        for (KogitoWorkItem workItem : workItems) {
-            kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        }
-        assertEquals(1, kruntime.getKogitoProcessInstances().size());
-        assertEquals(3, handler.getWorkItems().size());
-
-        for (KogitoWorkItem workItem : handler.getWorkItems()) {
-            kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        //complete all user tasks instances
+        for (int i = 0; i < list.size() * 2; i++) {
+            completeWorkItems(kruntime, handler);
         }
         assertEquals(0, kruntime.getKogitoProcessInstances().size());
+        assertEquals(ProcessInstance.STATE_COMPLETED, kogitoProcessInstance.getState());
+    }
+
+    public void completeWorkItems(KogitoProcessRuntime kruntime, TestListWorkItemHandler handler) {
+        KogitoWorkItem workItem = handler.getWorkItems().get(0);
+        handler.reset();
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
     }
 
     private static class TestListWorkItemHandler implements KogitoWorkItemHandler {

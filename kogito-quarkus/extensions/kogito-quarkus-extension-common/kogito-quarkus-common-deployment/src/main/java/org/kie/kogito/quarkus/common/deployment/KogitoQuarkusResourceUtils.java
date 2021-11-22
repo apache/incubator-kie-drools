@@ -178,7 +178,6 @@ public class KogitoQuarkusResourceUtils {
         indexes.addAll(generatedKogitoClasses.stream()
                 .map(KogitoGeneratedClassesBuildItem::getIndexedClasses)
                 .collect(Collectors.toList()));
-
         return CompositeIndex.create(indexes.toArray(new IndexView[0]));
     }
 

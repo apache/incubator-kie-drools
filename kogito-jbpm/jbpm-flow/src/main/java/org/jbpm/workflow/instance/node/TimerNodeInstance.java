@@ -32,6 +32,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.timer.TimerInstance;
@@ -42,7 +43,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(TimerNodeInstance.class);
-    private static final String TIMER_TRIGGERED_EVENT = "timerTriggered";
+    public static final String TIMER_TRIGGERED_EVENT = "timerTriggered";
 
     private String timerId;
 
@@ -70,7 +71,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
             addTimerListener();
         }
         ProcessInstanceJobDescription jobDescription =
-                ProcessInstanceJobDescription.of(getTimerNode().getTimer().getId(),
+                ProcessInstanceJobDescription.of(new TimerJobId(getTimerNode().getTimer().getId()),
                         expirationTime,
                         getProcessInstance().getStringId(),
                         getProcessInstance().getRootProcessInstanceId(),

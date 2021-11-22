@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.humantask.Reassignment;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.workflow.core.node.AsyncEventNodeInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
@@ -60,6 +62,7 @@ import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.kie.kogito.serialization.process.MarshallerContextName;
 import org.kie.kogito.serialization.process.MarshallerReaderContext;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerException;
+import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.AsyncEventNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.CompositeContextNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.DynamicNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.EventNodeInstanceContent;
@@ -156,21 +159,9 @@ public class ProtobufProcessInstanceReader {
         }
 
         WorkflowContext workflowContext = processInstanceProtobuf.getContext();
+
         for (KogitoTypesProtobuf.NodeInstance nodeInstanceProtobuf : workflowContext.getNodeInstanceList()) {
-            NodeInstanceImpl nodeInstanceImpl = buildNodeInstance(nodeInstanceProtobuf.getContent());
-
-            nodeInstanceImpl.setId(nodeInstanceProtobuf.getId());
-            nodeInstanceImpl.setNodeId(nodeInstanceProtobuf.getNodeId());
-            nodeInstanceImpl.setNodeInstanceContainer(processInstance);
-            nodeInstanceImpl.setProcessInstance(processInstance);
-            nodeInstanceImpl.setLevel(nodeInstanceProtobuf.getLevel() == 0 ? 1 : nodeInstanceProtobuf.getLevel());
-
-            SLAContext slaNodeInstanceContext = nodeInstanceProtobuf.getSla();
-            nodeInstanceImpl.internalSetSlaCompliance(slaNodeInstanceContext.getSlaCompliance());
-            if (slaNodeInstanceContext.getSlaDueDate() > 0) {
-                nodeInstanceImpl.internalSetSlaDueDate(new Date(slaNodeInstanceContext.getSlaDueDate()));
-            }
-            nodeInstanceImpl.internalSetSlaTimerId(slaNodeInstanceContext.getSlaTimerId());
+            NodeInstanceImpl nodeInstanceImpl = buildNodeInstance(nodeInstanceProtobuf, processInstance);
             if (nodeInstanceProtobuf.hasTriggerDate()) {
                 nodeInstanceImpl.internalSetTriggerTime(new Date(nodeInstanceProtobuf.getTriggerDate()));
             }
@@ -194,55 +185,100 @@ public class ProtobufProcessInstanceReader {
         return processInstance;
     }
 
-    protected NodeInstanceImpl buildNodeInstance(com.google.protobuf.Any nodeContentProtobuf) {
+    private void setCommonNodeInstanceData(RuleFlowProcessInstance processInstance, KogitoNodeInstanceContainer parentContainer, KogitoTypesProtobuf.NodeInstance nodeInstanceProtobuf,
+            NodeInstanceImpl nodeInstanceImpl) {
+        if (nodeInstanceImpl.getStringId() == null) {
+            nodeInstanceImpl.setId(nodeInstanceProtobuf.getId());
+        }
+
+        if (nodeInstanceImpl.getNodeId() == 0) {
+            nodeInstanceImpl.setNodeId(nodeInstanceProtobuf.getNodeId());
+        }
+
+        if (nodeInstanceImpl.getNodeInstanceContainer() == null) {
+            nodeInstanceImpl.setNodeInstanceContainer(parentContainer);
+        }
+        if (nodeInstanceImpl.getProcessInstance() == null) {
+            nodeInstanceImpl.setProcessInstance(processInstance);
+        }
+
+        nodeInstanceImpl.setLevel(nodeInstanceProtobuf.getLevel() == 0 ? 1 : nodeInstanceProtobuf.getLevel());
+    }
+
+    protected NodeInstanceImpl buildNodeInstance(KogitoTypesProtobuf.NodeInstance nodeInstance, KogitoNodeInstanceContainer parent) {
+        final com.google.protobuf.Any nodeContentProtobuf = nodeInstance.getContent();
+        NodeInstanceImpl result = null;
         try {
             if (nodeContentProtobuf.is(RuleSetNodeInstanceContent.class)) {
                 RuleSetNodeInstanceContent content = nodeContentProtobuf.unpack(RuleSetNodeInstanceContent.class);
-                return buildRuleSetNodeInstance(content);
+                result = buildRuleSetNodeInstance(content);
             } else if (nodeContentProtobuf.is(ForEachNodeInstanceContent.class)) {
                 ForEachNodeInstanceContent content = nodeContentProtobuf.unpack(ForEachNodeInstanceContent.class);
-                return buildForEachNodeInstance(content);
+                result = buildForEachNodeInstance(content, nodeInstance, parent);
             } else if (nodeContentProtobuf.is(LambdaSubProcessNodeInstanceContent.class)) {
                 LambdaSubProcessNodeInstanceContent content = nodeContentProtobuf.unpack(LambdaSubProcessNodeInstanceContent.class);
-                return buildLambdaSubProcessNodeInstance(content);
+                result = buildLambdaSubProcessNodeInstance(content);
             } else if (nodeContentProtobuf.is(SubProcessNodeInstanceContent.class)) {
                 SubProcessNodeInstanceContent content = nodeContentProtobuf.unpack(SubProcessNodeInstanceContent.class);
-                return buildSubProcessNodeInstance(content);
+                result = buildSubProcessNodeInstance(content);
             } else if (nodeContentProtobuf.is(StateNodeInstanceContent.class)) {
                 StateNodeInstanceContent content = nodeContentProtobuf.unpack(StateNodeInstanceContent.class);
-                return buildStateNodeInstance(content);
+                result = buildStateNodeInstance(content);
             } else if (nodeContentProtobuf.is(JoinNodeInstanceContent.class)) {
                 JoinNodeInstanceContent content = nodeContentProtobuf.unpack(JoinNodeInstanceContent.class);
-                return buildJoinInstance(content);
+                result = buildJoinInstance(content);
             } else if (nodeContentProtobuf.is(TimerNodeInstanceContent.class)) {
                 TimerNodeInstanceContent content = nodeContentProtobuf.unpack(TimerNodeInstanceContent.class);
-                return buildTimerNodeInstance(content);
+                result = buildTimerNodeInstance(content);
             } else if (nodeContentProtobuf.is(EventNodeInstanceContent.class)) {
-                return buildEventNodeInstance();
+                result = buildEventNodeInstance();
             } else if (nodeContentProtobuf.is(MilestoneNodeInstanceContent.class)) {
                 MilestoneNodeInstanceContent content = nodeContentProtobuf.unpack(MilestoneNodeInstanceContent.class);
-                return buildMilestoneNodeInstance(content);
+                result = buildMilestoneNodeInstance(content);
             } else if (nodeContentProtobuf.is(DynamicNodeInstanceContent.class)) {
                 DynamicNodeInstanceContent content = nodeContentProtobuf.unpack(DynamicNodeInstanceContent.class);
-                return buildDynamicNodeInstance(content);
+                result = buildDynamicNodeInstance(content);
             } else if (nodeContentProtobuf.is(EventSubProcessNodeInstanceContent.class)) {
                 EventSubProcessNodeInstanceContent content = nodeContentProtobuf.unpack(EventSubProcessNodeInstanceContent.class);
-                return buildEventSubProcessNodeInstance(content);
+                result = buildEventSubProcessNodeInstance(content);
             } else if (nodeContentProtobuf.is(CompositeContextNodeInstanceContent.class)) {
                 CompositeContextNodeInstanceContent content = nodeContentProtobuf.unpack(CompositeContextNodeInstanceContent.class);
-                return buildCompositeContextNodeInstance(content);
+                result = buildCompositeContextNodeInstance(content, nodeInstance, parent);
             } else if (nodeContentProtobuf.is(WorkItemNodeInstanceContent.class)) {
                 WorkItemNodeInstanceContent content = nodeContentProtobuf.unpack(WorkItemNodeInstanceContent.class);
-                return buildWorkItemNodeInstance(content);
-            } else {
+                result = buildWorkItemNodeInstance(content);
+            } else if (nodeContentProtobuf.is(AsyncEventNodeInstanceContent.class)) {
+                AsyncEventNodeInstanceContent content = nodeContentProtobuf.unpack(AsyncEventNodeInstanceContent.class);
+                result = buildAsyncEventNodeInstance(content);
+            }
+
+            if (Objects.isNull(result)) {
                 throw new IllegalArgumentException("Unknown node instance");
             }
+
+            setCommonNodeInstanceData(ruleFlowProcessInstance, parent, nodeInstance, result);
+
+            SLAContext slaNodeInstanceContext = nodeInstance.getSla();
+            result.internalSetSlaCompliance(slaNodeInstanceContext.getSlaCompliance());
+            if (slaNodeInstanceContext.getSlaDueDate() > 0) {
+                result.internalSetSlaDueDate(new Date(slaNodeInstanceContext.getSlaDueDate()));
+            }
+            result.internalSetSlaTimerId(slaNodeInstanceContext.getSlaTimerId());
+
+            return result;
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot read node instance content");
         }
     }
 
-    private NodeInstanceImpl buildCompositeContextNodeInstance(CompositeContextNodeInstanceContent content) {
+    private NodeInstanceImpl buildAsyncEventNodeInstance(AsyncEventNodeInstanceContent content) {
+        AsyncEventNodeInstance nodeInstance = new AsyncEventNodeInstance();
+        nodeInstance.setJobId(content.getJobId());
+        return nodeInstance;
+    }
+
+    private NodeInstanceImpl buildCompositeContextNodeInstance(CompositeContextNodeInstanceContent content, KogitoTypesProtobuf.NodeInstance protoNodeInstance,
+            KogitoNodeInstanceContainer parentContainer) {
         CompositeContextNodeInstance nodeInstance = new CompositeContextNodeInstance();
 
         if (content.getTimerInstanceIdCount() > 0) {
@@ -252,6 +288,8 @@ public class ProtobufProcessInstanceReader {
             }
             nodeInstance.internalSetTimerInstances(timerInstances);
         }
+
+        setCommonNodeInstanceData(ruleFlowProcessInstance, parentContainer, protoNodeInstance, nodeInstance);
 
         buildWorkflowContext(nodeInstance, content.getContext());
         return nodeInstance;
@@ -356,8 +394,13 @@ public class ProtobufProcessInstanceReader {
         return nodeInstance;
     }
 
-    private NodeInstanceImpl buildForEachNodeInstance(ForEachNodeInstanceContent content) {
+    private NodeInstanceImpl buildForEachNodeInstance(ForEachNodeInstanceContent content, KogitoTypesProtobuf.NodeInstance protoNodeInstance, KogitoNodeInstanceContainer parentContainer) {
         ForEachNodeInstance nodeInstance = new ForEachNodeInstance();
+        nodeInstance.setExecutedInstances(content.getExecutedInstances());
+        nodeInstance.setTotalInstances(content.getTotalInstances());
+        nodeInstance.setHasAsyncInstances(content.getHasAsyncInstances());
+
+        setCommonNodeInstanceData(ruleFlowProcessInstance, parentContainer, protoNodeInstance, nodeInstance);
         buildWorkflowContext(nodeInstance, content.getContext());
         return nodeInstance;
     }
@@ -420,6 +463,7 @@ public class ProtobufProcessInstanceReader {
             workItem.setName(content.getName());
             workItem.setState(content.getState());
             workItem.setDeploymentId(ruleFlowProcessInstance.getDeploymentId());
+            workItem.setProcessInstance(ruleFlowProcessInstance);
             workItem.setPhaseId(content.getPhaseId());
             workItem.setPhaseStatus(content.getPhaseStatus());
             workItem.setStartDate(new Date(content.getStartDate()));
@@ -445,7 +489,6 @@ public class ProtobufProcessInstanceReader {
             if (workItemDataMessage.is(HumanTaskWorkItemData.class)) {
                 HumanTaskNodeInstance nodeInstance = new HumanTaskNodeInstance();
                 HumanTaskWorkItemImpl workItem = new HumanTaskWorkItemImpl();
-                nodeInstance.setProcessInstance(ruleFlowProcessInstance);
                 nodeInstance.internalSetWorkItem(workItem);
                 return nodeInstance;
             } else {
@@ -454,7 +497,6 @@ public class ProtobufProcessInstanceReader {
         } else {
             WorkItemNodeInstance nodeInstance = new WorkItemNodeInstance();
             KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
-            nodeInstance.setProcessInstance(ruleFlowProcessInstance);
             nodeInstance.internalSetWorkItem(workItem);
             return nodeInstance;
         }
@@ -463,20 +505,7 @@ public class ProtobufProcessInstanceReader {
     private void buildWorkflowContext(CompositeContextNodeInstance container, WorkflowContext workflowContext) {
         if (workflowContext.getNodeInstanceCount() > 0) {
             for (KogitoTypesProtobuf.NodeInstance nodeInstanceProtobuf : workflowContext.getNodeInstanceList()) {
-                NodeInstanceImpl nodeInstanceImpl = buildNodeInstance(nodeInstanceProtobuf.getContent());
-                nodeInstanceImpl.setProcessInstance(ruleFlowProcessInstance);
-                nodeInstanceImpl.setId(nodeInstanceProtobuf.getId());
-                nodeInstanceImpl.setNodeId(nodeInstanceProtobuf.getNodeId());
-                nodeInstanceImpl.setNodeInstanceContainer((KogitoNodeInstanceContainer) container);
-                nodeInstanceImpl.setLevel(nodeInstanceProtobuf.getLevel() == 0 ? 1 : nodeInstanceProtobuf.getLevel());
-
-                SLAContext slaNodeInstanceContext = nodeInstanceProtobuf.getSla();
-                nodeInstanceImpl.internalSetSlaCompliance(slaNodeInstanceContext.getSlaCompliance());
-                if (slaNodeInstanceContext.getSlaDueDate() > 0) {
-                    nodeInstanceImpl.internalSetSlaDueDate(new Date(slaNodeInstanceContext.getSlaDueDate()));
-                }
-                nodeInstanceImpl.internalSetSlaTimerId(slaNodeInstanceContext.getSlaTimerId());
-
+                buildNodeInstance(nodeInstanceProtobuf, container);
             }
         }
         for (KogitoTypesProtobuf.NodeInstanceGroup group : workflowContext.getExclusiveGroupList()) {
@@ -484,8 +513,8 @@ public class ProtobufProcessInstanceReader {
             container.addContextInstance(ExclusiveGroup.EXCLUSIVE_GROUP, buildExclusiveGroupInstance(group, finder));
         }
 
+        container.addContextInstance(VariableScope.VARIABLE_SCOPE, new VariableScopeInstance());
         if (workflowContext.getVariableCount() > 0) {
-            container.addContextInstance(VariableScope.VARIABLE_SCOPE, new VariableScopeInstance());
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance) container.getContextInstance(VariableScope.VARIABLE_SCOPE);
             varReader.buildVariables(workflowContext.getVariableList()).forEach(v -> variableScopeInstance.internalSetVariable(v.getName(), v.getValue()));
         }

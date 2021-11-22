@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serialization.process;
+package org.kie.kogito.jobs;
 
-public interface ObjectMarshallerStrategy extends Comparable<ObjectMarshallerStrategy> {
+public interface JobId<T, P> {
 
-    Integer DEFAULT_ORDER = 10;
+    JobId<T, P> decode(String value);
 
-    default Integer order() {
-        return DEFAULT_ORDER;
-    }
+    T correlationId();
 
-    @Override
-    default int compareTo(ObjectMarshallerStrategy that) {
-        return that.order().compareTo(this.order());
-    }
+    String encode();
 
-    boolean acceptForMarshalling(Object value);
+    String signal();
 
-    Object marshall(Object unmarshalled);
-
-    boolean acceptForUnmarshalling(Object value);
-
-    Object unmarshall(Object marshalled);
-
+    P payload(Object... parameters);
 }

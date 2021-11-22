@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.TimerJobId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,7 +58,7 @@ public class RestJobsServiceTest {
 
     @Test
     void testGetCallbackEndpoint() {
-        ProcessInstanceJobDescription description = ProcessInstanceJobDescription.of(123,
+        ProcessInstanceJobDescription description = ProcessInstanceJobDescription.of(new TimerJobId(),
                 ExactExpirationTime.now(),
                 "processInstanceId",
                 "processId");

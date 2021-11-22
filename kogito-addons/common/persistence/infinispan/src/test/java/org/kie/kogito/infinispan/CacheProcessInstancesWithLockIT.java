@@ -26,7 +26,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
@@ -69,8 +68,8 @@ class CacheProcessInstancesWithLockIT {
         }
     }
 
-    private BpmnProcess createProcess(ProcessConfig config, String fileName) {
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
+    private BpmnProcess createProcess(String fileName) {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
         KogitoProcessInstancesFactory factory = mock(KogitoProcessInstancesFactory.class);
         process.setProcessInstancesFactory(factory);
         process.configure();
@@ -79,7 +78,7 @@ class CacheProcessInstancesWithLockIT {
 
     @Test
     public void testBasic() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
 
         CacheProcessInstances pi = new CacheProcessInstances(process, cacheManager, null, true);
         assertNotNull(pi);

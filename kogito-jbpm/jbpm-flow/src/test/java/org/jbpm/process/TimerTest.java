@@ -31,7 +31,7 @@ import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.timer.TimerInstance;
-import org.kie.services.jobs.impl.InMemoryJobService;
+import org.kie.services.jobs.impl.LegacyInMemoryJobService;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,9 +71,9 @@ public class TimerTest extends AbstractBaseTest {
         processRuntime.getProcessInstanceManager().internalAddProcessInstance(processInstance);
 
         new Thread(() -> kruntime.getKieSession().fireUntilHalt()).start();
-        JobsService jobService = new InMemoryJobService(processRuntime.getKogitoProcessRuntime(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
+        JobsService jobService = new LegacyInMemoryJobService(kruntime, new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
 
-        ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.of(-1, ExactExpirationTime.now(), processInstance.getStringId(), "test");
+        ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.of(ExactExpirationTime.now(), processInstance.getStringId(), "test");
         String jobId = jobService.scheduleProcessInstanceJob(desc);
 
         try {
@@ -84,7 +84,7 @@ public class TimerTest extends AbstractBaseTest {
         assertEquals(1, counter);
 
         counter = 0;
-        desc = ProcessInstanceJobDescription.of(-1, DurationExpirationTime.after(500), processInstance.getStringId(), "test");
+        desc = ProcessInstanceJobDescription.of(DurationExpirationTime.after(500), processInstance.getStringId(), "test");
         jobId = jobService.scheduleProcessInstanceJob(desc);
         assertEquals(0, counter);
         try {
@@ -95,7 +95,7 @@ public class TimerTest extends AbstractBaseTest {
         assertEquals(1, counter);
 
         counter = 0;
-        desc = ProcessInstanceJobDescription.of(-1, DurationExpirationTime.repeat(500, 300L), processInstance.getStringId(), "test");
+        desc = ProcessInstanceJobDescription.of(DurationExpirationTime.repeat(500, 300L), processInstance.getStringId(), "test");
         jobId = jobService.scheduleProcessInstanceJob(desc);
         assertEquals(0, counter);
         try {

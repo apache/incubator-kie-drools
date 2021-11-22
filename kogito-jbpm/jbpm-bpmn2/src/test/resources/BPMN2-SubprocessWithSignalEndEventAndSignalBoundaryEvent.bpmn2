@@ -12,7 +12,7 @@
                     <drools:metaValue><![CDATA[]]></drools:metaValue>
                 </drools:metaData>
                 <drools:metaData name="customAsync">
-                    <drools:metaValue><![CDATA[true]]></drools:metaValue>
+                    <drools:metaValue><![CDATA[false]]></drools:metaValue>
                 </drools:metaData>
             </bpmn2:extensionElements>
             <bpmn2:incoming>_C01D6160-D140-4768-98FF-52E5F9E0C037</bpmn2:incoming>

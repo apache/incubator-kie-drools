@@ -80,5 +80,11 @@ message EventSubProcessNodeInstanceContent {
 message ForEachNodeInstanceContent {
     repeated string timer_instance_id = 1;
     WorkflowContext context = 2;
+    int32 totalInstances = 3;
+    int32 executedInstances = 4;
+    bool hasAsyncInstances = 5;
 }
 
+message AsyncEventNodeInstanceContent {
+    string job_id = 1;
+}

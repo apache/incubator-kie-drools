@@ -106,7 +106,7 @@ public class TimerInstance implements Serializable {
                 + "]";
     }
 
-    public static TimerInstance with(long timerId, String id, Integer limit) {
+    public static TimerInstance with(Long timerId, String id, Integer limit) {
         TimerInstance timerInstance = new TimerInstance();
         timerInstance.setId(id);
         timerInstance.setTimerId(timerId);

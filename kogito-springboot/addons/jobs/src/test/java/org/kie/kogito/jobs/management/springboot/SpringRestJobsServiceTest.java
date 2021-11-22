@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobNotFoundException;
 import org.mockito.ArgumentCaptor;
@@ -71,7 +72,7 @@ public class SpringRestJobsServiceTest {
     @Test
     void testScheduleProcessInstanceJob() {
         when(restTemplate.postForEntity(any(URI.class), any(Job.class), eq(String.class))).thenReturn(ResponseEntity.ok().build());
-        ProcessInstanceJobDescription processInstanceJobDescription = ProcessInstanceJobDescription.of(123,
+        ProcessInstanceJobDescription processInstanceJobDescription = ProcessInstanceJobDescription.of(new TimerJobId(123l),
                 ExactExpirationTime.now(),
                 "processInstanceId",
                 "processId");

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.core.spi.KogitoProcessContextImpl;
 import org.drools.core.util.StringUtils;
@@ -34,6 +35,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessFactory;
@@ -59,6 +61,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
     private String processInstanceId;
+    private boolean asyncWaitingNodeInstance;
 
     protected SubProcessNode getSubProcessNode() {
         return (SubProcessNode) getNode();
@@ -95,6 +98,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
 
         processInstance.start();
         this.processInstanceId = processInstance.id();
+        this.asyncWaitingNodeInstance = hasAsyncNodeInstance(pi);
 
         subProcessFactory.unbind(context, processInstance.variables());
 
@@ -105,6 +109,14 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         } else {
             addProcessListener();
         }
+    }
+
+    private boolean hasAsyncNodeInstance(org.kie.api.runtime.process.ProcessInstance pi) {
+        return Optional.ofNullable(pi)
+                .map(ProcessInstanceImpl.class::cast)
+                .map(instance -> instance.getMetaData().get(Metadata.ASYNC_WAITING))
+                .map(Boolean.class::cast)
+                .orElse(false);
     }
 
     @Override
@@ -124,6 +136,10 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
 
     public String getProcessInstanceId() {
         return processInstanceId;
+    }
+
+    public boolean isAsyncWaitingNodeInstance() {
+        return asyncWaitingNodeInstance;
     }
 
     public void internalSetProcessInstanceId(String processInstanceId) {

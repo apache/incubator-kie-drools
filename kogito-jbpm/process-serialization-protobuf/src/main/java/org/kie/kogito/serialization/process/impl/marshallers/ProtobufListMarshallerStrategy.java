@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serialization.process;
 
-public interface ObjectMarshallerStrategy extends Comparable<ObjectMarshallerStrategy> {
+package org.kie.kogito.serialization.process.impl.marshallers;
 
-    Integer DEFAULT_ORDER = 10;
+import java.util.List;
 
-    default Integer order() {
+public class ProtobufListMarshallerStrategy extends ProtobufObjectMarshallerStrategy {
+
+    @Override
+    public Integer order() {
         return DEFAULT_ORDER;
     }
 
     @Override
-    default int compareTo(ObjectMarshallerStrategy that) {
-        return that.order().compareTo(this.order());
+    public boolean acceptForMarshalling(Object value) {
+        return List.class.isInstance(value);
     }
-
-    boolean acceptForMarshalling(Object value);
-
-    Object marshall(Object unmarshalled);
-
-    boolean acceptForUnmarshalling(Object value);
-
-    Object unmarshall(Object marshalled);
-
 }

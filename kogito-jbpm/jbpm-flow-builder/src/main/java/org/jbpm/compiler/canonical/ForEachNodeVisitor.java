@@ -24,6 +24,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ForEachNode;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -36,6 +37,7 @@ import static org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory.METHOD_
 import static org.jbpm.ruleflow.core.factory.ForEachNodeFactory.METHOD_COLLECTION_EXPRESSION;
 import static org.jbpm.ruleflow.core.factory.ForEachNodeFactory.METHOD_OUTPUT_COLLECTION_EXPRESSION;
 import static org.jbpm.ruleflow.core.factory.ForEachNodeFactory.METHOD_OUTPUT_VARIABLE;
+import static org.jbpm.ruleflow.core.factory.ForEachNodeFactory.METHOD_SEQUENTIAL;
 
 public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode> {
 
@@ -52,6 +54,9 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode
     public void visitNode(String factoryField, ForEachNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         body.addStatement(getAssignedFactoryMethod(factoryField, ForEachNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, "ForEach"));
+
+        body.addStatement(getFactoryMethod(getNodeId(node), METHOD_SEQUENTIAL, new BooleanLiteralExpr(node.isSequential())));
+
         visitMetaData(node.getMetaData(), body, getNodeId(node));
 
         body.addStatement(getFactoryMethod(getNodeId(node), METHOD_COLLECTION_EXPRESSION, new StringLiteralExpr(stripExpression(node.getCollectionExpression()))))
@@ -72,5 +77,4 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode
                 .addStatement(getDoneMethod(getNodeId(node)));
 
     }
-
 }
