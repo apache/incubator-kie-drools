@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.runtime.graal;
+package org.optaplanner.persistence.xstream.runtime.graal;
 
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;

@@ -137,6 +137,10 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-timer</artifactId>
           </exclusion>
+          <exclusion> <!-- OptaPlanner's use of Drools does not require XStream. -->
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
