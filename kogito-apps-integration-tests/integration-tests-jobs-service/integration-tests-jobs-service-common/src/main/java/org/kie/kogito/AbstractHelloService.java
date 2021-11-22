@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.it.jobs;
+package org.kie.kogito;
 
-import org.junit.jupiter.api.Disabled;
+public abstract class AbstractHelloService {
 
-import io.quarkus.test.junit.NativeImageTest;
+    public String hello(String input) {
+        return "Hello " + input;
+    }
 
-@NativeImageTest
-@Disabled("see https://issues.redhat.com/browse/KOGITO-4987")
-public class NativeProcessTimerIT extends ProcessTimerIT {
+    public String bye(String input) {
+        return "Bye " + input;
+    }
 }

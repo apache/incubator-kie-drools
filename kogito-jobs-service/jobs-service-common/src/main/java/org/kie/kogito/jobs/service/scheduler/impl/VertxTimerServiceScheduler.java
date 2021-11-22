@@ -123,7 +123,7 @@ public class VertxTimerServiceScheduler implements TimerService<ManageableJobHan
         return Optional.of(now)
                 .map(ChronoZonedDateTime::toInstant)
                 .map(Instant::toEpochMilli)
-                .filter(n -> then >= n)
+                .filter(n -> then > n)
                 .map(n -> then - n)
                 .orElse(1l);
     }

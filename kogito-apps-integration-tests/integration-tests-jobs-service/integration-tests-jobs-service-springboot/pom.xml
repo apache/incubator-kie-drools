@@ -42,7 +42,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-jobs-service-common</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
