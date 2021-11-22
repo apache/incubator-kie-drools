@@ -322,7 +322,7 @@ public class ParserHelper {
         QualifiedNameContext ctx4 = ctx3.getRuleContext(FEEL_1_1Parser.QualifiedNameContext.class, 0);
         if (ctx4 == null) {
             return 0;
-        }
+        } // I expect in this param ctx=`var[1]` for `var` to be a qualifiedName
         for (String n : ctx4.qns) {
             recoverScope(n);
         }
