@@ -121,7 +121,7 @@ The following example demonstrates how to add credentials to a curl request:
 curl -u username:password <request>
 ----
 +
-If {KIE_SERVER} is configured with Red Hat Single Sign-On, the request must include a bearer token:
+If {KIE_SERVER} is configured with {RH-SSO}, the request must include a bearer token:
 +
 [source,java]
 ----
