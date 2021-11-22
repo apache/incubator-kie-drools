@@ -96,14 +96,27 @@ public class DMNInvocationEvaluator
 
         try {
             boolean walkedIntoScope = false;
-            QName importAlias = null;
+            StringBuilder functionNamePrefix = new StringBuilder();
             String[] fnameParts = functionName.split("\\.");
-            if (fnameParts.length > 1) {
-                importAlias = ((DMNModelImpl) ((DMNResultImpl) dmnr).getModel()).getImportAliasesForNS().get(fnameParts[0]);
-                dmnContext.pushScope(fnameParts[0], importAlias.getNamespaceURI());
-                walkedIntoScope = true;
+            boolean thereAreImports = !((DMNModelImpl) result.getModel()).getImportAliasesForNS().isEmpty();
+            if (fnameParts.length > 1 && thereAreImports) {
+
+                for(String part : fnameParts) {
+                    functionNamePrefix.append(part);
+                    QName importAlias = ((DMNModelImpl) result.getModel()).getImportAliasesForNS().get(functionNamePrefix.toString());
+                    if (importAlias != null) {
+                        dmnContext.pushScope(functionNamePrefix.toString(), importAlias.getNamespaceURI());
+                        walkedIntoScope = true;
+                        break;
+                    } else {
+                        functionNamePrefix.append(".");
+                    }
+                }
             }
-            FEELFunction function = this.functionLocator.apply(dmnContext, (fnameParts.length > 1) ? fnameParts[1] : functionName);
+            // prefix and name is separated by '.'
+            functionNamePrefix.append(".");
+            final String functionNameWithoutPrefix = functionName.replaceFirst(functionNamePrefix.toString(), "");
+            FEELFunction function = this.functionLocator.apply(dmnContext, walkedIntoScope ? functionNameWithoutPrefix : functionName);
             if( function == null ) {
                 // check if it is a configured/built-in function
                 Object r = null;

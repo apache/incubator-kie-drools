@@ -1283,6 +1283,24 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("usingCurried").getResult(), is(new BigDecimal(3)));
     }
 
+    @Test
+    public void testBkmWithDotsInName() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("bkmWithDotsInName.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_E035C5C5-3571-453D-BD8F-FFF30E74A7F8",
+                                                   "bkmWithDotsInName");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext ctx = runtime.newContext();
+        ctx.set("Number one", new BigDecimal(1));
+        ctx.set("Number two", new BigDecimal(2));
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, ctx);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Total Sum").getResult(), is(new BigDecimal(3)));
+    }
+
     @Ignore("the purpose of this work is to enable PMML execution.")
     @Test
     public void testPMMLFunctionContext() {
