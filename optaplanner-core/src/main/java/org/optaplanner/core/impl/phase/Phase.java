@@ -35,8 +35,8 @@ public interface Phase<Solution_> extends PhaseLifecycleListener<Solution_> {
     /**
      * Add a {@link PhaseLifecycleListener} that is only notified
      * of the {@link PhaseLifecycleListener#phaseStarted(AbstractPhaseScope) phase}
-     * and the {@link PhaseLifecycleListener#stepStarted(AbstractStepScope)} step} starting/ending events from this phase
-     * (and the {@link PhaseLifecycleListener#solvingStarted(SolverScope)} solving} events too of course).
+     * and the {@link PhaseLifecycleListener#stepStarted(AbstractStepScope) step} starting/ending events from this phase
+     * (and the {@link PhaseLifecycleListener#solvingStarted(SolverScope) solving} events too of course).
      * <p>
      * To get notified for all phases, use {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)} instead.
      *

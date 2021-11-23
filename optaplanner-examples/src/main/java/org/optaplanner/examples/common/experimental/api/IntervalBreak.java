@@ -37,7 +37,7 @@ public interface IntervalBreak<Interval_, Point_ extends Comparable<Point_>, Dif
     /**
      * Return the end of the sequence before this break. For the
      * break between 6 and 10, this will return 6.
-     * 
+     *
      * @return never null, the item this break is directly after
      */
     default Point_ getPreviousIntervalClusterEnd() {
@@ -47,7 +47,7 @@ public interface IntervalBreak<Interval_, Point_ extends Comparable<Point_>, Dif
     /**
      * Return the start of the sequence after this break. For the
      * break between 6 and 10, this will return 10.
-     * 
+     *
      * @return never null, the item this break is directly before
      */
     default Point_ getNextIntervalClusterStart() {
@@ -58,7 +58,7 @@ public interface IntervalBreak<Interval_, Point_ extends Comparable<Point_>, Dif
      * Return the length of the break, which is the difference
      * between {@link #getNextIntervalClusterStart()} and {@link #getPreviousIntervalClusterEnd()}. For the
      * break between 6 and 10, this will return 4.
-     * 
+     *
      * @return never null, the length of this break
      */
     Difference_ getLength();

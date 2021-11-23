@@ -52,7 +52,7 @@ public interface Break<Value_, Difference_ extends Comparable<Difference_>> {
     /**
      * Return the end of the sequence before this break. For the
      * break between 6 and 10, this will return 6.
-     * 
+     *
      * @return never null, the item this break is directly after
      */
     default Value_ getPreviousSequenceEnd() {
@@ -62,7 +62,7 @@ public interface Break<Value_, Difference_ extends Comparable<Difference_>> {
     /**
      * Return the start of the sequence after this break. For the
      * break between 6 and 10, this will return 10.
-     * 
+     *
      * @return never null, the item this break is directly before
      */
     default Value_ getNextSequenceStart() {
@@ -73,7 +73,7 @@ public interface Break<Value_, Difference_ extends Comparable<Difference_>> {
      * Return the length of the break, which is the difference
      * between {@link #getNextSequenceStart()} and {@link #getPreviousSequenceEnd()}. For the
      * break between 6 and 10, this will return 4.
-     * 
+     *
      * @return never null, the length of this break
      */
     Difference_ getLength();
