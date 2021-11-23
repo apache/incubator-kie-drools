@@ -30,7 +30,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -90,8 +89,6 @@ public interface InternalKnowledgeBase extends KieBase {
     ClassLoader getRootClassLoader();
 
     void disposeStatefulSession(InternalWorkingMemory statefulSession);
-
-    TraitRegistry getTraitRegistry();
 
     Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
 

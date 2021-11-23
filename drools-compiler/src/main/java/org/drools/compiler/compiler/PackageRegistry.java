@@ -17,12 +17,11 @@ package org.drools.compiler.compiler;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.ImportDeclaration;
 import org.kie.api.io.Resource;
-import org.drools.core.addon.TypeResolver;
 
 public class PackageRegistry {
 
@@ -86,9 +85,5 @@ public class PackageRegistry {
 
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
         return pkg.removeObjectsGeneratedFromResource(resource);
-    }
-
-    public TraitRegistry getTraitRegistry() {
-        return pkg.getTraitRegistry();
     }
 }

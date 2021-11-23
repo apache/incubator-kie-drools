@@ -855,7 +855,7 @@ public class RuleBaseConfiguration
     
     public void addActivationListener(String name, ActivationListenerFactory factory) {
         if ( this.activationListeners == null ) {
-            this.activationListeners = new HashMap<String, ActivationListenerFactory>();
+            this.activationListeners = new HashMap<>();
         }
         this.activationListeners.put( name, factory );
     }
@@ -877,19 +877,6 @@ public class RuleBaseConfiguration
         } 
         
         throw new IllegalArgumentException( "ActivationListenerFactory not found for '" + name + "'" );
-    }
-
-    private boolean determineShadowProxy(String userValue) {
-        if ( this.isSequential() ) {
-            // sequential never needs shadowing, so always override
-            return false;
-        }
-
-        if ( userValue != null ) {
-            return Boolean.valueOf( userValue ).booleanValue();
-        } else {
-            return true;
-        }
     }
 
     public ClassLoader getClassLoader() {
@@ -994,72 +981,6 @@ public class RuleBaseConfiguration
 
         public String toString() {
             return "AssertBehaviour : " + ((this.value == 0) ? "identity" : "equality");
-        }
-    }
-
-    public static class LogicalOverride
-            implements
-            Externalizable {
-        private static final long serialVersionUID = 510l;
-
-        public static final LogicalOverride PRESERVE = new LogicalOverride(0);
-        public static final LogicalOverride DISCARD  = new LogicalOverride(1);
-
-        private int value;
-
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
-            value = in.readInt();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(value);
-        }
-
-        public LogicalOverride() {
-
-        }
-
-        private LogicalOverride(final int value) {
-            this.value = value;
-        }
-
-        public static LogicalOverride determineLogicalOverride(final String value) {
-            if ("PRESERVE".equalsIgnoreCase(value)) {
-                return PRESERVE;
-            } else if ("DISCARD".equalsIgnoreCase(value)) {
-                return DISCARD;
-            } else {
-                throw new IllegalArgumentException("Illegal enum value '" + value + "' for LogicalOverride");
-            }
-        }
-
-        private Object readResolve() throws java.io.ObjectStreamException {
-            switch (this.value) {
-                case 0:
-                    return PRESERVE;
-                case 1:
-                    return DISCARD;
-                default:
-                    throw new IllegalArgumentException("Illegal enum value '" + this.value + "' for LogicalOverride");
-            }
-        }
-
-        public boolean equals(Object obj) {
-            if (obj == this) {
-                return true;
-            } else if (obj instanceof LogicalOverride) {
-                return value == ((LogicalOverride) obj).value;
-            }
-            return false;
-        }
-
-        public String toExternalForm() {
-            return (this.value == 0) ? "preserve" : "discard";
-        }
-
-        public String toString() {
-            return "LogicalOverride : " + ((this.value == 0) ? "preserve" : "discard");
         }
     }
 

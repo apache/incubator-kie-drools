@@ -25,20 +25,19 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.CoreWrapper;
+import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
-import org.drools.runtime.factory.KieComponentFactory;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.util.HierarchyEncoder;
+import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.traits.core.factmodel.AbstractTraitFactory;
+import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
+import org.drools.traits.core.factmodel.TraitClassBuilderImpl;
+import org.drools.traits.core.factmodel.TraitRegistryImpl;
 import org.drools.traits.core.factmodel.TripleFactory;
 import org.drools.traits.core.factmodel.TripleFactoryImpl;
 import org.drools.traits.core.factmodel.TripleStore;
-import org.drools.traits.core.factmodel.AbstractTraitFactory;
-import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.traits.core.factmodel.TraitClassBuilderImpl;
-import org.drools.traits.core.factmodel.TraitRegistryImpl;
-import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.traits.core.reteoo.TraitKieComponentFactory;
 
 public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> {
@@ -90,10 +89,6 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
     @Override
     protected ClassLoader getRootClassLoader() {
         return classLoader;
-    }
-
-    protected KieComponentFactory getComponentFactory() {
-        return kieComponentFactory;
     }
 
     @Override

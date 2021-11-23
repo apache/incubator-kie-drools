@@ -20,11 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
@@ -36,7 +37,6 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.AccumulateFunction;
-import org.drools.core.addon.TypeResolver;
 
 public interface InternalKnowledgePackage extends KiePackage,
                                                   Externalizable {
@@ -150,9 +150,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     InternalKnowledgePackage deepCloneIfAlreadyInUse(ClassLoader classLoader);
 
-    boolean hasTraitRegistry();
-
-    TraitRegistry getTraitRegistry();
+    void mergeTraitRegistry(InternalKnowledgeBase knowledgeBase);
 
     void addCloningResource(String key, Object resource);
 

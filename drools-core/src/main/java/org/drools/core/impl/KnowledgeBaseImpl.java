@@ -46,7 +46,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -590,9 +589,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
             newPkg.checkValidity();
             this.eventSupport.fireBeforePackageAdded( newPkg );
 
-            if ( newPkg.hasTraitRegistry() ) {
-                getTraitRegistry().merge( newPkg.getTraitRegistry() );
-            }
+            newPkg.mergeTraitRegistry(this);
 
             InternalKnowledgePackage pkg = this.pkgs.get( newPkg.getName() );
             if ( pkg == null ) {
@@ -600,8 +597,7 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
 
                 // @TODO we really should have a single root cache
                 pkg.setClassFieldAccessorCache( this.classFieldAccessorCache );
-                pkgs.put( pkg.getName(),
-                          pkg );
+                pkgs.put( pkg.getName(), pkg );
             }
 
             // first merge anything related to classloader re-wiring
@@ -1443,10 +1439,6 @@ public class KnowledgeBaseImpl implements InternalKnowledgeBase {
             entryPointIds.addAll( pkg.getEntryPointIds() );
         }
         return entryPointIds;
-    }
-
-    public TraitRegistry getTraitRegistry() {
-        return RuntimeComponentFactory.get().getTraitRegistry(this);
     }
 
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
