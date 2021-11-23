@@ -26,7 +26,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.runtime.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;

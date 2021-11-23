@@ -25,7 +25,7 @@ import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.runtime.factory.KieComponentFactory;
+import org.drools.kiesession.factory.KieComponentFactory;
 import org.drools.traits.core.common.TraitNamedEntryPointFactory;
 import org.drools.traits.core.factmodel.TraitClassBuilderFactory;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;

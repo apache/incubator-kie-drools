@@ -19,8 +19,8 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.runtime.debug.SessionInspector;
-import org.drools.runtime.debug.StatefulKnowledgeSessionInfo;
+import org.drools.kiesession.debug.SessionInspector;
+import org.drools.kiesession.debug.StatefulKnowledgeSessionInfo;
 import org.drools.mvel.SessionReporter;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Cheesery;

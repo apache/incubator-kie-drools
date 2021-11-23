@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.runtime.debug.StatefulKnowledgeSessionInfo;
+import org.drools.kiesession.debug.StatefulKnowledgeSessionInfo;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;

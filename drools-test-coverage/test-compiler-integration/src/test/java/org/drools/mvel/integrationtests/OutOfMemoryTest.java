@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.runtime.debug.SessionInspector;
+import org.drools.kiesession.debug.SessionInspector;
 import org.drools.mvel.SessionReporter;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;

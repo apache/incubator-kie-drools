@@ -41,7 +41,7 @@ import org.kie.api.runtime.StatelessKieSession;
 
 public interface RuntimeComponentFactory {
 
-    String NO_RUNTIME = "Missing runtime. Please add the module org.drools:drools-runtime to your classpath.";
+    String NO_RUNTIME = "Missing runtime. Please add the module org.drools:drools-kiesession to your classpath.";
 
     ClassBuilderFactory getClassBuilderFactory();
 
