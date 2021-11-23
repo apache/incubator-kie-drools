@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.core.common;
+package org.drools.runtime.agenda;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.PropagationContext;

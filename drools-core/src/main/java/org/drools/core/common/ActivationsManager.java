@@ -30,6 +30,11 @@ import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.AgendaFilter;
 
 public interface ActivationsManager {
+
+    String ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME = "$onBeforeAllFire$";
+    String ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME = "$onAfterAllFire$";
+    String ON_DELETE_MATCH_CONSEQUENCE_NAME = "$onDeleteMatch$";
+
     ReteEvaluator getReteEvaluator();
 
     AgendaGroupsManager getAgendaGroupsManager();
@@ -89,4 +94,11 @@ public interface ActivationsManager {
         ruleAgendaItem.getRuleExecutor().addLeftTuple( justified.getTuple() );
     }
 
+    default ActivationsManager getPartitionedAgenda(int partitionNr) {
+        return this;
+    }
+
+    default ActivationsManager getPartitionedAgendaForNode(NetworkNode node) {
+        return this;
+    }
 }

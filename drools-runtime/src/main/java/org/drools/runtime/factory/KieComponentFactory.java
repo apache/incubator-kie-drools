@@ -24,7 +24,7 @@ import org.drools.core.base.FieldFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.BeliefSystemFactory;
-import org.drools.core.common.DefaultAgendaFactory;
+import org.drools.runtime.agenda.DefaultAgendaFactory;
 import org.drools.core.common.DefaultNamedEntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPointFactory;

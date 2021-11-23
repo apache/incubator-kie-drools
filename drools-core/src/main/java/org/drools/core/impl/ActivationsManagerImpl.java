@@ -60,8 +60,6 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
 
-import static org.drools.core.common.DefaultAgenda.ON_DELETE_MATCH_CONSEQUENCE_NAME;
-
 public class ActivationsManagerImpl implements ActivationsManager {
 
     private final ReteEvaluator reteEvaluator;

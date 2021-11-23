@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.common;
+package org.drools.runtime.agenda;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -27,6 +27,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.core.common.ActivationGroupImpl;
+import org.drools.core.common.ActivationGroupNode;
+import org.drools.core.common.ActivationsFilter;
+import org.drools.core.common.AgendaGroupsManager;
+import org.drools.core.common.AgendaItem;
+import org.drools.core.common.EventSupport;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleFlowGroup;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -87,16 +101,12 @@ public class DefaultAgenda
         Externalizable,
         InternalAgenda {
 
-    public static final String ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME = "$onBeforeAllFire$";
-    public static final String ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME = "$onAfterAllFire$";
-    public static final String ON_DELETE_MATCH_CONSEQUENCE_NAME = "$onDeleteMatch$";
-
     protected static final transient Logger                      log                = LoggerFactory.getLogger( DefaultAgenda.class );
 
     private static final long                                    serialVersionUID   = 510l;
 
     /** Working memory of this Agenda. */
-    protected InternalWorkingMemory                              workingMemory;
+    protected InternalWorkingMemory workingMemory;
 
     /** Items time-delayed. */
 
@@ -117,7 +127,7 @@ public class DefaultAgenda
 
     private ObjectTypeConf                                       activationObjectTypeConf;
 
-    private ActivationsFilter                                    activationsFilter;
+    private ActivationsFilter activationsFilter;
 
     private volatile List<PropagationContext>                    expirationContexts;
 

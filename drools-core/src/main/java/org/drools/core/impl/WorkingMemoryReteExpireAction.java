@@ -17,7 +17,6 @@ package org.drools.core.impl;
 
 import java.io.IOException;
 
-import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -134,7 +133,7 @@ public class WorkingMemoryReteExpireAction
             }
 
             PropagationContext context = createPropagationContextForFact( reteEvaluator, factHandle, PropagationContext.Type.EXPIRATION );
-            ( (CompositeDefaultAgenda) reteEvaluator.getActivationsManager() ).getPartitionedAgenda( partition ).registerExpiration( context );
+            reteEvaluator.getActivationsManager().getPartitionedAgenda( partition ).registerExpiration( context );
 
             DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
             linkedTuples.forEachLeftTuple( partition, ObjectTypeNode::expireLeftTuple );

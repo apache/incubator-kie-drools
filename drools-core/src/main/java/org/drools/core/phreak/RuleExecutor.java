@@ -20,7 +20,6 @@ import java.util.Comparator;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalFactHandle;
@@ -137,7 +136,7 @@ public class RuleExecutor {
             Tuple tuple = getNextTuple();
             
             if (ruleIsAllMatches) {
-                fireConsequenceEvent(reteEvaluator, activationsManager, (AgendaItem) tuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(reteEvaluator, activationsManager, (AgendaItem) tuple, ActivationsManager.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
 
             Tuple lastTuple = null;
@@ -182,7 +181,7 @@ public class RuleExecutor {
             }
 
             if (ruleIsAllMatches) {
-                fireConsequenceEvent(reteEvaluator, activationsManager, (AgendaItem) lastTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(reteEvaluator, activationsManager, (AgendaItem) lastTuple, ActivationsManager.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
             }
         }
 

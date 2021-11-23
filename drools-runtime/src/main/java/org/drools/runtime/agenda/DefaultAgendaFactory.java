@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.core.common;
+package org.drools.runtime.agenda;
 
-
-import org.drools.core.impl.InternalKnowledgeBase;
 
 import java.io.Serializable;
+
+import org.drools.core.common.AgendaFactory;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.impl.InternalKnowledgeBase;
 
 public class DefaultAgendaFactory implements AgendaFactory, Serializable {
 

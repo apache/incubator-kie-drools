@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.common;
+package org.drools.runtime.agenda;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -27,6 +27,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
+import org.drools.core.common.ActivationsFilter;
+import org.drools.core.common.AgendaGroupsManager;
+import org.drools.core.common.AgendaItem;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
@@ -91,10 +100,12 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
         }
     }
 
+    @Override
     public DefaultAgenda getPartitionedAgenda(int partitionNr) {
         return agendas[partitionNr];
     }
 
+    @Override
     public DefaultAgenda getPartitionedAgendaForNode(NetworkNode node) {
         return getPartitionedAgenda( node.getPartitionId().getParallelEvaluationSlot() );
     }
@@ -184,7 +195,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public AgendaItem createAgendaItem( RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup ) {
+    public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup ) {
         return getPartitionedAgendaForNode(ruleAgendaItem.getTerminalNode()).createAgendaItem( rtnLeftTuple, salience, context, ruleAgendaItem, agendaGroup );
     }
 
