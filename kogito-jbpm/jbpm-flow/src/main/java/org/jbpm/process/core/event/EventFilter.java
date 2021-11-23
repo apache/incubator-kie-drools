@@ -19,8 +19,10 @@ import java.util.function.Function;
 
 public interface EventFilter {
 
-    boolean acceptsEvent(String type, Object event);
+    default boolean isCorrelated() {
+        return false;
+    }
 
-    boolean acceptsEvent(String type, Object event, Function<String, String> resolver);
+    boolean acceptsEvent(String type, Object event, Function<String, Object> resolver);
 
 }

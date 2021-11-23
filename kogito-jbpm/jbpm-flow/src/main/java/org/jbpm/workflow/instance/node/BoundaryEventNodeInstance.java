@@ -17,6 +17,7 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.function.Function;
 
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
@@ -29,7 +30,7 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
     private static final long serialVersionUID = -4958054074031174180L;
 
     @Override
-    public void signalEvent(String type, Object event) {
+    public void signalEvent(String type, Object event, Function<String, Object> varResolver) {
         if (triggerTime == null) {
             triggerTime = new Date();
         }
@@ -40,17 +41,22 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
         if (type != null && type.startsWith(Metadata.EVENT_TYPE_COMPENSATION)) {
             // if not active && completed, signal
             if (!isAttachedToNodeActive(nodeInstances, attachedTo, type, event) && isAttachedToNodeCompleted(attachedTo)) {
-                super.signalEvent(type, event);
+                super.signalEvent(type, event, varResolver);
             } else {
                 cancel();
             }
         } else {
             if (isAttachedToNodeActive(nodeInstances, attachedTo, type, event)) {
-                super.signalEvent(type, event);
+                super.signalEvent(type, event, varResolver);
             } else {
                 cancel();
             }
         }
+    }
+
+    @Override
+    public void signalEvent(String type, Object event) {
+        this.signalEvent(type, event, varName -> this.getVariable(varName));
     }
 
     private boolean isAttachedToNodeActive(Collection<NodeInstance> nodeInstances, String attachedTo, String type, Object event) {

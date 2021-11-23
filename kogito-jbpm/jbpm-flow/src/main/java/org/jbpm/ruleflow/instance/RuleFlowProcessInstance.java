@@ -31,7 +31,7 @@ public class RuleFlowProcessInstance extends WorkflowProcessInstanceImpl {
     }
 
     public void internalStart(String trigger) {
-        StartNode startNode = getRuleFlowProcess().getStart(trigger);
+        StartNode startNode = getRuleFlowProcess().getStart(trigger, varName -> getVariable(varName));
         if (startNode != null) {
             getNodeInstance(startNode).trigger(null, null);
         } else if (!getRuleFlowProcess().isDynamic()) {

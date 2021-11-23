@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 
+import org.jbpm.process.core.correlation.CorrelationManager;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.util.PatternConstants;
@@ -72,6 +73,12 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         return evaluatedValue;
 
     };
+
+    private CorrelationManager correlationManager = new CorrelationManager();
+
+    public CorrelationManager getCorrelationManager() {
+        return correlationManager;
+    }
 
     public WorkflowProcessImpl() {
         nodeContainer = (org.jbpm.workflow.core.NodeContainer) createNodeContainer();

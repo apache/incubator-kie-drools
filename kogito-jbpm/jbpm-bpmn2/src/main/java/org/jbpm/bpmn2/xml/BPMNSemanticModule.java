@@ -82,6 +82,11 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("association", new AssociationHandler());
         addHandler("documentation", new DocumentationHandler());
 
+        // related to correlations
+        addHandler("correlationProperty", new CorrelationPropertyHandler());
+        addHandler("collaboration", new CollaborationHandler());
+        addHandler("correlationSubscription", new CorrelationSubscriptionHandler());
+
         handlersByClass.put(Split.class, new SplitHandler());
         handlersByClass.put(Join.class, new JoinHandler());
         handlersByClass.put(EventNode.class, new EventNodeHandler());

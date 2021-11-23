@@ -535,20 +535,18 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         }
 
         @Override
-        public void signalEvent(final String type,
-                Object event) {
+        public void signalEvent(final String type, Object event) {
             for (EventFilter filter : eventFilters) {
-                if (!filter.acceptsEvent(type,
-                        event)) {
+                if (!filter.acceptsEvent(type, event, varName -> null)) {
                     return;
                 }
             }
             if (eventTransformer != null) {
                 event = eventTransformer.transformEvent(event);
             }
-            Map<String, Object> params = null;
+            Map<String, Object> params = new HashMap<>();
             if (inMappings != null && !inMappings.isEmpty()) {
-                params = new HashMap<String, Object>();
+                params = new HashMap<>();
 
                 if (inMappings.size() == 1) {
                     params.put(inMappings.keySet().iterator().next(), event);
@@ -564,6 +562,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
                     }
                 }
             }
+
             startProcessWithParamsAndTrigger(processId, params, type, false);
         }
     }

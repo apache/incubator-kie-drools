@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.exception.CompensationScope;
@@ -109,13 +111,14 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         return endNodes;
     }
 
-    public StartNode getStart(String trigger) {
+    public StartNode getStart(String trigger, Function<String, Object> varResolver) {
         Node[] nodes = getNodes();
 
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] instanceof StartNode) {
 
                 StartNode start = ((StartNode) nodes[i]);
+
                 // return start node that is not event based node
                 if (trigger == null && ((start.getTriggers() == null
                         || start.getTriggers().isEmpty())
@@ -125,8 +128,25 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
                     if (start.getTriggers() != null) {
                         for (Trigger t : start.getTriggers()) {
                             if (t instanceof EventTrigger) {
-                                for (EventFilter filter : ((EventTrigger) t).getEventFilters()) {
-                                    if (filter.acceptsEvent(trigger, null)) {
+                                EventTrigger eventTrigger = (EventTrigger) t;
+                                Map<String, String> mappings = eventTrigger.getInMappings();
+                                Object event = null;
+                                if (varResolver != null) {
+                                    switch (mappings.size()) {
+                                        case 0:
+                                            event = null;
+                                            break;
+                                        case 1:
+                                            event = varResolver.apply(mappings.keySet().iterator().next());
+                                            break;
+                                        default:
+                                            event = varResolver.apply("event");
+                                            break;
+                                    }
+                                }
+
+                                for (EventFilter filter : eventTrigger.getEventFilters()) {
+                                    if (filter.acceptsEvent(trigger, event, varResolver)) {
                                         return start;
                                     }
                                 }
@@ -164,7 +184,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
 
         protected void validateAddNode(Node node) {
             super.validateAddNode(node);
-            StartNode startNode = getStart(null);
+            StartNode startNode = getStart(null, null);
             if ((node instanceof StartNode) && (startNode != null && startNode.getTriggers() == null && startNode.getTimer() == null)) {
                 // ignore start nodes that are event based
                 if ((((StartNode) node).getTriggers() == null || ((StartNode) node).getTriggers().isEmpty()) && ((StartNode) node).getTimer() == null) {

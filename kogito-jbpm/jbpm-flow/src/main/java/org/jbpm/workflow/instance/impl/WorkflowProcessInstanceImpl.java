@@ -623,7 +623,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                             && ((EventNodeInterface) node).acceptsEvent(type, event, getResolver(node, currentView))) {
                         if (node instanceof EventNode && ((EventNode) node).getFrom() == null) {
                             EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
-                            eventNodeInstance.signalEvent(type, event);
+                            eventNodeInstance.signalEvent(type, event, getResolver(node, currentView));
                         } else {
                             if (node instanceof EventSubProcessNode && (resolveVariables(((EventSubProcessNode) node).getEvents()).contains(type))) {
                                 EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
@@ -632,13 +632,14 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                                 List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
                                 if (nodeInstances != null && !nodeInstances.isEmpty()) {
                                     for (NodeInstance nodeInstance : nodeInstances) {
-                                        ((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event);
+                                        ((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event, getResolver(node, currentView));
                                     }
                                 }
                             }
                         }
                     }
                 }
+
                 if (((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()) {
                     for (org.kie.api.definition.process.Node node : getWorkflowProcess().getNodes()) {
                         if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
@@ -668,7 +669,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         }
     }
 
-    private Function<String, String> getResolver(org.kie.api.definition.process.Node node, List<NodeInstance> currentView) {
+    private Function<String, Object> getResolver(org.kie.api.definition.process.Node node, List<NodeInstance> currentView) {
         if (node instanceof DynamicNode) {
             // special handling for dynamic node to allow to resolve variables from individual node instances of the dynamic node
             // instead of just relying on process instance's variables

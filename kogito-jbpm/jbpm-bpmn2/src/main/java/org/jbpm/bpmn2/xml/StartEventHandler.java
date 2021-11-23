@@ -27,12 +27,14 @@ import org.jbpm.bpmn2.core.Message;
 import org.jbpm.bpmn2.core.Signal;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.core.correlation.CorrelationManager;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ConstraintTrigger;
@@ -143,7 +145,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 startNode.setMetaData(TRIGGER_TYPE, TriggerMetaData.TriggerType.ConsumeMessage.name());
                 startNode.setMetaData(TRIGGER_REF, message.getName());
 
-                addTriggerWithInMappings(startNode, "Message-" + message.getName());
+                addTriggerWithInMappings(startNode, "Message-" + message.getName(), message.getId(), ((RuleFlowProcess) parser.getMetaData().get("CurrentProcessDefinition")).getCorrelationManager());
             } else if ("timerEventDefinition".equals(nodeName)) {
                 handleTimerNode(startNode, element, uri, localName, parser);
                 // following event definitions are only for event sub process and will be validated to not be included in top process definitions
@@ -197,11 +199,16 @@ public class StartEventHandler extends AbstractNodeHandler {
     }
 
     private void addTriggerWithInMappings(StartNode startNode, String triggerEventType) {
+        this.addTriggerWithInMappings(startNode, triggerEventType, null, null);
+    }
+
+    private void addTriggerWithInMappings(StartNode startNode, String triggerEventType, String messageRef, CorrelationManager manager) {
         EventTrigger trigger = new EventTrigger();
         EventTypeFilter eventFilter = new EventTypeFilter();
+        eventFilter.setCorrelationManager(manager);
         eventFilter.setType(triggerEventType);
+        eventFilter.setMessageRef(messageRef);
         trigger.addEventFilter(eventFilter);
-
         String mapping = (String) startNode.getMetaData(TRIGGER_MAPPING);
         if (mapping != null) {
             trigger.addInMapping(mapping, startNode.getOutMapping(mapping));

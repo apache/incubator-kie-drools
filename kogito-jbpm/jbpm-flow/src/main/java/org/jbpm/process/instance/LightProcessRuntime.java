@@ -303,8 +303,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         public void signalEvent(final String type,
                 Object event) {
             for (EventFilter filter : eventFilters) {
-                if (!filter.acceptsEvent(type,
-                        event)) {
+                if (!filter.acceptsEvent(type, event, varName -> null)) {
                     return;
                 }
             }

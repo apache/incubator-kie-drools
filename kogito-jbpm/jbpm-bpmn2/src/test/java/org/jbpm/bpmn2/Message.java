@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.core.event;
 
-import java.util.function.Function;
+package org.jbpm.bpmn2;
 
-public class NonAcceptingEventTypeFilter extends EventTypeFilter {
+public class Message {
 
-    private static final long serialVersionUID = 510l;
+    private String id;
+    private String content;
 
-    /**
-     * Nodes that use this event filter should never be triggered by this event
-     */
-    @Override
-    public boolean acceptsEvent(String type, Object event, Function<String, Object> resolver) {
-        return false;
+    public Message() {
+        // do nothing
+    }
+
+    public Message(String id, String content) {
+        this.id = id;
+        this.content = content;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
 }

@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 
 import org.jbpm.process.core.context.variable.Variable;
@@ -53,7 +54,8 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
 
     private static final long serialVersionUID = 510l;
 
-    public void signalEvent(String type, Object event) {
+    @Override
+    public void signalEvent(String type, Object event, Function<String, Object> varResolver) {
         if ("timerTriggered".equals(type)) {
             TimerInstance timerInstance = (TimerInstance) event;
             if (timerInstance.getId().equals(slaTimerId)) {
@@ -79,6 +81,10 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
             }
             triggerCompleted();
         }
+    }
+
+    public void signalEvent(String type, Object event) {
+        this.signalEvent(type, event, varName -> this.getVariable(varName));
     }
 
     @Override
@@ -305,4 +311,5 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
         }
         return Collections.singleton(new BaseEventDescription(getEventType(), getNodeDefinitionId(), getNodeName(), "signal", getStringId(), getProcessInstance().getStringId(), dataType));
     }
+
 }

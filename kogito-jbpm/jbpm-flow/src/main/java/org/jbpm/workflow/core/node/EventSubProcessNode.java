@@ -69,27 +69,13 @@ public class EventSubProcessNode extends CompositeContextNode {
     }
 
     @Override
-    public boolean acceptsEvent(String type, Object event) {
-        for (EventTypeFilter filter : this.eventTypeFilters) {
-            if (filter.acceptsEvent(type, event)) {
-                return true;
-            }
-        }
-        return super.acceptsEvent(type, event);
-    }
-
-    @Override
-    public boolean acceptsEvent(String type, Object event, Function<String, String> resolver) {
-        if (resolver == null) {
-            return acceptsEvent(type, event);
-        }
-
+    public boolean acceptsEvent(String type, Object event, Function<String, Object> resolver) {
         for (EventTypeFilter filter : this.eventTypeFilters) {
             if (filter.acceptsEvent(type, event, resolver)) {
                 return true;
             }
         }
-        return super.acceptsEvent(type, event);
+        return super.acceptsEvent(type, event, resolver);
     }
 
     @Override

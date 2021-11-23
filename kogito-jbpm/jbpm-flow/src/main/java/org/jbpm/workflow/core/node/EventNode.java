@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.event.EventFilter;
@@ -74,9 +75,10 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface,
         return null;
     }
 
-    public boolean acceptsEvent(String type, Object event) {
+    @Override
+    public boolean acceptsEvent(String type, Object event, Function<String, Object> resolver) {
         for (EventFilter filter : filters) {
-            if (!filter.acceptsEvent(type, event)) {
+            if (!filter.acceptsEvent(type, event, resolver)) {
                 return false;
             }
         }

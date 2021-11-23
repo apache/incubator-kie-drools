@@ -402,6 +402,7 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
             assertNull(current);
             return;
         }
+        expected.remove("CorrelationSubscriptions");
         assertNotNull(current);
         assertEquals(expected.keySet()
                 .stream()

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jbpm.workflow.core.Node;
@@ -299,21 +300,21 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     @Override
-    public void signalEvent(String type, Object event) {
+    public void signalEvent(String type, Object event, Function<String, Object> varResolver) {
         List<NodeInstance> currentView = new ArrayList<>(this.nodeInstances);
         super.signalEvent(type, event);
+
         for (org.kie.api.definition.process.Node node : getCompositeNode().internalGetNodes()) {
             if (node instanceof EventNodeInterface
-                    && ((EventNodeInterface) node).acceptsEvent(type, event)) {
+                    && ((EventNodeInterface) node).acceptsEvent(type, event, varName -> this.getVariable(varName))) {
                 if (node instanceof EventNode && ((EventNode) node).getFrom() == null || node instanceof EventSubProcessNode) {
                     EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
-                    eventNodeInstance.signalEvent(type, event);
+                    eventNodeInstance.signalEvent(type, event, varResolver);
                 } else {
                     List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
                     if (nodeInstances != null && !nodeInstances.isEmpty()) {
                         for (NodeInstance nodeInstance : nodeInstances) {
-                            ((EventNodeInstanceInterface) nodeInstance)
-                                    .signalEvent(type, event);
+                            ((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event, varResolver);
                         }
                     }
                 }
@@ -332,6 +333,11 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
                 nodeInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
             }
         }
+    }
+
+    @Override
+    public void signalEvent(String type, Object event) {
+        this.signalEvent(type, event, varName -> this.getVariable(varName));
     }
 
     public List<NodeInstance> getNodeInstances(final long nodeId) {
@@ -461,4 +467,5 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     public Map<String, Integer> getIterationLevels() {
         return iterationLevels;
     }
+
 }

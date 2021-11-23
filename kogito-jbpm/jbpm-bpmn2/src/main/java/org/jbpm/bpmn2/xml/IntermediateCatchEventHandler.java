@@ -253,7 +253,9 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 eventNode.setMetaData(TRIGGER_REF, message.getName());
                 List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                 EventTypeFilter eventFilter = new EventTypeFilter();
+                eventFilter.setCorrelationManager(((RuleFlowProcess) parser.getMetaData().get("CurrentProcessDefinition")).getCorrelationManager());
                 eventFilter.setType("Message-" + message.getName());
+                eventFilter.setMessageRef(message.getId());
                 eventFilters.add(eventFilter);
                 eventNode.setEventFilters(eventFilters);
             }

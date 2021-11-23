@@ -34,16 +34,12 @@ public class BoundaryEventNode extends EventNode {
     }
 
     @Override
-    public boolean acceptsEvent(String type, Object event, Function<String, String> resolver) {
-        if (resolver == null) {
-            return acceptsEvent(type, event);
-        }
-
+    public boolean acceptsEvent(String type, Object event, Function<String, Object> resolver) {
         for (EventFilter filter : getEventFilters()) {
             if (filter.acceptsEvent(type, event, resolver)) {
                 return true;
             }
         }
-        return super.acceptsEvent(type, event);
+        return super.acceptsEvent(type, event, resolver);
     }
 }
