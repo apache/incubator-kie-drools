@@ -43,6 +43,7 @@ public class BatchSchedulingPanel extends SolutionPanel<BatchSchedule> {
         setLayout(new BorderLayout());
     }
 
+    @Override
     public void resetPanel(BatchSchedule solution) {
         removeAll();
         repaint();

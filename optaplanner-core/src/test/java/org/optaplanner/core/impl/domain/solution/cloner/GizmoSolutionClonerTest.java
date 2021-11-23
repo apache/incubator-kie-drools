@@ -87,6 +87,7 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
 
         ClassLoader gizmoClassLoader = new ClassLoader() {
             // getName() is an abstract method in Java 11 but not in Java 8
+            @Override
             public String getName() {
                 return "OptaPlanner Gizmo SolutionCloner Test ClassLoader";
             }

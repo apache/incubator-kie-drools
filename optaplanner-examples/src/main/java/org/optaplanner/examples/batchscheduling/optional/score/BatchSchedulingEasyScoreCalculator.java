@@ -31,6 +31,7 @@ import org.optaplanner.examples.batchscheduling.domain.RoutePath;
 
 public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<BatchSchedule, BendableLongScore> {
 
+    @Override
     public BendableLongScore calculateScore(BatchSchedule schedule) {
         // Refer to incremental score calculator for comments on hard and soft scores.
         long hard0Score = 0;

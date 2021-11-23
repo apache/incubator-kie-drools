@@ -57,6 +57,7 @@ public class GizmoMemberAccessorFactoryTest {
     public void testGizmoNotOnClasspathThrowsException() throws NoSuchMethodException {
         Member member = TestdataEntity.class.getMethod("getValue");
         Thread.currentThread().setContextClassLoader(new ClassLoader() {
+            @Override
             public String getName() {
                 return "ClassLoader without Gizmo";
             }

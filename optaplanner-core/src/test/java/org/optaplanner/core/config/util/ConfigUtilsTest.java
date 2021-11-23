@@ -313,10 +313,12 @@ public class ConfigUtilsTest {
     }
 
     public static class ClassWithBridgeMethod extends ClassWithBridgeMethodParent<Integer> {
+        @Override
         public Integer getScore() {
             return 0;
         }
 
+        @Override
         @PlanningScore
         public void setScore(Integer score) {
         }

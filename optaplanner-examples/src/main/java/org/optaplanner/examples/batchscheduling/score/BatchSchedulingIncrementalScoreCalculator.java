@@ -817,6 +817,7 @@ public class BatchSchedulingIncrementalScoreCalculator
         return segmentStringMap.size() - segmentSet.size();
     }
 
+    @Override
     public BendableLongScore calculateScore() {
         return BendableLongScore.of(new long[] { hard0Score, hard1Score, hard2Score },
                 new long[] { soft0Score, soft1Score });

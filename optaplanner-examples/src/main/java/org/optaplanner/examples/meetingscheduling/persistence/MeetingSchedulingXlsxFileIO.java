@@ -98,6 +98,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             super(workbook, MeetingSchedulingApp.SOLVER_CONFIG);
         }
 
+        @Override
         public MeetingSchedule read() {
             solution = new MeetingSchedule();
             readConfiguration();
