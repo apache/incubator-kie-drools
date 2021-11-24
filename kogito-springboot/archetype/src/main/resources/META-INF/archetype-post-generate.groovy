@@ -125,9 +125,9 @@ def removeUnneededResources(String starters, String appPackage) {
         Files.deleteIfExists(projectPath.resolve("src/main/resources/test-process.bpmn2"))
         Files.deleteIfExists(projectPath.resolve("src/test/java/" + packagePath + "/GreetingsTest.java"))
     }
-    if (!starters.contains("decisions") || !starters.contains("predictions") || !starters.contains("processes")) {
+    if (!starters.contains("decisions") && !starters.contains("predictions")) {
         // no need to keep DMN files
-        Files.deleteIfExists(projectPath.resolve("src/main/resources/Traffic Violation.dmn"))
+        Files.deleteIfExists(projectPath.resolve("src/main/resources/TrafficViolation.dmn"))
         Files.deleteIfExists(projectPath.resolve("src/test/java/" + packagePath + "/TrafficViolationTest.java"))
     }
 }
