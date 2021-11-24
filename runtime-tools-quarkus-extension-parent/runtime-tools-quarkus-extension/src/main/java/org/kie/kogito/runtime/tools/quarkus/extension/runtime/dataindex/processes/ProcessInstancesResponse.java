@@ -18,20 +18,20 @@ package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.process
 
 public class ProcessInstancesResponse {
 
-    private ProcessInstances data;
+    private ProcessInstancesData data;
 
     public ProcessInstancesResponse() {
     }
 
-    public ProcessInstancesResponse(final ProcessInstances data) {
+    public ProcessInstancesResponse(final ProcessInstancesData data) {
         this.data = data;
     }
 
-    public ProcessInstances getData() {
+    public ProcessInstancesData getData() {
         return data;
     }
 
-    public void setData(final ProcessInstances data) {
+    public void setData(final ProcessInstancesData data) {
         this.data = data;
     }
 }

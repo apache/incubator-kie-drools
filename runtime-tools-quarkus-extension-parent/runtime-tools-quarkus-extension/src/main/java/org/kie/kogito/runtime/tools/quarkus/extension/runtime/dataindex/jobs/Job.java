@@ -16,9 +16,7 @@
 
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.jobs;
 
-import javax.json.JsonValue;
-
-public class Job implements JsonValue {
+public class Job {
 
     private String id;
 
@@ -35,11 +33,6 @@ public class Job implements JsonValue {
 
     public void setId(final String id) {
         this.id = id;
-    }
-
-    @Override
-    public ValueType getValueType() {
-        return ValueType.OBJECT;
     }
 
     @Override

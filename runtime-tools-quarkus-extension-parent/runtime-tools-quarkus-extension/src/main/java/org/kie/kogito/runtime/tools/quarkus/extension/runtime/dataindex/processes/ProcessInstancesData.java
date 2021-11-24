@@ -18,22 +18,25 @@ package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.process
 
 import java.util.List;
 
-public class ProcessInstances {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private List<ProcessInstance> processInstancesList;
+public class ProcessInstancesData {
 
-    public ProcessInstances() {
+    @JsonProperty("ProcessInstances")
+    private List<ProcessInstance> instances;
+
+    public ProcessInstancesData() {
     }
 
-    public ProcessInstances(final List<ProcessInstance> processInstancesList) {
-        this.processInstancesList = processInstancesList;
+    public ProcessInstancesData(final List<ProcessInstance> instances) {
+        this.instances = instances;
     }
 
     public List<ProcessInstance> getProcessInstances() {
-        return processInstancesList;
+        return instances;
     }
 
     public void setProcessInstances(final List<ProcessInstance> processInstancesList) {
-        this.processInstancesList = processInstancesList;
+        this.instances = processInstancesList;
     }
 }

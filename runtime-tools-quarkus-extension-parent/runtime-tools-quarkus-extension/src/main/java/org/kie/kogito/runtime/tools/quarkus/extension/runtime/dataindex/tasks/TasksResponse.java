@@ -18,20 +18,16 @@ package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.tasks;
 
 public class TasksResponse {
 
-    private UserTaskInstances data;
+    private TaskResponseData data;
 
     public TasksResponse() {
     }
 
-    public TasksResponse(final UserTaskInstances data) {
-        this.data = data;
-    }
-
-    public UserTaskInstances getData() {
+    public TaskResponseData getData() {
         return data;
     }
 
-    public void setData(final UserTaskInstances data) {
+    public void setData(final TaskResponseData data) {
         this.data = data;
     }
 }

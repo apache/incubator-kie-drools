@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.jobs;
+package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.tasks;
 
 import java.util.List;
 
-public class Jobs {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private List<Job> jobsList;
+public class TaskResponseData {
 
-    public Jobs() {
+    @JsonProperty("UserTaskInstances")
+    private List<Task> tasks;
+
+    public TaskResponseData() {
     }
 
-    public Jobs(final List<Job> jobsList) {
-        this.jobsList = jobsList;
+    public TaskResponseData(final List<Task> tasks) {
+        this.tasks = tasks;
     }
 
-    public List<Job> getJobs() {
-        return jobsList;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
-    public void setJobs(final List<Job> jobsList) {
-        this.jobsList = jobsList;
+    public void setTasks(final List<Task> userTaskInstancesList) {
+        this.tasks = userTaskInstancesList;
     }
 }

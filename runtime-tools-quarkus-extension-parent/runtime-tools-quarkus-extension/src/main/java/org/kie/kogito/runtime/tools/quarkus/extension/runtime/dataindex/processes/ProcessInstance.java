@@ -16,9 +16,7 @@
 
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.processes;
 
-import javax.json.JsonValue;
-
-public class ProcessInstance implements JsonValue {
+public class ProcessInstance {
 
     private String id;
 
@@ -35,11 +33,6 @@ public class ProcessInstance implements JsonValue {
 
     public void setId(final String id) {
         this.id = id;
-    }
-
-    @Override
-    public ValueType getValueType() {
-        return ValueType.OBJECT;
     }
 
     @Override

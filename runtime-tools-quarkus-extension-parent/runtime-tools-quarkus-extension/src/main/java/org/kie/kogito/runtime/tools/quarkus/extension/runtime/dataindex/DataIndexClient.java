@@ -16,6 +16,7 @@
 
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,6 +26,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/graphql")
 @RegisterRestClient
+@ApplicationScoped
 public interface DataIndexClient {
 
     @POST

@@ -16,9 +16,7 @@
 
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.tasks;
 
-import javax.json.JsonValue;
-
-public class Task implements JsonValue {
+public class Task {
 
     private String id;
 
@@ -35,11 +33,6 @@ public class Task implements JsonValue {
 
     public void setId(final String id) {
         this.id = id;
-    }
-
-    @Override
-    public ValueType getValueType() {
-        return ValueType.OBJECT;
     }
 
     @Override
