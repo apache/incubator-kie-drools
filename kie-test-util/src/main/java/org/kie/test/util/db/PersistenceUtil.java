@@ -147,7 +147,7 @@ public class PersistenceUtil {
         if (driverClass.startsWith("org.h2")) {
             String jdbcUrl = dsProps.getProperty("url");
             // fix an incomplete JDBC URL used by some tests
-            if (jdbcUrl.startsWith("jdbc:h2:") && !jdbcUrl.contains("tcp://")) {
+            if (jdbcUrl.startsWith("jdbc:h2:") && !jdbcUrl.contains("tcp://") && !jdbcUrl.contains("mem:")) {
                 dsProps.put("url", jdbcUrl + "tcp://localhost/target/./persistence-test");
             }
             h2Server.start();
