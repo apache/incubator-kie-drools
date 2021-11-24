@@ -17,7 +17,7 @@ package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
-import org.kie.kogito.serverless.workflow.parser.NodeIdGenerator;
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.states.DelayState;
@@ -25,13 +25,18 @@ import io.serverlessworkflow.api.states.DelayState;
 public class DelayHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends StateHandler<DelayState, TimerNodeFactory<P>, P> {
 
     protected DelayHandler(DelayState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
-            NodeIdGenerator idGenerator) {
-        super(state, workflow, factory, idGenerator);
+            ParserContext parserContext) {
+        super(state, workflow, factory, parserContext);
     }
 
     @Override
-    protected TimerNodeFactory<P> makeNode() {
-        return factory.timerNode(idGenerator.getId()).name(state.getName()).delay(state.getTimeDelay());
+    public boolean usedForCompensation() {
+        return state.isUsedForCompensation();
+    }
+
+    @Override
+    protected TimerNodeFactory<P> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        return (TimerNodeFactory<P>) factory.timerNode(parserContext.newId()).name(state.getName()).delay(state.getTimeDelay());
     }
 
 }

@@ -17,7 +17,7 @@ package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
-import org.kie.kogito.serverless.workflow.parser.NodeIdGenerator;
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.suppliers.InjectActionSupplier;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,13 +28,18 @@ import io.serverlessworkflow.api.states.InjectState;
 public class InjectHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends StateHandler<InjectState, ActionNodeFactory<P>, P> {
 
     protected InjectHandler(InjectState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
-            NodeIdGenerator idGenerator) {
-        super(state, workflow, factory, idGenerator);
+            ParserContext parserContext) {
+        super(state, workflow, factory, parserContext);
     }
 
     @Override
-    public ActionNodeFactory<P> makeNode() {
-        ActionNodeFactory<P> actionNodeFactory = factory.actionNode(idGenerator.getId()).name(
+    public boolean usedForCompensation() {
+        return state.isUsedForCompensation();
+    }
+
+    @Override
+    public ActionNodeFactory<P> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        ActionNodeFactory<P> actionNodeFactory = (ActionNodeFactory<P>) factory.actionNode(parserContext.newId()).name(
                 state.getName());
         JsonNode node = state.getData();
         if (node != null) {

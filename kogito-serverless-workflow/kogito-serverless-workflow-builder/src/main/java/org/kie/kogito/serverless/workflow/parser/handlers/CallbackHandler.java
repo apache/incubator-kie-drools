@@ -18,7 +18,7 @@ package org.kie.kogito.serverless.workflow.parser.handlers;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
-import org.kie.kogito.serverless.workflow.parser.NodeIdGenerator;
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 
@@ -27,24 +27,29 @@ import io.serverlessworkflow.api.states.CallbackState;
 
 public class CallbackHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends CompositeContextNodeHandler<CallbackState, P, CompositeContextNodeFactory<P>> {
 
-    protected CallbackHandler(CallbackState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory, NodeIdGenerator idGenerator) {
-        super(state, workflow, factory, idGenerator);
+    protected CallbackHandler(CallbackState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory, ParserContext parserContext) {
+        super(state, workflow, factory, parserContext);
     }
 
     @Override
-    public CompositeContextNodeFactory<P> makeNode() {
-        CompositeContextNodeFactory<P> embeddedSubProcess = factory.compositeContextNode(idGenerator.getId()).name(state.getName()).autoComplete(true);
-        NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(idGenerator.getId()).name("EmbeddedStart");
+    public boolean usedForCompensation() {
+        return state.isUsedForCompensation();
+    }
+
+    @Override
+    public CompositeContextNodeFactory<P> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        CompositeContextNodeFactory<P> embeddedSubProcess = (CompositeContextNodeFactory<P>) factory.compositeContextNode(parserContext.newId()).name(state.getName()).autoComplete(true);
+        NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart");
         NodeFactory<?, ?> currentNode;
         if (state.getAction() != null) {
             currentNode = getActionNode(embeddedSubProcess, state.getAction());
             embeddedSubProcess.connection(startNode.getNode().getId(), currentNode.getNode().getId());
             startNode = currentNode;
         }
-        currentNode = ServerlessWorkflowParser.messageEventNode(embeddedSubProcess.eventNode(idGenerator.getId()), ServerlessWorkflowUtils
+        currentNode = ServerlessWorkflowParser.messageEventNode(embeddedSubProcess.eventNode(parserContext.newId()), ServerlessWorkflowUtils
                 .getWorkflowEventFor(workflow, state.getEventRef()));
         embeddedSubProcess.connection(startNode.getNode().getId(), currentNode.getNode().getId());
-        long endId = idGenerator.getId();
+        long endId = parserContext.newId();
         embeddedSubProcess.endNode(endId).name("EmbeddedEnd").terminate(true).done().connection(currentNode
                 .getNode().getId(), endId);
         return embeddedSubProcess;

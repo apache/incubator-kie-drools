@@ -35,7 +35,7 @@ import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 import org.kie.kogito.serverless.workflow.JsonNodeResolver;
 import org.kie.kogito.serverless.workflow.ObjectResolver;
-import org.kie.kogito.serverless.workflow.parser.NodeIdGenerator;
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.kie.kogito.serverless.workflow.parser.util.WorkflowAppContext;
@@ -84,15 +84,15 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
     private final WorkflowAppContext workflowAppContext = WorkflowAppContext.ofAppResources();
 
     protected CompositeContextNodeHandler(S state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
-            NodeIdGenerator idGenerator) {
-        super(state, workflow, factory, idGenerator);
+            ParserContext parserContext) {
+        super(state, workflow, factory, parserContext);
     }
 
     protected final N handleActions(List<Action> actions) {
-        N embeddedSubProcess = (N) factory.compositeContextNode(idGenerator.getId()).name(state.getName()).autoComplete(true);
+        N embeddedSubProcess = (N) factory.compositeContextNode(parserContext.newId()).name(state.getName()).autoComplete(true);
 
         if (actions != null && !actions.isEmpty()) {
-            NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(idGenerator.getId()).name("EmbeddedStart");
+            NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart");
             NodeFactory<?, ?> currentNode = startNode;
 
             for (Action action : actions) {
@@ -100,12 +100,12 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                 embeddedSubProcess.connection(startNode.getNode().getId(), currentNode.getNode().getId());
                 startNode = currentNode;
             }
-            long endId = idGenerator.getId();
+            long endId = parserContext.newId();
             embeddedSubProcess.endNode(endId).name("EmbeddedEnd").terminate(true).done().connection(currentNode
                     .getNode().getId(), endId);
         } else {
-            long startId = idGenerator.getId();
-            long endId = idGenerator.getId();
+            long startId = parserContext.newId();
+            long endId = parserContext.newId();
             embeddedSubProcess.startNode(startId).name("EmbeddedStart").done().endNode(endId).name("EmbeddedEnd")
                     .terminate(true).done().connection(startId, endId);
         }
@@ -129,24 +129,24 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
         switch (getActionType(actionFunction)) {
             case SCRIPT:
                 return embeddedSubProcess
-                        .actionNode(idGenerator.getId())
+                        .actionNode(parserContext.newId())
                         .name(actionName)
                         .action(JavaDialect.ID,
                                 functionRef
                                         .getArguments().get(SCRIPT_TYPE_PARAM).asText());
             case EXPRESSION:
                 return embeddedSubProcess
-                        .actionNode(idGenerator.getId())
+                        .actionNode(parserContext.newId())
                         .name(actionName)
                         .action(new ExpressionActionSupplier(workflow.getExpressionLang(), actionFunction.getOperation()));
             case SYSOUT:
                 return embeddedSubProcess
-                        .actionNode(idGenerator.getId())
+                        .actionNode(parserContext.newId())
                         .name(actionName)
                         .action(new SysoutActionSupplier(workflow.getExpressionLang(), functionRef.getArguments().get(SYSOUT_TYPE_PARAM).asText()));
             case SERVICE:
                 WorkItemNodeFactory<N> serviceFactory = embeddedSubProcess
-                        .workItemNode(idGenerator.getId())
+                        .workItemNode(parserContext.newId())
                         .name(actionName)
                         .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, SERVICE_TASK_TYPE)
                         .workName(SERVICE_TASK_TYPE)
@@ -174,7 +174,7 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
 
             case REST:
                 WorkItemNodeFactory<N> workItemFactory = embeddedSubProcess
-                        .workItemNode(idGenerator.getId())
+                        .workItemNode(parserContext.newId())
                         .name(actionFunction.getName())
                         .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, RestWorkItemHandler.REST_TASK_TYPE)
                         .workName(RestWorkItemHandler.REST_TASK_TYPE)
@@ -211,7 +211,7 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                         .withModelParameter(WORKITEM_PARAM)
                         .withArgs(functionsToMap(functionArgs), JsonNodeResolver.class, JsonNode.class, s -> true)
                         .withResultHandler(new JsonNodeResultHandlerExprSupplier(), JsonNodeResultHandler.class)
-                        .build(embeddedSubProcess.workItemNode(idGenerator.getId())).name(functionRef.getRefName())
+                        .build(embeddedSubProcess.workItemNode(parserContext.newId())).name(functionRef.getRefName())
                         .inMapping(WORKITEM_PARAM,
                                 ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)
                         .outMapping(
@@ -297,7 +297,7 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
 
     private NodeFactory<?, ?> emptyNode(N embeddedSubProcess, String actionName) {
         return embeddedSubProcess
-                .actionNode(idGenerator.getId())
+                .actionNode(parserContext.newId())
                 .name(actionName)
                 .action(JavaDialect.ID, "");
     }

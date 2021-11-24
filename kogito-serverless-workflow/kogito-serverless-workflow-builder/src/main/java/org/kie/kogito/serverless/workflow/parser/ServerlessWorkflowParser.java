@@ -16,9 +16,11 @@
 package org.kie.kogito.serverless.workflow.parser;
 
 import java.io.Reader;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.Metadata;
@@ -33,19 +35,14 @@ import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.EventDefinition;
-import io.serverlessworkflow.api.interfaces.State;
 
 public class ServerlessWorkflowParser {
-
-    private static final Logger logger = LoggerFactory.getLogger(ServerlessWorkflowParser.class);
 
     public static final String NODE_START_NAME = "Start";
     public static final String NODE_END_NAME = "End";
@@ -84,7 +81,6 @@ public class ServerlessWorkflowParser {
         if (workflowStartStateName == null || workflowStartStateName.trim().isEmpty()) {
             throw new IllegalArgumentException("workflow does not define a starting state");
         }
-
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess(workflow.getId())
                 .name(workflow.getName() == null ? DEFAULT_NAME : workflow.getName())
                 .version(workflow.getVersion() == null ? DEFAULT_VERSION : workflow.getVersion())
@@ -92,21 +88,20 @@ public class ServerlessWorkflowParser {
                         DEFAULT_PACKAGE) : DEFAULT_PACKAGE)
                 .visibility("Public")
                 .variable(DEFAULT_WORKFLOW_VAR, JsonNode.class);
-        Map<String, StateHandler<?, ?, ?>> stateHandlers = new LinkedHashMap<>();
-        for (State state : workflow.getStates()) {
-            StateHandler<?, ?, ?> stateHandler = StateHandlerFactory.getStateHandler(state, workflow, factory, idGenerator);
-            if (stateHandler == null) {
-                logger.warn("Unsupported state {}. Ignoring it", state.getName());
-            } else {
-                stateHandlers.put(state.getName(), stateHandler);
-                stateHandler.handleStart(workflowStartStateName);
-            }
+        ParserContext parserContext = new ParserContext(idGenerator);
+        Collection<StateHandler<?, ?, ?>> handlers =
+                workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, factory, parserContext))
+                        .filter(Optional::isPresent).map(Optional::get).filter(state -> !state.usedForCompensation()).collect(Collectors.toList());
+        handlers.forEach(StateHandler::handleStart);
+        handlers.forEach(StateHandler::handleEnd);
+        handlers.forEach(StateHandler::handleState);
+        handlers.forEach(StateHandler::handleTransitions);
+        handlers.forEach(StateHandler::handleErrors);
+        handlers.forEach(StateHandler::handleConnections);
+        if (parserContext.isCompensation()) {
+            factory.metaData(Metadata.COMPENSATION, true);
+            factory.addCompensationContext(workflow.getId());
         }
-        stateHandlers.values().forEach(StateHandler::handleEnd);
-        stateHandlers.values().forEach(StateHandler::handleState);
-        stateHandlers.values().forEach(s -> s.handleTransitions(stateHandlers));
-        stateHandlers.values().forEach(s -> s.handleErrors(stateHandlers));
-        stateHandlers.values().forEach(StateHandler::handleConnections);
         return factory.validate().getProcess();
     }
 
