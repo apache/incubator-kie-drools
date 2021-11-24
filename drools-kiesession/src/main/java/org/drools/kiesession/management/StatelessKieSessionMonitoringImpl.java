@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.core.management;
+package org.drools.kiesession.management;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.management.ObjectName;
 
+import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.management.GenericKieSessionMonitoringImpl;
+import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.rule.ObjectDeletedEvent;
@@ -71,7 +74,7 @@ public class StatelessKieSessionMonitoringImpl extends GenericKieSessionMonitori
     public long getTotalSessions() {
         long totalCount = 0;
         for (KieRuntimeEventManager kr : ksessions) {
-            totalCount += ((WorkingMemoryCounter) kr).getWorkingMemoryCreated();
+            totalCount += ((StatelessKnowledgeSessionImpl) kr).getWorkingMemoryCreated();
         }
         return totalCount;
     }

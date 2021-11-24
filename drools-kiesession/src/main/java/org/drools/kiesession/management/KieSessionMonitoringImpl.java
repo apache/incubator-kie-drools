@@ -1,8 +1,10 @@
-package org.drools.core.management;
+package org.drools.kiesession.management;
 
 import javax.management.ObjectName;
 
 import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.management.GenericKieSessionMonitoringImpl;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.management.KieSessionMonitoringMXBean;

@@ -24,7 +24,6 @@ import org.drools.core.base.FieldFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.BeliefSystemFactory;
-import org.drools.kiesession.agenda.DefaultAgendaFactory;
 import org.drools.core.common.DefaultNamedEntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPointFactory;
@@ -39,11 +38,15 @@ import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.kiesession.agenda.DefaultAgendaFactory;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
+import org.drools.kiesession.management.KieSessionMonitoringImpl;
+import org.drools.kiesession.management.StatelessKieSessionMonitoringImpl;
 import org.drools.kiesession.session.KieSessionsPoolImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
@@ -56,56 +59,44 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
 
     public static final RuntimeComponentFactoryImpl DEFAULT = new RuntimeComponentFactoryImpl();
 
-    private FactHandleFactory handleFactory = new ReteooFactHandleFactory();
+    private final FactHandleFactory handleFactory = new ReteooFactHandleFactory();
+    private final PropagationContextFactory propagationFactory = PhreakPropagationContextFactory.getInstance();
+    private final WorkingMemoryFactory wmFactory = PhreakWorkingMemoryFactory.getInstance();
+    private final AgendaFactory agendaFactory = DefaultAgendaFactory.getInstance();
+    private final AgendaGroupFactory agendaGroupFactory = PriorityQueueAgendaGroupFactory.getInstance();
+    private final FieldDataFactory fieldFactory = FieldFactory.getInstance();
 
-    
     public FactHandleFactory getFactHandleFactoryService() {
         return handleFactory;
     }
 
-    
     public NamedEntryPointFactory getNamedEntryPointFactory() {
         return new DefaultNamedEntryPointFactory();
     }
 
-    private WorkingMemoryFactory wmFactory = PhreakWorkingMemoryFactory.getInstance();
-
-    
     public WorkingMemoryFactory getWorkingMemoryFactory() {
         return wmFactory;
     }
 
-    private PropagationContextFactory propagationFactory = PhreakPropagationContextFactory.getInstance();
-
-    
     public PropagationContextFactory getPropagationContextFactory() {
         return propagationFactory;
     }
 
-    private BeliefSystemFactory bsFactory = new PhreakBeliefSystemFactory();
+    private final BeliefSystemFactory bsFactory = new PhreakBeliefSystemFactory();
 
     
     public BeliefSystemFactory getBeliefSystemFactory() {
         return bsFactory;
     }
 
-    private AgendaFactory agendaFactory = DefaultAgendaFactory.getInstance();
-
-    
     public AgendaFactory getAgendaFactory() {
         return agendaFactory;
     }
 
-    private AgendaGroupFactory agendaGroupFactory = PriorityQueueAgendaGroupFactory.getInstance();
-
-    
     public AgendaGroupFactory getAgendaGroupFactory() {
         return agendaGroupFactory;
     }
 
-    private FieldDataFactory fieldFactory = FieldFactory.getInstance();
-
-    
     public FieldDataFactory getFieldFactory() {
         return fieldFactory;
     }
@@ -148,5 +139,13 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
 
     public KieSessionsPool createSessionsPool(KnowledgeBaseImpl kBase, int initialSize) {
         return new KieSessionsPoolImpl(kBase, initialSize);
+    }
+
+    public KieSessionMonitoringImpl createStatefulSessionMonitor(DroolsManagementAgent.CBSKey cbsKey) {
+        return new KieSessionMonitoringImpl( cbsKey.getKcontainerId(), cbsKey.getKbaseId(), cbsKey.getKsessionName() );
+    }
+
+    public StatelessKieSessionMonitoringImpl createStatelessSessionMonitor(DroolsManagementAgent.CBSKey cbsKey) {
+        return new StatelessKieSessionMonitoringImpl( cbsKey.getKcontainerId(), cbsKey.getKbaseId(), cbsKey.getKsessionName() );
     }
 }

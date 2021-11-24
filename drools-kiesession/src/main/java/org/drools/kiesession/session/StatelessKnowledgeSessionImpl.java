@@ -39,7 +39,6 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.management.DroolsManagementAgent;
-import org.drools.core.management.WorkingMemoryCounter;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.KieBase;
@@ -61,7 +60,7 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 
-public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements StatelessKnowledgeSession, StatelessKieSession, WorkingMemoryCounter {
+public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements StatelessKnowledgeSession, StatelessKieSession {
 
     private KnowledgeBaseImpl kBase;
     private MapGlobalResolver    sessionGlobals = new MapGlobalResolver();

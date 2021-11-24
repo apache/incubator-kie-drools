@@ -30,6 +30,8 @@ import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.management.GenericKieSessionMonitoringImpl;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.internal.utils.ServiceRegistry;
@@ -71,6 +73,10 @@ public interface RuntimeComponentFactory {
     StatelessKieSession createStatelessSession(KnowledgeBaseImpl kbase, KieSessionConfiguration conf);
 
     KieSessionsPool createSessionsPool(KnowledgeBaseImpl kBase, int initialSize);
+
+    GenericKieSessionMonitoringImpl createStatefulSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
+
+    GenericKieSessionMonitoringImpl createStatelessSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
 
     class Holder {
         private static final RuntimeComponentFactory INSTANCE = ServiceRegistry.getService( RuntimeComponentFactory.class );
