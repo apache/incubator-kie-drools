@@ -115,7 +115,7 @@ public class RuleNetworkEvaluator {
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) smem.getRootNode();
 
-        LinkedList<StackEntry> stack = new LinkedList<StackEntry>();
+        LinkedList<StackEntry> stack = new LinkedList<>();
 
         NetworkNode node;
         Memory nodeMem;
@@ -380,7 +380,7 @@ public class RuleNetworkEvaluator {
                                    SegmentMemory[] smems, int smemIndex, ActivationsManager activationsManager, LinkedList<StackEntry> stack,
                                    boolean processRian, RuleExecutor executor, TupleSets<LeftTuple> srcTuples, SegmentMemory smem,
                                    TupleSets<LeftTuple> stagedLeftTuples, LeftTupleSinkNode sink ) {
-        TupleSets<LeftTuple> trgTuples = new TupleSetsImpl<LeftTuple>();
+        TupleSets<LeftTuple> trgTuples = new TupleSetsImpl<>();
         if ( NodeTypeEnums.isBetaNode( node )) {
             boolean exitInnerEval = evalBetaNode(pmem, node, nodeMem, smems, smemIndex, trgTuples, activationsManager, stack, processRian, executor, srcTuples, stagedLeftTuples, sink);
             if ( exitInnerEval ) {
@@ -500,7 +500,7 @@ public class RuleNetworkEvaluator {
                 smemIndex = 0;
                 SegmentMemory smem = smems[smemIndex]; // 0
 
-                LeftTupleNode liaNode = (LeftInputAdapterNode) qpmem.getPathEndNode().getPathNodes()[0];
+                LeftTupleNode liaNode = qpmem.getPathEndNode().getPathNodes()[0];
 
                 if (liaNode == smem.getTipNode()) {
                     // segment only has liaNode in it
@@ -915,7 +915,7 @@ public class RuleNetworkEvaluator {
         doRemoveExistentialRightMemoryForReorder(rtm, resumeFromCurrent, rightTuple);
         doAddExistentialRightMemoryForReorder(rtm, resumeFromCurrent, rightTuple);
 
-        updateBlockersAndPropagate(notNode, rightTuple, reteEvaluator, rtm, bm.getContext(), notNode.getRawConstraints(), !resumeFromCurrent, null, null, null);;
+        updateBlockersAndPropagate(notNode, rightTuple, reteEvaluator, rtm, bm.getContext(), notNode.getRawConstraints(), !resumeFromCurrent, null, null, null);
     }
 
     private static void doAddExistentialRightMemoryForReorder(TupleMemory rtm, boolean resumeFromCurrent, RightTuple rightTuple) {
