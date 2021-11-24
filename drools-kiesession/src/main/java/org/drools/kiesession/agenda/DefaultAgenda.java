@@ -97,41 +97,41 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultAgenda implements Externalizable, InternalAgenda {
 
-    protected static final transient Logger                      log                = LoggerFactory.getLogger( DefaultAgenda.class );
+    protected static final transient Logger log = LoggerFactory.getLogger( DefaultAgenda.class );
 
-    private static final long                                    serialVersionUID   = 510l;
+    private static final long serialVersionUID = 510l;
 
     /** Working memory of this Agenda. */
     protected InternalWorkingMemory workingMemory;
 
     /** Items time-delayed. */
 
-    private Map<String, InternalActivationGroup>                 activationGroups;
+    private Map<String, InternalActivationGroup> activationGroups;
 
     private final org.drools.core.util.LinkedList<RuleAgendaItem> eager = new org.drools.core.util.LinkedList<>();
 
-    private final Map<QueryImpl, RuleAgendaItem>                 queries = new ConcurrentHashMap<>();
+    private final Map<QueryImpl, RuleAgendaItem> queries = new ConcurrentHashMap<>();
 
-    private ConsequenceExceptionHandler                          legacyConsequenceExceptionHandler;
+    private ConsequenceExceptionHandler legacyConsequenceExceptionHandler;
 
     private org.kie.api.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
 
-    protected int                                                activationCounter;
+    protected int activationCounter;
 
-    private boolean                                              declarativeAgenda;
-    private boolean                                              sequential;
+    private boolean declarativeAgenda;
+    private boolean sequential;
 
-    private ActivationsFilter                                    activationsFilter;
+    private ActivationsFilter activationsFilter;
 
-    private volatile List<PropagationContext>                    expirationContexts;
+    private volatile List<PropagationContext> expirationContexts;
 
-    private RuleEvaluator                                        ruleEvaluator;
+    private RuleEvaluator ruleEvaluator;
 
-    private PropagationList                                      propagationList;
+    private PropagationList propagationList;
 
-    private ExecutionStateMachine                                executionStateMachine;
+    private ExecutionStateMachine executionStateMachine;
 
-    private AgendaGroupsManager                                  agendaGroupsManager;
+    private AgendaGroupsManager agendaGroupsManager;
 
     // ------------------------------------------------------------
     // Constructors

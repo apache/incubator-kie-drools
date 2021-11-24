@@ -16,8 +16,8 @@
 package org.drools.mvel.compiler.lang;
 
 import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.compiler.lang.MVELDumper;
-import org.drools.compiler.lang.MVELDumper.MVELDumperContext;
+import org.drools.compiler.lang.DumperContext;
+import org.drools.compiler.lang.DescrDumper;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
@@ -31,9 +31,9 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class MVELDumperTest {
+public class DescrDumperTest {
 
-    private MVELDumper dumper;
+    private DescrDumper dumper;
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +41,7 @@ public class MVELDumperTest {
         new SetEvaluatorsDefinition();
         new MatchesEvaluatorsDefinition();
 
-        dumper = new MVELDumper();
+        dumper = new DescrDumper();
     }
 
     @Test
@@ -170,7 +170,7 @@ public class MVELDumperTest {
         String expected = "property > value";
 
         ConstraintConnectiveDescr descr = parse( input );
-        MVELDumperContext ctx = new MVELDumperContext();
+        DumperContext ctx = new DumperContext();
         String result = dumper.dump( descr,
                                      ctx );
 
@@ -191,7 +191,7 @@ public class MVELDumperTest {
         String expected = "( a > b[10].prop || 10 != 20 ) && someMethod(10) == 20";
 
         ConstraintConnectiveDescr descr = parse( input );
-        MVELDumperContext ctx = new MVELDumperContext();
+        DumperContext ctx = new DumperContext();
         String result = dumper.dump( descr,
                                      ctx );
 
@@ -246,7 +246,7 @@ public class MVELDumperTest {
         String expected = "( age > 10 && age < 20 || age > 30 )";
 
         ConstraintConnectiveDescr descr = parse( input );
-        MVELDumperContext ctx = new MVELDumperContext();
+        DumperContext ctx = new DumperContext();
         String result = dumper.dump( descr,
                                      ctx );
 
@@ -267,7 +267,7 @@ public class MVELDumperTest {
         String expected = "( age == 10 || age == 20 || age == $someVal )";
 
         ConstraintConnectiveDescr descr = parse( input );
-        MVELDumperContext ctx = new MVELDumperContext();
+        DumperContext ctx = new DumperContext();
         String result = dumper.dump( descr,
                                      ctx );
 
@@ -288,7 +288,7 @@ public class MVELDumperTest {
         String expected = "age != 10 && age != 20 && age != $someVal";
 
         ConstraintConnectiveDescr descr = parse( input );
-        MVELDumperContext ctx = new MVELDumperContext();
+        DumperContext ctx = new DumperContext();
         String result = dumper.dump( descr,
                                      ctx );
 
