@@ -52,7 +52,7 @@ public class TypedValueTestUtils {
                 name,
                 "SUCCESS",
                 new UnitValue(typeRef, typeRef, value),
-                Collections.emptyMap(),
+                Collections.emptyList(),
                 Collections.emptyList());
     }
 
@@ -61,7 +61,7 @@ public class TypedValueTestUtils {
                 name,
                 "SUCCESS",
                 new StructureValue(typeRef, value),
-                Collections.emptyMap(),
+                Collections.emptyList(),
                 Collections.emptyList());
     }
 

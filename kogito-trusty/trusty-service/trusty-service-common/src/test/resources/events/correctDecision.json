@@ -76,29 +76,32 @@
           }
         }
       },
-      "outcomeInputs": {
-        "Violation": {
-          "kind": "STRUCTURE",
-          "type": "tViolation",
+      "outcomeInputs": [
+        {
+          "name": "Violation",
           "value": {
-            "Type": {
-              "kind": "UNIT",
-              "type": "string",
-              "value": "speed"
-            },
-            "Actual Speed": {
-              "kind": "UNIT",
-              "type": "number",
-              "value": 140
-            },
-            "Speed Limit": {
-              "kind": "UNIT",
-              "type": "number",
-              "value": 100
+            "kind": "STRUCTURE",
+            "type": "tViolation",
+            "value": {
+              "Type": {
+                "kind": "UNIT",
+                "type": "string",
+                "value": "speed"
+              },
+              "Actual Speed": {
+                "kind": "UNIT",
+                "type": "number",
+                "value": 140
+              },
+              "Speed Limit": {
+                "kind": "UNIT",
+                "type": "number",
+                "value": 100
+              }
             }
           }
         }
-      },
+      ],
       "messages": null,
       "hasErrors": false
     },
@@ -111,42 +114,48 @@
         "type": "string",
         "value": "Yes"
       },
-      "outcomeInputs": {
-        "Driver": {
-          "kind": "STRUCTURE",
-          "type": "tDriver",
-          "baseType": "tDriver",
+      "outcomeInputs": [
+        {
+          "name": "Driver",
           "value": {
-            "Age": {
-              "kind": "UNIT",
-              "type": "number",
-              "value": 25
-            },
-            "Points": {
-              "kind": "UNIT",
-              "type": "number",
-              "value": 13
+            "kind": "STRUCTURE",
+            "type": "tDriver",
+            "baseType": "tDriver",
+            "value": {
+              "Age": {
+                "kind": "UNIT",
+                "type": "number",
+                "value": 25
+              },
+              "Points": {
+                "kind": "UNIT",
+                "type": "number",
+                "value": 13
+              }
             }
           }
         },
-        "Fine": {
-          "kind": "STRUCTURE",
-          "type": "tFine",
-          "baseType": "tFine",
+        {
+          "name": "Fine",
           "value": {
-            "Amount": {
-              "kind": "UNIT",
-              "type": "number",
-              "value": 1000
-            },
-            "Points": {
-              "kind": "UNIT",
-              "type": "number",
-              "value": 7
+            "kind": "STRUCTURE",
+            "type": "tFine",
+            "baseType": "tFine",
+            "value": {
+              "Amount": {
+                "kind": "UNIT",
+                "type": "number",
+                "value": 1000
+              },
+              "Points": {
+                "kind": "UNIT",
+                "type": "number",
+                "value": 7
+              }
             }
           }
         }
-      },
+      ],
       "messages": null,
       "hasErrors": false
     }

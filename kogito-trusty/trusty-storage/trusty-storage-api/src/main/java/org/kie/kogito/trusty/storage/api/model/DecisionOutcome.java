@@ -16,8 +16,8 @@
 package org.kie.kogito.trusty.storage.api.model;
 
 import java.util.Collection;
-import java.util.Map;
 
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.tracing.decision.event.message.Message;
 import org.kie.kogito.tracing.decision.event.message.MessageLevel;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
@@ -49,7 +49,7 @@ public class DecisionOutcome {
     private TypedValue outcomeResult;
 
     @JsonProperty(OUTCOME_INPUTS_FIELD)
-    private Map<String, TypedValue> outcomeInputs;
+    private Collection<NamedTypedValue> outcomeInputs;
 
     @JsonProperty(MESSAGES_FIELD)
     private Collection<Message> messages;
@@ -61,7 +61,7 @@ public class DecisionOutcome {
             String outcomeName,
             String evaluationStatus,
             TypedValue outcomeResult,
-            Map<String, TypedValue> outcomeInputs,
+            Collection<NamedTypedValue> outcomeInputs,
             Collection<Message> messages) {
         this.outcomeId = outcomeId;
         this.outcomeName = outcomeName;
@@ -103,11 +103,11 @@ public class DecisionOutcome {
         this.outcomeResult = outcomeResult;
     }
 
-    public Map<String, TypedValue> getOutcomeInputs() {
+    public Collection<NamedTypedValue> getOutcomeInputs() {
         return outcomeInputs;
     }
 
-    public void setOutcomeInputs(Map<String, TypedValue> outcomeInputs) {
+    public void setOutcomeInputs(Collection<NamedTypedValue> outcomeInputs) {
         this.outcomeInputs = outcomeInputs;
     }
 

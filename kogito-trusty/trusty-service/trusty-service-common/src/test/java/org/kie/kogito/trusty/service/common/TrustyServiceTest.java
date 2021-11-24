@@ -260,7 +260,7 @@ public class TrustyServiceTest {
                         new DecisionOutcome(
                                 "OUT1", "Result", "SUCCEEDED",
                                 new UnitValue("string", "string", toJsonNode("\"YES\"")),
-                                Collections.emptyMap(), Collections.emptyList())));
+                                Collections.emptyList(), Collections.emptyList())));
 
         Storage<String, Decision> decisionStorageMock = mock(Storage.class);
         when(decisionStorageMock.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(false);
@@ -520,7 +520,7 @@ public class TrustyServiceTest {
                         new DecisionOutcome(
                                 "OUT1", "salary", "SUCCEEDED",
                                 new UnitValue("integer", "integer", new IntNode(1000)),
-                                Collections.emptyMap(), Collections.emptyList())));
+                                Collections.emptyList(), Collections.emptyList())));
 
         when(decisionStorage.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(true);
         when(trustyStorageServiceMock.getDecisionsStorage()).thenReturn(decisionStorage);

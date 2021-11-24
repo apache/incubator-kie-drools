@@ -19,10 +19,10 @@ package org.kie.kogito.trusty.service.common.messaging.incoming;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.tracing.decision.event.message.Message;
 import org.kie.kogito.tracing.decision.event.message.MessageExceptionField;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
@@ -61,8 +61,8 @@ public class TraceEventTestUtils {
         assertEquals(expected.getOutcomeName(), actual.getOutcomeName());
         assertTypedValue(expected.getOutcomeResult(), actual.getOutcomeResult());
         assertEquals(expected.getEvaluationStatus(), actual.getEvaluationStatus());
-        assertList(expected.getOutcomeInputs().entrySet(),
-                actual.getOutcomeInputs().entrySet(),
+        assertList(expected.getOutcomeInputs(),
+                actual.getOutcomeInputs(),
                 TraceEventTestUtils::assertTypedValue,
                 TraceEventTestUtils::compareTypedValue);
         assertList(expected.getMessages(),
@@ -114,9 +114,9 @@ public class TraceEventTestUtils {
         assertMessageExceptionField(expected.getCause(), actual.getCause());
     }
 
-    public static void assertTypedValue(Map.Entry<String, TypedValue> expected,
-            Map.Entry<String, TypedValue> actual) {
-        assertEquals(expected.getKey(), actual.getKey());
+    public static void assertTypedValue(NamedTypedValue expected,
+            NamedTypedValue actual) {
+        assertEquals(expected.getName(), actual.getName());
         assertTypedValue(expected.getValue(), actual.getValue());
     }
 
@@ -155,10 +155,10 @@ public class TraceEventTestUtils {
                 .toComparison();
     }
 
-    public static int compareTypedValue(Map.Entry<String, TypedValue> expected,
-            Map.Entry<String, TypedValue> actual) {
+    public static int compareTypedValue(NamedTypedValue expected,
+            NamedTypedValue actual) {
         return new CompareToBuilder()
-                .append(expected.getKey(), actual.getKey())
+                .append(expected.getName(), actual.getName())
                 .append(expected.getValue().getKind(), actual.getValue().getKind())
                 .append(expected.getValue().toUnit().getBaseType(), actual.getValue().toUnit().getBaseType())
                 .append(expected.getValue().getType(), actual.getValue().getType())
