@@ -32,7 +32,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.util.Drools;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -82,9 +81,6 @@ public interface RuntimeComponentFactory {
     }
 
     static <T> T throwExceptionForMissingRuntime() {
-        if (Drools.isNativeImage()) {
-            return null;
-        }
         throw new RuntimeException(NO_RUNTIME);
     }
 }

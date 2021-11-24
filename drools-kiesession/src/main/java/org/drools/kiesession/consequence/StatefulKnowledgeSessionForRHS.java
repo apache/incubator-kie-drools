@@ -17,7 +17,6 @@ import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -33,7 +32,6 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
@@ -45,6 +43,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.kiebase.KieBaseEventListener;
@@ -680,12 +679,6 @@ public class StatefulKnowledgeSessionForRHS
 
     public void cancelActivation(Activation activation, boolean declarativeAgenda) {
         delegate.cancelActivation(activation, declarativeAgenda);
-    }
-
-    @Override
-    public InternalWorkingMemory setStateless(boolean stateless) {
-        delegate.setStateless(stateless);
-        return this;
     }
 
     public void clearAgenda() {

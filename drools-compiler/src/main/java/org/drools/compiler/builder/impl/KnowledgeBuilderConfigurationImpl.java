@@ -33,7 +33,6 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
-import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
@@ -147,8 +146,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     private Map<String, ResultSeverity>       severityMap;
 
-    private DroolsCompilerComponentFactory    compilerComponentFactory;
-
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
     private CompilationCache                  compilationCache        = null;
@@ -261,8 +258,6 @@ public class KnowledgeBuilderConfigurationImpl
 
         setProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME,
                     this.chainedProperties.getProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME,"true"));
-
-        this.compilerComponentFactory = new DroolsCompilerComponentFactory();
     }
 
     protected ClassLoader getFunctionFactoryClassLoader() {
@@ -697,14 +692,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     public void setDefaultPackageName(String defaultPackageName) {
         this.defaultPackageName = defaultPackageName;
-    }
-
-    public DroolsCompilerComponentFactory getCompilerComponentFactory() {
-        return compilerComponentFactory;
-    }
-
-    public void setCompilerComponentFactory(DroolsCompilerComponentFactory compilerComponentFactory) {
-        this.compilerComponentFactory = compilerComponentFactory;
     }
 
     public LanguageLevelOption getLanguageLevel() {

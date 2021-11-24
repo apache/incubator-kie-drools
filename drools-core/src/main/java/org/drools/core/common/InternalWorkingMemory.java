@@ -156,6 +156,4 @@ public interface InternalWorkingMemory
     default boolean isThreadSafe() {
         return getSessionConfiguration().isThreadSafe();
     }
-
-    InternalWorkingMemory setStateless(boolean stateless);
 }

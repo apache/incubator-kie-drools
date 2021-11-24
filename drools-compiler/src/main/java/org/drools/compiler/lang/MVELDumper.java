@@ -43,6 +43,12 @@ import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
 
 public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter {
 
+    private static final MVELDumper INSTANCE = new MVELDumper();
+
+    public static MVELDumper getInstance() {
+        return MVELDumper.INSTANCE;
+    }
+
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(", Pattern.MULTILINE );
 
     private static final String[] standard;

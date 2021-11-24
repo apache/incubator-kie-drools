@@ -55,7 +55,6 @@ import org.drools.core.phreak.SynchronizedBypassPropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.phreak.ThreadUnsafePropagationList;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -96,10 +95,7 @@ import org.slf4j.LoggerFactory;
  * Non-invalidated actions are left on the agenda, and are executed in turn.
  * </p>
  */
-public class DefaultAgenda
-        implements
-        Externalizable,
-        InternalAgenda {
+public class DefaultAgenda implements Externalizable, InternalAgenda {
 
     protected static final transient Logger                      log                = LoggerFactory.getLogger( DefaultAgenda.class );
 
@@ -125,19 +121,17 @@ public class DefaultAgenda
     private boolean                                              declarativeAgenda;
     private boolean                                              sequential;
 
-    private ObjectTypeConf                                       activationObjectTypeConf;
-
-    private ActivationsFilter activationsFilter;
+    private ActivationsFilter                                    activationsFilter;
 
     private volatile List<PropagationContext>                    expirationContexts;
 
-    private RuleEvaluator ruleEvaluator;
+    private RuleEvaluator                                        ruleEvaluator;
 
-    private PropagationList propagationList;
+    private PropagationList                                      propagationList;
 
-    private ExecutionStateMachine executionStateMachine;
+    private ExecutionStateMachine                                executionStateMachine;
 
-    private AgendaGroupsManager agendaGroupsManager;
+    private AgendaGroupsManager                                  agendaGroupsManager;
 
     // ------------------------------------------------------------
     // Constructors

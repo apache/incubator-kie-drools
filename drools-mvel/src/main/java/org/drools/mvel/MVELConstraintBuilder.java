@@ -46,6 +46,7 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.FieldFactory;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
@@ -224,8 +225,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             Evaluator evaluator = buildLiteralEvaluator(context, extractor, restrictionDescr, vtype);
             if (evaluator != null && evaluator.isTemporal()) {
                 try {
-                    field = context.getCompilerFactory().getFieldFactory().getFieldValue(field.getValue(),
-                                                                                         ValueType.DATE_TYPE);
+                    field = FieldFactory.getInstance().getFieldValue(field.getValue(), ValueType.DATE_TYPE);
                 } catch (Exception e) {
                     context.addError( new DescrBuildError( context.getParentDescr(),
                                                            restrictionDescr,
@@ -794,7 +794,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                 vtype = ValueType.determineValueType(o.getClass());
             }
 
-            return context.getCompilerFactory().getFieldFactory().getFieldValue(o, vtype);
+            return FieldFactory.getInstance().getFieldValue(o, vtype);
         } catch (final Exception e) {
             // we will fallback to regular preducates, so don't raise an error
         }

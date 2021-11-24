@@ -73,7 +73,6 @@ public class TraitKnowledgePackageImpl extends KnowledgePackageImpl {
         }
     }
 
-
     @Override
     protected String[] getImplicitImports() {
         return implicitImports;

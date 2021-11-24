@@ -854,7 +854,7 @@ public class PatternBuilder
         d.copyLocation(patternDescr);
 
         mvelCtx.clear();
-        String expr = context.getCompilerFactory().getExpressionProcessor().dump(d, ccd, mvelCtx);
+        String expr = MVELDumper.getInstance().dump(d, ccd, mvelCtx);
         Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
 
         // create bindings

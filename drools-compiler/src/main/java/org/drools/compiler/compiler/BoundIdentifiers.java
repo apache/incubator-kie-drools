@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.lang.MVELDumper;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.EvaluatorWrapper;
@@ -99,7 +100,7 @@ public class BoundIdentifiers {
         }
 
         if ( cls == null && operators.containsKey( identifier )) {
-            cls = context.getConfiguration().getCompilerComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass();
+            cls = MVELDumper.getInstance().getEvaluatorWrapperClass();
         }
 
         return cls;

@@ -362,7 +362,7 @@ public class QueryElementBuilder
 
     private QueryArgument getLiteralQueryArgument( RuleBuildContext context, BaseDescr descr, ConstraintConnectiveDescr result ) {
         MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-        String expr = context.getCompilerFactory().getExpressionProcessor().dump( result, mvelCtx );
+        String expr = MVELDumper.getInstance().dump( result, mvelCtx );
         try {
             Object value = CoreComponentsBuilder.get()
                     .evaluateMvelExpression( context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" ),

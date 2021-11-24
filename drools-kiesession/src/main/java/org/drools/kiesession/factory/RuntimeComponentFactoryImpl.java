@@ -52,9 +52,9 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 
-public class KieComponentFactory implements Serializable, RuntimeComponentFactory {
+public class RuntimeComponentFactoryImpl implements Serializable, RuntimeComponentFactory {
 
-    public static final KieComponentFactory DEFAULT = new KieComponentFactory();
+    public static final RuntimeComponentFactoryImpl DEFAULT = new RuntimeComponentFactoryImpl();
 
     private FactHandleFactory handleFactory = new ReteooFactHandleFactory();
 

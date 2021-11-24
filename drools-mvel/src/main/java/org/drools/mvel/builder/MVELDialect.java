@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.lang.MVELDumper;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
@@ -592,7 +593,7 @@ public class MVELDialect
         for (String op : analysis.getBoundIdentifiers().getOperators().keySet()) {
             strList.add(op);
             ids.add(op);
-            resolvedInputs.put(op, context.getConfiguration().getCompilerComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass());
+            resolvedInputs.put(op, MVELDumper.getInstance().getEvaluatorWrapperClass());
         }
         EvaluatorWrapper[] operators = new EvaluatorWrapper[strList.size()];
         for (int i = 0; i < operators.length; i++) {

@@ -122,8 +122,8 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
     private InternalWorkingMemory createWorkingMemory() {
         this.kBase.readLock();
         try {
-            InternalWorkingMemory ksession = RuntimeComponentFactory.get()
-                    .createStatefulSession(kBase, this.environment, this.conf, false )
+            InternalWorkingMemory ksession = ((StatefulKnowledgeSessionImpl) RuntimeComponentFactory.get()
+                    .createStatefulSession(kBase, this.environment, this.conf, false ) )
                     .setStateless( true );
             wmCreated.incrementAndGet();
             return ksession;

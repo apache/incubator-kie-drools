@@ -38,12 +38,12 @@ import org.drools.traits.core.factmodel.TripleFactory;
 import org.drools.traits.core.factmodel.TripleFactoryImpl;
 import org.drools.traits.core.factmodel.TripleStore;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.drools.traits.core.reteoo.TraitKieComponentFactory;
+import org.drools.traits.core.reteoo.TraitRuntimeComponentFactoryImpl;
 
 public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> {
 
     private ProjectClassLoader classLoader;
-    private TraitKieComponentFactory kieComponentFactory = new TraitKieComponentFactory();
+    private TraitRuntimeComponentFactoryImpl kieComponentFactory = new TraitRuntimeComponentFactoryImpl();
     private TraitRegistryImpl registry;
     private ClassFieldAccessorStore store;
     private HierarchyEncoder encoder;

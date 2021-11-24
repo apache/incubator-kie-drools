@@ -534,7 +534,7 @@ public class KieContainerImpl
         return kBase == null ? null : new StatefulSessionPool(kBase, initialSize, () -> {
             SessionConfiguration sessConf = conf != null ? (SessionConfiguration) conf : kBase.getSessionConfiguration();
             StatefulKnowledgeSessionImpl kSession = stateless ?
-                    (StatefulKnowledgeSessionImpl) RuntimeComponentFactory.get().createStatefulSession(kBase, env, sessConf, false).setStateless( true ) :
+                    ((StatefulKnowledgeSessionImpl) RuntimeComponentFactory.get().createStatefulSession(kBase, env, sessConf, false)).setStateless( true ) :
                     (StatefulKnowledgeSessionImpl) kBase.newKieSession( sessConf, env );
             registerNewKieSession( kSessionModel, kBase, kSession );
             return kSession;

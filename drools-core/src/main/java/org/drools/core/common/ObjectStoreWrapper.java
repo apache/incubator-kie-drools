@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.kie.api.runtime.rule.FactHandle;
 
-public class ObjectStoreWrapper extends AbstractImmutableCollection {
+public class ObjectStoreWrapper implements Collection {
+
     public ObjectStore                     store;
     public org.kie.api.runtime.ObjectFilter filter;
     public int                             type;           // 0 == object, 1 == facthandle
@@ -108,5 +109,29 @@ public class ObjectStoreWrapper extends AbstractImmutableCollection {
             list.add(o);
         }
         return list;
+    }
+
+    public boolean add(Object o) {
+        throw new UnsupportedOperationException( "This is an immmutable Collection" );
+    }
+
+    public boolean addAll(Collection c) {
+        throw new UnsupportedOperationException( "This is an immmutable Collection" );
+    }
+
+    public void clear() {
+        throw new UnsupportedOperationException( "This is an immmutable Collection" );
+    }
+
+    public boolean remove(Object o) {
+        throw new UnsupportedOperationException( "This is an immmutable Collection" );
+    }
+
+    public boolean removeAll(Collection c) {
+        throw new UnsupportedOperationException( "This is an immmutable Collection" );
+    }
+
+    public boolean retainAll(Collection c) {
+        throw new UnsupportedOperationException( "This is an immmutable Collection" );
     }
 }
