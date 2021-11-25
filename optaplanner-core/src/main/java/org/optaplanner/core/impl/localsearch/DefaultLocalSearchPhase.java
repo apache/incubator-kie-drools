@@ -47,7 +47,7 @@ import io.micrometer.core.instrument.Tags;
 public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_> implements LocalSearchPhase<Solution_>,
         LocalSearchPhaseLifecycleListener<Solution_> {
 
-    protected LocalSearchDecider<Solution_> decider;
+    protected final LocalSearchDecider<Solution_> decider;
     protected final AtomicLong acceptedMoveCountPerStep = new AtomicLong(0);
     protected final AtomicLong selectedMoveCountPerStep = new AtomicLong(0);
     protected final Map<Tags, AtomicLong> constraintMatchTotalTagsToStepCount = new ConcurrentHashMap<>();
@@ -55,16 +55,9 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     protected final Map<Tags, List<AtomicReference<Number>>> constraintMatchTotalStepScoreMap = new ConcurrentHashMap<>();
     protected final Map<Tags, List<AtomicReference<Number>>> constraintMatchTotalBestScoreMap = new ConcurrentHashMap<>();
 
-    public DefaultLocalSearchPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, termination);
-    }
-
-    public LocalSearchDecider<Solution_> getDecider() {
-        return decider;
-    }
-
-    public void setDecider(LocalSearchDecider<Solution_> decider) {
-        this.decider = decider;
+    private DefaultLocalSearchPhase(Builder<Solution_> builder) {
+        super(builder);
+        decider = builder.decider;
     }
 
     @Override
@@ -235,4 +228,19 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         decider.solvingEnded(solverScope);
     }
 
+    public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
+
+        private final LocalSearchDecider<Solution_> decider;
+
+        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
+                LocalSearchDecider<Solution_> decider) {
+            super(phaseIndex, logIndentation, phaseTermination);
+            this.decider = decider;
+        }
+
+        @Override
+        public DefaultLocalSearchPhase<Solution_> build() {
+            return new DefaultLocalSearchPhase<>(this);
+        }
+    }
 }

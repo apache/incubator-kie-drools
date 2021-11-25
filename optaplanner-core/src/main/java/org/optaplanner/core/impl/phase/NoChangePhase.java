@@ -29,8 +29,8 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  */
 public class NoChangePhase<Solution_> extends AbstractPhase<Solution_> {
 
-    public NoChangePhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, termination);
+    private NoChangePhase(Builder<Solution_> builder) {
+        super(builder);
     }
 
     @Override
@@ -49,4 +49,15 @@ public class NoChangePhase<Solution_> extends AbstractPhase<Solution_> {
                 phaseIndex);
     }
 
+    public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
+
+        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination) {
+            super(phaseIndex, logIndentation, phaseTermination);
+        }
+
+        @Override
+        public NoChangePhase<Solution_> build() {
+            return new NoChangePhase<>(this);
+        }
+    }
 }

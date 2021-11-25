@@ -26,9 +26,11 @@ import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConf
 import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
@@ -57,19 +59,22 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
     public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
-        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
-        DefaultConstructionHeuristicPhase<Solution_> phase =
-                new DefaultConstructionHeuristicPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
-        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getPhaseTermination()));
-        ConstructionHeuristicType constructionHeuristicType_ =
-                Objects.requireNonNullElse(phaseConfig.getConstructionHeuristicType(),
-                        ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
-        phaseConfigPolicy
-                .setEntitySorterManner(phaseConfig.getEntitySorterManner() != null ? phaseConfig.getEntitySorterManner()
-                        : constructionHeuristicType_.getDefaultEntitySorterManner());
-        phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
-                : constructionHeuristicType_.getDefaultValueSorterManner());
+        ConstructionHeuristicType constructionHeuristicType_ = Objects.requireNonNullElse(
+                phaseConfig.getConstructionHeuristicType(),
+                ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
+        EntitySorterManner entitySorterManner = Objects.requireNonNullElse(
+                phaseConfig.getEntitySorterManner(),
+                constructionHeuristicType_.getDefaultEntitySorterManner());
+        ValueSorterManner valueSorterManner = Objects.requireNonNullElse(
+                phaseConfig.getValueSorterManner(),
+                constructionHeuristicType_.getDefaultValueSorterManner());
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.cloneBuilder()
+                .withReinitializeVariableFilterEnabled(true)
+                .withInitializedChainedValueFilterEnabled(true)
+                .withEntitySorterManner(entitySorterManner)
+                .withValueSorterManner(valueSorterManner)
+                .build();
+        Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         EntityPlacerConfig entityPlacerConfig_;
         if (phaseConfig.getEntityPlacerConfig() == null) {
             entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
@@ -89,26 +94,31 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         }
         EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_)
                 .buildEntityPlacer(phaseConfigPolicy);
-        phase.setEntityPlacer(entityPlacer);
+
+        DefaultConstructionHeuristicPhase.Builder<Solution_> builder = new DefaultConstructionHeuristicPhase.Builder<>(
+                phaseIndex,
+                solverConfigPolicy.getLogIndentation(),
+                phaseTermination,
+                entityPlacer,
+                buildDecider(phaseConfigPolicy, phaseTermination));
+
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
-            phase.setAssertStepScoreFromScratch(true);
+            builder.setAssertStepScoreFromScratch(true);
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
-            phase.setAssertExpectedStepScore(true);
-            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
+            builder.setAssertExpectedStepScore(true);
+            builder.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
-        return phase;
+        return builder.build();
     }
 
     private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
             Termination<Solution_> termination) {
-        ConstructionHeuristicForagerConfig foragerConfig_ = phaseConfig.getForagerConfig() == null
-                ? new ConstructionHeuristicForagerConfig()
-                : phaseConfig.getForagerConfig();
+        ConstructionHeuristicForagerConfig foragerConfig_ =
+                Objects.requireNonNullElseGet(phaseConfig.getForagerConfig(), ConstructionHeuristicForagerConfig::new);
         ConstructionHeuristicForager<Solution_> forager =
-                ConstructionHeuristicForagerFactory.<Solution_> create(foragerConfig_)
-                        .buildForager(configPolicy);
+                ConstructionHeuristicForagerFactory.<Solution_> create(foragerConfig_).buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         ConstructionHeuristicDecider<Solution_> decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();

@@ -27,10 +27,12 @@ import org.optaplanner.core.config.exhaustivesearch.NodeExplorationType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -59,18 +61,22 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
     public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
-        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
-        ExhaustiveSearchType exhaustiveSearchType_ = phaseConfig.getExhaustiveSearchType() == null
-                ? ExhaustiveSearchType.BRANCH_AND_BOUND
-                : phaseConfig.getExhaustiveSearchType();
-        phaseConfigPolicy
-                .setEntitySorterManner(phaseConfig.getEntitySorterManner() != null ? phaseConfig.getEntitySorterManner()
-                        : exhaustiveSearchType_.getDefaultEntitySorterManner());
-        phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
-                : exhaustiveSearchType_.getDefaultValueSorterManner());
-        DefaultExhaustiveSearchPhase<Solution_> phase =
-                new DefaultExhaustiveSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        ExhaustiveSearchType exhaustiveSearchType_ = Objects.requireNonNullElse(
+                phaseConfig.getExhaustiveSearchType(),
+                ExhaustiveSearchType.BRANCH_AND_BOUND);
+        EntitySorterManner entitySorterManner = Objects.requireNonNullElse(
+                phaseConfig.getEntitySorterManner(),
+                exhaustiveSearchType_.getDefaultEntitySorterManner());
+        ValueSorterManner valueSorterManner = Objects.requireNonNullElse(
+                phaseConfig.getValueSorterManner(),
+                exhaustiveSearchType_.getDefaultValueSorterManner());
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.cloneBuilder()
+                .withReinitializeVariableFilterEnabled(true)
+                .withInitializedChainedValueFilterEnabled(true)
+                .withEntitySorterManner(entitySorterManner)
+                .withValueSorterManner(valueSorterManner)
+                .build();
+        Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;
         if (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE) {
@@ -86,24 +92,29 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             nodeExplorationType_ = Objects.requireNonNullElse(phaseConfig.getNodeExplorationType(),
                     NodeExplorationType.DEPTH_FIRST);
         }
-        phase.setNodeComparator(nodeExplorationType_.buildNodeComparator(scoreBounderEnabled));
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
         EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
                 .buildEntitySelector(phaseConfigPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
-        phase.setEntitySelector(entitySelector);
-        phase.setDecider(buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phase.getPhaseTermination(),
-                scoreBounderEnabled));
+
+        DefaultExhaustiveSearchPhase.Builder<Solution_> builder = new DefaultExhaustiveSearchPhase.Builder<>(
+                phaseIndex,
+                solverConfigPolicy.getLogIndentation(),
+                phaseTermination,
+                nodeExplorationType_.buildNodeComparator(scoreBounderEnabled),
+                entitySelector,
+                buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phaseTermination, scoreBounderEnabled));
+
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
-            phase.setAssertWorkingSolutionScoreFromScratch(true);
-            phase.setAssertStepScoreFromScratch(true); // Does nothing because ES doesn't use predictStepScore()
+            builder.setAssertWorkingSolutionScoreFromScratch(true);
+            builder.setAssertStepScoreFromScratch(true); // Does nothing because ES doesn't use predictStepScore()
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
-            phase.setAssertExpectedWorkingSolutionScore(true);
-            phase.setAssertExpectedStepScore(true); // Does nothing because ES doesn't use predictStepScore()
-            phase.setAssertShadowVariablesAreNotStaleAfterStep(true); // Does nothing because ES doesn't use predictStepScore()
+            builder.setAssertExpectedWorkingSolutionScore(true);
+            builder.setAssertExpectedStepScore(true); // Does nothing because ES doesn't use predictStepScore()
+            builder.setAssertShadowVariablesAreNotStaleAfterStep(true); // Does nothing because ES doesn't use predictStepScore()
         }
-        return phase;
+        return builder.build();
     }
 
     private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {

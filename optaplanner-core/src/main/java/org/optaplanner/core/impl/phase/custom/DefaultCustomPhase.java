@@ -33,14 +33,11 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  */
 public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> implements CustomPhase<Solution_> {
 
-    protected List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
+    protected final List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
-    public DefaultCustomPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, termination);
-    }
-
-    public void setCustomPhaseCommandList(List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
-        this.customPhaseCommandList = customPhaseCommandList;
+    private DefaultCustomPhase(Builder<Solution_> builder) {
+        super(builder);
+        customPhaseCommandList = builder.customPhaseCommandList;
     }
 
     @Override
@@ -118,4 +115,19 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
                 phaseScope.getNextStepIndex());
     }
 
+    public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
+
+        private final List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
+
+        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
+                List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
+            super(phaseIndex, logIndentation, phaseTermination);
+            this.customPhaseCommandList = List.copyOf(customPhaseCommandList);
+        }
+
+        @Override
+        public DefaultCustomPhase<Solution_> build() {
+            return new DefaultCustomPhase<>(this);
+        }
+    }
 }

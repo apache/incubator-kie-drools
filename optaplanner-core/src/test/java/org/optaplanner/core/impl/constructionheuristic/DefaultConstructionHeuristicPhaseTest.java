@@ -36,8 +36,7 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithInitializedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(new ConstructionHeuristicPhaseConfig()));
 
         TestdataSolution solution = new TestdataSolution("s1");

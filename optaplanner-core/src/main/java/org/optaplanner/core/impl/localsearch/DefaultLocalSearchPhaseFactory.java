@@ -48,8 +48,7 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class DefaultLocalSearchPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig> {
+public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig> {
 
     public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig phaseConfig) {
         super(phaseConfig);
@@ -59,20 +58,21 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
     public LocalSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultLocalSearchPhase<Solution_> phase =
-                new DefaultLocalSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
-        phase.setDecider(buildDecider(phaseConfigPolicy,
-                phase.getPhaseTermination()));
+        Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
+        DefaultLocalSearchPhase.Builder<Solution_> builder = new DefaultLocalSearchPhase.Builder<>(
+                phaseIndex,
+                solverConfigPolicy.getLogIndentation(),
+                phaseTermination,
+                buildDecider(phaseConfigPolicy, phaseTermination));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
-            phase.setAssertStepScoreFromScratch(true);
+            builder.setAssertStepScoreFromScratch(true);
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
-            phase.setAssertExpectedStepScore(true);
-            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
+            builder.setAssertExpectedStepScore(true);
+            builder.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
-        return phase;
+        return builder.build();
     }
 
     private LocalSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,

@@ -152,9 +152,7 @@ public class DefaultPartitionedSearchPhaseTest {
                 });
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<TestdataSolution> solutionFuture = executor.submit(() -> {
-            return solver.solve(solution);
-        });
+        Future<TestdataSolution> solutionFuture = executor.submit(() -> solver.solve(solution));
 
         // make sure solver has started solving before terminating early
         solvingStarted.await();
@@ -182,9 +180,7 @@ public class DefaultPartitionedSearchPhaseTest {
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<TestdataSolution> solutionFuture = executor.submit(() -> {
-            return solver.solve(solution);
-        });
+        Future<TestdataSolution> solutionFuture = executor.submit(() -> solver.solve(solution));
 
         sleepAnnouncement.await();
         // Now we know the sleeping entity is sleeping so we can attempt to shut down.

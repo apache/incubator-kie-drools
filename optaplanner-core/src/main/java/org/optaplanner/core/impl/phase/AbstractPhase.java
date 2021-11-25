@@ -58,19 +58,22 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     // Called "phaseTermination" to clearly distinguish from "solverTermination" inside AbstractSolver.
     protected final Termination<Solution_> phaseTermination;
 
+    protected final boolean assertStepScoreFromScratch;
+    protected final boolean assertExpectedStepScore;
+    protected final boolean assertShadowVariablesAreNotStaleAfterStep;
+
     /** Used for {@link #addPhaseLifecycleListener(PhaseLifecycleListener)}. */
     protected PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
     protected AbstractSolver<Solution_> solver;
 
-    protected boolean assertStepScoreFromScratch = false;
-    protected boolean assertExpectedStepScore = false;
-    protected boolean assertShadowVariablesAreNotStaleAfterStep = false;
-
-    public AbstractPhase(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination) {
-        this.phaseIndex = phaseIndex;
-        this.logIndentation = logIndentation;
-        this.phaseTermination = phaseTermination;
+    protected AbstractPhase(Builder<Solution_> builder) {
+        phaseIndex = builder.phaseIndex;
+        logIndentation = builder.logIndentation;
+        phaseTermination = builder.phaseTermination;
+        assertStepScoreFromScratch = builder.assertStepScoreFromScratch;
+        assertExpectedStepScore = builder.assertExpectedStepScore;
+        assertShadowVariablesAreNotStaleAfterStep = builder.assertShadowVariablesAreNotStaleAfterStep;
     }
 
     public int getPhaseIndex() {
@@ -93,24 +96,12 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         return assertStepScoreFromScratch;
     }
 
-    public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
-        this.assertStepScoreFromScratch = assertStepScoreFromScratch;
-    }
-
     public boolean isAssertExpectedStepScore() {
         return assertExpectedStepScore;
     }
 
-    public void setAssertExpectedStepScore(boolean assertExpectedStepScore) {
-        this.assertExpectedStepScore = assertExpectedStepScore;
-    }
-
     public boolean isAssertShadowVariablesAreNotStaleAfterStep() {
         return assertShadowVariablesAreNotStaleAfterStep;
-    }
-
-    public void setAssertShadowVariablesAreNotStaleAfterStep(boolean assertShadowVariablesAreNotStaleAfterStep) {
-        this.assertShadowVariablesAreNotStaleAfterStep = assertShadowVariablesAreNotStaleAfterStep;
     }
 
     public abstract String getPhaseTypeString();
@@ -245,4 +236,34 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         }
     }
 
+    protected abstract static class Builder<Solution_> {
+
+        private final int phaseIndex;
+        private final String logIndentation;
+        private final Termination<Solution_> phaseTermination;
+
+        private boolean assertStepScoreFromScratch = false;
+        private boolean assertExpectedStepScore = false;
+        private boolean assertShadowVariablesAreNotStaleAfterStep = false;
+
+        protected Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination) {
+            this.phaseIndex = phaseIndex;
+            this.logIndentation = logIndentation;
+            this.phaseTermination = phaseTermination;
+        }
+
+        public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
+            this.assertStepScoreFromScratch = assertStepScoreFromScratch;
+        }
+
+        public void setAssertExpectedStepScore(boolean assertExpectedStepScore) {
+            this.assertExpectedStepScore = assertExpectedStepScore;
+        }
+
+        public void setAssertShadowVariablesAreNotStaleAfterStep(boolean assertShadowVariablesAreNotStaleAfterStep) {
+            this.assertShadowVariablesAreNotStaleAfterStep = assertShadowVariablesAreNotStaleAfterStep;
+        }
+
+        protected abstract AbstractPhase<Solution_> build();
+    }
 }

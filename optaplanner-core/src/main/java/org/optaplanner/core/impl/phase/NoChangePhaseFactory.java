@@ -31,7 +31,7 @@ public class NoChangePhaseFactory<Solution_> extends AbstractPhaseFactory<Soluti
     public NoChangePhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        return new NoChangePhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        return new NoChangePhase.Builder<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
+                buildPhaseTermination(phaseConfigPolicy, solverTermination)).build();
     }
 }

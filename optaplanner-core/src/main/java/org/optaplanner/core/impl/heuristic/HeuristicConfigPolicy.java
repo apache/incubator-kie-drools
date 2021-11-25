@@ -43,29 +43,26 @@ public class HeuristicConfigPolicy<Solution_> {
     private final Class<? extends ThreadFactory> threadFactoryClass;
     private final InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
 
-    private EntitySorterManner entitySorterManner = EntitySorterManner.NONE;
-    private ValueSorterManner valueSorterManner = ValueSorterManner.NONE;
-    private boolean reinitializeVariableFilterEnabled = false;
-    private boolean initializedChainedValueFilterEnabled = false;
+    private final EntitySorterManner entitySorterManner;
+    private final ValueSorterManner valueSorterManner;
 
-    private Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap = new HashMap<>();
-    private Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap = new HashMap<>();
+    private final boolean reinitializeVariableFilterEnabled;
+    private final boolean initializedChainedValueFilterEnabled;
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, Integer moveThreadCount, Integer moveThreadBufferSize,
-            Class<? extends ThreadFactory> threadFactoryClass,
-            InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory) {
-        this(environmentMode, "", moveThreadCount, moveThreadBufferSize, threadFactoryClass, scoreDirectorFactory);
-    }
+    private final Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap = new HashMap<>();
+    private final Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap = new HashMap<>();
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation, Integer moveThreadCount,
-            Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
-            InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory) {
-        this.environmentMode = environmentMode;
-        this.logIndentation = logIndentation;
-        this.moveThreadCount = moveThreadCount;
-        this.moveThreadBufferSize = moveThreadBufferSize;
-        this.threadFactoryClass = threadFactoryClass;
-        this.scoreDirectorFactory = scoreDirectorFactory;
+    private HeuristicConfigPolicy(Builder<Solution_> builder) {
+        this.environmentMode = builder.environmentMode;
+        this.logIndentation = builder.logIndentation;
+        this.moveThreadCount = builder.moveThreadCount;
+        this.moveThreadBufferSize = builder.moveThreadBufferSize;
+        this.threadFactoryClass = builder.threadFactoryClass;
+        this.scoreDirectorFactory = builder.scoreDirectorFactory;
+        this.entitySorterManner = builder.entitySorterManner;
+        this.valueSorterManner = builder.valueSorterManner;
+        this.reinitializeVariableFilterEnabled = builder.reinitializeVariableFilterEnabled;
+        this.initializedChainedValueFilterEnabled = builder.initializedChainedValueFilterEnabled;
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -78,10 +75,6 @@ public class HeuristicConfigPolicy<Solution_> {
 
     public Integer getMoveThreadCount() {
         return moveThreadCount;
-    }
-
-    public Class<? extends ThreadFactory> getThreadFactoryClass() {
-        return threadFactoryClass;
     }
 
     public Integer getMoveThreadBufferSize() {
@@ -104,36 +97,12 @@ public class HeuristicConfigPolicy<Solution_> {
         return entitySorterManner;
     }
 
-    public void setEntitySorterManner(EntitySorterManner entitySorterManner) {
-        this.entitySorterManner = entitySorterManner;
-    }
-
     public ValueSorterManner getValueSorterManner() {
         return valueSorterManner;
     }
 
-    public void setValueSorterManner(ValueSorterManner valueSorterManner) {
-        this.valueSorterManner = valueSorterManner;
-    }
-
     public boolean isReinitializeVariableFilterEnabled() {
         return reinitializeVariableFilterEnabled;
-    }
-
-    public Map<String, EntityMimicRecorder<Solution_>> getEntityMimicRecorderMap() {
-        return entityMimicRecorderMap;
-    }
-
-    public void setEntityMimicRecorderMap(Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap) {
-        this.entityMimicRecorderMap = entityMimicRecorderMap;
-    }
-
-    public Map<String, ValueMimicRecorder<Solution_>> getValueMimicRecorderMap() {
-        return valueMimicRecorderMap;
-    }
-
-    public void setValueMimicRecorderMap(Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap) {
-        this.valueMimicRecorderMap = valueMimicRecorderMap;
     }
 
     public boolean isInitializedChainedValueFilterEnabled() {
@@ -144,23 +113,19 @@ public class HeuristicConfigPolicy<Solution_> {
     // Builder methods
     // ************************************************************************
 
-    public HeuristicConfigPolicy<Solution_> createPhaseConfigPolicy() {
-        return new HeuristicConfigPolicy<>(environmentMode, logIndentation,
-                moveThreadCount, moveThreadBufferSize, threadFactoryClass,
-                scoreDirectorFactory);
+    public Builder<Solution_> cloneBuilder() {
+        return new Builder<>(environmentMode, moveThreadCount, moveThreadBufferSize, threadFactoryClass, scoreDirectorFactory)
+                .withLogIndentation(logIndentation);
     }
 
-    public HeuristicConfigPolicy<Solution_> createFilteredPhaseConfigPolicy() {
-        HeuristicConfigPolicy<Solution_> heuristicConfigPolicy = createPhaseConfigPolicy();
-        heuristicConfigPolicy.reinitializeVariableFilterEnabled = true;
-        heuristicConfigPolicy.initializedChainedValueFilterEnabled = true;
-        return heuristicConfigPolicy;
+    public HeuristicConfigPolicy<Solution_> createPhaseConfigPolicy() {
+        return cloneBuilder().build();
     }
 
     public HeuristicConfigPolicy<Solution_> createChildThreadConfigPolicy(ChildThreadType childThreadType) {
-        return new HeuristicConfigPolicy<>(environmentMode, logIndentation + "        ",
-                moveThreadCount, moveThreadBufferSize, threadFactoryClass,
-                scoreDirectorFactory);
+        return cloneBuilder()
+                .withLogIndentation(logIndentation + "        ")
+                .build();
     }
 
     // ************************************************************************
@@ -213,5 +178,61 @@ public class HeuristicConfigPolicy<Solution_> {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + environmentMode + ")";
+    }
+
+    public static class Builder<Solution_> {
+
+        private final EnvironmentMode environmentMode;
+        private final Integer moveThreadCount;
+        private final Integer moveThreadBufferSize;
+        private final Class<? extends ThreadFactory> threadFactoryClass;
+        private final InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
+
+        private String logIndentation = "";
+
+        private EntitySorterManner entitySorterManner = EntitySorterManner.NONE;
+        private ValueSorterManner valueSorterManner = ValueSorterManner.NONE;
+
+        private boolean reinitializeVariableFilterEnabled = false;
+        private boolean initializedChainedValueFilterEnabled = false;
+
+        public Builder(EnvironmentMode environmentMode, Integer moveThreadCount,
+                Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
+                InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory) {
+            this.environmentMode = environmentMode;
+            this.moveThreadCount = moveThreadCount;
+            this.moveThreadBufferSize = moveThreadBufferSize;
+            this.threadFactoryClass = threadFactoryClass;
+            this.scoreDirectorFactory = scoreDirectorFactory;
+        }
+
+        public Builder<Solution_> withLogIndentation(String logIndentation) {
+            this.logIndentation = logIndentation;
+            return this;
+        }
+
+        public Builder<Solution_> withEntitySorterManner(EntitySorterManner entitySorterManner) {
+            this.entitySorterManner = entitySorterManner;
+            return this;
+        }
+
+        public Builder<Solution_> withValueSorterManner(ValueSorterManner valueSorterManner) {
+            this.valueSorterManner = valueSorterManner;
+            return this;
+        }
+
+        public Builder<Solution_> withReinitializeVariableFilterEnabled(boolean reinitializeVariableFilterEnabled) {
+            this.reinitializeVariableFilterEnabled = reinitializeVariableFilterEnabled;
+            return this;
+        }
+
+        public Builder<Solution_> withInitializedChainedValueFilterEnabled(boolean initializedChainedValueFilterEnabled) {
+            this.initializedChainedValueFilterEnabled = initializedChainedValueFilterEnabled;
+            return this;
+        }
+
+        public HeuristicConfigPolicy<Solution_> build() {
+            return new HeuristicConfigPolicy<>(this);
+        }
     }
 }

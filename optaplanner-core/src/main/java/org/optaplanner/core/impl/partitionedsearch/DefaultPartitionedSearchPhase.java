@@ -60,24 +60,16 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     protected final ThreadFactory threadFactory;
     protected final Integer runnablePartThreadLimit;
 
-    protected List<PhaseConfig> phaseConfigList;
-    protected HeuristicConfigPolicy<Solution_> configPolicy;
+    protected final List<PhaseConfig> phaseConfigList;
+    protected final HeuristicConfigPolicy<Solution_> configPolicy;
 
-    public DefaultPartitionedSearchPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination,
-            SolutionPartitioner<Solution_> solutionPartitioner, ThreadFactory threadFactory,
-            Integer runnablePartThreadLimit) {
-        super(phaseIndex, logIndentation, termination);
-        this.solutionPartitioner = solutionPartitioner;
-        this.threadFactory = threadFactory;
-        this.runnablePartThreadLimit = runnablePartThreadLimit;
-    }
-
-    public void setPhaseConfigList(List<PhaseConfig> phaseConfigList) {
-        this.phaseConfigList = phaseConfigList;
-    }
-
-    public void setConfigPolicy(HeuristicConfigPolicy<Solution_> configPolicy) {
-        this.configPolicy = configPolicy;
+    private DefaultPartitionedSearchPhase(Builder<Solution_> builder) {
+        super(builder);
+        solutionPartitioner = builder.solutionPartitioner;
+        threadFactory = builder.threadFactory;
+        runnablePartThreadLimit = builder.runnablePartThreadLimit;
+        phaseConfigList = builder.phaseConfigList;
+        configPolicy = builder.configPolicy;
     }
 
     @Override
@@ -236,4 +228,30 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 runnablePartThreadLimit);
     }
 
+    public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
+
+        private final SolutionPartitioner<Solution_> solutionPartitioner;
+        private final ThreadFactory threadFactory;
+        private final Integer runnablePartThreadLimit;
+
+        private final List<PhaseConfig> phaseConfigList;
+        private final HeuristicConfigPolicy<Solution_> configPolicy;
+
+        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
+                SolutionPartitioner<Solution_> solutionPartitioner, ThreadFactory threadFactory,
+                Integer runnablePartThreadLimit, List<PhaseConfig> phaseConfigList,
+                HeuristicConfigPolicy<Solution_> configPolicy) {
+            super(phaseIndex, logIndentation, phaseTermination);
+            this.solutionPartitioner = solutionPartitioner;
+            this.threadFactory = threadFactory;
+            this.runnablePartThreadLimit = runnablePartThreadLimit;
+            this.phaseConfigList = List.copyOf(phaseConfigList);
+            this.configPolicy = configPolicy;
+        }
+
+        @Override
+        public DefaultPartitionedSearchPhase<Solution_> build() {
+            return new DefaultPartitionedSearchPhase<>(this);
+        }
+    }
 }

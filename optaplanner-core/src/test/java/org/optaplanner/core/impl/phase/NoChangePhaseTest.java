@@ -34,10 +34,8 @@ public class NoChangePhaseTest {
 
     @Test
     public void solve() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                new NoChangePhaseConfig()));
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setPhaseConfigList(Collections.singletonList(new NoChangePhaseConfig()));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");

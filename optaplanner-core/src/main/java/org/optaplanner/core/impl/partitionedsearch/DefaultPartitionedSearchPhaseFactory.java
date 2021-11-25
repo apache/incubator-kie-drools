@@ -55,24 +55,30 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         ThreadFactory threadFactory = solverConfigPolicy.buildThreadFactory(ChildThreadType.PART_THREAD);
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         Integer resolvedActiveThreadCount = resolveActiveThreadCount(phaseConfig.getRunnablePartThreadLimit());
-        DefaultPartitionedSearchPhase<Solution_> phase =
-                new DefaultPartitionedSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                        phaseTermination, buildSolutionPartitioner(), threadFactory, resolvedActiveThreadCount);
         List<PhaseConfig> phaseConfigList_ = phaseConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
         }
-        phase.setPhaseConfigList(phaseConfigList_);
-        phase.setConfigPolicy(phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));
+
+        DefaultPartitionedSearchPhase.Builder<Solution_> builder = new DefaultPartitionedSearchPhase.Builder<>(
+                phaseIndex,
+                solverConfigPolicy.getLogIndentation(),
+                phaseTermination,
+                buildSolutionPartitioner(),
+                threadFactory,
+                resolvedActiveThreadCount,
+                phaseConfigList_,
+                phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));
+
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
-            phase.setAssertStepScoreFromScratch(true);
+            builder.setAssertStepScoreFromScratch(true);
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
-            phase.setAssertExpectedStepScore(true);
-            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
+            builder.setAssertExpectedStepScore(true);
+            builder.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
-        return phase;
+        return builder.build();
     }
 
     private SolutionPartitioner<Solution_> buildSolutionPartitioner() {

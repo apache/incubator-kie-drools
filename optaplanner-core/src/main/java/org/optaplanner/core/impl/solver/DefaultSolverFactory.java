@@ -67,10 +67,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     private final SolverConfig solverConfig;
 
     public DefaultSolverFactory(SolverConfig solverConfig) {
-        if (solverConfig == null) {
-            throw new IllegalStateException("The solverConfig (" + solverConfig + ") cannot be null.");
-        }
-        this.solverConfig = solverConfig;
+        this.solverConfig = Objects.requireNonNull(solverConfig, "The solverConfig (" + solverConfig + ") cannot be null.");
     }
 
     public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
@@ -108,21 +105,18 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
 
         BestSolutionRecaller<Solution_> bestSolutionRecaller =
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(environmentMode_);
-        HeuristicConfigPolicy<Solution_> configPolicy = new HeuristicConfigPolicy<>(environmentMode_,
+        HeuristicConfigPolicy<Solution_> configPolicy = new HeuristicConfigPolicy.Builder<>(environmentMode_,
                 moveThreadCount_, solverConfig.getMoveThreadBufferSize(), solverConfig.getThreadFactoryClass(),
-                scoreDirectorFactory);
-        TerminationConfig terminationConfig_ = solverConfig.getTerminationConfig() == null
-                ? new TerminationConfig()
-                : solverConfig.getTerminationConfig();
+                scoreDirectorFactory).build();
+        TerminationConfig terminationConfig_ =
+                Objects.requireNonNullElseGet(solverConfig.getTerminationConfig(), TerminationConfig::new);
         BasicPlumbingTermination<Solution_> basicPlumbingTermination = new BasicPlumbingTermination<>(daemon_);
         Termination<Solution_> termination = TerminationFactory.<Solution_> create(terminationConfig_)
                 .buildTermination(configPolicy, basicPlumbingTermination);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
-        Solver<Solution_> out =
-                new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
-                        termination, phaseList, solverScope,
-                        moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
-        return out;
+        return new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
+                termination, phaseList, solverScope,
+                moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
     }
 
     /**
@@ -131,9 +125,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
      */
     public InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
         SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = solverConfig.getScoreDirectorFactoryConfig() == null
-                ? new ScoreDirectorFactoryConfig()
-                : solverConfig.getScoreDirectorFactoryConfig();
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
+                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(), ScoreDirectorFactoryConfig::new);
         ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
                 new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
         return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,

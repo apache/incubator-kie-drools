@@ -35,19 +35,13 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<Solution_>
         implements ConstructionHeuristicPhase<Solution_> {
 
-    protected EntityPlacer<Solution_> entityPlacer;
-    protected ConstructionHeuristicDecider<Solution_> decider;
+    protected final EntityPlacer<Solution_> entityPlacer;
+    protected final ConstructionHeuristicDecider<Solution_> decider;
 
-    public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, termination);
-    }
-
-    public void setEntityPlacer(EntityPlacer<Solution_> entityPlacer) {
-        this.entityPlacer = entityPlacer;
-    }
-
-    public void setDecider(ConstructionHeuristicDecider<Solution_> decider) {
-        this.decider = decider;
+    private DefaultConstructionHeuristicPhase(Builder<Solution_> builder) {
+        super(builder);
+        entityPlacer = builder.entityPlacer;
+        decider = builder.decider;
     }
 
     @Override
@@ -164,4 +158,21 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         decider.solvingEnded(solverScope);
     }
 
+    public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
+
+        private final EntityPlacer<Solution_> entityPlacer;
+        private final ConstructionHeuristicDecider<Solution_> decider;
+
+        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
+                EntityPlacer<Solution_> entityPlacer, ConstructionHeuristicDecider<Solution_> decider) {
+            super(phaseIndex, logIndentation, phaseTermination);
+            this.entityPlacer = entityPlacer;
+            this.decider = decider;
+        }
+
+        @Override
+        public DefaultConstructionHeuristicPhase<Solution_> build() {
+            return new DefaultConstructionHeuristicPhase<>(this);
+        }
+    }
 }

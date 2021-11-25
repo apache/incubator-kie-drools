@@ -42,8 +42,7 @@ public class PooledEntityPlacerFactoryTest {
         moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("value"));
 
         HeuristicConfigPolicy<TestdataSolution> configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
-        PooledEntityPlacerConfig placerConfig =
-                PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
+        PooledEntityPlacerConfig placerConfig = PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
 
         assertThat(placerConfig.getMoveSelectorConfig())
                 .isNotNull()
@@ -61,6 +60,7 @@ public class PooledEntityPlacerFactoryTest {
             buildHeuristicConfigPolicy(SolutionDescriptor<TestdataSolution> solutionDescriptor) {
         InnerScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        return new HeuristicConfigPolicy<>(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
+        return new HeuristicConfigPolicy.Builder<>(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory)
+                .build();
     }
 }

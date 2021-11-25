@@ -46,47 +46,21 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solution_>
         implements ExhaustiveSearchPhase<Solution_> {
 
-    protected Comparator<ExhaustiveSearchNode> nodeComparator;
-    protected EntitySelector<Solution_> entitySelector;
-    protected ExhaustiveSearchDecider<Solution_> decider;
+    protected final Comparator<ExhaustiveSearchNode> nodeComparator;
+    protected final EntitySelector<Solution_> entitySelector;
+    protected final ExhaustiveSearchDecider<Solution_> decider;
 
-    protected boolean assertWorkingSolutionScoreFromScratch = false;
-    protected boolean assertExpectedWorkingSolutionScore = false;
+    protected final boolean assertWorkingSolutionScoreFromScratch;
+    protected final boolean assertExpectedWorkingSolutionScore;
 
-    public DefaultExhaustiveSearchPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, termination);
-    }
+    private DefaultExhaustiveSearchPhase(Builder<Solution_> builder) {
+        super(builder);
+        nodeComparator = builder.nodeComparator;
+        entitySelector = builder.entitySelector;
+        decider = builder.decider;
 
-    public Comparator<ExhaustiveSearchNode> getNodeComparator() {
-        return nodeComparator;
-    }
-
-    public void setNodeComparator(Comparator<ExhaustiveSearchNode> nodeComparator) {
-        this.nodeComparator = nodeComparator;
-    }
-
-    public EntitySelector<Solution_> getEntitySelector() {
-        return entitySelector;
-    }
-
-    public void setEntitySelector(EntitySelector<Solution_> entitySelector) {
-        this.entitySelector = entitySelector;
-    }
-
-    public ExhaustiveSearchDecider<Solution_> getDecider() {
-        return decider;
-    }
-
-    public void setDecider(ExhaustiveSearchDecider<Solution_> decider) {
-        this.decider = decider;
-    }
-
-    public void setAssertWorkingSolutionScoreFromScratch(boolean assertWorkingSolutionScoreFromScratch) {
-        this.assertWorkingSolutionScoreFromScratch = assertWorkingSolutionScoreFromScratch;
-    }
-
-    public void setAssertExpectedWorkingSolutionScore(boolean assertExpectedWorkingSolutionScore) {
-        this.assertExpectedWorkingSolutionScore = assertExpectedWorkingSolutionScore;
+        assertWorkingSolutionScoreFromScratch = builder.assertWorkingSolutionScoreFromScratch;
+        assertExpectedWorkingSolutionScore = builder.assertExpectedWorkingSolutionScore;
     }
 
     @Override
@@ -269,4 +243,35 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         decider.solvingEnded(solverScope);
     }
 
+    public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
+
+        private final Comparator<ExhaustiveSearchNode> nodeComparator;
+        private final EntitySelector<Solution_> entitySelector;
+        private final ExhaustiveSearchDecider<Solution_> decider;
+
+        private boolean assertWorkingSolutionScoreFromScratch = false;
+        private boolean assertExpectedWorkingSolutionScore = false;
+
+        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
+                Comparator<ExhaustiveSearchNode> nodeComparator, EntitySelector<Solution_> entitySelector,
+                ExhaustiveSearchDecider<Solution_> decider) {
+            super(phaseIndex, logIndentation, phaseTermination);
+            this.nodeComparator = nodeComparator;
+            this.entitySelector = entitySelector;
+            this.decider = decider;
+        }
+
+        public void setAssertWorkingSolutionScoreFromScratch(boolean assertWorkingSolutionScoreFromScratch) {
+            this.assertWorkingSolutionScoreFromScratch = assertWorkingSolutionScoreFromScratch;
+        }
+
+        public void setAssertExpectedWorkingSolutionScore(boolean assertExpectedWorkingSolutionScore) {
+            this.assertExpectedWorkingSolutionScore = assertExpectedWorkingSolutionScore;
+        }
+
+        @Override
+        public DefaultExhaustiveSearchPhase<Solution_> build() {
+            return new DefaultExhaustiveSearchPhase<>(this);
+        }
+    }
 }
