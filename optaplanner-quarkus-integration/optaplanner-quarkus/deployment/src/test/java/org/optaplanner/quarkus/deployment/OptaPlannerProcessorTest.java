@@ -32,10 +32,12 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 
 import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.Capability;
 
 class OptaPlannerProcessorTest {
 
-    private final static Set<String> KOGITO_CAPABILITIES = Set.of("kogito-rules");
+    // TODO: Remove the Capability.RESTEASY_JSON_JACKSON after https://issues.redhat.com/browse/PLANNER-2572 is resolved.
+    private final static Set<String> KOGITO_CAPABILITIES = Set.of("kogito-rules", Capability.RESTEASY_JSON_JACKSON);
 
     @Test
     void customScoreDrl_overrides_solverConfig() {
