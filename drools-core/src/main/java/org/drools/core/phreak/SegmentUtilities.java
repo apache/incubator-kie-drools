@@ -389,6 +389,7 @@ public class SegmentUtilities {
 
         nodeTypesInSegment = checkSegmentBoundary(lt, reteEvaluator, nodeTypesInSegment);
 
+        PathMemory pmem = null;
         for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
             if (NodeTypeEnums.isLeftTupleSource(sink)) {
                 nodeTypesInSegment = updateRiaAndTerminalMemory((LeftTupleSource) sink, originalLt, smem, reteEvaluator, fromPrototype, nodeTypesInSegment);
@@ -397,11 +398,7 @@ public class SegmentUtilities {
                 RiaNodeMemory riaMem = (RiaNodeMemory) reteEvaluator.getNodeMemory((MemoryFactory) sink);
                 // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork
                 if (inSubNetwork((RightInputAdapterNode) sink, originalLt)) {
-                    PathMemory pmem = riaMem.getRiaPathMemory();
-                    smem.addPathMemory( pmem );
-                    if (smem.getPos() < pmem.getSegmentMemories().length) {
-                        pmem.setSegmentMemory( smem.getPos(), smem );
-                    }
+                    pmem = riaMem.getRiaPathMemory();
 
                     if (fromPrototype) {
                         ObjectSink[] nodes = ((RightInputAdapterNode) sink).getObjectSinkPropagator().getSinks();
@@ -421,19 +418,20 @@ public class SegmentUtilities {
                         }
                     }
                 }
+
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                PathMemory pmem = (PathMemory) reteEvaluator.getNodeMemory((MemoryFactory) sink);
-                smem.addPathMemory(pmem);
-                // this terminal segment could have been created during a rule removal with the only purpose to be merged
-                // with the former one and in this case doesn't have to be added to the the path memory
-                if (smem.getPos() < pmem.getSegmentMemories().length) {
-                    pmem.setSegmentMemory( smem.getPos(), smem );
-                    if (smem.isSegmentLinked()) {
-                        // not's can cause segments to be linked, and the rules need to be notified for evaluation
-                        smem.notifyRuleLinkSegment(reteEvaluator);
-                    }
-                    checkEagerSegmentCreation(sink.getLeftTupleSource(), reteEvaluator, nodeTypesInSegment);
+                pmem = (PathMemory) reteEvaluator.getNodeMemory((MemoryFactory) sink);
+            }
+
+            if (pmem != null && smem.getPos() < pmem.getSegmentMemories().length) {
+                smem.addPathMemory( pmem );
+                pmem.setSegmentMemory( smem.getPos(), smem );
+                if (smem.isSegmentLinked()) {
+                    // not's can cause segments to be linked, and the rules need to be notified for evaluation
+                    smem.notifyRuleLinkSegment(reteEvaluator);
                 }
+                checkEagerSegmentCreation(sink.getLeftTupleSource(), reteEvaluator, nodeTypesInSegment);
+                pmem = null;
             }
         }
         return nodeTypesInSegment;
