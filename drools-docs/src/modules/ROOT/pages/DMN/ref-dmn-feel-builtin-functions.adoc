@@ -1336,6 +1336,87 @@ mode( [6, 1, 9, 6, 1] ) = [1, 6]
 mode( [ ] ) = [ ]
 ----
 --
+
+=== Loop statements
+Loop statements can transform lists or verify if some elements satisfy a specific condition:
+
+for in (list)::
++
+--
+Iterates the elements of the list.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`list`
+|`list` of `Any` elements
+|===
+
+
+.Examples
+[source,FEEL]
+----
+for i in [1, 2, 3] return i * i = [1, 4, 9]
+for i in [1,2,3], j in [1,2,3] return i*j = [1, 2, 3, 2, 4, 6, 3, 6, 9]
+----
+--
+
+some in (list) satisfies (condition)::
++
+--
+Returns to single boolean value (true or false), if any element in the list satisfies the condition.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`list`
+|`list` of `Any` elements
+
+|`condition`
+|boolean expression evaluated to true or false
+|===
+
+
+.Examples
+[source,FEEL]
+----
+some i in [1, 2, 3] satisfies i > 3 = true
+some i in [1, 2, 3] satisfies i > 4 = false
+----
+--
+
+every in (list) satisfies (condition)::
++
+--
+Returns to single boolean value (true or false), if every element in the list satisfies the condition.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`list`
+|`list` of `Any` elements
+
+|`condition`
+|boolean expression evaluated to true or false
+|===
+
+
+.Examples
+[source,FEEL]
+----
+every i in [1, 2, 3] satisfies i > 1 = false
+every i in [1, 2, 3] satisfies i > 0 = true
+----
+--
 // ----------------------------------------------------------------------------
 
 == Numeric functions
