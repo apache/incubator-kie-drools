@@ -551,14 +551,24 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // generate Grafana dashboards
         if (context().getAddonsConfig().usePrometheusMonitoring()) {
-            String globalDbName = buildDashboardName(context().getGAV(), "Global");
-            String globalDbJson = generateOperationalDashboard(GLOBAL_OPERATIONAL_DASHBOARD_TEMPLATE, globalDbName, "Global", context().getGAV().orElse(KogitoGAV.EMPTY_GAV), false);
-            generatedFiles.addAll(DashboardGeneratedFileUtils.operational(globalDbJson, globalDbName + ".json"));
 
+            Optional<String> globalDbJson = generateOperationalDashboard(GLOBAL_OPERATIONAL_DASHBOARD_TEMPLATE,
+                    "Global",
+                    context().getPropertiesMap(),
+                    "Global",
+                    context().getGAV().orElse(KogitoGAV.EMPTY_GAV),
+                    false);
+            String globalDbName = buildDashboardName(context().getGAV(), "Global");
+            globalDbJson.ifPresent(dashboard -> generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dashboard, globalDbName + ".json")));
             for (KogitoWorkflowProcess process : processes.values()) {
                 String dbName = buildDashboardName(context().getGAV(), process.getId());
-                String dbJson = generateOperationalDashboard(PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE, dbName, process.getId(), context().getGAV().orElse(KogitoGAV.EMPTY_GAV), false);
-                generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dbJson, dbName + ".json"));
+                Optional<String> dbJson = generateOperationalDashboard(PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE,
+                        process.getId(),
+                        context().getPropertiesMap(),
+                        process.getId(),
+                        context().getGAV().orElse(KogitoGAV.EMPTY_GAV),
+                        false);
+                dbJson.ifPresent(dashboard -> generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dashboard, dbName + ".json")));
             }
         }
 

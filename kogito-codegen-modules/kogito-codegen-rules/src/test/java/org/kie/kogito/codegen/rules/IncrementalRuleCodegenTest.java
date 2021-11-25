@@ -44,6 +44,8 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.withLegacyApi;
+import static org.kie.kogito.grafana.utils.GrafanaDashboardUtils.DISABLED_DOMAIN_DASHBOARDS;
+import static org.kie.kogito.grafana.utils.GrafanaDashboardUtils.DISABLED_OPERATIONAL_DASHBOARDS;
 
 public class IncrementalRuleCodegenTest {
 
@@ -228,6 +230,26 @@ public class IncrementalRuleCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void generateGrafanaDashboardsExcluded(KogitoBuildContext.Builder contextBuilder) {
+        contextBuilder.withAddonsConfig(AddonsConfig.builder()
+                .withPrometheusMonitoring(true)
+                .withMonitoring(true)
+                .build());
+
+        KogitoBuildContext context = contextBuilder.build();
+        context.setApplicationProperty(DISABLED_OPERATIONAL_DASHBOARDS, "find-adults,find-adults-age");
+        context.setApplicationProperty(DISABLED_DOMAIN_DASHBOARDS, "AdultUnit");
+
+        IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
+                context,
+                new File(RESOURCE_PATH + "/org/kie/kogito/codegen/unit/RuleUnitQuery.drl"));
+
+        Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        assertThat(generatedFiles.stream().filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE))).isEmpty();
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void elapsedTimeMonitoringIsWrappingEveryMethod(KogitoBuildContext.Builder contextBuilder) {
         contextBuilder.withAddonsConfig(AddonsConfig.builder()
                 .withPrometheusMonitoring(true)
@@ -267,7 +289,7 @@ public class IncrementalRuleCodegenTest {
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void noObjectMapperWhenNoRest(KogitoBuildContext.Builder contextBuilder) {
         IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
-                contextBuilder,
+                contextBuilder.build(),
                 new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/myunit").listFiles());
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
@@ -285,8 +307,12 @@ public class IncrementalRuleCodegenTest {
     }
 
     private IncrementalRuleCodegen getIncrementalRuleCodegenFromFiles(KogitoBuildContext.Builder contextBuilder, File... resources) {
+        return getIncrementalRuleCodegenFromFiles(contextBuilder.build(), resources);
+    }
+
+    private IncrementalRuleCodegen getIncrementalRuleCodegenFromFiles(KogitoBuildContext context, File... resources) {
         return IncrementalRuleCodegen.ofCollectedResources(
-                contextBuilder.build(),
+                context,
                 CollectedResourceProducer.fromFiles(Paths.get(RESOURCE_PATH), resources));
     }
 
