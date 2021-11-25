@@ -58,3 +58,17 @@ Terminates the solver when a specific or higher score has been reached.
 For example: `0hard/-1000soft` terminates when the best score changes from `0hard/-1200soft` to `0hard/-900soft`.
 Wildcards are supported to replace numbers.
 For example: `0hard/*soft` to terminate when any feasible score is reached.
+
+{property_prefix}optaplanner.benchmark.solver-benchmark-config-xml::
+A classpath resource to read the benchmark configuration XML.
+Defaults to solverBenchmarkConfig.xml.
+If this property isn't specified, that solverBenchmarkConfig.xml is optional.
+
+{property_prefix}optaplanner.benchmark.result-directory::
+Where the benchmark results are written to. Defaults to
+target/benchmarks.
+
+{property_prefix}optaplanner.benchmark.solver.termination.spent-limit::
+How long solver should be run in a benchmark run.
+For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.
+Also supports ISO-8601 format, see https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration].

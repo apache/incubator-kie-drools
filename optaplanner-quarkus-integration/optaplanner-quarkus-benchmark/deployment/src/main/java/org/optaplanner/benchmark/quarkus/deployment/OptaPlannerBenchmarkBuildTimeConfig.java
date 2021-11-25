@@ -29,7 +29,7 @@ public class OptaPlannerBenchmarkBuildTimeConfig {
 
     public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG_URL = "solverBenchmarkConfig.xml";
     /**
-     * A classpath resource to read the solver configuration XML.
+     * A classpath resource to read the benchmark configuration XML.
      * Defaults to {@value DEFAULT_SOLVER_BENCHMARK_CONFIG_URL}.
      * If this property isn't specified, that solverBenchmarkConfig.xml is optional.
      */

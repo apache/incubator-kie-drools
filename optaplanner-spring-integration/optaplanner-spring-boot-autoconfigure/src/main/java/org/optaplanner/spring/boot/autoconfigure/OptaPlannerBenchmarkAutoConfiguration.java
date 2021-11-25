@@ -89,7 +89,7 @@ public class OptaPlannerBenchmarkAutoConfiguration
         if (!isTerminationConfigured(
                 benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig())) {
             throw new IllegalStateException(
-                    "Property optaplanner.benchmark.solver.termination.spentLimit is required if termination is not configured.");
+                    "Property optaplanner.benchmark.solver.termination.spent-limit is required if termination is not configured.");
         }
         return benchmarkConfig;
     }
