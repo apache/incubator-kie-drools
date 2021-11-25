@@ -26,16 +26,13 @@ import java.util.concurrent.Future;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -47,7 +44,6 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
@@ -172,12 +168,6 @@ public class KieBaseImpl implements InternalKnowledgeBase {
     }
 
     @Override
-    public StatefulKnowledgeSessionImpl createSession(long l, FactHandleFactory factHandleFactory, long l1, SessionConfiguration sessionConfiguration, InternalAgenda internalAgenda,
-            Environment environment) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public String getId() {
         return delegate.getId();
     }
@@ -288,18 +278,8 @@ public class KieBaseImpl implements InternalKnowledgeBase {
     }
 
     @Override
-    public void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulKnowledgeSession) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public TripleStore getTripleStore() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public TraitRegistry getTraitRegistry() {
-        throw new UnsupportedOperationException();
+    public void disposeStatefulSession(InternalWorkingMemory statefulSession) {
+        delegate.disposeStatefulSession(statefulSession);
     }
 
     @Override

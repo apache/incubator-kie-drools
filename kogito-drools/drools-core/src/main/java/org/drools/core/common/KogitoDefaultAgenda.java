@@ -16,6 +16,7 @@
 package org.drools.core.common;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.agenda.DefaultAgenda;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 

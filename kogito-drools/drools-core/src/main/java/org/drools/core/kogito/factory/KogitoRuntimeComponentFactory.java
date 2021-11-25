@@ -19,10 +19,10 @@ import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.KogitoDefaultAgendaFactory;
 import org.drools.core.common.KogitoPhreakWorkingMemoryFactory;
 import org.drools.core.common.WorkingMemoryFactory;
-import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.spi.FactHandleFactory;
+import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 
-public class KogitoKieComponentFactory extends KieComponentFactory {
+public class KogitoRuntimeComponentFactory extends RuntimeComponentFactoryImpl {
 
     @Override
     public FactHandleFactory getFactHandleFactoryService() {

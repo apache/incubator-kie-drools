@@ -17,8 +17,6 @@ package org.drools.core.impl;
 
 import org.drools.core.KogitoWorkingMemory;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.base.DefaultKnowledgeHelper;
-import org.drools.core.base.StatefulKnowledgeSessionForRHS;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -31,6 +29,9 @@ import org.drools.core.spi.KogitoProcessContextImpl;
 import org.drools.core.time.KogitoTimerServiceFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
+import org.drools.kiesession.consequence.StatefulKnowledgeSessionForRHS;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;

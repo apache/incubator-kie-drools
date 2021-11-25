@@ -43,6 +43,10 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-kiesession</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>

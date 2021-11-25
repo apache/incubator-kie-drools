@@ -18,6 +18,7 @@ package org.drools.core.common;
 import java.io.Serializable;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.agenda.CompositeDefaultAgenda;
 
 public class KogitoDefaultAgendaFactory implements AgendaFactory, Serializable {
 

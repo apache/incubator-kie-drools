@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.runtime.process.ProcessRuntimeFactory;
+import org.drools.kiesession.session.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;

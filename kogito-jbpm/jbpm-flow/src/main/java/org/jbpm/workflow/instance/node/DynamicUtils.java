@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;

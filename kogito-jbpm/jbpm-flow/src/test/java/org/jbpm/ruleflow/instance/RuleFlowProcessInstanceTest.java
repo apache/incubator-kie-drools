@@ -15,7 +15,7 @@
  */
 package org.jbpm.ruleflow.instance;
 
-import org.drools.core.runtime.process.ProcessRuntimeFactory;
+import org.drools.kiesession.session.ProcessRuntimeFactory;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;

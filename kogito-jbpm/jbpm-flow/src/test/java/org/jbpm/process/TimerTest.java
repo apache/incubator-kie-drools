@@ -16,7 +16,7 @@
 package org.jbpm.process;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.runtime.process.ProcessRuntimeFactory;
+import org.drools.kiesession.session.ProcessRuntimeFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
