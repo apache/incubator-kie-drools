@@ -34,6 +34,7 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.VariableRestriction;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
@@ -237,7 +238,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         private void cacheLiteral( Object value, ReteEvaluator reteEvaluator ) {
-            CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+            CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
             cachedLiteral = getCode( value, x );
         }
 
@@ -318,18 +319,18 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             BitSet sourceTraits = null;
             BitSet targetTraits = null;
             if ( source instanceof Class ) {
-                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 sourceTraits = x.getCode( ((Class) source).getName() );
             } else if ( source instanceof Thing ) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
                 if ( sourceTraits == null && source instanceof TraitType ) {
-                    CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                     sourceTraits = x.getCode( ((TraitType)source)._getTraitName() );
                 }
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
             } else if ( source instanceof String ) {
-                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 sourceTraits = x.getCode( source );
             } else {
                 TraitableBean tbean = lookForWrapper( source, reteEvaluator);
@@ -339,21 +340,21 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             }
 
             if ( target instanceof Class ) {
-                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 targetTraits = x.getCode( ((Class) target).getName() );
             } else if ( target instanceof String ) {
-                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 targetTraits = x.getCode( target );
             } else if ( target instanceof Thing ) {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
                 if ( targetTraits == null && target instanceof TraitType ) {
-                    CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                     targetTraits = x.getCode( ((TraitType)target)._getTraitName() );
                 }
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();
             } else if ( target instanceof Collection ) {
-                CodedHierarchy x = reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 targetTraits = getCode( target, x );
             } else {
                 TraitableBean tbean = lookForWrapper( target, reteEvaluator );

@@ -49,7 +49,7 @@ public class ServiceDiscoveryImpl {
     private static final String[] KIE_MODULES = new String[] {
             "", // This is to reserve the path META-INF/kie/kie.conf for user specific customizations
             "drools-alphanetwork-compiler", "drools-beliefs", "drools-compiler", "drools-core", "drools-decisiontables",
-            "drools-metric", "drools-model-compiler", "drools-mvel", "drools-persistence-jpa",
+            "drools-kiesession", "drools-metric", "drools-model-compiler", "drools-mvel", "drools-persistence-jpa",
             "drools-scorecards", "drools-serialization-protobuf", "drools-traits", "drools-workbench-models-guided-dtable",
             "drools-workbench-models-guided-scorecard", "drools-workbench-models-guided-template", "drools-xml-support",
             "jbpm-bpmn2", "jbpm-case-mgmt-cmmn", "jbpm-flow", "jbpm-flow-builder", "jbpm-human-task-jpa",

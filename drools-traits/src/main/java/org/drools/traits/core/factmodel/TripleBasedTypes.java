@@ -16,11 +16,6 @@
 
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.util.Triple;
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleStore;
-import org.kie.api.runtime.rule.Variable;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -30,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.kie.api.runtime.rule.Variable;
 
 
 public class TripleBasedTypes extends TripleBasedStruct {
@@ -141,7 +138,6 @@ public class TripleBasedTypes extends TripleBasedStruct {
         for ( Triple t : getSchemaTriplesForSubject( getObject() ) ) {
             Triple x = getProxyTripleByTraitType( t.getValue() );
             if ( x != null ) {
-//                values.add( store.get( tripleFactory.newTriple( t.getValue(), TripleStore.PROXY, null ) ).getValue() );
                 values.add( x.getValue() );
             }
         }
@@ -151,8 +147,6 @@ public class TripleBasedTypes extends TripleBasedStruct {
     public Set<Entry<String, Object>> entrySet() {
         Set<Entry<String, Object>> set = new HashSet<Entry<String, Object>>();
         for ( Triple t : getSchemaTriplesForSubject( getObject() ) ) {
-//            Triple proxy = store.get( tripleFactory.newTriple( t.getValue(), TripleStore.PROXY, Variable.v ) );
-//            set.add( TraitProxy.buildEntry( (String) t.getValue(), proxy.getValue() ) );
             Triple x = getProxyTripleByTraitType( t.getValue() );
             if ( x != null ) {
                 set.add(TraitProxyImpl.buildEntry((String) t.getValue(), x.getValue() ) );

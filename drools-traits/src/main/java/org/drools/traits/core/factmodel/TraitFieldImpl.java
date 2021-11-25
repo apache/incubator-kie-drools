@@ -17,7 +17,7 @@
 package org.drools.traits.core.factmodel;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.DefaultAgenda;
+import org.drools.kiesession.agenda.DefaultAgenda;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitField;

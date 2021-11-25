@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
@@ -232,8 +231,6 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public ActivationsManager getActualActivationsManager(ReteEvaluator reteEvaluator) {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
-        return activationsManager instanceof CompositeDefaultAgenda ?
-               ( (CompositeDefaultAgenda) activationsManager ).getPartitionedAgendaForNode( getPathEndNode() ) :
-                activationsManager;
+        return activationsManager.getPartitionedAgendaForNode( getPathEndNode() );
     }
 }

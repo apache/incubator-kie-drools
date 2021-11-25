@@ -29,6 +29,7 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.traits.core.definitions.impl.TraitKnowledgePackageImpl;
 import org.drools.traits.core.factmodel.TraitClassBuilderImpl;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.traits.core.factmodel.TraitRegistryImpl;
@@ -41,7 +42,7 @@ public class TraitsTypeDeclarationBuilderImpl extends TypeDeclarationBuilder {
 
     @Override
     protected void postGenerateDeclaredBean(AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, PackageRegistry pkgRegistry) {
-        traitRegistry = (TraitRegistryImpl) pkgRegistry.getTraitRegistry();
+        traitRegistry = ((TraitKnowledgePackageImpl)pkgRegistry.getPackage()).getTraitRegistry();
         if ( typeDescr.hasAnnotation(Traitable.class )
                 || ( ! type.getKind().equals(TypeDeclaration.Kind.TRAIT ) &&
                 kbuilder.getPackageRegistry().containsKey(def.getSuperClass() ) &&

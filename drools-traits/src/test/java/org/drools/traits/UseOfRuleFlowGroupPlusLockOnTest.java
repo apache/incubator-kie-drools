@@ -1,6 +1,6 @@
 package org.drools.traits;
 
-import org.drools.core.common.DefaultAgenda;
+import org.drools.kiesession.agenda.DefaultAgenda;
 import org.drools.core.reteoo.ReteDumper;
 import org.junit.Assert;
 import org.junit.Test;

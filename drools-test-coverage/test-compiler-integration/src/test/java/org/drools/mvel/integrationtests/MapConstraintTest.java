@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.audit.WorkingMemoryConsoleLogger;
+import org.drools.kiesession.audit.WorkingMemoryConsoleLogger;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Pet;

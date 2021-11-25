@@ -31,9 +31,10 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
@@ -63,7 +64,7 @@ public class FactHandleMarshallingTest {
         // EntryPointNode
         Rete rete = kBase.getRete();
 
-        NodeFactory nFacotry = kBase.getConfiguration().getComponentFactory().getNodeFactoryService();
+        NodeFactory nFacotry = CoreComponentFactory.get().getNodeFactoryService();
 
         RuleBasePartitionId partionId = RuleBasePartitionId.MAIN_PARTITION;
         EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);

@@ -40,11 +40,12 @@ import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.impl.StatefulSessionPool;
-import org.drools.core.impl.StatelessKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulSessionPool;
+import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
@@ -533,7 +534,7 @@ public class KieContainerImpl
         return kBase == null ? null : new StatefulSessionPool(kBase, initialSize, () -> {
             SessionConfiguration sessConf = conf != null ? (SessionConfiguration) conf : kBase.getSessionConfiguration();
             StatefulKnowledgeSessionImpl kSession = stateless ?
-                    kBase.internalCreateStatefulKnowledgeSession( env, sessConf, false ).setStateless( true ) :
+                    ((StatefulKnowledgeSessionImpl) RuntimeComponentFactory.get().createStatefulSession(kBase, env, sessConf, false)).setStateless( true ) :
                     (StatefulKnowledgeSessionImpl) kBase.newKieSession( sessConf, env );
             registerNewKieSession( kSessionModel, kBase, kSession );
             return kSession;

@@ -15,7 +15,7 @@
 package org.drools.serialization.protobuf.actions;
 
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -23,7 +23,7 @@ import org.drools.serialization.protobuf.ProtobufMessages;
 import org.drools.serialization.protobuf.ProtobufWorkingMemoryAction;
 
 public class ProtobufWorkingMemoryReteExpireAction
-        extends StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction
+        extends WorkingMemoryReteExpireAction
         implements ProtobufWorkingMemoryAction {
 
     public ProtobufWorkingMemoryReteExpireAction( MarshallerReaderContext context,

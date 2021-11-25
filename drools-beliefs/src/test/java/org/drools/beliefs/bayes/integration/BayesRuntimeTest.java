@@ -20,7 +20,7 @@ import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;

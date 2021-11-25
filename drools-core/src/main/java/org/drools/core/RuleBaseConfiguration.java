@@ -28,7 +28,7 @@ import java.util.Properties;
 
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.reteoo.KieComponentFactory;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
@@ -67,7 +67,6 @@ import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.reteoo.KieComponentFactory.createKieComponentFactory;
 import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.MemoryUtil.hasPermGen;
 
@@ -176,8 +175,6 @@ public class RuleBaseConfiguration
 
     private transient ClassLoader classLoader;
 
-    private KieComponentFactory componentFactory;
-
     private int sessionPoolSize;
 
     private static class DefaultRuleBaseConfigurationHolder {
@@ -218,7 +215,6 @@ public class RuleBaseConfiguration
         out.writeObject(eventProcessingMode);
         out.writeBoolean(classLoaderCacheEnabled);
         out.writeBoolean(declarativeAgenda);
-        out.writeObject(componentFactory);
         out.writeInt(sessionPoolSize);
         out.writeBoolean(mutabilityEnabled);
     }
@@ -252,7 +248,6 @@ public class RuleBaseConfiguration
         eventProcessingMode = (EventProcessingOption) in.readObject();
         classLoaderCacheEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
-        componentFactory = (KieComponentFactory) in.readObject();
         sessionPoolSize = in.readInt();
         mutabilityEnabled = in.readBoolean();
     }
@@ -439,8 +434,6 @@ public class RuleBaseConfiguration
     }
     
     private void init(Properties properties) {
-        this.componentFactory = createKieComponentFactory();
-
         this.immutable = false;
 
         this.chainedProperties = ChainedProperties.getChainedProperties( this.classLoader );
@@ -721,7 +714,7 @@ public class RuleBaseConfiguration
     }
 
     public AgendaGroupFactory getAgendaGroupFactory() {
-        return getComponentFactory().getAgendaGroupFactory();
+        return RuntimeComponentFactory.get().getAgendaGroupFactory();
     }
 
     public SequentialAgenda getSequentialAgenda() {
@@ -862,7 +855,7 @@ public class RuleBaseConfiguration
     
     public void addActivationListener(String name, ActivationListenerFactory factory) {
         if ( this.activationListeners == null ) {
-            this.activationListeners = new HashMap<String, ActivationListenerFactory>();
+            this.activationListeners = new HashMap<>();
         }
         this.activationListeners.put( name, factory );
     }
@@ -886,19 +879,6 @@ public class RuleBaseConfiguration
         throw new IllegalArgumentException( "ActivationListenerFactory not found for '" + name + "'" );
     }
 
-    private boolean determineShadowProxy(String userValue) {
-        if ( this.isSequential() ) {
-            // sequential never needs shadowing, so always override
-            return false;
-        }
-
-        if ( userValue != null ) {
-            return Boolean.valueOf( userValue ).booleanValue();
-        } else {
-            return true;
-        }
-    }
-
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
@@ -907,14 +887,6 @@ public class RuleBaseConfiguration
         this.classLoader = ProjectClassLoader.getClassLoader( classLoader,
                                                               getClass(),
                                                               isClassLoaderCacheEnabled());
-    }
-
-    public KieComponentFactory getComponentFactory() {
-        return componentFactory;
-    }
-
-    public void setComponentFactory(KieComponentFactory componentFactory) {
-        this.componentFactory = componentFactory;
     }
 
     /**
@@ -1009,72 +981,6 @@ public class RuleBaseConfiguration
 
         public String toString() {
             return "AssertBehaviour : " + ((this.value == 0) ? "identity" : "equality");
-        }
-    }
-
-    public static class LogicalOverride
-            implements
-            Externalizable {
-        private static final long serialVersionUID = 510l;
-
-        public static final LogicalOverride PRESERVE = new LogicalOverride(0);
-        public static final LogicalOverride DISCARD  = new LogicalOverride(1);
-
-        private int value;
-
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
-            value = in.readInt();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(value);
-        }
-
-        public LogicalOverride() {
-
-        }
-
-        private LogicalOverride(final int value) {
-            this.value = value;
-        }
-
-        public static LogicalOverride determineLogicalOverride(final String value) {
-            if ("PRESERVE".equalsIgnoreCase(value)) {
-                return PRESERVE;
-            } else if ("DISCARD".equalsIgnoreCase(value)) {
-                return DISCARD;
-            } else {
-                throw new IllegalArgumentException("Illegal enum value '" + value + "' for LogicalOverride");
-            }
-        }
-
-        private Object readResolve() throws java.io.ObjectStreamException {
-            switch (this.value) {
-                case 0:
-                    return PRESERVE;
-                case 1:
-                    return DISCARD;
-                default:
-                    throw new IllegalArgumentException("Illegal enum value '" + this.value + "' for LogicalOverride");
-            }
-        }
-
-        public boolean equals(Object obj) {
-            if (obj == this) {
-                return true;
-            } else if (obj instanceof LogicalOverride) {
-                return value == ((LogicalOverride) obj).value;
-            }
-            return false;
-        }
-
-        public String toExternalForm() {
-            return (this.value == 0) ? "preserve" : "discard";
-        }
-
-        public String toString() {
-            return "LogicalOverride : " + ((this.value == 0) ? "preserve" : "discard");
         }
     }
 

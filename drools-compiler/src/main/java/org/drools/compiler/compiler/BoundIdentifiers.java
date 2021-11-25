@@ -99,7 +99,7 @@ public class BoundIdentifiers {
         }
 
         if ( cls == null && operators.containsKey( identifier )) {
-            cls = context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass();
+            cls = EvaluatorWrapper.class;
         }
 
         return cls;

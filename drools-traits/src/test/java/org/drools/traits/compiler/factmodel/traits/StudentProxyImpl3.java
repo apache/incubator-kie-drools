@@ -16,21 +16,21 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
+import java.util.Map;
+
+import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
+import org.drools.traits.core.factmodel.Triple;
+import org.drools.traits.core.factmodel.TripleFactory;
+import org.drools.traits.core.factmodel.TripleFactoryImpl;
+import org.drools.traits.core.factmodel.TripleStore;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.traits.core.factmodel.TraitTypeMapImpl;
-import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.traits.core.factmodel.TripleBasedBean;
 import org.drools.traits.core.factmodel.TripleBasedStruct;
 import org.drools.traits.core.factmodel.TripleBasedTypes;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
-import org.drools.core.util.Triple;
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleFactoryImpl;
-import org.drools.core.util.TripleStore;
 import org.kie.api.runtime.rule.Variable;
-
-import java.util.Map;
 
 
 public class StudentProxyImpl3 extends TraitProxyImpl implements IStudent {
@@ -55,7 +55,6 @@ public class StudentProxyImpl3 extends TraitProxyImpl implements IStudent {
         System.out.println( "ABSCS" );
 
         this.object = obj;
-        m.getId();
 
         setTripleFactory( factory );
 

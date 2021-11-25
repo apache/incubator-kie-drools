@@ -25,26 +25,25 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.CoreWrapper;
+import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.reteoo.KieComponentFactory;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.util.HierarchyEncoder;
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleFactoryImpl;
-import org.drools.core.util.TripleStore;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.traits.core.factmodel.AbstractTraitFactory;
 import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
-import org.drools.core.factmodel.traits.Thing;
 import org.drools.traits.core.factmodel.TraitClassBuilderImpl;
 import org.drools.traits.core.factmodel.TraitRegistryImpl;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.traits.core.factmodel.TripleFactory;
+import org.drools.traits.core.factmodel.TripleFactoryImpl;
+import org.drools.traits.core.factmodel.TripleStore;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.drools.reflective.classloader.ProjectClassLoader;
-import org.drools.traits.core.reteoo.TraitKieComponentFactory;
+import org.drools.traits.core.reteoo.TraitRuntimeComponentFactoryImpl;
 
 public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> {
 
     private ProjectClassLoader classLoader;
-    private TraitKieComponentFactory kieComponentFactory;
+    private TraitRuntimeComponentFactoryImpl kieComponentFactory = new TraitRuntimeComponentFactoryImpl();
     private TraitRegistryImpl registry;
     private ClassFieldAccessorStore store;
     private HierarchyEncoder encoder;
@@ -53,17 +52,11 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
     private TripleFactory tripleFactory;
 
     public StandaloneTraitFactory( ProjectClassLoader classLoader ) {
-        this( classLoader, new TraitKieComponentFactory() );
+        this( classLoader, VirtualPropertyMode.MAP );
     }
 
-    public StandaloneTraitFactory( ProjectClassLoader classLoader, TraitKieComponentFactory factory ) {
-        this( classLoader, factory, VirtualPropertyMode.MAP );
-    }
-
-    public StandaloneTraitFactory(ProjectClassLoader classLoader, TraitKieComponentFactory factory, VirtualPropertyMode mode ) {
+    public StandaloneTraitFactory(ProjectClassLoader classLoader, VirtualPropertyMode mode ) {
         this.classLoader = classLoader;
-        this.kieComponentFactory = factory;
-        this.registry = (TraitRegistryImpl) kieComponentFactory.getTraitRegistry();
         this.store = new ClassFieldAccessorStore();
             this.store.setClassFieldAccessorCache( new ClassFieldAccessorCache( this.classLoader ) );
         this.encoder = new HierarchyEncoderImpl();
@@ -71,7 +64,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
         encoder.encode( Thing.class, Collections.emptyList() );
 
         this.mode = mode;
-        setMode( this.mode, getComponentFactory() );
+        setMode( this.mode, null, kieComponentFactory );
     }
 
     /**
@@ -96,11 +89,6 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
     @Override
     protected ClassLoader getRootClassLoader() {
         return classLoader;
-    }
-
-    @Override
-    protected KieComponentFactory getComponentFactory() {
-        return kieComponentFactory;
     }
 
     @Override

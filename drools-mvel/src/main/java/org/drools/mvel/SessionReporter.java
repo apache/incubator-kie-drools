@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
+import org.drools.kiesession.debug.StatefulKnowledgeSessionInfo;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -49,7 +49,7 @@ public class SessionReporter {
     public static String generateReport(final String ruleTemplate,
                                         final StatefulKnowledgeSessionInfo session,
                                         final Map<String, Object> vars) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, Object> context = new HashMap<>();
         if ( vars != null ) {
             context.putAll( vars );
         }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.common.DefaultAgenda;
+import org.drools.kiesession.agenda.DefaultAgenda;
 import org.drools.testcoverage.common.model.Alarm;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;

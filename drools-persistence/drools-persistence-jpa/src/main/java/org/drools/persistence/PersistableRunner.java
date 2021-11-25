@@ -31,7 +31,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.fluent.impl.InternalExecutable;
 import org.drools.core.fluent.impl.PseudoClockRunner;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.KieSessionInitializer;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.core.runtime.ChainableRunner;
@@ -62,8 +62,6 @@ import org.kie.api.runtime.RequestContext;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.lang.Boolean.TRUE;
 
 public class PersistableRunner implements SingleSessionCommandService {
 

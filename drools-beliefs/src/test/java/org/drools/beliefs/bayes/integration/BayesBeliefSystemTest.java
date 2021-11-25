@@ -26,7 +26,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
@@ -36,7 +36,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;

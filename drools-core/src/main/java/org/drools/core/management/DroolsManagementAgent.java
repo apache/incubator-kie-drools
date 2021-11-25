@@ -27,6 +27,7 @@ import javax.management.StandardMBean;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.management.KieManagementAgentMBean;
@@ -270,7 +271,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
                             return (GenericKieSessionMonitoringImpl) mbeansRefs.get(cbsKey);
                         } else {
                             try {
-                                StatelessKieSessionMonitoringImpl mbean = new StatelessKieSessionMonitoringImpl( cbsKey.kcontainerId, cbsKey.kbaseId, cbsKey.ksessionName );
+                                GenericKieSessionMonitoringImpl mbean = RuntimeComponentFactory.get().createStatelessSessionMonitor( cbsKey );
                                 registerMBean( cbsKey, mbean, mbean.getName() );
                                 mbeansRefs.put(cbsKey, mbean);
                                 return mbean;
@@ -286,7 +287,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
                             return (GenericKieSessionMonitoringImpl) mbeansRefs.get(cbsKey);
                         } else {
                             try {
-                                KieSessionMonitoringImpl mbean = new KieSessionMonitoringImpl( cbsKey.kcontainerId, cbsKey.kbaseId, cbsKey.ksessionName );
+                                GenericKieSessionMonitoringImpl mbean = RuntimeComponentFactory.get().createStatefulSessionMonitor( cbsKey );
                                 registerMBean( cbsKey, mbean, mbean.getName() );
                                 mbeansRefs.put(cbsKey, mbean);
                                 return mbean;

@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
@@ -107,7 +107,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
 
     @Override
     public void propagateAssertObject( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
-        CompositeDefaultAgenda compositeAgenda = (CompositeDefaultAgenda) reteEvaluator.getActivationsManager();
+        ActivationsManager compositeAgenda = reteEvaluator.getActivationsManager();
         if (hashed) {
             AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( new CompositeObjectSinkAdapter.HashKey( fieldIndex, factHandle.getObject() ) );
             if ( sink != null ) {

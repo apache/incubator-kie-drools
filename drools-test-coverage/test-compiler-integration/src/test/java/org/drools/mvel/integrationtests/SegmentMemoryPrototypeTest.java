@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.TerminalNode;

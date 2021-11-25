@@ -52,7 +52,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DefaultKnowledgeHelper;
+import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
@@ -65,7 +65,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -202,7 +202,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                                           rule.getLhs(),
                                                           tuple );
 
-        DefaultKnowledgeHelper knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
+        DefaultKnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
         knowledgeHelper.setActivation( activation );
 
         rule.getConsequence().evaluate( knowledgeHelper,
@@ -223,7 +223,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         rule = pkg.getRule( "rule-1" );
 
-        knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
+        knowledgeHelper = new DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
         knowledgeHelper.setActivation( activation );
 
         rule.getConsequence().evaluate( knowledgeHelper,
@@ -285,7 +285,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                                           newRule.getLhs(),
                                                           tuple );
 
-        final DefaultKnowledgeHelper knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
+        final DefaultKnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
         knowledgeHelper.setActivation( activation );
 
         newRule.getConsequence().evaluate( knowledgeHelper,

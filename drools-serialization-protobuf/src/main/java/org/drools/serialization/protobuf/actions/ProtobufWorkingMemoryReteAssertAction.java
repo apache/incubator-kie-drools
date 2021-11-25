@@ -15,7 +15,7 @@
 package org.drools.serialization.protobuf.actions;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.WorkingMemoryReteAssertAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.spi.Tuple;
@@ -24,7 +24,7 @@ import org.drools.serialization.protobuf.ProtobufMessages;
 import org.drools.serialization.protobuf.ProtobufWorkingMemoryAction;
 
 public class ProtobufWorkingMemoryReteAssertAction
-        extends StatefulKnowledgeSessionImpl.WorkingMemoryReteAssertAction
+        extends WorkingMemoryReteAssertAction
         implements ProtobufWorkingMemoryAction {
 
     public ProtobufWorkingMemoryReteAssertAction( MarshallerReaderContext context,

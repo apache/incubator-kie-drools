@@ -40,6 +40,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.CoreWrapper;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
@@ -49,7 +50,7 @@ import org.drools.traits.core.factmodel.TraitRegistryImpl;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.traits.core.metadata.Metadatable;
 import org.drools.traits.core.metadata.Modify;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -246,7 +247,7 @@ public class TraitHelperImpl implements Externalizable,
         if ( ! inner.hasTraits() ) {
             TraitTypeMapImpl ttm = (TraitTypeMapImpl) inner._getTraitMap();
             if ( ttm != null && ttm.getStaticTypeCode() == null ) {
-                TraitRegistryImpl registry = (TraitRegistryImpl) this.workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry();
+                TraitRegistryImpl registry = (TraitRegistryImpl) RuntimeComponentFactory.get().getTraitRegistry(this.workingMemory.getKnowledgeBase());
                 // code that summarizes ALL the static types
                 BitSet staticCode = registry.getStaticTypeCode( inner.getClass().getName() );
                 ttm.setStaticTypeCode( staticCode );
@@ -350,7 +351,7 @@ public class TraitHelperImpl implements Externalizable,
             } else if ( core.hasTrait( trait.getName() ) ) {
                 removedTypes = core.removeTrait( trait.getName() );
             } else {
-                HierarchyEncoder hier = this.workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                HierarchyEncoder hier = RuntimeComponentFactory.get().getTraitRegistry(this.workingMemory.getKnowledgeBase()).getHierarchy();
                 BitSet code = hier.getCode( trait.getName() );
                 removedTypes = core.removeTrait( code );
             }

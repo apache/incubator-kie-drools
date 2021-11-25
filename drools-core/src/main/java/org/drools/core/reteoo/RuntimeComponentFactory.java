@@ -1,0 +1,92 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.core.reteoo;
+
+import org.drools.core.SessionConfiguration;
+import org.drools.core.base.FieldDataFactory;
+import org.drools.core.common.AgendaFactory;
+import org.drools.core.common.AgendaGroupFactory;
+import org.drools.core.common.BeliefSystemFactory;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.NamedEntryPointFactory;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.WorkingMemoryFactory;
+import org.drools.core.factmodel.ClassBuilderFactory;
+import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.management.GenericKieSessionMonitoringImpl;
+import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.spi.KnowledgeHelper;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.KieSessionsPool;
+import org.kie.api.runtime.StatelessKieSession;
+
+public interface RuntimeComponentFactory {
+
+    String NO_RUNTIME = "Missing runtime. Please add the module org.drools:drools-kiesession to your classpath.";
+
+    ClassBuilderFactory getClassBuilderFactory();
+
+    AgendaFactory getAgendaFactory();
+
+    AgendaGroupFactory getAgendaGroupFactory();
+
+    PropagationContextFactory getPropagationContextFactory();
+
+    BeliefSystemFactory getBeliefSystemFactory();
+
+    NamedEntryPointFactory getNamedEntryPointFactory();
+
+    FactHandleFactory getFactHandleFactoryService();
+
+    WorkingMemoryFactory getWorkingMemoryFactory();
+
+    FieldDataFactory getFieldFactory();
+
+    TraitRegistry getTraitRegistry(InternalKnowledgeBase knowledgeBase);
+
+    TraitFactory getTraitFactory(InternalKnowledgeBase knowledgeBase);
+
+    KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator);
+
+    InternalWorkingMemory createStatefulSession(KnowledgeBaseImpl kbase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool);
+
+    StatelessKieSession createStatelessSession(KnowledgeBaseImpl kbase, KieSessionConfiguration conf);
+
+    KieSessionsPool createSessionsPool(KnowledgeBaseImpl kBase, int initialSize);
+
+    GenericKieSessionMonitoringImpl createStatefulSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
+
+    GenericKieSessionMonitoringImpl createStatelessSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
+
+    class Holder {
+        private static final RuntimeComponentFactory INSTANCE = ServiceRegistry.getService( RuntimeComponentFactory.class );
+    }
+
+    static RuntimeComponentFactory get() {
+        return RuntimeComponentFactory.Holder.INSTANCE != null ? RuntimeComponentFactory.Holder.INSTANCE : throwExceptionForMissingRuntime();
+    }
+
+    static <T> T throwExceptionForMissingRuntime() {
+        throw new RuntimeException(NO_RUNTIME);
+    }
+}

@@ -25,9 +25,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.integrationtests.SerializationHelper;
-import org.drools.core.reteoo.builder.NodeFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -110,10 +108,6 @@ public class CommonTestMethodBase {
         return kbase.newStatelessKieSession();
     }
 
-    protected KieBase loadKnowledgeBaseFromString(NodeFactory nodeFactory, String... drlContentStrings) {
-        return loadKnowledgeBaseFromString(null, null, nodeFactory, drlContentStrings);
-    }
-
     protected KieBase loadKnowledgeBaseFromString(String... drlContentStrings) {
         return loadKnowledgeBaseFromString(null, null, drlContentStrings);
     }
@@ -128,10 +122,6 @@ public class CommonTestMethodBase {
     }
 
     protected KieBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( config, kBaseConfig, (NodeFactory)null, drlContentStrings);
-    }
-
-    protected KieBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, NodeFactory nodeFactory, String... drlContentStrings) {
         KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder(config);
         for (String drlContentString : drlContentStrings) {
             kbuilder.add(ResourceFactory.newByteArrayResource(drlContentString
@@ -145,9 +135,6 @@ public class CommonTestMethodBase {
             kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
         InternalKnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
-        if (nodeFactory != null) {
-            ((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().setNodeFactoryProvider(nodeFactory);
-        }
         kbase.addPackages( kbuilder.getKnowledgePackages());
         return kbase;
     }

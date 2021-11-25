@@ -17,6 +17,7 @@
 package org.drools.core.reteoo.builder;
 
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.rule.From;
 import org.drools.core.rule.RuleConditionElement;
@@ -42,7 +43,7 @@ public class FromBuilder
                                                                context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ) :
                                                                new AlphaNodeFieldConstraint[0];
 
-        NodeFactory nodeFactory = context.getComponentFactory().getNodeFactoryService();
+        NodeFactory nodeFactory = CoreComponentFactory.get().getNodeFactoryService();
         FromNode fromNode = from.isReactive() ?
                             nodeFactory.buildReactiveFromNode( context.getNextNodeId(),
                                                                from.getDataProvider(),

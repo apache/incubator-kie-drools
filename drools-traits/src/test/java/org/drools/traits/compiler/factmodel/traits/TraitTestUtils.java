@@ -16,22 +16,12 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
-import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.traits.core.factmodel.TraitFactoryImpl;
-import org.drools.traits.core.reteoo.TraitKieComponentFactory;
-import org.drools.traits.core.util.StandaloneTraitFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.traits.core.util.StandaloneTraitFactory;
 
 public class TraitTestUtils {
 
     public static StandaloneTraitFactory createStandaloneTraitFactory() {
-        return new StandaloneTraitFactory(ProjectClassLoader.createProjectClassLoader()) {
-            @Override
-            protected KieComponentFactory getComponentFactory() {
-                TraitKieComponentFactory componentFactory = (TraitKieComponentFactory) super.getComponentFactory();
-                componentFactory.setTraitFactory(new TraitFactoryImpl(null));
-                return componentFactory;
-            }
-        };
+        return new StandaloneTraitFactory(ProjectClassLoader.createProjectClassLoader());
     }
 }

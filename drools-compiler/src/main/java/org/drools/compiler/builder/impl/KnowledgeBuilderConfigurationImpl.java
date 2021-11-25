@@ -33,13 +33,10 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
-import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.factmodel.ClassBuilderFactory;
-import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
@@ -75,8 +72,6 @@ import org.kie.internal.builder.conf.TrimCellsInDTableOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.reteoo.KieComponentFactory.createKieComponentFactory;
 
 /**
  * This class configures the package compiler.
@@ -150,10 +145,6 @@ public class KnowledgeBuilderConfigurationImpl
     private String                            defaultPackageName;
 
     private Map<String, ResultSeverity>       severityMap;
-
-    private DroolsCompilerComponentFactory    componentFactory;
-
-    private KieComponentFactory               kieComponentFactory;
 
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
@@ -267,10 +258,6 @@ public class KnowledgeBuilderConfigurationImpl
 
         setProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME,
                     this.chainedProperties.getProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME,"true"));
-
-        this.componentFactory = new DroolsCompilerComponentFactory();
-
-        this.kieComponentFactory = createKieComponentFactory();
     }
 
     protected ClassLoader getFunctionFactoryClassLoader() {
@@ -705,22 +692,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     public void setDefaultPackageName(String defaultPackageName) {
         this.defaultPackageName = defaultPackageName;
-    }
-
-    public DroolsCompilerComponentFactory getComponentFactory() {
-        return componentFactory;
-    }
-
-    public void setComponentFactory(DroolsCompilerComponentFactory componentFactory) {
-        this.componentFactory = componentFactory;
-    }
-
-    public ClassBuilderFactory getClassBuilderFactory() {
-        return kieComponentFactory.getClassBuilderFactory();
-    }
-
-    public KieComponentFactory getKieComponentFactory() {
-        return kieComponentFactory;
     }
 
     public LanguageLevelOption getLanguageLevel() {

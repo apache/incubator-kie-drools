@@ -23,6 +23,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.ReturnValueExpression;
@@ -95,7 +96,7 @@ public class MVELReturnValueExpression
         }
 
         Object value = evaluator.evaluate( handle, factory );
-        return reteEvaluator.getKnowledgeBase().getConfiguration().getComponentFactory().getFieldFactory().getFieldValue( value );
+        return RuntimeComponentFactory.get().getFieldFactory().getFieldValue( value );
     }
 
 

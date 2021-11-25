@@ -40,6 +40,7 @@ import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.AddRemoveRule;
+import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.WindowDeclaration;
 import org.kie.api.definition.rule.Rule;
@@ -88,7 +89,7 @@ public class ReteooBuilder
         this.queries = new HashMap<>();
         this.namedWindows = new HashMap<>();
 
-        this.ruleBuilder = kBase.getConfiguration().getComponentFactory().getRuleBuilderFactory().newRuleBuilder();
+        this.ruleBuilder = new ReteooRuleBuilder();
     }
 
     // ------------------------------------------------------------
@@ -463,8 +464,7 @@ public class ReteooBuilder
 
     public void setRuleBase( InternalKnowledgeBase kBase ) {
         this.kBase = kBase;
-
-        this.ruleBuilder = kBase.getConfiguration().getComponentFactory().getRuleBuilderFactory().newRuleBuilder();
+        this.ruleBuilder = new ReteooRuleBuilder();
     }
 
 }

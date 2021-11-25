@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.common.ReteEvaluator;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -51,7 +51,7 @@ public class ClearRuleFlowGroupCommand implements ExecutableCommand<Void> {
 
     public Void execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        ((StatefulKnowledgeSessionImpl)ksession).getAgenda().getRuleFlowGroup( this.name ).clear();
+        ((ReteEvaluator)ksession).getActivationsManager().getAgendaGroupsManager().getAgendaGroup( this.name ).clear();
         return null;
     }
 

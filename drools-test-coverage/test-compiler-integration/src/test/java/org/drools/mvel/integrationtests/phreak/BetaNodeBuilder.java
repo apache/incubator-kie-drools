@@ -21,6 +21,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
@@ -82,7 +83,7 @@ public class BetaNodeBuilder {
     }
 
     public BetaNode build() {
-        NodeFactory nFactory = buildContext.getComponentFactory().getNodeFactoryService();
+        NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
 
         EntryPointNode epn = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
 

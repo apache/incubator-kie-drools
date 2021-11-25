@@ -27,7 +27,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
-import org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl;
+import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;

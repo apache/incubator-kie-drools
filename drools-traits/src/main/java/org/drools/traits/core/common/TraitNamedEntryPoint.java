@@ -29,11 +29,12 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.KieComponentFactory;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.traits.core.base.TraitHelperImpl;
 
 public class TraitNamedEntryPoint extends NamedEntryPoint {
 
@@ -41,29 +42,27 @@ public class TraitNamedEntryPoint extends NamedEntryPoint {
 
     public TraitNamedEntryPoint(EntryPointId entryPoint,
                                 EntryPointNode entryPointNode,
-                                ReteEvaluator reteEvaluator,
-                                KieComponentFactory componentFactory) {
+                                ReteEvaluator reteEvaluator) {
         this(entryPoint,
              entryPointNode,
              reteEvaluator,
-             new ReentrantLock(), componentFactory);
+             new ReentrantLock());
     }
 
     public TraitNamedEntryPoint(EntryPointId entryPoint,
                                 EntryPointNode entryPointNode,
                                 ReteEvaluator reteEvaluator,
-                                ReentrantLock lock,
-                                KieComponentFactory componentFactory) {
+                                ReentrantLock lock) {
         this.entryPoint = entryPoint;
         this.entryPointNode = entryPointNode;
         this.reteEvaluator = reteEvaluator;
         this.kBase = this.reteEvaluator.getKnowledgeBase();
         this.lock = lock;
         this.handleFactory = this.reteEvaluator.getFactHandleFactory();
-        this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         boolean isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(this.kBase.getConfiguration().getAssertBehaviour());
         this.objectStore = new ClassAwareObjectStore(isEqualityBehaviour, this.lock);
-        this.traitHelper = componentFactory.createTraitHelper((InternalWorkingMemoryActions) reteEvaluator, this);
+        this.traitHelper = new TraitHelperImpl((InternalWorkingMemoryActions) reteEvaluator, this);
     }
 
     @Override

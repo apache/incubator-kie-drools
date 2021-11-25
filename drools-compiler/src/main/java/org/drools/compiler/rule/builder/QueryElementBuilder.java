@@ -24,7 +24,8 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.MVELDumper;
+import org.drools.compiler.lang.DumperContext;
+import org.drools.compiler.lang.DescrDumper;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
@@ -361,8 +362,8 @@ public class QueryElementBuilder
     }
 
     private QueryArgument getLiteralQueryArgument( RuleBuildContext context, BaseDescr descr, ConstraintConnectiveDescr result ) {
-        MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-        String expr = context.getCompilerFactory().getExpressionProcessor().dump( result, mvelCtx );
+        DumperContext mvelCtx = new DumperContext();
+        String expr = DescrDumper.getInstance().dump( result, mvelCtx );
         try {
             Object value = CoreComponentsBuilder.get()
                     .evaluateMvelExpression( context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" ),

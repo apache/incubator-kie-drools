@@ -51,7 +51,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ActivationKey;
 import org.drools.core.marshalling.impl.KieSessionInitializer;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -63,6 +63,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
@@ -193,11 +194,12 @@ public class ProtobufInputMarshaller {
         FactHandleFactory handleFactory = context.getKnowledgeBase().newFactHandleFactory( _session.getRuleData().getLastId(),
                                                                                  _session.getRuleData().getLastRecency() );
 
-        InternalAgenda agenda = context.getKnowledgeBase().getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.getKnowledgeBase(), false );
+        InternalAgenda agenda = RuntimeComponentFactory.get().getAgendaFactory().createAgenda( context.getKnowledgeBase(), false );
 
-        StatefulKnowledgeSessionImpl session = context.getKnowledgeBase().createSession( id, handleFactory,
-                                            1, // pCTx starts at 1, as InitialFact is 0
-                                            config, agenda, environment );
+        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) RuntimeComponentFactory.get().getWorkingMemoryFactory()
+                .createWorkingMemory( id, context.getKnowledgeBase(), handleFactory,
+                                      1, // pCTx starts at 1, as InitialFact is 0
+                                      config, agenda, environment );
 
         agenda.setWorkingMemory( session );
         readAgenda( context, _session.getRuleData(), agenda );
@@ -497,7 +499,7 @@ public class ProtobufInputMarshaller {
         WorkingMemoryEntryPoint ep = handle.getEntryPoint(wm);
         ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( ep.getEntryPoint(), object );
 
-        PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+        PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
         PropagationContext propagationContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION, null, null, handle, ep.getEntryPoint(), context);
         // keeping this list for a later cleanup is necessary because of the lazy propagations that might occur

@@ -25,6 +25,7 @@ import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -147,7 +148,7 @@ public class GroupElementBuilder
 
                 // adapt it to a Tuple source
                 context.setTupleSource( utils.attachNode( context,
-                                                          context.getComponentFactory().getNodeFactoryService()
+                        CoreComponentFactory.get().getNodeFactoryService()
                                                                  .buildLeftInputAdapterNode( context.getNextNodeId(),
                                                                                              context.getObjectSource(),
                                                                                              context, terminal ) ) );
@@ -163,7 +164,7 @@ public class GroupElementBuilder
                                                                                         context.getBetaconstraints(),
                                                                                         false );
 
-                JoinNode joinNode = context.getComponentFactory()
+                JoinNode joinNode = CoreComponentFactory.get()
                                            .getNodeFactoryService().buildJoinNode( context.getNextNodeId(),
                                                                                    context.getTupleSource(),
                                                                                    context.getObjectSource(),
@@ -245,7 +246,7 @@ public class GroupElementBuilder
 
             // if it is a subnetwork
             if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
-                RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode(context.getNextNodeId(),
+                RightInputAdapterNode riaNode = CoreComponentFactory.get().getNodeFactoryService().buildRightInputNode(context.getNextNodeId(),
                                                                                                                           context.getTupleSource(),
                                                                                                                           tupleSource,
                                                                                                                           context);
@@ -263,7 +264,7 @@ public class GroupElementBuilder
                 context.setBetaconstraints( predicates );
             }
 
-            NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
+            NodeFactory nfactory = CoreComponentFactory.get().getNodeFactoryService();
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),
@@ -324,7 +325,7 @@ public class GroupElementBuilder
 
             // if it is a subnetwork
             if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
-                RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
+                RightInputAdapterNode riaNode = CoreComponentFactory.get().getNodeFactoryService().buildRightInputNode( context.getNextNodeId(),
                                                                                                                            context.getTupleSource(),
                                                                                                                            tupleSource,
                                                                                                                            context );
@@ -340,7 +341,7 @@ public class GroupElementBuilder
                 context.setBetaconstraints( betaConstraints ); // Empty list ensures EmptyBetaConstraints is assigned
             }
 
-            NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
+            NodeFactory nfactory = CoreComponentFactory.get().getNodeFactoryService();
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),

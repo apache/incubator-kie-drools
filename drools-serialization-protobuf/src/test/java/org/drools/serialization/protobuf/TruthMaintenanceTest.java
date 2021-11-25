@@ -27,7 +27,7 @@ import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.mvel.CommonTestMethodBase;

@@ -1,6 +1,6 @@
 package org.drools.serialization.protobuf;
 
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 
 public class ReadSessionResult {
 

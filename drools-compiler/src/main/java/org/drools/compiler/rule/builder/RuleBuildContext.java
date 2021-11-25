@@ -54,8 +54,6 @@ public class RuleBuildContext extends PackageBuildContext {
     // a simple counter for patterns
     private int patternId = -1;
 
-    private final DroolsCompilerComponentFactory compilerFactory;
-
     private boolean needStreamMode = false;
 
     private Pattern prefixPattern;
@@ -105,7 +103,6 @@ public class RuleBuildContext extends PackageBuildContext {
             dialect.init(ruleDescr);
         }
 
-        this.compilerFactory = kBuilder.getBuilderConfiguration().getComponentFactory();
         this.declarationResolver = new DeclarationScopeResolver(kBuilder.getGlobals(), getPkg());
     }
 
@@ -139,10 +136,6 @@ public class RuleBuildContext extends PackageBuildContext {
 
     public int getNextPatternId() {
         return ++this.patternId;
-    }
-
-    public DroolsCompilerComponentFactory getCompilerFactory() {
-        return compilerFactory;
     }
 
     public boolean needsStreamMode() {

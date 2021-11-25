@@ -16,9 +16,9 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.core.impl.AbstractKieSessionsPool;
-import org.drools.core.impl.StatefulSessionPool;
-import org.drools.core.impl.StatelessKnowledgeSessionImpl;
+import org.drools.kiesession.session.AbstractKieSessionsPool;
+import org.drools.kiesession.session.StatefulSessionPool;
+import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
 import org.kie.api.runtime.KieContainerSessionsPool;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;

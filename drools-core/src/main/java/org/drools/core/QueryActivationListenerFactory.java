@@ -16,6 +16,7 @@
 package org.drools.core;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -31,8 +32,7 @@ public class QueryActivationListenerFactory implements ActivationListenerFactory
                                                  int subruleIndex,
                                                  BuildContext context,
                                                  Object... args) {
-        TerminalNode t = context.getComponentFactory().getNodeFactoryService().buildQueryTerminalNode( id, source, rule, subrule, subruleIndex, context );
-        return t;
+        return CoreComponentFactory.get().getNodeFactoryService().buildQueryTerminalNode( id, source, rule, subrule, subruleIndex, context );
     }
 
 }

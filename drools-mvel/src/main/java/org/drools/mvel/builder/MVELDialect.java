@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -77,7 +76,6 @@ import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.compiler.rule.builder.WindowReferenceBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
-import org.drools.mvel.java.JavaFunctionBuilder;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalWorkingMemory;
@@ -89,9 +87,11 @@ import org.drools.core.util.StringUtils;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.expr.MVELCompilationUnit;
+import org.drools.mvel.java.JavaFunctionBuilder;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
 
@@ -592,7 +592,7 @@ public class MVELDialect
         for (String op : analysis.getBoundIdentifiers().getOperators().keySet()) {
             strList.add(op);
             ids.add(op);
-            resolvedInputs.put(op, context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass());
+            resolvedInputs.put(op, EvaluatorWrapper.class);
         }
         EvaluatorWrapper[] operators = new EvaluatorWrapper[strList.size()];
         for (int i = 0; i < operators.length; i++) {

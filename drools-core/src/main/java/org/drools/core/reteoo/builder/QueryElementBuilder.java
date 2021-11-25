@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo.builder;
 
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.RuleConditionElement;
@@ -42,7 +43,7 @@ public class QueryElementBuilder
         resultPattern.setObjectIndex((context.getTupleSource() != null) ? context.getTupleSource().getObjectCount() : 0);
 
         context.setTupleSource( utils.attachNode( context,
-                                                  context.getComponentFactory().getNodeFactoryService().buildQueryElementNode(
+                CoreComponentFactory.get().getNodeFactoryService().buildQueryElementNode(
                                                                         context.getNextNodeId(),
                                                                         context.getTupleSource(),
                                                                         qe,

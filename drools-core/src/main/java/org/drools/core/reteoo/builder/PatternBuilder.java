@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InstanceNotEqualsConstraint;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
@@ -133,7 +134,7 @@ public class PatternBuilder
 
         if( ! behaviors.isEmpty() ) {
             // build the window node:
-            WindowNode wn = context.getComponentFactory().getNodeFactoryService().buildWindowNode( context.getNextNodeId(),
+            WindowNode wn = CoreComponentFactory.get().getNodeFactoryService().buildWindowNode( context.getNextNodeId(),
                                                                                                    constraints.alphaConstraints,
                                                                                                    behaviors,
                                                                                                    context.getObjectSource(),
@@ -309,7 +310,7 @@ public class PatternBuilder
 
         buildAlphaNodeChain( context, utils, pattern, alphaConstraints );
 
-        NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
+        NodeFactory nfactory = CoreComponentFactory.get().getNodeFactoryService();
         
         if ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT && context.isAttachPQN() ) {
             // the entry-point specific network nodes are attached, so, set context to default entry-point
@@ -321,7 +322,7 @@ public class PatternBuilder
         for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
             context.pushRuleComponent( constraint );
             context.setObjectSource( utils.attachNode( context,
-                                                       context.getComponentFactory().getNodeFactoryService().buildAlphaNode( context.getNextNodeId(),
+                    CoreComponentFactory.get().getNodeFactoryService().buildAlphaNode( context.getNextNodeId(),
                                                                                                                              constraint,
                                                                                                                              context.getObjectSource(),
                                                                                                                              context) ) );
@@ -341,7 +342,7 @@ public class PatternBuilder
             }
         }
 
-        ObjectTypeNode otn = context.getComponentFactory().getNodeFactoryService().buildObjectTypeNode( context.getNextNodeId(),
+        ObjectTypeNode otn = CoreComponentFactory.get().getNodeFactoryService().buildObjectTypeNode( context.getNextNodeId(),
                                                  (EntryPointNode) context.getObjectSource(),
                                                  objectType,
                                                  context );

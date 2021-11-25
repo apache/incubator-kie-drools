@@ -11,12 +11,12 @@ User facts count  : @{session.externalFactCount}
 
 ============== Top Ten Left Memory Sizes ======
 @code{
-topTuples = new java.util.TreeSet(new org.drools.core.util.debug.LeftMemorySizeComparator());
+topTuples = new java.util.TreeSet(new org.drools.kiesession.debug.LeftMemorySizeComparator());
 topTuples.addAll( session.nodeInfos );
 buffer = new StringBuilder();
 it = topTuples.iterator();
 for( int i = 0; i < 10 && it.hasNext() ; i++ ) {
-    ni = (org.drools.core.util.debug.NodeInfo) it.next();
+    ni = (org.drools.kiesession.debug.NodeInfo) it.next();
     buffer.append( (i+1) + ". " + ni.node.toString() );
     buffer.append( "\n\t\tLeftTuples = ");
     buffer.append( ni.getTupleMemorySize());
@@ -27,12 +27,12 @@ for( int i = 0; i < 10 && it.hasNext() ; i++ ) {
 
 ============== Top Ten Right Memory Sizes ======
 @code{
-topFacts = new java.util.TreeSet(new org.drools.core.util.debug.RightMemorySizeComparator());
+topFacts = new java.util.TreeSet(new org.drools.kiesession.debug.RightMemorySizeComparator());
 topFacts.addAll( session.nodeInfos );
 buffer = new StringBuilder();
 it = topFacts.iterator();
 for( int j = 0; j < 10 && it.hasNext() ; j++ ) {
-    ni = (org.drools.core.util.debug.NodeInfo) it.next();
+    ni = (org.drools.kiesession.debug.NodeInfo) it.next();
     buffer.append( (j+1) + ". " + ni.node.toString() );
     buffer.append( "\n\t\tFacts = ");
     buffer.append( ni.getFactMemorySize());

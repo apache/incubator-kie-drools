@@ -25,13 +25,11 @@ import java.util.concurrent.Future;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -43,17 +41,13 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.Environment;
 
 public interface InternalKnowledgeBase extends KieBase {
-
-    StatefulKnowledgeSessionImpl createSession( long id, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment );
 
     String getId();
 
@@ -94,11 +88,7 @@ public interface InternalKnowledgeBase extends KieBase {
 
     ClassLoader getRootClassLoader();
 
-    void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession);
-
-    TripleStore getTripleStore();
-
-    TraitRegistry getTraitRegistry();
+    void disposeStatefulSession(InternalWorkingMemory statefulSession);
 
     Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
 

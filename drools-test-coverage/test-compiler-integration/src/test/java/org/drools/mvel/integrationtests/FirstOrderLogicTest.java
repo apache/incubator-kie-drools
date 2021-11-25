@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
-import org.drools.core.audit.WorkingMemoryConsoleLogger;
+import org.drools.kiesession.audit.WorkingMemoryConsoleLogger;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;

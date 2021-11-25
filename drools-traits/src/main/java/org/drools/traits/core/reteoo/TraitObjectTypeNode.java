@@ -19,7 +19,6 @@ package org.drools.traits.core.reteoo;
 import java.util.BitSet;
 import java.util.Collection;
 
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.traits.Thing;
@@ -28,6 +27,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropertySpecificUtil;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -46,9 +46,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     public TraitObjectTypeNode(int id, EntryPointNode source, ObjectType objectType, BuildContext context ) {
         super( id, source, objectType, context );
 
-        typeMask = context.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy().getCode(
-                ((ClassObjectType) objectType).getClassName()
-        );
+        typeMask = RuntimeComponentFactory.get().getTraitRegistry(context.getKnowledgeBase()).getHierarchy().getCode( objectType.getClassName() );
     }
 
     @Override
