@@ -86,6 +86,7 @@ class UserTaskInstanceEntityMapperIT {
         commentEntity.setContent(comment_content);
         commentEntity.setUpdatedAt(time);
         commentEntity.setUpdatedBy(comment_updatedBy);
+        commentEntity.setUserTask(userTaskInstanceEntity);
 
         String attachmentId = "testAttachmentId";
         String attachment_name = "testAttachmentName";
@@ -99,6 +100,7 @@ class UserTaskInstanceEntityMapperIT {
         attachmentEntity.setName(attachment_name);
         attachmentEntity.setUpdatedAt(time);
         attachmentEntity.setUpdatedBy(attachment_updatedBy);
+        attachmentEntity.setUserTask(userTaskInstanceEntity);
 
         userTaskInstance.setId(testId);
         userTaskInstance.setDescription(description);

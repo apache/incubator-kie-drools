@@ -53,6 +53,8 @@ import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 public final class TestUtils {
 
+    private static final String MILESTONE_ID = UUID.randomUUID().toString();
+
     private TestUtils() {
     }
 
@@ -154,7 +156,7 @@ public final class TestUtils {
     private static List<Milestone> getMilestones() {
         return newArrayList(
                 Milestone.builder()
-                        .id(UUID.randomUUID().toString())
+                        .id(MILESTONE_ID)
                         .name("SimpleMilestone")
                         .status(MilestoneStatus.AVAILABLE.name())
                         .build());

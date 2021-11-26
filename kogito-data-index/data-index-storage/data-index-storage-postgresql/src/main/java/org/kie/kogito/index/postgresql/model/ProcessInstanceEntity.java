@@ -22,13 +22,16 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -38,8 +41,9 @@ import org.kie.kogito.persistence.postgresql.hibernate.JsonBinaryType;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-@Entity
+@Entity(name = "processes")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@Table(name = "processes")
 public class ProcessInstanceEntity extends AbstractEntity {
 
     @Id
@@ -50,28 +54,32 @@ public class ProcessInstanceEntity extends AbstractEntity {
     private String businessKey;
     private String endpoint;
     @ElementCollection
-    @JoinColumn(name = "ROLE", referencedColumnName = "ID")
+    @JoinColumn(name = "process_id")
+    @CollectionTable(name = "processes_roles", joinColumns = @JoinColumn(name = "process_id", foreignKey = @ForeignKey(name = "fk_processes_roles_processes")))
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "role", nullable = false)
     private Set<String> roles;
-    @Column(name = "start_time")
+    @Column(name = "startTime")
     private ZonedDateTime start;
-    @Column(name = "end_time")
+    @Column(name = "endTime")
     private ZonedDateTime end;
     private String rootProcessInstanceId;
     private String rootProcessId;
     private String parentProcessInstanceId;
-    @Column(name = "last_update_time")
+    @Column(name = "lastUpdateTime")
     private ZonedDateTime lastUpdate;
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
     private ObjectNode variables;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "processInstance")
     private List<NodeInstanceEntity> nodes;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "processInstance")
     private List<MilestoneEntity> milestones;
     @ElementCollection
-    @JoinColumn(name = "ADDON", referencedColumnName = "ID")
+    @JoinColumn(name = "process_id")
+    @CollectionTable(name = "processes_addons", joinColumns = @JoinColumn(name = "process_id", foreignKey = @ForeignKey(name = "fk_processes_addons_processes")))
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "addon", nullable = false)
     private Set<String> addons;
     @Embedded
     private ProcessInstanceErrorEntity error;
@@ -181,12 +189,12 @@ public class ProcessInstanceEntity extends AbstractEntity {
         this.lastUpdate = lastUpdate;
     }
 
-    public void setVariables(ObjectNode variables) {
-        this.variables = variables;
-    }
-
     public ObjectNode getVariables() {
         return variables;
+    }
+
+    public void setVariables(ObjectNode variables) {
+        this.variables = variables;
     }
 
     public List<NodeInstanceEntity> getNodes() {
@@ -213,12 +221,12 @@ public class ProcessInstanceEntity extends AbstractEntity {
         this.addons = addons;
     }
 
-    public void setError(ProcessInstanceErrorEntity error) {
-        this.error = error;
-    }
-
     public ProcessInstanceErrorEntity getError() {
         return error;
+    }
+
+    public void setError(ProcessInstanceErrorEntity error) {
+        this.error = error;
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.index.postgresql.model.MilestoneEntity;
+import org.kie.kogito.index.postgresql.model.MilestoneEntityId;
 import org.kie.kogito.index.postgresql.model.NodeInstanceEntity;
 import org.kie.kogito.index.postgresql.model.ProcessInstanceEntity;
 import org.kie.kogito.index.postgresql.model.ProcessInstanceErrorEntity;
@@ -126,15 +127,20 @@ class ProcessInstanceEntityMapperIT {
         nodeInstanceEntity.setName(nodeInstanceName);
         nodeInstanceEntity.setNodeId(nodeInstanceNodeId);
         nodeInstanceEntity.setType(nodeInstanceType);
+        nodeInstanceEntity.setProcessInstance(processInstanceEntity);
 
         ProcessInstanceErrorEntity processInstanceErrorEntity = new ProcessInstanceErrorEntity();
         processInstanceErrorEntity.setMessage(processInstanceErrorMessage);
         processInstanceErrorEntity.setNodeDefinitionId(processInstanceErrorNodeDefinitionId);
 
         MilestoneEntity milestoneEntity = new MilestoneEntity();
+        MilestoneEntityId milestoneEntityId = new MilestoneEntityId();
+        milestoneEntityId.setId(milestoneId);
+        milestoneEntityId.setProcessInstance(testId);
         milestoneEntity.setId(milestoneId);
         milestoneEntity.setName(milestoneName);
         milestoneEntity.setStatus(milestoneStatus);
+        milestoneEntity.setProcessInstance(processInstanceEntity);
 
         processInstanceEntity.setId(testId);
         processInstanceEntity.setProcessId(processId);
@@ -159,13 +165,13 @@ class ProcessInstanceEntityMapperIT {
     @Test
     void testMapToEntity() {
         ProcessInstanceEntity result = mapper.mapToEntity(processInstance);
-        assertThat(result).isEqualToIgnoringGivenFields(processInstanceEntity, "$$_hibernate_tracker");
+        assertThat(result).usingRecursiveComparison().ignoringFieldsMatchingRegexes(".*\\$\\$_hibernate_tracker").isEqualTo(processInstanceEntity);
     }
 
     @Test
     void testMapToModel() {
         ProcessInstance result = mapper.mapToModel(processInstanceEntity);
-        assertThat(result).isEqualToComparingFieldByField(processInstance);
+        assertThat(result).usingRecursiveComparison().isEqualTo(processInstance);
     }
 
 }

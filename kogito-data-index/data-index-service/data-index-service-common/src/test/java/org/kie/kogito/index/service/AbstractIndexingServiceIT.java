@@ -310,9 +310,11 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         endEvent.getData().setEnd(ZonedDateTime.now());
         endEvent.getData().setVariables((ObjectNode) getObjectMapper().readTree(
                 "{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }"));
+        endEvent.getData().getMilestones().get(0).setStatus(MilestoneStatus.COMPLETED.name());
         indexProcessCloudEvent(endEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent);
+        validateProcessInstance(getProcessInstanceByIdAndMilestoneStatus(processInstanceId, MilestoneStatus.COMPLETED.name()), endEvent);
 
         KogitoProcessCloudEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId,
                 processId, processInstanceId);

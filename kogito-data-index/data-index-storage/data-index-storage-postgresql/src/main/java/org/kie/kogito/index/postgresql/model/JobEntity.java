@@ -21,8 +21,10 @@ import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Entity
+@Entity(name = "jobs")
+@Table(name = "jobs")
 public class JobEntity extends AbstractEntity {
 
     @Id

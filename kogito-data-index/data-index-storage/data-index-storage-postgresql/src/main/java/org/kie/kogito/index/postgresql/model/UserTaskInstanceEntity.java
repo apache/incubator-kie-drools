@@ -22,12 +22,15 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -37,8 +40,9 @@ import org.kie.kogito.persistence.postgresql.hibernate.JsonBinaryType;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-@Entity
+@Entity(name = "tasks")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@Table(name = "tasks")
 public class UserTaskInstanceEntity extends AbstractEntity {
 
     @Id
@@ -50,26 +54,36 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     private String state;
     private String actualOwner;
     @ElementCollection
-    @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "task_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @CollectionTable(name = "tasks_admin_groups", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_admin_groups_tasks")))
+    @Column(name = "group_id", nullable = false)
     private Set<String> adminGroups;
     @ElementCollection
-    @JoinColumn(name = "USER", referencedColumnName = "ID")
+    @JoinColumn(name = "task_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @CollectionTable(name = "tasks_admin_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_admin_users_tasks")))
+    @Column(name = "user_id", nullable = false)
     private Set<String> adminUsers;
     private ZonedDateTime completed;
     private ZonedDateTime started;
     @ElementCollection
-    @JoinColumn(name = "USER", referencedColumnName = "ID")
+    @JoinColumn(name = "task_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @CollectionTable(name = "tasks_excluded_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_excluded_users_tasks")))
+    @Column(name = "user_id", nullable = false)
     private Set<String> excludedUsers;
     @ElementCollection
-    @JoinColumn(name = "GROUP", referencedColumnName = "ID")
+    @JoinColumn(name = "task_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @CollectionTable(name = "tasks_potential_groups", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_potential_groups_tasks")))
+    @Column(name = "group_id", nullable = false)
     private Set<String> potentialGroups;
     @ElementCollection
-    @JoinColumn(name = "USER", referencedColumnName = "ID")
+    @JoinColumn(name = "task_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @CollectionTable(name = "tasks_potential_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_potential_users_tasks")))
+    @Column(name = "user_id", nullable = false)
     private Set<String> potentialUsers;
     private String referenceName;
     private ZonedDateTime lastUpdate;
@@ -83,9 +97,9 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     @Column(columnDefinition = "jsonb")
     private ObjectNode outputs;
     private String endpoint;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask")
     private List<CommentEntity> comments;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask")
     private List<AttachmentEntity> attachments;
 
     @Override

@@ -19,11 +19,20 @@ package org.kie.kogito.index.postgresql.model;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-@Entity
-public class NodeInstanceEntity {
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+@Entity(name = "nodes")
+@Table(name = "nodes")
+public class NodeInstanceEntity extends AbstractEntity {
 
     @Id
     private String id;
@@ -33,7 +42,12 @@ public class NodeInstanceEntity {
     private ZonedDateTime enter;
     private ZonedDateTime exit;
     private String definitionId;
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "processInstanceId", foreignKey = @ForeignKey(name = "fk_nodes_process"))
+    private ProcessInstanceEntity processInstance;
 
+    @Override
     public String getId() {
         return id;
     }
@@ -88,6 +102,14 @@ public class NodeInstanceEntity {
 
     public void setExit(ZonedDateTime exit) {
         this.exit = exit;
+    }
+
+    public ProcessInstanceEntity getProcessInstance() {
+        return processInstance;
+    }
+
+    public void setProcessInstance(ProcessInstanceEntity processInstance) {
+        this.processInstance = processInstance;
     }
 
     @Override
