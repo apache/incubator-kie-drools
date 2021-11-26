@@ -452,10 +452,10 @@ public class MVELDialect
 
     private Class<?> loadImportedClass(String className) {
         try {
-            return pkg.getTypeResolver().resolveType(className);
+            return this.packageRegistry.getPackageClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) { }
         try {
-            return this.packageRegistry.getPackageClassLoader().loadClass(className);
+            return pkg.getTypeResolver().resolveType(className);
         } catch (ClassNotFoundException e) { }
         return null;
     }
