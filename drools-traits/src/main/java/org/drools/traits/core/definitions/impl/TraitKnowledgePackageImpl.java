@@ -30,7 +30,7 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
@@ -67,7 +67,7 @@ public class TraitKnowledgePackageImpl extends KnowledgePackageImpl {
     }
 
     @Override
-    public void mergeTraitRegistry(InternalKnowledgeBase knowledgeBase) {
+    public void mergeTraitRegistry(RuleBase knowledgeBase) {
         if (traitRegistry != null) {
             RuntimeComponentFactory.get().getTraitRegistry(knowledgeBase).merge(traitRegistry);
         }

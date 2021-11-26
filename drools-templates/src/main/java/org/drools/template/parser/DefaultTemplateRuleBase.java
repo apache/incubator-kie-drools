@@ -24,7 +24,7 @@ import java.util.Map;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.template.model.Condition;
 import org.drools.template.model.Consequence;
 import org.drools.template.model.DRLOutput;
@@ -137,7 +137,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
             InternalKnowledgePackage pkg = builder.getPackage(DefaultTemplateRuleBase.class.getPackage().getName());
 
             // add the package to a rulebase (deploy the rule package).
-            InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+            InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
             kBase.addPackage(pkg);
             return kBase;
 

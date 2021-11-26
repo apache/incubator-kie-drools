@@ -26,8 +26,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.management.ObjectName;
+
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.MaterializedLambda;
@@ -39,14 +39,13 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.drools.kiesession.session.StatefulSessionPool;
-import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.ClassUtils;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulSessionPool;
+import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -80,7 +79,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.Drools.isJndiAvailable;
@@ -530,7 +528,7 @@ public class KieContainerImpl
             log.error("Unknown KieSession name: " + kSessionName);
             return null;
         }
-        KnowledgeBaseImpl kBase = (KnowledgeBaseImpl) getKieBaseFromKieSessionModel( kSessionModel );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKieBaseFromKieSessionModel( kSessionModel );
         return kBase == null ? null : new StatefulSessionPool(kBase, initialSize, () -> {
             SessionConfiguration sessConf = conf != null ? (SessionConfiguration) conf : kBase.getSessionConfiguration();
             StatefulKnowledgeSessionImpl kSession = stateless ?

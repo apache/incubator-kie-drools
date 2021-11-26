@@ -16,17 +16,19 @@
 package org.drools.core.reteoo;
 
 
+import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.WindowDeclaration;
 
 public interface RuleBuilder {
 
-    List<TerminalNode> addRule( RuleImpl rule, InternalKnowledgeBase kBase );
+    List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories );
 
-    void addEntryPoint( String id, InternalKnowledgeBase kBase );
+    void addEntryPoint( String id, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories );
 
-    WindowNode addWindowNode( WindowDeclaration window, InternalKnowledgeBase kBase );
+    WindowNode addWindowNode( WindowDeclaration window, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories );
 }

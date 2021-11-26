@@ -128,7 +128,7 @@ public class GroupElementBuilder
             Class<?> patternClass = ((Pattern) child).getObjectType().getClassType();
             boolean isInitialFact = patternClass != null && InitialFact.class.isAssignableFrom( patternClass );
             boolean hasTimer = context.getRule().getTimer() != null;
-            RuleBaseConfiguration conf = context.getKnowledgeBase().getConfiguration();
+            RuleBaseConfiguration conf = context.getRuleBase().getConfiguration();
             boolean lockOnActive = context.getRule().isLockOnActive();
             boolean eager = context.getRule().getMetaData( Propagation.class.getName() ) != null;
             return !isInitialFact && !hasTimer && !lockOnActive && !eager &&

@@ -20,7 +20,8 @@ import java.io.Serializable;
 import java.io.StringReader;
 
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
+import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -98,9 +99,9 @@ public class UnmarshallingTest {
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( kbuilder.getErrors().toString() );
         }
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        InternalKnowledgeBase knowledgeBase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase( config ));
         knowledgeBase.addPackages( kbuilder.getKnowledgePackages() );
 
         return knowledgeBase;

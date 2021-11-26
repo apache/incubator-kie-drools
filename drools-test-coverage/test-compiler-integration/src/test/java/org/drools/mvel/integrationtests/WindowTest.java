@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -134,7 +134,7 @@ public class WindowTest {
     public void initialization() {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
-        KieSessionConfiguration ksconfig = KnowledgeBaseFactory
+        KieSessionConfiguration ksconfig = RuleBaseFactory
                 .newKnowledgeSessionConfiguration();
         ksconfig.setOption(ClockTypeOption.PSEUDO);
 

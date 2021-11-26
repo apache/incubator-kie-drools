@@ -29,7 +29,7 @@ import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.GenericKieSessionMonitoringImpl;
 import org.drools.core.spi.FactHandleFactory;
@@ -62,17 +62,17 @@ public interface RuntimeComponentFactory {
 
     FieldDataFactory getFieldFactory();
 
-    TraitRegistry getTraitRegistry(InternalKnowledgeBase knowledgeBase);
+    TraitRegistry getTraitRegistry(RuleBase knowledgeBase);
 
-    TraitFactory getTraitFactory(InternalKnowledgeBase knowledgeBase);
+    TraitFactory getTraitFactory(RuleBase knowledgeBase);
 
     KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator);
 
-    InternalWorkingMemory createStatefulSession(KnowledgeBaseImpl kbase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool);
+    InternalWorkingMemory createStatefulSession(InternalKnowledgeBase kbase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool);
 
-    StatelessKieSession createStatelessSession(KnowledgeBaseImpl kbase, KieSessionConfiguration conf);
+    StatelessKieSession createStatelessSession(InternalKnowledgeBase kbase, KieSessionConfiguration conf);
 
-    KieSessionsPool createSessionsPool(KnowledgeBaseImpl kBase, int initialSize);
+    KieSessionsPool createSessionsPool(InternalKnowledgeBase kBase, int initialSize);
 
     GenericKieSessionMonitoringImpl createStatefulSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
 

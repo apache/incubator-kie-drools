@@ -22,7 +22,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -86,7 +86,7 @@ public class FireUntilHaltAccumulateTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         final KieSessionConfiguration sessionConfig =
-                KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+                RuleBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ));
 
         this.statefulSession = kbase.newKieSession(sessionConfig, null);

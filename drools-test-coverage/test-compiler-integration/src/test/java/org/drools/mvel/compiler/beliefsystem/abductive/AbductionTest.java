@@ -31,7 +31,7 @@ import org.drools.core.beliefsystem.abductive.Abducible;
 import org.drools.core.beliefsystem.defeasible.Defeasible;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -81,7 +81,7 @@ public class AbductionTest {
         KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drlString);
         KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, options);
 
-        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
         return kbase.newKieSession( ksConf, null );
     }

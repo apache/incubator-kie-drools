@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.model.Alarm;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.Sensor;
@@ -272,7 +272,7 @@ public class ActivateAndDeleteOnListenerTest {
                 "end  \n";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("activate-delete-test", kieBaseTestConfiguration, drl);
-        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( new ForceEagerActivationOption.FILTERED(rule -> rule.getName().equals("yyy")));
 
         final List<String> list = new ArrayList<>();
@@ -356,7 +356,7 @@ public class ActivateAndDeleteOnListenerTest {
               "end  \n";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("activate-delete-test", kieBaseTestConfiguration, drl);
-        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( new ForceEagerActivationOption.FILTERED(rule -> rule.getName().equals("yyy")));
 
         final List<String> list = new ArrayList<>();
@@ -425,7 +425,7 @@ public class ActivateAndDeleteOnListenerTest {
               "end  \n";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("activate-delete-test", kieBaseTestConfiguration, drl);
-        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( new ForceEagerActivationOption.FILTERED(rule -> rule.getName().equals("yyy")));
 
         final List<String> list = new ArrayList<>();
@@ -704,7 +704,7 @@ public class ActivateAndDeleteOnListenerTest {
 
     private KieSession getSessionWithEagerActivation(final String drl) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("activate-delete-test", kieBaseTestConfiguration, drl);
-        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ForceEagerActivationOption.YES );
         return kbase.newKieSession(conf, null);
     }

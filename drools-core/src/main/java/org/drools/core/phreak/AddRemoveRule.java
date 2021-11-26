@@ -37,7 +37,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -87,7 +87,7 @@ public class AddRemoveRule {
      * This method is called after the rule nodes have been added to the network
      * For add tuples are processed after the segments and pmems have been adjusted
      */
-    public static void addRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalKnowledgeBase kBase) {
+    public static void addRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, RuleBase kBase) {
         if (log.isTraceEnabled()) {
             log.trace("Adding Rule {}", tn.getRule().getName());
         }
@@ -146,7 +146,7 @@ public class AddRemoveRule {
      * This method is called before the rule nodes are removed from the network.
      * For remove tuples are processed before the segments and pmems have been adjusted
      */
-    public static void removeRule( TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalKnowledgeBase kBase) {
+    public static void removeRule( TerminalNode tn, Collection<InternalWorkingMemory> wms, RuleBase kBase) {
         if (log.isTraceEnabled()) {
             log.trace("Removing Rule {}", tn.getRule().getName());
         }
@@ -1414,7 +1414,7 @@ public class AddRemoveRule {
         List<PathMemory> otherPmems = new ArrayList<PathMemory>();
     }
 
-    private static PathEndNodes getPathEndNodes(InternalKnowledgeBase kBase,
+    private static PathEndNodes getPathEndNodes(RuleBase kBase,
                                                 LeftTupleNode lt,
                                                 TerminalNode tn,
                                                 Rule processedRule,
@@ -1437,7 +1437,7 @@ public class AddRemoveRule {
         return endNodes;
     }
 
-    private static void collectPathEndNodes(InternalKnowledgeBase kBase,
+    private static void collectPathEndNodes(RuleBase kBase,
                                             LeftTupleNode lt,
                                             PathEndNodes endNodes,
                                             TerminalNode tn,
@@ -1486,7 +1486,7 @@ public class AddRemoveRule {
         }
     }
 
-    private static void invalidateRootNode( InternalKnowledgeBase kBase, LeftTupleNode lt ) {
+    private static void invalidateRootNode( RuleBase kBase, LeftTupleNode lt ) {
         while (!isRootNode( lt, null )) {
             lt = lt.getLeftTupleSource();
         }

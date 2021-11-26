@@ -68,7 +68,7 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
     }
 
     public final void init(BuildContext context, short betaNodeType) {
-        RuleBaseConfiguration config = context.getKnowledgeBase().getConfiguration();
+        RuleBaseConfiguration config = context.getRuleBase().getConfiguration();
 
         if ( disableIndexing || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory()) ) {
             indexed = new boolean[constraints.length];

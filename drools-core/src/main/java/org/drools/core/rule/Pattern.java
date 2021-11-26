@@ -32,7 +32,7 @@ import java.util.Set;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.spi.AcceptsClassObjectType;
@@ -552,8 +552,8 @@ public class Pattern
         this.listenedProperties.addAll( watchedProperties );
     }
 
-    public List<String> getAccessibleProperties(InternalKnowledgeBase kBase) {
-        return PropertySpecificUtil.getAccessibleProperties( kBase, getClassType() );
+    public List<String> getAccessibleProperties(RuleBase ruleBase) {
+        return PropertySpecificUtil.getAccessibleProperties( ruleBase, getClassType() );
     }
 
     public BitMask getPositiveWatchMask( List<String> accessibleProperties ) {

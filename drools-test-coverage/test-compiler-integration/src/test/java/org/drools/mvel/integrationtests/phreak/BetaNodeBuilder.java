@@ -85,7 +85,7 @@ public class BetaNodeBuilder {
     public BetaNode build() {
         NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
 
-        EntryPointNode epn = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
+        EntryPointNode epn = buildContext.getRuleBase().getRete().getEntryPointNodes().values().iterator().next();
 
         ObjectTypeNode otn = nFactory.buildObjectTypeNode(buildContext.getNextNodeId(),
                                                           epn,
@@ -117,7 +117,7 @@ public class BetaNodeBuilder {
             betaConstraints = new SingleBetaConstraints(reteTesterHelper.getBoundVariableConstraint(rightType,
                                                                                                     constraintFieldName,
                                                                                                     declr,
-                                                                                                    constraintOperator), buildContext.getKnowledgeBase().getConfiguration());
+                                                                                                    constraintOperator), buildContext.getRuleBase().getConfiguration());
         } else {
             betaConstraints = new EmptyBetaConstraints();
         }

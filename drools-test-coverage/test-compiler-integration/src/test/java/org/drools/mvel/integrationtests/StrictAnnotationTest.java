@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -127,7 +127,7 @@ public class StrictAnnotationTest {
                 "then \n" +
                 "end  \n";
 
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ForceEagerActivationOption.YES);
 
         Map<String, String> kieModuleConfigurationProperties = new HashMap<>();

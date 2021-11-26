@@ -24,7 +24,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
@@ -113,8 +113,8 @@ public abstract class ObjectSource extends BaseNode {
         this.source = source;
     }
 
-    public InternalKnowledgeBase getKnowledgeBase() {
-        return source.getKnowledgeBase();
+    public RuleBase getRuleBase() {
+        return source.getRuleBase();
     }
 
     public void initDeclaredMask(BuildContext context) {
@@ -134,12 +134,12 @@ public abstract class ObjectSource extends BaseNode {
         }
         
         Class objectClass = ((ClassObjectType)objectType).getClassType();        
-        TypeDeclaration typeDeclaration = context.getKnowledgeBase().getTypeDeclaration(objectClass);
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
         if ( typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
             // if property specific is not on, then accept all modification propagations
             declaredMask = AllSetBitMask.get();
         } else {
-            List<String> settableProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
+            List<String> settableProperties = getAccessibleProperties( context.getRuleBase(), objectClass );
             declaredMask = calculateDeclaredMask(objectClass, settableProperties);
         }
     }

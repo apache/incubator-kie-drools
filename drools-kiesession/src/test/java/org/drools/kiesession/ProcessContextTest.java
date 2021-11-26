@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.spi.ProcessContext;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;

@@ -115,7 +115,8 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.io.impl.BaseResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.DescrResource;
@@ -132,6 +133,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
+import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.reflective.ComponentsFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
@@ -2132,7 +2134,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
 
         if (kBase != null) {
-            modified = kBase.removeObjectsGeneratedFromResource(resource) || modified;
+            modified = kBase.removeObjectsGeneratedFromResource(resource, kBase.getWorkingMemories()) || modified;
         }
 
         return new ResourceRemovalResult(modified, removedTypes);
@@ -2210,9 +2212,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
             }
             throw new IllegalArgumentException("Could not parse knowledge. See the logs for details.");
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(conf);
+        RuleBase kbase = RuleBaseFactory.newKnowledgeBase(conf);
         kbase.addPackages(Arrays.asList(getPackages()));
-        return kbase;
+        return new SessionsAwareKnowledgeBase(kbase);
     }
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {

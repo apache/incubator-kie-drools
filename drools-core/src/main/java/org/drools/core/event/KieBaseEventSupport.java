@@ -36,7 +36,8 @@ import org.drools.core.event.knowlegebase.impl.BeforeProcessAddedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeProcessRemovedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
+import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
 import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
@@ -58,19 +59,17 @@ import org.kie.api.event.kiebase.BeforeRuleAddedEvent;
 import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 
+import static org.drools.core.impl.KnowledgeBaseImpl.asKieBase;
+
 public class KieBaseEventSupport extends AbstractEventSupport<KieBaseEventListener> {
-    private transient InternalKnowledgeBase kBase;
+    private final KieBase kBase;
 
-    public KieBaseEventSupport() {
-
-    }
-
-    public KieBaseEventSupport(final InternalKnowledgeBase kBase) {
+    public KieBaseEventSupport(KieBase kBase) {
         this.kBase = kBase;
     }
 
-    public void setKnowledgeBase(InternalKnowledgeBase kBase) {
-        this.kBase = kBase;
+    public KieBaseEventSupport(RuleBase ruleBase) {
+        this.kBase = asKieBase(ruleBase);
     }
 
     public void fireBeforePackageAdded(final InternalKnowledgePackage newPkg) {

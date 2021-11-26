@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.mvel.compiler.Attribute;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Message;
@@ -35,8 +34,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;

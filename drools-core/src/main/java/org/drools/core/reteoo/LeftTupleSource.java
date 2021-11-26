@@ -83,7 +83,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
     protected LeftTupleSource(int id, BuildContext context) {
         super(id,
               context != null ? context.getPartitionId() : RuleBasePartitionId.MAIN_PARTITION,
-              context != null && context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
+              context != null && context.getRuleBase().getConfiguration().isMultithreadEvaluation());
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
         initMemoryId( context );
     }
@@ -237,7 +237,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
         // if pattern is null (e.g. for eval or query nodes) we cannot calculate the mask, so we set it all
         if ( pattern != null && isPropertyReactive(context, objectClass) ) {
             Collection<String> leftListenedProperties = pattern.getListenedProperties();
-            List<String> accessibleProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
+            List<String> accessibleProperties = getAccessibleProperties( context.getRuleBase(), objectClass );
             leftDeclaredMask = calculatePositiveMask( objectClass, leftListenedProperties, accessibleProperties );
             leftDeclaredMask = setNodeConstraintsPropertyReactiveMask(leftDeclaredMask, objectClass, accessibleProperties);
             leftNegativeMask = calculateNegativeMask( objectClass, leftListenedProperties, accessibleProperties );

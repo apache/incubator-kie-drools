@@ -25,11 +25,11 @@ import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.decisiontable.parser.xls.ExcelParser;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;

@@ -85,7 +85,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
     }
 
     private QueryArgument[] initArgsTemplate(BuildContext context) {
-        ClassLoader classLoader = context.getKnowledgeBase().getRootClassLoader();
+        ClassLoader classLoader = context.getRuleBase().getRootClassLoader();
         QueryArgument[] originalArgs = this.queryElement.getArguments();
         QueryArgument[] args = new QueryArgument[originalArgs.length];
         for (int i = 0; i < originalArgs.length; i++) {

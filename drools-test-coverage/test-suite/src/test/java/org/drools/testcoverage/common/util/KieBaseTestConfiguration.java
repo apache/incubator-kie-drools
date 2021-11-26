@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
@@ -234,7 +234,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
     @Override
     public KieBaseConfiguration getKieBaseConfiguration() {
-        final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        final KieBaseConfiguration kieBaseConfiguration = RuleBaseFactory.newKnowledgeBaseConfiguration();
         if (isStreamMode()) {
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
         } else {

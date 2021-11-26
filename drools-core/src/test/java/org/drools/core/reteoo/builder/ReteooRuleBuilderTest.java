@@ -19,24 +19,23 @@ package org.drools.core.reteoo.builder;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.Pattern;
-import org.drools.core.WorkingMemory;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ReteooRuleBuilderTest {
     private ReteooRuleBuilder builder;
@@ -89,8 +88,7 @@ public class ReteooRuleBuilderTest {
 
         rule.setConsequence( consequence );
 
-        final List terminals = this.builder.addRule( rule,
-                                               this.rulebase );
+        final List terminals = this.builder.addRule( rule, this.rulebase, Collections.emptyList() );
 
         assertEquals( "Rule must have a single terminal node",
                              1,

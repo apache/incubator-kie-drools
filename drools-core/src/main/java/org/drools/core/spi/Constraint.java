@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.util.bitmask.BitMask;
@@ -80,7 +80,7 @@ public interface Constraint
         return allSetButTraitBitMask();
     }
 
-    default boolean equals(Object object, InternalKnowledgeBase kbase) {
+    default boolean equals(Object object, RuleBase kbase) {
         return this.equals( object );
     }
 

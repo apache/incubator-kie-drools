@@ -15,135 +15,44 @@
 
 package org.drools.core.impl;
 
-import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Future;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.AsyncReceiveNode;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.LeftTupleNode;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.rule.InvalidPatternException;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
-import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.KieBase;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.process.Process;
-import org.kie.api.io.Resource;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.KieSessionsPool;
+import org.kie.api.runtime.StatelessKieSession;
 
-public interface InternalKnowledgeBase extends KieBase {
+public interface InternalKnowledgeBase extends RuleBase, KieBase {
 
-    String getId();
+    KieSession newKieSession(KieSessionConfiguration conf, Environment environment );
+    KieSession newKieSession();
 
-    RuleBasePartitionId createNewPartitionId();
+    KieSessionsPool newKieSessionsPool(int initialSize);
 
-    RuleBaseConfiguration getConfiguration();
+    Collection<? extends KieSession> getKieSessions();
+    Collection<InternalWorkingMemory> getWorkingMemories();
 
-    void readLock();
-    void readUnlock();
+    StatelessKieSession newStatelessKieSession( KieSessionConfiguration conf );
+
+    StatelessKieSession newStatelessKieSession();
+
+    KieSessionsPool getSessionPool();
 
     void enqueueModification(Runnable modification);
     boolean flushModifications();
 
     int nextWorkingMemoryCounter();
 
-    int getWorkingMemoryCounter();
+    void addStatefulSession(InternalWorkingMemory wm);
 
-    FactHandleFactory newFactHandleFactory();
+    KieSession newKieSession(KieSessionConfiguration conf, Environment environment, boolean b);
 
-    FactHandleFactory newFactHandleFactory(long id, long counter) throws IOException;
-
-    Map<String, Class<?>> getGlobals();
-
-    int getNodeCount();
-    int getMemoryCount();
-
-    void executeQueuedActions();
-
-    ReteooBuilder getReteooBuilder();
-
-    void registerAddedEntryNodeCache(EntryPointNode node);
-    Set<EntryPointNode> getAddedEntryNodeCache();
-
-    void registeRremovedEntryNodeCache(EntryPointNode node);
-    Set<EntryPointNode> getRemovedEntryNodeCache();
-
-    Rete getRete();
-
-    ClassLoader getRootClassLoader();
+    void setKieContainer( InternalKieContainer kieContainer );
 
     void disposeStatefulSession(InternalWorkingMemory statefulSession);
 
-    Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
-
-    InternalKnowledgePackage getPackage(String name);
-    Future<KiePackage> addPackage( KiePackage pkg );
-    void addPackages( Collection<? extends KiePackage> newPkgs );
-    Map<String, InternalKnowledgePackage> getPackagesMap();
-    
-    ClassFieldAccessorCache getClassFieldAccessorCache();
-
-    Collection<InternalWorkingMemory> getWorkingMemories();
-
-    boolean hasSegmentPrototypes();
-    void invalidateSegmentPrototype(LeftTupleNode rootNode);
-    SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluatorm, LeftTupleSource tupleSource);
-    SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment);
-
-    void processAllTypesDeclaration( Collection<InternalKnowledgePackage> pkgs );
-
-    void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
-    void removeRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
-
-    default void beforeIncrementalUpdate(KieBaseUpdate kieBaseUpdate) { }
-    default void afterIncrementalUpdate(KieBaseUpdate kieBaseUpdate) { }
-
-    @Deprecated
-    void addProcess( Process process );
-    @Deprecated
-    void removeProcess( final String id );
-
-    void addGlobal(String identifier, Class clazz);
-    void removeGlobal(String identifier);
-
-    boolean removeObjectsGeneratedFromResource(Resource resource);
-
-    TypeDeclaration getTypeDeclaration( Class<?> clazz );
-    TypeDeclaration getExactTypeDeclaration( Class<?> clazz );
-    TypeDeclaration getOrCreateExactTypeDeclaration( Class<?> clazz );
-    Collection<TypeDeclaration> getTypeDeclarations();
-    void registerTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg );
-
-	ReleaseId getResolvedReleaseId();
-	void setResolvedReleaseId(ReleaseId currentReleaseId);
-	String getContainerId();
-	void setContainerId(String containerId);
-    void setKieContainer( InternalKieContainer kieContainer );
-	void initMBeans();
-
-    RuleUnitDescriptionRegistry getRuleUnitDescriptionRegistry();
-    boolean hasUnits();
-
-    SessionConfiguration getSessionConfiguration();
-
-    List<AsyncReceiveNode> getReceiveNodes();
-    void addReceiveNode(AsyncReceiveNode node);
-
-    boolean hasMultipleAgendaGroups();
+    InternalKieContainer getKieContainer();
 }

@@ -25,7 +25,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
@@ -150,7 +150,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     InternalKnowledgePackage deepCloneIfAlreadyInUse(ClassLoader classLoader);
 
-    void mergeTraitRegistry(InternalKnowledgeBase knowledgeBase);
+    void mergeTraitRegistry(RuleBase knowledgeBase);
 
     void addCloningResource(String key, Object resource);
 

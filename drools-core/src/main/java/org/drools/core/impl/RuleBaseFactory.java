@@ -53,14 +53,14 @@ import org.kie.api.runtime.KieSessionConfiguration;
  *
  * @see KnowledgeBase
  */
-public class KnowledgeBaseFactory  {
+public class RuleBaseFactory {
 
     /**
      * Create a new KnowledgeBase using the default KnowledgeBaseConfiguration
      * @return
      *     The KnowledgeBase
      */
-    public static InternalKnowledgeBase newKnowledgeBase() {
+    public static RuleBase newKnowledgeBase() {
         return newKnowledgeBase( UUID.randomUUID().toString() );
     }
 
@@ -76,7 +76,7 @@ public class KnowledgeBaseFactory  {
      * @return
      *     The KnowledgeBase
      */
-    public static InternalKnowledgeBase newKnowledgeBase(String kbaseId) {
+    public static RuleBase newKnowledgeBase(String kbaseId) {
         return newKnowledgeBase( kbaseId, null );
     }
 
@@ -85,8 +85,8 @@ public class KnowledgeBaseFactory  {
      * @return
      *     The KnowledgeBase
      */
-    public static InternalKnowledgeBase newKnowledgeBase(KieBaseConfiguration conf) {
-        return newKnowledgeBase( UUID.randomUUID().toString(), (RuleBaseConfiguration) conf );
+    public static RuleBase newKnowledgeBase(KieBaseConfiguration conf) {
+        return newKnowledgeBase( UUID.randomUUID().toString(), conf );
     }
 
     /**
@@ -101,8 +101,7 @@ public class KnowledgeBaseFactory  {
      * @return
      *     The KnowledgeBase
      */
-    public static InternalKnowledgeBase newKnowledgeBase(String kbaseId,
-                                                         KieBaseConfiguration conf) {
+    public static RuleBase newKnowledgeBase(String kbaseId, KieBaseConfiguration conf) {
         return new KnowledgeBaseImpl( kbaseId, (RuleBaseConfiguration) conf);
     }
 

@@ -17,7 +17,6 @@
 package org.drools.core.management;
 
 import java.util.Map;
-
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
@@ -50,10 +49,9 @@ import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.management.KieBaseConfigurationMonitorMBean;
 import org.kie.api.management.ObjectTypeNodeMonitorMBean;
 import org.slf4j.Logger;
@@ -79,8 +77,8 @@ public class KnowledgeBaseMonitoring
     // ************************************************************************************************
     // MBean attributes
     //
-    private InternalKnowledgeBase kbase;
-    private ObjectName     name;
+    private RuleBase kbase;
+    private ObjectName name;
 
     private OpenMBeanInfoSupport info;
 
@@ -113,7 +111,7 @@ public class KnowledgeBaseMonitoring
     // ************************************************************************************************
 
     // Constructor
-    public KnowledgeBaseMonitoring(InternalKnowledgeBase kbase) {
+    public KnowledgeBaseMonitoring(RuleBase kbase) {
         this.kbase = kbase;
         this.name = DroolsManagementAgent.createObjectNameFor(kbase);
 

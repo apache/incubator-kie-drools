@@ -64,7 +64,8 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -196,7 +197,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase, Collections.emptyList()) )  );
         final Activation activation = new MockActivation( rule,
                                                           0,
                                                           rule.getLhs(),
@@ -264,7 +265,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         InternalKnowledgePackage newPkg = SerializationHelper.serializeObject( pkg );
         final RuleImpl newRule = newPkg.getRule( "rule-1" );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
 
         // It's been serialised so we have to simulate the re-wiring process
         newPkg.getDialectRuntimeRegistry().onAdd( kBase.getRootClassLoader() );
@@ -279,7 +280,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase, Collections.emptyList()) )  );
         final Activation activation = new MockActivation( newRule,
                                                           0,
                                                           newRule.getLhs(),

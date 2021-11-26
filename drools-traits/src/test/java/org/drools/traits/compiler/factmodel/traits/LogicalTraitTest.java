@@ -28,7 +28,7 @@ import org.drools.core.factmodel.traits.TraitField;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.serialization.protobuf.SerializationHelper;
 import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.ReviseTraitTestWithPRAlwaysCategory;

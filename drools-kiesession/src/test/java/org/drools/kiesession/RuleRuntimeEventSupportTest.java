@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.event.RuleRuntimeEventSupport;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.test.model.Cheese;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.ObjectDeletedEvent;

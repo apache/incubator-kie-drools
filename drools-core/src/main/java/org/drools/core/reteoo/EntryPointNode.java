@@ -87,7 +87,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
                           final BuildContext context) {
         this( id,
               context.getPartitionId(),
-              context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
+              context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
               objectSource,
               context.getCurrentEntryPoint() ); // irrelevant for this node, since it overrides sink management
     }
@@ -107,7 +107,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         this.objectTypeNodes = new ConcurrentHashMap<>();
 
         hashcode = calculateHashCode();
-        typeConfReg = new ObjectTypeConfigurationRegistry( objectSource.getKnowledgeBase() );
+        typeConfReg = new ObjectTypeConfigurationRegistry( objectSource.getRuleBase() );
     }
 
     // ------------------------------------------------------------

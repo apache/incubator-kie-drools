@@ -111,12 +111,12 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         }
 
         Class objectClass = ((ClassObjectType)objectType).getClassType();
-        TypeDeclaration typeDeclaration = context.getKnowledgeBase().getTypeDeclaration(objectClass);
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
         if (  typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
             // if property specific is not on, then accept all modification propagations
             setDeclaredMask( AllSetBitMask.get() );
         } else  {
-            List<String> accessibleProperties = pattern.getAccessibleProperties( context.getKnowledgeBase() );
+            List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
             setDeclaredMask( pattern.getPositiveWatchMask(accessibleProperties) );
             setNegativeMask( pattern.getNegativeWatchMask(accessibleProperties) );
         }

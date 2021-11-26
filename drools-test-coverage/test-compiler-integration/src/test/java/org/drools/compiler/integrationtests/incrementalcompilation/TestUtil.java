@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;

@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.mvel.compiler.command.SimpleBatchExecutionTest;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
@@ -63,7 +63,7 @@ public class SimpleBatchExecutionPersistenceTest extends SimpleBatchExecutionTes
         if( context == null ) {
             context = DroolsPersistenceUtil.setupWithPoolingDataSource(DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME);
         }
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         Environment env = DroolsPersistenceUtil.createEnvironment(context);
         if( this.locking ) {
             env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);

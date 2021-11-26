@@ -21,7 +21,7 @@ import java.util.Collections;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.model.Model;
 import org.drools.modelcompiler.CanonicalKiePackages;
 import org.drools.modelcompiler.KiePackagesBuilder;

@@ -16,17 +16,17 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.facttemplates.FactTemplateObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.ObjectType;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.facttemplates.FactTemplateObjectType;
+import org.drools.core.impl.RuleBase;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.spi.ObjectType;
 
 public class FactTemplateTypeConf
     implements
@@ -35,7 +35,7 @@ public class FactTemplateTypeConf
 
     private static final long serialVersionUID = 510l;
 
-    private transient InternalKnowledgeBase kBase;
+    private transient RuleBase ruleBase;
 
     private ObjectType        objectType;
     private FactTemplate      factTemplate;
@@ -52,18 +52,18 @@ public class FactTemplateTypeConf
 
     public FactTemplateTypeConf(final EntryPointId entryPoint,
                                 final FactTemplate factTemplate,
-                                final InternalKnowledgeBase kBase) {
-        this.kBase = kBase;
+                                final RuleBase ruleBase) {
+        this.ruleBase = ruleBase;
         this.factTemplate = factTemplate;
         this.entryPoint = entryPoint;
         this.objectType = new FactTemplateObjectType( factTemplate );
-        this.concreteObjectTypeNode = (ObjectTypeNode) kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+        this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        kBase = (InternalKnowledgeBase) in.readObject();
+        ruleBase = (RuleBase) in.readObject();
         factTemplate = (FactTemplate) in.readObject();
         concreteObjectTypeNode = (ObjectTypeNode) in.readObject();
         cache = (ObjectTypeNode[]) in.readObject();
@@ -71,7 +71,7 @@ public class FactTemplateTypeConf
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( kBase );
+        out.writeObject( ruleBase );
         out.writeObject( factTemplate );
         out.writeObject( concreteObjectTypeNode );
         out.writeObject( cache );
@@ -80,7 +80,7 @@ public class FactTemplateTypeConf
 
     public ObjectTypeNode getConcreteObjectTypeNode() {
         if (concreteObjectTypeNode == null) {
-            concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+            concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         }
         return this.concreteObjectTypeNode;
     }

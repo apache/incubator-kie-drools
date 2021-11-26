@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
@@ -40,7 +40,7 @@ public class PropertySpecificUtil {
     }
 
     public static boolean isPropertyReactive(BuildContext context, Class<?> objectClass) {
-        TypeDeclaration typeDeclaration = context.getKnowledgeBase().getTypeDeclaration( objectClass );
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration( objectClass );
         return typeDeclaration != null && typeDeclaration.isPropertyReactive();
     }
 
@@ -116,7 +116,7 @@ public class PropertySpecificUtil {
         return mask.isSet(index + CUSTOM_BITS_OFFSET);
     }
 
-    public static List<String> getAccessibleProperties( InternalKnowledgeBase kBase, Class<?> nodeClass ) {
-        return kBase.getOrCreateExactTypeDeclaration(nodeClass).getAccessibleProperties();
+    public static List<String> getAccessibleProperties(RuleBase ruleBase, Class<?> nodeClass ) {
+        return ruleBase.getOrCreateExactTypeDeclaration(nodeClass).getAccessibleProperties();
     }
 }

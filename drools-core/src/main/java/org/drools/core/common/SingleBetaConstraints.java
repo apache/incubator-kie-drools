@@ -69,7 +69,7 @@ public class SingleBetaConstraints
     }
 
     public void init(BuildContext context, short betaNodeType) {
-        RuleBaseConfiguration config = context.getKnowledgeBase().getConfiguration();
+        RuleBaseConfiguration config = context.getRuleBase().getConfiguration();
 
         if ((disableIndex) || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory())) {
             this.indexed = false;

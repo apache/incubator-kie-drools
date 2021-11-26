@@ -15,28 +15,29 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.core.impl.KnowledgeBaseFactory;
+import java.util.Collection;
+
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.Test;
-import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
-import org.kie.api.io.Resource;
-import org.kie.api.time.SessionPseudoClock;
+import org.drools.core.impl.RuleBaseFactory;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.Collection;
 
 import static org.junit.Assert.assertTrue;
 
@@ -56,13 +57,13 @@ public class DynamicEvalTest {
     @Before
     public void setUp() throws Exception {
 
-        baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig = RuleBaseFactory.newKnowledgeBaseConfiguration();
         // use stream mode to enable proper event processing (see Drools Fusion 5.5.0 Doc "Event Processing Modes")
         baseConfig.setOption( EventProcessingOption.STREAM );
         kbase = KnowledgeBaseFactory.newKnowledgeBase(baseConfig);
 
         // config
-        sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
         // use a pseudo clock, which starts at 0 and can be advanced manually
         sessionConfig.setOption( ClockTypeOption.PSEUDO );
 

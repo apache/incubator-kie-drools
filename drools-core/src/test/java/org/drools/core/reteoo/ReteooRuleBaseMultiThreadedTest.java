@@ -16,7 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -31,7 +30,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,7 +46,7 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
 
     @Before
     public void setUp() {
-        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        this.kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
 
         pkg = new KnowledgePackageImpl("org.droos.test");
         pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));

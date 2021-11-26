@@ -20,7 +20,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
@@ -29,7 +28,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Consequence;
@@ -88,7 +87,7 @@ public class RuleBaseEventSupportTest {
      */
     @Before
     public void setUp() throws Exception {
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
         listener1 = new TestRuleBaseListener( "(listener-1) " );
         listener2 = new TestRuleBaseListener( "(listener-2) " );
         kBase.addEventListener( listener1 );

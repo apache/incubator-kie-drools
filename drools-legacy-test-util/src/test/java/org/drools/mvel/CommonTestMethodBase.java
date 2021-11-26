@@ -24,8 +24,10 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.integrationtests.SerializationHelper;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -77,7 +79,7 @@ public class CommonTestMethodBase {
     }
 
     protected KieSession createKieSession(KieBase kbase, KieSessionOption option) {
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption(option);
         return kbase.newKieSession(ksconf, null);
     }
@@ -91,7 +93,7 @@ public class CommonTestMethodBase {
     }
 
     protected KieSession createKnowledgeSession(KieBase kbase, KieSessionOption option) {
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption(option);
         return kbase.newKieSession(ksconf, null);
     }
@@ -132,9 +134,9 @@ public class CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
         if (kBaseConfig == null) {
-            kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kBaseConfig = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+        InternalKnowledgeBase kbase = new SessionsAwareKnowledgeBase(kBaseConfig == null ? RuleBaseFactory.newKnowledgeBase() : RuleBaseFactory.newKnowledgeBase(kBaseConfig));
         kbase.addPackages( kbuilder.getKnowledgePackages());
         return kbase;
     }
@@ -143,9 +145,9 @@ public class CommonTestMethodBase {
         Collection<KiePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, classPathResources);
 
         if (kbaseConf == null) {
-            kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
+        InternalKnowledgeBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
         kbase.addPackages(knowledgePackages);
         return kbase;
     }
@@ -158,9 +160,9 @@ public class CommonTestMethodBase {
         Collection<KiePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, descr);
 
         if (kbaseConf == null) {
-            kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
+        InternalKnowledgeBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
         kbase.addPackages(knowledgePackages);
         return kbase;
     }
@@ -246,12 +248,12 @@ public class CommonTestMethodBase {
 
 
     protected KieBase getKnowledgeBase() {
-        KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kBaseConfig = RuleBaseFactory.newKnowledgeBaseConfiguration();
         return getKnowledgeBase(kBaseConfig);
     }
 
     protected KieBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        return KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+        return new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kBaseConfig));
     }
 
     protected KieBase loadKnowledgeBase(String... classPathResources) {

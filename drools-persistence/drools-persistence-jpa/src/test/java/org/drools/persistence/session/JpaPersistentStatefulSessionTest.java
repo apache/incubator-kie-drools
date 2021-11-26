@@ -32,7 +32,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.FireAllRulesInterceptor;
 import org.drools.core.command.impl.LoggingInterceptor;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.runtime.ChainableRunner;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.util.DroolsPersistenceUtil;
@@ -404,7 +404,7 @@ public class JpaPersistentStatefulSessionTest {
 
         final Properties properties = new Properties();
         properties.put("drools.processInstanceManagerFactory", "com.example.CustomJPAProcessInstanceManagerFactory");
-        final KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+        final KieSessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration(properties);
 
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, config, env);
         final SessionConfiguration sessionConfig = (SessionConfiguration) ksession.getSessionConfiguration();

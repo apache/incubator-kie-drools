@@ -16,7 +16,6 @@
 package org.drools.persistence.jta;
 
 import java.util.HashMap;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -24,7 +23,7 @@ import com.arjuna.ats.jta.TransactionManager;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Environment;

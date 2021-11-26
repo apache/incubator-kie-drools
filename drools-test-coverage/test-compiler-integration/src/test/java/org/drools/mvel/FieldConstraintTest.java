@@ -27,7 +27,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RightTupleImpl;
@@ -87,7 +87,7 @@ public class FieldConstraintTest {
      */
     @Test
     public void testLiteralConstraint() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final ClassFieldReader extractor = store.getReader( Cheese.class,
@@ -125,7 +125,7 @@ public class FieldConstraintTest {
      */
     @Test
     public void testPrimitiveLiteralConstraint() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
@@ -164,7 +164,7 @@ public class FieldConstraintTest {
      */
     @Test
     public void testPredicateConstraint() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final InternalReadAccessor priceExtractor = store.getReader( Cheese.class,

@@ -85,7 +85,7 @@ public class AsyncReceiveNode extends LeftTupleSource
     public void doAttach( BuildContext context ) {
         super.doAttach(context);
         this.leftInput.addTupleSink( this, context );
-        context.getKnowledgeBase().addReceiveNode(this);
+        context.getRuleBase().addReceiveNode(this);
     }
 
     public AlphaNodeFieldConstraint[] getAlphaConstraints() {

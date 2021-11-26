@@ -37,7 +37,7 @@ import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -101,11 +101,11 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return fieldFactory;
     }
 
-    public TraitFactory getTraitFactory(InternalKnowledgeBase knowledgeBase) {
+    public TraitFactory getTraitFactory(RuleBase knowledgeBase) {
         return null;
     }
 
-    public TraitRegistry getTraitRegistry(InternalKnowledgeBase knowledgeBase) {
+    public TraitRegistry getTraitRegistry(RuleBase knowledgeBase) {
         return null;
     }
 
@@ -117,7 +117,7 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return new DefaultKnowledgeHelper( reteEvaluator );
     }
 
-    public InternalWorkingMemory createStatefulSession(KnowledgeBaseImpl kbase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool) {
+    public InternalWorkingMemory createStatefulSession(InternalKnowledgeBase kbase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool) {
         if (fromPool || kbase.getSessionPool() == null) {
             StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) RuntimeComponentFactory.get().getWorkingMemoryFactory()
                     .createWorkingMemory( kbase.nextWorkingMemoryCounter(), kbase, sessionConfig, environment );
@@ -126,18 +126,18 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return (InternalWorkingMemory) kbase.getSessionPool().newKieSession( sessionConfig );
     }
 
-    private StatefulKnowledgeSessionImpl internalInitSession( KnowledgeBaseImpl kbase, SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session ) {
+    private StatefulKnowledgeSessionImpl internalInitSession( InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session ) {
         if ( sessionConfig.isKeepReference() ) {
             kbase.addStatefulSession(session);
         }
         return session;
     }
 
-    public StatelessKieSession createStatelessSession(KnowledgeBaseImpl kbase, KieSessionConfiguration conf) {
+    public StatelessKieSession createStatelessSession(InternalKnowledgeBase kbase, KieSessionConfiguration conf) {
         return new StatelessKnowledgeSessionImpl( kbase, conf );
     }
 
-    public KieSessionsPool createSessionsPool(KnowledgeBaseImpl kBase, int initialSize) {
+    public KieSessionsPool createSessionsPool(InternalKnowledgeBase kBase, int initialSize) {
         return new KieSessionsPoolImpl(kBase, initialSize);
     }
 
