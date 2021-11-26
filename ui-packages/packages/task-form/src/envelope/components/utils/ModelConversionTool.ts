@@ -15,86 +15,149 @@
  */
 
 export class ModelConversionTool {
-  public static convertDateToString = (model: any, schema: any): any => {
-    return ModelConversionTool.convertDates(model, schema, value =>
-      value.toISOString()
-    );
-  };
-
-  public static convertStringToDate = (model: any, schema: any): any => {
-    return ModelConversionTool.convertDates(
-      model,
-      schema,
-      value => new Date(value)
-    );
-  };
-
-  private static convertDates = (
+  public static convertDateToString = (
     model: any,
-    schema: any,
-    conversion: (value: any) => any
+    schema: Record<string, any>
   ): any => {
-    const obj: any = {};
+    return doConvert(model, schema, value => value.toISOString());
+  };
 
-    if (!model) {
-      return obj;
+  public static convertStringToDate = (
+    model: any,
+    schema: Record<string, any>
+  ): any => {
+    return doConvert(model, schema, value => new Date(value));
+  };
+}
+
+interface ContextInitArgs {
+  defintions: Record<string, any>;
+  rootSchema: Record<string, any>;
+  rootModel: any;
+  conversion: (value: any) => any;
+}
+class ConversionContext {
+  public readonly definitions: Record<string, any>;
+  public readonly rootSchema: Record<string, any>;
+  public readonly rootModel: any;
+  public readonly convert: (value: any) => any;
+
+  constructor(args: ContextInitArgs) {
+    this.definitions = args.defintions;
+    this.rootSchema = args.rootSchema;
+    this.rootModel = args.rootModel;
+    this.convert = args.conversion;
+  }
+
+  public lookupDefinition(ref: string): Record<string, any> | undefined {
+    if (!this.definitions) {
+      return undefined;
+    }
+    const index = ref.lastIndexOf('/');
+
+    if (index === -1) {
+      return undefined;
     }
 
-    if (!schema.properties) {
-      return obj;
+    return this.definitions[ref.substring(index + 1)];
+  }
+}
+
+function doConvert(
+  model: any,
+  schema: Record<string, any>,
+  conversion: (value: any) => any
+): any {
+  const ctx: ConversionContext = new ConversionContext({
+    rootSchema: schema,
+    rootModel: model,
+    defintions: schema.definitions || schema.$defs,
+    conversion
+  });
+
+  return convertModel(model, schema, ctx);
+}
+
+function convertModel(
+  model: any,
+  schema: Record<string, any>,
+  ctx: ConversionContext
+) {
+  const obj: any = {};
+
+  if (!model) {
+    return obj;
+  }
+
+  if (!schema.properties) {
+    return obj;
+  }
+
+  Object.keys(model).forEach(propertyName => {
+    const property = schema.properties[propertyName];
+
+    const value = model[propertyName];
+
+    if (value === null) {
+      return;
     }
 
-    Object.keys(model).forEach(property => {
-      const properties = schema.properties[property];
+    if (!property) {
+      obj[propertyName] = value;
+      return;
+    }
 
-      const value = model[property];
+    const props = lookupSchemaPropertyProps(property, ctx);
 
-      if (value === null) {
-        return;
-      }
-
-      if (!properties) {
-        obj[property] = value;
-        return;
-      }
-
-      switch (properties.type) {
-        case 'object':
-          obj[property] = ModelConversionTool.convertDates(
-            value,
-            properties,
-            conversion
-          );
-          break;
-        case 'array':
-          if (properties.items && properties.items.type === 'object') {
-            obj[property] = value.map((item: any) =>
-              ModelConversionTool.convertDates(
-                item,
-                properties.items,
-                conversion
-              )
+    switch (props.type) {
+      case 'object':
+        obj[propertyName] = convertModel(value, props, ctx);
+        break;
+      case 'array':
+        if (property.items) {
+          const itemProps = lookupSchemaPropertyProps(props.items, ctx);
+          if (itemProps.type === 'object') {
+            obj[propertyName] = value.map((item: any) =>
+              convertModel(item, itemProps, ctx)
             );
           } else {
-            obj[property] = value;
+            obj[propertyName] = value;
           }
-          break;
-        case 'string':
-          switch (properties.format) {
-            case 'date-time':
-            case 'date':
-              obj[property] = conversion(value);
-              break;
-            default:
-              obj[property] = value;
-              break;
-          }
-          break;
-        default:
-          obj[property] = value;
-          break;
-      }
-    });
-    return obj;
-  };
+        } else {
+          obj[propertyName] = value;
+        }
+        break;
+      case 'string':
+        switch (props.format) {
+          case 'date-time':
+          case 'date':
+            obj[propertyName] = ctx.convert(value);
+            break;
+          default:
+            obj[propertyName] = value;
+            break;
+        }
+        break;
+      default:
+        obj[propertyName] = value;
+        break;
+    }
+  });
+  return obj;
+}
+
+function lookupSchemaPropertyProps(property: any, ctx: ConversionContext) {
+  if (property['$ref']) {
+    return ctx.lookupDefinition(property['$ref']) || property;
+  }
+
+  if (property['allOf']) {
+    const allOf: [] = property.allOf;
+
+    const refItem = allOf.find(item => item['$ref']);
+    if (refItem) {
+      return ctx.lookupDefinition(refItem['$ref']);
+    }
+  }
+  return property;
 }

@@ -14,20 +14,90 @@
  * limitations under the License.
  */
 
+import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import merge from 'lodash/merge';
 import unset from 'lodash/unset';
 import set from 'lodash/set';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { TaskFormSchema } from '../../../types';
 
-export interface TaskDataAssignments {
+export type TaskDataAssignments = {
   inputs: string[];
   outputs: string[];
+};
+
+export type ParsedTaskFormSchema = {
+  schema: Record<string, any>;
+  assignments: TaskDataAssignments;
+};
+
+export function parseTaskSchema(
+  formSchema: Record<string, any>
+): ParsedTaskFormSchema {
+  const schema = cloneDeep(formSchema);
+
+  const assignments: TaskDataAssignments = {
+    inputs: [],
+    outputs: []
+  };
+
+  if (!formSchema.properties) {
+    return {
+      schema,
+      assignments
+    };
+  }
+
+  for (const key of Object.keys(schema.properties)) {
+    const property = schema.properties[key];
+
+    const assignmetChecker = property['allOf']
+      ? checkAssignmentForAllOf
+      : checkAssignment;
+
+    if (assignmetChecker(property, 'input')) {
+      assignments.inputs.push(key);
+    }
+    if (assignmetChecker(property, 'output')) {
+      assignments.outputs.push(key);
+    }
+
+    if (!assignments.outputs.includes(key)) {
+      set(property, 'uniforms.disabled', true);
+    }
+  }
+
+  return {
+    schema,
+    assignments
+  };
+}
+
+function checkAssignmentForAllOf(
+  property: any,
+  assignmentExpr: string
+): boolean {
+  const allOf: any[] = property['allOf'];
+
+  const assignment = allOf.find(value => value[assignmentExpr]);
+  if (assignment) {
+    const index = allOf.indexOf(assignment);
+    allOf.splice(index, 1);
+    return true;
+  }
+  return false;
+}
+
+function checkAssignment(property: any, assignmentExpr: string): boolean {
+  if (property[assignmentExpr]) {
+    delete property[assignmentExpr];
+    return true;
+  }
+  return false;
 }
 
 export function readSchemaAssignments(
-  formSchema: TaskFormSchema,
+  formSchema: Record<string, any>,
   isUniforms = true
 ): TaskDataAssignments {
   const assignments: TaskDataAssignments = {

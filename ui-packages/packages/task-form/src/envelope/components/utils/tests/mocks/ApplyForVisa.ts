@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
+import { SCHEMA_VERSION } from '../../../../../types';
+
 export const ApplyForVisaForm = {
+  $schema: SCHEMA_VERSION.DRAFT_2019_09,
   type: 'object',
   properties: {
     trip: {

@@ -17,7 +17,6 @@
 import { buildTaskFormContext } from '../utils';
 import { ApplyForVisaForm } from '../../../utils/tests/mocks/ApplyForVisa';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { TaskFormSchema } from '../../../../../types';
 
 const userTaskInstance: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -69,11 +68,14 @@ describe('utils tests', () => {
       groups: ['admin', 'managers']
     };
 
-    const taskSchema = ApplyForVisaForm as TaskFormSchema;
-    const context = buildTaskFormContext(userTaskInstance, taskSchema, user);
+    const context = buildTaskFormContext(
+      userTaskInstance,
+      ApplyForVisaForm,
+      user
+    );
 
     expect(context.user).toStrictEqual(user);
-    expect(context.phases).toStrictEqual(taskSchema.phases);
+    expect(context.phases).toStrictEqual(ApplyForVisaForm.phases);
     expect(context.schema.phases).toBeUndefined();
     expect(context.task).toStrictEqual(filteredTask);
   });

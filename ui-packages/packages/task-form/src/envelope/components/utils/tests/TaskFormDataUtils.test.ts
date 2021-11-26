@@ -15,8 +15,12 @@
  */
 
 import _ from 'lodash';
-import { generateFormData, readSchemaAssignments } from '../TaskFormDataUtils';
-import { TaskFormSchema } from '../../../../types';
+import {
+  generateFormData,
+  parseTaskSchema,
+  readSchemaAssignments
+} from '../TaskFormDataUtils';
+import { SCHEMA_VERSION } from '../../../../types';
 
 const userTask = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -45,6 +49,100 @@ const userTask = {
 };
 
 describe('TaskFormDataUtils tests', () => {
+  it('parseTaskSchema for regular schema', () => {
+    const testSchema = {
+      $schema: SCHEMA_VERSION.DRAFT_2019_09,
+      type: 'object',
+      properties: {
+        name: { type: 'string', input: true },
+        lastName: { type: 'string', input: true },
+        job: { type: 'string', input: true, output: true },
+        address: { type: 'string', output: true }
+      },
+      phases: ['complete', 'skip']
+    };
+
+    const parsedSchema = parseTaskSchema(testSchema);
+
+    expect(parsedSchema.assignments.inputs).toHaveLength(3);
+    expect(parsedSchema.assignments.inputs).toContain('name');
+    expect(parsedSchema.assignments.inputs).toContain('lastName');
+    expect(parsedSchema.assignments.inputs).toContain('job');
+
+    expect(parsedSchema.assignments.outputs).toHaveLength(2);
+    expect(parsedSchema.assignments.outputs).toContain('job');
+    expect(parsedSchema.assignments.outputs).toContain('address');
+
+    expect(
+      _.get(parsedSchema.schema, 'properties.name.uniforms.disabled')
+    ).toBeTruthy();
+    expect(
+      _.get(parsedSchema.schema, 'properties.lastName.uniforms.disabled')
+    ).toBeTruthy();
+
+    expect(_.has(parsedSchema.schema, 'properties.job.uniforms')).toBeFalsy();
+    expect(
+      _.has(parsedSchema.schema, 'properties.address.uniforms')
+    ).toBeFalsy();
+  });
+
+  it('parseTaskSchema for DRAFT_7 schema', () => {
+    const testSchema = {
+      $schema: SCHEMA_VERSION.DRAFT_7,
+      definitions: {
+        Address: {
+          type: 'object',
+          properties: {
+            date: { type: 'string', format: 'date-time' },
+            street: { type: 'string' }
+          }
+        }
+      },
+      type: 'object',
+      properties: {
+        name: { type: 'string', input: true },
+        address: {
+          allOf: [{ $ref: '#/definitions/Address' }, { input: true }]
+        },
+        officeAddress: {
+          allOf: [
+            { $ref: '#/definitions/Address' },
+            { input: true },
+            { output: true }
+          ]
+        },
+        extraAddress: {
+          allOf: [{ $ref: '#/definitions/Address' }, { output: true }]
+        }
+      },
+      phases: ['complete', 'skip']
+    };
+
+    const parsedSchema = parseTaskSchema(testSchema);
+    expect(parsedSchema.assignments.inputs).toHaveLength(3);
+    expect(parsedSchema.assignments.inputs).toContain('name');
+    expect(parsedSchema.assignments.inputs).toContain('address');
+    expect(parsedSchema.assignments.inputs).toContain('officeAddress');
+
+    expect(parsedSchema.assignments.outputs).toHaveLength(2);
+    expect(parsedSchema.assignments.outputs).toContain('officeAddress');
+    expect(parsedSchema.assignments.outputs).toContain('extraAddress');
+
+    expect(
+      _.get(parsedSchema.schema, 'properties.name.uniforms.disabled')
+    ).toBeTruthy();
+    expect(
+      _.get(parsedSchema.schema, 'properties.address.uniforms.disabled')
+    ).toBeTruthy();
+
+    expect(
+      _.has(parsedSchema.schema, 'properties.officeAddress.uniforms')
+    ).toBeFalsy();
+    expect(
+      _.has(parsedSchema.schema, 'properties.extraAddress.uniforms')
+    ).toBeFalsy();
+  });
+
   it('readSchemaAssignments', () => {
     const testSchema = {
       type: 'object',
@@ -56,7 +154,7 @@ describe('TaskFormDataUtils tests', () => {
       }
     };
 
-    const assignments = readSchemaAssignments(testSchema as TaskFormSchema);
+    const assignments = readSchemaAssignments(testSchema);
 
     expect(assignments.inputs).toHaveLength(3);
     expect(assignments.inputs).toContain('name');

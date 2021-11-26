@@ -28,6 +28,7 @@ import {
   MockedTaskFormDriver,
   testUserTask
 } from '../../../../embedded/tests/mocks/Mocks';
+import { parseTaskSchema } from '../../utils/TaskFormDataUtils';
 
 jest.mock('../../TaskFormRenderer/TaskFormRenderer');
 jest.mock('../../EmptyTaskForm/EmptyTaskForm');
@@ -123,7 +124,9 @@ describe('TaskForm Test', () => {
 
     expect(taskFormRenderer.props().enabled).toBeTruthy();
     expect(taskFormRenderer.props().userTask).toStrictEqual(props.userTask);
-    expect(taskFormRenderer.props().formSchema).toStrictEqual(props.schema);
+    expect(taskFormRenderer.props().formSchema).toStrictEqual(
+      parseTaskSchema(props.schema).schema
+    );
     expect(taskFormRenderer.props().formData).toBeNull();
 
     const formData = JSON.parse(props.userTask.inputs);

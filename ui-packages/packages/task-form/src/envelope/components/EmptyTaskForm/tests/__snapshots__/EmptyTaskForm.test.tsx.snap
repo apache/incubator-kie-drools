@@ -5,6 +5,7 @@ exports[`EmptyTaskForm Test Empty form completed task rendering 1`] = `
   enabled={true}
   formSchema={
     Object {
+      "$schema": "https://json-schema.org/draft/2019-09/schema",
       "phases": Array [
         "complete",
         "release",
@@ -197,6 +198,7 @@ exports[`EmptyTaskForm Test Empty form rendering 1`] = `
   enabled={true}
   formSchema={
     Object {
+      "$schema": "https://json-schema.org/draft/2019-09/schema",
       "phases": Array [
         "complete",
         "release",

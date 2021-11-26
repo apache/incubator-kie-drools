@@ -5,6 +5,7 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
   enabled={true}
   formSchema={
     Object {
+      "$schema": "https://json-schema.org/draft/2019-09/schema",
       "phases": Array [
         "complete",
         "release",
@@ -152,6 +153,7 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
       }
       formSchema={
         Object {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
           "phases": Array [
             "complete",
             "release",

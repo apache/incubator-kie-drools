@@ -25,7 +25,7 @@ import {
   FormOpened
 } from '@kogito-apps/form-displayer';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { CustomForm, TaskFormSchema } from '../../../types';
+import { CustomForm } from '../../../types';
 import { generateFormData } from '../utils/TaskFormDataUtils';
 import FormFooter from '../FormFooter/FormFooter';
 import { FormAction } from '../utils';
@@ -36,7 +36,7 @@ import { buildTaskFormContext } from './utils/utils';
 
 export interface CustomTaskFormDisplayerProps {
   userTask: UserTaskInstance;
-  schema: TaskFormSchema;
+  schema: Record<string, any>;
   customForm: CustomForm;
   user: User;
   driver: TaskFormDriver;

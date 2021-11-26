@@ -18,11 +18,7 @@ import React from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { GraphQL } from '@kogito-apps/consoles-common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
-import {
-  EmbeddedTaskForm,
-  TaskFormSchema,
-  CustomForm
-} from '@kogito-apps/task-form';
+import { EmbeddedTaskForm, CustomForm } from '@kogito-apps/task-form';
 import { useTaskFormGatewayApi } from '../../../channel/TaskForms/TaskFormContext';
 import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
@@ -65,7 +61,7 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
               });
           });
         },
-        getTaskFormSchema(): Promise<TaskFormSchema> {
+        getTaskFormSchema(): Promise<Record<string, any>> {
           return gatewayApi.getTaskFormSchema(userTask);
         },
         getCustomForm(): Promise<CustomForm> {

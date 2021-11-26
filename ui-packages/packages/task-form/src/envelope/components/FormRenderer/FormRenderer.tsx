@@ -18,11 +18,7 @@ import React from 'react';
 import JSONSchemaBridge from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from 'uniforms-patternfly';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import {
-  DefaultFormValidator,
-  FormAction,
-  ModelConversionTool
-} from '../utils';
+import { FormAction, lookupValidator, ModelConversionTool } from '../utils';
 import FormFooter from '../FormFooter/FormFooter';
 
 interface IOwnProps {
@@ -42,7 +38,7 @@ const FormRenderer: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  const validator = new DefaultFormValidator(formSchema);
+  const validator = lookupValidator(formSchema);
 
   const bridge = new JSONSchemaBridge(formSchema, formModel => {
     // Converting back all the JS Dates into String before validating the model

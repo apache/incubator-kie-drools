@@ -21,7 +21,6 @@ import TaskFormRenderer from '../TaskFormRenderer';
 import { mount } from 'enzyme';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
-import { TaskFormSchema } from '../../../../types';
 import FormRenderer from '../../FormRenderer/FormRenderer';
 
 jest.mock('../../FormRenderer/FormRenderer');
@@ -88,7 +87,7 @@ let doSubmit;
 
 const getTaskFormRendererWrapper = (
   userTask: UserTaskInstance,
-  formSchema: TaskFormSchema,
+  formSchema: Record<string, any>,
   enabled: boolean,
   formData?: any
 ) => {

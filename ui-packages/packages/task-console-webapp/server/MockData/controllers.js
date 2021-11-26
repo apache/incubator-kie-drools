@@ -20,6 +20,7 @@ const graphQL = require('./graphql');
 const confirmTravelForm = require('./forms/ConfirmTravel');
 const applyForVisaForm = require('./forms/ApplyForVisa');
 const emptyForm = require('./forms/EmptyForm');
+const draft7Form = require('./forms/ConfirmTravelDraft7');
 
 const restData = require('./rest');
 
@@ -36,6 +37,11 @@ const taskWithoutForm = [
 const taskWithEmptyForm = [
   '45a73767-5da3-49bf-9c40-d533c3e77ef3',
   '809aae9e-f0bf-4892-b0c9-4be80664d2aa'
+];
+
+const tasksWithDraft7Schema = [
+  'f6be5b6b-34de-4b06-b6e7-05bcf8ba7f54',
+  '2e37c623-a535-4eb1-ae5b-6eaf7f4039c3'
 ];
 
 module.exports = controller = {
@@ -84,6 +90,14 @@ module.exports = controller = {
       }
       res.send(JSON.stringify(form));
       return;
+    }
+
+    if (tasksWithDraft7Schema.includes(task.id)) {
+      const form = _.cloneDeep(draft7Form);
+      if (clearPhases) {
+        delete form.phases;
+      }
+      res.send(JSON.stringify(form));
     }
 
     if (taskWithoutForm.includes(task.id)) {

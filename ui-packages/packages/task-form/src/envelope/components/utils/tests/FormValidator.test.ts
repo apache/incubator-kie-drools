@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { DefaultFormValidator } from '../FormValidator';
+import cloneDeep from 'lodash/cloneDeep';
+import set from 'lodash/set';
+import {
+  Draft2019_09Validator,
+  Draft7FormValidator,
+  lookupValidator
+} from '../FormValidator';
+import { SCHEMA_VERSION } from '../../../../types';
 
 const schema = {
   type: 'object',
@@ -26,22 +33,103 @@ const schema = {
   required: ['name', 'lastName']
 };
 
-const validator = new DefaultFormValidator(schema);
+const draft7SchemaWithRefs = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  definitions: {
+    Person: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        lastName: { type: 'string' },
+        age: { type: 'integer', minimum: 18 }
+      }
+    }
+  },
+  type: 'object',
+  properties: {
+    person: {
+      allOf: [
+        {
+          $ref: '#/definitions/Person'
+        }
+      ]
+    }
+  }
+};
 
-describe('Model Conversion  tests', () => {
-  test('Test succesfully model validation', () => {
+describe('Model Validation  tests', () => {
+  test('Test DRAFT_7 succesfully model validation', () => {
+    const draft7Schema = cloneDeep(schema);
+    set(draft7Schema, '$schema', SCHEMA_VERSION.DRAFT_7);
+    const validator = lookupValidator(draft7Schema);
+
     const model = {
       name: 'John',
       lastName: 'Doe',
       age: 27
     };
+
+    expect(validator).toBeInstanceOf(Draft7FormValidator);
     expect(validator.validate(model)).toBeUndefined();
   });
 
-  test('Test model validation with errors', () => {
+  test('Test DRAFT_7 model validation with errors', () => {
+    const draft7Schema = cloneDeep(schema);
+    set(draft7Schema, '$schema', SCHEMA_VERSION.DRAFT_7);
+    const validator = lookupValidator(draft7Schema);
+
     const model = {
       age: 10
     };
+    expect(validator).toBeInstanceOf(Draft7FormValidator);
     expect(validator.validate(model)).not.toBeUndefined();
+  });
+
+  test('Test DRAFT_7 with $ref succesfully model validation', () => {
+    const validator = lookupValidator(draft7SchemaWithRefs);
+
+    const model = {
+      person: {
+        name: 'John',
+        lastName: 'Doe',
+        age: 27
+      }
+    };
+
+    expect(validator).toBeInstanceOf(Draft7FormValidator);
+    expect(validator.validate(model)).toBeUndefined();
+  });
+
+  test('Test DRAFT_2019_09 model validation', () => {
+    const draft2019Schema = cloneDeep(schema);
+    set(draft2019Schema, '$schema', SCHEMA_VERSION.DRAFT_2019_09);
+    const validator = lookupValidator(draft2019Schema);
+
+    const model = {
+      name: 'John',
+      lastName: 'Doe',
+      age: 27
+    };
+
+    expect(validator).toBeInstanceOf(Draft2019_09Validator);
+    expect(validator.validate(model)).toBeUndefined();
+  });
+
+  test('Test wrong schema version', () => {
+    const wrongSchema = cloneDeep(schema);
+    const schemaVersion = 'wrong schema here';
+    set(wrongSchema, '$schema', schemaVersion);
+
+    const validator = lookupValidator(wrongSchema);
+
+    const model = {
+      name: 'John',
+      lastName: 'Doe',
+      age: 27
+    };
+
+    expect(validator).not.toBeInstanceOf(Draft7FormValidator);
+    expect(validator).not.toBeInstanceOf(Draft2019_09Validator);
+    expect(validator.validate(model)).toBeUndefined();
   });
 });

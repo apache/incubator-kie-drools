@@ -62,18 +62,18 @@ module.exports = data = {
       rootProcessInstanceId: null,
       rootProcessId: null,
       state: 'Completed',
-      actualOwner: 'john',
+      actualOwner: null,
       adminGroups: [],
       adminUsers: [],
       completed: '2020-02-19T10:49:24.623Z',
       started: '2020-02-19T10:49:16.559Z',
       excludedUsers: [],
-      potentialGroups: [],
+      potentialGroups: ['employees', 'interns', 'managers'],
       potentialUsers: [],
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null}}',
       outputs: '{}',
-      referenceName: 'Confirm travel',
+      referenceName: 'Confirm travel (Draft 7 schema)',
       endpoint:
         'http://localhost:4000/travels/4bfdd404-c46a-4751-b401-b1428a30fa07/ConfirmTravel/f6be5b6b-34de-4b06-b6e7-05bcf8ba7f54'
     },
@@ -235,7 +235,7 @@ module.exports = data = {
     {
       id: '2e37c623-a535-4eb1-ae5b-6eaf7f4039c3',
       name: 'ConfirmTravel',
-      referenceName: 'Confirm travel',
+      referenceName: 'Confirm travel (Draft 7 schema)',
       description: null,
       priority: '1',
       processInstanceId: '40ab14f0-3a10-4ffd-96e1-05b0028943b4',

@@ -16,13 +16,12 @@
 
 import cloneDeep from 'lodash/cloneDeep';
 import unset from 'lodash/unset';
-import { TaskFormSchema } from '../../../../types';
 import { User } from '../../../../api';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 export function buildTaskFormContext(
   userTask: UserTaskInstance,
-  schema: TaskFormSchema,
+  schema: Record<string, any>,
   user: User
 ): Record<string, any> {
   const ctxSchema = cloneDeep(schema);

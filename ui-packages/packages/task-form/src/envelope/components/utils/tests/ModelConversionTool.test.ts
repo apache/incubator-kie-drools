@@ -17,7 +17,7 @@
 import _ from 'lodash';
 import { ModelConversionTool } from '../ModelConversionTool';
 
-const schema = {
+const inlineSchema = {
   type: 'object',
   properties: {
     name: { type: 'string' },
@@ -47,6 +47,122 @@ const schema = {
             format: 'date-time'
           }
         }
+      }
+    }
+  }
+};
+
+const draft7schema = {
+  definitions: {
+    Nested: {
+      type: 'object',
+      properties: {
+        date: {
+          type: 'string',
+          format: 'date-time'
+        }
+      }
+    }
+  },
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    lastName: { type: 'string' },
+    married: { type: 'boolean' },
+    age: { type: 'integer' },
+    date: {
+      type: 'string',
+      format: 'date-time'
+    },
+    nested: {
+      $ref: '#/definitions/Nested'
+    },
+    children: {
+      type: 'array',
+      items: {
+        $ref: '#/definitions/Nested'
+      }
+    }
+  }
+};
+
+const draft7AllOfschema = {
+  definitions: {
+    Nested: {
+      type: 'object',
+      properties: {
+        date: {
+          type: 'string',
+          format: 'date-time'
+        }
+      }
+    }
+  },
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    lastName: { type: 'string' },
+    married: { type: 'boolean' },
+    age: { type: 'integer' },
+    date: {
+      type: 'string',
+      format: 'date-time'
+    },
+    nested: {
+      allOf: [
+        {
+          $ref: '#/definitions/Nested'
+        },
+        {
+          input: true
+        }
+      ]
+    },
+    children: {
+      type: 'array',
+      items: {
+        allOf: [
+          {
+            $ref: '#/definitions/Nested'
+          },
+          {
+            input: true
+          }
+        ]
+      }
+    }
+  }
+};
+
+const draft2019schema = {
+  $defs: {
+    Nested: {
+      type: 'object',
+      properties: {
+        date: {
+          type: 'string',
+          format: 'date-time'
+        }
+      }
+    }
+  },
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    lastName: { type: 'string' },
+    married: { type: 'boolean' },
+    age: { type: 'integer' },
+    date: {
+      type: 'string',
+      format: 'date-time'
+    },
+    nested: {
+      $ref: '#/definitions/Nested'
+    },
+    children: {
+      type: 'array',
+      items: {
+        $ref: '#/definitions/Nested'
       }
     }
   }
@@ -83,6 +199,7 @@ function getModel(dateValue: Date | string): any {
 function testModel(
   originalDateValue: Date | string,
   convertedDateValue: string | Date,
+  schema: any,
   conversion: (model, schema) => any
 ) {
   const model = getModel(originalDateValue);
@@ -108,25 +225,121 @@ function testModel(
 }
 
 describe('Model Conversion  tests', () => {
-  it('String to dates conversion', () => {
-    testModel(currentStrDate, currentDate, (model, formSchema) =>
-      ModelConversionTool.convertStringToDate(model, formSchema)
-    );
+  describe('Inline Schema', () => {
+    it('String to dates conversion', () => {
+      testModel(
+        currentStrDate,
+        currentDate,
+        inlineSchema,
+        (model, formSchema) =>
+          ModelConversionTool.convertStringToDate(model, formSchema)
+      );
+    });
+
+    it('Dates to strings conversion', () => {
+      testModel(
+        currentDate,
+        currentStrDate,
+        inlineSchema,
+        (model, formSchema) =>
+          ModelConversionTool.convertDateToString(model, formSchema)
+      );
+    });
+
+    it('Empty schema conversion', () => {
+      const model = getModel(currentDate);
+      const formSchema = _.cloneDeep(inlineSchema);
+      delete formSchema.properties;
+
+      const result = ModelConversionTool.convertDateToString(model, formSchema);
+
+      expect(result).not.toBeNull();
+    });
   });
 
-  it('Dates to strings conversion', () => {
-    testModel(currentDate, currentStrDate, (model, formSchema) =>
-      ModelConversionTool.convertDateToString(model, formSchema)
-    );
+  describe('Draft 7 schema', () => {
+    it('String to dates conversion', () => {
+      testModel(
+        currentStrDate,
+        currentDate,
+        draft7schema,
+        (model, formSchema) =>
+          ModelConversionTool.convertStringToDate(model, formSchema)
+      );
+
+      testModel(
+        currentStrDate,
+        currentDate,
+        draft7AllOfschema,
+        (model, formSchema) =>
+          ModelConversionTool.convertStringToDate(model, formSchema)
+      );
+    });
+
+    it('Dates to strings conversion', () => {
+      testModel(
+        currentDate,
+        currentStrDate,
+        draft7schema,
+        (model, draft7schema) =>
+          ModelConversionTool.convertDateToString(model, draft7schema)
+      );
+
+      testModel(
+        currentDate,
+        currentStrDate,
+        draft7AllOfschema,
+        (model, draft7schema) =>
+          ModelConversionTool.convertDateToString(model, draft7schema)
+      );
+    });
+
+    it('Empty schema conversion', () => {
+      const model = getModel(currentDate);
+      const formSchema = _.cloneDeep(draft7schema);
+      delete formSchema.properties;
+
+      const result = ModelConversionTool.convertDateToString(
+        model,
+        draft7schema
+      );
+
+      expect(result).not.toBeNull();
+    });
   });
 
-  it('Empty schema conversion', () => {
-    const model = getModel(currentDate);
-    const formSchema = _.cloneDeep(schema);
-    delete formSchema.properties;
+  describe('Draft 2019 schema', () => {
+    it('String to dates conversion', () => {
+      testModel(
+        currentStrDate,
+        currentDate,
+        draft2019schema,
+        (model, formSchema) =>
+          ModelConversionTool.convertStringToDate(model, formSchema)
+      );
+    });
 
-    const result = ModelConversionTool.convertDateToString(model, formSchema);
+    it('Dates to strings conversion', () => {
+      testModel(
+        currentDate,
+        currentStrDate,
+        draft2019schema,
+        (model, draft7schema) =>
+          ModelConversionTool.convertDateToString(model, draft7schema)
+      );
+    });
 
-    expect(result).not.toBeNull();
+    it('Empty schema conversion', () => {
+      const model = getModel(currentDate);
+      const formSchema = _.cloneDeep(draft2019schema);
+      delete formSchema.properties;
+
+      const result = ModelConversionTool.convertDateToString(
+        model,
+        draft7schema
+      );
+
+      expect(result).not.toBeNull();
+    });
   });
 });

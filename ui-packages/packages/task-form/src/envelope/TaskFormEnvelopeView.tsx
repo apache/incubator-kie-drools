@@ -30,7 +30,7 @@ import {
   KogitoEmptyStateType,
   KogitoSpinner
 } from '@kogito-apps/components-common';
-import { CustomForm, TaskFormSchema } from '../types';
+import { CustomForm } from '../types';
 import { TaskFormEnvelopeViewDriver } from './TaskFormEnvelopeViewDriver';
 import CustomTaskFormDisplayer from './components/CustomTaskFormDisplayer/CustomTaskFormDisplayer';
 import TaskForm from './components/TaskForm/TaskForm';
@@ -56,7 +56,9 @@ export const TaskFormEnvelopeView = React.forwardRef<
   ] = useState<boolean>(false);
   const [userTask, setUserTask] = useState<UserTaskInstance>();
   const [user, setUser] = useState<User>();
-  const [taskFormSchema, setTaskFormSchema] = useState<TaskFormSchema>(null);
+  const [taskFormSchema, setTaskFormSchema] = useState<Record<string, any>>(
+    null
+  );
   const [customForm, setCustomForm] = useState<CustomForm>(null);
 
   const [driver] = useState<TaskFormEnvelopeViewDriver>(

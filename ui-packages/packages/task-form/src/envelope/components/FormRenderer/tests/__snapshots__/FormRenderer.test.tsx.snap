@@ -12,6 +12,7 @@ exports[`FormRenderer test Render form with actions 1`] = `
   }
   formSchema={
     Object {
+      "$schema": "https://json-schema.org/draft/2019-09/schema",
       "phases": Array [
         "complete",
         "release",
@@ -180,6 +181,7 @@ exports[`FormRenderer test Render form with actions 1`] = `
         "getSubfields": [Function],
         "getType": [Function],
         "schema": Object {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
           "phases": Array [
             "complete",
             "release",
@@ -323,6 +325,7 @@ exports[`FormRenderer test Render form without actions 1`] = `
   formActions={Array []}
   formSchema={
     Object {
+      "$schema": "https://json-schema.org/draft/2019-09/schema",
       "phases": Array [
         "complete",
         "release",
@@ -491,6 +494,7 @@ exports[`FormRenderer test Render form without actions 1`] = `
         "getSubfields": [Function],
         "getType": [Function],
         "schema": Object {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
           "phases": Array [
             "complete",
             "release",

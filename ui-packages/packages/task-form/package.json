@@ -29,9 +29,8 @@
   },
   "dependencies": {
     "@kogito-apps/components-common": "^1.0.0",
-    "@kogito-apps/task-console-shared": "^1.0.0",
     "@kogito-apps/form-displayer": "^1.0.0",
-    "@types/json-schema": "^7.0.7",
+    "@kogito-apps/task-console-shared": "^1.0.0",
     "ajv": "6.12.2",
     "uniforms": "3.0.0",
     "uniforms-bridge-json-schema": "3.0.0",
@@ -57,7 +56,14 @@
       "./src/static",
       "dist/"
     ],
-    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
+    "coverageReporters": [
+      [
+        "lcov",
+        {
+          "projectRoot": "../../"
+        }
+      ]
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],

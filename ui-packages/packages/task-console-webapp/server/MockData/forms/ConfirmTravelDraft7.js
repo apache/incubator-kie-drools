@@ -14,11 +14,28 @@
  * limitations under the License.
  */
 
-module.exports = ConfirmTravelForm = {
-  $schema: 'https://json-schema.org/draft/2019-09/schema',
+module.exports = ConfirmTravelFormDraft7 = {
+  $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
-  properties: {
-    flight: {
+  definitions: {
+    Address: {
+      type: 'object',
+      properties: {
+        street: {
+          type: 'string'
+        },
+        city: {
+          type: 'string'
+        },
+        zipCode: {
+          type: 'string'
+        },
+        country: {
+          type: 'string'
+        }
+      }
+    },
+    Flight: {
       type: 'object',
       properties: {
         flightNumber: {
@@ -38,31 +55,16 @@ module.exports = ConfirmTravelForm = {
           type: 'string',
           format: 'date-time'
         }
-      },
-      input: true
+      }
     },
-    hotel: {
+    Hotel: {
       type: 'object',
       properties: {
         name: {
           type: 'string'
         },
         address: {
-          type: 'object',
-          properties: {
-            street: {
-              type: 'string'
-            },
-            city: {
-              type: 'string'
-            },
-            zipCode: {
-              type: 'string'
-            },
-            country: {
-              type: 'string'
-            }
-          }
+          $ref: '#/definitions/Address'
         },
         phone: {
           type: 'string'
@@ -73,9 +75,19 @@ module.exports = ConfirmTravelForm = {
         room: {
           type: 'string'
         }
-      },
-      input: true,
-      output: true
+      }
+    }
+  },
+  properties: {
+    flight: {
+      allOf: [{ $ref: '#/definitions/Flight' }, { input: true }]
+    },
+    hotel: {
+      allOf: [
+        { $ref: '#/definitions/Hotel' },
+        { input: true },
+        { output: true }
+      ]
     }
   },
   phases: ['complete', 'release']

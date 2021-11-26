@@ -11,6 +11,7 @@ exports[`TaskForm Test Empty Task Form rendering 1`] = `
   }
   schema={
     Object {
+      "$schema": "https://json-schema.org/draft/2019-09/schema",
       "phases": Array [
         "complete",
         "release",
@@ -52,6 +53,7 @@ exports[`TaskForm Test Empty Task Form rendering 1`] = `
     enabled={true}
     formSchema={
       Object {
+        "$schema": "https://json-schema.org/draft/2019-09/schema",
         "phases": Array [
           "complete",
           "release",
@@ -101,12 +103,15 @@ exports[`TaskForm Test Task Form rendering 1`] = `
   }
   schema={
     Object {
+      "$schema": "https://json-schema.org/draft/2019-09/schema",
       "phases": Array [
         "complete",
         "release",
       ],
       "properties": Object {
         "traveller": Object {
+          "input": true,
+          "output": true,
           "properties": Object {
             "address": Object {
               "properties": Object {
@@ -146,6 +151,7 @@ exports[`TaskForm Test Task Form rendering 1`] = `
           "type": "object",
         },
         "trip": Object {
+          "input": true,
           "properties": Object {
             "begin": Object {
               "format": "date-time",
@@ -166,11 +172,9 @@ exports[`TaskForm Test Task Form rendering 1`] = `
             },
           },
           "type": "object",
-          "uniforms": Object {
-            "disabled": true,
-          },
         },
         "visaApplication": Object {
+          "input": true,
           "properties": Object {
             "city": Object {
               "type": "string",
@@ -195,9 +199,6 @@ exports[`TaskForm Test Task Form rendering 1`] = `
             },
           },
           "type": "object",
-          "uniforms": Object {
-            "disabled": true,
-          },
         },
       },
       "type": "object",
@@ -238,6 +239,7 @@ exports[`TaskForm Test Task Form rendering 1`] = `
     formData={null}
     formSchema={
       Object {
+        "$schema": "https://json-schema.org/draft/2019-09/schema",
         "phases": Array [
           "complete",
           "release",

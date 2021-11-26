@@ -27,12 +27,11 @@ import {
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { TaskFormSchema } from '../../../types';
 import { convertActionsToButton } from '../utils/FormActionsUtils';
 
 interface IOwnProps {
   userTask: UserTaskInstance;
-  formSchema: TaskFormSchema;
+  formSchema: Record<string, any>;
   enabled: boolean;
   submit: (phase: string) => void;
 }

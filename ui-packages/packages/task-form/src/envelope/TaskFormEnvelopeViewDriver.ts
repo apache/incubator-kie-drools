@@ -16,7 +16,7 @@
 
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
 import { TaskFormChannelApi, TaskFormDriver } from '../api';
-import { CustomForm, TaskFormSchema } from '../types';
+import { CustomForm } from '../types';
 
 /**
  * Implementation of TaskFormDriver to be used on TaskFormEnvelopeView
@@ -26,7 +26,7 @@ export class TaskFormEnvelopeViewDriver implements TaskFormDriver {
     private readonly channelApi: MessageBusClientApi<TaskFormChannelApi>
   ) {}
 
-  getTaskFormSchema(): Promise<TaskFormSchema> {
+  getTaskFormSchema(): Promise<Record<string, any>> {
     return this.channelApi.requests.taskForm__getTaskFormSchema();
   }
 

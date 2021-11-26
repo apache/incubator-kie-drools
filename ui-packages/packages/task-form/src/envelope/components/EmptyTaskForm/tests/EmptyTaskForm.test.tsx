@@ -25,7 +25,6 @@ import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import EmptyTaskForm from '../EmptyTaskForm';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
 import { mount } from 'enzyme';
-import { TaskFormSchema } from '../../../../types';
 
 const testTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -68,7 +67,7 @@ let doSubmit;
 
 const getEmptyTaskFormWrapper = (
   userTask: UserTaskInstance,
-  schema: TaskFormSchema,
+  schema: Record<string, any>,
   enabled: boolean
 ) => {
   doSubmit = jest.fn();
