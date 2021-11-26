@@ -19,6 +19,12 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-quarkus-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jackson-deployment</artifactId>
+        </dependency>
+
         <!--  Required because of InMemoryCompiler  -->
         <dependency>
             <groupId>org.kie.kogito</groupId>

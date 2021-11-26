@@ -8,7 +8,5 @@ metadata:
   related-guide-section: https://quarkus.io/guides/kogito-dmn
 language:
   base:
-    dependencies:
-      - org.kie.kogito:kogito-quarkus-decisions
     test-dependencies:
       - io.rest-assured:rest-assured

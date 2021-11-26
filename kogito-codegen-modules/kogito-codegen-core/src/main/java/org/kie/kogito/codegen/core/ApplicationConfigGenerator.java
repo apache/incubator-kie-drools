@@ -74,7 +74,7 @@ public class ApplicationConfigGenerator {
 
         generatedFiles.add(generateApplicationConfigDescriptor(configClassNames));
 
-        if (context.hasDI()) {
+        if (context.hasDI() && context.hasRESTGloballyAvailable()) {
             generatedFiles.add(ObjectMapperGenerator.generate(context));
         }
 
