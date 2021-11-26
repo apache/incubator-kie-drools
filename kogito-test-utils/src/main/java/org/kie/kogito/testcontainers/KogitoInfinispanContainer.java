@@ -35,7 +35,9 @@ public class KogitoInfinispanContainer extends KogitoGenericContainer<KogitoInfi
         addExposedPort(PORT);
         waitingFor(Wait.forHttp("/").withStartupTimeout(Duration.ofMinutes(5)));
         withClasspathResourceMapping("testcontainers/infinispan/infinispan-local.xml", CONF_PATH + "infinispan-local.xml", BindMode.READ_ONLY);
-        setCommand("/opt/infinispan/bin/server.sh -c infinispan-local.xml");
+        withCommand("-c infinispan-local.xml");
+        withEnv("USER", "admin");
+        withEnv("PASS", "admin");
     }
 
     @Override

@@ -13,9 +13,11 @@
       <socket-binding name="default" port="${infinispan.bind.port:11222}"/>
     </socket-bindings>
 
-    <endpoints socket-binding="default">
-      <hotrod-connector name="hotrod" />
-      <rest-connector name="rest"/>
+    <endpoints>
+      <endpoint socket-binding="default">
+        <hotrod-connector name="hotrod"/>
+        <rest-connector name="rest"/>
+      </endpoint>
     </endpoints>
   </server>
 </infinispan>
