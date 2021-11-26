@@ -1,16 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2019-09/schema",
-  "type": "object",
-  "properties": {
-    "approved": {
-      "type": "boolean",
-      "output": true
-    },
-    "traveller": {
-      "input": true,
-      "$ref": "#/definitions/Traveller"
-    }
-  },
   "definitions": {
     "Address": {
       "type": "object",
@@ -51,6 +40,21 @@
           "type": "boolean"
         }
       }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "approver": {
+      "type": "string"
+    },
+    "firstLineApproval": {
+      "type": "boolean"
+    },
+    "secondLineApproval": {
+      "type": "boolean"
+    },
+    "traveller": {
+      "$ref": "#/definitions/Traveller"
     }
   }
 }

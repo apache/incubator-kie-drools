@@ -43,8 +43,12 @@ public class JsonSchemaUtil {
     private static ObjectMapper mapper = new ObjectMapper();
     private static Path jsonDir = Paths.get("META-INF", "jsonSchema");
 
+    public static String getJsonSchemaName(String id) {
+        return id.replace('.', '#').replaceAll("\\s", "_");
+    }
+
     public static String getJsonSchemaName(String processId, String taskName) {
-        return (processId + "_" + taskName).replace('.', '#').replaceAll("\\s", "_");
+        return getJsonSchemaName(processId + "_" + taskName);
     }
 
     public static Path getJsonDir() {
@@ -55,8 +59,16 @@ public class JsonSchemaUtil {
         return key + ".json";
     }
 
+    public static Map<String, Object> load(ClassLoader cl, String processId) {
+        return loadSchema(cl, processId);
+    }
+
     public static Map<String, Object> load(ClassLoader cl, String processId, String taskName) {
-        Path jsonFile = jsonDir.resolve(getFileName(getJsonSchemaName(processId, taskName)));
+        return loadSchema(cl, getJsonSchemaName(processId, taskName));
+    }
+
+    private static Map<String, Object> loadSchema(ClassLoader cl, String schemaId) {
+        Path jsonFile = jsonDir.resolve(getFileName(schemaId));
         try (InputStream in = cl.getResourceAsStream(jsonFile.toString())) {
             if (in == null) {
                 throw new IllegalArgumentException("Cannot find file " + jsonFile + " in classpath");

@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JsonUtilsTest {
 
     @Test
-    public void testMerge() {
+    public void testFullMerge() {
         ObjectMapper mapper = new ObjectMapper();
 
         JsonNode node1 = createJson(mapper, createJson(mapper, "numbers", Arrays.asList(1, 2, 3)));
@@ -52,12 +52,59 @@ public class JsonUtilsTest {
         JsonNode numbers = merged.get("numbers");
         assertTrue(numbers instanceof ArrayNode);
         ArrayNode numbersNode = (ArrayNode) numbers;
-        assertEquals(4, numbersNode.get(0).asInt());
-        assertEquals(5, numbersNode.get(1).asInt());
-        assertEquals(6, numbersNode.get(2).asInt());
+        assertEquals(6, numbersNode.size());
+        assertEquals(1, numbersNode.get(0).asInt());
+        assertEquals(2, numbersNode.get(1).asInt());
+        assertEquals(3, numbersNode.get(2).asInt());
+        assertEquals(4, numbersNode.get(3).asInt());
+        assertEquals(5, numbersNode.get(4).asInt());
+        assertEquals(6, numbersNode.get(5).asInt());
         assertEquals(false, merged.get("boolean").asBoolean());
         assertEquals("javier", merged.get("string").asText());
         assertEquals(1, merged.get("number").asInt());
+    }
+
+    @Test
+    public void testArrayIntoObjectMerge() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        JsonNode src = createJson(mapper, createJson(mapper, "property", Arrays.asList(1, 2, 3)));
+        JsonNode target = createJson(mapper, mapper.createObjectNode().put("property", 4));
+
+        JsonUtils.merge(src, target);
+
+        assertEquals(1, target.size());
+        JsonNode merged = target.get("merged");
+        assertEquals(1, merged.size());
+        JsonNode property = merged.get("property");
+        assertTrue(property instanceof ArrayNode);
+        ArrayNode propertyNode = (ArrayNode) property;
+        assertEquals(4, propertyNode.size());
+        assertEquals(4, propertyNode.get(0).asInt());
+        assertEquals(1, propertyNode.get(1).asInt());
+        assertEquals(2, propertyNode.get(2).asInt());
+        assertEquals(3, propertyNode.get(3).asInt());
+    }
+
+    @Test
+    public void testArrayIntoNewPropertyMerge() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        JsonNode src = createJson(mapper, createJson(mapper, "property", Arrays.asList(1, 2, 3)));
+        JsonNode target = createJson(mapper, mapper.createObjectNode());
+
+        JsonUtils.merge(src, target);
+
+        assertEquals(1, target.size());
+        JsonNode merged = target.get("merged");
+        assertEquals(1, merged.size());
+        JsonNode property = merged.get("property");
+        assertTrue(property instanceof ArrayNode);
+        ArrayNode propertyNode = (ArrayNode) property;
+        assertEquals(3, propertyNode.size());
+        assertEquals(1, propertyNode.get(0).asInt());
+        assertEquals(2, propertyNode.get(1).asInt());
+        assertEquals(3, propertyNode.get(2).asInt());
     }
 
     private JsonNode createJson(ObjectMapper mapper, String name, Collection<Integer> integers) {

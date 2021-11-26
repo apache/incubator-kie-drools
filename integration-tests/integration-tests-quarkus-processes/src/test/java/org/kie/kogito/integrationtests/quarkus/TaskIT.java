@@ -113,7 +113,7 @@ class TaskIT {
 
     @Test
     void testJsonSchemaFiles() {
-        long expectedJsonSchemas = 9;
+        long expectedJsonSchemas = 25;
         Path jsonDir = Paths.get("target", "classes").resolve(JsonSchemaUtil.getJsonDir());
         try (Stream<Path> paths = Files.walk(jsonDir)) {
             long generatedJsonSchemas = paths

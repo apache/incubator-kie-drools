@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.kogito.Model;
+import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
@@ -119,8 +120,11 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 generatedResources.forEach(this::writeGeneratedFile);
 
                 // Json schema generation
-                Stream<Class<?>> classStream = reflections.getTypesAnnotatedWith(UserTask.class).stream();
-                generateJsonSchema(classStream).forEach(this::writeGeneratedFile);
+                Stream<Class<?>> processClassStream = reflections.getTypesAnnotatedWith(ProcessInput.class).stream();
+                generateJsonSchema(processClassStream).forEach(this::writeGeneratedFile);
+
+                Stream<Class<?>> userTaskClassStream = reflections.getTypesAnnotatedWith(UserTask.class).stream();
+                generateJsonSchema(userTaskClassStream).forEach(this::writeGeneratedFile);
             }
         } catch (Exception e) {
             throw new MojoExecutionException("Error during processing model classes", e);
@@ -155,7 +159,6 @@ public class ProcessClassesMojo extends AbstractKieMojo {
 
     private Collection<GeneratedFile> generateJsonSchema(Stream<Class<?>> classes) throws IOException {
         return new JsonSchemaGenerator.ClassBuilder(classes)
-                .withGenSchemaPredicate(x -> true)
                 .withSchemaVersion(schemaVersion).build()
                 .generate();
     }

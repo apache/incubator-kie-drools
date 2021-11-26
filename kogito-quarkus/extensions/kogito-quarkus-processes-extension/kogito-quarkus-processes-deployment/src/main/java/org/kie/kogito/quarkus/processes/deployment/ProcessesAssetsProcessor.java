@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
 import org.kie.kogito.Model;
+import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
@@ -265,17 +267,19 @@ public class ProcessesAssetsProcessor {
     private Collection<GeneratedFile> generateJsonSchema(KogitoBuildContext context, IndexView index, Map<String, byte[]> generatedClasses) throws IOException {
         ClassLoader cl = new InMemoryClassLoader(context.getClassLoader(), generatedClasses);
 
-        Collection<AnnotationInstance> annotations =
-                index.getAnnotations(DotName.createSimple(UserTask.class.getCanonicalName()));
+        List<AnnotationInstance> annotations = new ArrayList<>();
 
-        Stream<Class<?>> stream = annotations.stream()
+        annotations.addAll(index.getAnnotations(DotName.createSimple(ProcessInput.class.getCanonicalName())));
+        annotations.addAll(index.getAnnotations(DotName.createSimple(UserTask.class.getCanonicalName())));
+
+        List<Class<?>> annotatedClasses = annotations.stream()
                 .map(ann -> loadClassFromAnnotation(ann, cl))
                 .filter(Optional::isPresent)
-                .map(Optional::get);
+                .map(Optional::get).collect(Collectors.toList());
 
-        JsonSchemaGenerator jsonSchemaGenerator = new JsonSchemaGenerator.ClassBuilder(stream)
-                .withGenSchemaPredicate(x -> true)
-                .withSchemaVersion(System.getProperty("kogito.jsonSchema.version")).build();
+        JsonSchemaGenerator jsonSchemaGenerator = new JsonSchemaGenerator.ClassBuilder(annotatedClasses.stream())
+                .withSchemaVersion(System.getProperty("kogito.jsonSchema.version"))
+                .build();
 
         return jsonSchemaGenerator.generate();
     }

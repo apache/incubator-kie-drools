@@ -27,6 +27,10 @@ public class Traveller {
 
 	}
 
+	public Traveller(String firstName, String lastName, String email, String nationality) {
+		this(firstName, lastName, email, nationality, null);
+	}
+
 	public Traveller(String firstName, String lastName, String email, String nationality, Address address) {
 		super();
 		this.firstName = firstName;

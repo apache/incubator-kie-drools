@@ -184,7 +184,51 @@ public class HotReloadIT {
     }
 
     @Test
-    public void testJsonSchema() {
+    public void testProcessJsonSchema() {
+
+        String jsonSchema = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/" + PROCESS_NAME + "/schema")
+                .then()
+                .statusCode(200)
+                .extract().body().asString();
+
+        assertNotNull(jsonSchema);
+        assertFalse(jsonSchema.isEmpty());
+
+        test.modifyResourceFile(RESOURCE_FILE, s -> s.replaceAll(PROCESS_NAME, "new_" + PROCESS_NAME));
+
+        // old endpoint should not work anymore
+        given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/" + PROCESS_NAME + "/schema")
+                .then()
+                .statusCode(404);
+
+        String newJsonSchema = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/new_" + PROCESS_NAME + "/schema")
+                .then()
+                .statusCode(200)
+                .extract().body().asString();
+
+        assertNotNull(newJsonSchema);
+        assertFalse(newJsonSchema.isEmpty());
+
+        assertEquals(jsonSchema, newJsonSchema);
+    }
+
+    @Test
+    public void testUserTaskJsonSchema() {
 
         String jsonSchema = given()
                 .baseUri("http://localhost:" + HTTP_TEST_PORT)

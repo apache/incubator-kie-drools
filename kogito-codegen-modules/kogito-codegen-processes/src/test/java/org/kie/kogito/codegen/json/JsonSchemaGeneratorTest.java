@@ -16,16 +16,22 @@
 package org.kie.kogito.codegen.json;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.jbpm.util.JsonSchemaUtil;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
+import org.kie.kogito.codegen.VariableInfo;
 import org.kie.kogito.codegen.api.GeneratedFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,10 +42,17 @@ import com.github.victools.jsonschema.generator.SchemaVersion;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsonSchemaGeneratorTest {
+
+    private static final String ALL_OF = "allOf";
+    private static final String REF = "$ref";
+    private static final String INPUT = "input";
+    private static final String OUTPUT = "output";
 
     private enum Color {
         GREEN,
@@ -67,6 +80,9 @@ public class JsonSchemaGeneratorTest {
 
         @UserTaskParam(UserTaskParam.ParamType.OUTPUT)
         private String name;
+
+        @UserTaskParam(UserTaskParam.ParamType.OUTPUT)
+        private Address address;
 
         @SuppressWarnings("unused")
         private String ignored;
@@ -98,6 +114,36 @@ public class JsonSchemaGeneratorTest {
         private String name;
     }
 
+    @ProcessInput(processName = "processName")
+    private static class ProcessInputModel {
+
+        @VariableInfo
+        private Color color;
+
+        @VariableInfo
+        private Person person;
+    }
+
+    @ProcessInput(processName = "emptyProcessName")
+    private static class EmptyProcessInputModel {
+
+        private Color color;
+
+        private Person person;
+    }
+
+    private static class Person {
+
+        @SuppressWarnings("unused")
+        private String name;
+        @SuppressWarnings("unused")
+        private int age;
+        @SuppressWarnings("unused")
+        private Address address;
+        @SuppressWarnings("unused")
+        private Person parent;
+    }
+
     private static class Address {
 
         @SuppressWarnings("unused")
@@ -116,11 +162,13 @@ public class JsonSchemaGeneratorTest {
     public void testJsonSchemaGenerator() throws IOException {
         Collection<GeneratedFile> files =
                 new JsonSchemaGenerator.ClassBuilder(
-                        Stream.of(PersonInputParams.class, PersonOutputParams.class, IgnoredClass.class))
+                        Stream.of(EmptyProcessInputModel.class, PersonInputParams.class, ProcessInputModel.class, PersonOutputParams.class, IgnoredClass.class))
                                 .build().generate();
-        assertEquals(1, files.size());
-        GeneratedFile file = files.iterator().next();
-        assertSchema("org#jbpm#test_test.json", file, SchemaVersion.DRAFT_7);
+        assertEquals(3, files.size());
+        Iterator<GeneratedFile> iterator = files.iterator();
+        assertEmptyProcessSchema("emptyProcessName.json", iterator.next(), SchemaVersion.DRAFT_2019_09);
+        assertProcessSchema("processName.json", iterator.next(), SchemaVersion.DRAFT_2019_09);
+        assertTaskSchema("org#jbpm#test_test.json", iterator.next(), SchemaVersion.DRAFT_2019_09, Arrays.asList("name", "address", "color"), Arrays.asList("name", "address", "age"));
     }
 
     @Test
@@ -136,14 +184,16 @@ public class JsonSchemaGeneratorTest {
     }
 
     @Test
-    public void testJsonSchemaGeneratorDraft2019() throws IOException {
+    public void testJsonSchemaGeneratorDraft7() throws IOException {
         Collection<GeneratedFile> files =
                 new JsonSchemaGenerator.ClassBuilder(
-                        Stream.of(PersonInputParams.class, PersonOutputParams.class, IgnoredClass.class))
-                                .withSchemaVersion("DRAFT_2019_09").build().generate();
-        assertEquals(1, files.size());
-        GeneratedFile file = files.iterator().next();
-        assertSchema("org#jbpm#test_test.json", file, SchemaVersion.DRAFT_2019_09);
+                        Stream.of(EmptyProcessInputModel.class, PersonInputParams.class, ProcessInputModel.class, PersonOutputParams.class, IgnoredClass.class))
+                                .withSchemaVersion("DRAFT_7").build().generate();
+        assertEquals(3, files.size());
+        Iterator<GeneratedFile> iterator = files.iterator();
+        assertEmptyProcessSchema("emptyProcessName.json", iterator.next(), SchemaVersion.DRAFT_7);
+        assertProcessSchema("processName.json", iterator.next(), SchemaVersion.DRAFT_7);
+        assertTaskSchema("org#jbpm#test_test.json", iterator.next(), SchemaVersion.DRAFT_7, Arrays.asList("name", "address", "color"), Arrays.asList("name", "address", "age"));
     }
 
     @Test
@@ -151,7 +201,8 @@ public class JsonSchemaGeneratorTest {
         Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(Stream.of(PersonInputOutputParams.class)).build().generate();
         assertEquals(1, files.size());
         GeneratedFile file = files.iterator().next();
-        assertSchema("InputOutput_test.json", file, SchemaVersion.DRAFT_7);
+
+        assertTaskSchema("InputOutput_test.json", file, SchemaVersion.DRAFT_2019_09, Arrays.asList("name", "address", "color"), List.of("age"));
     }
 
     @Test
@@ -168,29 +219,164 @@ public class JsonSchemaGeneratorTest {
         assertTrue(files.isEmpty());
     }
 
-    private void assertSchema(String fileName, GeneratedFile file, SchemaVersion schemaVersion) throws IOException {
+    @Test
+    public void testJsonSchemaGenerationForProcess() throws IOException {
+        Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(Stream.of(ProcessInputModel.class)).build().generate();
+        assertEquals(1, files.size());
+        assertProcessSchema("processName.json", files.iterator().next(), SchemaVersion.DRAFT_2019_09);
+    }
+
+    @Test
+    public void testJsonSchemaGenerationForEmptyProcessModel() throws IOException {
+        Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(Stream.of(EmptyProcessInputModel.class)).build().generate();
+        assertEquals(1, files.size());
+
+        assertEmptyProcessSchema("emptyProcessName.json", files.iterator().next(), SchemaVersion.DRAFT_2019_09);
+    }
+
+    private void assertEmptyProcessSchema(String fileName, GeneratedFile file, SchemaVersion schemaVersion) throws IOException {
+        assertEquals(JsonSchemaUtil.getJsonDir().resolve(fileName).toString(), file.relativePath());
+
+        ObjectReader reader = new ObjectMapper().reader();
+        JsonNode node = reader.readTree(file.contents());
+
+        assertEquals(schemaVersion.getIdentifier(), node.get("$schema").asText());
+        assertEquals("object", node.get("type").asText());
+        assertNull(node.get("properties"));
+    }
+
+    private void assertProcessSchema(String fileName, GeneratedFile file, SchemaVersion schemaVersion) throws IOException {
         assertEquals(JsonSchemaUtil.getJsonDir().resolve(fileName).toString(), file.relativePath());
         ObjectReader reader = new ObjectMapper().reader();
         JsonNode node = reader.readTree(file.contents());
         assertEquals(schemaVersion.getIdentifier(), node.get("$schema").asText());
+
+        // assert definitions
+        String definitionsPath = resolveDefinitionsProperty(schemaVersion);
+        assertEquals(3, node.get(definitionsPath).size());
+        assertPersonNode(node.get(definitionsPath).get("Person"), definitionsPath);
+        assertAddressNode(node.get(definitionsPath).get("Address"));
+        assertColorNode(node.get(definitionsPath).get("Color"));
+
+        assertEquals("object", node.get("type").asText());
+        JsonNode properties = node.get("properties");
+        assertEquals(2, properties.size());
+        JsonNode color = properties.get("color");
+        assertEquals("#/" + definitionsPath + "/Color", color.get("$ref").asText());
+        JsonNode address = properties.get("person");
+        assertEquals("#/" + definitionsPath + "/Person", address.get("$ref").asText());
+    }
+
+    private void assertTaskSchema(String fileName, GeneratedFile file, SchemaVersion schemaVersion, List<String> inputs, List<String> outputs) throws IOException {
+        assertEquals(JsonSchemaUtil.getJsonDir().resolve(fileName).toString(), file.relativePath());
+        ObjectReader reader = new ObjectMapper().reader();
+        JsonNode node = reader.readTree(file.contents());
+        assertEquals(schemaVersion.getIdentifier(), node.get("$schema").asText());
+
+        // assert definitions
+        String definitionsPath = resolveDefinitionsProperty(schemaVersion);
+        assertEquals(2, node.get(definitionsPath).size());
+        assertAddressNode(node.get(definitionsPath).get("Address"));
+        assertColorNode(node.get(definitionsPath).get("Color"));
+
         assertEquals("object", node.get("type").asText());
         JsonNode properties = node.get("properties");
         assertEquals(4, properties.size());
-        assertEquals("integer", properties.get("age").get("type").asText());
-        assertEquals("string", properties.get("name").get("type").asText());
-        JsonNode color = properties.get("color");
-        assertEquals("string", color.get("type").asText());
-        assertTrue(color.get("enum") instanceof ArrayNode);
-        ArrayNode colors = (ArrayNode) color.get("enum");
-        Set<Color> colorValues = EnumSet.noneOf(Color.class);
-        colors.forEach(x -> colorValues.add(Color.valueOf(x.asText())));
-        assertArrayEquals(Color.values(), colorValues.toArray());
-        JsonNode address = properties.get("address");
-        assertEquals("object", address.get("type").asText());
-        JsonNode addressProperties = address.get("properties");
+        assertBasicTaskField(properties, "age", "integer", inputs, outputs);
+        assertBasicTaskField(properties, "name", "string", inputs, outputs);
+        assertTaskFieldWithRef(properties, "color", "#/" + definitionsPath + "/Color", inputs, outputs);
+        assertTaskFieldWithRef(properties, "address", "#/" + definitionsPath + "/Address", inputs, outputs);
+    }
+
+    private void assertBasicTaskField(JsonNode properties, String name, String type, List<String> inputs, List<String> outputs) {
+        JsonNode property = properties.get(name);
+        assertEquals(type, property.get("type").asText());
+        if (inputs.contains(name)) {
+            checkNodeHasInputField(property);
+        }
+        if (outputs.contains(name)) {
+            checkNodeHasOutputField(property);
+        }
+    }
+
+    private void checkNodeHasInputField(JsonNode node) {
+        assertTrue(node.has(INPUT));
+        assertTrue(node.get(INPUT).asBoolean());
+    }
+
+    private void checkNodeHasOutputField(JsonNode node) {
+        assertTrue(node.has(OUTPUT));
+        assertTrue(node.get(OUTPUT).asBoolean());
+    }
+
+    private void assertChildAssignmentNode(ArrayNode arrayNode, String assignment) {
+        Iterable<JsonNode> iterable = () -> arrayNode.iterator();
+        JsonNode childAssignment = StreamSupport.stream(iterable.spliterator(), false)
+                .filter(node -> node.has(assignment))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(childAssignment);
+        assertTrue(childAssignment.get(assignment).asBoolean());
+    }
+
+    private void assertTaskFieldWithRef(JsonNode properties, String name, String refPath, List<String> inputs, List<String> outputs) {
+        JsonNode property = properties.get(name);
+        if (property.has(ALL_OF)) {
+            ArrayNode allOf = (ArrayNode) property.get(ALL_OF);
+            assertEquals(refPath, allOf.get(0).get(REF).asText());
+            if (inputs.contains(name)) {
+                assertChildAssignmentNode(allOf, INPUT);
+            }
+            if (outputs.contains(name)) {
+                assertChildAssignmentNode(allOf, OUTPUT);
+            }
+        } else {
+            assertEquals(refPath, property.get("$ref").asText());
+            if (inputs.contains(name)) {
+                checkNodeHasInputField(property);
+            }
+            if (outputs.contains(name)) {
+                checkNodeHasOutputField(property);
+            }
+        }
+
+    }
+
+    private void assertPersonNode(JsonNode personNode, String definitionsPath) {
+        assertNotNull(personNode);
+
+        assertEquals("object", personNode.get("type").asText());
+        JsonNode personProperties = personNode.get("properties");
+        assertEquals("string", personProperties.get("name").get("type").asText());
+        assertEquals("integer", personProperties.get("age").get("type").asText());
+        assertEquals("#/" + definitionsPath + "/Address", personProperties.get("address").get(REF).asText());
+        assertEquals("#/" + definitionsPath + "/Person", personProperties.get("parent").get(REF).asText());
+    }
+
+    private void assertAddressNode(JsonNode addressNode) {
+        assertNotNull(addressNode);
+
+        assertEquals("object", addressNode.get("type").asText());
+        JsonNode addressProperties = addressNode.get("properties");
         assertEquals("string", addressProperties.get("street").get("type").asText());
         JsonNode dateNode = addressProperties.get("date");
         assertEquals("string", dateNode.get("type").asText());
         assertEquals("date-time", dateNode.get("format").asText());
+    }
+
+    private void assertColorNode(JsonNode colorNode) {
+        assertNotNull(colorNode);
+
+        assertEquals("string", colorNode.get("type").asText());
+        assertTrue(colorNode.get("enum") instanceof ArrayNode);
+        ArrayNode colors = (ArrayNode) colorNode.get("enum");
+        Set<Color> colorValues = EnumSet.noneOf(Color.class);
+        colors.forEach(x -> colorValues.add(Color.valueOf(x.asText())));
+        assertArrayEquals(Color.values(), colorValues.toArray());
+    }
+
+    private String resolveDefinitionsProperty(SchemaVersion schemaVersion) {
+        return SchemaVersion.DRAFT_2019_09.equals(schemaVersion) ? "$defs" : "definitions";
     }
 }

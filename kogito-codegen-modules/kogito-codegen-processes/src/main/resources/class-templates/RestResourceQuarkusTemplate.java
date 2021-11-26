@@ -86,6 +86,14 @@ public class $Type$Resource {
     }
 
     @GET
+    @Path("schema")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> getResourceSchema_$name$() {
+        return JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id());
+    }
+
+
+    @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public $Type$Output getResource_$name$(@PathParam("id") String id) {

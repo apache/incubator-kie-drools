@@ -29,6 +29,7 @@ import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.ProcessInput;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -40,6 +41,7 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithName;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -58,6 +60,7 @@ public class ProcessToExecModelGenerator {
     private static final String PROCESS_CLASS_SUFFIX = "Process";
     private static final String MODEL_CLASS_SUFFIX = "Model";
     private static final String PROCESS_TEMPLATE_FILE = "/class-templates/ProcessTemplate.java";
+    private static final String PROCESS_NAME_PARAM = "processName";
 
     private final ProcessVisitor processVisitor;
 
@@ -122,7 +125,8 @@ public class ProcessToExecModelGenerator {
                 inputVars,
                 true,
                 "/class-templates/ModelNoIDTemplate.java",
-                new AddMethodConsumer("toModel", modelName, inputVars, false));
+                new AddMethodConsumer("toModel", modelName, inputVars, false),
+                new AddProcessAnnotation(process.getId()));
     }
 
     public ModelMetaData generateOutputModel(WorkflowProcess process) {
@@ -198,6 +202,24 @@ public class ProcessToExecModelGenerator {
             }
             body.addStatement(new ReturnStmt(returnName));
             method.setBody(body);
+        }
+    }
+
+    private static class AddProcessAnnotation implements Consumer<CompilationUnit> {
+
+        private final String processId;
+
+        public AddProcessAnnotation(String processId) {
+            this.processId = processId;
+        }
+
+        @Override
+        public void accept(CompilationUnit cu) {
+            ClassOrInterfaceDeclaration clazz = cu.findFirst(ClassOrInterfaceDeclaration.class)
+                    .orElseThrow(() -> new NoSuchElementException("Cannot find class declaration in the template"));
+
+            clazz.addAndGetAnnotation(ProcessInput.class)
+                    .addPair(PROCESS_NAME_PARAM, new StringLiteralExpr(processId));
         }
     }
 

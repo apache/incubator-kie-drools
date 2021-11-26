@@ -82,6 +82,11 @@ public class $Type$Resource {
         return processService.getProcessInstanceOutput(process);
     }
 
+    @GetMapping(value = "/schema", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> getResourceSchema_$name$() {
+        return JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id());
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public $Type$Output getResource_$name$(@PathVariable("id") String id) {
         return processService.findById(process, id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
