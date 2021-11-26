@@ -46,6 +46,10 @@
       <artifactId>quarkus-vertx-graphql</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.graphql-java</groupId>
+      <artifactId>graphql-java-extended-scalars</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-messaging-api</artifactId>
     </dependency>

@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import graphql.Scalars;
+import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLSchema;
@@ -81,7 +82,7 @@ public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, Graph
                         type = Scalars.GraphQLInt;
                         break;
                     case "java.lang.Long":
-                        type = Scalars.GraphQLLong;
+                        type = ExtendedScalars.GraphQLLong;
                         break;
                     case "java.lang.String":
                     case "java.util.Date":

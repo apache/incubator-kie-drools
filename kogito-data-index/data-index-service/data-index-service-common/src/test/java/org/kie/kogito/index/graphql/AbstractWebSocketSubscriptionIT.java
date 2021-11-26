@@ -63,9 +63,6 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
     public ProtobufService protobufService;
 
     @Inject
-    public MockGraphQLInstrumentation instrumentation;
-
-    @Inject
     public Vertx vertx;
 
     @Inject
@@ -224,7 +221,6 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
         CompletableFuture<JsonObject> cf = new CompletableFuture<>();
         CompletableFuture<Void> wsFuture = new CompletableFuture<>();
         JsonObject terminate = new JsonObject().put("type", CONNECTION_TERMINATE.getText());
-        instrumentation.setFuture(wsFuture);
         httpClient.webSocket("/graphql", websocketRes -> {
             if (websocketRes.succeeded()) {
                 WebSocket webSocket = websocketRes.result();
@@ -242,7 +238,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                                 .put("id", String.valueOf(counter.getAndIncrement()))
                                 .put("type", START.getText())
                                 .put("payload", new JsonObject().put("query", subscription));
-                        webSocket.write(init.toBuffer());
+                        webSocket.write(init.toBuffer()).onSuccess(v -> wsFuture.complete(null));
                     } else if (CONNECTION_KEEP_ALIVE.getText().equals(type)) {
                         //Ignore
                     } else {
