@@ -27,7 +27,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -79,12 +78,12 @@ public class KafkaTestClient implements ApplicationListener<ConsumerStartedEvent
         this.producer = producer;
     }
 
-    private ConsumerFactory<String, String> consumerFactory() {
+    private ConsumerFactory<String, String> consumerFactory(String host) {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
         config.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, host);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         config.put(ConsumerConfig.GROUP_ID_CONFIG, KafkaTestClient.class.getName() + "Consumer");
@@ -102,16 +101,14 @@ public class KafkaTestClient implements ApplicationListener<ConsumerStartedEvent
     }
 
     public void consume(Collection<String> topics, Consumer<String> callback) {
+        consume(topics, callback, kafkaBootstrapServers);
+    }
+
+    public void consume(Collection<String> topics, Consumer<String> callback, String host) {
         if (container == null) {
             ContainerProperties containerProperties = new ContainerProperties(topics.toArray(new String[] {}));
-            container = new KafkaMessageListenerContainer(consumerFactory(), containerProperties);
-            container.setupMessageListener(new MessageListener<String, String>() {
-
-                @Override
-                public void onMessage(ConsumerRecord<String, String> record) {
-                    callback.accept(record.value());
-                }
-            });
+            container = new KafkaMessageListenerContainer(consumerFactory(host), containerProperties);
+            container.setupMessageListener((MessageListener<String, String>) record -> callback.accept(record.value()));
             container.setBeanName("kafka-test-client");
             container.start();
             try {

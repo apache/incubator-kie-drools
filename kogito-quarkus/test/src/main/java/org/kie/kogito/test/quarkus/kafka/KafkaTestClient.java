@@ -49,13 +49,13 @@ public class KafkaTestClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTestClient.class);
     private static final int TIMEOUT = 10;
 
-    private final KafkaProducer<String, String> producer;
-    private final KafkaConsumer<String, String> consumer;
+    private KafkaProducer<String, String> producer;
+    private KafkaConsumer<String, String> consumer;
     private Vertx vertx = Vertx.vertx();
+    private String hosts;
 
     public KafkaTestClient(String hosts) {
-        this.producer = createDefaultProducer(hosts);
-        this.consumer = createDefaultConsumer(hosts);
+        this.hosts = hosts;
     }
 
     public KafkaTestClient(KafkaProducer<String, String> producer, KafkaConsumer<String, String> consumer) {
@@ -85,9 +85,14 @@ public class KafkaTestClient {
     }
 
     public void consume(Set<String> topics, Consumer<String> callback) {
-        waitForCompletion(consumer.unsubscribe());
+        if (consumer == null) {
+            consumer = createDefaultConsumer(hosts);
+        } else {
+            waitForCompletion(consumer.unsubscribe());
+        }
         consumer.handler(record -> callback.accept(record.value()));
-        waitForCompletion(consumer.subscribe(topics));
+        waitForCompletion(consumer.subscribe(topics)
+                .onSuccess(v -> LOGGER.debug("Kafka consumer subscribed to topic(s): {}", topics)));
     }
 
     public void consume(String topic, Consumer<String> callback) {
@@ -95,6 +100,9 @@ public class KafkaTestClient {
     }
 
     public void produce(String data, String topic) {
+        if (producer == null) {
+            producer = createDefaultProducer(hosts);
+        }
         LOGGER.info("Publishing event with data {} for topic {}", data, topic);
         producer.send(KafkaProducerRecord.create(topic, data), this::produceCallback);
         producer.flush();
@@ -109,8 +117,12 @@ public class KafkaTestClient {
     }
 
     public void shutdown() {
-        waitForCompletion(producer.close());
-        waitForCompletion(consumer.close());
+        if (producer != null) {
+            waitForCompletion(producer.close());
+        }
+        if (consumer != null) {
+            waitForCompletion(consumer.close());
+        }
     }
 
     public void waitForCompletion(Future future) {
