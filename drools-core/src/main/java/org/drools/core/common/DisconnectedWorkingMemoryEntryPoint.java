@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
@@ -123,7 +123,7 @@ public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPo
     }
 
     @Override
-    public InternalKnowledgeBase getKnowledgeBase() {
+    public RuleBase getKnowledgeBase() {
         return null;
     }
 

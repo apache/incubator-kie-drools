@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.command.Command;

@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.util.IoUtils;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.definition.KiePackage;

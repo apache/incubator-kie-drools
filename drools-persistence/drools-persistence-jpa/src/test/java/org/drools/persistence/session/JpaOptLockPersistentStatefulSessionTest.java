@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;

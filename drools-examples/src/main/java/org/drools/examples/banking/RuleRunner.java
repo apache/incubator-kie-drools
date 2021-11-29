@@ -18,7 +18,7 @@ package org.drools.examples.banking;
 
 import java.util.Collection;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;

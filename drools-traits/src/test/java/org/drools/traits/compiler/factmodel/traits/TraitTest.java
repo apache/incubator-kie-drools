@@ -42,7 +42,7 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.reteoo.LeftTuple;

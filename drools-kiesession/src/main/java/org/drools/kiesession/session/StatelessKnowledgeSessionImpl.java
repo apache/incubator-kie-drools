@@ -36,7 +36,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.runtime.impl.ExecutionResultImpl;

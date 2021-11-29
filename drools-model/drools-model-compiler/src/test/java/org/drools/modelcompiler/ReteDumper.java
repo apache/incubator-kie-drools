@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;

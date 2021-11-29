@@ -32,7 +32,7 @@ import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.BetaMemory;

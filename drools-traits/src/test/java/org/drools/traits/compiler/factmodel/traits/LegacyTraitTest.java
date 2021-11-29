@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;

@@ -25,7 +25,7 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;

@@ -16,7 +16,7 @@
 
 package org.kie.dmn.core.runtime;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.dmn.api.core.DMNRuntime;

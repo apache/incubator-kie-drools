@@ -38,7 +38,7 @@ import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;

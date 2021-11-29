@@ -27,8 +27,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -59,10 +57,10 @@ import org.kie.api.runtime.KieSession;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -83,7 +81,7 @@ public class PropertySpecificTest {
         return getSettableProperties(workingMemory.getKnowledgeBase(), objectTypeNode);
     }
 
-    public static List<String> getSettableProperties( InternalKnowledgeBase kBase, ObjectTypeNode objectTypeNode ) {
+    public static List<String> getSettableProperties( RuleBase kBase, ObjectTypeNode objectTypeNode ) {
         return PropertySpecificUtil.getAccessibleProperties( kBase, getNodeClass( objectTypeNode ) );
     }
 

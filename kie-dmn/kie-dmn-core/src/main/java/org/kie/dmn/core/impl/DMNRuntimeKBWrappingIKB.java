@@ -31,7 +31,7 @@ import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;

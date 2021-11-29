@@ -24,7 +24,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.api.PersistenceContextManager;
 import org.drools.persistence.util.DroolsPersistenceUtil;

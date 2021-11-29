@@ -23,7 +23,7 @@ import java.util.Collections;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;

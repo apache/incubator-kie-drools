@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ScoreCardConfigurationImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;

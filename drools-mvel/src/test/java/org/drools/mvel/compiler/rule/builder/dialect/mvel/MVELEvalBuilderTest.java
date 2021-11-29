@@ -31,7 +31,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;

@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.UpdateContext;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 
 public class MockTupleSource extends LeftTupleSource {

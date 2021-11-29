@@ -20,17 +20,17 @@ import java.util.EventObject;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 
 public class KnowledgeBaseEvent extends EventObject {
 
     private static final long serialVersionUID = 510l;
-    private final InternalKnowledgeBase kBase;
+    private final RuleBase kBase;
     private final InternalKnowledgePackage pkg;
-    private final RuleImpl              rule;
-    private final String                function;
+    private final RuleImpl rule;
+    private final String function;
 
-    public KnowledgeBaseEvent(final InternalKnowledgeBase kBase) {
+    public KnowledgeBaseEvent(final RuleBase kBase) {
         super( kBase );
         this.kBase = kBase;
         this.pkg = null;
@@ -38,7 +38,7 @@ public class KnowledgeBaseEvent extends EventObject {
         this.function = null;
     }
 
-    public KnowledgeBaseEvent(final InternalKnowledgeBase kBase,
+    public KnowledgeBaseEvent(final RuleBase kBase,
                               final InternalKnowledgePackage pkg) {
         super( kBase );
         this.kBase = kBase;
@@ -47,7 +47,7 @@ public class KnowledgeBaseEvent extends EventObject {
         this.function = null;
     }
 
-    public KnowledgeBaseEvent(final InternalKnowledgeBase kBase,
+    public KnowledgeBaseEvent(final RuleBase kBase,
                               final InternalKnowledgePackage pkg,
                               final RuleImpl rule) {
         super( kBase );
@@ -57,7 +57,7 @@ public class KnowledgeBaseEvent extends EventObject {
         this.function = null;
     }
 
-    public KnowledgeBaseEvent(final InternalKnowledgeBase kBase,
+    public KnowledgeBaseEvent(final RuleBase kBase,
                               final InternalKnowledgePackage pkg,
                               final String function) {
         super( kBase );
@@ -67,7 +67,7 @@ public class KnowledgeBaseEvent extends EventObject {
         this.function = function;
     }
 
-    public InternalKnowledgeBase getKnowledgeBase() {
+    public RuleBase getKnowledgeBase() {
         return this.kBase;
     }
 

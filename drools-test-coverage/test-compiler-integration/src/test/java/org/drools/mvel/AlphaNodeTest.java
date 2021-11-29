@@ -23,7 +23,7 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.reteoo.RuntimeComponentFactory;

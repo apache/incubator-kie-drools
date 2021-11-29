@@ -32,11 +32,10 @@ import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
@@ -72,10 +71,6 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
 
     public NamedEntryPointFactory getNamedEntryPointFactory() {
         return new DefaultNamedEntryPointFactory();
-    }
-
-    public WorkingMemoryFactory getWorkingMemoryFactory() {
-        return wmFactory;
     }
 
     public PropagationContextFactory getPropagationContextFactory() {
@@ -117,9 +112,10 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return new DefaultKnowledgeHelper( reteEvaluator );
     }
 
-    public InternalWorkingMemory createStatefulSession(InternalKnowledgeBase kbase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool) {
+    public InternalWorkingMemory createStatefulSession(RuleBase ruleBase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool) {
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) ruleBase;
         if (fromPool || kbase.getSessionPool() == null) {
-            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) RuntimeComponentFactory.get().getWorkingMemoryFactory()
+            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) getWorkingMemoryFactory()
                     .createWorkingMemory( kbase.nextWorkingMemoryCounter(), kbase, sessionConfig, environment );
             return internalInitSession( kbase, sessionConfig, session );
         }
@@ -133,12 +129,12 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return session;
     }
 
-    public StatelessKieSession createStatelessSession(InternalKnowledgeBase kbase, KieSessionConfiguration conf) {
-        return new StatelessKnowledgeSessionImpl( kbase, conf );
+    public StatelessKieSession createStatelessSession(RuleBase ruleBase, KieSessionConfiguration conf) {
+        return new StatelessKnowledgeSessionImpl( (InternalKnowledgeBase) ruleBase, conf );
     }
 
-    public KieSessionsPool createSessionsPool(InternalKnowledgeBase kBase, int initialSize) {
-        return new KieSessionsPoolImpl(kBase, initialSize);
+    public KieSessionsPool createSessionsPool(RuleBase ruleBase, int initialSize) {
+        return new KieSessionsPoolImpl((InternalKnowledgeBase) ruleBase, initialSize);
     }
 
     public KieSessionMonitoringImpl createStatefulSessionMonitor(DroolsManagementAgent.CBSKey cbsKey) {
@@ -147,5 +143,9 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
 
     public StatelessKieSessionMonitoringImpl createStatelessSessionMonitor(DroolsManagementAgent.CBSKey cbsKey) {
         return new StatelessKieSessionMonitoringImpl( cbsKey.getKcontainerId(), cbsKey.getKbaseId(), cbsKey.getKsessionName() );
+    }
+
+    protected WorkingMemoryFactory getWorkingMemoryFactory() {
+        return wmFactory;
     }
 }

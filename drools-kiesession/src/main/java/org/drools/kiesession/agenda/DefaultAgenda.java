@@ -45,7 +45,7 @@ import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
@@ -138,15 +138,15 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     // ------------------------------------------------------------
     public DefaultAgenda() { }
 
-    public DefaultAgenda(InternalKnowledgeBase kBase) {
+    public DefaultAgenda(RuleBase kBase) {
         this( kBase, true );
     }
 
-    public DefaultAgenda(InternalKnowledgeBase kBase, boolean initMain) {
+    public DefaultAgenda(RuleBase kBase, boolean initMain) {
         this(kBase, initMain, new ConcurrentExecutionStateMachine());
     }
 
-    DefaultAgenda(InternalKnowledgeBase kBase,
+    DefaultAgenda(RuleBase kBase,
                   boolean initMain,
                   ExecutionStateMachine executionStateMachine) {
         this.agendaGroupsManager = AgendaGroupsManager.create(kBase, initMain);

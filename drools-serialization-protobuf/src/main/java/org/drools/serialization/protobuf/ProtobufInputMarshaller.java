@@ -51,6 +51,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.kiesession.factory.PhreakWorkingMemoryFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ActivationKey;
 import org.drools.core.marshalling.impl.KieSessionInitializer;
@@ -196,7 +197,7 @@ public class ProtobufInputMarshaller {
 
         InternalAgenda agenda = RuntimeComponentFactory.get().getAgendaFactory().createAgenda( context.getKnowledgeBase(), false );
 
-        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) RuntimeComponentFactory.get().getWorkingMemoryFactory()
+        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) PhreakWorkingMemoryFactory.getInstance()
                 .createWorkingMemory( id, context.getKnowledgeBase(), handleFactory,
                                       1, // pCTx starts at 1, as InitialFact is 0
                                       config, agenda, environment );

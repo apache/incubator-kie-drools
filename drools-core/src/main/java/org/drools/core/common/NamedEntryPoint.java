@@ -31,7 +31,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -69,7 +69,7 @@ public class NamedEntryPoint
 
     protected ObjectStore objectStore;
 
-    protected transient InternalKnowledgeBase kBase;
+    protected transient RuleBase ruleBase;
 
     protected EntryPointId     entryPoint;
     protected EntryPointNode entryPointNode;
@@ -96,11 +96,11 @@ public class NamedEntryPoint
         this.entryPoint = entryPoint;
         this.entryPointNode = entryPointNode;
         this.reteEvaluator = reteEvaluator;
-        this.kBase = this.reteEvaluator.getKnowledgeBase();
+        this.ruleBase = this.reteEvaluator.getKnowledgeBase();
         this.lock = reteEvaluator.getSessionConfiguration().isThreadSafe() ? new ReentrantLock() : null;
         this.handleFactory = this.reteEvaluator.getFactHandleFactory();
 
-        RuleBaseConfiguration conf = this.kBase.getConfiguration();
+        RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
         this.objectStore = isEqualityBehaviour || conf.isMutabilityEnabled() ?
@@ -266,7 +266,7 @@ public class NamedEntryPoint
                        final RuleImpl rule,
                        ObjectTypeConf typeConf,
                        PropagationContext pctx) {
-        this.kBase.executeQueuedActions();
+        this.ruleBase.executeQueuedActions();
 
         this.objectStore.addHandle( handle, object );
         this.entryPointNode.assertObject( handle, pctx, typeConf, this.reteEvaluator );
@@ -302,7 +302,7 @@ public class NamedEntryPoint
                        String... modifiedProperties) {
         Class modifiedClass = object.getClass();
 
-        TypeDeclaration typeDeclaration = kBase.getOrCreateExactTypeDeclaration( modifiedClass );
+        TypeDeclaration typeDeclaration = ruleBase.getOrCreateExactTypeDeclaration( modifiedClass );
         BitMask mask = typeDeclaration.isPropertyReactive() ?
                 calculatePositiveMask( modifiedClass, asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
                 AllSetBitMask.get();
@@ -327,7 +327,7 @@ public class NamedEntryPoint
         try {
             this.reteEvaluator.startOperation();
             try {
-                this.kBase.executeQueuedActions();
+                this.ruleBase.executeQueuedActions();
 
                 // the handle might have been disconnected, so reconnect if it has
                 if (handle.isDisconnected()) {
@@ -439,7 +439,7 @@ public class NamedEntryPoint
         try {
             this.reteEvaluator.startOperation();
             try {
-                this.kBase.executeQueuedActions();
+                this.ruleBase.executeQueuedActions();
 
                 InternalFactHandle handle = (InternalFactHandle) factHandle;
 
@@ -621,8 +621,8 @@ public class NamedEntryPoint
         return entryPointNode.getTypeConfReg();
     }
 
-    public InternalKnowledgeBase getKnowledgeBase() {
-        return kBase;
+    public RuleBase getKnowledgeBase() {
+        return ruleBase;
     }
 
     public FactHandle getFactHandle(Object object) {

@@ -73,7 +73,7 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.impl.EntryPointsManager;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;

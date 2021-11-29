@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.SegmentMemory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -34,11 +34,11 @@ public class ConcurrentNodeMemories implements NodeMemories {
     private AtomicReferenceArray<Memory> memories;
 
     private final Lock lock = new ReentrantLock();
-    private final InternalKnowledgeBase kBase;
+    private final RuleBase ruleBase;
 
-    public ConcurrentNodeMemories( InternalKnowledgeBase kBase ) {
-        this.kBase = kBase;
-        this.memories = new AtomicReferenceArray<>( this.kBase.getMemoryCount() );
+    public ConcurrentNodeMemories( RuleBase ruleBase) {
+        this.ruleBase = ruleBase;
+        this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
     }
 
     public void clearNodeMemory( MemoryFactory node ) {
@@ -48,11 +48,11 @@ public class ConcurrentNodeMemories implements NodeMemories {
     }
     
     public void clear() {
-        this.memories = new AtomicReferenceArray<>( this.kBase.getMemoryCount() );
+        this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
     }
 
     public void resetAllMemories(StatefulKnowledgeSession session) {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) session.getKieBase();
+        RuleBase kBase = (RuleBase) session.getKieBase();
         Set<SegmentMemory> smemSet = new HashSet<>();
 
         for (int i = 0; i < memories.length(); i++) {
@@ -66,7 +66,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
         smemSet.forEach(smem -> resetSegmentMemory(session, kBase, smem));
     }
 
-    private void resetSegmentMemory(StatefulKnowledgeSession session, InternalKnowledgeBase kBase, SegmentMemory smem) {
+    private void resetSegmentMemory(StatefulKnowledgeSession session, RuleBase kBase, SegmentMemory smem) {
         if (smem != null) {
             smem.reset(kBase.getSegmentPrototype(smem));
             if (smem.isSegmentLinked()) {
@@ -106,7 +106,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
             // it was not created yet
             Memory memory = this.memories.get( node.getMemoryId() );
             if( memory == null ) {
-                memory = node.createMemory( this.kBase.getConfiguration(), reteEvaluator );
+                memory = node.createMemory( this.ruleBase.getConfiguration(), reteEvaluator );
 
                 if( !this.memories.compareAndSet( node.getMemoryId(), null, memory ) ) {
                     memory = this.memories.get( node.getMemoryId() );
@@ -128,7 +128,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
             this.lock.lock();
             if( node.getMemoryId() >= this.memories.length() ) {
                 // adding some buffer for new nodes, so that we reduce array copies
-                int size = Math.max( this.kBase.getMemoryCount(), node.getMemoryId() + 32 );
+                int size = Math.max( this.ruleBase.getMemoryCount(), node.getMemoryId() + 32 );
                 AtomicReferenceArray<Memory> newMem = new AtomicReferenceArray<>( size );
                 for ( int i = 0; i < this.memories.length(); i++ ) {
                     newMem.set( i,

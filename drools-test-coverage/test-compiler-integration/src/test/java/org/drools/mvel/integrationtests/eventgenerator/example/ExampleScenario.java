@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.mvel.integrationtests.eventgenerator.SimpleEventGenerator;

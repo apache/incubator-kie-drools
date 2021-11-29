@@ -19,7 +19,7 @@ package org.drools.mvel.integrationtests;
 import java.util.Collection;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSink;

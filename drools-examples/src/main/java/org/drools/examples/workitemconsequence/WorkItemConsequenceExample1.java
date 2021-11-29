@@ -15,7 +15,7 @@
  */
 package org.drools.examples.workitemconsequence;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;

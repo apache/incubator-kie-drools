@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;

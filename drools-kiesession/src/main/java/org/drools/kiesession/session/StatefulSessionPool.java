@@ -18,7 +18,7 @@ package org.drools.kiesession.session;
 
 import java.util.function.Supplier;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.util.ScalablePool;
 
 public class StatefulSessionPool {

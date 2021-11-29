@@ -25,7 +25,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;

@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;

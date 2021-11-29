@@ -26,7 +26,7 @@ import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;

@@ -13,11 +13,13 @@
  * limitations under the License.
 */
 
-package org.drools.core.impl;
+package org.drools.kiesession.rulebase;
 
 import java.util.Collection;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKieContainer;
+import org.drools.core.impl.RuleBase;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;

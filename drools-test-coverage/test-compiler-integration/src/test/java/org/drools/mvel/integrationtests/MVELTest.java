@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.AlphaNodeFieldConstraint;

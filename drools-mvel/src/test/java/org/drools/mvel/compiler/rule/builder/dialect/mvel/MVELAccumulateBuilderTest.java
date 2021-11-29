@@ -27,7 +27,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.FromNodeLeftTuple;
 import org.drools.core.reteoo.InitialFactImpl;

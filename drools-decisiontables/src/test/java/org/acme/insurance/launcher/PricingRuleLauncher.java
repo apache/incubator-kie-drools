@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;

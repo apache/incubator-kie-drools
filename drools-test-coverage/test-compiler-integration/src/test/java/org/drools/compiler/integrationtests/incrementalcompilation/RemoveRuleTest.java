@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;

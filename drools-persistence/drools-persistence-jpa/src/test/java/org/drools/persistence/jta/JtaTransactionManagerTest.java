@@ -26,7 +26,7 @@ import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.api.TransactionManager;

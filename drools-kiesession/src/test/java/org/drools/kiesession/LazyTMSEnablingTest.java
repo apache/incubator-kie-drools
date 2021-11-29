@@ -16,7 +16,7 @@
 package org.drools.kiesession;
 
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;

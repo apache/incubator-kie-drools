@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
@@ -43,7 +43,6 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.kie.api.KieBase;
 
 public class PhreakActivationIterator
     implements
@@ -58,8 +57,8 @@ public class PhreakActivationIterator
     }
 
     private PhreakActivationIterator(ReteEvaluator reteEvaluator,
-                                     KieBase kbase) {
-        agendaItems = collectAgendaItems((InternalKnowledgeBase) kbase, reteEvaluator);
+                                     RuleBase kbase) {
+        agendaItems = collectAgendaItems(kbase, reteEvaluator);
         agendaItemIter =  agendaItems.iterator();
     }
 
@@ -77,7 +76,7 @@ public class PhreakActivationIterator
     }
 
 
-    public static List<RuleTerminalNode> populateRuleTerminalNodes(InternalKnowledgeBase kbase, Set<RuleTerminalNode>  nodeSet) {
+    public static List<RuleTerminalNode> populateRuleTerminalNodes(RuleBase kbase, Set<RuleTerminalNode>  nodeSet) {
         Collection<TerminalNode[]> nodesWithArray = kbase.getReteooBuilder().getTerminalNodes().values();
 
         for (TerminalNode[] nodeArray : nodesWithArray) {
@@ -91,11 +90,11 @@ public class PhreakActivationIterator
         return Arrays.asList(nodeSet.toArray(new RuleTerminalNode[nodeSet.size()]));
     }
 
-    public static List<AgendaItem> collectAgendaItems(InternalKnowledgeBase kbase, ReteEvaluator reteEvaluator) {
-        Set<RuleTerminalNode> nodeSet = new HashSet<RuleTerminalNode>();
+    public static List<AgendaItem> collectAgendaItems(RuleBase kbase, ReteEvaluator reteEvaluator) {
+        Set<RuleTerminalNode> nodeSet = new HashSet<>();
         List<RuleTerminalNode> nodeList = populateRuleTerminalNodes(kbase, nodeSet);
 
-        List<AgendaItem> agendaItems = new ArrayList<AgendaItem>();
+        List<AgendaItem> agendaItems = new ArrayList<>();
         for ( RuleTerminalNode rtn : nodeList ) {
             if ( !nodeSet.contains(rtn) ) {
                 // this node has already been processed

@@ -18,7 +18,7 @@ package org.drools.kiesession.agenda;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.PropagationContext;
 
@@ -26,7 +26,7 @@ public class PartitionedDefaultAgenda extends DefaultAgenda {
 
     private final int partition;
 
-    PartitionedDefaultAgenda(InternalKnowledgeBase kBase,
+    PartitionedDefaultAgenda(RuleBase kBase,
                              boolean initMain,
                              ExecutionStateMachine executionStateMachine,
                              int partition) {

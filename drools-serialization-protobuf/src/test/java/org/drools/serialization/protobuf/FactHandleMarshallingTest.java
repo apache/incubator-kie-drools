@@ -29,7 +29,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;

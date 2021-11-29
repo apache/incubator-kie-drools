@@ -19,7 +19,6 @@ package org.drools.mvel.integrationtests;
 import java.util.Collection;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
@@ -72,7 +71,7 @@ public class NodePositionInPathTest {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         
-        ReteDumper.dumpRete( ( (InternalKnowledgeBase) kbase ) );
+        ReteDumper.dumpRete( ( (RuleBase) kbase ) );
 
         Rete rete = ( (RuleBase) kbase ).getRete();
         LeftInputAdapterNode liaNode = null;

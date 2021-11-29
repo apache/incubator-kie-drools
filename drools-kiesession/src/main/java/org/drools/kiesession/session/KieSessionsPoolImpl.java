@@ -17,7 +17,7 @@
 package org.drools.kiesession.session;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;

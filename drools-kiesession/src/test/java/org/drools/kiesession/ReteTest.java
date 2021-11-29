@@ -28,7 +28,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;

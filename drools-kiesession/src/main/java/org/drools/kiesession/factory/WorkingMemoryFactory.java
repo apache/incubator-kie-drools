@@ -13,11 +13,13 @@
  * limitations under the License.
 */
 
-package org.drools.core.common;
+package org.drools.kiesession.factory;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.FactHandleFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.runtime.Environment;
 
 public interface WorkingMemoryFactory {

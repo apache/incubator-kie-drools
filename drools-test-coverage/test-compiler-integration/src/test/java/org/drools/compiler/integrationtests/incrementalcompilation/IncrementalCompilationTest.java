@@ -37,7 +37,7 @@ import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;

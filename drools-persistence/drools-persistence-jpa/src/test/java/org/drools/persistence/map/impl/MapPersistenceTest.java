@@ -15,7 +15,7 @@
  */
 package org.drools.persistence.map.impl;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;

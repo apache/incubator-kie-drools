@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeJobContext;

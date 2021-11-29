@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.TemplateDataListener;

@@ -19,7 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.junit.Assert;

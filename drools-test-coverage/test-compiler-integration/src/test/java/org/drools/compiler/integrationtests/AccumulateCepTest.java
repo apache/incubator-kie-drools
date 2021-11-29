@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;

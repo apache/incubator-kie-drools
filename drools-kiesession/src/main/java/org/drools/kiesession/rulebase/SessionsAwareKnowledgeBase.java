@@ -41,7 +41,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KieBaseUpdate;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBase;

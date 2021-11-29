@@ -62,7 +62,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.factmodel.GeneratedFact;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;

@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.core.ClockType;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;

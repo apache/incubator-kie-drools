@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterOptions;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.Rete;
 import org.kie.api.KieBase;
 import org.kie.api.conf.Option;

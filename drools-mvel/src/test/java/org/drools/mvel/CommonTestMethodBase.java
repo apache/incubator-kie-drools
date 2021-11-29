@@ -23,7 +23,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.integrationtests.SerializationHelper;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;

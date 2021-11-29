@@ -20,7 +20,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;

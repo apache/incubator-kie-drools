@@ -21,7 +21,7 @@ import java.util.Collections;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.builder.BuildContext;

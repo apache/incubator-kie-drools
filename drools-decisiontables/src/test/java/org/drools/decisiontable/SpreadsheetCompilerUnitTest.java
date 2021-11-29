@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;

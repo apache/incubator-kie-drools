@@ -62,7 +62,7 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;

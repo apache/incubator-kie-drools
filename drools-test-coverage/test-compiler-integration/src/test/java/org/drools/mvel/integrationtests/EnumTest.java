@@ -19,7 +19,7 @@ package org.drools.mvel.integrationtests;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.compiler.Triangle;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;

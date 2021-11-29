@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 

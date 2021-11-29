@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.template.model.Condition;
 import org.drools.template.model.Consequence;

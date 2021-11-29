@@ -38,7 +38,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
@@ -460,7 +459,7 @@ public class ReteooBuilder
         }
     }
 
-    public void setRuleBase( InternalKnowledgeBase kBase ) {
+    public void setRuleBase( RuleBase kBase ) {
         this.kBase = kBase;
         this.ruleBuilder = new ReteooRuleBuilder();
     }

@@ -20,7 +20,7 @@ import org.drools.beliefs.bayes.assembler.BayesPackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;

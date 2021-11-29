@@ -65,8 +65,7 @@ import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateImpl;
 import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.core.facttemplates.FieldTemplateImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
@@ -1835,14 +1834,14 @@ public class Misc2Test {
                 "when \n" +
                 "  $packs : java.util.Collection() \n" +
                 "then \n" +
-                "   ((org.drools.core.impl.InternalKnowledgeBase)drools.getKieRuntime().getKieBase()).addPackages( $packs );" +
+                "   ((org.drools.core.impl.RuleBase)drools.getKieRuntime().getKieBase()).addPackages( $packs );" +
                 "end \n" +
                 "" +
                 "rule \"Self-change\"\n" +
                 "when\n" +
                 "  String( this == \"go\" )\n" +
                 "then\n" +
-                "   ((org.drools.core.impl.InternalKnowledgeBase)drools.getKieRuntime().getKieBase()).removeRule( \"org.drools.mvel.integrationtests\", \"React\" ); \n" +
+                "   ((org.drools.core.impl.RuleBase)drools.getKieRuntime().getKieBase()).removeRule( \"org.drools.mvel.integrationtests\", \"React\" ); \n" +
                 "end\n" +
                 "\n" +
                 "\n" +

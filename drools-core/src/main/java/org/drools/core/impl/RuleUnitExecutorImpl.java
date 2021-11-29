@@ -65,7 +65,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     private final RuleRuntimeEventSupport ruleRuntimeEventSupport = new RuleRuntimeEventSupport();
     private final AtomicLong propagationIdCounter = new AtomicLong(1);
 
-    private final InternalKnowledgeBase kBase;
+    private final RuleBase ruleBase;
     private final SessionConfiguration sessionConfiguration;
     private final FactHandleFactory handleFactory;
 
@@ -82,25 +82,25 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
     private Calendars calendars;
 
-    public RuleUnitExecutorImpl(InternalKnowledgeBase knowledgeBase) {
+    public RuleUnitExecutorImpl(RuleBase knowledgeBase) {
         this(knowledgeBase, knowledgeBase.getSessionConfiguration());
     }
 
-    public RuleUnitExecutorImpl(InternalKnowledgeBase knowledgeBase, SessionConfiguration sessionConfiguration) {
-        this.kBase = knowledgeBase;
+    public RuleUnitExecutorImpl(RuleBase knowledgeBase, SessionConfiguration sessionConfiguration) {
+        this.ruleBase = knowledgeBase;
         this.sessionConfiguration = sessionConfiguration;
 
         this.handleFactory = knowledgeBase.newFactHandleFactory();
-        this.nodeMemories = new ConcurrentNodeMemories(kBase);
+        this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
 
         this.activationsManager = new ActivationsManagerImpl(this);
         this.entryPointsManager = new EntryPointsManager(this);
         this.timerService = TimerServiceFactory.getTimerService( sessionConfiguration );
 
-        initInitialFact(kBase);
+        initInitialFact(ruleBase);
     }
 
-    private void initInitialFact(InternalKnowledgeBase kBase) {
+    private void initInitialFact(RuleBase kBase) {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
         InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
 
@@ -119,8 +119,8 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     }
 
     @Override
-    public InternalKnowledgeBase getKnowledgeBase() {
-        return kBase;
+    public RuleBase getKnowledgeBase() {
+        return ruleBase;
     }
 
     @Override

@@ -30,7 +30,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.fluent.impl.InternalExecutable;
 import org.drools.core.fluent.impl.PseudoClockRunner;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.KieSessionInitializer;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;

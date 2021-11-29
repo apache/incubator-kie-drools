@@ -25,7 +25,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.rule.TypeDeclaration;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 

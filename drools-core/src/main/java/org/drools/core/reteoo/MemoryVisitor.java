@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
@@ -68,7 +68,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     /**
      * RuleBaseImpl visits its Rete.
      */
-    public void visitReteooRuleBase(InternalKnowledgeBase kBase) {
+    public void visitReteooRuleBase(RuleBase kBase) {
         visit( kBase.getRete() );
     }
 

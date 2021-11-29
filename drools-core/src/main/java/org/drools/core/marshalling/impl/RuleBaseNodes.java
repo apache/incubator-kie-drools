@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSink;
@@ -31,13 +31,13 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
 
 public class RuleBaseNodes {
-    public static Map<Integer, BaseNode> getNodeMap(InternalKnowledgeBase kBase) {
-        Map<Integer, BaseNode> nodes = new HashMap<Integer, BaseNode>();
+    public static Map<Integer, BaseNode> getNodeMap(RuleBase kBase) {
+        Map<Integer, BaseNode> nodes = new HashMap<>();
         buildNodeMap( kBase, nodes );
         return nodes;
     }
     
-    private static void buildNodeMap(InternalKnowledgeBase kBase,
+    private static void buildNodeMap(RuleBase kBase,
                                      Map<Integer, BaseNode> nodes) {
         for ( ObjectTypeNode sink : kBase.getRete().getObjectTypeNodes() ) {
             nodes.put( sink.getId(),
@@ -48,7 +48,7 @@ public class RuleBaseNodes {
         }
     }
 
-    private static void addObjectSink(InternalKnowledgeBase kBase,
+    private static void addObjectSink(RuleBase kBase,
                                      ObjectSink sink,
                                      Map<Integer, BaseNode> nodes) {
         // we don't need to store alpha nodes, as they have no state to serialise
@@ -75,7 +75,7 @@ public class RuleBaseNodes {
         }
     }
 
-    private static void addLeftTupleSink(InternalKnowledgeBase kBase,
+    private static void addLeftTupleSink(RuleBase kBase,
                                         LeftTupleSink sink,
                                         Map<Integer, BaseNode> nodes) {
         if ( sink instanceof LeftTupleSource ) {

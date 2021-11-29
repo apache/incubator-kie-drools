@@ -27,7 +27,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.Rete;

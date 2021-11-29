@@ -37,7 +37,7 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.WorkingMemoryReteAssertAction;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.ActivationKey;
@@ -159,7 +159,7 @@ public class PersisterHelper extends MarshallingHelper {
         
         writeStrategiesIndex( context, _header );
 
-        InternalKnowledgeBase kBase = context.getKnowledgeBase();
+        RuleBase kBase = context.getKnowledgeBase();
         if (kBase != null) {
             TraitFactory traitFactory = RuntimeComponentFactory.get().getTraitFactory(kBase);
             if (traitFactory != null) {

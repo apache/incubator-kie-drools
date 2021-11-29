@@ -1,7 +1,6 @@
 package org.drools.kiesession.rulebase;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.api.KieBaseConfiguration;
 

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo;
+package org.drools.kiesession;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.test.model.DroolsTestCase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.drools.core.impl.RuleBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -46,7 +46,7 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
 
     @Before
     public void setUp() {
-        this.kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
+        this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
         pkg = new KnowledgePackageImpl("org.droos.test");
         pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));

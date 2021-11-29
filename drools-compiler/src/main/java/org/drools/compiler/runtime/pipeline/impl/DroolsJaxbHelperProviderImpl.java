@@ -62,7 +62,7 @@ import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;

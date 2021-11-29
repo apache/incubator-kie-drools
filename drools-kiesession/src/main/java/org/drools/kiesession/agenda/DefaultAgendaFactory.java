@@ -21,7 +21,7 @@ import java.io.Serializable;
 
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 
 public class DefaultAgendaFactory implements AgendaFactory, Serializable {
 
@@ -33,13 +33,13 @@ public class DefaultAgendaFactory implements AgendaFactory, Serializable {
 
     private DefaultAgendaFactory() { }
 
-    public InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain) {
+    public InternalAgenda createAgenda(RuleBase kBase, boolean initMain) {
         return kBase.getConfiguration().isMultithreadEvaluation() ?
                new CompositeDefaultAgenda( kBase, initMain ) :
                new DefaultAgenda( kBase, initMain );
     }
 
-    public InternalAgenda createAgenda(InternalKnowledgeBase kBase) {
+    public InternalAgenda createAgenda(RuleBase kBase) {
         return kBase.getConfiguration().isMultithreadEvaluation() ?
                new CompositeDefaultAgenda( kBase ) :
                new DefaultAgenda( kBase );

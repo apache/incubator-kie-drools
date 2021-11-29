@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.facttemplates.Fact;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.FactTemplateTypeConf;

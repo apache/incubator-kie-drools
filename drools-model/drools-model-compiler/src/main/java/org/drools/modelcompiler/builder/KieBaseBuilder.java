@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.model.Model;
 import org.drools.modelcompiler.CanonicalKiePackages;

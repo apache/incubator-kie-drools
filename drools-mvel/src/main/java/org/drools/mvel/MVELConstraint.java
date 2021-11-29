@@ -41,7 +41,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -345,7 +344,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private ConditionEvaluator executeJitting(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple, ConditionEvaluator mvelEvaluator) {
-        InternalKnowledgeBase kBase = reteEvaluator.getKnowledgeBase();
+        RuleBase kBase = reteEvaluator.getKnowledgeBase();
         if (!isJmxAvailable() && MemoryUtil.permGenStats.isUsageThresholdExceeded(kBase.getConfiguration().getPermGenThreshold())) {
             return mvelEvaluator;
         }
@@ -828,7 +827,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         return getMVELDialectRuntimeData(reteEvaluator.getKnowledgeBase());
     }
 
-    protected MVELDialectRuntimeData getMVELDialectRuntimeData(InternalKnowledgeBase kbase) {
+    protected MVELDialectRuntimeData getMVELDialectRuntimeData(RuleBase kbase) {
         for (String packageName : packageNames) {
             InternalKnowledgePackage pkg = kbase.getPackage(packageName);
             if (pkg != null) {

@@ -19,7 +19,7 @@ package org.drools.modelcompiler.constraints;
 import java.util.Collections;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;

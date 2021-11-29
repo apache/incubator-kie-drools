@@ -26,7 +26,6 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.reteoo.PathEndNode;
