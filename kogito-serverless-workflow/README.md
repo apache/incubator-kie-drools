@@ -5,20 +5,20 @@ Kogito is an implementation of the [CNCF Serverless Workflow Specification](http
 ## Current Status
 
 Currently, Kogito implements the [**version
-0.6**](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md) of the specification. 
+0.6**](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md) of the specification.
 
 The following table lists the current status of the features as defined by the specification:
 
 | Feature       | Status               |
 | ------------- | -------------------- |
-| States        | :first_quarter_moon: |
-| Functions     | :first_quarter_moon: |
-| Events        | :first_quarter_moon: |
-| Retries       | :new_moon:           |
-| Workflow Data | :full_moon:          |
-| Expressions   | :full_moon:          |
-| Error Handling | :full_moon:         |
-| Compensation   | :full_moon:         |
+| [States](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#State-Definition) | :first_quarter_moon: |
+| [Functions](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Function-Definition) | :first_quarter_moon: |
+| [Events](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Event-Definition) | :first_quarter_moon: |
+| [Retries](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Retry-Definition) | :construction:       |
+| [Workflow Data](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Workflow-Data) | :first_quarter_moon:          |
+| [Expressions](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Workflow-Expressions) | :full_moon:          |
+| [Error Handling](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Workflow-Error-Handling) | :full_moon:         |
+| [Compensation](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Workflow-Compensation) | :full_moon:         |
 
 Legend:
 
@@ -26,7 +26,7 @@ Legend:
 | ------------- | -------------------- |
 | :full_moon: | Fully implemented |
 | :first_quarter_moon: | Partially implemented |
-| :new_moon: | Not Implemented |
+| :construction: | To be implemented |
 
 The sections below describe in detail the current status of the supported features.
 
@@ -41,15 +41,23 @@ The sections below describe in detail the current status of the supported featur
 | Parallel      | :full_moon: |
 | SubFlow       | :full_moon: |
 | Inject        | :full_moon: |
-| ForEach       | :new_moon:  |
+| ForEach       | :construction:  |
 | Callback      | :full_moon: |
+
+#### Examples
+
+1. [Event Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-events-quarkus)
+2. [Operation Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-functions-quarkus)
+3. [Switch, Parallel, and SubFlow Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-order-processing)
+4. [Inject and Switch Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-greeting-quarkus)
+5. [Callback Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-callback-quarkus)
 
 ### Workflow Model - Functions
 
 | Function Type | Status             | Obs |
 | ------------- | ------------------ | --- |
 | rest          | :full_moon: | You can find more details about the Kogito OpenAPI implementation [here](../kogito-codegen-modules/kogito-codegen-openapi) |
-| rpc           | :new_moon:                | |
+| rpc           | :construction: | |
 | expression    | :full_moon: | Either `jq` or `jsonpath` |
 
 Additionally, even though they are not defined in the specification, Kogito also supports `sysout` and `java` functions.
@@ -185,6 +193,14 @@ Or, if you prefer you can pass only the necessary data:
 }
 ```
 
+#### Examples
+
+1. [Functions With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-functions-quarkus)
+2. [Funqy](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-functions-quarkus)
+3. [The GitHub Showcase](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-github-showcase)
+4. [Greetings Example With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-greeting-quarkus)
+5. [Temperature Conversion Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-temperature-conversion)
+
 ### Workflow Model - Events
 
 | Definition | Status             |
@@ -193,19 +209,28 @@ Or, if you prefer you can pass only the necessary data:
 | Source     | :full_moon: |
 | Type       | :full_moon: |
 | Kind       | :full_moon: |
-| Correlation | :new_moon:  |
+| Correlation | :construction:  |
 | Metadata    | :full_moon: |
+
+#### Examples
+
+1. [Events With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-events-quarkus)
+2. [Functions With Events](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-functions-events-quarkus)
+3. [Order Processing](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-order-processing)
 
 ### Workflow Model - Retries
 
-Kogito **does not**
-support [retries](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Retry-Definition) just
-yet.
+[Retries](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Retry-Definition) hasn't been
+implemented yet, but it's in our roadmap for the future versions.
+
+Alternatively to retries, you can use our [error handling](#Workflow-Error-Handling) feature.
 
 ### Workflow Data
 
-Data manipulation (filtering and transformation) on Kogito is fully implemented and can be used either `jq`
-or `jsonpath`.
+Data manipulation (transformation) on Kogito is fully implemented and can be used either `jq`
+or `jsonpath`. [State](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#state-data-filters)
+and [Action](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#action-data-filters) data
+filtering is not currently supported, but it's in our priorities for the upcoming versions.
 
 ### Workflow Expressions
 
@@ -223,12 +248,22 @@ definition:
 }
 ```
 
+#### Example
+
+1. [Expressions With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-expression-quarkus)
+
 ### Workflow Error Handling
 
 Kogito supports error handling. Find more details about this implementation on
 our [documentation](https://docs.jboss.org/kogito/release/latest/html_single/#con-serverless-workflow-error-handling_kogito-developing-decision-services).
 
+1. [Error Handling With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-error-quarkus)
+
 ### Workflow Compensation
 
 Kogito supports workflow compensation as described in
 the [specification](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Workflow-Compensation).
+
+#### Examples
+
+1. [Workflow Compensation With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-compensation-quarkus)
