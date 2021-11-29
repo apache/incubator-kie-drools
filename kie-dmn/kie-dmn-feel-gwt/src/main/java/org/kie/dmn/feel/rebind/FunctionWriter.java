@@ -36,21 +36,13 @@ public class FunctionWriter {
     }
 
     public void makeFunctionTemplate() {
-        template.append(String.format("if (obj instanceof %s) {\n", feelFunction.getClass().getName()));
+        template.append(String.format("if (obj instanceof %s) {%n", feelFunction.getClass().getName()));
 
         for (final Method declaredMethod : getInvokeMethods(feelFunction)) {
 
             final Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
             template.append("   if (");
-            template.append(String.format("args.length == %d", parameterTypes.length));
-            for (int i = 0; i < parameterTypes.length; i++) {
-                if (parameterTypes[i].isArray()) {
-                    template.append(" && args[" + i + "].getClass().isArray()");
-                } else {
-                    template.append(" && args[" + i + "] instanceof " + parameterTypes[i].getName());
-                }
-            }
-
+            appendConstraints(parameterTypes);
             template.append(") {\n");
             template.append("       return ((" + feelFunction.getClass().getName() + ") obj).invoke(");
             for (int i = 0; i < parameterTypes.length; i++) {
@@ -81,6 +73,17 @@ public class FunctionWriter {
             template.append("   return ((" + feelFunction.getClass().getName() + ") obj).invoke(args);\n");
         }
         template.append("}\n");
+    }
+
+    private void appendConstraints(final Class<?>[] parameterTypes) {
+        template.append(String.format("args.length == %d", parameterTypes.length));
+        for (int i = 0; i < parameterTypes.length; i++) {
+            if (parameterTypes[i].isArray()) {
+                template.append(" && args[" + i + "].getClass().isArray()");
+            } else {
+                template.append(" && args[" + i + "] instanceof " + parameterTypes[i].getName());
+            }
+        }
     }
 
     private String getSafeName(final Class<?> parameterType) {

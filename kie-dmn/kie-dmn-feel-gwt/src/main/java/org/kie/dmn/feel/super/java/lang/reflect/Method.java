@@ -24,7 +24,7 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class Method {
 
-    private final static MethodInvoker METHOD_INVOKER = GWT.create(MethodInvoker.class);
+    private static final MethodInvoker METHOD_INVOKER = GWT.create(MethodInvoker.class);
 
     private FunctionOverrideVariation definition;
 
@@ -33,7 +33,7 @@ public class Method {
     }
 
     public String getName() {
-        return "invoke";
+        return "invoke"; // Always invoke since that is the only method we mock with reflection.
     }
 
     public int getParameterCount() {
@@ -66,7 +66,7 @@ public class Method {
     }
 
     public Annotation[][] getParameterAnnotations() {
-        return null;
+        return new Annotation[0][0];
     }
 
     public int getModifiers() {

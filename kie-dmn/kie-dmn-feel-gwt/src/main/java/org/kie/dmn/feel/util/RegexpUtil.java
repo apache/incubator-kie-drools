@@ -50,7 +50,7 @@ public class RegexpUtil {
         return LocalDate.from(DateFunction.FEEL_DATE.parse(val));
     }
 
-    public static boolean findFindYear(final String val) { // TODO find find?
+    public static boolean findFindYear(final String val) {
         return BEGIN_YEAR.exec(val) != null;
     }
     public static List<String> split(final String string, final String delimiter, final String flags) {
