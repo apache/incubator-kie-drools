@@ -96,6 +96,7 @@ public interface RuleBase {
 
     Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
 
+    InternalKnowledgePackage[] getPackages();
     InternalKnowledgePackage getPackage(String name);
     Future<KiePackage> addPackage(KiePackage pkg );
     void addPackages( Collection<? extends KiePackage> newPkgs );
@@ -131,7 +132,6 @@ public interface RuleBase {
     void setResolvedReleaseId(ReleaseId currentReleaseId);
     String getContainerId();
     void setContainerId(String containerId);
-    void initMBeans();
 
     RuleUnitDescriptionRegistry getRuleUnitDescriptionRegistry();
     boolean hasUnits();

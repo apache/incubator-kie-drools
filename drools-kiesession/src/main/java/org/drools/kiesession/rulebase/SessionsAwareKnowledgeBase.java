@@ -46,6 +46,7 @@ import org.drools.core.impl.KieBaseUpdate;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
+import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -90,6 +91,8 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     private final AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
     private final AtomicBoolean flushingUpdates = new AtomicBoolean( false );
 
+    private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
+
     public SessionsAwareKnowledgeBase() {
         this(RuleBaseFactory.newKnowledgeBase());
     }
@@ -104,6 +107,10 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
         if (this.delegate.getConfiguration().getSessionPoolSize() > 0) {
             sessionPool = newKieSessionsPool( this.delegate.getConfiguration().getSessionPoolSize() );
         }
+    }
+
+    public KnowledgeBaseImpl getDelegate() {
+        return delegate;
     }
 
     @Override
@@ -348,7 +355,10 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public void initMBeans() {
-        delegate.initMBeans();
+        if (getConfiguration() != null && getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
+            // no further synch enforced at this point, even if other threads might not immediately see (yet) the MBean registered on JMX.
+            DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
+        }
     }
 
     @Override
@@ -526,6 +536,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
         return delegate.getProcesses();
     }
 
+    @Override
     public InternalKnowledgePackage[] getPackages() {
         return delegate.getPackages();
     }

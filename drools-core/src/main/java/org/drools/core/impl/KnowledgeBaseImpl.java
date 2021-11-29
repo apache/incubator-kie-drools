@@ -30,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -141,7 +140,6 @@ public class KnowledgeBaseImpl implements RuleBase {
 
     private ReleaseId resolvedReleaseId;
     private String containerId;
-    private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
 
     private final RuleUnitDescriptionRegistry ruleUnitDescriptionRegistry = new RuleUnitDescriptionRegistry();
 
@@ -175,14 +173,6 @@ public class KnowledgeBaseImpl implements RuleBase {
         sessionConfiguration = new SessionConfigurationImpl( null, this.config.getClassLoader(), this.config.getChainedProperties() );
 
         mutable = this.config.isMutabilityEnabled();
-    }
-
-    @Override
-    public void initMBeans() {
-        if (config != null && config.isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
-            // no further synch enforced at this point, even if other threads might not immediately see (yet) the MBean registered on JMX.
-            DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
-        }
     }
 
     private void createRulebaseId(final String id) {
@@ -466,7 +456,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             InternalKnowledgePackage pkg = this.pkgs.get( newPkg.getName() );
 
             // now merge the new package into the existing one
-            mergePackage( pkg, newPkg );
+            mergePackage( pkg, newPkg, workingMemories );
 
             // add the window declarations to the kbase
             for( WindowDeclaration window : newPkg.getWindowDeclarations().values() ) {
@@ -773,8 +763,7 @@ public class KnowledgeBaseImpl implements RuleBase {
      * but this class does some work (including combining imports, compilation data, globals,
      * and the actual Rule objects into the package).
      */
-    private void mergePackage( InternalKnowledgePackage pkg,
-                               InternalKnowledgePackage newPkg ) {
+    private void mergePackage( InternalKnowledgePackage pkg, InternalKnowledgePackage newPkg, Collection<InternalWorkingMemory> workingMemories ) {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll(newPkg.getImports());
@@ -845,7 +834,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             }
         }
         if (!rulesToBeRemoved.isEmpty()) {
-            removeRules( rulesToBeRemoved );
+            internalRemoveRules( rulesToBeRemoved, workingMemories );
         }
 
         for (Rule newRule : newPkg.getRules()) {

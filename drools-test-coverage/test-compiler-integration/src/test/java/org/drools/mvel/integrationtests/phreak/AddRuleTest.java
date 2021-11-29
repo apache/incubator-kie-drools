@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.JoinNode;
@@ -618,7 +618,7 @@ public class AddRuleTest {
 
 
     private RuleTerminalNode getRtn(String ruleName, KieBase kbase) {
-        return ( RuleTerminalNode ) ((KnowledgeBaseImpl) kbase).getReteooBuilder().getTerminalNodes(ruleName)[0];
+        return ( RuleTerminalNode ) ((RuleBase) kbase).getReteooBuilder().getTerminalNodes(ruleName)[0];
     }
 
     private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
@@ -684,7 +684,7 @@ public class AddRuleTest {
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
-        return getObjectTypeNode(((KnowledgeBaseImpl) kbase).getRete(), nodeClass);
+        return getObjectTypeNode(((RuleBase) kbase).getRete(), nodeClass);
     }
 
     public ObjectTypeNode getObjectTypeNode(Rete rete, Class<?> nodeClass) {

@@ -20,9 +20,9 @@ import java.util.Collections;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.BaseModelTest;
 import org.drools.mvel.MVELConstraint;
@@ -93,7 +93,7 @@ public class ConstraintEvaluationExceptionTest extends BaseModelTest {
         } else {
             mvelConstraint = new MVELConstraint("com.example", constraint, null, null, null, null, null);
 
-            InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
+            InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
             BuildContext buildContext = new BuildContext(kBase, Collections.emptyList());
             RuleImpl ruleImpl = new RuleImpl(ruleName);
             Resource resource = new ByteArrayResource();
@@ -112,7 +112,7 @@ public class ConstraintEvaluationExceptionTest extends BaseModelTest {
             // in non-exec-model, node sharing triggers merging
             MVELConstraint otherMvelConstraint = new MVELConstraint("com.example", mvelConstraint.getExpression(), null, null, null, null, null);
 
-            InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
+            InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
             BuildContext buildContext = new BuildContext(kBase, Collections.emptyList());
             RuleImpl ruleImpl = new RuleImpl(ruleName);
             Resource resource = new ByteArrayResource();

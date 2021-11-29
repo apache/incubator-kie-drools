@@ -23,8 +23,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NodeMemories;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -32,6 +31,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.spi.Tuple;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.AFact;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
@@ -223,7 +223,7 @@ public class NotTest {
     }
 
     public static ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
-        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
         for (ObjectTypeNode n : nodes) {
             if (n.getObjectType().getClassType() == nodeClass) {
                 return n;

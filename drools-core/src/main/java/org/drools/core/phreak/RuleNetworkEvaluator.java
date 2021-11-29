@@ -758,7 +758,7 @@ public class RuleNetworkEvaluator {
                                              LeftTuple leftTuple, boolean useLeftMemory) {
         // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
         FastIterator it = betaNode.getRightIterator(rtm);
-        for (RightTuple rightTuple = betaNode.getFirstRightTuple(leftTuple, rtm, null, it); rightTuple != null; ) {
+        for (RightTuple rightTuple = betaNode.getFirstRightTuple(leftTuple, rtm, it); rightTuple != null; ) {
             RightTuple nextRight = (RightTuple) it.next(rightTuple);
             if (constraints.isAllowedCachedLeft(contextEntry,
                                                 rightTuple.getFactHandleForEvaluation())) {

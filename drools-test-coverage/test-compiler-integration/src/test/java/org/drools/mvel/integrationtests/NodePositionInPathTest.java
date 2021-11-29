@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -74,7 +74,7 @@ public class NodePositionInPathTest {
         
         ReteDumper.dumpRete( ( (InternalKnowledgeBase) kbase ) );
 
-        Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
+        Rete rete = ( (RuleBase) kbase ).getRete();
         LeftInputAdapterNode liaNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             Class<?> otnType = ( (ClassObjectType) otn.getObjectType() ).getClassType();

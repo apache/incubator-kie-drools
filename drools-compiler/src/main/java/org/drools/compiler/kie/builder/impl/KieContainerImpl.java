@@ -39,6 +39,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -718,10 +719,10 @@ public class KieContainerImpl
         Set<DroolsManagementAgent.CBSKey> cbskeys = new HashSet<DroolsManagementAgent.CBSKey>();
         if ( isMBeanOptionEnabled() ) {
             for (Entry<String, KieSession> kv : kSessions.entrySet()) {
-                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((InternalKnowledgeBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
+                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((RuleBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
             }
             for (Entry<String, StatelessKieSession> kv : statelessKSessions.entrySet()) {
-                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((InternalKnowledgeBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
+                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((RuleBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
             }
         }
 
@@ -736,7 +737,7 @@ public class KieContainerImpl
                 DroolsManagementAgent.getInstance().unregisterKnowledgeSessionBean(c);
             }
             for (KieBase kb : kBases.values()) {
-                DroolsManagementAgent.getInstance().unregisterKnowledgeBase((InternalKnowledgeBase) kb);
+                DroolsManagementAgent.getInstance().unregisterKnowledgeBase((RuleBase) kb);
             }
             DroolsManagementAgent.getInstance().unregisterMBeansFromOwner(this);
         }

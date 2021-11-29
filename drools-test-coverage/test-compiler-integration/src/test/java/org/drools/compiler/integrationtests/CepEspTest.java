@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.WorkingMemory;
+import org.drools.core.impl.RuleBase;
 import org.drools.kiesession.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
@@ -461,7 +462,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         // read in the source
-        final TypeDeclaration factType = ((KnowledgeBaseImpl) kbase).getTypeDeclaration(StockTick.class);
+        final TypeDeclaration factType = ((RuleBase) kbase).getTypeDeclaration(StockTick.class);
         assertEquals(TimeIntervalParser.parse("1h30m")[0], factType.getExpirationOffset());
     }
 
@@ -504,7 +505,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
 
-        final Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes(EntryPointId.DEFAULT);
+        final Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((RuleBase) kbase).getRete().getObjectTypeNodes(EntryPointId.DEFAULT);
         final ObjectTypeNode node = objectTypeNodes.get(new ClassObjectType(StockTick.class));
 
         assertNotNull(node);

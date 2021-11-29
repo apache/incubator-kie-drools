@@ -29,6 +29,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -1903,9 +1904,9 @@ public class PropertySpecificTest {
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, String nodeName) {
-        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
-            if ( ((ClassObjectType)n.getObjectType()).getClassType().getSimpleName().equals( nodeName ) ) {
+            if ( n.getObjectType().getClassType().getSimpleName().equals( nodeName ) ) {
                 return n;
             }
         }

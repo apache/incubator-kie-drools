@@ -179,7 +179,7 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
         constraints.updateFromTuple( contextEntry, reteEvaluator, this );
 
         Collection<Object> result = new ArrayList<>();
-        for (RightTuple rightTuple = betaNode.getFirstRightTuple(this, rtm, null, it); rightTuple != null; ) {
+        for (RightTuple rightTuple = betaNode.getFirstRightTuple(this, rtm, it); rightTuple != null; ) {
             RightTuple nextRight = (RightTuple) it.next(rightTuple);
             if ( !(rightTuple instanceof SubnetworkTuple) ) {
                 InternalFactHandle fh = rightTuple.getFactHandleForEvaluation();

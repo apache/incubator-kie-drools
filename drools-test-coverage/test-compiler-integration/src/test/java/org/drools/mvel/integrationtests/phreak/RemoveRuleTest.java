@@ -24,7 +24,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.JoinNode;
@@ -663,7 +663,7 @@ public class RemoveRuleTest {
     }
 
     private RuleTerminalNode getRtn(String ruleName, InternalKnowledgeBase kbase) {
-        return ( RuleTerminalNode ) ((KnowledgeBaseImpl) kbase).getReteooBuilder().getTerminalNodes(ruleName)[0];
+        return ( RuleTerminalNode ) kbase.getReteooBuilder().getTerminalNodes(ruleName)[0];
     }
 
     private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
@@ -723,7 +723,7 @@ public class RemoveRuleTest {
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
-        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
                 return n;

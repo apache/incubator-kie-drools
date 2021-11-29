@@ -27,33 +27,32 @@ import java.util.TreeMap;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 
 public class StatefulKnowledgeSessionInfo {
     private StatefulKnowledgeSessionImpl session;
-    private Map<NetworkNode, DefaultNodeInfo> nodesInfo;
-    private List<String>                      log;
+    private final Map<NetworkNode, DefaultNodeInfo> nodesInfo;
+    private final List<String> log;
 
-    private SimpleDateFormat                  df;
+    private final SimpleDateFormat df;
 
     public StatefulKnowledgeSessionInfo() {
-        nodesInfo = new TreeMap<NetworkNode, DefaultNodeInfo>( new Comparator<NetworkNode>() {
+        nodesInfo = new TreeMap<>(new Comparator<NetworkNode>() {
             public int compare(NetworkNode o1,
                                NetworkNode o2) {
                 return o1.getId() - o2.getId();
             }
-        } );
-        log = new ArrayList<String>();
+        });
+        log = new ArrayList<>();
         df = new SimpleDateFormat( "HH:mm:ss.SSS" );
     }
 
     public InternalKnowledgePackage[] getPackages() {
-        return ((KnowledgeBaseImpl) this.session.getKnowledgeBase()).getPackages();
+        return this.session.getKnowledgeBase().getPackages();
     }
 
     public int getNodeCount() {
-        return ((KnowledgeBaseImpl) this.session.getKnowledgeBase()).getNodeCount();
+        return this.session.getKnowledgeBase().getNodeCount();
     }
 
     public int getExternalFactCount() {

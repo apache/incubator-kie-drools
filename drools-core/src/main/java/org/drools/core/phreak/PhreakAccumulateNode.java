@@ -169,10 +169,7 @@ public class PhreakAccumulateNode {
 
             FastIterator rightIt = accNode.getRightIterator(rtm);
 
-            for (RightTuple rightTuple = accNode.getFirstRightTuple(leftTuple,
-                                                                    rtm,
-                                                                    null,
-                                                                    rightIt); rightTuple != null; ) {
+            for (RightTuple rightTuple = accNode.getFirstRightTuple(leftTuple, rtm, rightIt); rightTuple != null; ) {
                 RightTuple nextRightTuple = (RightTuple) rightIt.next(rightTuple);
 
                 if (constraints.isAllowedCachedLeft(contextEntry,
@@ -300,10 +297,7 @@ public class PhreakAccumulateNode {
                                         leftTuple);
 
             FastIterator rightIt = accNode.getRightIterator(rtm);
-            RightTuple rightTuple = accNode.getFirstRightTuple(leftTuple,
-                                                               rtm,
-                                                               null,
-                                                               rightIt);
+            RightTuple rightTuple = accNode.getFirstRightTuple(leftTuple, rtm, rightIt);
 
             LeftTuple childLeftTuple = leftTuple.getFirstChild();
 

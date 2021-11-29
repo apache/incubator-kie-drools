@@ -30,8 +30,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -44,6 +43,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -259,10 +259,10 @@ public class IndexingTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
         final InternalWorkingMemory wm = (InternalWorkingMemory) kbase.newKieSession();
         try {
-            final List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes();
+            final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
             for (final ObjectTypeNode n : nodes) {
-                if (((ClassObjectType) n.getObjectType()).getClassType() == DroolsQuery.class) {
+                if (n.getObjectType().getClassType() == DroolsQuery.class) {
                     node = n;
                     break;
                 }
@@ -296,7 +296,7 @@ public class IndexingTest {
         final StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) kbase.newKieSession();
         ReteDumper.dumpRete( wm );
         try {
-            final List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes();
+            final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
             for (final ObjectTypeNode n : nodes) {
                 if (((ClassObjectType) n.getObjectType()).getClassType() == DroolsQuery.class) {
@@ -429,10 +429,10 @@ public class IndexingTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
         final StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) kbase.newKieSession();
         try {
-            final List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes();
+            final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
             for (final ObjectTypeNode n : nodes) {
-                if (((ClassObjectType) n.getObjectType()).getClassType() == DroolsQuery.class) {
+                if (n.getObjectType().getClassType() == DroolsQuery.class) {
                     node = n;
                     break;
                 }
@@ -476,7 +476,7 @@ public class IndexingTest {
 
             final List<RightTuple> list = new ArrayList<>(100);
             FastIterator it = n.getRightIterator(bm.getRightTupleMemory());
-            for (RightTuple rt = n.getFirstRightTuple(null, bm.getRightTupleMemory(), null, it); rt != null; rt = (RightTuple) it.next(rt)) {
+            for (RightTuple rt = n.getFirstRightTuple(null, bm.getRightTupleMemory(), it); rt != null; rt = (RightTuple) it.next(rt)) {
                 list.add(rt);
             }
             assertEquals(100, list.size());

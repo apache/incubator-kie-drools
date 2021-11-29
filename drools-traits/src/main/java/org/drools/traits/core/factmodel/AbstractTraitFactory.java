@@ -40,7 +40,6 @@ import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.HierarchyEncoder;
@@ -68,7 +67,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     }
 
     protected static void setMode(VirtualPropertyMode newMode, RuleBase kBase, RuntimeComponentFactory rcf) {
-        TraitFactoryImpl traitFactory = (TraitFactoryImpl) rcf.getTraitFactory(((InternalKnowledgeBase) kBase));
+        TraitFactoryImpl traitFactory = (TraitFactoryImpl) rcf.getTraitFactory(kBase);
         traitFactory.mode = newMode;
         switch (newMode) {
             case MAP:

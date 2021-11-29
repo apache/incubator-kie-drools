@@ -101,12 +101,8 @@ public class PhreakJoinNode {
                                          reteEvaluator,
                                          leftTuple );
 
-            for (RightTuple rightTuple = joinNode.getFirstRightTuple( leftTuple,
-                                                                      rtm,
-                                                                      null,
-                                                                      it ); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
-                if (constraints.isAllowedCachedLeft( contextEntry,
-                                                     rightTuple.getFactHandle() )) {
+            for (RightTuple rightTuple = joinNode.getFirstRightTuple( leftTuple, rtm, it ); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
+                if (constraints.isAllowedCachedLeft( contextEntry, rightTuple.getFactHandle() )) {
                     insertChildLeftTuple(trgLeftTuples,
                                          leftTuple,
                                          rightTuple,
@@ -192,10 +188,7 @@ public class PhreakJoinNode {
                                         leftTuple);
 
             FastIterator it = joinNode.getRightIterator(rtm);
-            RightTuple rightTuple = joinNode.getFirstRightTuple(leftTuple,
-                                                                rtm,
-                                                                null,
-                                                                it);
+            RightTuple rightTuple = joinNode.getFirstRightTuple(leftTuple, rtm, it);
 
             // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
             // if rightTuple is null, we assume there was a bucket change and that bucket is empty

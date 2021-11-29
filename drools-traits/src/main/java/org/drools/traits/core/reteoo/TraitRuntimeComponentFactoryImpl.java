@@ -26,6 +26,7 @@ import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
+import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.traits.core.common.TraitNamedEntryPointFactory;
 import org.drools.traits.core.factmodel.TraitClassBuilderFactory;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
@@ -40,6 +41,9 @@ public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImp
 
     @Override
     public TraitFactoryImpl getTraitFactory(RuleBase knowledgeBase) {
+        if (knowledgeBase instanceof SessionsAwareKnowledgeBase) {
+            knowledgeBase = ((SessionsAwareKnowledgeBase) knowledgeBase).getDelegate();
+        }
         return traitFactoryCache.computeIfAbsent(knowledgeBase, TraitFactoryImpl::new);
     }
 

@@ -26,7 +26,6 @@ import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -37,6 +36,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.PredicateConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.model.Cheese;
 import org.drools.mvel.model.MockObjectSource;
 import org.junit.Before;
@@ -78,7 +78,7 @@ public class CompositeObjectSinkAdapterTest {
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
-        this.kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
+        this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
         this.buildContext = new BuildContext( kBase, Collections.emptyList() );
         this.buildContext.setRule(new RuleImpl("test"));

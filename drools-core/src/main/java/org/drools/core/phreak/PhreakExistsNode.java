@@ -206,7 +206,7 @@ public void doNormalNode(ExistsNode existsNode,
 
             FastIterator rightIt = existsNode.getRightIterator(rtm);
 
-            RightTuple firstRightTuple = existsNode.getFirstRightTuple(leftTuple, rtm, null, rightIt);
+            RightTuple firstRightTuple = existsNode.getFirstRightTuple(leftTuple, rtm, rightIt);
 
             // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
             RightTuple blocker = leftTuple.getBlocker();
@@ -372,7 +372,7 @@ public void doNormalNode(ExistsNode existsNode,
                                                  leftTuple );
 
                     if ( iterateFromStart ) {
-                        rootBlocker = existsNode.getFirstRightTuple( leftTuple, rtm, null, rightIt );
+                        rootBlocker = existsNode.getFirstRightTuple( leftTuple, rtm, rightIt );
                     }
 
                     // we know that older tuples have been checked so continue next

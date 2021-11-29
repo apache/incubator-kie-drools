@@ -48,11 +48,13 @@ public interface InternalKnowledgeBase extends RuleBase, KieBase {
 
     void addStatefulSession(InternalWorkingMemory wm);
 
-    KieSession newKieSession(KieSessionConfiguration conf, Environment environment, boolean b);
+    KieSession newKieSession(KieSessionConfiguration conf, Environment environment, boolean fromPool);
 
     void setKieContainer( InternalKieContainer kieContainer );
 
     void disposeStatefulSession(InternalWorkingMemory statefulSession);
 
     InternalKieContainer getKieContainer();
+
+    void initMBeans();
 }

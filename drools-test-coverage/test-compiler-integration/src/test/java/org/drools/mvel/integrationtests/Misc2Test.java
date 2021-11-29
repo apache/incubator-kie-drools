@@ -67,6 +67,7 @@ import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -450,9 +451,9 @@ public class Misc2Test {
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener( listener );
         kbase.addEventListener( listener );
-        assertEquals( 1, ( (KnowledgeBaseImpl) kbase ).getKieBaseEventListeners().size() );
+        assertEquals( 1, ( (RuleBase) kbase ).getKieBaseEventListeners().size() );
         kbase.removeEventListener( listener );
-        assertEquals( 0, ( (KnowledgeBaseImpl) kbase ).getKieBaseEventListeners().size() );
+        assertEquals( 0, ( (RuleBase) kbase ).getKieBaseEventListeners().size() );
     }
 
     @Test
@@ -7806,7 +7807,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
-        Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
+        Rete rete = ( (RuleBase) kbase ).getRete();
         LeftInputAdapterNode liaNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             Class<?> otnType = ( (ClassObjectType) otn.getObjectType() ).getClassType();

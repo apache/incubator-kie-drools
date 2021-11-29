@@ -28,12 +28,12 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.test.model.Cheese;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,7 +87,7 @@ public class RuleBaseEventSupportTest {
      */
     @Before
     public void setUp() throws Exception {
-        kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase();
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();;
         listener1 = new TestRuleBaseListener( "(listener-1) " );
         listener2 = new TestRuleBaseListener( "(listener-2) " );
         kBase.addEventListener( listener1 );

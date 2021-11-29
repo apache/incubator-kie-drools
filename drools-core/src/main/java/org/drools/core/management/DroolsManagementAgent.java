@@ -312,9 +312,8 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
                             name );
                     List<ObjectName> mbl = mbeans.get( owner );
                     if ( mbl == null ) {
-                        mbl = new ArrayList<ObjectName>();
-                        mbeans.put( owner,
-                                mbl );
+                        mbl = new ArrayList<>();
+                        mbeans.put( owner, mbl );
                         if (mbean instanceof StandardMBean) {
                             mbeansRefs.put(owner, ((StandardMBean) mbean).getImplementation());
                         } else {

@@ -16,20 +16,20 @@
 
 package org.drools.core.util;
 
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.kie.api.KieBase;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.rule.Rule;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.impl.RuleBase;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
+
 public class DroolsTestUtil {
     public static Map<String, Rule> rulestoMap( Collection<Rule> rules ) {
-        Map<String, Rule> ret = new HashMap<String, Rule>();
+        Map<String, Rule> ret = new HashMap<>();
         for ( Rule rule : rules ) {
             ret.put( rule.getName(), rule );
         }
@@ -38,7 +38,7 @@ public class DroolsTestUtil {
 
     public static Map<String, Rule> rulestoMap( KieBase kbase ) {
         List<Rule> rules = new ArrayList();
-        for ( KiePackage pkg : ((KnowledgeBaseImpl)kbase).getPackages() ) {
+        for ( KiePackage pkg : ((RuleBase)kbase).getPackages() ) {
             for ( Rule rule : pkg.getRules() ) {
                 rules.add(rule);
             }

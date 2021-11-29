@@ -228,7 +228,7 @@ public class PhreakNotNode {
             LeftTuple next = leftTuple.getStagedNext();
 
             FastIterator rightIt = notNode.getRightIterator(rtm);
-            RightTuple firstRightTuple = notNode.getFirstRightTuple(leftTuple, rtm, null, rightIt);
+            RightTuple firstRightTuple = notNode.getFirstRightTuple(leftTuple, rtm, rightIt);
 
             // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
             RightTuple blocker = leftTuple.getBlocker();
@@ -400,7 +400,7 @@ public class PhreakNotNode {
                 constraints.updateFromTuple(contextEntry, reteEvaluator, leftTuple );
 
                 if (iterateFromStart) {
-                    rootBlocker = notNode.getFirstRightTuple( leftTuple, rtm, null, rightIt );
+                    rootBlocker = notNode.getFirstRightTuple( leftTuple, rtm, rightIt );
                 }
 
                 // we know that older tuples have been checked so continue next
