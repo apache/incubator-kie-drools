@@ -86,7 +86,7 @@ public class KogitoQuarkusResourceUtils {
         AppPaths appPaths = AppPaths.fromQuarkus(paths, buildTool);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
-                .withApplicationProperties(appPaths.getResourceFiles())
+                .withApplicationPropertyProvider(new KogitoQuarkusApplicationPropertiesProvider())
                 .withClassLoader(classLoader)
                 .withClassAvailabilityResolver(className -> classAvailabilityResolver(classLoader, index, className))
                 .withAppPaths(appPaths)
