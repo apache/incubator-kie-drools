@@ -267,12 +267,15 @@ public abstract class BaseFEELFunction
                 } else {
                     if (cm.getScore() > candidate.getScore()) {
                         candidate = cm;
-                    } else if (cm.getScore() == candidate.getScore() 
-                            && candidate.getApply().getParameterTypes().length == 1
-                            && cm.getApply().getParameterTypes().length == 1
-                            && candidate.getApply().getParameterTypes()[0].equals(Object.class)
-                            && !cm.getApply().getParameterTypes()[0].equals(Object.class)) {
-                        candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
+                    } else if (cm.getScore() == candidate.getScore()) {
+                        if (isNamedParams && nullCount(cm.actualParams)<nullCount(candidate.actualParams)) {
+                            candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
+                        } else if (candidate.getApply().getParameterTypes().length == 1
+                                && cm.getApply().getParameterTypes().length == 1
+                                && candidate.getApply().getParameterTypes()[0].equals(Object.class)
+                                && !cm.getApply().getParameterTypes()[0].equals(Object.class)) {
+                            candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
+                        }
                     } else {
                         // do nothing.
                     }
@@ -280,6 +283,10 @@ public abstract class BaseFEELFunction
             }
         }
         return candidate;
+    }
+    
+    private static long nullCount(Object[] params) {
+        return Stream.of(params).filter(x -> x == null).count();
     }
 
     @Override
