@@ -9,7 +9,7 @@ title: OptaPlanner User Guide ${project.version}
 version: latest
 asciidoc:
   attributes:
-    project-version: ${project.version}
+    optaplanner-version: ${project.version}
     java-version: ${maven.compiler.release}
     maven-version: ${maven.min.version}
     quarkus-version: ${version.io.quarkus}

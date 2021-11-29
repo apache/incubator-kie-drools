@@ -45,7 +45,7 @@
             </resource>
           </resources>
           <attributes>
-            <project-version>${project.version}</project-version>
+            <optaplanner-version>${project.version}</optaplanner-version>
             <java-version>${maven.compiler.release}</java-version>
             <maven-version>${maven.min.version}</maven-version>
             <quarkus-version>${version.io.quarkus}</quarkus-version>

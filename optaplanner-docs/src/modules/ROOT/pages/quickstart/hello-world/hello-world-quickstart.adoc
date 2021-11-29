@@ -112,7 +112,7 @@ If you choose Maven, your `pom.xml` file has the following content:
       <dependency>
         <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-bom</artifactId>
-        <version>{project-version}</version>
+        <version>{optaplanner-version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -167,7 +167,7 @@ plugins {
     id "application"
 }
 
-def optaplannerVersion = "{project-version}"
+def optaplannerVersion = "{optaplanner-version}"
 def logbackVersion = "1.2.3"
 
 group = "org.acme"

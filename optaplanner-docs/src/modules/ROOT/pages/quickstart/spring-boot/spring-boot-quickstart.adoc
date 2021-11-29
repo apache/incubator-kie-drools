@@ -88,7 +88,7 @@ If you choose Maven, your `pom.xml` file has the following content:
 
     <properties>
         <java.version>{java-version}</java.version>
-        <version.org.optaplanner>{project-version}</version.org.optaplanner>
+        <version.org.optaplanner>{optaplanner-version}</version.org.optaplanner>
     </properties>
 
     <dependencyManagement>
@@ -149,7 +149,7 @@ plugins {
     id "java"
 }
 
-def optaplannerVersion = "{project-version}"
+def optaplannerVersion = "{optaplanner-version}"
 
 group = "org.acme"
 version = "1.0-SNAPSHOT"

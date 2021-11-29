@@ -104,7 +104,7 @@ If you choose Maven, your `pom.xml` file has the following content:
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <version.io.quarkus>{quarkus-version}</version.io.quarkus>
-    <version.org.optaplanner>{project-version}</version.org.optaplanner>
+    <version.org.optaplanner>{optaplanner-version}</version.org.optaplanner>
   </properties>
 
   <dependencyManagement>
@@ -192,7 +192,7 @@ plugins {
 }
 
 def quarkusVersion = "{quarkus-version}"
-def optaplannerVersion = "{project-version}"
+def optaplannerVersion = "{optaplanner-version}"
 
 group = "org.acme"
 version = "1.0-SNAPSHOT"
