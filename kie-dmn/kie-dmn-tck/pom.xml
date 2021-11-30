@@ -59,7 +59,7 @@
                   <connectionUrl>scm:git:${tck.repository.url}</connectionUrl>
                   <scmVersion>${tck.repository.branch}</scmVersion>
                   <scmVersionType>branch</scmVersionType>
-                  <goals>install -Ddrools.version=${project.version} -Dorg.kie.dmn.strictConformance -Dorg.kie.dmn.compiler.execmodel=${org.kie.dmn.compiler.execmodel}</goals>
+                  <goals>install -Ddrools.version=${project.version} -Dorg.kie.dmn.compiler.execmodel=${org.kie.dmn.compiler.execmodel}</goals>
                   <goalsDirectory>runners</goalsDirectory>
                   <profiles>drools</profiles>
                   <pushChanges>false</pushChanges>
