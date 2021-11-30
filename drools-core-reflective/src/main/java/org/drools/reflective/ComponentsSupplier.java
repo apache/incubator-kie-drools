@@ -17,6 +17,7 @@
 package org.drools.reflective;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.reflective.util.ByteArrayClassLoader;
@@ -26,7 +27,12 @@ import org.kie.internal.builder.KnowledgeBuilder;
 
 public interface ComponentsSupplier {
     ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider );
+
     ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent );
+
+    default ClassLoader createPackageClassLoader(Map<String, byte[]> store, ClassLoader rootClassLoader) {
+        return rootClassLoader;
+    }
 
     Object createConsequenceExceptionHandler(String className, ClassLoader classLoader);
 

@@ -20,55 +20,40 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.net.URL;
-import java.security.AccessController;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivilegedAction;
-import java.security.ProtectionDomain;
 import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Wireable;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
+import org.drools.reflective.ComponentsFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
-import org.kie.internal.utils.FastClassLoader;
-import org.kie.memorycompiler.WritableClassLoader;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
-public class JavaDialectRuntimeData
-                                   implements
-                                   DialectRuntimeData,
-                                   Externalizable {
+public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizable {
 
     private static final long              serialVersionUID = 510l;
-
-    private static final ProtectionDomain  PROTECTION_DOMAIN;
 
     private final Map<String, Wireable>    invokerLookups = new ConcurrentHashMap<>();
 
@@ -83,15 +68,6 @@ public class JavaDialectRuntimeData
     private boolean                        dirty;
 
     private List<String>                   wireList         = Collections.<String> emptyList();
-
-    static {
-        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
-
-            public Object run() {
-                return JavaDialectRuntimeData.class.getProtectionDomain();
-            }
-        } );
-    }
 
     public JavaDialectRuntimeData() {
         this.dirty = false;
@@ -514,12 +490,7 @@ public class JavaDialectRuntimeData
         invokerLookups.putAll( invokers );
     }
 
-    public void removeInvoker( final String className ) {
-        invokerLookups.remove(className);
-    }
-
-    public void putClassDefinition( final String className,
-                                    final byte[] classDef ) {
+    public void putClassDefinition( final String className, final byte[] classDef ) {
         classLookups.put( className, classDef );
     }
 
@@ -533,119 +504,7 @@ public class JavaDialectRuntimeData
                                                                      null);
     }
 
-    public void removeClassDefinition( final String className ) {
-        classLookups.remove( className );
-    }
-
     private ClassLoader makeClassLoader() {
-        return ClassUtils.isAndroid() ?
-                (ClassLoader) ClassUtils.instantiateObject(
-                        "org.drools.android.DexPackageClassLoader", null, this, this.rootClassLoader)
-                : new PackageClassLoader( this, this.rootClassLoader );
-    }
-
-    /**
-     * This is an Internal Drools Class
-     */
-    public static class PackageClassLoader extends ClassLoader implements FastClassLoader, WritableClassLoader {
-
-        private final ConcurrentHashMap<String, Object> parallelLockMap = new ConcurrentHashMap<String, Object>();
-
-        protected JavaDialectRuntimeData store;
-
-        private Set<String> existingPackages = new ConcurrentSkipListSet<String>();
-
-        public PackageClassLoader( JavaDialectRuntimeData store,
-                                   ClassLoader rootClassLoader ) {
-            super( rootClassLoader );
-            this.store = store;
-        }
-
-        public Class<?> loadClass( final String name,
-                                   final boolean resolve ) throws ClassNotFoundException {
-            Class<?> cls = fastFindClass( name );
-
-            if (cls == null) {
-                ClassLoader parent = getParent();
-                cls = parent.loadClass( name );
-            }
-
-            if (cls == null) {
-                throw new ClassNotFoundException( "Unable to load class: " + name );
-            }
-
-            return cls;
-        }
-
-        public Class<?> fastFindClass( final String name ) {
-            Class<?> cls = findLoadedClass( name );
-
-            if (cls == null) {
-                Object lock = getLockObject(name);
-                synchronized (lock) {
-                    cls = findLoadedClass( name );
-                    if (cls == null) {
-                        try {
-                            cls = internalDefineClass( name, this.store.read( convertClassToResourcePath( name ) ) );
-                        } finally {
-                            releaseLockObject( name );
-                        }
-                    }
-                }
-            }
-
-            return cls;
-        }
-
-        private Class<?> internalDefineClass( String name, byte[] clazzBytes ) {
-            if ( clazzBytes == null ) {
-                return null;
-            }
-            String pkgName = name.substring( 0,
-                                             name.lastIndexOf( '.' ) );
-
-            if ( !existingPackages.contains( pkgName ) ) {
-                synchronized (this) {
-                    if ( getPackage( pkgName ) == null ) {
-                        definePackage( pkgName,
-                                       "", "", "", "", "", "",
-                                       null );
-                    }
-                    existingPackages.add( pkgName );
-                }
-            }
-
-            Class<?> cls = writeClass( name, clazzBytes );
-            resolveClass( cls );
-            return cls;
-        }
-
-        public InputStream getResourceAsStream( final String name ) {
-            final byte[] clsBytes = this.store.read( name );
-            return clsBytes != null ? new ByteArrayInputStream( clsBytes ) : getParent().getResourceAsStream( name );
-        }
-
-        public URL getResource( String name ) {
-            return getParent().getResource( name );
-        }
-
-        public Enumeration<URL> getResources( String name ) throws IOException {
-            return getParent().getResources( name );
-        }
-
-        private Object getLockObject(String className) {
-            Object newLock = new Object();
-            Object lock = parallelLockMap.putIfAbsent(className, newLock);
-            return lock != null ? lock : newLock;
-        }
-
-        private void releaseLockObject(String className) {
-            parallelLockMap.remove( className );
-        }
-
-        @Override
-        public Class<?> writeClass( String name, byte[] bytecode ) {
-            return defineClass( name, bytecode, 0, bytecode.length, PROTECTION_DOMAIN );
-        }
+        return ComponentsFactory.createPackageClassLoader(this.store, this.rootClassLoader);
     }
 }

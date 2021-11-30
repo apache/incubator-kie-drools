@@ -32,7 +32,7 @@ import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
+import org.drools.dynamic.PackageClassLoader;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class ClassBuilderTest {
     }
 
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
-        classLoader = new PackageClassLoader(data, ProjectClassLoader.createProjectClassLoader());
+        classLoader = new PackageClassLoader(data.getStore(), ProjectClassLoader.createProjectClassLoader());
         byte[] d = builder.buildClass( classDef, classLoader);
                      
         data.write( convertClassToResourcePath(classDef.getClassName()), d );
