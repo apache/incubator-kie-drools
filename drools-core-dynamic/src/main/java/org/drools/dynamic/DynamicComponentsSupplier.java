@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
+import java.util.Map;
 
 import org.drools.reflective.ComponentsSupplier;
 import org.drools.reflective.ResourceProvider;
@@ -40,6 +41,13 @@ public class DynamicComponentsSupplier implements ComponentsSupplier {
     @Override
     public ByteArrayClassLoader createByteArrayClassLoader(ClassLoader parent) {
         return ClassUtils.isAndroid() ? (ByteArrayClassLoader) ClassUtils.instantiateObject("org.drools.android.MultiDexClassLoader", null, parent) : new DefaultByteArrayClassLoader(parent);
+    }
+
+    @Override
+    public ClassLoader createPackageClassLoader(Map<String, byte[]> store, ClassLoader rootClassLoader) {
+        return ClassUtils.isAndroid() ?
+                (ClassLoader) ClassUtils.instantiateObject("org.drools.android.DexPackageClassLoader", null, this, rootClassLoader) :
+                new PackageClassLoader( store, rootClassLoader );
     }
 
     public static class DefaultByteArrayClassLoader extends ClassLoader implements ByteArrayClassLoader {

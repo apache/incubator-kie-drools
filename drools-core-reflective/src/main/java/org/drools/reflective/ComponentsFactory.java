@@ -17,6 +17,7 @@
 package org.drools.reflective;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.reflective.util.ByteArrayClassLoader;
@@ -39,6 +40,10 @@ public class ComponentsFactory {
 
     public static ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent ) {
         return getComponentsSupplier().createByteArrayClassLoader(parent);
+    }
+
+    public static ClassLoader createPackageClassLoader(Map<String, byte[]> store, ClassLoader rootClassLoader) {
+        return getComponentsSupplier().createPackageClassLoader(store, rootClassLoader);
     }
 
     public static Object createConsequenceExceptionHandler(String className, ClassLoader classLoader) {
