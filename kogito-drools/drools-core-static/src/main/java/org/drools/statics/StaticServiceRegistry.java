@@ -58,7 +58,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
 
         registerService("org.drools.compiler.kie.builder.impl.InternalKieModuleProvider", "org.drools.modelcompiler.CanonicalKieModuleProvider", true);
         registerService("org.drools.compiler.compiler.DecisionTableProvider", "org.drools.decisiontable.DecisionTableProviderImpl", false);
-        registerService("org.drools.core.reteoo.KieComponentFactoryFactory", "org.drools.core.kogito.factory.KogitoComponentFactoryFactory", true);
+        registerService("org.drools.core.reteoo.RuntimeComponentFactory", "org.drools.core.kogito.factory.KogitoRuntimeComponentFactory", false);
 
         registerService("org.drools.core.marshalling.impl.ProcessMarshallerFactoryService", "org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl", false);
         registerService("org.drools.core.runtime.process.ProcessRuntimeFactoryService", "org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl", false);
