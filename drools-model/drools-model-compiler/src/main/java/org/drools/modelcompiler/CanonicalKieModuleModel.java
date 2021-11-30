@@ -17,6 +17,7 @@
 package org.drools.modelcompiler;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.model.Model;
@@ -36,9 +37,9 @@ public interface CanonicalKieModuleModel {
 
     default KieModuleModel getKieModuleModel() {
         KieModuleModel kModuleModel = new KieModuleModelImpl();
-        KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );
-        kieBaseModel.newKieSessionModel( "defaultKieSession" ).setDefault( true );
-        kieBaseModel.newKieSessionModel( "defaultStatelessKieSession" ).setType( KieSessionModel.KieSessionType.STATELESS ).setDefault( true );
+        KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase_" + UUID.randomUUID() ).addPackage( "*" ).setDefault( true );
+        kieBaseModel.newKieSessionModel( "defaultKieSession_" + UUID.randomUUID() ).setDefault( true );
+        kieBaseModel.newKieSessionModel( "defaultStatelessKieSession_" + UUID.randomUUID() ).setType( KieSessionModel.KieSessionType.STATELESS ).setDefault( true );
         return kModuleModel;
     }
 

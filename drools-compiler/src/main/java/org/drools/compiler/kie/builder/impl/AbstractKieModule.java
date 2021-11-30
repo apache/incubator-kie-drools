@@ -38,11 +38,11 @@ import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.util.StringUtils;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.reflective.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
@@ -219,7 +219,7 @@ public abstract class AbstractKieModule
 
         RuleBase kBase = RuleBaseFactory.newKnowledgeBase(kBaseModel.getName(), conf );
         kBase.addPackages( pkgs );
-        return new SessionsAwareKnowledgeBase(kBase);
+        return KnowledgeBaseFactory.newKnowledgeBase(kBase);
     }
 
     public static void checkStreamMode( KieBaseModelImpl kBaseModel, KieBaseConfiguration conf, Collection<? extends KiePackage> pkgs ) {

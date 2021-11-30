@@ -114,7 +114,6 @@ import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.io.impl.BaseResource;
@@ -133,7 +132,8 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.reflective.ComponentsFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
@@ -2214,7 +2214,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
         RuleBase kbase = RuleBaseFactory.newKnowledgeBase(conf);
         kbase.addPackages(Arrays.asList(getPackages()));
-        return new SessionsAwareKnowledgeBase(kbase);
+        return KnowledgeBaseFactory.newKnowledgeBase(kbase);
     }
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {

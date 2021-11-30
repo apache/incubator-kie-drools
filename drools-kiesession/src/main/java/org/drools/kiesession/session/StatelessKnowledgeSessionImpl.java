@@ -36,10 +36,10 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -58,8 +58,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-
-import static org.drools.core.impl.KnowledgeBaseImpl.asKieBase;
 
 public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements StatelessKnowledgeSession, StatelessKieSession {
 
@@ -237,7 +235,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
 
     @Override
     public KieBase getKieBase() {
-        return asKieBase(getKnowledgeBase());
+        return getKnowledgeBase();
     }
 
     public <T> T execute(Command<T> command) {

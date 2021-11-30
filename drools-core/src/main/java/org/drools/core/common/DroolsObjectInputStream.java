@@ -106,11 +106,11 @@ public class DroolsObjectInputStream extends ObjectInputStream
         return this.classLoader;
     }
 
-    public RuleBase getKnowledgeBase() {
+    public RuleBase getRuleBase() {
         return ruleBase;
     }
 
-    public void setKnowledgeBase(RuleBase ruleBase) {
+    public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.classLoader = this.ruleBase.getRootClassLoader();
     }

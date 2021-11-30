@@ -23,11 +23,10 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.common.InternalAgenda;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.integrationtests.SerializationHelper;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -136,7 +135,7 @@ public class CommonTestMethodBase {
         if (kBaseConfig == null) {
             kBaseConfig = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = new SessionsAwareKnowledgeBase(kBaseConfig == null ? RuleBaseFactory.newKnowledgeBase() : RuleBaseFactory.newKnowledgeBase(kBaseConfig));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig == null ? RuleBaseFactory.newKnowledgeBase() : RuleBaseFactory.newKnowledgeBase(kBaseConfig));
         kbase.addPackages( kbuilder.getKnowledgePackages());
         return kbase;
     }
@@ -147,7 +146,7 @@ public class CommonTestMethodBase {
         if (kbaseConf == null) {
             kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
         kbase.addPackages(knowledgePackages);
         try {
             kbase = SerializationHelper.serializeObject(kbase);
@@ -167,7 +166,7 @@ public class CommonTestMethodBase {
         if (kbaseConf == null) {
             kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
         kbase.addPackages(knowledgePackages);
         try {
             kbase = SerializationHelper.serializeObject(kbase);
@@ -263,7 +262,7 @@ public class CommonTestMethodBase {
     }
 
     protected KieBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        KieBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kBaseConfig));
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kBaseConfig));
         try {
             kbase = SerializationHelper.serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader());
         } catch (Exception e) {

@@ -19,9 +19,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -101,7 +101,7 @@ public class UnmarshallingTest {
         }
         KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase knowledgeBase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase( config ));
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase( config ));
         knowledgeBase.addPackages( kbuilder.getKnowledgePackages() );
 
         return knowledgeBase;

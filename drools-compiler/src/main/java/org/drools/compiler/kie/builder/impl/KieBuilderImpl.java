@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -562,9 +563,9 @@ public class KieBuilderImpl
     public static void setDefaultsforEmptyKieModule( KieModuleModel kModuleModel ) {
         if ( kModuleModel != null && kModuleModel.getKieBaseModels().isEmpty() ) {
             // would be null if they pass a corrupted kModuleModel
-            KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );
-            kieBaseModel.newKieSessionModel( "defaultKieSession" ).setDefault( true );
-            kieBaseModel.newKieSessionModel( "defaultStatelessKieSession" ).setType( KieSessionModel.KieSessionType.STATELESS ).setDefault( true );
+            KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase_" + UUID.randomUUID() ).addPackage( "*" ).setDefault( true );
+            kieBaseModel.newKieSessionModel( "defaultKieSession_" + UUID.randomUUID() ).setDefault( true );
+            kieBaseModel.newKieSessionModel( "defaultStatelessKieSession_" + UUID.randomUUID() ).setType( KieSessionModel.KieSessionType.STATELESS ).setDefault( true );
         }
     }
 

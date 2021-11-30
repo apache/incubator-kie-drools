@@ -24,7 +24,7 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -43,7 +43,7 @@ public class ObjectHashMapTest {
     public void testEqualityWithResize() {        
         KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EqualityBehaviorOption.EQUALITY );
-        KieBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
         KieSession ksession = kbase.newKieSession();
         
         int length = 1 * 300 * 1000 ;
@@ -86,7 +86,7 @@ public class ObjectHashMapTest {
     public void testIdentityWithResize() {        
         KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EqualityBehaviorOption.IDENTITY );
-        KieBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
         KieSession ksession = kbase.newKieSession();
         
         int length = 1 * 300;

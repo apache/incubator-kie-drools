@@ -23,10 +23,10 @@ import java.util.Collections;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
@@ -96,7 +96,7 @@ public class ObjectMarshallingStrategyStoreTest {
 
 		kbconf.setOption(EventProcessingOption.STREAM);
 		
-		InternalKnowledgeBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase( kbconf ));
+		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase( kbconf ));
 
 		KieSession ks = kbase.newKieSession( ksc, env);
 		
@@ -149,7 +149,7 @@ public class ObjectMarshallingStrategyStoreTest {
 
 		kbconf.setOption(EventProcessingOption.STREAM);
 		
-		InternalKnowledgeBase kbase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase( kbconf ));
+		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase( kbconf ));
 
 		KieSession ks = kbase.newKieSession( ksc, env);
 		

@@ -31,7 +31,7 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 
 import static org.drools.mvel.integrationtests.phreak.Pair.t;
@@ -74,7 +74,7 @@ public class SegmentPropagationTest {
         sinkNode2 = (JoinNode) BetaNodeBuilder.create( NodeTypeEnums.JoinNode, buildContext ).build();
         joinNode.addTupleSink( sinkNode2 );
 
-        wm = (InternalWorkingMemory) new SessionsAwareKnowledgeBase(buildContext.getRuleBase()).newKieSession();;
+        wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();;
         
         bm =(BetaMemory)  wm.getNodeMemory( joinNode );
         

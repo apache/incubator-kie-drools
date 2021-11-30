@@ -25,7 +25,6 @@ import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.BetaMemory;
@@ -45,8 +44,8 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.spi.PropagationContext;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
@@ -123,7 +122,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     
     public void setUp(int type) {
         KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
-        kBase = new SessionsAwareKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
+        kBase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
 
         buildContext = new BuildContext( kBase, Collections.emptyList() );
 

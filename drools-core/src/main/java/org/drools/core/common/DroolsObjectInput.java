@@ -25,8 +25,8 @@ public interface DroolsObjectInput extends ObjectInput {
     ClassLoader getClassLoader();
     void setClassLoader(ClassLoader classLoader);
 
-    RuleBase getKnowledgeBase();
-    void setKnowledgeBase(RuleBase kBase);
+    RuleBase getRuleBase();
+    void setRuleBase(RuleBase kBase);
     
     void setWorkingMemory(InternalWorkingMemory workingMemory);
     InternalWorkingMemory getWorkingMemory();
