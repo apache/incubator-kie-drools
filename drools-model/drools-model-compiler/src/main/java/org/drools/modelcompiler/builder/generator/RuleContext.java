@@ -366,7 +366,17 @@ public class RuleContext {
         }
         this.scopedDeclarations.put(d.getBindingId(), d);
         this.allDeclarations.put(d.getBindingId(), d);
-        definedVars.put(bindingId, bindingId);
+        String var = stripIfScoped(bindingId);
+        definedVars.put(var, bindingId);
+    }
+
+    private String stripIfScoped(String bindingId) {
+        if (bindingId.endsWith("sCoPe")) {
+            String stripSuffix = bindingId.substring(0, bindingId.lastIndexOf("_sCoPe"));
+            return stripSuffix.substring(0, stripSuffix.lastIndexOf("_")); // strip counter
+        } else {
+            return bindingId;
+        }
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
