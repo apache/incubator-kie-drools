@@ -16,6 +16,7 @@
 
 package org.drools.traits.core.reteoo;
 
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -25,6 +26,7 @@ import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
+import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.traits.core.common.TraitNamedEntryPointFactory;
 import org.drools.traits.core.factmodel.TraitClassBuilderFactory;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
@@ -33,14 +35,16 @@ public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImp
 
     private final TraitFactHandleFactory traitFactHandleFactory = new TraitFactHandleFactory();
 
-    private final Map<String, TraitFactoryImpl> traitFactoryCache = new WeakHashMap<>();
+    private final Map<RuleBase, TraitFactoryImpl> traitFactoryCache = new WeakHashMap<>(new IdentityHashMap<>());
 
     private final TraitClassBuilderFactory traitClassBuilderFactory = new TraitClassBuilderFactory();
 
     @Override
     public TraitFactoryImpl getTraitFactory(RuleBase knowledgeBase) {
-        return traitFactoryCache.computeIfAbsent(knowledgeBase == null ? "" : knowledgeBase.getId(), id -> new TraitFactoryImpl(knowledgeBase));
-    }
+        if (knowledgeBase instanceof SessionsAwareKnowledgeBase) {
+            knowledgeBase = ((SessionsAwareKnowledgeBase) knowledgeBase).getDelegate();
+        }
+        return traitFactoryCache.computeIfAbsent(knowledgeBase, TraitFactoryImpl::new);    }
 
     @Override
     public TraitRegistry getTraitRegistry(RuleBase knowledgeBase) {

@@ -3136,7 +3136,7 @@ public class IncrementalCompilationTest {
         final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
 
         KieModuleModel model = ks.newKieModuleModel();
-        model.newKieBaseModel("kbase").newKieSessionModel("ksession").setDefault(true);
+        model.newKieBaseModel("kbase").setDefault(true).newKieSessionModel("ksession").setDefault(true);
         String kproj = model.toXML();
 
         kfs.generateAndWritePomXML(releaseId1);

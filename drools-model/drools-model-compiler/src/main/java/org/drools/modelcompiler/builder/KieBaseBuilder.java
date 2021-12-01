@@ -18,7 +18,6 @@ package org.drools.modelcompiler.builder;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -48,7 +47,7 @@ public class KieBaseBuilder {
 
     public KieBaseBuilder(KieBaseModel kBaseModel, KieBaseConfiguration conf) {
         this.conf = conf;
-        this.kBaseName = kBaseModel != null ? kBaseModel.getName() : "defaultkiebase_" + UUID.randomUUID();
+        this.kBaseName = kBaseModel != null ? kBaseModel.getName() : "defaultkiebase";
     }
 
     public InternalKnowledgeBase createKieBase(CanonicalKiePackages kpkgs) {

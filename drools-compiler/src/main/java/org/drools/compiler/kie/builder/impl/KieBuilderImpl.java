@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -56,9 +55,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-import org.kie.util.maven.support.DependencyFilter;
-import org.kie.util.maven.support.PomModel;
-import org.kie.util.maven.support.ReleaseIdImpl;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
@@ -66,6 +62,9 @@ import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.util.maven.support.DependencyFilter;
+import org.kie.util.maven.support.PomModel;
+import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -563,9 +562,9 @@ public class KieBuilderImpl
     public static void setDefaultsforEmptyKieModule( KieModuleModel kModuleModel ) {
         if ( kModuleModel != null && kModuleModel.getKieBaseModels().isEmpty() ) {
             // would be null if they pass a corrupted kModuleModel
-            KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase_" + UUID.randomUUID() ).addPackage( "*" ).setDefault( true );
-            kieBaseModel.newKieSessionModel( "defaultKieSession_" + UUID.randomUUID() ).setDefault( true );
-            kieBaseModel.newKieSessionModel( "defaultStatelessKieSession_" + UUID.randomUUID() ).setType( KieSessionModel.KieSessionType.STATELESS ).setDefault( true );
+            KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );
+            kieBaseModel.newKieSessionModel( "defaultKieSession" ).setDefault( true );
+            kieBaseModel.newKieSessionModel( "defaultStatelessKieSession" ).setType( KieSessionModel.KieSessionType.STATELESS ).setDefault( true );
         }
     }
 

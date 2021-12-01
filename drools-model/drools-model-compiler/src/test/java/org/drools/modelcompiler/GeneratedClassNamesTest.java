@@ -281,7 +281,7 @@ public class GeneratedClassNamesTest extends BaseModelTest {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "kjar-test-" + UUID.randomUUID(), "1.0");
 
-        KieBuilder kieBuilder = createKieBuilder(ks, null, releaseId, toKieFiles(new String[]{str}));
+        KieBuilder kieBuilder = createKieBuilder(ks, getDefaultKieModuleModel( ks ), releaseId, toKieFiles(new String[]{str}));
 
         final InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
         byte[] kjar = kieModule.getBytes();
@@ -296,7 +296,7 @@ public class GeneratedClassNamesTest extends BaseModelTest {
         ks.getRepository().addKieModule(kjarResource);
         KieContainer kcontainer = ks.newKieContainer(releaseId);
 
-        KieModule kieModule2 = ((KieContainerImpl) kcontainer).getKieModuleForKBase("defaultKieBase");
+        KieModule kieModule2 = ((KieContainerImpl) kcontainer).getKieModuleForKBase("kbase");
 
         assertTrue(kieModule2 instanceof CanonicalKieModule);
 
