@@ -213,10 +213,10 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void removeKiePackage(String packageName) {
-        removeKiePackage(packageName, Collections.emptyList());
+        kBaseInternal_removePackage(packageName, Collections.emptyList());
     }
 
-    public void removeKiePackage(String packageName, Collection<InternalWorkingMemory> workingMemories) {
+    public void kBaseInternal_removePackage(String packageName, Collection<InternalWorkingMemory> workingMemories) {
         final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
         if (pkg == null) {
             throw new IllegalArgumentException( "Package name '" + packageName +
@@ -224,7 +224,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
         this.eventSupport.fireBeforePackageRemoved( pkg );
 
-        internalRemoveRules( pkg.getRules(), workingMemories );
+        kBaseInternal_removeRules( pkg.getRules(), workingMemories );
 
         // getting the list of referenced globals
         final Set<String> referencedGlobals = new HashSet<>();
@@ -241,7 +241,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
         //and now the rule flows
         for ( String processName : new ArrayList<>(pkg.getRuleFlows().keySet()) ) {
-            internalRemoveProcess( processName );
+            kBaseInternal_removeProcess( processName );
         }
         // removing the package itself from the list
         this.pkgs.remove( pkg.getName() );
@@ -324,7 +324,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         return this.globals;
     }
 
-    public void lock() {
+    public void kBaseInternal_lock() {
         // The lock is reentrant, so we need additional magic here to skip
         // notifications for locked if this thread already has locked it.
         boolean firstLock = !this.lock.isWriteLockedByCurrentThread();
@@ -338,7 +338,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
     }
 
-    public void unlock() {
+    public void kBaseInternal_unlock() {
         boolean lastUnlock = this.lock.getWriteHoldCount() == 1;
         if (lastUnlock) {
             this.eventSupport.fireBeforeRuleBaseUnlocked();
@@ -357,15 +357,15 @@ public class KnowledgeBaseImpl implements RuleBase {
         this.lock.readLock().unlock();
     }
 
-    public void writeLock() {
+    public void kBaseInternal_writeLock() {
         this.lock.writeLock().lock();
     }
 
-    public boolean tryWriteLock() {
+    public boolean kBaseInternal_tryWriteLock() {
         return this.lock.writeLock().tryLock();
     }
 
-    public void writeUnlock() {
+    public void kBaseInternal_writeUnlock() {
         this.lock.writeLock().unlock();
     }
 
@@ -385,19 +385,19 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
 
         clonedPkgs.sort(Comparator.comparing( (InternalKnowledgePackage p) -> p.getRules().size() ).reversed().thenComparing( InternalKnowledgePackage::getName ));
-        internalAddPackages( clonedPkgs, Collections.emptyList() );
+        kBaseInternal_addPackages( clonedPkgs, Collections.emptyList() );
     }
 
     @Override
     public Future<KiePackage> addPackage( final KiePackage newPkg ) {
         InternalKnowledgePackage clonedPkg = ((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader);
         CompletableFuture<KiePackage> result = new CompletableFuture<>();
-        internalAddPackages( Collections.singletonList(clonedPkg), Collections.emptyList() );
+        kBaseInternal_addPackages( Collections.singletonList(clonedPkg), Collections.emptyList() );
         result.complete( getPackage(newPkg.getName()) );
         return result;
     }
 
-    public void internalAddPackages(Collection<InternalKnowledgePackage> clonedPkgs, Collection<InternalWorkingMemory> workingMemories) {
+    public void kBaseInternal_addPackages(Collection<InternalKnowledgePackage> clonedPkgs, Collection<InternalWorkingMemory> workingMemories) {
         // we need to merge all byte[] first, so that the root classloader can resolve classes
         for (InternalKnowledgePackage newPkg : clonedPkgs) {
             newPkg.checkValidity();
@@ -469,7 +469,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             }
 
             // add the rules to the RuleBase
-            internalAddRules( newPkg.getRules(), workingMemories );
+            kBaseInternal_addRules( newPkg.getRules(), workingMemories );
 
             // add the flows to the RuleBase
             if ( newPkg.getRuleFlows() != null ) {
@@ -834,7 +834,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             }
         }
         if (!rulesToBeRemoved.isEmpty()) {
-            internalRemoveRules( rulesToBeRemoved, workingMemories );
+            kBaseInternal_removeRules( rulesToBeRemoved, workingMemories );
         }
 
         for (Rule newRule : newPkg.getRules()) {
@@ -1052,10 +1052,10 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void addRules(Collection<RuleImpl> rules ) throws InvalidPatternException {
-        internalAddRules( rules, Collections.emptyList() );
+        kBaseInternal_addRules( rules, Collections.emptyList() );
     }
 
-    public void internalAddRules( Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories ) {
+    public void kBaseInternal_addRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories ) {
         for (Rule r : rules) {
             RuleImpl rule = (RuleImpl) r;
             checkMultithreadedEvaluation( rule );
@@ -1071,14 +1071,14 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void removeRules( Collection<RuleImpl> rules ) {
-        internalRemoveRules( rules, Collections.emptyList() );
+        kBaseInternal_removeRules( rules, Collections.emptyList() );
     }
 
     public void removeRule( final String packageName, final String ruleName ) {
-        internalRemoveRule(packageName, ruleName, Collections.emptyList());
+        kBaseInternal_removeRule(packageName, ruleName, Collections.emptyList());
     }
 
-    public void internalRemoveRule(String packageName, String ruleName, Collection<InternalWorkingMemory> workingMemories) {
+    public void kBaseInternal_removeRule(String packageName, String ruleName, Collection<InternalWorkingMemory> workingMemories) {
         final InternalKnowledgePackage pkg = pkgs.get(packageName);
         if (pkg == null) {
             throw new IllegalArgumentException( "Package name '" + packageName +
@@ -1101,7 +1101,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
-    public void internalRemoveRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories) {
+    public void kBaseInternal_removeRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories) {
         for (Rule rule : rules) {
             this.eventSupport.fireBeforeRuleRemoved( (RuleImpl) rule );
         }
@@ -1112,10 +1112,10 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void removeFunction( final String packageName, final String functionName ) {
-        internalRemoveFunction( packageName, functionName );
+        kBaseInternal_removeFunction( packageName, functionName );
     }
 
-    public void internalRemoveFunction( String packageName, String functionName ) {
+    public void kBaseInternal_removeFunction(String packageName, String functionName ) {
         final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
         if (pkg == null) {
             throw new IllegalArgumentException( "Package name '" + packageName +
@@ -1142,11 +1142,11 @@ public class KnowledgeBaseImpl implements RuleBase {
 
     public void addProcess( final Process process ) {
         // XXX: could use a synchronized(processes) here.
-        lock();
+        kBaseInternal_lock();
         try {
             internalAddProcess( process );
         } finally {
-            unlock();
+            kBaseInternal_unlock();
         }
     }
 
@@ -1157,10 +1157,10 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void removeProcess( final String id ) {
-        internalRemoveProcess( id );
+        kBaseInternal_removeProcess( id );
     }
 
-    public void internalRemoveProcess( String id ) {
+    public void kBaseInternal_removeProcess(String id ) {
         Process process = this.processes.get( id );
         if ( process == null ) {
             throw new IllegalArgumentException( "Process '" + id + "' does not exist for this Rule Base." );
@@ -1255,7 +1255,7 @@ public class KnowledgeBaseImpl implements RuleBase {
 
             List<Function> functionsToBeRemoved = pkg.removeFunctionsGeneratedFromResource(resource);
             for (Function function : functionsToBeRemoved) {
-                internalRemoveFunction(pkg.getName(), function.getName());
+                kBaseInternal_removeFunction(pkg.getName(), function.getName());
             }
 
             List<Process> processesToBeRemoved = pkg.removeProcessesGeneratedFromResource(resource);

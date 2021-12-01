@@ -90,7 +90,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     private final AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
     private final AtomicBoolean flushingUpdates = new AtomicBoolean( false );
 
-    private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
+    private final AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
 
     public SessionsAwareKnowledgeBase() {
         this(RuleBaseFactory.newKnowledgeBase());
@@ -243,14 +243,12 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
         for ( InternalWorkingMemory wm : getWorkingMemories() ) {
             wm.flushPropagations();
         }
-        delegate.internalAddPackages(clonedPkgs, statefulSessions);
+        delegate.kBaseInternal_addPackages(clonedPkgs, statefulSessions);
     }
 
     @Override
     public void removeKiePackage(String packageName) {
-        enqueueModification( () -> {
-            delegate.removeKiePackage(packageName, statefulSessions);
-        });
+        enqueueModification( () -> delegate.kBaseInternal_removePackage(packageName, statefulSessions) );
     }
 
     @Override
@@ -289,13 +287,13 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     }
 
     private void lockAndDeactivate() {
-        delegate.lock();
+        delegate.kBaseInternal_lock();
         deactivateAllSessions();
     }
 
     private void unlockAndActivate() {
         activateAllSessions();
-        delegate.unlock();
+        delegate.kBaseInternal_unlock();
     }
 
     private boolean tryDeactivateAllSessions() {
@@ -319,13 +317,13 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     private boolean tryLockAndDeactivate() {
         if ( sessionDeactivationsCounter.incrementAndGet() > 1 ) {
-            delegate.writeLock();
+            delegate.kBaseInternal_writeLock();
             return true;
         }
 
-        boolean locked = delegate.tryWriteLock();
+        boolean locked = delegate.kBaseInternal_tryWriteLock();
         if ( locked && !tryDeactivateAllSessions() ) {
-            delegate.writeUnlock();
+            delegate.kBaseInternal_writeUnlock();
             locked = false;
         }
 
@@ -562,7 +560,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public void addRules(Collection<RuleImpl> rules ) throws InvalidPatternException {
-        enqueueModification( () -> delegate.internalAddRules( rules, statefulSessions ) );
+        enqueueModification( () -> delegate.kBaseInternal_addRules( rules, statefulSessions ) );
     }
 
     @Override
@@ -572,17 +570,17 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public void removeRule( final String packageName, final String ruleName ) {
-        enqueueModification( () -> delegate.internalRemoveRule(packageName, ruleName, statefulSessions) );
+        enqueueModification( () -> delegate.kBaseInternal_removeRule(packageName, ruleName, statefulSessions) );
     }
 
     @Override
     public void removeRules( Collection<RuleImpl> rules ) {
-        enqueueModification( () -> delegate.internalRemoveRules( rules, statefulSessions ) );
+        enqueueModification( () -> delegate.kBaseInternal_removeRules( rules, statefulSessions ) );
     }
 
     @Override
     public void removeFunction( final String packageName, final String functionName ) {
-        enqueueModification( () -> delegate.internalRemoveFunction( packageName, functionName ) );
+        enqueueModification( () -> delegate.kBaseInternal_removeFunction( packageName, functionName ) );
     }
 
     @Override
@@ -592,7 +590,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public void removeProcess( final String id ) {
-        enqueueModification( () -> delegate.internalRemoveProcess( id ) );
+        enqueueModification( () -> delegate.kBaseInternal_removeProcess( id ) );
     }
 
     @Override
