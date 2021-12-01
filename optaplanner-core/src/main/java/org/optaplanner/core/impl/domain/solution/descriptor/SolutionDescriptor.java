@@ -931,12 +931,9 @@ public class SolutionDescriptor<Solution_> {
      * @param scoreDirector never null
      * @return {@code >= 0}
      */
-    public int getMovableEntityCount(ScoreDirector<Solution_> scoreDirector) {
+    public boolean hasMovableEntities(ScoreDirector<Solution_> scoreDirector) {
         return extractAllEntitiesStream(scoreDirector.getWorkingSolution())
-                .mapToInt(entity -> findEntityDescriptorOrFail(entity.getClass()).isMovable(scoreDirector, entity)
-                        ? 1
-                        : 0)
-                .sum();
+                .anyMatch(entity -> findEntityDescriptorOrFail(entity.getClass()).isMovable(scoreDirector, entity));
     }
 
     /**

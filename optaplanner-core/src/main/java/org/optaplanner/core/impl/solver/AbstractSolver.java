@@ -87,7 +87,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     }
 
     protected void runPhases(SolverScope<Solution_> solverScope) {
-        if (solverScope.getSolutionDescriptor().getMovableEntityCount(solverScope.getScoreDirector()) == 0) {
+        if (!solverScope.getSolutionDescriptor().hasMovableEntities(solverScope.getScoreDirector())) {
             logger.info("Skipped all phases ({}): out of {} planning entities, none are movable (non-pinned).",
                     phaseList.size(),
                     solverScope.getSolutionDescriptor().getEntityCount(solverScope.getWorkingSolution()));
