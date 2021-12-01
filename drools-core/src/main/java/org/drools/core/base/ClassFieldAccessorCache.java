@@ -23,8 +23,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.drools.reflective.ComponentsFactory;
-import org.drools.reflective.util.ByteArrayClassLoader;
+import org.drools.wiring.api.ComponentsFactory;
+import org.drools.wiring.api.util.ByteArrayClassLoader;
 
 import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
 
@@ -164,7 +164,7 @@ public class ClassFieldAccessorCache {
                 throw new RuntimeException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
             }
 
-            this.byteArrayClassLoader = AccessController.doPrivileged( (PrivilegedAction<org.drools.reflective.util.ByteArrayClassLoader>)
+            this.byteArrayClassLoader = AccessController.doPrivileged( (PrivilegedAction<ByteArrayClassLoader>)
                     () -> ComponentsFactory.createByteArrayClassLoader(parentClassLoader) );
         }
 

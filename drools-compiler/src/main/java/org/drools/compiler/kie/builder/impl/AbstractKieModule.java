@@ -41,7 +41,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.StringUtils;
-import org.drools.reflective.ResourceProvider;
+import org.drools.wiring.api.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;

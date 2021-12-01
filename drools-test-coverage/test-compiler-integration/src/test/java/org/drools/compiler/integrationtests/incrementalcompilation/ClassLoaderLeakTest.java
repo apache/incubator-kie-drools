@@ -16,7 +16,7 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -138,7 +138,7 @@ public class ClassLoaderLeakTest {
             }
 
             KieProject kp = (( KieContainerImpl ) kieContainer).getKieProject();
-            ProjectClassLoader cl = ( ProjectClassLoader ) kp.getClassLoader();
+            ProjectClassLoader cl = (ProjectClassLoader) kp.getClassLoader();
             System.out.println(String.format("ProjectClassLoader.store size: %d, " + "retained bytes: %d.",
                     cl.getStore().size(),
                     cl.getStore().values().stream()

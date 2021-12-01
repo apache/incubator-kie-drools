@@ -31,7 +31,7 @@ import java.util.Set;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
-import org.drools.reflective.util.ByteArrayClassLoader;
+import org.drools.wiring.api.util.ByteArrayClassLoader;
 import org.kie.memorycompiler.WritableClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
@@ -39,9 +39,9 @@ import org.mvel2.asm.Type;
 
 import static java.lang.reflect.Modifier.isAbstract;
 
-import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
-import static org.drools.reflective.util.ClassUtils.convertPrimitiveNameToType;
-import static org.drools.reflective.util.ClassUtils.convertToPrimitiveType;
+import static org.drools.wiring.api.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.wiring.api.util.ClassUtils.convertPrimitiveNameToType;
+import static org.drools.wiring.api.util.ClassUtils.convertToPrimitiveType;
 import static org.mvel2.asm.Opcodes.AASTORE;
 import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
 import static org.mvel2.asm.Opcodes.ACC_STATIC;

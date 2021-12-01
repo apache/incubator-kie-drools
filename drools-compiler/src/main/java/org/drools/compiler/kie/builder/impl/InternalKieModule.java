@@ -36,8 +36,8 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.internal.InternalResource;
-import org.drools.reflective.ResourceProvider;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.ResourceProvider;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
+import static org.drools.wiring.api.classloader.ProjectClassLoader.createProjectClassLoader;
 
 public interface InternalKieModule extends KieModule, Serializable {
 

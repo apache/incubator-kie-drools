@@ -39,7 +39,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.CanonicalKieModule;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.memorycompiler.CompilationProblem;

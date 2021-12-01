@@ -21,7 +21,7 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.test.model.Address;
 import org.drools.core.test.model.Person;
 import org.drools.mvel.MVELDialectRuntimeData;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 

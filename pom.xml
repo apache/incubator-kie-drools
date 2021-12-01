@@ -149,8 +149,7 @@
     <module>kie-archetypes</module>
     <module>kie-util</module>
     <module>kie-memory-compiler</module>
-    <module>drools-core-reflective</module>
-    <module>drools-core-dynamic</module>
+    <module>drools-wiring</module>
     <module>kie-test-util</module>
     <module>drools-core</module>
     <module>drools-kiesession</module>

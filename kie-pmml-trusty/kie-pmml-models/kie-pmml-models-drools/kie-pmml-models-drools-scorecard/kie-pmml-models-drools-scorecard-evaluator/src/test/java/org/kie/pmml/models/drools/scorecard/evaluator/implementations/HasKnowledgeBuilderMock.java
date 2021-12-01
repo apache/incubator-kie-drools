@@ -18,7 +18,7 @@ package org.kie.pmml.models.drools.scorecard.evaluator.implementations;
 import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.exceptions.KiePMMLException;

@@ -37,7 +37,7 @@ import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;

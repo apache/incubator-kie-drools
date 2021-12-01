@@ -51,8 +51,9 @@ public interface ServiceRegistry extends Service {
 
     class Impl implements ServiceRegistry {
 
-        private static final String DYNAMIC_IMPL = "org.drools.dynamic.DynamicServiceRegistrySupplier";
-        private static final String STATIC_IMPL = "org.drools.statics.StaticServiceRegistrySupplier";
+        private static final String DYNAMIC_IMPL = "org.drools.wiring.dynamic.DynamicServiceRegistrySupplier";
+        private static final String KOGITO_IMPL = "org.kie.kogito.wiring.statics.KogitoStaticServiceRegistrySupplier";
+        private static final String STATIC_IMPL = "org.drools.wiring.statics.StaticServiceRegistrySupplier";
 
         private static Supplier<ServiceRegistry> supplier;
 
@@ -85,7 +86,7 @@ public interface ServiceRegistry extends Service {
 
         public static ServiceRegistry getServiceRegistry() {
             if (supplier == null) {
-                supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
+                supplier = instanceFromNames(DYNAMIC_IMPL, KOGITO_IMPL, STATIC_IMPL);
             }
             return supplier.get();
         }

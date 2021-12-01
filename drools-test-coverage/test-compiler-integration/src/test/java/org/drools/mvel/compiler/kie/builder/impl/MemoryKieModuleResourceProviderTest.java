@@ -21,7 +21,7 @@ import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.compiler.io.memory.MemoryFolder;
-import org.drools.reflective.ResourceProvider;
+import org.drools.wiring.api.ResourceProvider;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;

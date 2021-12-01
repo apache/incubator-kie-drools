@@ -23,7 +23,7 @@ import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.drools.core.addon.TypeResolver;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
