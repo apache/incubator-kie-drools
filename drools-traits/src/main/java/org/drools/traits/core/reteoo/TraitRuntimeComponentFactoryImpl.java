@@ -39,7 +39,7 @@ public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImp
 
     @Override
     public TraitFactoryImpl getTraitFactory(RuleBase knowledgeBase) {
-        return traitFactoryCache.computeIfAbsent(knowledgeBase.getId(), id -> new TraitFactoryImpl(knowledgeBase));
+        return traitFactoryCache.computeIfAbsent(knowledgeBase == null ? "" : knowledgeBase.getId(), id -> new TraitFactoryImpl(knowledgeBase));
     }
 
     @Override
