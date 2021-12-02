@@ -17,7 +17,7 @@ package org.drools.core.time;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
-import org.drools.reflective.ComponentsFactory;
+import org.drools.wiring.api.ComponentsFactory;
 
 public class KogitoTimerServiceFactory {
 

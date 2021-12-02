@@ -24,8 +24,7 @@
   </properties>
 
   <modules>
-    <module>drools-core-static</module>
-    <module>drools-core-dynamic</module>
+    <module>kogito-drools-wiring-static</module>
     <module>drools-core</module>
     <module>drools-compiler</module>
     <module>kogito-drools-model</module>

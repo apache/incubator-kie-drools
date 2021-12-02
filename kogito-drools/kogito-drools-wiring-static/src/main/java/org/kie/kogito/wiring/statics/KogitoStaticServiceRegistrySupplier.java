@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.statics;
+package org.kie.kogito.wiring.statics;
 
-import java.lang.reflect.Constructor;
+import java.util.function.Supplier;
 
-public class SimpleInstanceCreator {
-    static Constructor<?> constructor(String className) {
-        try {
-            return Class.forName(className).getConstructor();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+import org.kie.api.internal.utils.ServiceRegistry;
 
-    static Object instance(String className) {
-        try {
-            return Class.forName(className).newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+public class KogitoStaticServiceRegistrySupplier implements Supplier<ServiceRegistry> {
+
+    @Override
+    public ServiceRegistry get() {
+        return KogitoStaticServiceRegistry.INSTANCE;
     }
 }

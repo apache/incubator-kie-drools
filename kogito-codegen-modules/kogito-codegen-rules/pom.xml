@@ -89,7 +89,7 @@
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>drools-core-static</artifactId>
+            <artifactId>kogito-drools-wiring-static</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

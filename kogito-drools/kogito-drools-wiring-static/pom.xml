@@ -10,11 +10,16 @@
      <version>2.0.0-SNAPSHOT</version>
    </parent>
 
-    <artifactId>drools-core-static</artifactId>
+    <artifactId>kogito-drools-wiring-static</artifactId>
 
-    <name>Kogito :: Drools :: Drools Core Static</name>
+    <name>Kogito :: Drools :: Drools Wiring Static</name>
+
+    <description>
+        This module implements the wiring API in a static hardcoded way, that is native compilation friendly, also adding kogito specific services.
+    </description>
+
     <properties>
-      <java.module.name>org.kie.kogito.drools.core.static</java.module.name>
+      <java.module.name>org.kie.kogito.wiring.static</java.module.name>
     </properties>
 
     <dependencyManagement>
@@ -32,7 +37,11 @@
     <dependencies>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-core-reflective</artifactId>
+        <artifactId>drools-wiring-api</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-wiring-static</artifactId>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>

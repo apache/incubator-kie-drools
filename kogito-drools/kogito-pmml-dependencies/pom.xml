@@ -65,7 +65,7 @@
         </exclusion>
         <exclusion>
           <groupId>org.drools</groupId>
-          <artifactId>drools-core-reflective</artifactId>
+          <artifactId>drools-wiring-api</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.drools</groupId>

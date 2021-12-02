@@ -29,8 +29,8 @@ import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.RuleUnitData;
 
-import static org.drools.reflective.util.ClassUtils.getSetter;
-import static org.drools.reflective.util.ClassUtils.getter2property;
+import static org.drools.wiring.api.util.ClassUtils.getSetter;
+import static org.drools.wiring.api.util.ClassUtils.getter2property;
 
 public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
 

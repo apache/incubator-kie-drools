@@ -55,13 +55,13 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.kie.kogito</groupId>
-                    <artifactId>drools-core-static</artifactId>
+                    <artifactId>kogito-drools-wiring-static</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>drools-core-dynamic</artifactId>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-wiring-dynamic</artifactId>
         </dependency>
 
         <dependency>
