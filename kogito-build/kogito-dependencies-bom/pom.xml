@@ -16,8 +16,8 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.5.0.Final</version.io.quarkus>
-    <version.io.quarkus.quarkus-test-maven>2.5.0.Final</version.io.quarkus.quarkus-test-maven>
+    <version.io.quarkus>2.5.1.Final</version.io.quarkus>
+    <version.io.quarkus.quarkus-test-maven>2.5.1.Final</version.io.quarkus.quarkus-test-maven>
     <version.org.springframework.boot>2.3.10.RELEASE</version.org.springframework.boot>
 
     <!-- dependencies versions -->
@@ -30,7 +30,7 @@
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
     <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
-    <version.com.google.protobuf>3.15.8</version.com.google.protobuf>
+    <version.com.google.protobuf>3.19.1</version.com.google.protobuf>
     <!-- currently required for integration test only -->
     <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
 
@@ -52,7 +52,7 @@
     <version.io.fabric8.kubernetes-client>5.8.0</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.7.5</version.io.micrometer>
     <version.io.serverlessworkflow>2.0.0.Final</version.io.serverlessworkflow>
-    <version.io.smallrye-open-api-core>2.1.15</version.io.smallrye-open-api-core>
+    <version.io.smallrye-open-api-core>2.1.16</version.io.smallrye-open-api-core>
     <version.io.smallrye.reactive.mutiny-vertx-web-client>2.15.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
     <version.io.vertx>4.2.1</version.io.vertx>
