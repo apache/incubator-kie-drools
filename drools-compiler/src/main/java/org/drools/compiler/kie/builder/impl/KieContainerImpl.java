@@ -47,7 +47,7 @@ import org.drools.core.util.ClassUtils;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatefulSessionPool;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;

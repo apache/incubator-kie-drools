@@ -233,36 +233,54 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-core-reflective</artifactId>
+        <artifactId>drools-wiring-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-core-reflective</artifactId>
+        <artifactId>drools-wiring-api</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-core-reflective</artifactId>
+        <artifactId>drools-wiring-api</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-core-dynamic</artifactId>
+        <artifactId>drools-wiring-dynamic</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-core-dynamic</artifactId>
+        <artifactId>drools-wiring-dynamic</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-core-dynamic</artifactId>
+        <artifactId>drools-wiring-dynamic</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-wiring-static</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-wiring-static</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-wiring-static</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>

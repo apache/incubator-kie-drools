@@ -18,17 +18,17 @@ package org.kie.pmml.evaluator.assembler.implementations;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class HasKnowledgeBuilderImplTest {
 

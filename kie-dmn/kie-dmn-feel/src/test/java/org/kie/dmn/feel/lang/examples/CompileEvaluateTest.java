@@ -1,18 +1,11 @@
 package org.kie.dmn.feel.lang.examples;
 
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.kie.dmn.feel.util.DynamicTypeUtils.*;
-
-import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;import org.hamcrest.core.IsNull;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,12 +15,20 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.lang.FEELProperty;
-import org.kie.dmn.feel.lang.FEELType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.GenListType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertTrue;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.prototype;
 
 public class CompileEvaluateTest {
     private static final Logger LOG = LoggerFactory.getLogger(CompileEvaluateTest.class);
@@ -121,5 +122,49 @@ public class CompileEvaluateTest {
         Object result = feel.evaluate(compiledExpression, inputs);
         
         assertThat(result, is("John Doe"));
+    }
+    
+    @Test
+    public void testHyphenInProperty() {
+        CompilerContext ctx = feel.newCompilerContext();
+        ctx.addInputVariableType( "input", new MapBackedType().addField( "Primary-Key", BuiltInType.STRING ).addField( "Value", BuiltInType.STRING ) );
+        CompiledExpression compiledExpression = feel.compile( "input.Primary-Key", ctx );
+        assertTrue(errors.isEmpty());
+        
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put( "input", prototype(entry("Primary-Key", "k987")) );
+        Object result = feel.evaluate(compiledExpression, inputs);
+        assertThat(result, is("k987"));
+        assertTrue(errors.isEmpty());
+    }
+    
+    @Test
+    public void testHyphenInPropertyOfCollectionForProjection() {
+        MapBackedType compositeType = new MapBackedType().addField( "Primary-Key", BuiltInType.STRING ).addField( "Value", BuiltInType.STRING );
+        CompilerContext ctx = feel.newCompilerContext();
+        ctx.addInputVariableType( "input", new GenListType(compositeType) );
+        CompiledExpression compiledExpression = feel.compile( "input.Primary-Key", ctx );
+        assertTrue(errors.isEmpty());
+        
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put( "input", Arrays.asList(prototype(entry("Primary-Key", "k987"))) );
+        Object result = feel.evaluate(compiledExpression, inputs);
+        assertThat(result, is(Arrays.asList("k987")));
+        assertTrue(errors.isEmpty());
+    }
+    
+    @Test
+    public void testHyphenInPropertyOfCollectionForAccessor() {
+        MapBackedType compositeType = new MapBackedType().addField( "Primary-Key", BuiltInType.STRING ).addField( "Value", BuiltInType.STRING );
+        CompilerContext ctx = feel.newCompilerContext();
+        ctx.addInputVariableType( "my input", new GenListType(compositeType) );
+        CompiledExpression compiledExpression = feel.compile( "my input[1].Primary-Key", ctx );
+        assertTrue(errors.isEmpty());
+        
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put( "my input", Arrays.asList(prototype(entry("Primary-Key", "k987"))) );
+        Object result = feel.evaluate(compiledExpression, inputs);
+        assertThat(result, is("k987"));
+        assertTrue(errors.isEmpty());
     }
 }

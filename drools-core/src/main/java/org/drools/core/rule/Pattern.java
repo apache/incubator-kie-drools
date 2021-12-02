@@ -47,9 +47,9 @@ import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
-import static org.drools.reflective.util.ClassUtils.isFinal;
-import static org.drools.reflective.util.ClassUtils.isInterface;
+import static org.drools.wiring.api.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.wiring.api.util.ClassUtils.isFinal;
+import static org.drools.wiring.api.util.ClassUtils.isInterface;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
 public class Pattern

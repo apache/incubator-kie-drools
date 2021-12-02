@@ -67,7 +67,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.xml.jaxb.util.JaxbListWrapper;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;

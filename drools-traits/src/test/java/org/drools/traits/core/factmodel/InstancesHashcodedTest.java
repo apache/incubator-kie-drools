@@ -25,8 +25,8 @@ import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.dynamic.PackageClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Test;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
@@ -53,7 +53,7 @@ public class InstancesHashcodedTest {
         byte[] d = builder.buildClass( classDef, prjClassLoader );
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
         data.write( convertClassToResourcePath(classDef.getClassName()), d );
-        ClassLoader classLoader = new PackageClassLoader(data, prjClassLoader);
+        ClassLoader classLoader = new PackageClassLoader(data.getStore(), prjClassLoader);
         
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );

@@ -3087,4 +3087,46 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
         assertThat(dmnResult.getDecisionResultByName("hardcoded").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
     }
+    
+    @Test
+    public void testHyphenInPropertyOfCollectionForAccessor() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("testHyphenInPropertyOfCollectionForAccessor.dmn", this.getClass());
+        runtime.addListener(new DMNRuntimeEventListener() {});
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_b5362305-17be-42d8-acec-f2621e3cc0e0", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("input", Arrays.asList(prototype(entry("Primary-Key", "k987"), entry("Value", "v47"))) );
+        
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        /*
+         * input.Primary-Key is a list projection: take all elements, and Stream+map using the accessor
+         * input[1].Primary-Key is picking the first element in the list, and using the accessor (only on the first element index=1)
+         */
+        assertThat(dmnResult.getDecisionResultByName("decision").getResult(), is(prototype(entry("correct", Arrays.asList("k987")),entry("incorrect", "k987"))));
+    }
+    
+    @Test
+    public void testHyphenInPropertyOfCollectionForAccessorMultiple() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("testHyphenInPropertyOfCollectionForAccessorMultiple.dmn", this.getClass());
+        runtime.addListener(new DMNRuntimeEventListener() {});
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_b5362305-17be-42d8-acec-f2621e3cc0e0", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("input", Arrays.asList(prototype(entry("Primary-Key", "k1"), entry("Value", 47)), prototype(entry("Primary-Key", "k2"), entry("Value", -9)), prototype(entry("Primary-Key", "k3"), entry("Value", 1))));
+        
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        /*
+         * input.Primary-Key is a list projection: take all elements, and Stream+map using the accessor
+         * input[Value>0].Primary-Key is filtering, then projecting
+         */
+        assertThat(dmnResult.getDecisionResultByName("decision").getResult(), is(prototype(entry("correct", Arrays.asList("k1", "k2", "k3")),entry("incorrect", Arrays.asList("k1", "k3")))));
+    }
 }

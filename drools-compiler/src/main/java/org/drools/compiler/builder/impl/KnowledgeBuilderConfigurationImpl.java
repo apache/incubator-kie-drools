@@ -46,7 +46,7 @@ import org.drools.core.xml.Handler;
 import org.drools.core.xml.SemanticModule;
 import org.drools.core.xml.SemanticModules;
 import org.drools.core.xml.WrapperSemanticModule;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResultSeverity;

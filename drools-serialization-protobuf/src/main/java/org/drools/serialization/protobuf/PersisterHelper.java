@@ -51,7 +51,7 @@ import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.Drools;
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.drools.serialization.protobuf.ProtobufMessages.Header;
 import org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex.Builder;
 import org.drools.serialization.protobuf.actions.ProtobufBehaviorExpireWMAction;

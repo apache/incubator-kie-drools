@@ -70,7 +70,7 @@ import org.drools.mvel.ConditionAnalyzer.MethodInvocation;
 import org.drools.mvel.ConditionAnalyzer.SingleCondition;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.extractors.MVELObjectClassFieldReader;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.mvel2.ParserConfiguration;

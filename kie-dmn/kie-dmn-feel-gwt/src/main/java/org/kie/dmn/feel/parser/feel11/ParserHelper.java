@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
@@ -41,6 +42,8 @@ import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.FilterPathExpressionContext;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.QualifiedNameContext;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.EvalHelper;
 
@@ -279,6 +282,46 @@ public class ParserHelper {
         int b = ctx.stop.getStopIndex();
         Interval interval = new Interval(a, b);
         return ctx.getStart().getInputStream().getText(interval);
+    }
+    
+    /**
+     * a specific heuristic for scope retrieval for filterPathExpression
+     */
+    public int fphStart(ParserRuleContext ctx, Parser parser) {
+        if (!(ctx instanceof FEEL_1_1Parser.FilterPathExpressionContext)) { // I expect in `var[1].name` for this param ctx=`var[1]` to be a filterPathExpression
+            return 0;
+        }
+        FilterPathExpressionContext ctx0 = (FEEL_1_1Parser.FilterPathExpressionContext) ctx;
+        boolean ctxSquared = ctx0.filter != null && ctx0.n0 != null;
+        if (!ctxSquared) { // I expect `var[1]` to be in the squared form `...[...]`
+            return 0;
+        }
+        ParserRuleContext ctx1 = ctx0.n0.getRuleContext(FEEL_1_1Parser.NonSignedUnaryExpressionContext.class, 0);
+        if (ctx1 == null) {
+            return 0;
+        }
+        ParserRuleContext ctx2 = ctx1.getRuleContext(FEEL_1_1Parser.UenpmPrimaryContext.class, 0);
+        if (ctx2 == null) {
+            return 0;
+        }
+        ParserRuleContext ctx3 = ctx2.getRuleContext(FEEL_1_1Parser.PrimaryNameContext.class, 0);
+        if (ctx3 == null) {
+            return 0;
+        }
+        QualifiedNameContext ctx4 = ctx3.getRuleContext(FEEL_1_1Parser.QualifiedNameContext.class, 0);
+        if (ctx4 == null) {
+            return 0;
+        } // I expect in this param ctx=`var[1]` for `var` to be a qualifiedName
+        for (String n : ctx4.qns) {
+            recoverScope(n);
+        }
+        return ctx4.qns.size();
+    }
+    
+    public void fphEnd(int times) {
+        for (int i = 0; i < times; i++) {
+            dismissScope();
+        }
     }
 
     public static List<Token> getAllTokens(final ParseTree ctx,

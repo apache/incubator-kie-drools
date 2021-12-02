@@ -43,7 +43,7 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.util.StringUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.reflective.ResourceProvider;
+import org.drools.wiring.api.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;

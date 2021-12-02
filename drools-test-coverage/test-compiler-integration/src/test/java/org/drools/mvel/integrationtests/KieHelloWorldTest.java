@@ -28,10 +28,10 @@ import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.mvel.compiler.Message;
-import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -108,7 +108,7 @@ public class KieHelloWorldTest {
 
         assertSame( kieProject.getClassLoader(), kcontainer.getClassLoader() );
 
-        ProjectClassLoader pcl = (( ProjectClassLoader ) kieProject.getClassLoader());
+        ProjectClassLoader pcl = ((ProjectClassLoader) kieProject.getClassLoader());
         assertNotNull( pcl.getStore().get("org/Person.class") );
     }
 

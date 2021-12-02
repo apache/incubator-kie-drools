@@ -56,7 +56,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.ClassUtils;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;

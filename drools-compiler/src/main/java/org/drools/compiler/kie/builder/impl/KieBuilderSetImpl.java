@@ -33,7 +33,7 @@ import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.io.impl.BaseResource;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieBaseModel;
