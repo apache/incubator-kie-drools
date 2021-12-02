@@ -38,7 +38,7 @@ import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.maven.integration.ArtifactResolver;
 import org.kie.util.maven.support.DependencyFilter;

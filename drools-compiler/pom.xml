@@ -25,7 +25,7 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-core-reflective</artifactId>
+      <artifactId>drools-wiring-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

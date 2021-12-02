@@ -44,8 +44,8 @@ import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Wireable;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
-import org.drools.reflective.ComponentsFactory;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.ComponentsFactory;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;

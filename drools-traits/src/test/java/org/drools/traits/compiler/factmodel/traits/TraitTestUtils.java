@@ -16,7 +16,7 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.drools.traits.core.util.StandaloneTraitFactory;
 
 public class TraitTestUtils {
