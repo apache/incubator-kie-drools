@@ -31,7 +31,7 @@ public class BetaNodeTest {
 
     @Test
     public void testEqualsObject() {
-        RuleBase kBase = RuleBaseFactory.newKnowledgeBase();
+        RuleBase kBase = RuleBaseFactory.newRuleBase();
 
         BuildContext buildContext = new BuildContext( kBase, Collections.emptyList() );
 

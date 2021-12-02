@@ -34,7 +34,7 @@ public class TupleSourceTest extends DroolsTestCase {
     @Test
     public void testObjectTupleConstructor() {
         KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
-        RuleBase kBase =  RuleBaseFactory.newKnowledgeBase(kconf);
+        RuleBase kBase =  RuleBaseFactory.newRuleBase(kconf);
         BuildContext          buildContext = new BuildContext(kBase, Collections.emptyList());
 
         final MockTupleSource source = new MockTupleSource(15, buildContext);
@@ -46,7 +46,7 @@ public class TupleSourceTest extends DroolsTestCase {
     public void testAddTupleSink() throws Exception {
 
         KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
-        RuleBase kBase = RuleBaseFactory.newKnowledgeBase(kconf);
+        RuleBase kBase = RuleBaseFactory.newRuleBase(kconf);
         BuildContext          buildContext = new BuildContext(kBase, Collections.emptyList());
 
         final MockTupleSource source       = new MockTupleSource(15, buildContext);

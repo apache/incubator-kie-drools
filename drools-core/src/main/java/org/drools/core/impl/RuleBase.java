@@ -48,14 +48,9 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.io.Resource;
 
 public interface RuleBase {
-
-    void addEventListener(KieBaseEventListener listener);
-    void removeEventListener(KieBaseEventListener listener);
-    Collection<KieBaseEventListener> getKieBaseEventListeners();
 
     Collection<KiePackage> getKiePackages();
     KiePackage getKiePackage( String packageName );

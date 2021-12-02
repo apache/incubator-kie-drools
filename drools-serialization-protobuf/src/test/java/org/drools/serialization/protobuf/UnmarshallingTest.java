@@ -101,7 +101,7 @@ public class UnmarshallingTest {
         }
         KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase( config ));
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase( config ));
         knowledgeBase.addPackages( kbuilder.getKnowledgePackages() );
 
         return knowledgeBase;

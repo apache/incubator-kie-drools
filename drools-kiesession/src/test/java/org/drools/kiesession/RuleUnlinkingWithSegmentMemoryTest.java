@@ -122,7 +122,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     
     public void setUp(int type) {
         KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
-        kBase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
+        kBase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kconf));
 
         buildContext = new BuildContext( kBase, Collections.emptyList() );
 

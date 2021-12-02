@@ -60,8 +60,8 @@ public class RuleBaseFactory {
      * @return
      *     The KnowledgeBase
      */
-    public static RuleBase newKnowledgeBase() {
-        return newKnowledgeBase( UUID.randomUUID().toString() );
+    public static RuleBase newRuleBase() {
+        return newRuleBase( UUID.randomUUID().toString() );
     }
 
     /**
@@ -76,8 +76,8 @@ public class RuleBaseFactory {
      * @return
      *     The KnowledgeBase
      */
-    public static RuleBase newKnowledgeBase(String kbaseId) {
-        return newKnowledgeBase( kbaseId, null );
+    public static RuleBase newRuleBase(String kbaseId) {
+        return newRuleBase( kbaseId, null );
     }
 
     /**
@@ -85,8 +85,8 @@ public class RuleBaseFactory {
      * @return
      *     The KnowledgeBase
      */
-    public static RuleBase newKnowledgeBase(KieBaseConfiguration conf) {
-        return newKnowledgeBase( UUID.randomUUID().toString(), conf );
+    public static RuleBase newRuleBase(KieBaseConfiguration conf) {
+        return newRuleBase( UUID.randomUUID().toString(), conf );
     }
 
     /**
@@ -101,7 +101,7 @@ public class RuleBaseFactory {
      * @return
      *     The KnowledgeBase
      */
-    public static RuleBase newKnowledgeBase(String kbaseId, KieBaseConfiguration conf) {
+    public static RuleBase newRuleBase(String kbaseId, KieBaseConfiguration conf) {
         return new KnowledgeBaseImpl( kbaseId, (RuleBaseConfiguration) conf);
     }
 

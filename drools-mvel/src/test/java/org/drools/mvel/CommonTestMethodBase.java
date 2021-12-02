@@ -135,7 +135,7 @@ public class CommonTestMethodBase {
         if (kBaseConfig == null) {
             kBaseConfig = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig == null ? RuleBaseFactory.newKnowledgeBase() : RuleBaseFactory.newKnowledgeBase(kBaseConfig));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig == null ? RuleBaseFactory.newRuleBase() : RuleBaseFactory.newRuleBase(kBaseConfig));
         kbase.addPackages( kbuilder.getKnowledgePackages());
         return kbase;
     }
@@ -146,7 +146,7 @@ public class CommonTestMethodBase {
         if (kbaseConf == null) {
             kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kbaseConf));
         kbase.addPackages(knowledgePackages);
         try {
             kbase = SerializationHelper.serializeObject(kbase);
@@ -166,7 +166,7 @@ public class CommonTestMethodBase {
         if (kbaseConf == null) {
             kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kbaseConf));
         kbase.addPackages(knowledgePackages);
         try {
             kbase = SerializationHelper.serializeObject(kbase);
@@ -262,7 +262,7 @@ public class CommonTestMethodBase {
     }
 
     protected KieBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kBaseConfig));
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kBaseConfig));
         try {
             kbase = SerializationHelper.serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader());
         } catch (Exception e) {

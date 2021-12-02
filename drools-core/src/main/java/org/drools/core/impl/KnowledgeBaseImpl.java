@@ -42,7 +42,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.AsyncReceiveNode;
@@ -70,7 +69,6 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
-import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
@@ -80,16 +78,10 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.Expires.Policy;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
-import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.KieSessionsPool;
-import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,8 +112,6 @@ public class KnowledgeBaseImpl implements RuleBase {
 
     private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<>();
 
-    private final KieBaseEventSupport eventSupport = new KieBaseEventSupport(this);
-
     // lock for entire rulebase, used for dynamic updates
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -135,8 +125,6 @@ public class KnowledgeBaseImpl implements RuleBase {
 
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
-
-    public final Set<KieBaseEventListener> kieBaseListeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private ReleaseId resolvedReleaseId;
     private String containerId;
@@ -188,44 +176,20 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
     }
 
-    public void addEventListener(KieBaseEventListener listener) {
-        synchronized (kieBaseListeners) {
-            if ( !kieBaseListeners.contains( listener ) ) {
-                eventSupport.addEventListener( listener );
-                kieBaseListeners.add( listener );
-            }
-        }
-    }
-
-    public void removeEventListener(KieBaseEventListener listener) {
-        synchronized (kieBaseListeners) {
-            eventSupport.removeEventListener( listener );
-            kieBaseListeners.remove( listener );
-        }
-    }
-
-    public Collection<KieBaseEventListener> getKieBaseEventListeners() {
-        return Collections.unmodifiableCollection( kieBaseListeners );
-    }
-
     public SessionConfiguration getSessionConfiguration() {
         return sessionConfiguration;
     }
 
     public void removeKiePackage(String packageName) {
-        kBaseInternal_removePackage(packageName, Collections.emptyList());
-    }
-
-    public void kBaseInternal_removePackage(String packageName, Collection<InternalWorkingMemory> workingMemories) {
         final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
         if (pkg == null) {
-            throw new IllegalArgumentException( "Package name '" + packageName +
-                                                "' does not exist for this Rule Base." );
+            throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
         }
-        this.eventSupport.fireBeforePackageRemoved( pkg );
+        kBaseInternal_removeRules( pkg.getRules(), Collections.emptyList() );
+        kBaseInternal_removePackage( pkg, Collections.emptyList() );
+    }
 
-        kBaseInternal_removeRules( pkg.getRules(), workingMemories );
-
+    public void kBaseInternal_removePackage(InternalKnowledgePackage pkg, Collection<InternalWorkingMemory> workingMemories) {
         // getting the list of referenced globals
         final Set<String> referencedGlobals = new HashSet<>();
         for (InternalKnowledgePackage pkgref : this.pkgs.values()) {
@@ -241,7 +205,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
         //and now the rule flows
         for ( String processName : new ArrayList<>(pkg.getRuleFlows().keySet()) ) {
-            kBaseInternal_removeProcess( processName );
+            removeProcess( processName );
         }
         // removing the package itself from the list
         this.pkgs.remove( pkg.getName() );
@@ -250,8 +214,6 @@ public class KnowledgeBaseImpl implements RuleBase {
 
         //clear all members of the pkg
         pkg.clear();
-
-        this.eventSupport.fireAfterPackageRemoved( pkg );
     }
 
     public Rule getRule(String packageName, String ruleName) {
@@ -325,28 +287,12 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void kBaseInternal_lock() {
-        // The lock is reentrant, so we need additional magic here to skip
-        // notifications for locked if this thread already has locked it.
-        boolean firstLock = !this.lock.isWriteLockedByCurrentThread();
-        if (firstLock) {
-            this.eventSupport.fireBeforeRuleBaseLocked();
-        }
         // Always lock to increase the counter
         this.lock.writeLock().lock();
-        if ( firstLock ) {
-            this.eventSupport.fireAfterRuleBaseLocked();
-        }
     }
 
     public void kBaseInternal_unlock() {
-        boolean lastUnlock = this.lock.getWriteHoldCount() == 1;
-        if (lastUnlock) {
-            this.eventSupport.fireBeforeRuleBaseUnlocked();
-        }
         this.lock.writeLock().unlock();
-        if ( lastUnlock ) {
-            this.eventSupport.fireAfterRuleBaseUnlocked();
-        }
     }
 
     public void readLock() {
@@ -355,6 +301,10 @@ public class KnowledgeBaseImpl implements RuleBase {
 
     public void readUnlock() {
         this.lock.readLock().unlock();
+    }
+
+    public ReentrantReadWriteLock kBaseInternal_getLock() {
+        return lock;
     }
 
     public void kBaseInternal_writeLock() {
@@ -401,7 +351,6 @@ public class KnowledgeBaseImpl implements RuleBase {
         // we need to merge all byte[] first, so that the root classloader can resolve classes
         for (InternalKnowledgePackage newPkg : clonedPkgs) {
             newPkg.checkValidity();
-            this.eventSupport.fireBeforePackageAdded( newPkg );
 
             newPkg.mergeTraitRegistry(this);
 
@@ -475,20 +424,18 @@ public class KnowledgeBaseImpl implements RuleBase {
             if ( newPkg.getRuleFlows() != null ) {
                 final Map<String, Process> flows = newPkg.getRuleFlows();
                 for ( Process process : flows.values() ) {
-                    internalAddProcess( process );
+                    kBaseInternal_addProcess( process );
                 }
             }
 
             if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
                 KieWeavers weavers = ServiceRegistry.getService( KieWeavers.class );
                 for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
-                    weavers.weave( asKieBase(this), newPkg, rtkKpg );
+                    weavers.weave( newPkg, rtkKpg );
                 }
             }
 
             ruleUnitDescriptionRegistry.add(newPkg.getRuleUnitDescriptionLoader());
-
-            this.eventSupport.fireAfterPackageAdded( newPkg );
         }
 
         if (config.isMultithreadEvaluation() && !hasMultiplePartitions()) {
@@ -851,7 +798,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
             KieWeavers weavers = ServiceRegistry.getService(KieWeavers.class);
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
-                weavers.merge( asKieBase(this), pkg, rtkKpg );
+                weavers.merge( pkg, rtkKpg );
             }
         }
     }
@@ -1060,9 +1007,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             RuleImpl rule = (RuleImpl) r;
             checkMultithreadedEvaluation( rule );
             this.hasMultipleAgendaGroups |= !rule.isMainAgendaGroup();
-            this.eventSupport.fireBeforeRuleAdded( rule );
             this.reteooBuilder.addRule(rule, workingMemories);
-            this.eventSupport.fireAfterRuleAdded( rule );
         }
     }
 
@@ -1075,64 +1020,48 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void removeRule( final String packageName, final String ruleName ) {
-        kBaseInternal_removeRule(packageName, ruleName, Collections.emptyList());
-    }
-
-    public void kBaseInternal_removeRule(String packageName, String ruleName, Collection<InternalWorkingMemory> workingMemories) {
         final InternalKnowledgePackage pkg = pkgs.get(packageName);
         if (pkg == null) {
             throw new IllegalArgumentException( "Package name '" + packageName +
-                                                "' does not exist for this Rule Base." );
+                    "' does not exist for this Rule Base." );
         }
 
         RuleImpl rule = pkg.getRule(ruleName);
         if (rule == null) {
             throw new IllegalArgumentException( "Rule name '" + ruleName +
-                                                "' does not exist in the Package '" +
-                    packageName +
-                                                "'." );
+                    "' does not exist in the Package '" + packageName + "'." );
         }
+        kBaseInternal_removeRule(pkg, rule, Collections.emptyList());
+    }
 
-        this.eventSupport.fireBeforeRuleRemoved(rule);
+    public void kBaseInternal_removeRule(InternalKnowledgePackage pkg, RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
         this.reteooBuilder.removeRules(Collections.singletonList(rule), workingMemories);
-        this.eventSupport.fireAfterRuleRemoved(rule);
-
         pkg.removeRule( rule );
         addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
     public void kBaseInternal_removeRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories) {
-        for (Rule rule : rules) {
-            this.eventSupport.fireBeforeRuleRemoved( (RuleImpl) rule );
-        }
         this.reteooBuilder.removeRules(rules, workingMemories);
-        for (Rule rule : rules) {
-            this.eventSupport.fireAfterRuleRemoved( (RuleImpl) rule );
-        }
     }
 
     public void removeFunction( final String packageName, final String functionName ) {
-        kBaseInternal_removeFunction( packageName, functionName );
-    }
-
-    public void kBaseInternal_removeFunction(String packageName, String functionName ) {
         final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
         if (pkg == null) {
             throw new IllegalArgumentException( "Package name '" + packageName +
-                                                "' does not exist for this Rule Base." );
+                    "' does not exist for this Rule Base." );
         }
+        kBaseInternal_removeFunction( pkg, functionName );
+    }
 
+    public void kBaseInternal_removeFunction(InternalKnowledgePackage pkg, String functionName ) {
         Function function = pkg.getFunctions().get( functionName );
         if (function == null) {
-            throw new IllegalArgumentException( "function name '" + packageName +
-                                                "' does not exist in the Package '" +
-                                                packageName +
-                                                "'." );
+            throw new IllegalArgumentException( "function name '" + functionName +
+                    "' does not exist in the Package '" + pkg.getName() + "'." );
         }
 
-        this.eventSupport.fireBeforeFunctionRemoved( pkg, functionName );
         pkg.removeFunction( functionName );
-        this.eventSupport.fireAfterFunctionRemoved( pkg, functionName );
+
         if (rootClassLoader instanceof ProjectClassLoader ) {
             ((ProjectClassLoader)rootClassLoader).undefineClass(function.getClassName());
         }
@@ -1144,31 +1073,27 @@ public class KnowledgeBaseImpl implements RuleBase {
         // XXX: could use a synchronized(processes) here.
         kBaseInternal_lock();
         try {
-            internalAddProcess( process );
+            kBaseInternal_addProcess( process );
         } finally {
             kBaseInternal_unlock();
         }
     }
 
-    private void internalAddProcess( Process process ) {
-        this.eventSupport.fireBeforeProcessAdded(process);
+    public void kBaseInternal_addProcess(Process process ) {
         this.processes.put( process.getId(), process );
-        this.eventSupport.fireAfterProcessAdded(process);
     }
 
     public void removeProcess( final String id ) {
-        kBaseInternal_removeProcess( id );
-    }
-
-    public void kBaseInternal_removeProcess(String id ) {
         Process process = this.processes.get( id );
         if ( process == null ) {
             throw new IllegalArgumentException( "Process '" + id + "' does not exist for this Rule Base." );
         }
-        this.eventSupport.fireBeforeProcessRemoved( process );
+        kBaseInternal_removeProcess( process );
+    }
+
+    public void kBaseInternal_removeProcess(Process process) {
         this.processes.remove( id );
         this.pkgs.get( process.getPackageName() ).removeRuleFlow( id );
-        this.eventSupport.fireAfterProcessRemoved( process );
     }
 
     public Process getProcess( final String id ) {
@@ -1255,7 +1180,7 @@ public class KnowledgeBaseImpl implements RuleBase {
 
             List<Function> functionsToBeRemoved = pkg.removeFunctionsGeneratedFromResource(resource);
             for (Function function : functionsToBeRemoved) {
-                kBaseInternal_removeFunction(pkg.getName(), function.getName());
+                kBaseInternal_removeFunction(pkg, function.getName());
             }
 
             List<Process> processesToBeRemoved = pkg.removeProcessesGeneratedFromResource(resource);
@@ -1314,127 +1239,4 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
         receiveNodes.add(node);
     }
-
-    public static KieBase asKieBase(RuleBase kBase) {
-        return kBase instanceof KieBase ? ((KieBase) kBase) : new KieBaseAdapter(kBase);
-    }
-
-    private static class KieBaseAdapter implements KieBase {
-        private final RuleBase delegate;
-
-        private KieBaseAdapter(RuleBase delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public Collection<KiePackage> getKiePackages() {
-            return delegate.getKiePackages();
-        }
-
-        @Override
-        public KiePackage getKiePackage(String packageName) {
-            return delegate.getKiePackage(packageName);
-        }
-
-        @Override
-        public void removeKiePackage(String packageName) {
-            delegate.removeKiePackage(packageName);
-        }
-
-        @Override
-        public Rule getRule(String packageName, String ruleName) {
-            return delegate.getRule(packageName, ruleName);
-        }
-
-        @Override
-        public void removeRule(String packageName, String ruleName) {
-            delegate.removeRule(packageName, ruleName);
-        }
-
-        @Override
-        public Query getQuery(String packageName, String queryName) {
-            return delegate.getQuery(packageName, queryName);
-        }
-
-        @Override
-        public void removeQuery(String packageName, String queryName) {
-            delegate.removeQuery(packageName, queryName);
-        }
-
-        @Override
-        public void removeFunction(String packageName, String functionName) {
-            delegate.removeFunction(packageName, functionName);
-        }
-
-        @Override
-        public FactType getFactType(String packageName, String typeName) {
-            return delegate.getFactType(packageName, typeName);
-        }
-
-        @Override
-        public Process getProcess(String processId) {
-            return delegate.getProcess(processId);
-        }
-
-        @Override
-        public void removeProcess(String processId) {
-            delegate.removeProcess(processId);
-        }
-
-        @Override
-        public Collection<Process> getProcesses() {
-            return delegate.getProcesses();
-        }
-
-        @Override
-        public KieSession newKieSession(KieSessionConfiguration conf, Environment environment) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public KieSession newKieSession() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public KieSessionsPool newKieSessionsPool(int initialSize) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Collection<? extends KieSession> getKieSessions() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public StatelessKieSession newStatelessKieSession() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Set<String> getEntryPointIds() {
-            return delegate.getEntryPointIds();
-        }
-
-        @Override
-        public void addEventListener(KieBaseEventListener listener) {
-            delegate.addEventListener(listener);
-        }
-
-        @Override
-        public void removeEventListener(KieBaseEventListener listener) {
-            delegate.removeEventListener(listener);
-        }
-
-        @Override
-        public Collection<KieBaseEventListener> getKieBaseEventListeners() {
-            return delegate.getKieBaseEventListeners();
-        }
-    }
-
 }

@@ -2212,7 +2212,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
             }
             throw new IllegalArgumentException("Could not parse knowledge. See the logs for details.");
         }
-        RuleBase kbase = RuleBaseFactory.newKnowledgeBase(conf);
+        RuleBase kbase = RuleBaseFactory.newRuleBase(conf);
         kbase.addPackages(Arrays.asList(getPackages()));
         return KnowledgeBaseFactory.newKnowledgeBase(kbase);
     }

@@ -43,7 +43,7 @@ public class ObjectHashMapTest {
     public void testEqualityWithResize() {        
         KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EqualityBehaviorOption.EQUALITY );
-        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kconf));
         KieSession ksession = kbase.newKieSession();
         
         int length = 1 * 300 * 1000 ;
@@ -86,7 +86,7 @@ public class ObjectHashMapTest {
     public void testIdentityWithResize() {        
         KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EqualityBehaviorOption.IDENTITY );
-        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kconf));
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kconf));
         KieSession ksession = kbase.newKieSession();
         
         int length = 1 * 300;

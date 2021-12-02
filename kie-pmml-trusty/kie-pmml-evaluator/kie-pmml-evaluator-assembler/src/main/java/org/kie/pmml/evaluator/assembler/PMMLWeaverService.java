@@ -17,14 +17,14 @@ public class PMMLWeaverService implements KieWeaverService<PMMLPackage> {
     }
 
     @Override
-    public void merge(KieBase kieBase, KiePackage kiePkg, PMMLPackage dmnpkg) {
+    public void merge(KiePackage kiePkg, PMMLPackage dmnpkg) {
         ResourceTypePackageRegistry registry = ((InternalKnowledgePackage) kiePkg).getResourceTypePackages();
         PMMLPackageImpl existing = registry.computeIfAbsent(ResourceType.PMML, rt -> new PMMLPackageImpl());
         existing.addAll(dmnpkg.getAllModels().values());
     }
 
     @Override
-    public void weave(KieBase kieBase, KiePackage kiePkg, PMMLPackage rtPkg) {
+    public void weave(KiePackage kiePkg, PMMLPackage rtPkg) {
         // nothing to do for now
     }
 }

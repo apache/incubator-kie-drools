@@ -92,12 +92,15 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     private final AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
 
+    private final KieBaseEventSupport eventSupport = new KieBaseEventSupport(this);
+    public final Set<KieBaseEventListener> kieBaseListeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
     public SessionsAwareKnowledgeBase() {
-        this(RuleBaseFactory.newKnowledgeBase());
+        this(RuleBaseFactory.newRuleBase());
     }
 
     public SessionsAwareKnowledgeBase(KieBaseConfiguration kbaseConfiguration) {
-        this(RuleBaseFactory.newKnowledgeBase(kbaseConfiguration));
+        this(RuleBaseFactory.newRuleBase(kbaseConfiguration));
     }
 
     public SessionsAwareKnowledgeBase(RuleBase delegate) {
@@ -243,12 +246,36 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
         for ( InternalWorkingMemory wm : getWorkingMemories() ) {
             wm.flushPropagations();
         }
+
+        for (InternalKnowledgePackage newPkg : clonedPkgs) {
+            this.eventSupport.fireBeforePackageAdded(newPkg);
+            for (Rule rule : newPkg.getRules()) {
+                this.eventSupport.fireBeforeRuleAdded( (RuleImpl) rule );
+            }
+        }
+
         delegate.kBaseInternal_addPackages(clonedPkgs, statefulSessions);
+
+        for (InternalKnowledgePackage newPkg : clonedPkgs) {
+            for (Rule rule : newPkg.getRules()) {
+                this.eventSupport.fireAfterRuleAdded( (RuleImpl) rule );
+            }
+            this.eventSupport.fireAfterPackageAdded(newPkg);
+        }
     }
 
     @Override
     public void removeKiePackage(String packageName) {
-        enqueueModification( () -> delegate.kBaseInternal_removePackage(packageName, statefulSessions) );
+        enqueueModification( () -> {
+            final InternalKnowledgePackage pkg = getPackage( packageName );
+            if (pkg == null) {
+                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
+            }
+            this.eventSupport.fireBeforePackageRemoved( pkg );
+            removeRules( (Collection<RuleImpl>) (Object) pkg.getRules() );
+            delegate.kBaseInternal_removePackage(pkg, statefulSessions);
+            this.eventSupport.fireAfterPackageRemoved( pkg );
+        } );
     }
 
     @Override
@@ -287,14 +314,40 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     }
 
     private void lockAndDeactivate() {
-        delegate.kBaseInternal_lock();
+        lock();
         deactivateAllSessions();
     }
 
     private void unlockAndActivate() {
         activateAllSessions();
-        delegate.kBaseInternal_unlock();
+        unlock();
     }
+
+    public void lock() {
+        // The lock is reentrant, so we need additional magic here to skip
+        // notifications for locked if this thread already has locked it.
+        boolean firstLock = !delegate.kBaseInternal_getLock().isWriteLockedByCurrentThread();
+        if (firstLock) {
+            this.eventSupport.fireBeforeRuleBaseLocked();
+        }
+        // Always lock to increase the counter
+        delegate.kBaseInternal_lock();
+        if ( firstLock ) {
+            this.eventSupport.fireAfterRuleBaseLocked();
+        }
+    }
+
+    public void unlock() {
+        boolean lastUnlock = delegate.kBaseInternal_getLock().getWriteHoldCount() == 1;
+        if (lastUnlock) {
+            this.eventSupport.fireBeforeRuleBaseUnlocked();
+        }
+        delegate.kBaseInternal_unlock();
+        if ( lastUnlock ) {
+            this.eventSupport.fireAfterRuleBaseUnlocked();
+        }
+    }
+
 
     private boolean tryDeactivateAllSessions() {
         Collection<InternalWorkingMemory> wms = getWorkingMemories();
@@ -360,17 +413,25 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public void addEventListener(KieBaseEventListener listener) {
-        delegate.addEventListener(listener);
+        synchronized (kieBaseListeners) {
+            if ( !kieBaseListeners.contains( listener ) ) {
+                eventSupport.addEventListener( listener );
+                kieBaseListeners.add( listener );
+            }
+        }
     }
 
     @Override
     public void removeEventListener(KieBaseEventListener listener) {
-        delegate.removeEventListener(listener);
+        synchronized (kieBaseListeners) {
+            eventSupport.removeEventListener( listener );
+            kieBaseListeners.remove( listener );
+        }
     }
 
     @Override
     public Collection<KieBaseEventListener> getKieBaseEventListeners() {
-        return delegate.getKieBaseEventListeners();
+        return Collections.unmodifiableCollection( kieBaseListeners );
     }
 
     @Override
@@ -560,7 +621,15 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public void addRules(Collection<RuleImpl> rules ) throws InvalidPatternException {
-        enqueueModification( () -> delegate.kBaseInternal_addRules( rules, statefulSessions ) );
+        enqueueModification( () -> {
+            for (Rule rule : rules) {
+                this.eventSupport.fireBeforeRuleAdded( (RuleImpl) rule );
+            }
+            delegate.kBaseInternal_addRules( rules, statefulSessions );
+            for (Rule rule : rules) {
+                this.eventSupport.fireAfterRuleAdded( (RuleImpl) rule );
+            }
+        } );
     }
 
     @Override
@@ -570,27 +639,76 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public void removeRule( final String packageName, final String ruleName ) {
-        enqueueModification( () -> delegate.kBaseInternal_removeRule(packageName, ruleName, statefulSessions) );
+        enqueueModification( () -> {
+            final InternalKnowledgePackage pkg = getPackage(packageName);
+            if (pkg == null) {
+                throw new IllegalArgumentException( "Package name '" + packageName +
+                        "' does not exist for this Rule Base." );
+            }
+
+            RuleImpl rule = pkg.getRule(ruleName);
+            if (rule == null) {
+                throw new IllegalArgumentException( "Rule name '" + ruleName +
+                        "' does not exist in the Package '" + packageName + "'." );
+            }
+            this.eventSupport.fireBeforeRuleRemoved(rule);
+            delegate.kBaseInternal_removeRule(pkg, rule, statefulSessions);
+            this.eventSupport.fireAfterRuleRemoved(rule);
+        } );
     }
 
     @Override
     public void removeRules( Collection<RuleImpl> rules ) {
-        enqueueModification( () -> delegate.kBaseInternal_removeRules( rules, statefulSessions ) );
+        enqueueModification( () -> {
+            for (Rule rule : rules) {
+                this.eventSupport.fireBeforeRuleRemoved( (RuleImpl) rule );
+            }
+            delegate.kBaseInternal_removeRules( rules, statefulSessions );
+            for (Rule rule : rules) {
+                this.eventSupport.fireAfterRuleRemoved( (RuleImpl) rule );
+            }
+        } );
     }
 
     @Override
     public void removeFunction( final String packageName, final String functionName ) {
-        enqueueModification( () -> delegate.kBaseInternal_removeFunction( packageName, functionName ) );
+        enqueueModification( () -> {
+            final InternalKnowledgePackage pkg = this.getPackage( packageName );
+            if (pkg == null) {
+                throw new IllegalArgumentException( "Package name '" + packageName +
+                        "' does not exist for this Rule Base." );
+            }
+            this.eventSupport.fireBeforeFunctionRemoved( pkg, functionName );
+            delegate.kBaseInternal_removeFunction( pkg, functionName );
+            this.eventSupport.fireAfterFunctionRemoved( pkg, functionName );
+        });
     }
 
     @Override
-    public void addProcess(Process process) {
-        delegate.addProcess(process);
+    public void addProcess( final Process process ) {
+        // XXX: could use a synchronized(processes) here.
+        lock();
+        try {
+            this.eventSupport.fireBeforeProcessAdded(process);
+            delegate.kBaseInternal_addProcess( process );
+            this.eventSupport.fireAfterProcessAdded(process);
+        } finally {
+            unlock();
+        }
     }
+
 
     @Override
     public void removeProcess( final String id ) {
-        enqueueModification( () -> delegate.kBaseInternal_removeProcess( id ) );
+        enqueueModification( () -> {
+            Process process = getProcess( id );
+            if ( process == null ) {
+                throw new IllegalArgumentException( "Process '" + id + "' does not exist for this Rule Base." );
+            }
+            this.eventSupport.fireBeforeProcessRemoved( process );
+            delegate.kBaseInternal_removeProcess( process );
+            this.eventSupport.fireAfterProcessRemoved( process );
+        } );
     }
 
     @Override

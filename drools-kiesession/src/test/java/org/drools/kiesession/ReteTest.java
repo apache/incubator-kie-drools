@@ -426,7 +426,7 @@ public class ReteTest extends DroolsTestCase {
         properties.setProperty("drools.shadowProxyExcludes",
                                "org.drools.core.test.model.Cheese");
         RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newKnowledgeBase(conf);
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newRuleBase(conf);
         buildContext = new BuildContext(kBase, Collections.emptyList());
         final StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl(1L, kBase);
 

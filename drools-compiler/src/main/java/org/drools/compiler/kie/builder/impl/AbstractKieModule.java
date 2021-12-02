@@ -217,7 +217,7 @@ public abstract class AbstractKieModule
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
 
-        RuleBase kBase = RuleBaseFactory.newKnowledgeBase(kBaseModel.getName(), conf );
+        RuleBase kBase = RuleBaseFactory.newRuleBase(kBaseModel.getName(), conf );
         kBase.addPackages( pkgs );
         return KnowledgeBaseFactory.newKnowledgeBase(kBase);
     }

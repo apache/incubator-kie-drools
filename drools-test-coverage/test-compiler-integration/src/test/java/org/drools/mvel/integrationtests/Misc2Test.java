@@ -450,9 +450,9 @@ public class Misc2Test {
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener( listener );
         kbase.addEventListener( listener );
-        assertEquals( 1, ( (RuleBase) kbase ).getKieBaseEventListeners().size() );
+        assertEquals( 1, kbase.getKieBaseEventListeners().size() );
         kbase.removeEventListener( listener );
-        assertEquals( 0, ( (RuleBase) kbase ).getKieBaseEventListeners().size() );
+        assertEquals( 0, kbase.getKieBaseEventListeners().size() );
     }
 
     @Test

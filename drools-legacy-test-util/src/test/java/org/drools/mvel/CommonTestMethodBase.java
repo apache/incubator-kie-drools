@@ -135,7 +135,7 @@ public class CommonTestMethodBase {
         if (kBaseConfig == null) {
             kBaseConfig = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig == null ? RuleBaseFactory.newKnowledgeBase() : RuleBaseFactory.newKnowledgeBase(kBaseConfig));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig == null ? RuleBaseFactory.newRuleBase() : RuleBaseFactory.newRuleBase(kBaseConfig));
         kbase.addPackages( kbuilder.getKnowledgePackages());
         return kbase;
     }
@@ -146,7 +146,7 @@ public class CommonTestMethodBase {
         if (kbaseConf == null) {
             kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kbaseConf));
         kbase.addPackages(knowledgePackages);
         return kbase;
     }
@@ -161,7 +161,7 @@ public class CommonTestMethodBase {
         if (kbaseConf == null) {
             kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kbaseConf));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kbaseConf));
         kbase.addPackages(knowledgePackages);
         return kbase;
     }
@@ -252,7 +252,7 @@ public class CommonTestMethodBase {
     }
 
     protected KieBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        return KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newKnowledgeBase(kBaseConfig));
+        return KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kBaseConfig));
     }
 
     protected KieBase loadKnowledgeBase(String... classPathResources) {
