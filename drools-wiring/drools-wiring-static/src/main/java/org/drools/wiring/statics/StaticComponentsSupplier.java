@@ -46,7 +46,7 @@ public class StaticComponentsSupplier implements ComponentsSupplier {
                 final byte[] bytes,
                 final ProtectionDomain domain) {
             throw new UnsupportedOperationException(
-                    "The artifact drools-core-static does not support this operation, try using drools-core-dynamic instead.");
+                    "The artifact org.drools:drools-wiring-static does not support this operation, try using org.drools:drools-wiring-dynamic instead.");
         }
     }
 

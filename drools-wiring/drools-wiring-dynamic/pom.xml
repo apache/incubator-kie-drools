@@ -14,6 +14,10 @@
 
   <name>Drools :: Wiring :: Dynamic</name>
 
+  <description>
+    This module implements the wiring API using the dynamic service discovering mechanism based on kie-conf files.
+  </description>
+
   <properties>
     <java.module.name>org.drools.wiring.dynamic</java.module.name>
   </properties>

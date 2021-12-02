@@ -14,6 +14,10 @@
 
     <name>Drools :: Wiring :: API</name>
 
+    <description>
+        This module defines an API for wiring classloaders and other services used in Drools.
+    </description>
+
     <properties>
         <java.module.name>org.drools.wiring.api</java.module.name>
     </properties>

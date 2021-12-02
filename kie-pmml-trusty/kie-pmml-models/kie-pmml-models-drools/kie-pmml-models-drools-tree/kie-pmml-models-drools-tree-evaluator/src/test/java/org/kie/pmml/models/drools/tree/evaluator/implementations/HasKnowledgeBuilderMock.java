@@ -24,8 +24,7 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
 
-public class
-HasKnowledgeBuilderMock implements HasKnowledgeBuilder {
+public class HasKnowledgeBuilderMock implements HasKnowledgeBuilder {
 
     private final KnowledgeBuilderImpl knowledgeBuilder;
 

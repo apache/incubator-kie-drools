@@ -27,6 +27,6 @@ public class DummyByteArrayClassLoaderTest {
                 new StaticComponentsSupplier.DummyByteArrayClassLoader();
         assertThatThrownBy(() -> cl.defineClass("test", null, null))
                 .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessageContaining("drools-core-static");
+                .hasMessageContaining("drools-wiring-static");
     }
 }

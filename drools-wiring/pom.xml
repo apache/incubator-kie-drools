@@ -11,6 +11,11 @@
   </parent>
 
   <name>Drools :: Wiring :: Parent</name>
+
+  <description>
+    Bundle module for drools services wiring mechanism.
+  </description>
+
   <groupId>org.drools</groupId>
   <artifactId>drools-wiring</artifactId>
   <packaging>pom</packaging>
