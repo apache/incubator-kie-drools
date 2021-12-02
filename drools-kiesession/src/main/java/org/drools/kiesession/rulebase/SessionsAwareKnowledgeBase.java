@@ -706,7 +706,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
                 throw new IllegalArgumentException( "Process '" + id + "' does not exist for this Rule Base." );
             }
             this.eventSupport.fireBeforeProcessRemoved( process );
-            delegate.kBaseInternal_removeProcess( process );
+            delegate.kBaseInternal_removeProcess( id, process );
             this.eventSupport.fireAfterProcessRemoved( process );
         } );
     }

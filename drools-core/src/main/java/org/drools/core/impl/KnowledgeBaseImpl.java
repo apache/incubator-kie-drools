@@ -1088,10 +1088,10 @@ public class KnowledgeBaseImpl implements RuleBase {
         if ( process == null ) {
             throw new IllegalArgumentException( "Process '" + id + "' does not exist for this Rule Base." );
         }
-        kBaseInternal_removeProcess( process );
+        kBaseInternal_removeProcess( id, process );
     }
 
-    public void kBaseInternal_removeProcess(Process process) {
+    public void kBaseInternal_removeProcess(String id, Process process) {
         this.processes.remove( id );
         this.pkgs.get( process.getPackageName() ).removeRuleFlow( id );
     }
