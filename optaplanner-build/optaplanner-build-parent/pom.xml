@@ -163,11 +163,6 @@
         <artifactId>kogito-quarkus-rules-deployment</artifactId>
         <version>${version.org.kie.kogito}</version>
       </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-core-dynamic</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
       <!-- Normal dependencies versions-->
       <dependency>
         <groupId>ch.qos.logback</groupId>

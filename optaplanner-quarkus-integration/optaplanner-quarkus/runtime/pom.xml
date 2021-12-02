@@ -61,7 +61,7 @@
             org.kie.kogito:drools-core brings in static.
           -->
           <groupId>org.drools</groupId>
-          <artifactId>drools-core-dynamic</artifactId>
+          <artifactId>drools-wiring-dynamic</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
