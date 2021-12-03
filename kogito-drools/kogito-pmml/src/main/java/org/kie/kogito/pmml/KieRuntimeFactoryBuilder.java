@@ -28,7 +28,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.model.Model;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
@@ -101,7 +102,7 @@ public class KieRuntimeFactoryBuilder {
     }
 
     private static KnowledgeBuilderImpl createEmptyKnowledgeBuilderImpl(final Resource resource) {
-        KnowledgeBaseImpl defaultKnowledgeBase = new KnowledgeBaseImpl("PMML", null);
+        InternalKnowledgeBase defaultKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase("PMML", null);
         return new KnowledgeBuilderImpl(defaultKnowledgeBase);
     }
 

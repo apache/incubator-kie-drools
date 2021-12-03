@@ -15,18 +15,18 @@
  */
 package org.drools.core.common;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.kiesession.agenda.DefaultAgenda;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public class KogitoDefaultAgenda extends DefaultAgenda implements KogitoInternalAgenda {
 
-    public KogitoDefaultAgenda(InternalKnowledgeBase kBase) {
+    public KogitoDefaultAgenda(RuleBase kBase) {
         super(kBase);
     }
 
-    public KogitoDefaultAgenda(InternalKnowledgeBase kBase, boolean initMain) {
+    public KogitoDefaultAgenda(RuleBase kBase, boolean initMain) {
         super(kBase, initMain);
     }
 

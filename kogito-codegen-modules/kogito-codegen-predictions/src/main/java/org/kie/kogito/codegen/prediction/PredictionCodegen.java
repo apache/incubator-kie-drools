@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.api.ApplicationSection;
@@ -85,7 +85,7 @@ public class PredictionCodegen extends AbstractGenerator {
     }
 
     private static List<PMMLResource> parsePredictions(Path path, List<Resource> resources) {
-        final InternalKnowledgeBase knowledgeBase = new KnowledgeBaseImpl("PMML", null);
+        final InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase("PMML", null);
         KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl(knowledgeBase);
         List<PMMLResource> toReturn = new ArrayList<>();
         resources.forEach(resource -> {

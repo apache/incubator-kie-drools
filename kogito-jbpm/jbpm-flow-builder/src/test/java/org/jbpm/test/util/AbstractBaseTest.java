@@ -16,7 +16,7 @@
 package org.jbpm.test.util;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,7 +42,7 @@ public abstract class AbstractBaseTest {
 
     @Deprecated
     public KieSession createKieSession() {
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ForceEagerActivationOption.YES);
         return builder.newKieBase().newKieSession(conf, null);
     }

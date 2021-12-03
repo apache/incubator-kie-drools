@@ -18,9 +18,10 @@ package org.drools.core.common;
 import java.io.Serializable;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl;
 import org.drools.core.spi.FactHandleFactory;
+import org.drools.kiesession.factory.WorkingMemoryFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.runtime.Environment;
 
 public class KogitoPhreakWorkingMemoryFactory implements WorkingMemoryFactory, Serializable {

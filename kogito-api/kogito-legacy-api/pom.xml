@@ -52,5 +52,9 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-kiesession</artifactId>
+    </dependency>
   </dependencies>
 </project>

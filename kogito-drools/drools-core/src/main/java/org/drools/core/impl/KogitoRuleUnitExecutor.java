@@ -35,12 +35,12 @@ public class KogitoRuleUnitExecutor extends RuleUnitExecutorImpl {
 
     private final Application application;
 
-    public KogitoRuleUnitExecutor(InternalKnowledgeBase knowledgeBase, Application application) {
+    public KogitoRuleUnitExecutor(RuleBase knowledgeBase, Application application) {
         super(knowledgeBase);
         this.application = application;
     }
 
-    public KogitoRuleUnitExecutor(InternalKnowledgeBase knowledgeBase, SessionConfiguration sessionConfiguration, Application application) {
+    public KogitoRuleUnitExecutor(RuleBase knowledgeBase, SessionConfiguration sessionConfiguration, Application application) {
         super(knowledgeBase, sessionConfiguration);
         this.application = application;
     }

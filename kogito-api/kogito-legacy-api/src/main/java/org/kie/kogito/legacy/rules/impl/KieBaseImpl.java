@@ -32,7 +32,6 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -44,6 +43,7 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.spi.FactHandleFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
@@ -143,6 +143,11 @@ public class KieBaseImpl implements InternalKnowledgeBase {
     }
 
     @Override
+    public KieSessionsPool getSessionPool() {
+        return delegate.getSessionPool();
+    }
+
+    @Override
     public Set<String> getEntryPointIds() {
         return delegate.getEntryPointIds();
     }
@@ -208,8 +213,23 @@ public class KieBaseImpl implements InternalKnowledgeBase {
     }
 
     @Override
+    public void addStatefulSession(InternalWorkingMemory wm) {
+        delegate.addStatefulSession(wm);
+    }
+
+    @Override
+    public KieSession newKieSession(KieSessionConfiguration conf, Environment environment, boolean fromPool) {
+        return delegate.newKieSession(conf, environment, fromPool);
+    }
+
+    @Override
     public int getWorkingMemoryCounter() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void registerSegmentPrototype(LeftTupleSource tupleSource, SegmentMemory smem) {
+        delegate.registerSegmentPrototype(tupleSource, smem);
     }
 
     @Override
@@ -283,8 +303,18 @@ public class KieBaseImpl implements InternalKnowledgeBase {
     }
 
     @Override
+    public InternalKieContainer getKieContainer() {
+        return delegate.getKieContainer();
+    }
+
+    @Override
     public Class<?> registerAndLoadTypeDefinition(String s, byte[] bytes) throws ClassNotFoundException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public InternalKnowledgePackage[] getPackages() {
+        return delegate.getPackages();
     }
 
     @Override
@@ -373,8 +403,8 @@ public class KieBaseImpl implements InternalKnowledgeBase {
     }
 
     @Override
-    public boolean removeObjectsGeneratedFromResource(Resource resource) {
-        throw new UnsupportedOperationException();
+    public boolean removeObjectsGeneratedFromResource(Resource resource, Collection<InternalWorkingMemory> workingMemories) {
+        return delegate.removeObjectsGeneratedFromResource(resource, workingMemories);
     }
 
     @Override

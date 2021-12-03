@@ -17,7 +17,7 @@ package org.drools.core.common;
 
 import java.io.Serializable;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.kiesession.agenda.CompositeDefaultAgenda;
 
 public class KogitoDefaultAgendaFactory implements AgendaFactory, Serializable {
@@ -31,11 +31,11 @@ public class KogitoDefaultAgendaFactory implements AgendaFactory, Serializable {
     private KogitoDefaultAgendaFactory() {
     }
 
-    public InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain) {
+    public InternalAgenda createAgenda(RuleBase kBase, boolean initMain) {
         return kBase.getConfiguration().isMultithreadEvaluation() ? new CompositeDefaultAgenda(kBase, initMain) : new KogitoDefaultAgenda(kBase, initMain);
     }
 
-    public InternalAgenda createAgenda(InternalKnowledgeBase kBase) {
+    public InternalAgenda createAgenda(RuleBase kBase) {
         return kBase.getConfiguration().isMultithreadEvaluation() ? new CompositeDefaultAgenda(kBase) : new KogitoDefaultAgenda(kBase);
     }
 

@@ -22,12 +22,9 @@ import java.util.List;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.runtime.rule.FactHandle;
@@ -43,10 +40,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ProcessFlowControlTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessFlowControlTest.class);
-
-    protected KieBase getRuleBase(final KieBaseConfiguration config) throws Exception {
-        return KnowledgeBaseFactory.newKnowledgeBase(config);
-    }
 
     @Test
     @Disabled("MVEL not supported in ScriptTask")
