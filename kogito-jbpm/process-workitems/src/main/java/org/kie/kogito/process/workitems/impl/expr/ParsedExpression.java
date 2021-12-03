@@ -19,4 +19,5 @@ public interface ParsedExpression {
 
     <T> T eval(Object context, Class<T> returnClass);
 
+    void assign(Object context, Object value);
 }

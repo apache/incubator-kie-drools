@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;

@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
 
@@ -39,9 +40,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.utils.WorkflowTestUtils;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.end.End;
@@ -672,8 +670,9 @@ public class ServerlessWorkflowParsingTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "/examples/applicantworkflow.sw.json", "/exec/error.sw.json", "/exec/callback.sw.json", "/exec/compensation.sw.json", "/exec/compensation.end.sw.json" })
-    public void testSpecExamplesParsing(String workflowLocation) throws JsonProcessingException {
+    @ValueSource(strings = { "/examples/applicantworkflow.sw.json", "/exec/error.sw.json", "/exec/callback.sw.json", "/exec/compensation.sw.json", "/exec/compensation.end.sw.json",
+            "/exec/foreach.sw.json" })
+    public void testSpecExamplesParsing(String workflowLocation) throws IOException {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 
         assertNotNull(workflow);
@@ -689,7 +688,7 @@ public class ServerlessWorkflowParsingTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/openapi-greeting-operation.sw.json" })
-    public void testSpecOpenApiFunctionParsing(String workflowLocation) throws JsonProcessingException {
+    public void testSpecOpenApiFunctionParsing(String workflowLocation) throws IOException {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 
         assertNotNull(workflow);
@@ -727,7 +726,7 @@ public class ServerlessWorkflowParsingTest {
         assertEquals(ServerlessWorkflowParser.DEFAULT_PACKAGE, process.getPackageName());
     }
 
-    private Process getWorkflowParser(String workflowLocation) throws JsonProcessingException {
+    private Process getWorkflowParser(String workflowLocation) throws IOException {
         String format = workflowLocation.endsWith(".sw.json") ? "json" : "yml";
         ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(new InputStreamReader(this.getClass().getResourceAsStream(workflowLocation)), format);
         return parser.getProcess();

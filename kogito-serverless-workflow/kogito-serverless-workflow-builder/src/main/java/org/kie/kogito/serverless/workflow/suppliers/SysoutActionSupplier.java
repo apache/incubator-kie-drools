@@ -18,21 +18,22 @@ package org.kie.kogito.serverless.workflow.suppliers;
 import java.util.function.Supplier;
 
 import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
-import org.kie.kogito.serverless.workflow.actions.ExpressionAction;
 import org.kie.kogito.serverless.workflow.actions.SysoutAction;
 
 import com.github.javaparser.ast.expr.Expression;
 
-public class SysoutActionSupplier extends ExpressionAction implements Supplier<Expression> {
+public class SysoutActionSupplier extends SysoutAction implements Supplier<Expression> {
 
-    public SysoutActionSupplier(String lang, String expr) {
-        super(lang, expr);
+    private final String[] varArgs;
 
+    public SysoutActionSupplier(String lang, String expr, String... addVars) {
+        super(lang, expr, addVars);
+        this.varArgs = SWFSupplierUtils.getVarArgs(lang, expr, addVars);
     }
 
     @Override
     public Expression get() {
-        return SupplierUtils.getExpression(SysoutAction.class, lang, expr);
+        return SupplierUtils.getExpression(SysoutAction.class, varArgs);
     }
 
 }

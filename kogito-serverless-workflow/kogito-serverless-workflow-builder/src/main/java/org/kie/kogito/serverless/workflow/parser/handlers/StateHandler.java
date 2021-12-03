@@ -34,8 +34,8 @@ import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.error.Error;
@@ -43,24 +43,22 @@ import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.transitions.Transition;
 
-public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> {
+public abstract class StateHandler<S extends State> {
 
     protected final S state;
     protected final Workflow workflow;
-    protected final RuleFlowNodeContainerFactory<P, ?> factory;
     protected final ParserContext parserContext;
 
-    private StartNodeFactory<P> startNodeFactory;
-    private EndNodeFactory<P> endNodeFactory;
+    private StartNodeFactory<?> startNodeFactory;
+    private EndNodeFactory<?> endNodeFactory;
 
-    private T node;
-    private JoinFactory<P> join;
+    private NodeFactory<?, ?> node;
+    private JoinFactory<?> join;
     private List<Long> incomingConnections = new ArrayList<>();
 
-    protected StateHandler(S state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory, ParserContext parserContext) {
+    protected StateHandler(S state, Workflow workflow, ParserContext parserContext) {
         this.workflow = workflow;
         this.state = state;
-        this.factory = factory;
         this.parserContext = parserContext;
     }
 
@@ -70,13 +68,14 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
 
     public void handleStart() {
         if (state.getName().equals(workflow.getStart().getStateName())) {
-            startNodeFactory = factory.startNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_START_NAME);
+            startNodeFactory = parserContext.factory().startNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_START_NAME);
+            startNodeFactory.done();
         }
     }
 
     public void handleEnd() {
         if (state.getEnd() != null) {
-            endNodeFactory = factory.endNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_END_NAME);
+            endNodeFactory = parserContext.factory().endNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_END_NAME);
             List<ProduceEvent> produceEvents = state.getEnd().getProduceEvents();
             if (produceEvents == null || produceEvents.isEmpty()) {
                 endNodeFactory.terminate(true);
@@ -86,11 +85,12 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
                                 ServerlessWorkflowParser.JSON_NODE, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)),
                         ServerlessWorkflowUtils.getWorkflowEventFor(workflow, produceEvents.get(0).getEventRef()));
             }
+            endNodeFactory.done();
         }
     }
 
-    private void handleCompensation() {
-        StateHandler<?, ?, ?> compensation = parserContext.getStateHandler(state.getCompensatedBy());
+    private void handleCompensation(RuleFlowNodeContainerFactory<?, ?> factory) {
+        StateHandler<?> compensation = parserContext.getStateHandler(state.getCompensatedBy());
         if (compensation == null) {
             throw new IllegalArgumentException("State " + getState().getName() + " refers to a compensation " + state.getCompensatedBy() + " which cannot be found");
         }
@@ -117,8 +117,8 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
         embeddedSubProcess.endNode(endCompensationId).terminate(false).done().connection(lastNodeId, endCompensationId);
     }
 
-    private <N extends RuleFlowNodeContainerFactory<N, ?>> long handleCompensation(RuleFlowNodeContainerFactory<N, ?> embeddedSubProcess,
-            StateHandler<?, ?, ?> compensation) {
+    private long handleCompensation(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
+            StateHandler<?> compensation) {
         if (compensation.getState().getCompensatedBy() != null) {
             throw new IllegalArgumentException("Serverless workflow specification forbids nested compensations, hence state " + compensation.getState().getName() + " is not valid");
         }
@@ -126,42 +126,48 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
         Transition transition = compensation.getState().getTransition();
         long lastNodeId = compensation.getNode().getNode().getId();
         compensation.handleTransitions(embeddedSubProcess, transition, lastNodeId);
+        compensation.handleErrors(embeddedSubProcess);
         compensation.handleConnections(embeddedSubProcess);
         return lastNodeId;
     }
 
     public void handleState() {
-        handleState(factory);
+        handleState(parserContext.factory());
     }
 
-    protected <N extends RuleFlowNodeContainerFactory<N, ?>> void handleState(RuleFlowNodeContainerFactory<N, ?> factory) {
+    protected void handleState(RuleFlowNodeContainerFactory<?, ?> factory) {
         node = makeNode(factory);
-        connectStart();
-        connectEnd();
+        connectStart(factory);
+        connectEnd(factory);
         if (state.getCompensatedBy() != null) {
-            handleCompensation();
+            handleCompensation(factory);
         }
+        node.done();
     }
 
-    public void connect(long sourceId) {
+    public void connect(RuleFlowNodeContainerFactory<?, ?> factory, long sourceId) {
         incomingConnections.add(sourceId);
     }
 
     public void handleConnections() {
-        handleConnections(factory);
+        handleConnections(parserContext.factory());
     }
 
-    protected <N extends RuleFlowNodeContainerFactory<N, ?>> void handleConnections(RuleFlowNodeContainerFactory<N, ?> factory) {
-        NodeFactory<?, P> incoming = getIncomingNode();
+    protected void handleConnections(RuleFlowNodeContainerFactory<?, ?> factory) {
+        NodeFactory<?, ?> incoming = getIncomingNode(factory);
         for (long sourceId : incomingConnections) {
             factory.connection(sourceId, incoming.getNode().getId());
         }
     }
 
     public void handleErrors() {
+        handleErrors(parserContext.factory());
+    }
+
+    protected void handleErrors(RuleFlowNodeContainerFactory<?, ?> factory) {
         for (Error error : state.getOnErrors()) {
             String eventType = "Error-" + node.getNode().getMetaData().get("UniqueId");
-            BoundaryEventNodeFactory<P> boundaryNode =
+            BoundaryEventNodeFactory<?> boundaryNode =
                     factory.boundaryEventNode(parserContext.newId()).attachedTo(node.getNode().getId()).metaData(
                             "EventType", Metadata.EVENT_TYPE_ERROR).metaData("HasErrorEvent", true);
             if (error.getCode() != null) {
@@ -175,32 +181,32 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
     }
 
     public void handleTransitions() {
-        handleTransitions(factory, state.getTransition(), getOutgoingNode().getNode().getId());
+        handleTransitions(parserContext.factory(), state.getTransition(), getOutgoingNode().getNode().getId());
     }
 
-    protected <N extends RuleFlowNodeContainerFactory<N, ?>> void handleTransitions(RuleFlowNodeContainerFactory<N, ?> factory,
+    protected void handleTransitions(RuleFlowNodeContainerFactory<?, ?> factory,
             Transition transition,
             long sourceId) {
         handleTransition(factory, transition, sourceId, Optional.empty());
     }
 
-    protected void connectStart() {
+    protected void connectStart(RuleFlowNodeContainerFactory<?, ?> factory) {
         if (startNodeFactory != null) {
             factory.connection(startNodeFactory.getNode().getId(), node.getNode().getId());
         }
     }
 
-    protected void connectEnd() {
+    protected void connectEnd(RuleFlowNodeContainerFactory<?, ?> factory) {
         if (endNodeFactory != null) {
             if (state.getEnd().isCompensate()) {
-                endNodeFactory.done().connection(compensationEvent(getOutgoingNode().getNode().getId()), endNodeFactory.getNode().getId());
+                endNodeFactory.done().connection(compensationEvent(factory, getOutgoingNode().getNode().getId()), endNodeFactory.getNode().getId());
             } else {
                 factory.connection(getOutgoingNode().getNode().getId(), endNodeFactory.getNode().getId());
             }
         }
     }
 
-    public T getNode() {
+    public NodeFactory<?, ?> getNode() {
         return node;
     }
 
@@ -208,53 +214,51 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
         return state;
     }
 
-    @SuppressWarnings("unchecked")
-    public <N extends NodeFactory<N, P>> N getOutgoingNode() {
-        return (N) getNode();
+    public NodeFactory<?, ?> getOutgoingNode() {
+        return getNode();
     }
 
-    @SuppressWarnings("unchecked")
-    public <N extends NodeFactory<N, P>> N getIncomingNode() {
+    public NodeFactory<?, ?> getIncomingNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         if (join != null) {
-            return (N) join;
+            return join;
         } else if (incomingConnections.size() > 1) {
             join = factory.joinNode(parserContext.newId()).type(Join.TYPE_OR).name("Join-" + node.getNode()
                     .getName());
             join.done().connection(join.getNode().getId(), node.getNode().getId());
-            return (N) join;
+            return join;
         } else {
-            return (N) getNode();
+            return getNode();
         }
     }
 
-    protected abstract T makeNode(RuleFlowNodeContainerFactory<?, ?> factory);
+    protected abstract NodeFactory<?, ?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory);
 
-    protected final <N extends RuleFlowNodeContainerFactory<N, ?>> void handleTransition(RuleFlowNodeContainerFactory<N, ?> factory,
+    protected final void handleTransition(RuleFlowNodeContainerFactory<?, ?> factory,
             Transition transition,
             long sourceId,
             Optional<HandleTransitionCallBack> callback) {
-        StateHandler<?, ?, ?> targetState = parserContext.getStateHandler(transition);
+        StateHandler<?> targetState = parserContext.getStateHandler(transition);
         if (targetState != null) {
             List<ProduceEvent> produceEvents = transition.getProduceEvents();
             if (produceEvents.isEmpty()) {
                 if (transition.isCompensate()) {
-                    long eventId = compensationEvent(sourceId);
-                    targetState.connect(eventId);
+                    long eventId = compensationEvent(factory, sourceId);
+                    targetState.connect(factory, eventId);
                     callback.ifPresent(c -> c.onIdTarget(eventId));
                 } else {
-                    targetState.connect(sourceId);
+                    targetState.connect(factory, sourceId);
                     callback.ifPresent(c -> c.onStateTarget(targetState));
                 }
             } else {
-                final ActionNodeFactory<N> actionNode = factory.actionNode(parserContext.newId());
-                ActionNodeFactory<N> endNode = actionNode;
+                final ActionNodeFactory<?> actionNode = factory.actionNode(parserContext.newId());
+                ActionNodeFactory<?> endNode = actionNode;
                 ServerlessWorkflowParser.sendEventNode(actionNode, ServerlessWorkflowUtils.getWorkflowEventFor(workflow,
                         produceEvents.get(0).getEventRef()));
                 if (produceEvents.size() > 1) {
                     ListIterator<ProduceEvent> iter = produceEvents.listIterator(1);
                     while (iter.hasNext()) {
                         ProduceEvent produceEvent = iter.next();
-                        ActionNodeFactory<N> newNode = factory.actionNode(parserContext.newId());
+                        ActionNodeFactory<?> newNode = factory.actionNode(parserContext.newId());
                         ServerlessWorkflowParser.sendEventNode(newNode, ServerlessWorkflowUtils.getWorkflowEventFor(
                                 workflow, produceEvent.getEventRef())).done().connection(endNode.getNode().getId(),
                                         newNode.getNode().getId());
@@ -263,19 +267,19 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
                 }
                 factory.connection(sourceId, actionNode.getNode().getId());
                 if (transition.isCompensate()) {
-                    long eventId = compensationEvent(sourceId);
+                    long eventId = compensationEvent(factory, sourceId);
                     callback.ifPresent(c -> c.onIdTarget(eventId));
                 } else {
                     callback.ifPresent(c -> c.onIdTarget(actionNode.getNode().getId()));
                 }
-                targetState.connect(endNode.getNode().getId());
+                targetState.connect(factory, endNode.getNode().getId());
             }
         } else {
             callback.ifPresent(HandleTransitionCallBack::onEmptyTarget);
         }
     }
 
-    private long compensationEvent(long sourceId) {
+    private long compensationEvent(RuleFlowNodeContainerFactory<?, ?> factory, long sourceId) {
         long eventId = parserContext.newId();
         factory.actionNode(eventId).name(state.getName() + "-" + eventId).action(new CompensationActionSupplier(CompensationScope.IMPLICIT_COMPENSATION_PREFIX + workflow.getId())).done()
                 .connection(sourceId, eventId);
@@ -283,7 +287,7 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
     }
 
     protected interface HandleTransitionCallBack {
-        void onStateTarget(StateHandler<?, ?, ?> targetState);
+        void onStateTarget(StateHandler<?> targetState);
 
         void onIdTarget(long targetId);
 

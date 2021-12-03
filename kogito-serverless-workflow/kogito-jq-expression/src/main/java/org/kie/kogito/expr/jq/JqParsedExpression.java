@@ -15,12 +15,18 @@
  */
 package org.kie.kogito.expr.jq;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.MergeUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
+import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.Output;
@@ -32,8 +38,10 @@ public class JqParsedExpression implements ParsedExpression {
 
     private Scope scope;
     private JsonQuery query;
+    private String expr;
 
     public JqParsedExpression(Scope scope, String expr) {
+        this.expr = expr;
         this.scope = scope;
         try {
             this.query = JsonQuery.compile(expr, Versions.JQ_1_6);
@@ -52,6 +60,8 @@ public class JqParsedExpression implements ParsedExpression {
             out = new BooleanOutput();
         } else if (String.class.isAssignableFrom(returnClass)) {
             out = new StringOutput();
+        } else if (Collection.class.isAssignableFrom(returnClass)) {
+            out = new CollectionOutput();
         } else {
             out = new JsonNodeOutput((JsonNode) context);
         }
@@ -92,6 +102,26 @@ public class JqParsedExpression implements ParsedExpression {
 
     }
 
+    private static class CollectionOutput implements TypedOutput<Collection> {
+        Collection result = new ArrayList<>();
+
+        @Override
+        public void emit(JsonNode out) throws JsonQueryException {
+            Object obj = JsonObjectUtils.toJavaValue(out);
+            if (obj instanceof Collection)
+                result.addAll((Collection) obj);
+            else {
+                result.add(obj);
+            }
+        }
+
+        @Override
+        public Collection<?> getResult() {
+            return result;
+        }
+
+    }
+
     private static class JsonNodeOutput implements TypedOutput<JsonNode> {
 
         private JsonNode context;
@@ -104,7 +134,7 @@ public class JqParsedExpression implements ParsedExpression {
 
         @Override
         public void emit(JsonNode out) throws JsonQueryException {
-            if (out.isArray() || out.isObject()) {
+            if (out.isObject()) {
                 MergeUtils.merge(out, context);
             }
             if (this.result == null) {
@@ -134,5 +164,11 @@ public class JqParsedExpression implements ParsedExpression {
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using query " + query, e);
         }
+    }
+
+    @Override
+    public void assign(Object context, Object value) {
+        JsonObjectUtils.addToNode(ExpressionHandlerUtils.fallbackVarToName(expr).orElseThrow(() -> new IllegalArgumentException("Cannot find a valid variable name for expression " + expr)), value,
+                (ObjectNode) context);
     }
 }

@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.compiler.canonical.descriptors;
+package org.kie.kogito.serverless.workflow.suppliers;
+
+import java.util.function.Supplier;
+
+import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.kie.kogito.serverless.workflow.actions.ForEachCollectorAction;
 
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-public class SupplierUtils {
+public class ForEachCollectorActionSupplier extends ForEachCollectorAction implements Supplier<Expression> {
 
-    private SupplierUtils() {
+    private String[] varArgs;
+
+    public ForEachCollectorActionSupplier(String lang, String expr) {
+        super(lang, expr);
+        varArgs = SWFSupplierUtils.getVarArgs(lang, expr);
     }
 
-    public static Expression getExpression(Class<?> runtimeClass, String... args) {
-        ObjectCreationExpr result = new ObjectCreationExpr().setType(runtimeClass.getCanonicalName());
-        for (String arg : args) {
-            result.addArgument(new StringLiteralExpr(arg));
-        }
-        return result;
+    @Override
+    public Expression get() {
+        return SupplierUtils.getExpression(ForEachCollectorAction.class, varArgs);
     }
 
 }

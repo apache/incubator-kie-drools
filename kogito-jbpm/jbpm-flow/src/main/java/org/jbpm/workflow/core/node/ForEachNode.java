@@ -23,9 +23,12 @@ import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
+import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 /**
  * A for each node.
@@ -44,8 +47,11 @@ public class ForEachNode extends CompositeContextNode {
     private String collectionExpression;
     private String outputCollectionExpression;
     private String completionConditionExpression;
+    private String exprLanguage;
+    private Action finishAction;
     private boolean waitForCompletion = true;
     private boolean sequential = true;
+    private ParsedExpression evaluateExpression;
 
     public ForEachNode() {
         // Split
@@ -83,6 +89,7 @@ public class ForEachNode extends CompositeContextNode {
                 super.getNode(ForEachJoinNode.NODE_ID), Node.CONNECTION_DEFAULT_TYPE);
     }
 
+    @Override
     public String getVariableName() {
         return variableName;
     }
@@ -97,6 +104,29 @@ public class ForEachNode extends CompositeContextNode {
             }
         }
         return null;
+    }
+
+    public void setExpressionLanguage(String exprLanguage) {
+        this.exprLanguage = exprLanguage;
+    }
+
+    public String getExpressionLanguage() {
+        return exprLanguage;
+    }
+
+    public Action getCompletionAction() {
+        return finishAction;
+    }
+
+    public void setCompletionAction(Action finishAction) {
+        this.finishAction = finishAction;
+    }
+
+    public ParsedExpression getEvaluateExpression() {
+        if (evaluateExpression == null && ExpressionHandlerFactory.isSupported(exprLanguage)) {
+            evaluateExpression = ExpressionHandlerFactory.get(exprLanguage).parse(collectionExpression);
+        }
+        return evaluateExpression;
     }
 
     public String getOutputVariableName() {
@@ -127,58 +157,72 @@ public class ForEachNode extends CompositeContextNode {
         return (ForEachJoinNode) super.getNode(3);
     }
 
+    @Override
     public void addNode(org.kie.api.definition.process.Node node) {
         getCompositeNode().addNode(node);
     }
 
+    @Override
     protected void internalAddNode(org.kie.api.definition.process.Node node) {
         super.addNode(node);
     }
 
+    @Override
     public org.kie.api.definition.process.Node getNode(long id) {
         return getCompositeNode().getNode(id);
     }
 
+    @Override
     public org.kie.api.definition.process.Node internalGetNode(long id) {
         return super.getNode(id);
     }
 
+    @Override
     public org.kie.api.definition.process.Node[] getNodes() {
         return getCompositeNode().getNodes();
     }
 
+    @Override
     public org.kie.api.definition.process.Node[] internalGetNodes() {
         return super.getNodes();
     }
 
+    @Override
     public void removeNode(org.kie.api.definition.process.Node node) {
         getCompositeNode().removeNode(node);
     }
 
+    @Override
     protected void internalRemoveNode(org.kie.api.definition.process.Node node) {
         super.removeNode(node);
     }
 
+    @Override
     public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
         getCompositeNode().linkIncomingConnections(inType, inNodeId, inNodeType);
     }
 
+    @Override
     public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
         getCompositeNode().linkOutgoingConnections(outNodeId, outNodeType, outType);
     }
 
+    @Override
     public CompositeNode.NodeAndType getLinkedIncomingNode(String inType) {
         return getCompositeNode().getLinkedIncomingNode(inType);
     }
 
+    @Override
     public CompositeNode.NodeAndType internalGetLinkedIncomingNode(String inType) {
         return super.getLinkedIncomingNode(inType);
     }
 
+    @Override
     public CompositeNode.NodeAndType getLinkedOutgoingNode(String inType) {
         return getCompositeNode().getLinkedOutgoingNode(inType);
     }
 
+    @Override
     public CompositeNode.NodeAndType internalGetLinkedOutgoingNode(String inType) {
         return super.getLinkedOutgoingNode(inType);
     }

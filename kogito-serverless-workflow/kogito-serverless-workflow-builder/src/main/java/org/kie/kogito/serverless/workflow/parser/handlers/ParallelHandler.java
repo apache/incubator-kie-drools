@@ -26,20 +26,18 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.branches.Branch;
 import io.serverlessworkflow.api.states.ParallelState;
 
-public class ParallelHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends StateHandler<ParallelState, SplitFactory<P>, P> {
+public class ParallelHandler extends StateHandler<ParallelState> {
 
-    private JoinFactory<P> connectionNode;
+    private JoinFactory<?> connectionNode;
 
-    protected ParallelHandler(ParallelState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
-            ParserContext parserContext) {
-        super(state, workflow, factory, parserContext);
-
+    protected ParallelHandler(ParallelState state, Workflow workflow, ParserContext parserContext) {
+        super(state, workflow, parserContext);
     }
 
     @Override
-    public SplitFactory<P> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        SplitFactory<P> nodeFactory = (SplitFactory<P>) factory.splitNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_START_NAME).type(Split.TYPE_AND);
-        connectionNode = (JoinFactory<P>) factory.joinNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_END_NAME).type(Split.TYPE_AND);
+    public SplitFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        SplitFactory<?> nodeFactory = factory.splitNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_START_NAME).type(Split.TYPE_AND);
+        connectionNode = factory.joinNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_END_NAME).type(Split.TYPE_AND);
         for (Branch branch : state.getBranches()) {
             long branchId = parserContext.newId();
             if (branch.getWorkflowId() == null || branch.getWorkflowId().isEmpty()) {
@@ -51,9 +49,8 @@ public class ParallelHandler<P extends RuleFlowNodeContainerFactory<P, ?>> exten
         return nodeFactory;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public JoinFactory<P> getOutgoingNode() {
+    public JoinFactory<?> getOutgoingNode() {
         return connectionNode;
     }
 

@@ -24,20 +24,19 @@ import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.OnEvents;
 import io.serverlessworkflow.api.states.EventState;
 
-public class EventHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends CompositeContextNodeHandler<EventState, P, CompositeContextNodeFactory<P>> {
+public class EventHandler extends CompositeContextNodeHandler<EventState> {
 
-    protected EventHandler(EventState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
-            ParserContext parserContext) {
-        super(state, workflow, factory, parserContext);
+    protected EventHandler(EventState state, Workflow workflow, ParserContext parserContext) {
+        super(state, workflow, parserContext);
     }
 
-    private NodeFactory<?, P> startFactory;
+    private NodeFactory<?, ?> startFactory;
 
     @Override
     public void handleStart() {
@@ -47,26 +46,26 @@ public class EventHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends 
     }
 
     @Override
-    public CompositeContextNodeFactory<P> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+    public CompositeContextNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         OnEvents onEvent = state.getOnEvents().get(0);
-        CompositeContextNodeFactory<P> nodeFactory = handleActions(onEvent.getActions());
+        CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), onEvent.getActions());
         List<String> onEventRefs = onEvent.getEventRefs();
         if (onEventRefs.size() == 1) {
-            startFactory = (NodeFactory<?, P>) ServerlessWorkflowParser.messageStartNode(factory.startNode(parserContext.newId()), ServerlessWorkflowUtils
+            startFactory = ServerlessWorkflowParser.messageStartNode(factory.startNode(parserContext.newId()), ServerlessWorkflowUtils
                     .getWorkflowEventFor(workflow, onEventRefs.get(0)));
         } else {
-            startFactory = (NodeFactory<?, P>) factory.joinNode(parserContext.newId()).name(state.getName() + "Split").type(Join.TYPE_XOR);
+            startFactory = factory.joinNode(parserContext.newId()).name(state.getName() + "Split").type(Join.TYPE_XOR);
             for (String onEventRef : onEventRefs) {
-                StartNodeFactory<P> newStartNode = (StartNodeFactory<P>) factory.startNode(parserContext.newId());
+                StartNodeFactory<?> newStartNode = factory.startNode(parserContext.newId());
                 ServerlessWorkflowParser.messageStartNode(newStartNode, ServerlessWorkflowUtils.getWorkflowEventFor(workflow, onEventRef)).done().connection(newStartNode.getNode().getId(),
                         startFactory.getNode().getId());
             }
         }
-        return nodeFactory;
+        return embeddedSubProcess;
     }
 
     @Override
-    protected void connectStart() {
+    protected void connectStart(RuleFlowNodeContainerFactory<?, ?> factory) {
         factory.connection(startFactory.getNode().getId(), getNode().getNode().getId());
     }
 }

@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow;
+package org.kie.kogito.serverless.workflow.utils;
 
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
-import org.kie.kogito.serverless.workflow.parser.util.WorkflowAppContext;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.EventDefinition;
@@ -32,7 +30,6 @@ import io.serverlessworkflow.api.workflow.Events;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WorkflowUtilsTest {
 
@@ -48,10 +45,6 @@ public class WorkflowUtilsTest {
         objectMapper = ServerlessWorkflowUtils.getObjectMapper("yml");
         assertNotNull(objectMapper);
         assertThat(objectMapper).isInstanceOf(YamlObjectMapper.class);
-
-        assertThrows(IllegalArgumentException.class, () -> ServerlessWorkflowUtils.getObjectMapper("unsupported"));
-
-        assertThrows(IllegalArgumentException.class, () -> ServerlessWorkflowUtils.getObjectMapper(null));
     }
 
     @Test

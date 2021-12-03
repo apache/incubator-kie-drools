@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow.parser;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,9 +35,8 @@ import org.kie.api.definition.process.Process;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
-import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
@@ -58,9 +58,8 @@ public class ServerlessWorkflowParser {
     private Process process;
 
     public static ServerlessWorkflowParser of(Reader workflowFile,
-            String workflowFormat) throws JsonProcessingException {
-        return of(ServerlessWorkflowUtils.getObjectMapper(workflowFormat).readValue(ServerlessWorkflowUtils
-                .readWorkflowFile(workflowFile), Workflow.class));
+            String workflowFormat) throws IOException {
+        return of(ServerlessWorkflowUtils.getObjectMapper(workflowFormat).readValue(workflowFile, Workflow.class));
     }
 
     public static ServerlessWorkflowParser of(Workflow workflow) {
@@ -88,9 +87,9 @@ public class ServerlessWorkflowParser {
                         DEFAULT_PACKAGE) : DEFAULT_PACKAGE)
                 .visibility("Public")
                 .variable(DEFAULT_WORKFLOW_VAR, JsonNode.class);
-        ParserContext parserContext = new ParserContext(idGenerator);
-        Collection<StateHandler<?, ?, ?>> handlers =
-                workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, factory, parserContext))
+        ParserContext parserContext = new ParserContext(idGenerator, factory);
+        Collection<StateHandler<?>> handlers =
+                workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, parserContext))
                         .filter(Optional::isPresent).map(Optional::get).filter(state -> !state.usedForCompensation()).collect(Collectors.toList());
         handlers.forEach(StateHandler::handleStart);
         handlers.forEach(StateHandler::handleEnd);

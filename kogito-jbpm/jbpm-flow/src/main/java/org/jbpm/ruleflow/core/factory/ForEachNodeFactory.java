@@ -16,6 +16,7 @@
 package org.jbpm.ruleflow.core.factory;
 
 import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.ForEachNode;
@@ -48,6 +49,16 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
 
     public ForEachNodeFactory<T> outputCollectionExpression(String collectionExpression) {
         getForEachNode().setOutputCollectionExpression(collectionExpression);
+        return this;
+    }
+
+    public ForEachNodeFactory<T> expressionLanguage(String exprLanguage) {
+        getForEachNode().setExpressionLanguage(exprLanguage);
+        return this;
+    }
+
+    public ForEachNodeFactory<T> completionAction(Action completionAction) {
+        getForEachNode().setCompletionAction(completionAction);
         return this;
     }
 

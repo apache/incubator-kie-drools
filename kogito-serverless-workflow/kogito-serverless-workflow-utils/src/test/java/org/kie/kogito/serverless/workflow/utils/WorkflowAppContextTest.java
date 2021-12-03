@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow;
+package org.kie.kogito.serverless.workflow.utils;
 
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.serverless.workflow.parser.util.WorkflowAppContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

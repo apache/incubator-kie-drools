@@ -24,13 +24,15 @@ import com.github.javaparser.ast.expr.Expression;
 
 public class ExpressionActionSupplier extends ExpressionAction implements Supplier<Expression> {
 
-    public ExpressionActionSupplier(String lang, String expr) {
-        super(lang, expr);
+    private final String[] varArgs;
 
+    public ExpressionActionSupplier(String lang, String expr, String outputVar, String... addVars) {
+        super(lang, expr, outputVar, addVars);
+        this.varArgs = SWFSupplierUtils.getVarArgs(lang, expr, outputVar, addVars);
     }
 
     @Override
     public Expression get() {
-        return SupplierUtils.getExpression(ExpressionAction.class, lang, expr);
+        return SupplierUtils.getExpression(ExpressionAction.class, varArgs);
     }
 }

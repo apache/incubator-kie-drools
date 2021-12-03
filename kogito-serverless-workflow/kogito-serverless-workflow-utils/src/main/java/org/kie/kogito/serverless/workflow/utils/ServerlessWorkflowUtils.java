@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.parser.util;
+package org.kie.kogito.serverless.workflow.utils;
 
-import java.io.Reader;
 import java.util.NoSuchElementException;
 
-import org.drools.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +33,10 @@ public class ServerlessWorkflowUtils {
 
     public static final String DEFAULT_WORKFLOW_FORMAT = "json";
     public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
-    private static final String APP_PROPERTIES_BASE = "kogito.sw.";
+    public static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String APP_PROPERTIES_FUNCTIONS_BASE = "functions.";
     private static final String APP_PROPERTIES_EVENTS_BASE = "events.";
-    private static final String APP_PROPERTIES_STATES_BASE = "states.";
+    public static final String APP_PROPERTIES_STATES_BASE = "states.";
 
     public static final String OPENAPI_OPERATION_SEPARATOR = "#";
 
@@ -48,20 +46,7 @@ public class ServerlessWorkflowUtils {
     }
 
     public static BaseObjectMapper getObjectMapper(String workflowFormat) {
-        if (workflowFormat != null && workflowFormat.equalsIgnoreCase(DEFAULT_WORKFLOW_FORMAT)) {
-            return new JsonObjectMapper();
-        }
-
-        if (workflowFormat != null && workflowFormat.equalsIgnoreCase(ALTERNATE_WORKFLOW_FORMAT)) {
-            return new YamlObjectMapper();
-        }
-
-        LOGGER.error("unable to determine workflow format {}", workflowFormat);
-        throw new IllegalArgumentException("invalid workflow format");
-    }
-
-    public static String readWorkflowFile(Reader reader) {
-        return StringUtils.readFileAsString(reader);
+        return ALTERNATE_WORKFLOW_FORMAT.equals(workflowFormat) ? new YamlObjectMapper() : new JsonObjectMapper();
     }
 
     public static EventDefinition getWorkflowEventFor(Workflow workflow, String eventName) {
@@ -187,5 +172,4 @@ public class ServerlessWorkflowUtils {
     public static boolean isOpenApiOperation(FunctionDefinition function) {
         return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(OPENAPI_OPERATION_SEPARATOR);
     }
-
 }

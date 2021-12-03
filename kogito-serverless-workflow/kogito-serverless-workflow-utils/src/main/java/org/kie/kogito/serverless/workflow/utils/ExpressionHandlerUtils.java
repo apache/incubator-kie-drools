@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.compiler.canonical.descriptors;
+package org.kie.kogito.serverless.workflow.utils;
 
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import java.util.Optional;
 
-public class SupplierUtils {
+public class ExpressionHandlerUtils {
 
-    private SupplierUtils() {
+    private ExpressionHandlerUtils() {
     }
 
-    public static Expression getExpression(Class<?> runtimeClass, String... args) {
-        ObjectCreationExpr result = new ObjectCreationExpr().setType(runtimeClass.getCanonicalName());
-        for (String arg : args) {
-            result.addArgument(new StringLiteralExpr(arg));
-        }
-        return result;
+    public static Optional<String> fallbackVarToName(String expr) {
+        int indexOf = expr.lastIndexOf('.');
+        return indexOf >= 0 ? Optional.of(expr.substring(indexOf + 1)) : Optional.empty();
     }
-
 }

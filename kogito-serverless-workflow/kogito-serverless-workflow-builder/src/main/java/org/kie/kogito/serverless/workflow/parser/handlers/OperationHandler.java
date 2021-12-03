@@ -22,10 +22,10 @@ import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.states.OperationState;
 
-public class OperationHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends CompositeContextNodeHandler<OperationState, P, CompositeContextNodeFactory<P>> {
+public class OperationHandler extends CompositeContextNodeHandler<OperationState> {
 
-    protected OperationHandler(OperationState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory, ParserContext parserContext) {
-        super(state, workflow, factory, parserContext);
+    protected OperationHandler(OperationState state, Workflow workflow, ParserContext parserContext) {
+        super(state, workflow, parserContext);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class OperationHandler<P extends RuleFlowNodeContainerFactory<P, ?>> exte
     }
 
     @Override
-    public CompositeContextNodeFactory<P> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        return handleActions(state.getActions());
+    public CompositeContextNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        return handleActions(makeCompositeNode(factory), state.getActions());
     }
 }

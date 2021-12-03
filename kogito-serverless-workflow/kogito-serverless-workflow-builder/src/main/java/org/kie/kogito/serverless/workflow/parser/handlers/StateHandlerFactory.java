@@ -17,8 +17,6 @@ package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import java.util.Optional;
 
-import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +26,7 @@ import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.states.CallbackState;
 import io.serverlessworkflow.api.states.DelayState;
 import io.serverlessworkflow.api.states.EventState;
+import io.serverlessworkflow.api.states.ForEachState;
 import io.serverlessworkflow.api.states.InjectState;
 import io.serverlessworkflow.api.states.OperationState;
 import io.serverlessworkflow.api.states.ParallelState;
@@ -41,34 +40,35 @@ public class StateHandlerFactory {
 
     private static Logger logger = LoggerFactory.getLogger(StateHandlerFactory.class);
 
-    @SuppressWarnings("unchecked")
-    public static <S extends State, T extends NodeFactory<T, RuleFlowProcessFactory>> Optional<StateHandler<S, T, RuleFlowProcessFactory>> getStateHandler(S state, Workflow workflow,
-            RuleFlowProcessFactory factory, ParserContext parserContext) {
-        StateHandler<S, T, RuleFlowProcessFactory> result;
+    public static Optional<StateHandler<?>> getStateHandler(State state, Workflow workflow, ParserContext parserContext) {
+        StateHandler<?> result;
         switch (state.getType()) {
             case EVENT:
-                result = (StateHandler<S, T, RuleFlowProcessFactory>) new EventHandler<>((EventState) state, workflow, factory, parserContext);
+                result = new EventHandler((EventState) state, workflow, parserContext);
                 break;
             case OPERATION:
-                result = (StateHandler<S, T, RuleFlowProcessFactory>) new OperationHandler<>((OperationState) state, workflow, factory, parserContext);
+                result = new OperationHandler((OperationState) state, workflow, parserContext);
                 break;
             case DELAY:
-                result = (StateHandler<S, T, RuleFlowProcessFactory>) new DelayHandler<>((DelayState) state, workflow, factory, parserContext);
+                result = new DelayHandler((DelayState) state, workflow, parserContext);
                 break;
             case INJECT:
-                result = (StateHandler<S, T, RuleFlowProcessFactory>) new InjectHandler<>((InjectState) state, workflow, factory, parserContext);
+                result = new InjectHandler((InjectState) state, workflow, parserContext);
                 break;
             case SUBFLOW:
-                result = (StateHandler<S, T, RuleFlowProcessFactory>) new SubflowHandler<>((SubflowState) state, workflow, factory, parserContext);
+                result = new SubflowHandler((SubflowState) state, workflow, parserContext);
                 break;
             case SWITCH:
-                result = (StateHandler<S, T, RuleFlowProcessFactory>) new SwitchHandler<>((SwitchState) state, workflow, factory, parserContext);
+                result = new SwitchHandler((SwitchState) state, workflow, parserContext);
                 break;
             case PARALLEL:
-                result = (StateHandler<S, T, RuleFlowProcessFactory>) new ParallelHandler<>((ParallelState) state, workflow, factory, parserContext);
+                result = new ParallelHandler((ParallelState) state, workflow, parserContext);
                 break;
             case CALLBACK:
-                result = (StateHandler<S, T, RuleFlowProcessFactory>) new CallbackHandler<>((CallbackState) state, workflow, factory, parserContext);
+                result = new CallbackHandler((CallbackState) state, workflow, parserContext);
+                break;
+            case FOREACH:
+                result = new ForEachStateHandler((ForEachState) state, workflow, parserContext);
                 break;
             default:
                 logger.warn("Unsupported state {}. Ignoring it", state.getName());

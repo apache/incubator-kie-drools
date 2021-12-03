@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.expr.jq;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
@@ -71,6 +74,14 @@ class JqExpressionHandlerTest {
         ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo,.main,.another");
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", "Javierito").put("main", "Pepito").put("another", "Fulanito");
         assertEquals("Javierito Pepito Fulanito", parsedExpression.eval(node, String.class));
+    }
+
+    @Test
+    void testCollection() {
+        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo");
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode node = objectMapper.createObjectNode().set("foo", objectMapper.createArrayNode().add("pepe").add(false).add(3).add(objectMapper.createArrayNode().add(1.1).add(1.2).add(1.3)));
+        assertEquals(Arrays.asList("pepe", false, 3, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(node, Collection.class));
     }
 
 }

@@ -20,15 +20,15 @@ import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.states.CallbackState;
 
-public class CallbackHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends CompositeContextNodeHandler<CallbackState, P, CompositeContextNodeFactory<P>> {
+public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> {
 
-    protected CallbackHandler(CallbackState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory, ParserContext parserContext) {
-        super(state, workflow, factory, parserContext);
+    protected CallbackHandler(CallbackState state, Workflow workflow, ParserContext parserContext) {
+        super(state, workflow, parserContext);
     }
 
     @Override
@@ -37,8 +37,8 @@ public class CallbackHandler<P extends RuleFlowNodeContainerFactory<P, ?>> exten
     }
 
     @Override
-    public CompositeContextNodeFactory<P> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        CompositeContextNodeFactory<P> embeddedSubProcess = (CompositeContextNodeFactory<P>) factory.compositeContextNode(parserContext.newId()).name(state.getName()).autoComplete(true);
+    public CompositeContextNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        CompositeContextNodeFactory<?> embeddedSubProcess = factory.compositeContextNode(parserContext.newId()).name(state.getName()).autoComplete(true);
         NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart");
         NodeFactory<?, ?> currentNode;
         if (state.getAction() != null) {

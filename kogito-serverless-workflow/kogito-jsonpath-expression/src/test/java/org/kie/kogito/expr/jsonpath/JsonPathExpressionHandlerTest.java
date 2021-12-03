@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.expr.jsonpath;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
@@ -51,4 +54,11 @@ class JsonPathExpressionHandlerTest {
         assertEquals("Javierito", parsedExpression.eval(node, ObjectNode.class).get("name").asText());
     }
 
+    @Test
+    void testCollection() {
+        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jsonpath").parse("$.foo");
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode node = objectMapper.createObjectNode().set("foo", objectMapper.createArrayNode().add("pepe").add(false).add(3).add(objectMapper.createArrayNode().add(1.1).add(1.2).add(1.3)));
+        assertEquals(Arrays.asList("pepe", false, 3, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(node, Collection.class));
+    }
 }

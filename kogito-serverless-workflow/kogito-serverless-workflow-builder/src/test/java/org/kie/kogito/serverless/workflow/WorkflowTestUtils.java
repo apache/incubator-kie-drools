@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.utils;
+package org.kie.kogito.serverless.workflow;
 
 import java.io.File;
 import java.io.IOException;

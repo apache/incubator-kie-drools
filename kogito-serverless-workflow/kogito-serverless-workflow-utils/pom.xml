@@ -9,27 +9,32 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-jq-expression</artifactId>
-  <name>Kogito :: Serverless Workflow :: Expression:: JQ</name>
+  <artifactId>kogito-serverless-workflow-utils</artifactId>
+  <name>Kogito :: Serverless Workflow :: Utils</name>
 
-  <description>Kogito jq expression implementation</description>
+  <description>Kogito serverless workflow utils</description>
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>process-workitems</artifactId>
+      <artifactId>kogito-jackson-utils</artifactId>
     </dependency>
     <dependency>
-      <groupId>net.thisptr</groupId>
-      <artifactId>jackson-jq</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.serverlessworkflow</groupId>
+      <artifactId>serverlessworkflow-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-serverless-workflow-utils</artifactId>
+     </dependency>
+     <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

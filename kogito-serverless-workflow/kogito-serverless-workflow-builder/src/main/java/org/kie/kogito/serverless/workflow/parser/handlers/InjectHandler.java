@@ -25,11 +25,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.states.InjectState;
 
-public class InjectHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends StateHandler<InjectState, ActionNodeFactory<P>, P> {
+public class InjectHandler extends StateHandler<InjectState> {
 
-    protected InjectHandler(InjectState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
-            ParserContext parserContext) {
-        super(state, workflow, factory, parserContext);
+    protected InjectHandler(InjectState state, Workflow workflow, ParserContext parserContext) {
+        super(state, workflow, parserContext);
     }
 
     @Override
@@ -38,9 +37,8 @@ public class InjectHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends
     }
 
     @Override
-    public ActionNodeFactory<P> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        ActionNodeFactory<P> actionNodeFactory = (ActionNodeFactory<P>) factory.actionNode(parserContext.newId()).name(
-                state.getName());
+    public ActionNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        ActionNodeFactory<?> actionNodeFactory = factory.actionNode(parserContext.newId()).name(state.getName());
         JsonNode node = state.getData();
         if (node != null) {
             actionNodeFactory.action(new InjectActionSupplier(node));

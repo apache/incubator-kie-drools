@@ -15,23 +15,15 @@
  */
 package org.kie.kogito.serverless.workflow.actions;
 
-import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
-import static org.kie.kogito.serverless.workflow.actions.ActionUtils.getWorkflowData;
-
-public class SysoutAction implements Action {
-
-    private ParsedExpression expression;
-
-    public SysoutAction(String lang, String expr) {
-        this.expression = ExpressionHandlerFactory.get(lang).parse(expr);
+public class SysoutAction extends BaseExpressionAction {
+    public SysoutAction(String lang, String expr, String... addAttrs) {
+        super(lang, expr, addAttrs);
     }
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        System.out.println(expression.eval(getWorkflowData(context), String.class));
+        System.out.println(super.evaluate(context, String.class));
     }
 }

@@ -18,39 +18,46 @@ package org.kie.kogito.serverless.workflow.parser;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 
 import io.serverlessworkflow.api.transitions.Transition;
 
 public class ParserContext {
 
-    private final Map<String, StateHandler<?, ?, ?>> stateHandlers = new LinkedHashMap<>();
+    private final Map<String, StateHandler<?>> stateHandlers = new LinkedHashMap<>();
+    private final RuleFlowProcessFactory factory;
     private final NodeIdGenerator idGenerator;
 
     private boolean isCompensation;
 
-    public ParserContext(NodeIdGenerator idGenerator) {
+    public ParserContext(NodeIdGenerator idGenerator, RuleFlowProcessFactory factory) {
         this.idGenerator = idGenerator;
+        this.factory = factory;
     }
 
-    public void add(StateHandler<?, ?, ?> stateHandler) {
+    public void add(StateHandler<?> stateHandler) {
         stateHandlers.put(stateHandler.getState().getName(), stateHandler);
     }
 
-    public StateHandler<?, ?, ?> getStateHandler(StateHandler<?, ?, ?> stateHandler) {
+    public StateHandler<?> getStateHandler(StateHandler<?> stateHandler) {
         return getStateHandler(stateHandler.getState().getTransition());
     }
 
-    public StateHandler<?, ?, ?> getStateHandler(Transition transition) {
+    public StateHandler<?> getStateHandler(Transition transition) {
         return transition != null ? getStateHandler(transition.getNextState()) : null;
     }
 
-    public StateHandler<?, ?, ?> getStateHandler(String name) {
+    public StateHandler<?> getStateHandler(String name) {
         return name != null ? stateHandlers.get(name) : null;
     }
 
     public long newId() {
         return idGenerator.getId();
+    }
+
+    public RuleFlowProcessFactory factory() {
+        return factory;
     }
 
     public boolean isCompensation() {

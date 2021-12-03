@@ -41,7 +41,7 @@ The sections below describe in detail the current status of the supported featur
 | Parallel      | :full_moon: |
 | SubFlow       | :full_moon: |
 | Inject        | :full_moon: |
-| ForEach       | :construction:  |
+| ForEach       | :full_moon: |
 | Callback      | :full_moon: |
 
 #### Examples

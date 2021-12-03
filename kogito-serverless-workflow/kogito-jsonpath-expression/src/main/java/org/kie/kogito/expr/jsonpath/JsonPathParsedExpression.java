@@ -15,9 +15,12 @@
  */
 package org.kie.kogito.expr.jsonpath;
 
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
+import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -58,4 +61,9 @@ public class JsonPathParsedExpression implements ParsedExpression {
         }
     }
 
+    @Override
+    public void assign(Object context, Object value) {
+        JsonObjectUtils.addToNode(ExpressionHandlerUtils.fallbackVarToName(expr).orElseThrow(() -> new IllegalArgumentException("Cannot find a valid variable name for expression " + expr)), value,
+                (ObjectNode) context);
+    }
 }
