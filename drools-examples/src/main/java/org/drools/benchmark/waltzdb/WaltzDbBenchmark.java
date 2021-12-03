@@ -16,18 +16,6 @@
 
 package org.drools.benchmark.waltzdb;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.util.IoUtils;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.definition.KiePackage;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,6 +24,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
+import org.drools.core.util.IoUtils;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 
 /**
  * This example is incomplete, it run's, but is no way near correct.
@@ -48,7 +48,7 @@ public class WaltzDbBenchmark {
                               ResourceType.DRL );
         Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
 
-        KieBaseConfiguration kbaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbaseConfiguration = RuleBaseFactory.newKnowledgeBaseConfiguration();
         kbaseConfiguration.setProperty( "drools.removeIdentities",
                                         "true" );
 

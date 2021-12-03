@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleUnitExecutorImpl;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.drools.mvel.compiler.Person;

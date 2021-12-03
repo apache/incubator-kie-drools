@@ -31,8 +31,7 @@ import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -61,7 +60,7 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
 
     @Override
     public KieRuntimeFactory getKieRuntimeFactory(String kieBaseName) {
-        KieContainer kieContainer = ((KnowledgeBaseImpl) knowledgeBase).getKieContainer();
+        KieContainer kieContainer = knowledgeBase.getKieContainer();
         KieBase kieBase;
         if (kieContainer.getKieBaseNames().contains(kieBaseName)) {
             logger.debug("Retrieving {} KieBase", kieBaseName);
@@ -75,8 +74,8 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
 
     @Override
     public List<DMNRuntimeEventListener> getListeners() {
-        if (knowledgeBase != null && knowledgeBase instanceof KnowledgeBaseImpl && ((KnowledgeBaseImpl) knowledgeBase).getKieContainer() instanceof KieContainerImpl) {
-            KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) ((KieContainerImpl) ((KnowledgeBaseImpl) knowledgeBase).getKieContainer()).getKieProject().getKieBaseModel(knowledgeBase.getId());
+        if (knowledgeBase != null && knowledgeBase.getKieContainer() instanceof KieContainerImpl) {
+            KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) ((KieContainerImpl) knowledgeBase.getKieContainer()).getKieProject().getKieBaseModel(knowledgeBase.getId());
             ChainedProperties cp = ChainedProperties.getChainedProperties(getRootClassLoader());
             Properties kmoduleProperties = new Properties();
             kmoduleProperties.putAll(kieBaseModel.getKModule().getConfigurationProperties());

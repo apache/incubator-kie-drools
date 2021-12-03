@@ -41,7 +41,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.runtime.StatelessKieSession;

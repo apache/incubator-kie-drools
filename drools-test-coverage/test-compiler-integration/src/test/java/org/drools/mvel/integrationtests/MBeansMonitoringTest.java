@@ -27,7 +27,7 @@ import javax.management.ObjectName;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.core.ClockType;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;

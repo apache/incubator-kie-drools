@@ -24,10 +24,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.util.StringUtils;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.pmml.PMML4Result;
@@ -129,7 +129,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
                     Collections.singletonList(knowledgeBase.getKiePackage(kModulePackageName)) :
                     Collections.emptyList();
             RuleBaseConfiguration conf = new RuleBaseConfiguration();
-            conf.setClassLoader(((KnowledgeBaseImpl) knowledgeBase).getRootClassLoader());
+            conf.setClassLoader(((RuleBase) knowledgeBase).getRootClassLoader());
             InternalKnowledgeBase toReturn = KnowledgeBaseFactory.newKnowledgeBase(kModulePackageName, conf);
             toReturn.addPackages(packages);
             return toReturn;

@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.weaver.KieWeaverService;
@@ -46,18 +45,18 @@ public class KieWeaversImpl implements KieWeavers,
     }
 
     @Override
-    public void weave(KieBase kieBase, KiePackage newPkg, ResourceTypePackage rtkKpg) {
+    public void weave(KiePackage newPkg, ResourceTypePackage rtkKpg) {
         KieWeaverService svc = weavers.get(rtkKpg.getResourceType());
         if (svc != null) {
-            svc.weave(kieBase, newPkg, rtkKpg);
+            svc.weave(newPkg, rtkKpg);
         }
     }
 
     @Override
-    public void merge(KieBase kieBase, KiePackage pkg, ResourceTypePackage rtkKpg) {
+    public void merge(KiePackage pkg, ResourceTypePackage rtkKpg) {
         KieWeaverService svc = weavers.get(rtkKpg.getResourceType());
         if (svc != null) {
-            svc.merge(kieBase, pkg, rtkKpg);
+            svc.merge(pkg, rtkKpg);
         }
     }
 }

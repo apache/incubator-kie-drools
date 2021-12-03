@@ -24,7 +24,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.ClassA;
@@ -686,7 +686,7 @@ public class PatternTest {
             ksession.fireAllRules();
 
             // selects p1 and p3
-            if ((( KnowledgeBaseImpl ) kbase).getConfiguration().getAssertBehaviour().equals( RuleBaseConfiguration.AssertBehaviour.IDENTITY )) {
+            if (((RuleBase) kbase).getConfiguration().getAssertBehaviour().equals( RuleBaseConfiguration.AssertBehaviour.IDENTITY )) {
                 assertEquals(2, list.size());
                 assertSame(p1, list.get(0));
                 assertSame(p3, list.get(1));

@@ -26,9 +26,7 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.Declaration;
@@ -39,6 +37,8 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.core.spi.Tuple;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class FieldConstraintTest {
      */
     @Test
     public void testLiteralConstraint() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();;
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final ClassFieldReader extractor = store.getReader( Cheese.class,
@@ -125,7 +125,7 @@ public class FieldConstraintTest {
      */
     @Test
     public void testPrimitiveLiteralConstraint() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();;
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
@@ -164,7 +164,7 @@ public class FieldConstraintTest {
      */
     @Test
     public void testPredicateConstraint() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();;
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final InternalReadAccessor priceExtractor = store.getReader( Cheese.class,

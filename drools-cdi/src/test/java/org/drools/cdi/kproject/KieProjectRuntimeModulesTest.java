@@ -29,7 +29,7 @@ import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -94,7 +94,7 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
                                                         null );
 
         KieBase kBase = kContainer.getKieBase( "jar1.KBase1" );
-        ClassLoader cl = ((KnowledgeBaseImpl) kBase).getRootClassLoader();
+        ClassLoader cl = ((RuleBase) kBase).getRootClassLoader();
 
         Class cls = cl.loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar1" );
         assertNotNull( cls );

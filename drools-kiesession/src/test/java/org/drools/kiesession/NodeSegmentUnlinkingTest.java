@@ -15,6 +15,8 @@
 
 package org.drools.kiesession;
 
+import java.util.Collections;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -23,8 +25,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.PhreakNotNode;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.BetaMemory;
@@ -41,11 +42,14 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class NodeSegmentUnlinkingTest {
     InternalKnowledgeBase kBase;
@@ -103,9 +107,8 @@ public class NodeSegmentUnlinkingTest {
     }
     
     public void setUp(int... type) {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        buildContext = new BuildContext( kBase );
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        buildContext = new BuildContext( kBase, Collections.emptyList() );
 
         PropagationContextFactory pctxFactory = new PhreakPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
@@ -186,9 +189,8 @@ public class NodeSegmentUnlinkingTest {
         rule2 = new RuleImpl( "rule2" );
         rule3 = new RuleImpl( "rule3" );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        BuildContext buildContext = new BuildContext( kBase );
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext( kBase, Collections.emptyList() );
 
         MockObjectSource mockObjectSource = new MockObjectSource( 8 );
         MockTupleSource mockTupleSource = new MockTupleSource(9, buildContext);
@@ -246,9 +248,8 @@ public class NodeSegmentUnlinkingTest {
     public void testLiaNodeInitialisation() {
         setUp( JOIN_NODE );
         // Initialise from lian
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         SegmentUtilities.createSegmentMemory( liaNode, ksession );
@@ -264,7 +265,7 @@ public class NodeSegmentUnlinkingTest {
         assertEquals( 3, bm1.getSegmentMemory().getAllLinkedMaskTest() );         
         
         // Initialise from n1     
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         n1.assertObject( (InternalFactHandle) ksession.insert( "str" ), context, ksession );
@@ -283,8 +284,7 @@ public class NodeSegmentUnlinkingTest {
     public void testLiaNodeLinking() {
         setUp( JOIN_NODE );
         // Initialise from lian
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         SegmentUtilities.createSegmentMemory( liaNode, ksession );
@@ -331,8 +331,7 @@ public class NodeSegmentUnlinkingTest {
     public void tesMultiNodeSegmentDifferentInitialisationPoints() {
         setUp( JOIN_NODE );
         // Initialise from n3
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         createSegmentMemory(n3, ksession);
@@ -357,7 +356,7 @@ public class NodeSegmentUnlinkingTest {
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
         // Initialise from n4       
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         bm = createSegmentMemory( n4, ksession );
@@ -382,7 +381,7 @@ public class NodeSegmentUnlinkingTest {
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
         // Initialise from n5
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         createSegmentMemory( n5, ksession );
@@ -407,7 +406,7 @@ public class NodeSegmentUnlinkingTest {
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
         // Initialise from n6
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         createSegmentMemory( n6, ksession );
@@ -438,8 +437,7 @@ public class NodeSegmentUnlinkingTest {
 
         assertEquals( JoinNode.class, n3.getClass() ); // make sure it created JoinNodes
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         DefaultFactHandle f1 = (DefaultFactHandle) ksession.insert( "test1" );
@@ -464,8 +462,7 @@ public class NodeSegmentUnlinkingTest {
 
         assertEquals( ExistsNode.class, n3.getClass() ); // make sure it created ExistsNodes
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         DefaultFactHandle f1 = (DefaultFactHandle) ksession.insert( "test1" );
@@ -500,8 +497,7 @@ public class NodeSegmentUnlinkingTest {
 
         assertEquals( NotNode.class, n3.getClass() ); // make sure it created NotNodes
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n3 );

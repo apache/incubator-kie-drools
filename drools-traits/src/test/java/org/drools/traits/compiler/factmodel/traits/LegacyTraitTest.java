@@ -22,13 +22,13 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.core.factmodel.traits.Trait;
+import org.drools.core.factmodel.traits.Traitable;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
-import org.drools.core.factmodel.traits.Traitable;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.traits.core.util.StandaloneTraitFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;

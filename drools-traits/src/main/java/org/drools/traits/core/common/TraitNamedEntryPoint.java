@@ -56,11 +56,11 @@ public class TraitNamedEntryPoint extends NamedEntryPoint {
         this.entryPoint = entryPoint;
         this.entryPointNode = entryPointNode;
         this.reteEvaluator = reteEvaluator;
-        this.kBase = this.reteEvaluator.getKnowledgeBase();
+        this.ruleBase = this.reteEvaluator.getKnowledgeBase();
         this.lock = lock;
         this.handleFactory = this.reteEvaluator.getFactHandleFactory();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
-        boolean isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(this.kBase.getConfiguration().getAssertBehaviour());
+        boolean isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(this.ruleBase.getConfiguration().getAssertBehaviour());
         this.objectStore = new ClassAwareObjectStore(isEqualityBehaviour, this.lock);
         this.traitHelper = new TraitHelperImpl((InternalWorkingMemoryActions) reteEvaluator, this);
     }

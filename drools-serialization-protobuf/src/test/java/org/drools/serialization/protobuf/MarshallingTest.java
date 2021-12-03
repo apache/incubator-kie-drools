@@ -44,9 +44,8 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.marshalling.impl.RuleBaseNodes;
@@ -60,6 +59,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreConstants;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cell;
@@ -2155,7 +2155,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                         "System.out.println(\"b\");\n" +
                         "end\n";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
 
         KieBase kBase = loadKnowledgeBaseFromString(config, str);
@@ -2184,12 +2184,12 @@ public class MarshallingTest extends CommonTestMethodBase {
                         "insert(new C());" +
                         "end\n";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
 
         KieBase kBase = loadKnowledgeBaseFromString(config, str);
 
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = kBase.newKieSession( ksconf, null );
@@ -2209,10 +2209,10 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test @Ignore("This test is suspicious to say the least...")
     public void testScheduledActivation() {
-        KnowledgeBaseImpl knowledgeBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgePackageImpl impl = new KnowledgePackageImpl( "test" );
 
-        BuildContext buildContext = new BuildContext( knowledgeBase );
+        BuildContext buildContext = new BuildContext( knowledgeBase, Collections.emptyList() );
         //simple rule that fires after 10 seconds
         final RuleImpl rule = new RuleImpl( "test-rule" );
         new RuleTerminalNode(1, new MockTupleSource(2, buildContext), rule, rule.getLhs(), 0, buildContext );
@@ -2323,12 +2323,12 @@ public class MarshallingTest extends CommonTestMethodBase {
                         "list.add( $c );" +
                         "end\n";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
 
         KieBase kBase = loadKnowledgeBaseFromString(config, str);
 
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = kBase.newKieSession( ksconf, null );
@@ -2409,12 +2409,12 @@ public class MarshallingTest extends CommonTestMethodBase {
                         "list.add( $a );" +
                         "end\n";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
 
         KieBase kBase = loadKnowledgeBaseFromString(config, str);
 
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = kBase.newKieSession( ksconf, null );
@@ -2463,11 +2463,11 @@ public class MarshallingTest extends CommonTestMethodBase {
                         "   list.add( $l );" +
                         "end\n";
 
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KieBase kbase = loadKnowledgeBaseFromString( conf, str );
 
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = createKnowledgeSession(kbase, ksconf);
@@ -2538,11 +2538,11 @@ public class MarshallingTest extends CommonTestMethodBase {
                         "   list.add( $l );" +
                         "end\n";
 
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KieBase kbase = loadKnowledgeBaseFromString( conf, str );
 
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = createKnowledgeSession(kbase, ksconf);
@@ -2623,7 +2623,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         MarshallerFactory.newMarshaller( kbase ).marshall( out,
                                                            ksession );
 
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         ksconf.setOption( ClockTypeOption.PSEUDO );
 
@@ -2711,7 +2711,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                DeclarativeAgendaOption.ENABLED,
                                                EventProcessingOption.STREAM );
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.PSEUDO );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
@@ -2840,7 +2840,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                      "   retract( $m );\n" +
                      "end\n";
 
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         ksconf.setOption( TimedRuleExecutionOption.YES );
         ksconf.setOption(TimerJobFactoryOption.get("trackable"));

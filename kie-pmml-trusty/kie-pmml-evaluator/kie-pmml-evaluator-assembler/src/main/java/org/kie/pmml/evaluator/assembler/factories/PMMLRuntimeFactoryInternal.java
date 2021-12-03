@@ -30,12 +30,11 @@ import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.DescrResource;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.io.internal.InternalResource;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -130,7 +129,7 @@ public class PMMLRuntimeFactoryInternal {
     public static PMMLRuntime getPMMLRuntime(String pmmlFileName, String pmmlModelName, KieBase kieBase) {
         RuleBaseConfiguration ruleBaseConfiguration =
                 new RuleBaseConfiguration(((InternalKnowledgeBase) kieBase).getRootClassLoader());
-        KnowledgeBaseImpl kieBaseNew = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase(ruleBaseConfiguration);
+        InternalKnowledgeBase kieBaseNew = KnowledgeBaseFactory.newKnowledgeBase(ruleBaseConfiguration);
         KiePackage kiePackage = getKiePackageByModelName(pmmlModelName, kieBase);
         kieBaseNew.addPackage(kiePackage);
         List<KiePackage> nestedKiePackages = getNestedKiePackages((InternalKnowledgePackage) kiePackage, kieBase);

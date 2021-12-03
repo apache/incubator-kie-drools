@@ -26,7 +26,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.DescrResource;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.Test;
@@ -133,7 +133,7 @@ public class PMMLRuntimeFactoryInternalTest {
                 .stream()
                 .map(this::getKnowledgePackageWithPMMLResourceType)
                 .collect(Collectors.toList());
-        KnowledgeBaseImpl kieBase = (KnowledgeBaseImpl) new KieHelper().build(ExecutableModelProject.class);
+        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) new KieHelper().build(ExecutableModelProject.class);
         kieBase.addPackage(pmmlKnowledgePackage);
         kieBase.addPackages(kiePackages);
         // Actual test
@@ -151,7 +151,7 @@ public class PMMLRuntimeFactoryInternalTest {
         // Setup kiebase
         KiePMMLModel kiePMMLModel = new KiePMMLModelA("FAKE");
         KnowledgePackageImpl pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
-        KnowledgeBaseImpl kieBase = (KnowledgeBaseImpl) new KieHelper().build(ExecutableModelProject.class);
+        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) new KieHelper().build(ExecutableModelProject.class);
         kieBase.addPackage(pmmlKnowledgePackage);
         // Actual test
         assertNotNull(PMMLRuntimeFactoryInternal.getKiePackageByFullClassName(kiePMMLModel.getClass().getName(), kieBase));
@@ -161,7 +161,7 @@ public class PMMLRuntimeFactoryInternalTest {
     public void getKiePackageByFullClassNameNotPresent() {
         // Setup kiebase
         KnowledgePackageImpl pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(new KiePMMLModelA("FAKE"));
-        KnowledgeBaseImpl kieBase = (KnowledgeBaseImpl) new KieHelper().build(ExecutableModelProject.class);
+        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) new KieHelper().build(ExecutableModelProject.class);
         kieBase.addPackage(pmmlKnowledgePackage);
         // Actual test
         PMMLRuntimeFactoryInternal.getKiePackageByFullClassName(KiePMMLModel.class.getName(), kieBase);

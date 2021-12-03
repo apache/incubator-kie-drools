@@ -15,6 +15,7 @@
 
 package org.drools.mvel.compiler.rule.builder.dialect.mvel;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +31,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
@@ -41,6 +40,8 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
 import org.drools.mvel.builder.MVELEvalBuilder;
@@ -105,7 +106,7 @@ public class MVELEvalBuilderTest {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        BuildContext                             buildContext = new BuildContext(kBase);
+        BuildContext                             buildContext = new BuildContext(kBase, Collections.emptyList());
         org.drools.core.reteoo.MockLeftTupleSink sink         = new MockLeftTupleSink(buildContext);
         MockTupleSource                          source       = new MockTupleSource(1, buildContext);
         source.setObjectCount(1);

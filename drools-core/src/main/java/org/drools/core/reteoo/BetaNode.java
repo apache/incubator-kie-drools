@@ -164,10 +164,10 @@ public abstract class BetaNode extends LeftTupleSource
             ObjectType objectType = pattern.getObjectType();
 
             if (objectType instanceof ClassObjectType) {
-                Class objectClass = ((ClassObjectType) objectType).getClassType();
+                Class objectClass = objectType.getClassType();
                 if (isPropertyReactive(context, objectClass)) {
                     rightListenedProperties = pattern.getListenedProperties();
-                    List<String> accessibleProperties = pattern.getAccessibleProperties( context.getKnowledgeBase() );
+                    List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
                     rightDeclaredMask = pattern.getPositiveWatchMask(accessibleProperties);
                     rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(objectClass, accessibleProperties));
                     rightNegativeMask = pattern.getNegativeWatchMask(accessibleProperties);
@@ -373,66 +373,64 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public FastIterator getRightIterator( TupleMemory memory ) {
-        if ( !this.indexedUnificationJoin ) {
-            return memory.fastIterator();
-        } else {
+        if ( this.indexedUnificationJoin ) {
             return memory.fullFastIterator();
+        } else {
+            return memory.fastIterator();
         }
     }
 
     public FastIterator getRightIterator(TupleMemory memory, RightTuple rightTuple) {
-        if ( !this.indexedUnificationJoin ) {
-            return memory.fastIterator();
-        } else {
+        if ( this.indexedUnificationJoin ) {
             return memory.fullFastIterator(rightTuple);
+        } else {
+            return memory.fastIterator();
         }
     }
 
     public FastIterator getLeftIterator1(TupleMemory memory) {
-        if ( !this.indexedUnificationJoin ) {
-            return memory.fastIterator();
-        } else {
+        if ( this.indexedUnificationJoin ) {
             return memory.fullFastIterator();
+        } else {
+            return memory.fastIterator();
         }
     }
 
     public RightTuple getFirstRightTuple(final Tuple leftTuple,
                                          final TupleMemory memory,
-                                         final InternalFactHandle factHandle,
                                          final FastIterator it) {
-        if ( !this.indexedUnificationJoin ) {
-            return (RightTuple) memory.getFirst(leftTuple);
-        } else {
+        if ( this.indexedUnificationJoin ) {
             return (RightTuple) it.next( null );
+        } else {
+            return (RightTuple) memory.getFirst(leftTuple);
         }
     }
 
     public LeftTuple getFirstLeftTuple1(final RightTuple rightTuple,
                                        final TupleMemory memory,
                                        final FastIterator it) {
-        if ( !this.indexedUnificationJoin ) {
-            return (LeftTuple) memory.getFirst(rightTuple);
-        } else {
+        if ( this.indexedUnificationJoin ) {
             return (LeftTuple) it.next( null );
+        } else {
+            return (LeftTuple) memory.getFirst(rightTuple);
         }
     }
 
     public FastIterator getLeftIterator(TupleMemory memory) {
-        if (!rightInputIsRiaNode) {
-            return getLeftIterator1(memory);
-        } else {
+        if (rightInputIsRiaNode) {
             return FastIterator.NullFastIterator.INSTANCE;
+        } else {
+            return getLeftIterator1(memory);
         }
     }
 
     public LeftTuple getFirstLeftTuple(final RightTuple rightTuple,
                                        final TupleMemory memory,
                                        final FastIterator it) {
-        if (!rightInputIsRiaNode) {
-            return getFirstLeftTuple1(rightTuple, memory,it);
+        if (rightInputIsRiaNode) {
+            return getStartTuple((SubnetworkTuple)rightTuple);
         } else {
-            LeftTuple leftTuple = getStartTuple((SubnetworkTuple)rightTuple);
-            return leftTuple;
+            return getFirstLeftTuple1(rightTuple, memory,it);
         }
     }
 
@@ -486,7 +484,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public List<String> getRules() {
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
 
         final LeftTupleSink[] sinks = this.sink.getSinks();
         for (LeftTupleSink sink1 : sinks) {
@@ -535,7 +533,7 @@ public abstract class BetaNode extends LeftTupleSource
         if ( node.getType() == NodeTypeEnums.AccumulateNode ) {
             bm = ((AccumulateMemory)reteEvaluator.getNodeMemory(node)).getBetaMemory();
         } else {
-            bm = ((BetaMemory)reteEvaluator.getNodeMemory(  node ));
+            bm = ((BetaMemory)reteEvaluator.getNodeMemory( node ));
         }
         return bm;
     }
@@ -685,10 +683,6 @@ public abstract class BetaNode extends LeftTupleSource
     
     public BitMask getRightDeclaredMask() {
         return rightDeclaredMask;
-    }
-
-    public void setRightDeclaredMask(BitMask rightDeclaredMask) {
-        this.rightDeclaredMask = rightDeclaredMask;
     }
 
     public BitMask getRightInferredMask() {

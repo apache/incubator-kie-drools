@@ -52,7 +52,6 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.base.ClassObjectType;
-import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
@@ -63,9 +62,7 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -87,6 +84,9 @@ import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.ecj.EclipseJavaCompiler;
+import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MockBetaNode;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Primitives;
@@ -196,7 +196,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase, Collections.emptyList()) )  );
         final Activation activation = new MockActivation( rule,
                                                           0,
                                                           rule.getLhs(),
@@ -264,7 +264,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         InternalKnowledgePackage newPkg = SerializationHelper.serializeObject( pkg );
         final RuleImpl newRule = newPkg.getRule( "rule-1" );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();;
 
         // It's been serialised so we have to simulate the re-wiring process
         newPkg.getDialectRuntimeRegistry().onAdd( kBase.getRootClassLoader() );
@@ -279,7 +279,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase, Collections.emptyList()) )  );
         final Activation activation = new MockActivation( newRule,
                                                           0,
                                                           newRule.getLhs(),

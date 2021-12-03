@@ -30,7 +30,6 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.AbstractCompositeConstraint;
@@ -92,12 +91,12 @@ public class BuildUtils {
         RuleBasePartitionId partition = null;
         if ( candidate.getType() == NodeTypeEnums.EntryPointNode ) {
             // entry point nodes are always shared
-            node = context.getKnowledgeBase().getRete().getEntryPointNode( ((EntryPointNode) candidate).getEntryPoint() );
+            node = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode) candidate).getEntryPoint() );
             // all EntryPointNodes belong to the main partition
             partition = RuleBasePartitionId.MAIN_PARTITION;
         } else if ( candidate.getType() == NodeTypeEnums.ObjectTypeNode ) {
             // object type nodes are always shared
-            Map<ObjectType, ObjectTypeNode> map = context.getKnowledgeBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
+            Map<ObjectType, ObjectTypeNode> map = context.getRuleBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
             if ( map != null ) {
                 ObjectTypeNode otn = map.get( ((ObjectTypeNode) candidate).getObjectType() );
                 if ( otn != null ) {
@@ -132,7 +131,7 @@ public class BuildUtils {
                 // if it does not has a predefined label
                 if ( context.getPartitionId() == null ) {
                     // if no label in current context, create one
-                    context.setPartitionId( context.getKnowledgeBase().createNewPartitionId() );
+                    context.setPartitionId( context.getRuleBase().createNewPartitionId() );
                 }
                 partition = context.getPartitionId();
             }
@@ -177,9 +176,9 @@ public class BuildUtils {
      */
     private boolean isSharingEnabledForNode(BuildContext context, BaseNode node) {
         if ( NodeTypeEnums.isLeftTupleSource( node )) {
-            return context.getKnowledgeBase().getConfiguration().isShareBetaNodes();
+            return context.getRuleBase().getConfiguration().isShareBetaNodes();
         } else if ( NodeTypeEnums.isObjectSource( node ) ) {
-            return context.getKnowledgeBase().getConfiguration().isShareAlphaNodes();
+            return context.getRuleBase().getConfiguration().isShareAlphaNodes();
         }
         return false;
     }
@@ -213,27 +212,27 @@ public class BuildUtils {
                 break;
             case 1 :
                 constraints = BetaNodeConstraintFactory.Factory.get().createSingleBetaConstraints( list.get( 0 ),
-                                                         context.getKnowledgeBase().getConfiguration(),
+                                                         context.getRuleBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 2 :
                 constraints = BetaNodeConstraintFactory.Factory.get().createDoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                         context.getKnowledgeBase().getConfiguration(),
+                                                         context.getRuleBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 3 :
                 constraints = BetaNodeConstraintFactory.Factory.get().createTripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                         context.getKnowledgeBase().getConfiguration(),
+                                                         context.getRuleBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 4 :
                 constraints = BetaNodeConstraintFactory.Factory.get().createQuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                             context.getKnowledgeBase().getConfiguration(),
+                                                             context.getRuleBase().getConfiguration(),
                                                              disableIndexing );
                 break;
             default :
                 constraints = BetaNodeConstraintFactory.Factory.get().createDefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                          context.getKnowledgeBase().getConfiguration(),
+                                                          context.getRuleBase().getConfiguration(),
                                                           disableIndexing );
         }
         return constraints;

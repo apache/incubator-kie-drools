@@ -46,7 +46,7 @@ import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.definitions.rule.impl.GlobalImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
@@ -843,7 +843,7 @@ public class KnowledgePackageImpl
     }
 
     @Override
-    public void mergeTraitRegistry(InternalKnowledgeBase knowledgeBase) { }
+    public void mergeTraitRegistry(RuleBase knowledgeBase) { }
 
     @Override
     public void addCloningResource(String key, Object resource) {

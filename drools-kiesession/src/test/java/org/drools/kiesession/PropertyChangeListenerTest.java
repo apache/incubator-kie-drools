@@ -16,19 +16,19 @@
 
 package org.drools.kiesession;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collections;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,10 +39,10 @@ public class PropertyChangeListenerTest {
     
     @Before
     public void setUp() throws Exception {
-        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        this.buildContext = new BuildContext( kBase );
+        this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        this.buildContext = new BuildContext( kBase, Collections.emptyList() );
 
-        this.entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();;
+        this.entryPoint = buildContext.getRuleBase().getRete().getEntryPointNodes().values().iterator().next();;
     }
     
     @Test
@@ -89,14 +89,6 @@ public class PropertyChangeListenerTest {
             this.changes.firePropertyChange( "state",
                                              oldState,
                                              newState );
-        }
-
-        public void addPropertyChangeListener(final PropertyChangeListener l) {
-            this.changes.addPropertyChangeListener( l );
-        }
-
-        public void removePropertyChangeListener(final PropertyChangeListener l) {
-            this.changes.removePropertyChangeListener( l );
         }
     }
 }

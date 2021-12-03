@@ -36,11 +36,10 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -62,7 +61,7 @@ import org.kie.internal.runtime.StatelessKnowledgeSession;
 
 public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements StatelessKnowledgeSession, StatelessKieSession {
 
-    private KnowledgeBaseImpl kBase;
+    private InternalKnowledgeBase kBase;
     private MapGlobalResolver    sessionGlobals = new MapGlobalResolver();
     private Map<String, Channel> channels       = new HashMap<String, Channel>();
 
@@ -84,7 +83,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
 
     public StatelessKnowledgeSessionImpl(InternalKnowledgeBase kBase,
                                          KieSessionConfiguration conf) {
-        this.kBase = (KnowledgeBaseImpl)kBase;
+        this.kBase = kBase;
         this.conf = conf != null ? (SessionConfiguration) conf : kBase.getSessionConfiguration();
         this.environment = EnvironmentFactory.newEnvironment();
         this.pool = null;

@@ -17,7 +17,7 @@
 package org.drools.kiesession.session;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -25,9 +25,9 @@ import org.kie.api.runtime.StatelessKieSession;
 
 public class KieSessionsPoolImpl extends AbstractKieSessionsPool {
 
-    private final KnowledgeBaseImpl kBase;
+    private final InternalKnowledgeBase kBase;
 
-    public KieSessionsPoolImpl(KnowledgeBaseImpl kBase, int initialSize) {
+    public KieSessionsPoolImpl(InternalKnowledgeBase kBase, int initialSize) {
         super(initialSize);
         this.kBase = kBase;
     }

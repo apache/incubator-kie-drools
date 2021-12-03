@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.core.event;
+package org.drools.kiesession.rulebase;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.event.AbstractEventSupport;
 import org.drools.core.event.knowlegebase.impl.AfterFunctionRemovedEventImpl;
 import org.drools.core.event.knowlegebase.impl.AfterKiePackageAddedEventImpl;
 import org.drools.core.event.knowlegebase.impl.AfterKiePackageRemovedEventImpl;
@@ -36,7 +37,7 @@ import org.drools.core.event.knowlegebase.impl.BeforeProcessAddedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeProcessRemovedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
 import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
@@ -59,17 +60,9 @@ import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 
 public class KieBaseEventSupport extends AbstractEventSupport<KieBaseEventListener> {
-    private transient InternalKnowledgeBase kBase;
+    private final KieBase kBase;
 
-    public KieBaseEventSupport() {
-
-    }
-
-    public KieBaseEventSupport(final InternalKnowledgeBase kBase) {
-        this.kBase = kBase;
-    }
-
-    public void setKnowledgeBase(InternalKnowledgeBase kBase) {
+    public KieBaseEventSupport(KieBase kBase) {
         this.kBase = kBase;
     }
 

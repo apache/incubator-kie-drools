@@ -19,19 +19,19 @@ package org.kie.dmn.core.internal.utils;
 import java.util.Collections;
 import java.util.function.Function;
 
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class DMNRuntimeBuilderTest {
 
-    private static final KieBase KIE_BASE = new KnowledgeBaseImpl("DMN", null);
+    private static final KieBase KIE_BASE = KnowledgeBaseFactory.newKnowledgeBase("DMN", null);
     private DMNRuntimeBuilder dmnRuntimeBuilder;
 
     @Before

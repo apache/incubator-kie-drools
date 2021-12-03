@@ -27,7 +27,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
@@ -60,7 +60,7 @@ public class Rete extends ObjectSource implements ObjectSink {
 
     private Map<EntryPointId, EntryPointNode> entryPoints;
 
-    private transient InternalKnowledgeBase kBase;
+    private transient RuleBase kBase;
 
     public Rete() {
         this( null );
@@ -70,7 +70,7 @@ public class Rete extends ObjectSource implements ObjectSink {
     // Constructors
     // ------------------------------------------------------------
 
-    public Rete(InternalKnowledgeBase kBase) {
+    public Rete(RuleBase kBase) {
         super( 0, RuleBasePartitionId.MAIN_PARTITION, kBase != null && kBase.getConfiguration().isMultithreadEvaluation() );
         this.entryPoints = Collections.synchronizedMap( new HashMap<EntryPointId, EntryPointNode>() );
         this.kBase = kBase;
@@ -182,7 +182,7 @@ public class Rete extends ObjectSource implements ObjectSink {
     }
 
     @Override
-    public InternalKnowledgeBase getKnowledgeBase() {
+    public RuleBase getRuleBase() {
         return this.kBase;
     }
 

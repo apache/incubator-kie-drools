@@ -109,10 +109,10 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
                           final BuildContext context) {
         super(id,
               RuleBasePartitionId.MAIN_PARTITION,
-              context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
+              context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
               source,
-              context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold(),
-              context.getKnowledgeBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
+              context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold(),
+              context.getRuleBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
         this.objectType = objectType;
         idGenerator = new IdGenerator(id);
 
@@ -126,7 +126,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
 
         hashcode = calculateHashCode();
 
-        if (objectType != ClassObjectType.InitialFact_ObjectType && context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation()) {
+        if (objectType != ClassObjectType.InitialFact_ObjectType && context.getRuleBase().getConfiguration().isMultithreadEvaluation()) {
             this.sink = new CompositePartitionAwareObjectSinkAdapter();
         }
 
@@ -389,7 +389,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
             return;
         }
 
-        EntryPointNode epn = context.getKnowledgeBase().getRete().getEntryPointNode( ((EntryPointNode) source).getEntryPoint() );
+        EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode) source).getEntryPoint() );
         if (epn == null) {
             return;
         }

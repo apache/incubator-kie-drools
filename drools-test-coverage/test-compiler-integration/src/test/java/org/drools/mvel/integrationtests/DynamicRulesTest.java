@@ -26,8 +26,8 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.mvel.compiler.Cheese;
@@ -956,7 +956,7 @@ public class DynamicRulesTest {
             Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromClasspathResourcesWithClassLoaderForKieBuilder("test", getClass(), loader1, kieBaseTestConfiguration, "test_EnumSerialization.drl").getKiePackages();
 
             // adding original packages to a kbase just to make sure they are fine
-            KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader1 );
+            KieBaseConfiguration kbaseConf = RuleBaseFactory.newKnowledgeBaseConfiguration( null, loader1 );
             final KieModule kieModule = KieUtil.getKieModuleFromResourcesWithClassLoaderForKieBuilder("test", loader1, kieBaseTestConfiguration);
             InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.newKieBaseFromReleaseId(kieModule.getReleaseId(), kbaseConf);
 
@@ -974,7 +974,7 @@ public class DynamicRulesTest {
             loader2.loadClass( "org.drools.TestEnum" );
 
             // create another kbase
-            KieBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+            KieBaseConfiguration kbaseConf2 = RuleBaseFactory.newKnowledgeBaseConfiguration( null,
                                                                                                   loader2 );
             final KieModule kieModule2 = KieUtil.getKieModuleFromResourcesWithClassLoaderForKieBuilder("test2", loader2, kieBaseTestConfiguration);
             InternalKnowledgeBase kbase2 = (InternalKnowledgeBase) KieBaseUtil.newKieBaseFromReleaseId(kieModule2.getReleaseId(), kbaseConf2);
@@ -1195,7 +1195,7 @@ public class DynamicRulesTest {
 
     @Test(timeout=10000)
     public void testJBRULES_2206() {
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
 
         final KieModule kieModule = KieUtil.getKieModuleFromResources(KieUtil.generateReleaseId("test"), kieBaseTestConfiguration);

@@ -23,9 +23,8 @@ import java.util.regex.Pattern;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.TemplateDataListener;
 import org.junit.Test;
@@ -34,9 +33,11 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *         basic tests for converter utility. Note that some of this may

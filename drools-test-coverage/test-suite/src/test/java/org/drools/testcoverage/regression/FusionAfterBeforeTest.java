@@ -22,7 +22,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.kie.api.time.SessionPseudoClock;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.model.Event;
 import org.drools.testcoverage.common.model.EventA;
@@ -72,7 +72,7 @@ public class FusionAfterBeforeTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromResources(TestConstants.PACKAGE_REGRESSION,
                                                                                  kieBaseTestConfiguration, drlResource);
 
-        final KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption(ClockTypeOption.PSEUDO);
 
         final KieSession ksession = kieBase.newKieSession(ksconf, null);
@@ -126,7 +126,7 @@ public class FusionAfterBeforeTest {
         events.addAll(getEvents(EventA.class, 64 / 2, 2, 100, 0));
         events.addAll(getEvents(EventB.class, 64 / 2, 5, 100, 0));
 
-        final KieSessionConfiguration sessionConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration sessionConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         sessionConf.setOption(ClockTypeOption.PSEUDO);
         final KieSession kieSession =
                 new KieHelper().addContent(drlBuilder.toString(), ResourceType.DRL).build(kieBaseTestConfiguration.getKieBaseConfiguration()).newKieSession(sessionConf, null);

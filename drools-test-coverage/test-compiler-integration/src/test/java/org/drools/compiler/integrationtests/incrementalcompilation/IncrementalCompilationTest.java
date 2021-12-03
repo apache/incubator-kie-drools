@@ -37,8 +37,8 @@ import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
@@ -684,8 +684,8 @@ public class IncrementalCompilationTest {
         assertNotNull(rules.get("R2"));
         assertNotNull(rules.get("R3"));
 
-        final RuleTerminalNode rtn1_1 = (RuleTerminalNode) ((KnowledgeBaseImpl) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R1")[0];
-        final RuleTerminalNode rtn3_1 = (RuleTerminalNode) ((KnowledgeBaseImpl) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R3")[0];
+        final RuleTerminalNode rtn1_1 = (RuleTerminalNode) ((RuleBase) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R1")[0];
+        final RuleTerminalNode rtn3_1 = (RuleTerminalNode) ((RuleBase) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R3")[0];
 
         // Create a new jar for version 1.1.0
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -693,7 +693,7 @@ public class IncrementalCompilationTest {
         // try to update the container to version 1.1.0
         kc.updateToVersion(releaseId2);
 
-        final KnowledgeBaseImpl rb_2 = ((KnowledgeBaseImpl) kc.getKieBase());
+        final RuleBase rb_2 = ((RuleBase) kc.getKieBase());
 
         final RuleTerminalNode rtn1_2 = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes("org.drools.compiler.R1")[0];
         final RuleTerminalNode rtn3_2 = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes("org.drools.compiler.R3")[0];
@@ -2835,9 +2835,14 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem();
         final ReleaseId id = ks.newReleaseId("org.test", "myTest", "1.0.0");
 
+        KieModuleModel model = ks.newKieModuleModel();
+        model.newKieBaseModel("kbase").newKieSessionModel("ksession").setDefault(true);
+        String kproj = model.toXML();
+
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
 
         kfs.generateAndWritePomXML(id);
+        kfs.writeKModuleXML(kproj);
 
         kfs.write("src/main/java/org/test/MyBean.java",
                   ks.getResources().newReaderResource(new StringReader(JAVA1)));
@@ -2866,6 +2871,7 @@ public class IncrementalCompilationTest {
         final KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
 
         kfs2.generateAndWritePomXML(id2);
+        kfs2.writeKModuleXML(kproj);
 
         kfs2.write("src/main/java/org/test/MyBean.java",
                    ks.getResources().newReaderResource(new StringReader(JAVA2)));
@@ -2944,9 +2950,14 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem();
         final ReleaseId id = ks.newReleaseId("org.test", "myTest", "1.0.0");
 
+        KieModuleModel model = ks.newKieModuleModel();
+        model.newKieBaseModel("kbase").newKieSessionModel("ksession").setDefault(true);
+        String kproj = model.toXML();
+
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
 
         kfs.generateAndWritePomXML(id);
+        kfs.writeKModuleXML(kproj);
 
         kfs.write("src/main/java/org/test/MyBean.java",
                   ks.getResources().newReaderResource(new StringReader(JAVA1)));
@@ -2976,6 +2987,7 @@ public class IncrementalCompilationTest {
         final KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
 
         kfs2.generateAndWritePomXML(id2);
+        kfs2.writeKModuleXML(kproj);
 
         kfs2.write("src/main/java/org/test/MyBean.java",
                    ks.getResources().newReaderResource(new StringReader(JAVA2)));
@@ -3123,7 +3135,12 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem();
         final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
 
+        KieModuleModel model = ks.newKieModuleModel();
+        model.newKieBaseModel("kbase").setDefault(true).newKieSessionModel("ksession").setDefault(true);
+        String kproj = model.toXML();
+
         kfs.generateAndWritePomXML(releaseId1);
+        kfs.writeKModuleXML(kproj);
         kfs.write(ks.getResources()
                           .newReaderResource(new StringReader(drlDeclare))
                           .setResourceType(ResourceType.DRL)
@@ -3145,6 +3162,7 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs2 = ks.newKieFileSystem();
 
         kfs2.generateAndWritePomXML(releaseId2);
+        kfs2.writeKModuleXML(kproj);
 
         kfs2.write(ks.getResources()
                            .newReaderResource(new StringReader(drlDeclare))
@@ -3743,22 +3761,29 @@ public class IncrementalCompilationTest {
 
         final KieServices ks = KieServices.Factory.get();
 
+        KieModuleModel model = ks.newKieModuleModel();
+        model.newKieBaseModel("kbase").newKieSessionModel("ksession").setDefault(true);
+        String kproj = model.toXML();;
+
         final KieFileSystem kfs1 = ks.newKieFileSystem();
         kfs1.write("src/main/resources/rules/Sample1.drl", drl1);
         final ReleaseId releaseId1 = ks.newReleaseId("com.sample", "my-sample-a", "1.0.0");
         kfs1.generateAndWritePomXML(releaseId1);
+        kfs1.writeKModuleXML( kproj );
         ks.newKieBuilder(kfs1).buildAll(DrlProject.class);
 
         final KieFileSystem kfs2 = ks.newKieFileSystem();
         kfs2.write("src/main/resources/rules/Sample2.drl", drl2);
         final ReleaseId releaseId2 = ks.newReleaseId("com.sample", "my-sample-a", "2.0.0");
         kfs2.generateAndWritePomXML(releaseId2);
+        kfs2.writeKModuleXML( kproj );
         ks.newKieBuilder(kfs2).buildAll(DrlProject.class);
 
         final KieFileSystem kfs3 = ks.newKieFileSystem();
         kfs3.write("src/main/resources/rules/Sample3.drl", drl3);
         final ReleaseId releaseId3 = ks.newReleaseId("com.sample", "my-sample-a", "3.0.0");
         kfs3.generateAndWritePomXML(releaseId3);
+        kfs3.writeKModuleXML( kproj );
         ks.newKieBuilder(kfs3).buildAll(DrlProject.class);
 
         // Create a session and fire rules
@@ -4072,8 +4097,13 @@ public class IncrementalCompilationTest {
         KieServices ks = KieServices.get();
         final ReleaseId id = ks.newReleaseId("org.test", "logical", "1.0.0");
 
+        KieModuleModel model = ks.newKieModuleModel();
+        model.newKieBaseModel("kbase").newKieSessionModel("ksession").setDefault(true);
+        String kproj = model.toXML();
+
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.generateAndWritePomXML(id);
+        kfs.writeKModuleXML(kproj);
         kfs.write(ks.getResources()
                 .newReaderResource(new StringReader(DRL1))
                 .setResourceType(ResourceType.DRL)
@@ -4099,6 +4129,7 @@ public class IncrementalCompilationTest {
 
         KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
         kfs2.generateAndWritePomXML(id2);
+        kfs2.writeKModuleXML(kproj);
 
         kieBuilder = ks.newKieBuilder(kfs2);
         kieBuilder.buildAll(DrlProject.class);
@@ -4122,8 +4153,13 @@ public class IncrementalCompilationTest {
         KieServices ks = KieServices.get();
         final ReleaseId id = ks.newReleaseId("org.test", "logical", "1.0.0");
 
+        KieModuleModel model = ks.newKieModuleModel();
+        model.newKieBaseModel("kbase").newKieSessionModel("ksession").setDefault(true);
+        String kproj = model.toXML();
+
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.generateAndWritePomXML(id);
+        kfs.writeKModuleXML(kproj);
         kfs.write(ks.getResources()
                 .newReaderResource(new StringReader(DRL1))
                 .setResourceType(ResourceType.DRL)
@@ -4149,6 +4185,7 @@ public class IncrementalCompilationTest {
 
         KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
         kfs2.generateAndWritePomXML(id2);
+        kfs2.writeKModuleXML(kproj);
 
         kieBuilder = ks.newKieBuilder(kfs2);
         kieBuilder.buildAll(DrlProject.class);

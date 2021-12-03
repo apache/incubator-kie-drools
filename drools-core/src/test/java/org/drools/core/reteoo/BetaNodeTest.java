@@ -16,11 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Collections;
+
 import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,9 +31,9 @@ public class BetaNodeTest {
 
     @Test
     public void testEqualsObject() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        RuleBase kBase = RuleBaseFactory.newRuleBase();
 
-        BuildContext buildContext = new BuildContext( kBase );
+        BuildContext buildContext = new BuildContext( kBase, Collections.emptyList() );
 
         final LeftTupleSource ts = new MockTupleSource( 1, buildContext );
         final ObjectSource os = new MockObjectSource( 2, buildContext );

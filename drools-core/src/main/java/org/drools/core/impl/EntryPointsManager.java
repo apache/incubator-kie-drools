@@ -31,7 +31,7 @@ import org.drools.core.rule.EntryPointId;
 public class EntryPointsManager {
 
     private final ReteEvaluator reteEvaluator;
-    private final InternalKnowledgeBase kBase;
+    private final RuleBase ruleBase;
 
     InternalWorkingMemoryEntryPoint defaultEntryPoint;
 
@@ -39,7 +39,7 @@ public class EntryPointsManager {
 
     public EntryPointsManager(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
-        this.kBase = reteEvaluator.getKnowledgeBase();
+        this.ruleBase = reteEvaluator.getKnowledgeBase();
         initDefaultEntryPoint();
         updateEntryPointsCache();
     }
@@ -61,8 +61,8 @@ public class EntryPointsManager {
     }
 
     public void updateEntryPointsCache() {
-        if (kBase.getAddedEntryNodeCache() != null) {
-            for (EntryPointNode addedNode : kBase.getAddedEntryNodeCache()) {
+        if (ruleBase.getAddedEntryNodeCache() != null) {
+            for (EntryPointNode addedNode : ruleBase.getAddedEntryNodeCache()) {
                 EntryPointId id = addedNode.getEntryPoint();
                 if (EntryPointId.DEFAULT.equals(id)) continue;
                 WorkingMemoryEntryPoint wmEntryPoint = createNamedEntryPoint(addedNode, id);
@@ -70,8 +70,8 @@ public class EntryPointsManager {
             }
         }
 
-        if (kBase.getRemovedEntryNodeCache() != null) {
-            for (EntryPointNode removedNode : kBase.getRemovedEntryNodeCache()) {
+        if (ruleBase.getRemovedEntryNodeCache() != null) {
+            for (EntryPointNode removedNode : ruleBase.getRemovedEntryNodeCache()) {
                 entryPoints.remove(removedNode.getEntryPoint().getEntryPointId());
             }
         }
@@ -89,7 +89,7 @@ public class EntryPointsManager {
     }
 
     private InternalWorkingMemoryEntryPoint createDefaultEntryPoint() {
-        EntryPointNode epn = this.kBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
+        EntryPointNode epn = this.ruleBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
         return createNamedEntryPoint(epn, EntryPointId.DEFAULT);
     }
 }

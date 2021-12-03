@@ -22,7 +22,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.conflict.PhreakConflictResolver;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.spi.Activation;
@@ -65,7 +65,7 @@ public class AgendaGroupQueueImpl
     private static final Activation visited = new VisitedAgendaGroup();
 
     public AgendaGroupQueueImpl(final String name,
-                                final InternalKnowledgeBase kBase) {
+                                final RuleBase kBase) {
         this.name = name;
         this.sequential = kBase.getConfiguration().isSequential();
 

@@ -32,9 +32,8 @@ import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -44,6 +43,7 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -2222,7 +2222,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
         // Get the accumulate node, so we can test it's memory later
         // now check beta memory was correctly cleared
-        final List<ObjectTypeNode> nodes = (( KnowledgeBaseImpl ) kbase).getRete().getObjectTypeNodes();
+        final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for (final ObjectTypeNode n : nodes) {
             if ((( ClassObjectType ) n.getObjectType()).getClassType() == String.class) {

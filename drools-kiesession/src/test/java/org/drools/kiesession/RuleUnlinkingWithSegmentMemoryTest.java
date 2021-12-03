@@ -15,6 +15,7 @@
 
 package org.drools.kiesession;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
@@ -24,8 +25,7 @@ import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -44,11 +44,15 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.spi.PropagationContext;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class RuleUnlinkingWithSegmentMemoryTest {
     InternalKnowledgeBase kBase;
@@ -117,10 +121,10 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     }
     
     public void setUp(int type) {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kBase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
+        kBase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kconf));
 
-        buildContext = new BuildContext( kBase );
+        buildContext = new BuildContext( kBase, Collections.emptyList() );
 
         PropagationContextFactory pctxFactory = new PhreakPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
@@ -178,19 +182,18 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     public void testRuleSegmentsAllLinkedTestMasks() {
         setUp( JOIN_NODE );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
         
-        PathMemory rs = (PathMemory) wm.getNodeMemory( rtn1 );
+        PathMemory rs = wm.getNodeMemory( rtn1 );
         assertFalse( rs.isRuleLinked() );
         assertEquals( 1, rs.getAllLinkedMaskTest() );
         
-        rs = (PathMemory) wm.getNodeMemory( rtn2 );
+        rs = wm.getNodeMemory( rtn2 );
         assertFalse( rs.isRuleLinked() );
         assertEquals( 3, rs.getAllLinkedMaskTest() );
         
-        rs = (PathMemory) wm.getNodeMemory( rtn3 );
+        rs = wm.getNodeMemory( rtn3 );
         assertFalse( rs.isRuleLinked() );
         assertEquals( 7, rs.getAllLinkedMaskTest() );
     }   
@@ -200,20 +203,19 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     public void testSegmentNodeReferencesToSegments() {
         setUp( JOIN_NODE );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BetaMemory bm = null;
         List<PathMemory> list;
         
-        PathMemory rtn1Rs = (PathMemory) wm.getNodeMemory( rtn1 );
-        PathMemory rtn2Rs = (PathMemory) wm.getNodeMemory( rtn2 );
-        PathMemory rtn3Rs = (PathMemory) wm.getNodeMemory( rtn3 );
+        PathMemory rtn1Rs = wm.getNodeMemory( rtn1 );
+        PathMemory rtn2Rs = wm.getNodeMemory( rtn2 );
+        PathMemory rtn3Rs = wm.getNodeMemory( rtn3 );
 
         // lian
         SegmentUtilities.createSegmentMemory( lian, wm );
-        LeftInputAdapterNode.LiaNodeMemory lmem = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( lian );
+        LeftInputAdapterNode.LiaNodeMemory lmem = wm.getNodeMemory( lian );
         assertEquals( 1, lmem.getNodePosMaskBit() );
 
         // n1
@@ -304,15 +306,15 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     public void testRuleSegmentLinking() {
         setUp( JOIN_NODE );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BetaMemory bm = null;
         List<PathMemory> list;
         
-        PathMemory rtn1Rs = (PathMemory) wm.getNodeMemory( rtn1 );
-        PathMemory rtn2Rs = (PathMemory) wm.getNodeMemory( rtn2 );
-        PathMemory rtn3Rs = (PathMemory) wm.getNodeMemory( rtn3 );
+        PathMemory rtn1Rs = wm.getNodeMemory( rtn1 );
+        PathMemory rtn2Rs = wm.getNodeMemory( rtn2 );
+        PathMemory rtn3Rs = wm.getNodeMemory( rtn3 );
         
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
 

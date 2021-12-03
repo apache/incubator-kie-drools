@@ -19,7 +19,6 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
@@ -184,7 +183,7 @@ public class SegmentUtilities {
 
         nodeTypesInSegment = updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, reteEvaluator, false, nodeTypesInSegment);
 
-        ((KnowledgeBaseImpl)reteEvaluator.getKnowledgeBase()).registerSegmentPrototype(segmentRoot, smem);
+        reteEvaluator.getKnowledgeBase().registerSegmentPrototype(segmentRoot, smem);
 
         return smem;
     }

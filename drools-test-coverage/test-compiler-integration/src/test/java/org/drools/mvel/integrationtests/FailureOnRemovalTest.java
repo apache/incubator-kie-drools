@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -116,7 +116,7 @@ public class FailureOnRemovalTest {
     }
 
     private KieBaseConfiguration createKnowledgeBaseConfiguration(boolean shareBetaNodes) {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.NO );
         kconf.setOption( ShareAlphaNodesOption.YES );
         kconf.setOption( shareBetaNodes ? ShareBetaNodesOption.YES : ShareBetaNodesOption.NO );

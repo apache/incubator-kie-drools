@@ -15,6 +15,7 @@
 
 package org.drools.mvel.compiler.rule.builder.dialect.mvel;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,9 +32,7 @@ import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
@@ -44,6 +43,8 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Salience;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
 import org.drools.mvel.builder.MVELSalienceBuilder;
@@ -97,7 +98,7 @@ public class MVELSalienceBuilderTest {
         context.setDeclarationResolver( declarationResolver );
 
         kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        buildContext = new BuildContext(kBase);
+        buildContext = new BuildContext(kBase, Collections.emptyList());
 
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
@@ -198,7 +199,7 @@ public class MVELSalienceBuilderTest {
             this.context = context;
             final InternalFactHandle f0 = (InternalFactHandle) wm.insert( person );
 
-            BuildContext buildContext = new BuildContext(kBase);
+            BuildContext buildContext = new BuildContext(kBase, Collections.emptyList());
             MockLeftTupleSink sink = new MockLeftTupleSink(buildContext);
             MockTupleSource source = new MockTupleSource(1, buildContext);
             source.setObjectCount(1);

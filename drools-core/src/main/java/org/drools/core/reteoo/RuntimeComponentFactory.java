@@ -24,12 +24,10 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPointFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.GenericKieSessionMonitoringImpl;
 import org.drools.core.spi.FactHandleFactory;
@@ -58,21 +56,19 @@ public interface RuntimeComponentFactory {
 
     FactHandleFactory getFactHandleFactoryService();
 
-    WorkingMemoryFactory getWorkingMemoryFactory();
-
     FieldDataFactory getFieldFactory();
 
-    TraitRegistry getTraitRegistry(InternalKnowledgeBase knowledgeBase);
+    TraitRegistry getTraitRegistry(RuleBase knowledgeBase);
 
-    TraitFactory getTraitFactory(InternalKnowledgeBase knowledgeBase);
+    TraitFactory getTraitFactory(RuleBase knowledgeBase);
 
     KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator);
 
-    InternalWorkingMemory createStatefulSession(KnowledgeBaseImpl kbase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool);
+    InternalWorkingMemory createStatefulSession(RuleBase ruleBase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool);
 
-    StatelessKieSession createStatelessSession(KnowledgeBaseImpl kbase, KieSessionConfiguration conf);
+    StatelessKieSession createStatelessSession(RuleBase ruleBase, KieSessionConfiguration conf);
 
-    KieSessionsPool createSessionsPool(KnowledgeBaseImpl kBase, int initialSize);
+    KieSessionsPool createSessionsPool(RuleBase ruleBase, int initialSize);
 
     GenericKieSessionMonitoringImpl createStatefulSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
 

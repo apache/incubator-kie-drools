@@ -38,12 +38,12 @@ public class EntryPointBuilder
         final EntryPointId entry = (EntryPointId) rce;
         context.setCurrentEntryPoint( entry );
         
-        EntryPointNode epn = context.getKnowledgeBase().getRete().getEntryPointNode( entry );
+        EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( entry );
         if( epn == null ) {
             NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
             context.setObjectSource( utils.attachNode( context,
                                                        nFactory.buildEntryPointNode( context.getNextNodeId(),
-                                                                                     context.getKnowledgeBase().getRete(),
+                                                                                     context.getRuleBase().getRete(),
                                                                                      context ) ) );
         } else {
             context.setObjectSource( epn );

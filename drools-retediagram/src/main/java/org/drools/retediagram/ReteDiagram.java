@@ -16,11 +16,6 @@
 
 package org.drools.retediagram;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -38,9 +33,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.parse.Parser;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -63,10 +62,10 @@ import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.parse.Parser;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class ReteDiagram {
 
@@ -154,7 +153,7 @@ public class ReteDiagram {
 
     public void diagramRete(Rete rete) {
         String timestampPrefix = (new SimpleDateFormat("yyyyMMddHHmmssSSS")).format(new Date());
-        String fileNameNoExtension = (prefixTimestamp?timestampPrefix+".":"") + rete.getKnowledgeBase().getId();
+        String fileNameNoExtension = (prefixTimestamp?timestampPrefix+".":"") + rete.getRuleBase().getId();
         String gvFileName = fileNameNoExtension + ".gv";
         String svgFileName = fileNameNoExtension + ".svg";
         String pngFileName = fileNameNoExtension + ".png";

@@ -28,7 +28,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -58,7 +58,7 @@ public class BuildContext {
     private List<Pattern> patterns;
 
     // rule base to add rules to
-    private final InternalKnowledgeBase kBase;
+    private final RuleBase ruleBase;
     // rule being added at this moment
     private RuleImpl rule;
     private GroupElement subRule;
@@ -104,8 +104,11 @@ public class BuildContext {
 
     private String                           consequenceName;
 
-    public BuildContext(final InternalKnowledgeBase kBase) {
-        this.kBase = kBase;
+    private final Collection<InternalWorkingMemory> workingMemories;
+
+    public BuildContext(RuleBase ruleBase, Collection<InternalWorkingMemory> workingMemories) {
+        this.ruleBase = ruleBase;
+        this.workingMemories = workingMemories;
         this.tupleMemoryEnabled = true;
         this.objectTypeNodeMemoryEnabled = true;
         this.currentEntryPoint = EntryPointId.DEFAULT;
@@ -174,8 +177,8 @@ public class BuildContext {
     /**
      * Returns context rulebase
      */
-    public InternalKnowledgeBase getKnowledgeBase() {
-        return this.kBase;
+    public RuleBase getRuleBase() {
+        return this.ruleBase;
     }
 
     /**
@@ -183,25 +186,25 @@ public class BuildContext {
      * rulebase.
      */
     public Collection<InternalWorkingMemory> getWorkingMemories() {
-        return this.kBase.getWorkingMemories();
+        return workingMemories;
     }
 
     /**
      * Returns an Id for the next node
      */
     public int getNextNodeId() {
-        return kBase.getReteooBuilder().getNodeIdsGenerator().getNextId();
+        return ruleBase.getReteooBuilder().getNodeIdsGenerator().getNextId();
     }
 
     public int getNextMemoryId() {
-        return kBase.getReteooBuilder().getMemoryIdsGenerator().getNextId();
+        return ruleBase.getReteooBuilder().getMemoryIdsGenerator().getNextId();
     }
 
     /**
      * Method used to undo previous id assignment
      */
     public void releaseId(NetworkNode node) {
-        kBase.getReteooBuilder().releaseId(node);
+        ruleBase.getReteooBuilder().releaseId(node);
     }
 
     /**

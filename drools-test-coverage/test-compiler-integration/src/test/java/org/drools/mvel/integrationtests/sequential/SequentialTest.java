@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Message;
 import org.drools.mvel.compiler.Person;
@@ -32,7 +32,6 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

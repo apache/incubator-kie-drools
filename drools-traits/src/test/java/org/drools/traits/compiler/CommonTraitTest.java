@@ -15,12 +15,11 @@
 
 package org.drools.traits.compiler;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.core.base.evaluators.IsAEvaluatorDefinition;
 import org.junit.BeforeClass;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -46,8 +45,7 @@ public class CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
-        KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
         return kbase;
     }

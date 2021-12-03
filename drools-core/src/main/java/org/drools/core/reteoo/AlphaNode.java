@@ -70,10 +70,10 @@ public class AlphaNode extends ObjectSource
                      final BuildContext context) {
         super(id,
                 context.getPartitionId(),
-                context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
+                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                 objectSource,
-                context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold(),
-                context.getKnowledgeBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
+                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold(),
+                context.getRuleBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
 
         this.constraint = constraint.cloneIfInUse();
         this.constraint.registerEvaluationContext(context);
@@ -171,7 +171,7 @@ public class AlphaNode extends ObjectSource
         }
 
         AlphaNode other = (AlphaNode) object;
-        return this.source.getId() == other.source.getId() && constraint.equals(other.constraint, getKnowledgeBase());
+        return this.source.getId() == other.source.getId() && constraint.equals(other.constraint, getRuleBase());
     }
 
     /**

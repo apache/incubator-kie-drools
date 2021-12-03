@@ -15,19 +15,20 @@
 
 package org.drools.beliefs.bayes.integration;
 
-import org.drools.beliefs.bayes.BayesModeFactory;
-import org.drools.beliefs.bayes.BayesModeFactoryImpl;
 import org.drools.beliefs.bayes.BayesBeliefSystem;
 import org.drools.beliefs.bayes.BayesInstance;
+import org.drools.beliefs.bayes.BayesModeFactory;
+import org.drools.beliefs.bayes.BayesModeFactoryImpl;
 import org.drools.beliefs.bayes.PropertyReference;
 import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.rule.EntryPointId;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -38,8 +39,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -177,28 +176,7 @@ public class BayesBeliefSystemTest {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addPackages( kBuilder.getKnowledgePackages() );
 
-        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
-
-        KieSession kSession = kBase.newKieSession( ksConf, null );
-        return kSession;
-    }
-
-
-    protected KieSession getSession( String ruleFile ) {
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add( ResourceFactory.newClassPathResource( ruleFile ),
-                      ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( kBuilder.getErrors() );
-            fail();
-        }
-
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addPackages( kBuilder.getKnowledgePackages() );
-
-
-        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
 
         KieSession kSession = kBase.newKieSession( ksConf, null );

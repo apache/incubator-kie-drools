@@ -51,7 +51,6 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.InitialFact;
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
@@ -66,17 +65,16 @@ import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateImpl;
 import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.core.facttemplates.FieldTemplateImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.builder.MVELDialectConfiguration;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;
@@ -452,9 +450,9 @@ public class Misc2Test {
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener( listener );
         kbase.addEventListener( listener );
-        assertEquals( 1, ( (KnowledgeBaseImpl) kbase ).getKieBaseEventListeners().size() );
+        assertEquals( 1, kbase.getKieBaseEventListeners().size() );
         kbase.removeEventListener( listener );
-        assertEquals( 0, ( (KnowledgeBaseImpl) kbase ).getKieBaseEventListeners().size() );
+        assertEquals( 0, kbase.getKieBaseEventListeners().size() );
     }
 
     @Test
@@ -1836,14 +1834,14 @@ public class Misc2Test {
                 "when \n" +
                 "  $packs : java.util.Collection() \n" +
                 "then \n" +
-                "   ((org.drools.core.impl.InternalKnowledgeBase)drools.getKieRuntime().getKieBase()).addPackages( $packs );" +
+                "   ((org.drools.core.impl.RuleBase)drools.getKieRuntime().getKieBase()).addPackages( $packs );" +
                 "end \n" +
                 "" +
                 "rule \"Self-change\"\n" +
                 "when\n" +
                 "  String( this == \"go\" )\n" +
                 "then\n" +
-                "   ((org.drools.core.impl.InternalKnowledgeBase)drools.getKieRuntime().getKieBase()).removeRule( \"org.drools.mvel.integrationtests\", \"React\" ); \n" +
+                "   ((org.drools.core.impl.RuleBase)drools.getKieRuntime().getKieBase()).removeRule( \"org.drools.mvel.integrationtests\", \"React\" ); \n" +
                 "end\n" +
                 "\n" +
                 "\n" +
@@ -7808,7 +7806,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
-        Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
+        Rete rete = ( (RuleBase) kbase ).getRete();
         LeftInputAdapterNode liaNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             Class<?> otnType = ( (ClassObjectType) otn.getObjectType() ).getClassType();

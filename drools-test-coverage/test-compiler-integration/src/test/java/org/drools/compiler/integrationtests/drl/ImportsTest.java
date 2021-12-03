@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;
 import org.drools.testcoverage.common.model.FirstClass;

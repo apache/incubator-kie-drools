@@ -32,7 +32,7 @@ import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
@@ -50,24 +50,24 @@ public class ClassObjectTypeConf
 
     private static final long          serialVersionUID = 510l;
 
-    private Class< ? >                 cls;
-    private transient InternalKnowledgeBase kBase;
-    private ObjectTypeNode[]           objectTypeNodes;
+    private Class<?> cls;
+    private transient RuleBase ruleBase;
+    private ObjectTypeNode[] objectTypeNodes;
 
-    private ObjectType                 objectType;
-    private ObjectTypeNode             concreteObjectTypeNode;
-    private EntryPointId               entryPoint;
+    private ObjectType objectType;
+    private ObjectTypeNode concreteObjectTypeNode;
+    private EntryPointId entryPoint;
 
-    private TypeDeclaration            typeDecl;
+    private TypeDeclaration typeDecl;
     
-    private boolean                    tmsEnabled;
-    private boolean                    traitTmsEnabled;
+    private boolean tmsEnabled;
+    private boolean traitTmsEnabled;
     
-    private boolean                    isEvent;
+    private boolean isEvent;
 
-    private long                       expirationOffset = -1;
+    private long expirationOffset = -1;
 
-    private boolean                    isTrait;
+    private boolean isTrait;
 
     public ClassObjectTypeConf() {
 
@@ -75,12 +75,12 @@ public class ClassObjectTypeConf
 
     public ClassObjectTypeConf(final EntryPointId entryPoint,
                                final Class< ? > clazz,
-                               final InternalKnowledgeBase kBase) {
+                               final RuleBase ruleBase) {
         this.cls = (Activation.class.isAssignableFrom( clazz ) ) ? ClassObjectType.Match_ObjectType.getClassType() : clazz;
-        this.kBase = kBase;
+        this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
 
-        this.typeDecl = kBase.getTypeDeclaration( clazz );
+        this.typeDecl = ruleBase.getTypeDeclaration( clazz );
         if (typeDecl != null) {
             isEvent = typeDecl.getRole() == Role.Type.EVENT;
             if (isEvent) {
@@ -101,9 +101,9 @@ public class ClassObjectTypeConf
 
         isTrait = determineTraitStatus();
 
-        this.objectType = kBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
+        this.objectType = ruleBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
 
-        this.concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+        this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
 
         Traitable ttbl = cls.getAnnotation( Traitable.class );
         this.traitTmsEnabled = ttbl != null && ttbl.logical();
@@ -111,7 +111,7 @@ public class ClassObjectTypeConf
 
     public void readExternal(ObjectInput stream) throws IOException,
                                                 ClassNotFoundException {
-        kBase = (InternalKnowledgeBase) stream.readObject();
+        ruleBase = (RuleBase) stream.readObject();
         cls = (Class<?>) stream.readObject();
         objectTypeNodes = (ObjectTypeNode[]) stream.readObject();
         objectType = (ObjectType) stream.readObject();
@@ -125,7 +125,7 @@ public class ClassObjectTypeConf
     }
 
     public void writeExternal(ObjectOutput stream) throws IOException {
-        stream.writeObject( kBase );
+        stream.writeObject( ruleBase );
         stream.writeObject( cls );
         stream.writeObject( objectTypeNodes );
         stream.writeObject( objectType );
@@ -152,7 +152,7 @@ public class ClassObjectTypeConf
 
     public ObjectTypeNode getConcreteObjectTypeNode() {
         if (concreteObjectTypeNode == null) {
-            concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+            concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         }
         return concreteObjectTypeNode;
     }
@@ -193,7 +193,7 @@ public class ClassObjectTypeConf
     private ObjectTypeNode[] getMatchingObjectTypes(final Class<?> clazz) {
         final List<ObjectTypeNode> cache = new ArrayList<ObjectTypeNode>();
 
-        for ( ObjectTypeNode node : kBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
+        for ( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
             if ( clazz == DroolsQuery.class ) {
                 // for query objects only add direct matches
                 if ( ((ClassObjectType)node.getObjectType()).getClassType() == clazz ) {

@@ -27,13 +27,13 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.ObjectType;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -98,7 +98,7 @@ public class CrossProductTest {
     @Test
     public void testNotRemoveIdentities() throws Exception {
         // Default is remove identity FALSE
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addPackage( this.pkg );
 
         this.ksession = kBase.newKieSession();
@@ -120,7 +120,7 @@ public class CrossProductTest {
         System.setProperty( "drools.removeIdentities",
                             "true" );
         try {
-            InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+            InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
             kBase.addPackage( this.pkg );
 
             this.ksession = kBase.newKieSession();

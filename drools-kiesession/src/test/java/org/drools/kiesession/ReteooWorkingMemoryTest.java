@@ -27,9 +27,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.Rete;
@@ -39,6 +37,8 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -58,7 +58,7 @@ public class ReteooWorkingMemoryTest {
     @Test
     @Ignore
     public void testBasicWorkingMemoryActions() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final TruthMaintenanceSystem tms = ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()).getTruthMaintenanceSystem();
@@ -106,7 +106,7 @@ public class ReteooWorkingMemoryTest {
 
     @Test
     public void testId() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         assertEquals( 0,
@@ -125,7 +125,7 @@ public class ReteooWorkingMemoryTest {
                  "value2" );
         final GlobalResolver resolver = new MapGlobalResolver(map);
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         ksession.setGlobalResolver( resolver );
@@ -137,7 +137,7 @@ public class ReteooWorkingMemoryTest {
 
     @Test
     public void testObjectIterator() {
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         KieSession ksession = kBase.newKieSession();
 
         ksession.insert( new Person( "bob", 35) );
@@ -175,7 +175,7 @@ public class ReteooWorkingMemoryTest {
     public void testDifferentEntryPointsOnSameFact() {
         //JBRULES-2971
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         Rete rete = kBase.getRete();
 
         NodeFactory nFacotry = new PhreakNodeFactory();

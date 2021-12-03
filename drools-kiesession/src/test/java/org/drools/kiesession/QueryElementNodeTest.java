@@ -16,11 +16,12 @@
 
 package org.drools.kiesession;
 
+import java.util.Collections;
+
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -28,9 +29,10 @@ import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.DroolsTestCase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -42,8 +44,8 @@ public class QueryElementNodeTest extends DroolsTestCase {
 
     @Before
     public void setUp() {
-        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        this.buildContext = new BuildContext( kBase );
+        this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        this.buildContext = new BuildContext( kBase, Collections.emptyList() );
         this.buildContext.setRule(new RuleImpl());
         PropagationContextFactory pctxFactory = new PhreakPropagationContextFactory();
         this.context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);

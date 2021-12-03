@@ -22,7 +22,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -42,7 +42,7 @@ public interface ReteEvaluator {
 
     ActivationsManager getActivationsManager();
 
-    InternalKnowledgeBase getKnowledgeBase();
+    RuleBase getKnowledgeBase();
 
     Collection<? extends EntryPoint> getEntryPoints();
 

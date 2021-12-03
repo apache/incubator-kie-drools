@@ -20,7 +20,7 @@ package org.drools.mvel.integrationtests;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.compiler.StockTick;
 import org.drools.mvel.compiler.StockTickInterface;
@@ -133,7 +133,7 @@ public class PseudoClockEventsTest {
             throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drlContentString);
 
-        KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksessionConfig.setOption(ClockTypeOption.PSEUDO);
         ksessionConfig.setProperty("keep.reference", "true");
         final KieSession ksession = kbase.newKieSession(ksessionConfig, null);

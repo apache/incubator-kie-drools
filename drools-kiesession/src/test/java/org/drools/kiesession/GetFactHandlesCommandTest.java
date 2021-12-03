@@ -22,8 +22,8 @@ import java.util.Random;
 
 import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

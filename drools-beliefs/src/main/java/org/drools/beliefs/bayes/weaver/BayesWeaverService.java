@@ -30,7 +30,7 @@ public class BayesWeaverService implements KieWeaverService<BayesPackage> {
     }
 
     @Override
-    public void merge(KieBase kieBase, KiePackage kiePkg, BayesPackage bayesPkg) {
+    public void merge(KiePackage kiePkg, BayesPackage bayesPkg) {
         InternalKnowledgePackage internalPkg = (InternalKnowledgePackage) kiePkg;
         BayesPackage registeredPkg = internalPkg.getResourceTypePackages()
                 .computeIfAbsent(ResourceType.BAYES, rt -> new BayesPackage(kiePkg.getName()));
@@ -41,7 +41,7 @@ public class BayesWeaverService implements KieWeaverService<BayesPackage> {
     }
 
     @Override
-    public void weave(KieBase kieBase, KiePackage kiePkg, BayesPackage rtPkg) {
+    public void weave(KiePackage kiePkg, BayesPackage rtPkg) {
         System.out.println("Hello World ");
     }
 }

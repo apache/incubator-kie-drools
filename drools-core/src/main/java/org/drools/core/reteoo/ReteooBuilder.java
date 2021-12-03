@@ -38,7 +38,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.rule.InvalidPatternException;
@@ -59,7 +59,7 @@ public class ReteooBuilder
     private static final long           serialVersionUID = 510l;
 
     /** The RuleBase */
-    private transient InternalKnowledgeBase  kBase;
+    private transient RuleBase  kBase;
 
     private Map<String, TerminalNode[]>          rules;
     private Map<String, QueryTerminalNode[]>     queries;
@@ -83,7 +83,7 @@ public class ReteooBuilder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    public ReteooBuilder( final InternalKnowledgeBase  kBase ) {
+    public ReteooBuilder( final RuleBase kBase ) {
         this.kBase = kBase;
         this.rules = new HashMap<>();
         this.queries = new HashMap<>();
@@ -103,8 +103,8 @@ public class ReteooBuilder
      *            The rule to add.
      * @throws InvalidPatternException
      */
-    public synchronized void addRule(final RuleImpl rule) {
-        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase );
+    public synchronized void addRule(final RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
+        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase, workingMemories );
 
         TerminalNode[] nodes = terminals.toArray( new TerminalNode[terminals.size()] );
         this.rules.put( rule.getFullyQualifiedName(), nodes );
@@ -113,12 +113,12 @@ public class ReteooBuilder
         }
     }
 
-    public void addEntryPoint( String id ) {
-        this.ruleBuilder.addEntryPoint( id, this.kBase );
+    public void addEntryPoint( String id, Collection<InternalWorkingMemory> workingMemories ) {
+        this.ruleBuilder.addEntryPoint( id, this.kBase, workingMemories );
     }
 
-    public synchronized void addNamedWindow( WindowDeclaration window ) {
-        final WindowNode wnode = this.ruleBuilder.addWindowNode( window, this.kBase );
+    public synchronized void addNamedWindow( WindowDeclaration window, Collection<InternalWorkingMemory> workingMemories ) {
+        final WindowNode wnode = this.ruleBuilder.addWindowNode( window, this.kBase, workingMemories );
 
         this.namedWindows.put( window.getName(), wnode );
     }
@@ -155,10 +155,7 @@ public class ReteooBuilder
         return this.rules;
     }
 
-    public synchronized void removeRules(Collection<? extends Rule> rulesToBeRemoved) {
-        // reset working memories for potential propagation
-        Collection<InternalWorkingMemory> workingMemories = this.kBase.getWorkingMemories();
-
+    public synchronized void removeRules(Collection<? extends Rule> rulesToBeRemoved, Collection<InternalWorkingMemory> workingMemories) {
         for (Rule r : rulesToBeRemoved) {
             RuleImpl rule = (RuleImpl) r;
             if (rule.hasChildren() && !rulesToBeRemoved.containsAll( rule.getChildren() )) {
@@ -166,7 +163,7 @@ public class ReteooBuilder
             }
 
             final RuleRemovalContext context = new RuleRemovalContext( rule );
-            context.setKnowledgeBase( kBase );
+            context.setRuleBase( kBase );
 
             TerminalNode[] rulesTerminalNodes = rules.remove( rule.getFullyQualifiedName() );
             if (rulesTerminalNodes == null) {
@@ -462,7 +459,7 @@ public class ReteooBuilder
         }
     }
 
-    public void setRuleBase( InternalKnowledgeBase kBase ) {
+    public void setRuleBase( RuleBase kBase ) {
         this.kBase = kBase;
         this.ruleBuilder = new ReteooRuleBuilder();
     }

@@ -27,7 +27,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.PhreakAccumulateNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
@@ -83,7 +83,7 @@ public class AccumulateNode extends BetaNode {
         this.accumulate = accumulate;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
-        addAccFunctionDeclarationsToLeftMask( context.getKnowledgeBase(), leftInput, accumulate );
+        addAccFunctionDeclarationsToLeftMask( context.getRuleBase(), leftInput, accumulate );
 
         hashcode = this.leftInput.hashCode() ^
                    this.rightInput.hashCode() ^
@@ -93,11 +93,11 @@ public class AccumulateNode extends BetaNode {
 
     }
 
-    private void addAccFunctionDeclarationsToLeftMask( InternalKnowledgeBase kbase, LeftTupleSource leftInput, Accumulate accumulate ) {
+    private void addAccFunctionDeclarationsToLeftMask(RuleBase ruleBase, LeftTupleSource leftInput, Accumulate accumulate ) {
         BitMask leftMask = getLeftInferredMask();
         ObjectType leftObjectType = leftInput.getObjectType();
         if (leftObjectType instanceof ClassObjectType ) {
-            TypeDeclaration typeDeclaration = kbase.getExactTypeDeclaration( leftObjectType.getClassType() );
+            TypeDeclaration typeDeclaration = ruleBase.getExactTypeDeclaration( leftObjectType.getClassType() );
             if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
                 List<String> accessibleProperties = typeDeclaration.getAccessibleProperties();
                 for ( Declaration decl : accumulate.getRequiredDeclarations() ) {

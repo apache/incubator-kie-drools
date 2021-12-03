@@ -23,7 +23,7 @@ import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.util.Iterator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -693,7 +693,7 @@ public class ActivationIteratorTest {
                 "then \n" +
                 "end  \n";
 
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ForceEagerActivationOption.YES );
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
@@ -728,7 +728,7 @@ public class ActivationIteratorTest {
                 "then \n" +
                 "end  \n";
 
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( new ForceEagerActivationOption.FILTERED( new ForceEagerActivationFilter() {
             @Override
             public boolean accept(Rule rule) {

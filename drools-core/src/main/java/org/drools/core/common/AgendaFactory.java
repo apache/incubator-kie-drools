@@ -17,12 +17,12 @@
 package org.drools.core.common;
 
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 
 public interface AgendaFactory {
 
-    InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain);
+    InternalAgenda createAgenda(RuleBase kBase, boolean initMain);
 
-    InternalAgenda createAgenda(InternalKnowledgeBase kBase);
+    InternalAgenda createAgenda(RuleBase kBase);
 
 }

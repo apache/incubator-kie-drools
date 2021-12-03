@@ -20,14 +20,14 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
@@ -387,7 +387,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return wmEntryPoint;
     }
 
-    protected void setLinkedTuples( InternalKnowledgeBase kbase ) {
+    protected void setLinkedTuples( RuleBase kbase ) {
         linkedTuples = kbase != null && kbase.getConfiguration().isMultithreadEvaluation() ?
                        new CompositeLinkedTuples() :
                        new SingleLinkedTuples();

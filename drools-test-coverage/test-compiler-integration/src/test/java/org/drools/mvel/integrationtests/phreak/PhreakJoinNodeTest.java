@@ -15,6 +15,8 @@
 
 package org.drools.mvel.integrationtests.phreak;
 
+import java.util.Collections;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -22,7 +24,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
@@ -31,6 +32,7 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 
 import static org.drools.mvel.integrationtests.phreak.Pair.t;
@@ -59,7 +61,7 @@ public class PhreakJoinNodeTest {
 
         joinNode.addTupleSink( sinkNode );
 
-        wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newKieSession());
+        wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();
 
         bm = (BetaMemory)  wm.getNodeMemory( joinNode );
         
@@ -221,7 +223,7 @@ public class PhreakJoinNodeTest {
 
         KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
                                                          conf );
-        BuildContext buildContext = new BuildContext( rbase );
+        BuildContext buildContext = new BuildContext( rbase, Collections.emptyList() );
 
         RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );
         InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.pkg1" );

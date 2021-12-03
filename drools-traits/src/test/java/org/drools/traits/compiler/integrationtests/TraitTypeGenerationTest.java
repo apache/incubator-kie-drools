@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.traits.compiler.CommonTraitTest;
-import org.drools.traits.compiler.Person;
 import org.drools.core.beliefsystem.abductive.Abducible;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.traits.compiler.CommonTraitTest;
+import org.drools.traits.compiler.Person;
 import org.drools.traits.core.factmodel.Entity;
 import org.junit.Test;
 import org.kie.api.KieBase;

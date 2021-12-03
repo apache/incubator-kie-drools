@@ -17,8 +17,6 @@ package org.drools.mvel.compiler.compiler;
 
 import java.util.Arrays;
 
-import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.compiler.Person;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
@@ -28,9 +26,11 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.test.model.DroolsTestCase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.mvel.compiler.Cheese;
+import org.drools.mvel.compiler.Person;
 import org.junit.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;

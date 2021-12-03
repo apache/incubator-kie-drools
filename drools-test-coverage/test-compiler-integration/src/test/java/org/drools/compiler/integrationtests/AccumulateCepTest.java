@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -106,7 +106,7 @@ public class AccumulateCepTest {
         final InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration);
         kbase.addPackages(TestUtil.createKnowledgeBuilder(null, drl).getKnowledgePackages());
 
-        final KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksConf.setOption(ClockTypeOption.PSEUDO);
         final KieSession ksession = kbase.newKieSession(ksConf, null);
         try {

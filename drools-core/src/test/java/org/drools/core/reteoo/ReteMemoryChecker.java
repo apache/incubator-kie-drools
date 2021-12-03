@@ -20,13 +20,13 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.kie.api.runtime.KieSession;
 
 public class ReteMemoryChecker {
 
     public static void checkNodeMemories(KieSession session) {
-        InternalKnowledgeBase kbase = (InternalKnowledgeBase)session.getKieBase();
+        RuleBase kbase = (RuleBase)session.getKieBase();
         for (EntryPointNode entryPointNode : kbase.getRete().getEntryPointNodes().values()) {
             checkNodeMemory( (InternalWorkingMemory) session, entryPointNode );
         }

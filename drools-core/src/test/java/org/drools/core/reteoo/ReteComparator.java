@@ -21,7 +21,7 @@ import java.util.Comparator;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
@@ -41,18 +41,18 @@ public class ReteComparator {
     }
 
     public static void compare(KieBase kbase1, KieBase kbase2) {
-        compare( (InternalKnowledgeBase) kbase1, (InternalKnowledgeBase) kbase2 );
+        compare( (RuleBase) kbase1, (RuleBase) kbase2 );
     }
 
     public static void compare( KieRuntime session1, KieRuntime session2 ) {
-        compare( (InternalKnowledgeBase) session1.getKieBase(), (InternalKnowledgeBase) session2.getKieBase() );
+        compare( (RuleBase) session1.getKieBase(), (RuleBase) session2.getKieBase() );
     }
 
     public static void compare(KieSession session1, KieSession session2) {
-        compare( (InternalKnowledgeBase) session1.getKieBase(), (InternalKnowledgeBase) session2.getKieBase() );
+        compare( (RuleBase) session1.getKieBase(), (RuleBase) session2.getKieBase() );
     }
 
-    public static void compare(InternalKnowledgeBase kBase1, InternalKnowledgeBase kBase2) {
+    public static void compare(RuleBase kBase1, RuleBase kBase2) {
         compare( kBase1.getRete(), kBase2.getRete() );
     }
 

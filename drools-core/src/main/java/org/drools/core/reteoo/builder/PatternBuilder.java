@@ -187,7 +187,7 @@ public class PatternBuilder
                     break;
                 case BETA:
                     linkBetaConstraint( (BetaNodeFieldConstraint) constraint, constraints.betaConstraints );
-                    if ( isNegative && context.getKnowledgeBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
+                    if ( isNegative && context.getRuleBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
                         checkDelaying( context, constraint );
                     }
                     break;
@@ -266,7 +266,7 @@ public class PatternBuilder
         long offset = NEVER_EXPIRES;
         boolean hard = false;
 
-        for (TypeDeclaration type : context.getKnowledgeBase().getTypeDeclarations()) {
+        for (TypeDeclaration type : context.getRuleBase().getTypeDeclarations()) {
             if (type.getObjectType().isAssignableFrom( objectType )) {
                 if ( hard ) {
                     if ( type.getExpirationPolicy() == Policy.TIME_HARD && type.getExpirationOffset() > offset ) {
@@ -346,7 +346,7 @@ public class PatternBuilder
                                                  (EntryPointNode) context.getObjectSource(),
                                                  objectType,
                                                  context );
-        if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getKnowledgeBase().getConfiguration().getEventProcessingMode() ) ) {
+        if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getRuleBase().getConfiguration().getEventProcessingMode() ) ) {
             ExpirationSpec expirationSpec = getExpirationForType( context, objectType );
 
             if( expirationSpec.offset != NEVER_EXPIRES && expirationSpec.hard ) {
@@ -392,7 +392,7 @@ public class PatternBuilder
     private void checkRemoveIdentities(final BuildContext context,
                                        final Pattern pattern,
                                        final List<BetaNodeFieldConstraint> betaConstraints) {
-        if ( context.getKnowledgeBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
+        if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final Class< ? > thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();

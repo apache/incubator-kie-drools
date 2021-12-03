@@ -29,17 +29,17 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.EntryPointId;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Person;
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,9 +55,9 @@ import static org.junit.Assert.assertTrue;
 public class FactHandleMarshallingTest {
 
     private InternalKnowledgeBase createKnowledgeBase() {
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
-        return (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase( config );
+        return KnowledgeBaseFactory.newKnowledgeBase( config );
     }
     
     private InternalFactHandle createEventFactHandle(StatefulKnowledgeSessionImpl wm, InternalKnowledgeBase kBase) {
@@ -67,17 +67,17 @@ public class FactHandleMarshallingTest {
         NodeFactory nFacotry = CoreComponentFactory.get().getNodeFactoryService();
 
         RuleBasePartitionId partionId = RuleBasePartitionId.MAIN_PARTITION;
-        EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);
+        EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, rete , EntryPointId.DEFAULT);
         WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
 
-        EventFactHandle factHandle = new EventFactHandle(1, (Object) new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
+        EventFactHandle factHandle = new EventFactHandle(1, new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
         
         return factHandle;
     }
        
     private StatefulKnowledgeSessionImpl createWorkingMemory(InternalKnowledgeBase kBase) {
         // WorkingMemoryEntryPoint
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.PSEUDO );
         SessionConfiguration sessionConf = ((SessionConfiguration) ksconf);
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl(1L, kBase, true, sessionConf, EnvironmentFactory.newEnvironment());

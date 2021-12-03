@@ -18,11 +18,10 @@ package org.drools.beliefs.bayes.integration;
 import org.drools.beliefs.bayes.BayesInstance;
 import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 
@@ -48,10 +47,6 @@ public class BayesRuntimeTest {
     }
 
     protected InternalKnowledgeBase getKnowledgeBase() {
-        return KnowledgeBaseFactory.newKnowledgeBase();
-    }
-
-    protected InternalKnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        return KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+        return new SessionsAwareKnowledgeBase();
     }
 }

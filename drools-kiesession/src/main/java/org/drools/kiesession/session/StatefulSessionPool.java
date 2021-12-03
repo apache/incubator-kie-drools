@@ -18,20 +18,20 @@ package org.drools.kiesession.session;
 
 import java.util.function.Supplier;
 
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.util.ScalablePool;
 
 public class StatefulSessionPool {
 
-    private final KnowledgeBaseImpl kbase;
+    private final InternalKnowledgeBase kbase;
     private final ScalablePool<StatefulKnowledgeSessionImpl> pool;
 
-    public StatefulSessionPool( KnowledgeBaseImpl kbase, int initialSize, Supplier<StatefulKnowledgeSessionImpl> supplier ) {
+    public StatefulSessionPool( InternalKnowledgeBase kbase, int initialSize, Supplier<StatefulKnowledgeSessionImpl> supplier ) {
         this.kbase = kbase;
         this.pool = new ScalablePool<>(initialSize, supplier, s -> s.reset(), s -> s.fromPool(null).dispose());
     }
 
-    public KnowledgeBaseImpl getKieBase() {
+    public InternalKnowledgeBase getKieBase() {
         return kbase;
     }
 

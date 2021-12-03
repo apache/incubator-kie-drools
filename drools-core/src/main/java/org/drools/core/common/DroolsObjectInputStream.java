@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 import org.drools.core.base.AccessorKey;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
 
@@ -39,11 +39,11 @@ public class DroolsObjectInputStream extends ObjectInputStream
     implements
     DroolsObjectInput {
 
-    private ClassLoader                     classLoader;
-    private InternalKnowledgeBase           kBase;
-    private InternalWorkingMemory           workingMemory;
-    private Package                         pkg;
-    private ClassFieldAccessorStore         store;
+    private ClassLoader classLoader;
+    private RuleBase ruleBase;
+    private InternalWorkingMemory workingMemory;
+    private Package pkg;
+    private ClassFieldAccessorStore store;
 
     private Map<AccessorKey, List<Consumer<InternalReadAccessor>>> extractorBinders = new HashMap<>();
     
@@ -106,13 +106,13 @@ public class DroolsObjectInputStream extends ObjectInputStream
         return this.classLoader;
     }
 
-    public InternalKnowledgeBase getKnowledgeBase() {
-        return kBase;
+    public RuleBase getRuleBase() {
+        return ruleBase;
     }
 
-    public void setKnowledgeBase(InternalKnowledgeBase kBase) {
-        this.kBase = kBase;
-        this.classLoader = this.kBase.getRootClassLoader();
+    public void setRuleBase(RuleBase ruleBase) {
+        this.ruleBase = ruleBase;
+        this.classLoader = this.ruleBase.getRootClassLoader();
     }
 
     public InternalWorkingMemory getWorkingMemory() {
@@ -155,7 +155,7 @@ public class DroolsObjectInputStream extends ObjectInputStream
         }
     }
 
-    public void bindAllExtractors(InternalKnowledgeBase kbase) {
+    public void bindAllExtractors(RuleBase kbase) {
         extractorBinders.forEach( (k, l) -> {
             ClassFieldReader extractor = kbase.getPackagesMap().values().stream()
                                               .map( pkg -> pkg.getClassFieldAccessorStore().getReader( k ) )

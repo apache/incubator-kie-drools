@@ -25,7 +25,7 @@ public interface KieBaseEventManager {
      * @param listener
      *            The listener to add.
      */
-    public void addEventListener(KieBaseEventListener listener);
+    void addEventListener(KieBaseEventListener listener);
 
     /**
      * Remove an event listener.
@@ -33,12 +33,12 @@ public interface KieBaseEventManager {
      * @param listener
      *            The listener to remove.
      */
-    public void removeEventListener(KieBaseEventListener listener);
+    void removeEventListener(KieBaseEventListener listener);
 
     /**
      * Returns all event listeners.
      *
      * @return listeners The listeners.
      */
-    public Collection<KieBaseEventListener> getKieBaseEventListeners();
+    Collection<KieBaseEventListener> getKieBaseEventListeners();
 }

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
 import org.drools.kiesession.audit.WorkingMemoryConsoleLogger;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Cheesery;
@@ -1104,7 +1104,7 @@ public class FirstOrderLogicTest {
 
     @Test
     public void testForallWithSlidingWindow() throws Exception {
-        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
         KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);

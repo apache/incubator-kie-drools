@@ -22,7 +22,7 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
@@ -62,7 +62,7 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
 
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
 
-    InternalKnowledgeBase getKnowledgeBase();
+    RuleBase getKnowledgeBase();
 
     void delete(FactHandle factHandle,
                 RuleImpl rule,

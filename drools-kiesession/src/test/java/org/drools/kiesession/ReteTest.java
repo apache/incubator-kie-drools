@@ -19,6 +19,7 @@ package org.drools.kiesession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,9 +28,8 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.MockObjectSink;
@@ -41,6 +41,8 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -61,9 +63,9 @@ public class ReteTest extends DroolsTestCase {
         this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
         this.pctxFactory = new PhreakPropagationContextFactory();
-        this.buildContext = new BuildContext(kBase);
+        this.buildContext = new BuildContext(kBase, Collections.emptyList());
 
-        this.entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();;
+        this.entryPoint = buildContext.getRuleBase().getRete().getEntryPointNodes().values().iterator().next();;
     }
 
     /**
@@ -424,8 +426,8 @@ public class ReteTest extends DroolsTestCase {
         properties.setProperty("drools.shadowProxyExcludes",
                                "org.drools.core.test.model.Cheese");
         RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
-        buildContext = new BuildContext(kBase);
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) RuleBaseFactory.newRuleBase(conf);
+        buildContext = new BuildContext(kBase, Collections.emptyList());
         final StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
@@ -467,7 +469,7 @@ public class ReteTest extends DroolsTestCase {
         InternalKnowledgeBase kBase;
 
         TestBuildContext(InternalKnowledgeBase kBase) {
-            super(kBase);
+            super(kBase, Collections.emptyList());
             this.kBase = kBase;
         }
     }

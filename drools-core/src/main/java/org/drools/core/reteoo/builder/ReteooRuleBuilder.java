@@ -17,14 +17,16 @@
 package org.drools.core.reteoo.builder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.ActivationListenerFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -106,11 +108,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
      * @return a List<BaseNode> of terminal nodes for the rule             
      * @throws InvalidPatternException
      */
-    public List<TerminalNode> addRule( final RuleImpl rule,
-                                       final InternalKnowledgeBase kBase ) throws InvalidPatternException {
+    public List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories ) throws InvalidPatternException {
 
         // the list of terminal nodes
-        final List<TerminalNode> nodes = new ArrayList<TerminalNode>();
+        final List<TerminalNode> nodes = new ArrayList<>();
 
         // transform rule and gets the array of subrules
         final GroupElement[] subrules = rule.getTransformedLhs( new DefaultLogicTransformerFactory().getLogicTransformer(),
@@ -119,7 +120,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         for (int i = 0; i < subrules.length; i++) {
 
             // creates a clean build context for each subrule
-            final BuildContext context = new BuildContext( kBase );
+            final BuildContext context = new BuildContext( kBase, workingMemories );
             context.setRule( rule );
 
             // if running in STREAM mode, calculate temporal distance for events
@@ -137,10 +138,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
             }
 
             // adds subrule
-            final TerminalNode node = this.addSubRule( context,
-                                                       subrules[i],
-                                                       i,
-                                                       rule );
+            final TerminalNode node = this.addSubRule( context, subrules[i], i, rule );
 
             // adds the terminal node to the list of terminal nodes
             nodes.add( node );
@@ -179,7 +177,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
             builder.build( context, this.utils, rule.getTimer() );
         }
 
-        ActivationListenerFactory factory = context.getKnowledgeBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
+        ActivationListenerFactory factory = context.getRuleBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
         TerminalNode terminal = factory.createActivationListener( context.getNextNodeId(),
                                                                   context.getTupleSource(),
                                                                   rule,
@@ -193,7 +191,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         setPathEndNodes(context);
 
-        AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getKnowledgeBase() );
+        AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getRuleBase() );
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( baseTerminalNode );
@@ -235,22 +233,18 @@ public class ReteooRuleBuilder implements RuleBuilder {
                           pattern );
     }
 
-    public void addEntryPoint( final String id,
-            final InternalKnowledgeBase kBase ) {
+    public void addEntryPoint( final String id, final RuleBase kBase, Collection<InternalWorkingMemory> workingMemories ) {
         // creates a clean build context for each subrule
-        final BuildContext context = new BuildContext( kBase );
+        final BuildContext context = new BuildContext( kBase, workingMemories );
         EntryPointId ep = new EntryPointId( id );
         ReteooComponentBuilder builder = utils.getBuilderFor( ep );
-        builder.build(context,
-                utils,
-                ep);
+        builder.build(context, utils, ep);
     }
 
-    public WindowNode addWindowNode( WindowDeclaration window,
-                                     InternalKnowledgeBase kBase ) {
+    public WindowNode addWindowNode( WindowDeclaration window, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories ) {
 
         // creates a clean build context for each subrule
-        BuildContext context = new BuildContext( kBase );
+        BuildContext context = new BuildContext( kBase, workingMemories );
         context.setTupleMemoryEnabled( !kBase.getConfiguration().isSequential() );
         context.setObjectTypeNodeMemoryEnabled( !kBase.getConfiguration().isSequential() );
 

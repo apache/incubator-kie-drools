@@ -15,10 +15,18 @@
 
 package org.drools.persistence.timer.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.core.ClockType;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.kie.api.time.SessionPseudoClock;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,6 +48,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
@@ -48,15 +57,12 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static org.drools.persistence.util.DroolsPersistenceUtil.*;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarTest {
@@ -262,9 +268,9 @@ public class TimerAndCalendarTest {
                            "        TestEvent( ) from entry-point \"Test\"\n" +
                            "    then \n" +
                            "end";
-        KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Resource resource = ResourceFactory.newByteArrayResource( timerRule.getBytes() );
         Collection<KiePackage> kpackages = buildKnowledgePackage( resource,
                                                                         ResourceType.DRL );
@@ -291,7 +297,7 @@ public class TimerAndCalendarTest {
     public void testTimerWithRemovingRule() throws Exception {
         // DROOLS-576
         // Only reproducible with RETEOO
-        InternalKnowledgeBase kbase1  = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
 
         String str1 = "package org.test; " +
                 "import java.util.*; " +
@@ -360,7 +366,7 @@ public class TimerAndCalendarTest {
     }
 
     private KieSession createSession(KieBase kbase) {
-        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         Environment env = createEnvironment(context);
         if( locking ) { 
@@ -376,7 +382,7 @@ public class TimerAndCalendarTest {
         long ksessionId = ksession.getIdentifier();
         ksession.dispose();
 
-        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
         StatefulKnowledgeSession newksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId,

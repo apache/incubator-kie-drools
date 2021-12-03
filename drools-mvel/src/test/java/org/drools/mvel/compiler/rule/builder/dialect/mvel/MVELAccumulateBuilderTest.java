@@ -15,6 +15,8 @@
 
 package org.drools.mvel.compiler.rule.builder.dialect.mvel;
 
+import java.util.Collections;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -25,9 +27,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.FromNodeLeftTuple;
 import org.drools.core.reteoo.InitialFactImpl;
@@ -37,6 +37,8 @@ import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELAccumulateBuilder;
 import org.drools.mvel.builder.MVELDialect;
@@ -84,7 +86,7 @@ public class MVELAccumulateBuilderTest {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        BuildContext buildContext = new BuildContext(kBase);
+        BuildContext buildContext = new BuildContext(kBase, Collections.emptyList());
         MockLeftTupleSink sink = new MockLeftTupleSink(buildContext);
         MockTupleSource source = new MockTupleSource(1, buildContext);
         source.setObjectCount(1);

@@ -1,9 +1,10 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ * You may obtain a copy of the License at
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.core.impl;
 
@@ -41,13 +42,36 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.spi.FactHandleFactory;
-import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
+import org.kie.api.definition.rule.Query;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 
-public interface InternalKnowledgeBase extends KieBase {
+public interface RuleBase {
+
+    Collection<KiePackage> getKiePackages();
+    KiePackage getKiePackage( String packageName );
+    void removeKiePackage( String packageName );
+
+    Rule getRule( String packageName, String ruleName );
+    void removeRule( String packageName, String ruleName );
+
+    Query getQuery( String packageName, String queryName );
+    void removeQuery( String packageName, String queryName );
+
+    void removeFunction( String packageName, String functionName );
+
+    FactType getFactType( String packageName, String typeName );
+
+    Process getProcess( String processId );
+    Collection<Process> getProcesses();
+    void addProcess( Process process );
+    void removeProcess( String processId );
+
+    Set<String> getEntryPointIds();
 
     String getId();
 
@@ -57,13 +81,6 @@ public interface InternalKnowledgeBase extends KieBase {
 
     void readLock();
     void readUnlock();
-
-    void enqueueModification(Runnable modification);
-    boolean flushModifications();
-
-    int nextWorkingMemoryCounter();
-
-    int getWorkingMemoryCounter();
 
     FactHandleFactory newFactHandleFactory();
 
@@ -88,18 +105,15 @@ public interface InternalKnowledgeBase extends KieBase {
 
     ClassLoader getRootClassLoader();
 
-    void disposeStatefulSession(InternalWorkingMemory statefulSession);
-
     Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
 
+    InternalKnowledgePackage[] getPackages();
     InternalKnowledgePackage getPackage(String name);
-    Future<KiePackage> addPackage( KiePackage pkg );
+    Future<KiePackage> addPackage(KiePackage pkg );
     void addPackages( Collection<? extends KiePackage> newPkgs );
     Map<String, InternalKnowledgePackage> getPackagesMap();
-    
-    ClassFieldAccessorCache getClassFieldAccessorCache();
 
-    Collection<InternalWorkingMemory> getWorkingMemories();
+    ClassFieldAccessorCache getClassFieldAccessorCache();
 
     boolean hasSegmentPrototypes();
     void invalidateSegmentPrototype(LeftTupleNode rootNode);
@@ -114,28 +128,21 @@ public interface InternalKnowledgeBase extends KieBase {
     default void beforeIncrementalUpdate(KieBaseUpdate kieBaseUpdate) { }
     default void afterIncrementalUpdate(KieBaseUpdate kieBaseUpdate) { }
 
-    @Deprecated
-    void addProcess( Process process );
-    @Deprecated
-    void removeProcess( final String id );
-
     void addGlobal(String identifier, Class clazz);
     void removeGlobal(String identifier);
 
-    boolean removeObjectsGeneratedFromResource(Resource resource);
+    boolean removeObjectsGeneratedFromResource(Resource resource, Collection<InternalWorkingMemory> workingMemories);
 
-    TypeDeclaration getTypeDeclaration( Class<?> clazz );
+    TypeDeclaration getTypeDeclaration(Class<?> clazz );
     TypeDeclaration getExactTypeDeclaration( Class<?> clazz );
     TypeDeclaration getOrCreateExactTypeDeclaration( Class<?> clazz );
     Collection<TypeDeclaration> getTypeDeclarations();
     void registerTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg );
 
-	ReleaseId getResolvedReleaseId();
-	void setResolvedReleaseId(ReleaseId currentReleaseId);
-	String getContainerId();
-	void setContainerId(String containerId);
-    void setKieContainer( InternalKieContainer kieContainer );
-	void initMBeans();
+    ReleaseId getResolvedReleaseId();
+    void setResolvedReleaseId(ReleaseId currentReleaseId);
+    String getContainerId();
+    void setContainerId(String containerId);
 
     RuleUnitDescriptionRegistry getRuleUnitDescriptionRegistry();
     boolean hasUnits();
@@ -146,4 +153,10 @@ public interface InternalKnowledgeBase extends KieBase {
     void addReceiveNode(AsyncReceiveNode node);
 
     boolean hasMultipleAgendaGroups();
+
+    default int getWorkingMemoryCounter() {
+        return 0;
+    }
+
+    void registerSegmentPrototype(LeftTupleSource tupleSource, SegmentMemory smem);
 }

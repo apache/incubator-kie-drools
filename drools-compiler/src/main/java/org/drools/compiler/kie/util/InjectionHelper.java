@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.rule.builder.ConstraintBuilder;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.builder.model.ChannelModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;

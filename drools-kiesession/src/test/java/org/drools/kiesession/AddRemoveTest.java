@@ -16,18 +16,19 @@
 
 package org.drools.kiesession;
 
+import java.util.Collections;
+
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
 import org.drools.core.test.model.DroolsTestCase;
-import org.drools.core.reteoo.builder.BuildContext;
-
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
 public class
         AddRemoveTest extends DroolsTestCase {
@@ -37,11 +38,11 @@ public class
          * create a RuleBase with a single ObjectTypeNode we attach a
          * MockObjectSink so we can detect assertions and retractions
          */
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        BuildContext context = new BuildContext(kBase);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext context = new BuildContext(kBase, Collections.emptyList());
 
         NodeFactory nFacotry = new PhreakNodeFactory();
-        EntryPointNode entryPoint = context.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
+        EntryPointNode entryPoint = context.getRuleBase().getRete().getEntryPointNodes().values().iterator().next();
 
         final ObjectTypeNode objectTypeNode = nFacotry.buildObjectTypeNode( 0, entryPoint, new ClassObjectType( Object.class ), context );
         objectTypeNode.attach(context);

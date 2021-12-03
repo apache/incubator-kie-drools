@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.Constraint;
@@ -65,7 +65,7 @@ public class DefaultTemplateRuleBaseTest {
 
         };
         DefaultTemplateRuleBase ruleBase = new DefaultTemplateRuleBase(tc);
-        InternalKnowledgePackage[] packages = ((KnowledgeBaseImpl)ruleBase.newStatefulSession().getKieBase()).getPackages();
+        InternalKnowledgePackage[] packages = ((RuleBase)ruleBase.newStatefulSession().getKieBase()).getPackages();
         assertEquals(1, packages.length);
         Map<String, Class<?>> globals = packages[0].getGlobals();
         assertEquals(DefaultGenerator.class, globals.get("generator"));

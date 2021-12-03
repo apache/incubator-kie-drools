@@ -17,24 +17,25 @@
 package org.drools.core.reteoo;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.test.model.DroolsTestCase;
-
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class TupleSourceTest extends DroolsTestCase {
 
     @Test
     public void testObjectTupleConstructor() {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase =  KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        BuildContext          buildContext = new BuildContext(kBase );
+        KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
+        RuleBase kBase =  RuleBaseFactory.newRuleBase(kconf);
+        BuildContext          buildContext = new BuildContext(kBase, Collections.emptyList());
 
         final MockTupleSource source = new MockTupleSource(15, buildContext);
         assertEquals( 15,
@@ -44,9 +45,9 @@ public class TupleSourceTest extends DroolsTestCase {
     @Test
     public void testAddTupleSink() throws Exception {
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        BuildContext          buildContext = new BuildContext(kBase );
+        KieBaseConfiguration kconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
+        RuleBase kBase = RuleBaseFactory.newRuleBase(kconf);
+        BuildContext          buildContext = new BuildContext(kBase, Collections.emptyList());
 
         final MockTupleSource source       = new MockTupleSource(15, buildContext);
 

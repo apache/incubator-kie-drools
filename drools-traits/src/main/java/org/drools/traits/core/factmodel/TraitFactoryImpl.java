@@ -26,7 +26,8 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.HierarchyEncoder;
@@ -35,7 +36,7 @@ import org.mvel2.asm.Opcodes;
 
 public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable, TraitFactory {
 
-    private transient InternalKnowledgeBase kBase;
+    private transient RuleBase ruleBase;
 
     private transient Set<String> runtimeClasses;
 
@@ -44,23 +45,27 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
     private TripleStore tripleStore;
 
     public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
+        setMode( newMode, (InternalKnowledgeBase) kBase );
+    }
+
+    public static void setMode( VirtualPropertyMode newMode, InternalKnowledgeBase kBase ) {
         setMode( newMode, kBase, RuntimeComponentFactory.get() );
     }
 
-    public static TraitFactoryImpl getTraitBuilderForKnowledgeBase( KieBase kb ) {
-        return (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(((InternalKnowledgeBase) kb));
+    public static TraitFactoryImpl getTraitBuilderForKnowledgeBase( RuleBase kb ) {
+        return (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
     }
 
     public TraitFactoryImpl() {
     }
 
-    public TraitFactoryImpl(InternalKnowledgeBase kBase) {
-        this.kBase = kBase;
+    public TraitFactoryImpl(RuleBase ruleBase) {
+        this.ruleBase = ruleBase;
     }
 
     protected Class<?> registerAndLoadTypeDefinition( String proxyName, byte[] proxy ) throws ClassNotFoundException {
         registerRuntimeClass( proxyName );
-        return kBase.registerAndLoadTypeDefinition( proxyName, proxy );
+        return ruleBase.registerAndLoadTypeDefinition( proxyName, proxy );
     }
 
     private void registerRuntimeClass( String proxyName ) {
@@ -71,7 +76,7 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
     }
 
     protected ClassLoader getRootClassLoader() {
-        return kBase.getRootClassLoader();
+        return ruleBase.getRootClassLoader();
     }
 
     public TraitRegistryImpl getTraitRegistry() {
@@ -98,11 +103,11 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
     }
 
     protected ClassFieldAccessorStore getClassFieldAccessorStore() {
-        InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get(PACKAGE);
+        InternalKnowledgePackage traitPackage = ruleBase.getPackagesMap().get(PACKAGE);
         if ( traitPackage == null ) {
             traitPackage = new KnowledgePackageImpl(PACKAGE);
-            traitPackage.setClassFieldAccessorCache( kBase.getClassFieldAccessorCache() );
-            kBase.getPackagesMap().put(PACKAGE, traitPackage );
+            traitPackage.setClassFieldAccessorCache( ruleBase.getClassFieldAccessorCache() );
+            ruleBase.getPackagesMap().put(PACKAGE, traitPackage );
         }
         return traitPackage.getClassFieldAccessorStore();
     }

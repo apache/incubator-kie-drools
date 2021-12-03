@@ -17,7 +17,7 @@
 package org.drools.modelcompiler;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;

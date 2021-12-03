@@ -37,7 +37,7 @@ public class DMNWeaverService implements KieWeaverService<DMNPackage> {
     }
 
     @Override
-    public void merge(KieBase kieBase, KiePackage kiePkg, DMNPackage dmnpkg) {
+    public void merge(KiePackage kiePkg, DMNPackage dmnpkg) {
         ResourceTypePackageRegistry registry = ((InternalKnowledgePackage)kiePkg).getResourceTypePackages();
         DMNPackageImpl existing = registry.computeIfAbsent(ResourceType.DMN, rt -> new DMNPackageImpl(dmnpkg.getNamespace()));
 
@@ -49,7 +49,7 @@ public class DMNWeaverService implements KieWeaverService<DMNPackage> {
     }
 
     @Override
-    public void weave(KieBase kieBase, KiePackage kiePkg, DMNPackage rtPkg) {
+    public void weave(KiePackage kiePkg, DMNPackage rtPkg) {
         // nothing to do for now
     }
 }

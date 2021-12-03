@@ -25,13 +25,12 @@ import java.util.Map;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.impl.InternalMarshaller;
 import org.drools.core.marshalling.impl.KieSessionInitializer;
 import org.drools.core.marshalling.impl.RuleBaseNodes;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.serialization.protobuf.timers.BehaviorJobContextTimerInputMarshaller;
 import org.drools.serialization.protobuf.timers.ExpireJobContextTimerInputMarshaller;
 import org.drools.serialization.protobuf.timers.TimerNodeTimerInputMarshaller;
@@ -132,7 +131,7 @@ public class ProtobufMarshaller
                                                     KieSessionConfiguration config,
                                                     Environment environment) throws IOException, ClassNotFoundException {
         if ( config == null ) {
-            config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+            config = RuleBaseFactory.newKnowledgeSessionConfiguration();
         }
 
         if ( environment == null ) {
@@ -140,7 +139,7 @@ public class ProtobufMarshaller
         }
 
         ProtobufMarshallerReaderContext context = getMarshallerReaderContext(stream, environment);
-        int id = ((KnowledgeBaseImpl) this.kbase).nextWorkingMemoryCounter();
+        int id = ((InternalKnowledgeBase) this.kbase).nextWorkingMemoryCounter();
         ReadSessionResult readSessionResult = ProtobufInputMarshaller.readSession(context,
                                                                                   id,
                                                                                   environment,
@@ -148,15 +147,15 @@ public class ProtobufMarshaller
                                                                                   initializer);
         context.close();
         if ( ((SessionConfiguration) config).isKeepReference() ) {
-            ((KnowledgeBaseImpl) this.kbase).addStatefulSession(readSessionResult.getSession());
+            ((InternalKnowledgeBase) this.kbase).addStatefulSession(readSessionResult.getSession());
         }
         return readSessionResult;
     }
 
     private ProtobufMarshallerReaderContext getMarshallerReaderContext( final InputStream inputStream, final Environment environment) throws IOException {
         return new ProtobufMarshallerReaderContext(inputStream,
-                                           (KnowledgeBaseImpl) kbase,
-                                           RuleBaseNodes.getNodeMap((KnowledgeBaseImpl) kbase),
+                                           (InternalKnowledgeBase) kbase,
+                                           RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kbase),
                                            this.strategyStore,
                                            TIMER_READERS,
                                            this.marshallingConfig.isMarshallProcessInstances(),

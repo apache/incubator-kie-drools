@@ -20,9 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;

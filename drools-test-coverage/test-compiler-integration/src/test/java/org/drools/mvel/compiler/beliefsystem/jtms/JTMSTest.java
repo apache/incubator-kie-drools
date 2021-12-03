@@ -26,7 +26,7 @@ import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
@@ -76,7 +76,7 @@ public class JTMSTest {
             System.setProperty("drools.negatable", "off");
         }
 
-        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
         
         KieSession kSession = kBase.newKieSession( ksConf, null );
@@ -86,7 +86,7 @@ public class JTMSTest {
     protected KieSession getSessionFromFile( String ruleFile ) {
         KieBase kBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, ruleFile);
 
-        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
         
         KieSession kSession = kBase.newKieSession( ksConf, null );

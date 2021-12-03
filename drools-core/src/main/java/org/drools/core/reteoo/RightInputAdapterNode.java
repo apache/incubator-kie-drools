@@ -80,7 +80,7 @@ public class RightInputAdapterNode extends ObjectSource
                                  final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() );
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;

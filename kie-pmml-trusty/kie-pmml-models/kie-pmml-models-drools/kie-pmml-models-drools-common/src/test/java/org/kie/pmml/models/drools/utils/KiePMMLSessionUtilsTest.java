@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.core.command.runtime.SetGlobalCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -37,7 +37,7 @@ import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class KiePMMLSessionUtilsTest {
 
-    private static final KieBase KIE_BASE = new KnowledgeBaseImpl("PMML", null);
+    private static final KieBase KIE_BASE = KnowledgeBaseFactory.newKnowledgeBase("PMML", null);
     private final static String MODEL_NAME = "MODELNAME";
     private final static PMML4Result PMML4_RESULT = new PMML4Result();
     private KiePMMLSessionUtils.Builder builder;

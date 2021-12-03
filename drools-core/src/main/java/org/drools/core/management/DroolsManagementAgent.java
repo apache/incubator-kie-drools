@@ -26,7 +26,7 @@ import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.KieRuntimeEventManager;
@@ -56,7 +56,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         return DroolsManagementAgentHolder.INSTANCE;
     }
 
-	static ObjectName createObjectNameFor(InternalKnowledgeBase kbase) {
+	static ObjectName createObjectNameFor(RuleBase kbase) {
 		return DroolsManagementAgent.createObjectName(
 					DroolsManagementAgent.createObjectNameBy(kbase.getContainerId())
 					+ ",kbaseId=" + ObjectName.quote(kbase.getId())
@@ -98,9 +98,9 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
 
     long getNextKnowledgeSessionId();
 
-    void registerKnowledgeBase(InternalKnowledgeBase kbase);
+    void registerKnowledgeBase(RuleBase kbase);
     
-    void unregisterKnowledgeBase(InternalKnowledgeBase kbase);
+    void unregisterKnowledgeBase(RuleBase kbase);
     
     void registerKnowledgeSessionUnderName(CBSKey cbsKey, KieRuntimeEventManager ksession);
 
@@ -228,7 +228,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         }
 
         @Override
-        public void registerKnowledgeBase(InternalKnowledgeBase kbase) {
+        public void registerKnowledgeBase(RuleBase kbase) {
             KnowledgeBaseMonitoring mbean = new KnowledgeBaseMonitoring( kbase );
             registerMBean( kbase,
                     mbean,
@@ -236,7 +236,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         }
 
         @Override
-        public void unregisterKnowledgeBase(InternalKnowledgeBase kbase) {
+        public void unregisterKnowledgeBase(RuleBase kbase) {
             unregisterMBeansFromOwner(kbase);
         }
 
@@ -312,9 +312,8 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
                             name );
                     List<ObjectName> mbl = mbeans.get( owner );
                     if ( mbl == null ) {
-                        mbl = new ArrayList<ObjectName>();
-                        mbeans.put( owner,
-                                mbl );
+                        mbl = new ArrayList<>();
+                        mbeans.put( owner, mbl );
                         if (mbean instanceof StandardMBean) {
                             mbeansRefs.put(owner, ((StandardMBean) mbean).getImplementation());
                         } else {
@@ -406,12 +405,12 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         }
 
         @Override
-        public void registerKnowledgeBase(InternalKnowledgeBase kbase) {
+        public void registerKnowledgeBase(RuleBase kbase) {
 
         }
 
         @Override
-        public void unregisterKnowledgeBase(InternalKnowledgeBase kbase) {
+        public void unregisterKnowledgeBase(RuleBase kbase) {
 
         }
 

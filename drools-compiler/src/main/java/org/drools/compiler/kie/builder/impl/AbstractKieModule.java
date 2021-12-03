@@ -38,9 +38,11 @@ import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.util.StringUtils;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.wiring.api.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
@@ -215,9 +217,9 @@ public abstract class AbstractKieModule
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
 
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase(kBaseModel.getName(), conf );
+        RuleBase kBase = RuleBaseFactory.newRuleBase(kBaseModel.getName(), conf );
         kBase.addPackages( pkgs );
-        return kBase;
+        return KnowledgeBaseFactory.newKnowledgeBase(kBase);
     }
 
     public static void checkStreamMode( KieBaseModelImpl kBaseModel, KieBaseConfiguration conf, Collection<? extends KiePackage> pkgs ) {
@@ -232,7 +234,7 @@ public abstract class AbstractKieModule
     }
 
     private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModelImpl kBaseModel, ClassLoader cl) {
-        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, cl);
+        KieBaseConfiguration kbConf = RuleBaseFactory.newKnowledgeBaseConfiguration(null, cl);
         kbConf.setOption(kBaseModel.getEqualsBehavior());
         kbConf.setOption(kBaseModel.getEventProcessingMode());
         kbConf.setOption(kBaseModel.getDeclarativeAgenda());

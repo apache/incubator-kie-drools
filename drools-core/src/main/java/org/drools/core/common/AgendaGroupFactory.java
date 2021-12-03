@@ -17,8 +17,8 @@
 package org.drools.core.common;
 
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleBase;
 
 public interface AgendaGroupFactory {
-    InternalAgendaGroup createAgendaGroup(String name, InternalKnowledgeBase kBase);
+    InternalAgendaGroup createAgendaGroup(String name, RuleBase kBase);
 }
