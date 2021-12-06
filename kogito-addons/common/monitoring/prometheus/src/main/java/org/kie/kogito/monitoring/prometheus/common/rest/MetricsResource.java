@@ -15,11 +15,9 @@
  */
 package org.kie.kogito.monitoring.prometheus.common.rest;
 
-import org.kie.kogito.monitoring.prometheus.common.PrometheusRegistryProvider;
+/**
+ * This class must always have exact FQCN as <code>org.kie.kogito.monitoring.prometheus.common.rest. MetricsResource </code>
+ */
+public interface MetricsResource {
 
-public abstract class MetricsResource {
-
-    public String scrape() {
-        return PrometheusRegistryProvider.getPrometheusMeterRegistry().scrape();
-    }
 }

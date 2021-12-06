@@ -52,7 +52,7 @@ public class MonitoringIT extends BaseRestTest {
 
         String response = given().contentType(ContentType.JSON)
                 .when()
-                .get("/metrics")
+                .get("/actuator/prometheus")
                 .then()
                 .statusCode(200)
                 .extract().body().asString();
@@ -89,7 +89,7 @@ public class MonitoringIT extends BaseRestTest {
 
         response = given().contentType(ContentType.JSON)
                 .when()
-                .get("/metrics")
+                .get("/actuator/prometheus")
                 .then()
                 .statusCode(200)
                 .extract().body().asString();
