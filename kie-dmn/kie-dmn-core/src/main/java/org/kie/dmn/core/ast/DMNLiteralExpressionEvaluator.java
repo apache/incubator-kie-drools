@@ -29,9 +29,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -55,8 +53,9 @@ public class DMNLiteralExpressionEvaluator
     private LiteralExpression expressionNode;
     private CompiledExpression expression;
     private boolean isFunctionDef;
+    final FEELImpl feelInstance;
 
-    public DMNLiteralExpressionEvaluator(CompiledExpression expression, LiteralExpression expressionNode) {
+    public DMNLiteralExpressionEvaluator(CompiledExpression expression, LiteralExpression expressionNode, FEEL feel) {
         this.expressionNode = expressionNode;
         this.expression = expression;
         if (expression instanceof CompiledExpressionImpl) {
@@ -67,6 +66,7 @@ public class DMNLiteralExpressionEvaluator
             throw new IllegalArgumentException(
                     "Cannot create DMNLiteralExpressionEvaluator: unsupported type " + expression.getClass());
         }
+        this.feelInstance = (FEELImpl) feel;
     }
 
     public boolean isFunctionDefinition() {
@@ -80,14 +80,10 @@ public class DMNLiteralExpressionEvaluator
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
-        // in case an exception is thrown, the parent node will report it
-        List<DMNProfile> profiles = ((DMNRuntimeImpl) dmrem.getRuntime()).getProfiles();
-        @SuppressWarnings({"unchecked", "rawtypes"})
-        FEELImpl feelInstance = (FEELImpl) FEEL.newInstance(dmrem.getRuntime().getRootClassLoader(), (List) profiles);
         LiteralInvocationListener liListener = new LiteralInvocationListener();
-        @SuppressWarnings({"unchecked", "rawtypes"})
         EvaluationContextImpl ectx = feelInstance.newEvaluationContext(Arrays.asList(liListener), result.getContext().getAll());
         ectx.setDMNRuntime(dmrem.getRuntime());
+        // in case an exception is thrown, the parent node will report it
         Object val = feelInstance.evaluate(expression, ectx);
         ResultType resultType = ResultType.SUCCESS;
         for (FEELEvent captured : liListener.events) {

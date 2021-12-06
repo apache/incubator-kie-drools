@@ -888,7 +888,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                                                                                         exprText,
                                                                                         exprName,
                                                                                         node.getIdentifierString() );
-                    evaluator = new DMNLiteralExpressionEvaluator(compiledExpression, expression);
+                    evaluator = new DMNLiteralExpressionEvaluator(compiledExpression, expression, ctx.getFeelHelper().newFEELInstance());
                 } catch ( Throwable e ) {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
