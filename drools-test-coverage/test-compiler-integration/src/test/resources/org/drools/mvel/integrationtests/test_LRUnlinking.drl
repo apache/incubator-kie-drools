@@ -21,9 +21,9 @@ rule "Test LR unlinking with multiple joins on the same object type"
 	when
 	 $p1 : Person ($name : name != null)
 	 $p2 : Person ($likes : likes != null)
-	 $p3 : Person ($age : age != null)
+	 $p3 : Person ($age : age != 0)
 	 $p4 : Person ($hair : hair != null)
-	 $p5 : Person ($happy : happy != null)
+	 $p5 : Person ($happy : happy != false)
 	 $p6 : Person (name != $name,
 	               likes == $likes, 
 	               age == $age, 
