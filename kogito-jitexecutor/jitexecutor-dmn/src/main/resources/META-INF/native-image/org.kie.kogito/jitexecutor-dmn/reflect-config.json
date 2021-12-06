@@ -1211,26 +1211,24 @@
       "allPublicClasses" : true
     },
     {
-      "name":"org.kie.kogito.trusty.storage.api.model.SaliencyModel",
+      "name": "org.kie.kogito.explainability.api.SaliencyModel",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
       "allPublicMethods" : true,
       "allDeclaredFields" : true,
-      "allPublicFields" : true,
-      "allPublicClasses" : true
+      "allPublicFields" : true
     },
     {
-      "name":"org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel",
+      "name": "org.kie.kogito.explainability.api.FeatureImportanceModel",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
       "allPublicMethods" : true,
       "allDeclaredFields" : true,
-      "allPublicFields" : true,
-      "allPublicClasses" : true
+      "allPublicFields" : true
     },
-   {
+    {
       "name":"sun.misc.Unsafe",
       "fields":[{"name":"theUnsafe"}],
       "methods":[{"name":"allocateInstance","parameterTypes":["java.lang.Class"] }]
