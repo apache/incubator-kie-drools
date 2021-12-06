@@ -74,6 +74,8 @@ import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class RuleContext {
 
+    private static final String SCOPE_SUFFIX = "_sCoPe";
+
     private final KnowledgeBuilderImpl kbuilder;
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
@@ -371,8 +373,8 @@ public class RuleContext {
     }
 
     private String stripIfScoped(String bindingId) {
-        if (bindingId.endsWith("sCoPe")) {
-            String stripSuffix = bindingId.substring(0, bindingId.lastIndexOf("_sCoPe"));
+        if (bindingId.endsWith(SCOPE_SUFFIX)) {
+            String stripSuffix = bindingId.substring(0, bindingId.lastIndexOf(SCOPE_SUFFIX));
             return stripSuffix.substring(0, stripSuffix.lastIndexOf("_")); // strip counter
         } else {
             return bindingId;
@@ -626,7 +628,7 @@ public class RuleContext {
         if ( idGenerator.isGenerated( x ) || ruleUnitVars.containsKey( x ) ) {
             return DrlxParseUtil.toVar( x );
         }
-        String var = x.endsWith( "sCoPe" ) ? x : definedVars.get(x);
+        String var = x.endsWith( SCOPE_SUFFIX ) ? x : definedVars.get(x);
         return DrlxParseUtil.toVar(var != null ? var : x + currentScope.id);
     }
 
@@ -654,7 +656,7 @@ public class RuleContext {
         }
 
         private Scope( ConditionalElementDescr scopeElement ) {
-            this( "_" + scopeCounter++ + "_sCoPe", scopeElement );
+            this( "_" + scopeCounter++ + SCOPE_SUFFIX, scopeElement );
         }
 
         private Scope( String id, ConditionalElementDescr scopeElement ) {
