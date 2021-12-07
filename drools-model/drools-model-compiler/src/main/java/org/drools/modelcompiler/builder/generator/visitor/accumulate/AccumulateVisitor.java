@@ -239,7 +239,7 @@ public class AccumulateVisitor {
             if ( declaration.isPresent() ) {
                 nameExpr = declaration.get().getBindingId();
             } else {
-                throw new RuntimeException("Unknown parameter in accumulate: " + accumulateFunctionParameter);
+                throw new RuntimeException("Unknown parameter in accumulate: " + name);
             }
         }
 

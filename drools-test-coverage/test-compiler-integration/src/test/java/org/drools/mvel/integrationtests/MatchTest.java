@@ -30,8 +30,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -48,12 +46,8 @@ public class MatchTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        // TODO: EM failed with testGetObjectsAccumulateWithNestedExists, testGetObjectsAccumulate, 
-        // testObjectsDeepOnAccumulateNotSupportingReverse, testObjectsDeepOnNestedAccumulate. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
-
-    private static Logger logger = LoggerFactory.getLogger(MatchTest.class);
 
     @Test
     public void testGetObjectsOnePattern() {
