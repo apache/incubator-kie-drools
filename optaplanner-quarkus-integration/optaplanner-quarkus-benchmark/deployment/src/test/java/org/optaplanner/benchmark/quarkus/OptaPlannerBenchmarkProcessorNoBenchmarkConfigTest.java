@@ -37,7 +37,7 @@ public class OptaPlannerBenchmarkProcessorNoBenchmarkConfigTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
-            .overrideConfigKey("quarkus.optaplanner.benchmark.solver.termination.spent-limit", "5s")
+            .overrideConfigKey("quarkus.optaplanner.benchmark.solver.termination.best-score-limit", "0")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataQuarkusEntity.class,
                             TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));

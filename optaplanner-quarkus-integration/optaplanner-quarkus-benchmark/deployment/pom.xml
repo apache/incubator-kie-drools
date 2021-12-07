@@ -26,6 +26,10 @@
       <artifactId>quarkus-arc-deployment</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-awt-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-quarkus-deployment</artifactId>
     </dependency>

@@ -16,6 +16,6 @@
 
 <solver>
   <termination>
-    <secondsSpentLimit>2</secondsSpentLimit>
+    <scoreCalculationCountLimit>50</scoreCalculationCountLimit>
   </termination>
 </solver>

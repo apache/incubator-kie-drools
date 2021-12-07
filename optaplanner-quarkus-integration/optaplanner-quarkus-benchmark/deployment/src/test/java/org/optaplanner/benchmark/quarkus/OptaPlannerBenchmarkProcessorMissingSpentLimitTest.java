@@ -18,8 +18,6 @@ package org.optaplanner.benchmark.quarkus;
 
 import java.util.concurrent.ExecutionException;
 
-import javax.inject.Inject;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Assertions;
@@ -29,7 +27,6 @@ import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
 import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
-import org.optaplanner.core.config.solver.SolverConfig;
 
 import io.quarkus.test.QuarkusUnitTest;
 
@@ -42,18 +39,14 @@ public class OptaPlannerBenchmarkProcessorMissingSpentLimitTest {
                     .addClasses(TestdataQuarkusEntity.class,
                             TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));
 
-    @Inject
-    SolverConfig solverConfig;
-    @Inject
-    OptaPlannerBenchmarkRuntimeConfig runtimeConfig;
-
     @Test
     public void benchmark() throws ExecutionException, InterruptedException {
-        Assertions.assertThrows(IllegalStateException.class, () -> {
-            new OptaPlannerBenchmarkBeanProvider().benchmarkFactory(new PlannerBenchmarkConfig(),
-                    runtimeConfig, solverConfig);
-        }, "Property quarkus.optaplanner.benchmark.solver.termination.spent-limit is required if the inherited solver config does not have termination configured.");
-
+        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
+            new OptaPlannerBenchmarkRecorder().benchmarkConfigSupplier(new PlannerBenchmarkConfig()).get();
+        });
+        Assertions.assertEquals(
+                "At least one of the properties quarkus.optaplanner.benchmark.solver.termination.spent-limit, quarkus.optaplanner.benchmark.solver.termination.best-score-limit, quarkus.optaplanner.benchmark.solver.termination.unimproved-spent-limit is required if the inherited solver config does not have termination configured.",
+                exception.getMessage());
     }
 
 }

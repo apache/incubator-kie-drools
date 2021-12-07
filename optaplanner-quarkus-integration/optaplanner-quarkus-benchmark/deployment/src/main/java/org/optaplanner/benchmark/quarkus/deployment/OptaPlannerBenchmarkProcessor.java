@@ -21,10 +21,13 @@ import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.quarkus.OptaPlannerBenchmarkBeanProvider;
 import org.optaplanner.benchmark.quarkus.OptaPlannerBenchmarkRecorder;
 import org.optaplanner.benchmark.quarkus.UnavailableOptaPlannerBenchmarkBeanProvider;
+import org.optaplanner.benchmark.quarkus.config.OptaPlannerBenchmarkRuntimeConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.quarkus.deployment.SolverConfigBuildItem;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -55,6 +58,7 @@ class OptaPlannerBenchmarkProcessor {
     @Record(ExecutionTime.STATIC_INIT)
     void registerAdditionalBeans(BuildProducer<AdditionalBeanBuildItem> additionalBeans,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeans,
+            BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
             SolverConfigBuildItem solverConfigBuildItem,
             OptaPlannerBenchmarkRecorder recorder) {
         if (solverConfigBuildItem.getSolverConfig() == null) {
@@ -81,5 +85,7 @@ class OptaPlannerBenchmarkProcessor {
                 .supplier(recorder.benchmarkConfigSupplier(benchmarkConfig))
                 .done());
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBenchmarkBeanProvider.class));
+        unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerBenchmarkRuntimeConfig.class));
+        unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(SolverConfig.class));
     }
 }

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.quarkus;
+package org.optaplanner.benchmark.quarkus.config;
+
+import org.optaplanner.quarkus.config.TerminationRuntimeConfig;
 
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
@@ -35,5 +37,5 @@ public class OptaPlannerBenchmarkRuntimeConfig {
      * Termination configuration for the solvers run in the benchmark.
      */
     @ConfigItem(name = "solver.termination")
-    public TerminationBuildTimeConfig terminationBuildTimeConfig;
+    public TerminationRuntimeConfig termination;
 }

@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.quarkus;
+package org.optaplanner.quarkus.benchmark.it;
 
-import java.time.Duration;
-import java.util.Optional;
-
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
-
-import io.quarkus.runtime.annotations.ConfigGroup;
+import io.quarkus.test.junit.NativeImageTest;
 
 /**
- * During build time, this is translated into OptaPlanner's {@link TerminationConfig}.
+ * Test various OptaPlanner operations running in native mode
  */
-@ConfigGroup
-public class TerminationBuildTimeConfig {
-
-    /**
-     * How long solver should be run in a benchmark run.
-     * For example: "30s" is 30 seconds. "5m" is 5 minutes. "2h" is 2 hours. "1d" is 1 day.
-     * Also supports ISO-8601 format, see {@link Duration}.
-     */
-    public Optional<Duration> spentLimit;
+@NativeImageTest
+public class OptaPlannerBenchmarkTestResourceIT extends OptaPlannerBenchmarkTestResourceTest {
 
 }

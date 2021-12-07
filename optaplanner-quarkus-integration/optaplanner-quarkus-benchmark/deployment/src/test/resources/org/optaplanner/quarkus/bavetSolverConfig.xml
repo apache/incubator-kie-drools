@@ -20,6 +20,6 @@
     <constraintProviderClass>org.optaplanner.benchmark.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider</constraintProviderClass>
   </scoreDirectorFactory>
   <termination>
-    <secondsSpentLimit>2</secondsSpentLimit>
+    <scoreCalculationCountLimit>50</scoreCalculationCountLimit>
   </termination>
 </solver>
