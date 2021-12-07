@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -601,11 +602,33 @@ public class KiePackagesBuilder {
         if (sourcePattern != null) {
             bindings.addAll( sourcePattern.getBindings() );
             bindings.add( new SelfPatternBiding<>( sourcePattern.getPatternVariable() ) );
+        } else {
+            // No pattern is associated. It likely uses inner bindings
+            addInnerBindings(bindings, accumulatePattern.getAccumulateFunctions(), accumulatePattern.getCondition());
         }
 
         pattern.setSource(buildAccumulate( ctx, accumulatePattern, source, pattern, usedVariableName, bindings ));
 
         return existingPattern ? null : pattern;
+    }
+
+    private void addInnerBindings(Collection<Binding> bindings, AccumulateFunction[] accumulateFunctions, Condition condition) {
+        List<org.drools.model.Declaration> functionArgList = Arrays.stream(accumulateFunctions)
+                                          .map(function -> function.getSource())
+                                          .filter(org.drools.model.Declaration.class::isInstance)
+                                          .map(org.drools.model.Declaration.class::cast)
+                                          .collect(Collectors.toList());
+        if (condition instanceof CompositePatterns) {
+            CompositePatterns compositePatterns = (CompositePatterns) condition;
+            for (Condition c : compositePatterns.getSubConditions()) {
+                Variable<?>[] boundVariables = c.getBoundVariables();
+                Arrays.stream(boundVariables)
+                      .filter(org.drools.model.Declaration.class::isInstance)
+                      .map(org.drools.model.Declaration.class::cast)
+                      .filter(decl -> functionArgList.contains(decl))
+                      .forEach(decl -> bindings.add(new SelfPatternBiding<>((org.drools.model.Declaration)decl)));
+            }
+        }
     }
 
     private Constraint getForallSelfJoin(Condition condition) {
