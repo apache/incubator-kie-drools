@@ -47,6 +47,7 @@ public abstract class AbstractXmlSolutionImporter<Solution_> extends AbstractSol
     public Solution_ readSolution(File inputFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputFile))) {
             SAXBuilder builder = new SAXBuilder(false);
+            builder.setExpandEntities(false); // CVE-2021-33813
             Document document = builder.build(in);
             XmlInputBuilder<Solution_> xmlInputBuilder = createXmlInputBuilder();
             xmlInputBuilder.setInputFile(inputFile);
