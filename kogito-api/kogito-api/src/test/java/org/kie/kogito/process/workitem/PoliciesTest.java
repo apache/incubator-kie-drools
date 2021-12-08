@@ -27,7 +27,7 @@ class PoliciesTest {
     @Test
     void testPolicies() {
         assertEquals(0, Policies.of(null).length);
-        Policy<IdentityProvider>[] policies = Policies.of("pepe", Arrays.asList("master", "of", "the", "universe"));
+        Policy<IdentityProvider>[] policies = Policies.of("pepe", Arrays.asList("chief", "of", "the", "universe"));
         assertEquals(1, policies.length);
         assertEquals("pepe", policies[0].value().getName());
         assertEquals(4, policies[0].value().getRoles().size());

@@ -116,7 +116,7 @@ If you want to add a dependency that violates any of the rules above, get approv
 
 ### Tests and Documentation 
 
-Don't forget to include tests in your pull requests, and documentation (reference documentation, javadoc...). Guides and reference documentation should be submitted to the [Kogito Docs Repository](https://github.com/kiegroup/kie-docs/tree/master-kogito).
+Don't forget to include tests in your pull requests, and documentation (reference documentation, javadoc...). Guides and reference documentation should be submitted to the [Kogito Docs Repository](https://github.com/kiegroup/kie-docs/tree/main-kogito).
 If you are contributing a new feature, we strongly advise submitting an [Example](https://github.com/kiegroup/kogito-examples). 
 
 ### Code Reviews and Continuous Integration
