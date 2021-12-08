@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import AuditOverview from '../AuditOverview';
 import useExecutions from '../useExecutions';
 import { RemoteDataStatus } from '../../../../types';
+import { TrustyContext } from '../../TrustyApp/TrustyApp';
 
 jest.mock('../useExecutions');
 
@@ -71,9 +72,20 @@ describe('Audit overview', () => {
       .mockImplementation(() => new Date(fixedDate).getTime());
 
     const wrapper = mount(
-      <MemoryRouter>
-        <AuditOverview />
-      </MemoryRouter>
+      <TrustyContext.Provider
+        value={{
+          config: {
+            counterfactualEnabled: true,
+            explanationEnabled: true,
+            basePath: '',
+            useHrefLinks: true
+          }
+        }}
+      >
+        <MemoryRouter>
+          <AuditOverview />
+        </MemoryRouter>
+      </TrustyContext.Provider>
     );
 
     expect(useExecutions).toHaveBeenCalledWith({

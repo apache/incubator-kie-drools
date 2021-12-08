@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import {
   IRow,
   Table,
@@ -25,6 +25,7 @@ import {
   RemoteData,
   RemoteDataStatus
 } from '../../../types';
+import TrustyLink from '../../Atoms/TrustyLink/TrustyLink';
 
 type ExecutionTableProps = {
   data: RemoteData<Error, Executions>;
@@ -33,11 +34,14 @@ type ExecutionTableProps = {
 const ExecutionTable: React.FC<ExecutionTableProps> = props => {
   const { data } = props;
   const columns = ['ID', 'Description', 'Executor', 'Date', 'Execution status'];
-  const [rows, setRows] = useState<IRow[]>(prepareRows(columns.length, data));
+  const { url } = useRouteMatch();
+  const [rows, setRows] = useState<IRow[]>(
+    prepareRows(columns.length, data, url)
+  );
 
   useEffect(() => {
-    setRows(prepareRows(columns.length, data));
-  }, [data, columns.length]);
+    setRows(prepareRows(columns.length, data, url));
+  }, [data, columns.length, url]);
 
   const customRowWrapper = ({ row, rowProps, ...props }) => {
     const [rowKey, rowIndex] = rowProps;
@@ -67,7 +71,8 @@ const ExecutionTable: React.FC<ExecutionTableProps> = props => {
 
 const prepareRows = (
   columnsNumber: number,
-  data: RemoteData<Error, Executions>
+  data: RemoteData<Error, Executions>,
+  url: string
 ) => {
   let rows;
   switch (data.status) {
@@ -77,7 +82,7 @@ const prepareRows = (
       break;
     case RemoteDataStatus.SUCCESS:
       if (data.data.headers.length > 0) {
-        rows = prepareExecutionsRows(data.data.headers);
+        rows = prepareExecutionsRows(data.data.headers, url);
       } else {
         rows = noExecutions(columnsNumber);
       }
@@ -89,22 +94,22 @@ const prepareRows = (
   return rows;
 };
 
-const prepareExecutionsRows = (rowData: Execution[]) => {
+const prepareExecutionsRows = (rowData: Execution[], url: string) => {
   return rowData.map(item => ({
     executionKey: 'key-' + item.executionId,
     ouiaId: item.executionId,
     cells: [
       {
         title: (
-          <Link
-            to={`/audit/${item.executionType.toLocaleLowerCase()}/${
+          <TrustyLink
+            url={`${url}/${item.executionType.toLocaleLowerCase()}/${
               item.executionId
             }`}
             data-ouia-component-id="show-detail"
             data-ouia-component-type="link"
           >
             <ExecutionId id={item.executionId} />
-          </Link>
+          </TrustyLink>
         )
       },
       item.executedModelName,

@@ -1,13 +1,16 @@
-const path = require('path');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
-const BG_IMAGES_DIRNAME = 'bgimages';
+
+const path = require('path');
 
 module.exports = {
-  entry: {
-    app: path.resolve(__dirname, 'src', 'index.ts')
-  },
   plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: path.resolve(__dirname, '../static/images'), to: './images' },
+        { from: path.resolve(__dirname, '../static/fonts'), to: './fonts' }
+      ]
+    }),
     new webpack.EnvironmentPlugin({
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Trusty',
@@ -18,12 +21,11 @@ module.exports = {
     rules: [
       {
         test: /\.(tsx|ts)?$/,
-        include: [path.resolve(__dirname, 'src')],
         use: [
           {
             loader: 'ts-loader',
             options: {
-              configFile: path.resolve('./tsconfig.json'),
+              configFile: path.resolve(__dirname, 'tsconfig.json'),
               allowTsInNodeModules: true,
               onlyCompileBundledFiles: true
             }
@@ -34,7 +36,7 @@ module.exports = {
         test: /\.(svg|ttf|eot|woff|woff2)$/,
         include: [/fonts|pficon/],
         use: {
-          loader: 'file-loader',
+          loader: 'url-loader',
           options: {
             // Limit at 50k. larger files emitted into separate files
             limit: 5000,
@@ -57,14 +59,6 @@ module.exports = {
         ]
       },
       {
-        test: /\.svg$/,
-        include: input => input.indexOf(BG_IMAGES_DIRNAME) > -1,
-        use: {
-          loader: 'svg-url-loader',
-          options: {}
-        }
-      },
-      {
         test: /\.(jpg|jpeg|png|gif)$/i,
         use: [
           {
@@ -79,28 +73,7 @@ module.exports = {
       }
     ]
   },
-  output: {
-    filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
-    libraryTarget: 'umd',
-    globalObject: 'this'
-  },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: path.resolve(__dirname, './tsconfig.json')
-      })
-    ],
-    symlinks: false,
-    cacheWithContext: false
-  },
-  externals: {
-    react: 'umd react',
-    'react-dom': 'umd react-dom',
-    'react-router-dom': 'umd react-router-dom',
-    'react-router': 'umd react-router',
-    '@patternfly/react-core': 'umd @patternfly/react-core'
+    extensions: ['.tsx', '.ts', '.js', '.jsx']
   }
 };

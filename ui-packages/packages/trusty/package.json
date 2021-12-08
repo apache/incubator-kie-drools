@@ -1,9 +1,12 @@
 {
   "name": "@kogito-apps/trusty",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/app.bundle.js",
+  "types": "dist/index.d.ts",
   "author": "",
   "license": "Apache-2.0",
+  "files": ["dist/"],
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-apps.git"
@@ -24,15 +27,17 @@
     "use-react-router-breadcrumbs": "^1.0.4"
   },
   "scripts": {
-    "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
-    "build:prod": "yarn lint && webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --hot --color --progress --info=true --config ./dev-webapp/webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "build:prod": "yarn lint && rimraf dist && rimraf dist-standalone && yarn build && yarn build:standalone",
+    "build:standalone": "webpack --config ./dev-webapp/webpack.prod.js",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "test:coverage": "rimraf coverage && yarn test --coverage",
     "test:watch": "jest --watch",
     "lint": "eslint './src/**/*.ts{,x}'",
     "mock-server": "json-server api-mock/db.js --routes api-mock/routes.json --port 1336 --delay 1000 --id executionId --middlewares api-mock/filterSingular.js  api-mock/counterfactualPoll.js",
     "build:services": "./it-tests/docker-compose/build.sh",
-    "start:it": "concurrently 'yarn serve -p 9000 -c ../it-tests/serve.json ./dist/' 'yarn run mock-server'",
+    "start:it": "concurrently 'yarn serve -p 9000 -c ../it-tests/serve.json ./dist-standalone/' 'yarn run mock-server'",
     "start:e2e": "./it-tests/docker-compose/start_docker.sh",
     "cypress:open:it": "yarn run cypress open --project it-tests --config-file cypress.it.json",
     "cypress:run:it": "yarn run cypress run --project it-tests --config-file cypress.it.json",

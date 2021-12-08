@@ -10,7 +10,6 @@ import {
   Tooltip
 } from '@patternfly/react-core';
 import {
-  Link,
   Redirect,
   Route,
   Switch,
@@ -33,8 +32,9 @@ import Counterfactual from '../Counterfactual/Counterfactual';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import CounterfactualUnsupportedBanner from '../../Atoms/CounterfactualUnsupportedBanner/CounterfactualUnsupportedBanner';
 import NotFound from '../NotFound/NotFound';
-import './AuditDetail.scss';
+import TrustyLink from '../../Atoms/TrustyLink/TrustyLink';
 import { TrustyContext } from '../TrustyApp/TrustyApp';
+import './AuditDetail.scss';
 
 const AuditDetail = () => {
   const { path, url } = useRouteMatch();
@@ -83,7 +83,7 @@ const AuditDetail = () => {
       }
       setThirdLevelNav(newNav);
     }
-  }, [outcomes]);
+  }, [outcomes, config.counterfactualEnabled]);
 
   return (
     <>
@@ -116,7 +116,7 @@ const AuditDetail = () => {
                     isActive={location.pathname === url + item.url}
                     ouiaId={item.url.substr(1)}
                   >
-                    <Link to={url + item.url}>
+                    <TrustyLink url={url + item.url}>
                       <>
                         {item.desc}
                         {item.icon && (
@@ -125,7 +125,7 @@ const AuditDetail = () => {
                           </span>
                         )}
                       </>
-                    </Link>
+                    </TrustyLink>
                   </NavItem>
                 ))}
               </NavList>

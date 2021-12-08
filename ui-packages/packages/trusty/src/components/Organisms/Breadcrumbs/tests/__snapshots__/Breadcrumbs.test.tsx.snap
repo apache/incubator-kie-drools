@@ -25,28 +25,33 @@ exports[`Breadcrumbs renders outcome details breadcrumbs links 1`] = `
           <li
             className="pf-c-breadcrumb__item breadcrumb-item"
           >
-            <Link
+            <TrustyLink
               className="pf-c-breadcrumb__link"
-              to="/audit"
+              url="/audit"
             >
-              <LinkAnchor
+              <Link
                 className="pf-c-breadcrumb__link"
-                href="/audit"
-                navigate={[Function]}
+                to="/audit"
               >
-                <a
+                <LinkAnchor
                   className="pf-c-breadcrumb__link"
                   href="/audit"
-                  onClick={[Function]}
+                  navigate={[Function]}
                 >
-                  <span
-                    key="/audit"
+                  <a
+                    className="pf-c-breadcrumb__link"
+                    href="/audit"
+                    onClick={[Function]}
                   >
-                    Audit investigation
-                  </span>
-                </a>
-              </LinkAnchor>
-            </Link>
+                    <span
+                      key="/audit"
+                    >
+                      Audit investigation
+                    </span>
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </TrustyLink>
           </li>
         </BreadcrumbItem>
         <BreadcrumbItem
@@ -87,59 +92,64 @@ exports[`Breadcrumbs renders outcome details breadcrumbs links 1`] = `
                 </svg>
               </AngleRightIcon>
             </span>
-            <Link
+            <TrustyLink
               className="pf-c-breadcrumb__link"
-              to="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
+              url="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
             >
-              <LinkAnchor
+              <Link
                 className="pf-c-breadcrumb__link"
-                href="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
-                navigate={[Function]}
+                to="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
               >
-                <a
+                <LinkAnchor
                   className="pf-c-breadcrumb__link"
                   href="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
-                  onClick={[Function]}
+                  navigate={[Function]}
                 >
-                  <AuditDetailBreadcrumb
-                    key="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
-                    location={
-                      Object {
-                        "hash": "",
-                        "key": "execution",
-                        "pathname": "/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes",
-                        "search": "",
-                      }
-                    }
-                    match={
-                      Object {
-                        "isExact": true,
-                        "params": Object {
-                          "executionType": "decision",
-                          "id": "b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000",
-                        },
-                        "path": "/audit/:executionType/:id",
-                        "url": "/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000",
-                      }
-                    }
+                  <a
+                    className="pf-c-breadcrumb__link"
+                    href="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
+                    onClick={[Function]}
                   >
-                    <span>
-                      Execution 
-                      <ExecutionId
-                        id="b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
-                      >
-                        <span
-                          className="execution-id"
+                    <AuditDetailBreadcrumb
+                      key="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
+                      location={
+                        Object {
+                          "hash": "",
+                          "key": "execution",
+                          "pathname": "/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes",
+                          "search": "",
+                        }
+                      }
+                      match={
+                        Object {
+                          "isExact": true,
+                          "params": Object {
+                            "executionType": "decision",
+                            "id": "b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000",
+                          },
+                          "path": "/audit/:executionType/:id",
+                          "url": "/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000",
+                        }
+                      }
+                    >
+                      <span>
+                        Execution 
+                        <ExecutionId
+                          id="b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
                         >
-                          #
-                          b2b0ed8d
-                        </span>
-                      </ExecutionId>
-                    </span>
-                  </AuditDetailBreadcrumb>
-                </a>
-              </LinkAnchor>
-            </Link>
+                          <span
+                            className="execution-id"
+                          >
+                            #
+                            b2b0ed8d
+                          </span>
+                        </ExecutionId>
+                      </span>
+                    </AuditDetailBreadcrumb>
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </TrustyLink>
           </li>
         </BreadcrumbItem>
         <BreadcrumbItem
@@ -180,28 +190,33 @@ exports[`Breadcrumbs renders outcome details breadcrumbs links 1`] = `
                 </svg>
               </AngleRightIcon>
             </span>
-            <Link
+            <TrustyLink
               className="pf-c-breadcrumb__link pf-m-current"
-              to="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes"
+              url="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes"
             >
-              <LinkAnchor
+              <Link
                 className="pf-c-breadcrumb__link pf-m-current"
-                href="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes"
-                navigate={[Function]}
+                to="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes"
               >
-                <a
+                <LinkAnchor
                   className="pf-c-breadcrumb__link pf-m-current"
                   href="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes"
-                  onClick={[Function]}
+                  navigate={[Function]}
                 >
-                  <span
-                    key="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes"
+                  <a
+                    className="pf-c-breadcrumb__link pf-m-current"
+                    href="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes"
+                    onClick={[Function]}
                   >
-                    Outcomes
-                  </span>
-                </a>
-              </LinkAnchor>
-            </Link>
+                    <span
+                      key="/audit/decision/b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000/outcomes"
+                    >
+                      Outcomes
+                    </span>
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </TrustyLink>
           </li>
         </BreadcrumbItem>
       </ol>

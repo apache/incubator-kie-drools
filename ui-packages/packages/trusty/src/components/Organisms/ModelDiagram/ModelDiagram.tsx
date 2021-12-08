@@ -27,7 +27,8 @@ const ModelDiagram = (props: ModelDiagramProps) => {
       editor = DmnEditor.open({
         container: document.getElementById('dmn-editor-container'),
         initialContent: Promise.resolve(model.model),
-        readOnly: true
+        readOnly: true,
+        origin: '*'
       });
       return () => {
         editor.close();

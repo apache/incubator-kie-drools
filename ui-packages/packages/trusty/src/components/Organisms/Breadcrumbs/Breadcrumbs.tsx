@@ -1,8 +1,9 @@
 import React from 'react';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import ExecutionId from '../../Atoms/ExecutionId/ExecutionId';
+import TrustyLink from '../../Atoms/TrustyLink/TrustyLink';
 
 const Breadcrumbs = () => {
   const breadcrumbs = useBreadcrumbs(routes, { excludePaths });
@@ -18,9 +19,9 @@ const Breadcrumbs = () => {
                 key={match.url}
                 isActive={location.pathname === match.url}
                 render={({ className }) => (
-                  <Link to={match.url} className={className}>
+                  <TrustyLink url={match.url} className={className}>
                     {breadcrumb}
-                  </Link>
+                  </TrustyLink>
                 )}
               />
             );

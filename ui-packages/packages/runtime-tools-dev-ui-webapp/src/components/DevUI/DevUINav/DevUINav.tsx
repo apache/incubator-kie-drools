@@ -65,6 +65,15 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
             Forms
           </Link>
         </NavItem>
+        {/*Link to Audit app to be uncommented when the application will be ready*/}
+        {/*<NavItem key={'audit-nav'} isActive={pathname.startsWith('/Audit')}>*/}
+        {/*  <Link*/}
+        {/*    to="/Audit"*/}
+        {/*    {...ouiaAttribute('data-ouia-navigation-name', 'audit-nav')}*/}
+        {/*  >*/}
+        {/*    Audit investigation*/}
+        {/*  </Link>*/}
+        {/*</NavItem>*/}
       </NavList>
     </Nav>
   );

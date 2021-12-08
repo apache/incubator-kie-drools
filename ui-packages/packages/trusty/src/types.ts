@@ -2,6 +2,8 @@ export interface TrustyContextValue {
   config: {
     counterfactualEnabled: boolean;
     explanationEnabled: boolean;
+    basePath: string;
+    useHrefLinks: boolean;
   };
 }
 

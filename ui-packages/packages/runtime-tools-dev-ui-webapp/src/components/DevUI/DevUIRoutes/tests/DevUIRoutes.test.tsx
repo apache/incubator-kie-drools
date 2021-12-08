@@ -37,6 +37,13 @@ jest.mock('@kogito-apps/consoles-common', () => ({
   }
 }));
 
+jest.mock('@kogito-apps/trusty', () => ({
+  ...jest.requireActual('@kogito-apps/trusty'),
+  TrustyApp: () => {
+    return <MockedComponent />;
+  }
+}));
+
 const props = {
   navigate: 'JobsManagement'
 };
@@ -98,6 +105,20 @@ describe('DevUIRoutes tests', () => {
 
     const MockedFormsListPage = wrapper.find('MockedFormsListPage');
     expect(MockedFormsListPage.exists()).toBeTruthy();
+  });
+
+  it('audit investigation page test', () => {
+    const wrapper = mount(
+      <MemoryRouter keyLength={0} initialEntries={['/Audit']}>
+        <DevUIRoutes {...props} />
+      </MemoryRouter>
+    );
+
+    expect(wrapper).toMatchSnapshot();
+    const route = wrapper.find(Route);
+    expect(route.exists()).toBeTruthy();
+
+    expect(wrapper.find('TrustyApp').exists()).toBeTruthy();
   });
 
   it('no data page test', () => {

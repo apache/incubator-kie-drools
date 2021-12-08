@@ -1,14 +1,23 @@
 const merge = require('webpack-merge');
-const common = require('./webpack.common.js');
+const common = require('./webpack.config.js');
+const path = require('path');
 
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || '9000';
 
 module.exports = merge(common, {
   mode: 'development',
+  entry: {
+    app: path.resolve(__dirname, './index.tsx')
+  },
+  output: {
+    path: path.resolve('../dist-dev'),
+    filename: '[name].bundle.js',
+    publicPath: '/'
+  },
   devtool: 'source-map',
   devServer: {
-    contentBase: './dist',
+    contentBase: path.join(__dirname),
     host: HOST,
     port: PORT,
     compress: true,

@@ -99,7 +99,7 @@
               <outputDirectory>${basedir}/target/classes/META-INF/resources/</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${path.to.frontend.app}/dist</directory>
+                  <directory>${path.to.frontend.app}/dist-standalone</directory>
                   <excludes>
                     <exclude>index.html</exclude>
                   </excludes>

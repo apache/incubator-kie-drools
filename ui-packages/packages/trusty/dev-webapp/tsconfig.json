@@ -1,0 +1,16 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true
+  },
+  "files": [
+    "index.tsx"
+  ],
+  "include": [
+    "../../../config/declare.d.ts"
+  ],
+  "exclude": [
+    "**/node_modules"
+  ],
+  "preserveSymlinks": true
+}
