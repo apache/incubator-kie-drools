@@ -15,8 +15,12 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
 /**
  * Main class of the Kogito Serverless Workflow extension
@@ -26,5 +30,13 @@ public class ServerlessWorkflowAssetsProcessor {
     @BuildStep
     FeatureBuildItem featureBuildItem() {
         return new FeatureBuildItem("kogito-serverless-workflow");
+    }
+
+    @BuildStep
+    public List<ReflectiveClassBuildItem> reflectiveClassBuildItems() {
+        List<ReflectiveClassBuildItem> result = new ArrayList<>();
+        result.add(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.expr.jq.JqExpressionHandler"));
+        result.add(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.expr.jsonpath.JsonPathExpressionHandler"));
+        return result;
     }
 }
