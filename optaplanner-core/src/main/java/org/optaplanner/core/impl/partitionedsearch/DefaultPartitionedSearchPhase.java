@@ -182,7 +182,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 
     protected void doStep(PartitionedSearchStepScope<Solution_> stepScope) {
         Move<Solution_> nextStep = stepScope.getStep();
-        nextStep.doMove(stepScope.getScoreDirector());
+        nextStep.doMoveOnly(stepScope.getScoreDirector());
         calculateWorkingStepScore(stepScope, nextStep);
         solver.getBestSolutionRecaller().processWorkingSolutionDuringStep(stepScope);
     }

@@ -94,8 +94,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
 
     private void doStep(ConstructionHeuristicStepScope<Solution_> stepScope) {
         Move<Solution_> step = stepScope.getStep();
-        Move<Solution_> undoStep = step.doMove(stepScope.getScoreDirector());
-        stepScope.setUndoStep(undoStep);
+        step.doMoveOnly(stepScope.getScoreDirector());
         predictWorkingStepScore(stepScope, step);
         solver.getBestSolutionRecaller().processWorkingSolutionDuringConstructionHeuristicsStep(stepScope);
     }

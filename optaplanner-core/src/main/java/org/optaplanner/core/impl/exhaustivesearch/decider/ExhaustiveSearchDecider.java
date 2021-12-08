@@ -150,7 +150,7 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
         Move<Solution_> undoMove = move.doMove(scoreDirector);
         moveNode.setUndoMove(undoMove);
         processMove(stepScope, moveNode);
-        undoMove.doMove(scoreDirector);
+        undoMove.doMoveOnly(scoreDirector);
         if (assertExpectedUndoMoveScore) {
             // In BRUTE_FORCE a stepScore can be null because it was not calculated
             if (stepScope.getStartingStepScore() != null) {

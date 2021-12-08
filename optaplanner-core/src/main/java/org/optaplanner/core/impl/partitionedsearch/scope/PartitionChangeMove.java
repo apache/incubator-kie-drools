@@ -98,9 +98,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     protected PartitionChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        // HACK Creating an undoMove is a waste of time because it is never used,
-        // but this method is called anyway so it returns null to fail fast if it is used
-        return null;
+        throw new UnsupportedOperationException("Impossible state: undo move should not be called.");
     }
 
     @Override

@@ -117,7 +117,7 @@ public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implement
                     stepIndex = applyStepOperation.getStepIndex();
                     Move<Solution_> step = applyStepOperation.getStep().rebase(scoreDirector);
                     Score_ score = applyStepOperation.getScore();
-                    step.doMove(scoreDirector);
+                    step.doMoveOnly(scoreDirector);
                     predictWorkingStepScore(step, score);
                     lastStepScore = score;
                     LOGGER.trace("{}            Move thread ({}) step: step index ({}), score ({}).",

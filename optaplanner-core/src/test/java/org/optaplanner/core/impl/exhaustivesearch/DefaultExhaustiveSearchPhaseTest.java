@@ -100,19 +100,19 @@ public class DefaultExhaustiveSearchPhaseTest {
         phase.restoreWorkingSolution(stepScope);
 
         verify(node0.getMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node0.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
+        verify(node0.getUndoMove(), times(0)).doMoveOnly(any(ScoreDirector.class));
         verify(node1.getMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node1.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
+        verify(node1.getUndoMove(), times(0)).doMoveOnly(any(ScoreDirector.class));
         verify(node2A.getMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node2A.getUndoMove(), times(1)).doMove(scoreDirector);
+        verify(node2A.getUndoMove(), times(1)).doMoveOnly(scoreDirector);
         verify(node3A.getMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node3A.getUndoMove(), times(1)).doMove(scoreDirector);
-        verify(node2B.getMove(), times(1)).doMove(scoreDirector);
-        verify(node2B.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node3B.getMove(), times(1)).doMove(scoreDirector);
-        verify(node3B.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node4B.getMove(), times(1)).doMove(scoreDirector);
-        verify(node4B.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
+        verify(node3A.getUndoMove(), times(1)).doMoveOnly(scoreDirector);
+        verify(node2B.getMove(), times(1)).doMoveOnly(scoreDirector);
+        verify(node2B.getUndoMove(), times(0)).doMoveOnly(any(ScoreDirector.class));
+        verify(node3B.getMove(), times(1)).doMoveOnly(scoreDirector);
+        verify(node3B.getUndoMove(), times(0)).doMoveOnly(any(ScoreDirector.class));
+        verify(node4B.getMove(), times(1)).doMoveOnly(scoreDirector);
+        verify(node4B.getUndoMove(), times(0)).doMoveOnly(any(ScoreDirector.class));
         // TODO FIXME
         // verify(workingSolution).setScore(newScore);
     }

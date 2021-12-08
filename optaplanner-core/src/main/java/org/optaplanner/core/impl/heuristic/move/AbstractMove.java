@@ -33,9 +33,14 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
     @Override
     public final AbstractMove<Solution_> doMove(ScoreDirector<Solution_> scoreDirector) {
         AbstractMove<Solution_> undoMove = createUndoMove(scoreDirector);
+        doMoveOnly(scoreDirector);
+        return undoMove;
+    }
+
+    @Override
+    public final void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
         doMoveOnGenuineVariables(scoreDirector);
         scoreDirector.triggerVariableListeners();
-        return undoMove;
     }
 
     /**
@@ -48,8 +53,8 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
     protected abstract AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector);
 
     /**
-     * Like {@link #doMove(ScoreDirector)} but without the {@link ScoreDirector#triggerVariableListeners()} call
-     * (because {@link #doMove(ScoreDirector)} already does that).
+     * Like {@link #doMoveOnly(ScoreDirector)} but without the {@link ScoreDirector#triggerVariableListeners()} call
+     * (because {@link #doMoveOnly(ScoreDirector)} already does that).
      *
      * @param scoreDirector never null
      */

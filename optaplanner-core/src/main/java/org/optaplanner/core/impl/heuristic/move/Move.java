@@ -88,6 +88,17 @@ public interface Move<Solution_> {
     Move<Solution_> doMove(ScoreDirector<Solution_> scoreDirector);
 
     /**
+     * As defined by {@link #doMove(ScoreDirector)}, but does not return an undo move.
+     *
+     * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes
+     */
+    default void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
+        // For backwards compatibility, this method is default and calls doMove(...).
+        // Normally, the relationship is inversed, as implemented in AbstractMove.
+        doMove(scoreDirector);
+    }
+
+    /**
      * Rebases a move from an origin {@link ScoreDirector} to another destination {@link ScoreDirector}
      * which is usually on another {@link Thread} or JVM.
      * The new move returned by this method translates the entities and problem facts

@@ -348,7 +348,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
             return;
         }
         LOGGER.info("Doing user move ({}).", move);
-        move.doMove(guiScoreDirector);
+        move.doMoveOnly(guiScoreDirector);
         guiScoreDirector.calculateScore();
     }
 

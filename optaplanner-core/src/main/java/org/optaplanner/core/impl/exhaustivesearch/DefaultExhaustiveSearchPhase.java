@@ -187,7 +187,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         Collections.reverse(newMoveList);
         restoreMoveList.addAll(newMoveList);
         InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
-        restoreMoveList.forEach(restoreMove -> restoreMove.doMove(scoreDirector));
+        restoreMoveList.forEach(restoreMove -> restoreMove.doMoveOnly(scoreDirector));
         // There is no need to recalculate the score, but we still need to set it
         phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getStartingStepScore());
         if (assertWorkingSolutionScoreFromScratch) {
