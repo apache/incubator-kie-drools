@@ -189,7 +189,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
             final List<String> executionIds = new ArrayList<>();
             final int expectedExecutions = KOGITO_SERVICE_PAYLOADS.size();
 
-            // Invoke Decision endpoint to generate LIME explanations
+            LOGGER.info("Invoke Decision endpoint to generate LIME explanations...");
             KOGITO_SERVICE_PAYLOADS.forEach(json -> given()
                     .port(kogitoService.getFirstMappedPort())
                     .contentType("application/json")
@@ -197,7 +197,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                     .when().post("/Traffic Violation")
                     .then().statusCode(200));
 
-            // Check Decisions executed and LIME explanations generated
+            LOGGER.info("Check Decisions executed...");
             await()
                     .atLeast(5, SECONDS)
                     .atMost(30, SECONDS)
@@ -211,13 +211,16 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                                 .extract().as(ExecutionsResponse.class);
 
                         assertSame(expectedExecutions, executionsResponse.getHeaders().size());
+                        executionsResponse.getHeaders().forEach(h -> executionIds.add(h.getExecutionId()));
+                    });
 
-                        executionsResponse.getHeaders().forEach(execution -> {
-                            String executionId = execution.getExecutionId();
-                            executionIds.add(executionId);
-
-                            assertNotNull(executionId);
-
+            LOGGER.info("Check LIME explanations generated...");
+            await()
+                    .atLeast(5, SECONDS)
+                    .atMost(60, SECONDS)
+                    .with().pollInterval(5, SECONDS)
+                    .untilAsserted(() -> {
+                        executionIds.forEach(executionId -> {
                             SalienciesResponse salienciesResponse = given()
                                     .port(trustyService.getFirstMappedPort())
                                     .auth().oauth2(accessToken)
@@ -229,16 +232,16 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                         });
                     });
 
-            // Request Counterfactuals for each execution and check responses generated
+            LOGGER.info("Request Counterfactuals for each execution and check responses generated...");
             executionIds.forEach(executionId -> {
                 await()
                         .atLeast(500, MILLISECONDS)
-                        .atMost(1, SECONDS)
+                        .atMost(60, SECONDS)
                         .with().pollInterval(500, MILLISECONDS)
                         .until(doCounterfactualRequests(trustyService, accessToken, executionId));
                 await()
                         .atLeast(500, MILLISECONDS)
-                        .atMost(1, SECONDS)
+                        .atMost(60, SECONDS)
                         .with().pollInterval(500, MILLISECONDS)
                         .until(doCounterfactualResponses(trustyService, accessToken, executionId));
             });
@@ -248,7 +251,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
     private Callable<Boolean> doCounterfactualRequests(final InfinispanTrustyServiceContainer trustyService,
             final String accessToken,
             final String executionId) {
-        //Decision's Inputs
+        LOGGER.info(String.format("Reading Decision [%s]'s Inputs...", executionId));
         DecisionStructuredInputsResponse inputs = given()
                 .port(trustyService.getFirstMappedPort())
                 .auth().oauth2(accessToken)
@@ -256,7 +259,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                 .then().statusCode(200)
                 .extract().as(DecisionStructuredInputsResponse.class);
 
-        //Decision's Outcomes
+        LOGGER.info(String.format("Reading Decision [%s]'s Outputs...", executionId));
         DecisionOutcomesResponse outcomes = given()
                 .port(trustyService.getFirstMappedPort())
                 .auth().oauth2(accessToken)
@@ -284,9 +287,10 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                 //Swallow
             }
         });
-        LOGGER.info(sb.toString());
+        LOGGER.debug(sb.toString());
 
         return () -> {
+            LOGGER.info(String.format("Checking Decision [%s]'s Counterfactual request was successful...", executionId));
             // The Goals and Search Domain structures must match those of the original decision
             // See https://issues.redhat.com/browse/FAI-486
             CounterfactualRequestResponse counterfactualRequestResponse = given()
@@ -348,6 +352,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
             final String accessToken,
             final String executionId) {
         return () -> {
+            LOGGER.info(String.format("Checking Decision [%s] has only one Counterfactual request...", executionId));
             // Get all counterfactual requests for an execution
             List<CounterfactualRequestResponse> counterfactualRequests = Arrays.asList(given()
                     .port(trustyService.getFirstMappedPort())
@@ -365,6 +370,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
             // Verify there are counterfactual results available
             String counterfactualId = counterfactualRequests.get(0).getCounterfactualId();
 
+            LOGGER.info(String.format("Checking Decision [%s] Counterfactual results exist...", executionId));
             CounterfactualResultsResponse details = given()
                     .port(trustyService.getFirstMappedPort())
                     .auth().oauth2(accessToken)

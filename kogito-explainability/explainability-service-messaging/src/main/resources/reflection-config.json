@@ -45,15 +45,6 @@
     "allPublicFields" : true
   },
   {
-    "name": "org.kie.kogito.explainability.api.CounterfactualDomainFixed",
-    "allDeclaredConstructors" : true,
-    "allPublicConstructors" : true,
-    "allDeclaredMethods" : true,
-    "allPublicMethods" : true,
-    "allDeclaredFields" : true,
-    "allPublicFields" : true
-  },
-  {
     "name": "org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
@@ -108,6 +99,15 @@
     "allPublicFields" : true
   },
   {
+    "name": "org.kie.kogito.explainability.api.NamedTypedValue",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
     "name": "org.kie.kogito.explainability.api.ExplainabilityStatus",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
@@ -154,6 +154,24 @@
   },
   {
     "name": "org.kie.kogito.explainability.api.ModelIdentifier",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
+    "name" : "org.kie.kogito.tracing.typedvalue.BaseTypedValue",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
+    "name" : "org.kie.kogito.tracing.typedvalue.BaseTypedValue$Kind",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,

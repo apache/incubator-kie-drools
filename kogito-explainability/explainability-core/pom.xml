@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
+      <artifactId>optaplanner-quarkus</artifactId>
     </dependency>
 
     <dependency>

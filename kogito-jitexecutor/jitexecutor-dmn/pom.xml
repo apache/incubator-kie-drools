@@ -62,7 +62,7 @@
         <!-- Counterfactual explaination is not supported so excluding optaplanner to avoid undesired dependencies (e.g. drools-core-dynamic) -->
         <exclusion>
           <groupId>org.optaplanner</groupId>
-          <artifactId>optaplanner-core</artifactId>
+          <artifactId>optaplanner-quarkus</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
