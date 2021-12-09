@@ -17,6 +17,8 @@
 package org.drools.core.time;
 
 import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
+import org.drools.wiring.api.ComponentsFactory;
 
 public class TimerServiceFactory {
 
@@ -24,7 +26,7 @@ public class TimerServiceFactory {
         TimerService service;
         switch (config.getClockType()) {
             case REALTIME_CLOCK:
-                service = config.newTimerService();
+                service = newTimerService((SessionConfigurationImpl) config);
                 break;
             case PSEUDO_CLOCK:
                 service = (TimerService) config.getClockType().createInstance();
@@ -34,5 +36,13 @@ public class TimerServiceFactory {
         }
         service.setTimerJobFactoryManager(config.getTimerJobFactoryManager());
         return service;
+    }
+
+    private static TimerService newTimerService(SessionConfigurationImpl config) {
+        String className = config.getPropertyValue("drools.timerService", "org.drools.core.time.impl.JDKTimerService");
+        if (className == null) {
+            return null;
+        }
+        return (TimerService) ComponentsFactory.createTimerService(className);
     }
 }
