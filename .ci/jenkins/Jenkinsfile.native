@@ -122,7 +122,7 @@ pipeline {
 }
 
 void sendNotification() {
-    emailext body: "**${NOTIFICATION_JOB_NAME}** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
+    emailext body: "**${NOTIFICATION_JOB_NAME}** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\n@*optaplanner-team* Please look here: ${BUILD_URL}",
              subject: "[${params.BUILD_BRANCH_NAME}] Optaplanner",
              to: env.KOGITO_CI_EMAIL_TO
 }

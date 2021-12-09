@@ -72,7 +72,7 @@ String getGitAuthor() {
 void sendEmail() {
     echo 'Sending a summary email.'
     String body = """OptaPlanner turtle tests build #${BUILD_NUMBER} was: ${currentBuild.currentResult}.
-        \nPlease have a look here: ${env.BUILD_URL}."""
+        \n@*optaplanner-team* Please have a look here: ${env.BUILD_URL}."""
     echo body
     emailext(body: body, subject: 'OptaPlanner turtle tests', to: env.OPTAPLANNER_CI_EMAIL)
 }
