@@ -28,16 +28,14 @@ import io.serverlessworkflow.api.states.ParallelState;
 
 public class ParallelHandler extends StateHandler<ParallelState> {
 
-    private JoinFactory<?> connectionNode;
-
     protected ParallelHandler(ParallelState state, Workflow workflow, ParserContext parserContext) {
         super(state, workflow, parserContext);
     }
 
     @Override
-    public SplitFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+    public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         SplitFactory<?> nodeFactory = factory.splitNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_START_NAME).type(Split.TYPE_AND);
-        connectionNode = factory.joinNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_END_NAME).type(Split.TYPE_AND);
+        JoinFactory<?> connectionNode = factory.joinNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_END_NAME).type(Split.TYPE_AND);
         for (Branch branch : state.getBranches()) {
             long branchId = parserContext.newId();
             if (branch.getWorkflowId() == null || branch.getWorkflowId().isEmpty()) {
@@ -46,12 +44,7 @@ public class ParallelHandler extends StateHandler<ParallelState> {
             ServerlessWorkflowParser.subprocessNode(factory.subProcessNode(branchId).name(branch.getName()).processId(branch
                     .getWorkflowId()).waitForCompletion(true)).done().connection(nodeFactory.getNode().getId(), branchId).connection(branchId, connectionNode.getNode().getId());
         }
-        return nodeFactory;
-    }
-
-    @Override
-    public JoinFactory<?> getOutgoingNode() {
-        return connectionNode;
+        return new MakeNodeResult(nodeFactory, connectionNode);
     }
 
     @Override

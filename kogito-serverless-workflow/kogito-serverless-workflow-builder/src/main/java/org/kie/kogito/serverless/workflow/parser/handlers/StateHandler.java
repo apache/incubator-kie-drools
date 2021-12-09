@@ -35,10 +35,12 @@ import org.jbpm.workflow.core.node.Join;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.error.Error;
+import io.serverlessworkflow.api.filters.StateDataFilter;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.transitions.Transition;
@@ -53,6 +55,8 @@ public abstract class StateHandler<S extends State> {
     private EndNodeFactory<?> endNodeFactory;
 
     private NodeFactory<?, ?> node;
+    private NodeFactory<?, ?> outgoingNode;
+
     private JoinFactory<?> join;
     private List<Long> incomingConnections = new ArrayList<>();
 
@@ -98,7 +102,7 @@ public abstract class StateHandler<S extends State> {
         long eventCompensationId = parserContext.newId();
         long subprocessCompensationId = parserContext.newId();
         long startCompensationId = parserContext.newId();
-        String uniqueId = (String) getOutgoingNode().getNode().getMetaData().get(Metadata.UNIQUE_ID);
+        String uniqueId = (String) outgoingNode.getNode().getMetaData().get(Metadata.UNIQUE_ID);
         factory.boundaryEventNode(eventCompensationId).addCompensationHandler(uniqueId).attachedTo(uniqueId).eventType("Compensation").metaData(Metadata.EVENT_TYPE, "compensation");
         CompositeContextNodeFactory<?> embeddedSubProcess =
                 factory.compositeContextNode(subprocessCompensationId).autoComplete(true).metaData("isForCompensation", true).startNode(startCompensationId).interrupting(true).done();
@@ -136,13 +140,38 @@ public abstract class StateHandler<S extends State> {
     }
 
     protected void handleState(RuleFlowNodeContainerFactory<?, ?> factory) {
-        node = makeNode(factory);
-        connectStart(factory);
-        connectEnd(factory);
+        MakeNodeResult result = makeNode(factory);
+        node = result.getIncomingNode();
+        outgoingNode = result.getOutgoingNode();
         if (state.getCompensatedBy() != null) {
             handleCompensation(factory);
         }
         node.done();
+        StateDataFilter stateFilter = state.getStateDataFilter();
+        if (stateFilter != null) {
+            String input = stateFilter.getInput();
+
+            if (input != null) {
+                ActionNodeFactory<?> actionNode = handleStateFilter(factory, input);
+                factory.connection(actionNode.getNode().getId(), node.getNode().getId());
+                node = actionNode;
+            }
+            String output = stateFilter.getOutput();
+            if (output != null) {
+                ActionNodeFactory<?> actionNode = handleStateFilter(factory, output);
+                factory.connection(outgoingNode.getNode().getId(), actionNode.getNode().getId());
+                outgoingNode = actionNode;
+            }
+        }
+        connectStart(factory);
+        connectEnd(factory);
+    }
+
+    private ActionNodeFactory<?> handleStateFilter(RuleFlowNodeContainerFactory<?, ?> factory, String filter) {
+        ActionNodeFactory<?> result =
+                factory.actionNode(parserContext.newId()).action(new ExpressionActionSupplier(workflow.getExpressionLang(), filter, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR));
+        result.done();
+        return result;
     }
 
     public void connect(RuleFlowNodeContainerFactory<?, ?> factory, long sourceId) {
@@ -181,7 +210,7 @@ public abstract class StateHandler<S extends State> {
     }
 
     public void handleTransitions() {
-        handleTransitions(parserContext.factory(), state.getTransition(), getOutgoingNode().getNode().getId());
+        handleTransitions(parserContext.factory(), state.getTransition(), outgoingNode.getNode().getId());
     }
 
     protected void handleTransitions(RuleFlowNodeContainerFactory<?, ?> factory,
@@ -196,26 +225,22 @@ public abstract class StateHandler<S extends State> {
         }
     }
 
-    protected void connectEnd(RuleFlowNodeContainerFactory<?, ?> factory) {
+    private void connectEnd(RuleFlowNodeContainerFactory<?, ?> factory) {
         if (endNodeFactory != null) {
             if (state.getEnd().isCompensate()) {
-                endNodeFactory.done().connection(compensationEvent(factory, getOutgoingNode().getNode().getId()), endNodeFactory.getNode().getId());
+                endNodeFactory.done().connection(compensationEvent(factory, outgoingNode.getNode().getId()), endNodeFactory.getNode().getId());
             } else {
-                factory.connection(getOutgoingNode().getNode().getId(), endNodeFactory.getNode().getId());
+                factory.connection(outgoingNode.getNode().getId(), endNodeFactory.getNode().getId());
             }
         }
     }
 
-    public NodeFactory<?, ?> getNode() {
+    public final NodeFactory<?, ?> getNode() {
         return node;
     }
 
     public S getState() {
         return state;
-    }
-
-    public NodeFactory<?, ?> getOutgoingNode() {
-        return getNode();
     }
 
     public NodeFactory<?, ?> getIncomingNode(RuleFlowNodeContainerFactory<?, ?> factory) {
@@ -231,7 +256,7 @@ public abstract class StateHandler<S extends State> {
         }
     }
 
-    protected abstract NodeFactory<?, ?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory);
+    protected abstract MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory);
 
     protected final void handleTransition(RuleFlowNodeContainerFactory<?, ?> factory,
             Transition transition,

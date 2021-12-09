@@ -26,6 +26,10 @@ public class ExpressionActionSupplier extends ExpressionAction implements Suppli
 
     private final String[] varArgs;
 
+    public ExpressionActionSupplier(String lang, String expr) {
+        this(lang, expr, null);
+    }
+
     public ExpressionActionSupplier(String lang, String expr, String outputVar, String... addVars) {
         super(lang, expr, outputVar, addVars);
         this.varArgs = SWFSupplierUtils.getVarArgs(lang, expr, outputVar, addVars);

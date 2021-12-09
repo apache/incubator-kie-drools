@@ -16,7 +16,6 @@
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 
 import io.serverlessworkflow.api.Workflow;
@@ -34,7 +33,7 @@ public class OperationHandler extends CompositeContextNodeHandler<OperationState
     }
 
     @Override
-    public CompositeContextNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        return handleActions(makeCompositeNode(factory), state.getActions());
+    public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        return new MakeNodeResult(handleActions(makeCompositeNode(factory), state.getActions()));
     }
 }

@@ -16,7 +16,6 @@
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 
@@ -35,9 +34,9 @@ public class SubflowHandler extends StateHandler<SubflowState> {
     }
 
     @Override
-    public SubProcessNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        return ServerlessWorkflowParser.subprocessNode(factory.subProcessNode(parserContext.newId()).name(state.getName()).processId(state
-                .getWorkflowId()).waitForCompletion(state.isWaitForCompletion()));
+    public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+        return new MakeNodeResult(ServerlessWorkflowParser.subprocessNode(factory.subProcessNode(parserContext.newId()).name(state.getName()).processId(state
+                .getWorkflowId()).waitForCompletion(state.isWaitForCompletion())));
     }
 
 }

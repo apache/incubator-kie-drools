@@ -37,13 +37,13 @@ public class InjectHandler extends StateHandler<InjectState> {
     }
 
     @Override
-    public ActionNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+    public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         ActionNodeFactory<?> actionNodeFactory = factory.actionNode(parserContext.newId()).name(state.getName());
         JsonNode node = state.getData();
         if (node != null) {
             actionNodeFactory.action(new InjectActionSupplier(node));
         }
-        return actionNodeFactory;
+        return new MakeNodeResult(actionNodeFactory);
     }
 
 }

@@ -53,7 +53,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
     }
 
     @Override
-    public SplitFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+    public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         long id = parserContext.newId();
         SplitFactory<?> splitFactory = factory.splitNode(id).name(state.getName());
         // check if data-based or event-based switch state
@@ -64,7 +64,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
             splitFactory.metaData("UniqueId", Long.toString(id));
             splitFactory.metaData("EventBased", "true");
         }
-        return splitFactory;
+        return new MakeNodeResult(splitFactory);
     }
 
     @Override

@@ -46,7 +46,7 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
     }
 
     @Override
-    public CompositeContextNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+    public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         OnEvents onEvent = state.getOnEvents().get(0);
         CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), onEvent.getActions());
         List<String> onEventRefs = onEvent.getEventRefs();
@@ -61,7 +61,7 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
                         startFactory.getNode().getId());
             }
         }
-        return embeddedSubProcess;
+        return new MakeNodeResult(embeddedSubProcess);
     }
 
     @Override

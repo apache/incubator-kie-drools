@@ -38,7 +38,7 @@ public class ForEachStateHandler extends CompositeContextNodeHandler<ForEachStat
     }
 
     @Override
-    protected ForEachNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+    protected MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         ForEachNodeFactory<?> result =
                 factory.forEachNode(parserContext.newId()).sequential(false).waitForCompletion(true).expressionLanguage(workflow.getExpressionLang()).collectionExpression(state.getInputCollection())
                         .outputVariable(outputVarName, new ObjectDataType())
@@ -52,7 +52,7 @@ public class ForEachStateHandler extends CompositeContextNodeHandler<ForEachStat
         if (state.getOutputCollection() != null) {
             result.completionAction(new ForEachCollectorActionSupplier(workflow.getExpressionLang(), state.getOutputCollection()));
         }
-        return result;
+        return new MakeNodeResult(result);
     }
 
     @Override

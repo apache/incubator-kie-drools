@@ -24,9 +24,6 @@ states:
   - name: UpdateArg
     type: operation
     actionMode: sequential
-    stateDataFilter:
-      input: "{{ $.trace }}"
-      output: "{{ $.trace }}"
     actions:
       - functionRef:
           refName: helloTwo

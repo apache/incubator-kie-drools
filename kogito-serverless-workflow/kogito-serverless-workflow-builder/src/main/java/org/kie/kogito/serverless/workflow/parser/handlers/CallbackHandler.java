@@ -37,7 +37,7 @@ public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> 
     }
 
     @Override
-    public CompositeContextNodeFactory<?> makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
+    public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         CompositeContextNodeFactory<?> embeddedSubProcess = factory.compositeContextNode(parserContext.newId()).name(state.getName()).autoComplete(true);
         NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart");
         NodeFactory<?, ?> currentNode;
@@ -52,6 +52,6 @@ public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> 
         long endId = parserContext.newId();
         embeddedSubProcess.endNode(endId).name("EmbeddedEnd").terminate(true).done().connection(currentNode
                 .getNode().getId(), endId);
-        return embeddedSubProcess;
+        return new MakeNodeResult(embeddedSubProcess);
     }
 }
