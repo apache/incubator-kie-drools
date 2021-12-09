@@ -53,7 +53,7 @@ public final class BuilderResultUtils {
             final CompilationProblem[] problem = (CompilationProblem[]) object;
             for (CompilationProblem aProblem : problem) {
                 builder.append("\t")
-                       .append(aProblem)
+                       .append(aProblem.getMessage())
                        .append("\n");
             }
         } else if (object != null) {

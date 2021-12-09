@@ -62,4 +62,9 @@ public class MvelCompilationError implements CompilationProblem {
     public String getMessage() {
         return exception.toString();
     }
+
+    @Override
+    public String toString() {
+        return getMessage();
+    }
 }

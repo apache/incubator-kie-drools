@@ -60,4 +60,9 @@ public class CompilationProblemAdapter implements org.kie.internal.jci.Compilati
     public String getMessage() {
         return delegate.getMessage();
     }
+
+    @Override
+    public String toString() {
+        return getMessage();
+    }
 }
