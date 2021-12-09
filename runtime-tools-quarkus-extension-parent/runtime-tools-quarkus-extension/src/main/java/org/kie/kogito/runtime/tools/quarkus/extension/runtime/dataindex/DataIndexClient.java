@@ -24,10 +24,14 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import static org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.DataIndexClient.DATA_INDEX_CONFIG_KEY;
+
 @Path("/graphql")
-@RegisterRestClient
+@RegisterRestClient(configKey = DATA_INDEX_CONFIG_KEY)
 @ApplicationScoped
 public interface DataIndexClient {
+
+    String DATA_INDEX_CONFIG_KEY = "kogito.data-index.url";
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

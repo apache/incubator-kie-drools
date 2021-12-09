@@ -34,7 +34,7 @@
       const devUI = RuntimeToolsDevUI.open({
           container: document.getElementById("envelope-app"),
           users: {info:userInfo.arrayRepresentation.raw},
-          dataIndexUrl: "{config:property('org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.DataIndexClient/mp-rest/url')}/graphql",
+          dataIndexUrl: "{config:property('kogito.data-index.url')}/graphql",
           page: "Forms"
       })
   </script>
