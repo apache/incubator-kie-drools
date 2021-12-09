@@ -24,14 +24,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.AsyncEventNodeInstance;
 import org.jbpm.workflow.core.node.ForEachNode;
@@ -44,7 +43,6 @@ import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.definition.process.Connection;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.SimpleValueResolver;
 import org.slf4j.Logger;
@@ -134,44 +132,6 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
         return getForEachNode().getCompositeNode();
     }
 
-    private <T> T evaluateExpression(ParsedExpression expression, Class<T> resultClass) {
-        Object context = getVariable((String) getForEachNode().getMetaData(Metadata.VARIABLE));
-        return expression.eval(context, resultClass);
-    }
-
-    private Collection<?> evaluateCollectionExpression() {
-        Object collection;
-        String collectionExpression = getForEachNode().getCollectionExpression();
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(
-                VariableScope.VARIABLE_SCOPE, collectionExpression);
-        if (variableScopeInstance != null) {
-            collection = variableScopeInstance.getVariable(collectionExpression);
-        } else if (getForEachNode().getEvaluateExpression() != null) {
-            collection = evaluateExpression(getForEachNode().getEvaluateExpression(), Collection.class);
-        } else {
-            try {
-                collection = MVELProcessHelper.evaluator().eval(collectionExpression, new NodeInstanceResolverFactory(
-                        this));
-            } catch (Throwable t) {
-                throw new IllegalArgumentException(
-                        "Could not find collection " + collectionExpression);
-            }
-        }
-        if (collection == null) {
-            return Collections.emptyList();
-        }
-        if (collection instanceof Collection<?>) {
-            return (Collection<?>) collection;
-        }
-        if (collection.getClass().isArray()) {
-            List<Object> list = new ArrayList<>();
-            Collections.addAll(list, (Object[]) collection);
-            return list;
-        }
-        throw new IllegalArgumentException(
-                "Unexpected collection type: " + collection.getClass());
-    }
-
     private boolean isSequential() {
         return getForEachNode().isSequential() || hasAsyncInstances;
     }
@@ -220,6 +180,40 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 }
             }
         }
+
+        private Collection<?> evaluateCollectionExpression() {
+            Object collection;
+            String collectionExpression = getForEachNode().getCollectionExpression();
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(
+                    VariableScope.VARIABLE_SCOPE, collectionExpression);
+            if (variableScopeInstance != null) {
+                collection = variableScopeInstance.getVariable(collectionExpression);
+            } else if (getForEachNode().getEvaluateExpression() != null) {
+                collection = getForEachNode().getEvaluateExpression().eval(getVariable((String) getForEachNode().getMetaData(Metadata.VARIABLE)), Collection.class);
+            } else {
+                try {
+                    collection = MVELProcessHelper.evaluator().eval(collectionExpression, new NodeInstanceResolverFactory(
+                            this));
+                } catch (Throwable t) {
+                    throw new IllegalArgumentException(
+                            "Could not find collection " + collectionExpression);
+                }
+            }
+            if (collection == null) {
+                return Collections.emptyList();
+            }
+            if (collection instanceof Collection<?>) {
+                return (Collection<?>) collection;
+            }
+            if (collection.getClass().isArray()) {
+                List<Object> list = new ArrayList<>();
+                Collections.addAll(list, (Object[]) collection);
+                return list;
+            }
+            throw new IllegalArgumentException(
+                    "Unexpected collection type: " + collection.getClass());
+        }
+
     }
 
     private boolean checkAsyncInstance(NodeInstance nodeInstance) {
@@ -291,9 +285,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                     setVariable(outputCollection, outputVariable);
                 } else if (outputAction != null) {
                     try {
-                        KogitoProcessContextImpl context = new KogitoProcessContextImpl(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime());
-                        context.setNodeInstance(this);
-                        outputAction.execute(context);
+                        outputAction.execute(ContextFactory.fromNode(this));
                     } catch (Exception e) {
                         throw new IllegalStateException(e);
                     }
@@ -334,7 +326,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                     Object result = MVELProcessHelper.evaluator().eval(expression,
                             new ForEachNodeInstanceResolverFactory(this, tempVariables));
                     if (!(result instanceof Boolean)) {
-                        throw new RuntimeException("Completion condition expression must return boolean values: " +
+                        throw new IllegalArgumentException("Completion condition expression must return boolean values: " +
                                 result + " for expression " + expression);
                     }
                     return ((Boolean) result).booleanValue();

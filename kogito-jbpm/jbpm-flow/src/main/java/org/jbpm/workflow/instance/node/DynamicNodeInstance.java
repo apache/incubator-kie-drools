@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.spi.KogitoProcessContextImpl;
+import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.event.process.ContextAwareEventListener;
@@ -74,15 +74,12 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     }
 
     private boolean canActivate() {
-        KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
-        context.setNodeInstance(this);
-        return getDynamicNode().canActivate(context);
+        return getDynamicNode().canActivate(ContextFactory.fromNode(this));
     }
 
     private boolean canComplete() {
-        KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
-        context.setNodeInstance(this);
-        return getNodeInstances(false).isEmpty() && getDynamicNode().canComplete(context);
+
+        return getNodeInstances(false).isEmpty() && getDynamicNode().canComplete(ContextFactory.fromNode(this));
     }
 
     private void addActivationListener() {

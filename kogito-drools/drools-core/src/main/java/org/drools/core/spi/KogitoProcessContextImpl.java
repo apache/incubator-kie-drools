@@ -22,12 +22,8 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class KogitoProcessContextImpl extends AbstractProcessContext implements KogitoProcessContext {
-
-    private static Logger logger = LoggerFactory.getLogger(KogitoProcessContextImpl.class);
 
     public KogitoProcessContextImpl(KieRuntime kruntime) {
         super(kruntime);

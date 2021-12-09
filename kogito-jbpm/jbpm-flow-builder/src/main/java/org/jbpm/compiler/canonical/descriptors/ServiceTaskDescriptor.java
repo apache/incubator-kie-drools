@@ -25,7 +25,9 @@ import java.util.Map;
 
 import org.jbpm.compiler.canonical.ReflectionUtils;
 import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -33,6 +35,7 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.PrimitiveType.Primitive;
@@ -106,15 +109,17 @@ public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
 
     @Override
     protected void handleParametersForServiceCall(final BlockStmt executeWorkItemBody, final MethodCallExpr callServiceMethod) {
-
         int i = 0;
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (String paramName : parameters.keySet()) {
-            MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(paramName));
             Class<?> clazz = parameterTypes[i++];
+            MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(paramName));
             callServiceMethod.addArgument(
                     new CastExpr(clazz.isPrimitive() ? new PrimitiveType(Primitive.valueOf(clazz.getCanonicalName().toUpperCase())) : parseClassOrInterfaceType(clazz.getCanonicalName()),
                             getParamMethod));
+        }
+        if (parameterTypes.length > i && KogitoProcessContext.class.isAssignableFrom(parameterTypes[i])) {
+            callServiceMethod.addArgument(new MethodCallExpr(new TypeExpr(parseClassOrInterfaceType(ContextFactory.class.getCanonicalName())), "fromItem").addArgument(new NameExpr("workItem")));
         }
     }
 

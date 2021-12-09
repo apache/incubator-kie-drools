@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,18 +73,23 @@ public class ReflectionUtils {
     private static Method fallbackMethod(Class<?> clazz, String methodName, Class<?>[] methodParameters) throws NoSuchMethodException {
         List<Method> candidates = new ArrayList<>();
         for (Method m : clazz.getMethods()) {
-            if (m.getName().equals(methodName) && m.getParameterCount() == methodParameters.length) {
-                Class<?>[] thisMethodParams = m.getParameterTypes();
-                boolean valid = true;
-                boolean potentiallyValid = true;
-                for (int i = 0; potentiallyValid && i < methodParameters.length; i++) {
-                    valid = isValid(thisMethodParams[i], methodParameters[i]);
-                    potentiallyValid = valid || methodParameters[i].equals(java.lang.Object.class);
-                }
-                if (valid) {
-                    return m;
-                } else if (potentiallyValid) {
-                    candidates.add(m);
+            if (m.getName().equals(methodName)) {
+                int diff = m.getParameterCount() - methodParameters.length;
+                if (diff == 0 || diff == 1) {
+                    Class<?>[] thisMethodParams = m.getParameterTypes();
+                    boolean valid = true;
+                    boolean potentiallyValid = true;
+                    for (int i = 0; potentiallyValid && i < methodParameters.length; i++) {
+                        valid = isValid(thisMethodParams[i], methodParameters[i]);
+                        potentiallyValid = valid || methodParameters[i].equals(java.lang.Object.class);
+                    }
+                    if (diff == 0 || isContext(m)) {
+                        if (valid) {
+                            return m;
+                        } else if (potentiallyValid) {
+                            candidates.add(m);
+                        }
+                    }
                 }
             }
         }
@@ -92,6 +98,14 @@ public class ReflectionUtils {
         } else {
             return candidates.get(0);
         }
+    }
+
+    private static boolean isContext(Method m) {
+        return checkExtraArg(m, KogitoProcessContext.class);
+    }
+
+    private static boolean checkExtraArg(Method m, Class<?> checkClass) {
+        return checkClass.isAssignableFrom(m.getParameterTypes()[m.getParameterCount() - 1]);
     }
 
     private static boolean isValid(Class<?> thisMethodParam, Class<?> methodParam) {

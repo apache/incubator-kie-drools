@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -40,6 +39,7 @@ import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
+import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -88,10 +88,12 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         this.id = id;
     }
 
+    @Override
     public long getId() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String getStringId() {
         return this.id;
     }
@@ -100,19 +102,23 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         this.nodeId = nodeId;
     }
 
+    @Override
     public long getNodeId() {
         return this.nodeId;
     }
 
+    @Override
     public String getNodeName() {
         org.kie.api.definition.process.Node node = getNode();
         return node == null ? "" : node.getName();
     }
 
+    @Override
     public String getNodeDefinitionId() {
         return (String) getNode().getMetaData().get(UNIQUE_ID);
     }
 
+    @Override
     public int getLevel() {
         return this.level;
     }
@@ -125,10 +131,12 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         this.processInstance = processInstance;
     }
 
+    @Override
     public WorkflowProcessInstance getProcessInstance() {
         return this.processInstance;
     }
 
+    @Override
     public KogitoNodeInstanceContainer getNodeInstanceContainer() {
         return this.nodeInstanceContainer;
     }
@@ -140,6 +148,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
 
+    @Override
     public org.kie.api.definition.process.Node getNode() {
         try {
             return ((org.jbpm.workflow.core.NodeContainer) this.nodeInstanceContainer.getNodeContainer()).internalGetNode(this.nodeId);
@@ -156,6 +165,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return false;
     }
 
+    @Override
     public void cancel() {
         leaveTime = new Date();
         boolean hidden = false;
@@ -176,6 +186,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
 
+    @Override
     public final void trigger(KogitoNodeInstance from, String type) {
         boolean hidden = false;
         if (getNode().getMetaData().get(HIDDEN) != null) {
@@ -232,10 +243,9 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
      * @param action An {@link Action} instance.
      */
     protected void executeAction(Action action) {
-        KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
-        context.setNodeInstance(this);
+
         try {
-            action.execute(context);
+            action.execute(ContextFactory.fromNode(this));
         } catch (Exception e) {
             String exceptionName = e.getClass().getName();
             ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
@@ -445,6 +455,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return ((NodeImpl) getNode()).resolveContext(contextId, param);
     }
 
+    @Override
     public ContextInstance resolveContextInstance(String contextId, Object param) {
         Context context = resolveContext(contextId, param);
         if (context == null) {
@@ -489,6 +500,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
 
+    @Override
     public Object getVariable(String variableName) {
         VariableScopeInstance variableScope = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
         if (variableScope == null) {
@@ -497,6 +509,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return variableScope.getVariable(variableName);
     }
 
+    @Override
     public void setVariable(String variableName, Object value) {
         VariableScopeInstance variableScope = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
         if (variableScope == null) {
@@ -554,6 +567,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
 
+    @Override
     public void setDynamicParameters(Map<String, Object> dynamicParameters) {
         this.dynamicParameters = dynamicParameters;
     }
@@ -562,6 +576,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
     }
 
+    @Override
     public int getSlaCompliance() {
         return slaCompliance;
     }
@@ -570,6 +585,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         this.slaCompliance = slaCompliance;
     }
 
+    @Override
     public Date getSlaDueDate() {
         return slaDueDate;
     }
@@ -578,6 +594,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         this.slaDueDate = slaDueDate;
     }
 
+    @Override
     public String getSlaTimerId() {
         return slaTimerId;
     }
@@ -586,6 +603,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         this.slaTimerId = slaTimerId;
     }
 
+    @Override
     public Date getTriggerTime() {
         return triggerTime;
     }
@@ -594,6 +612,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         this.triggerTime = triggerTime;
     }
 
+    @Override
     public Date getLeaveTime() {
         return leaveTime;
     }

@@ -18,7 +18,6 @@ package org.jbpm.workflow.instance.node;
 import java.util.Date;
 import java.util.List;
 
-import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -42,6 +41,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
         return (ActionNode) getNode();
     }
 
+    @Override
     public void internalTrigger(KogitoNodeInstance from, String type) {
         triggerTime = new Date();
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
@@ -50,8 +50,6 @@ public class ActionNodeInstance extends NodeInstanceImpl {
         }
         Action action = (Action) getActionNode().getAction().getMetaData("Action");
         try {
-            KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
-            context.setNodeInstance(this);
             executeAction(action);
         } catch (WorkflowRuntimeException wre) {
             throw wre;

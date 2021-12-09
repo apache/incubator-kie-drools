@@ -17,8 +17,11 @@ package org.jbpm.compiler.canonical;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 
+import org.drools.core.spi.KogitoProcessContextImpl;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,6 +37,14 @@ public class ReflectionUtilsTest {
         @SuppressWarnings("unused")
         public Float primitiveType(String s, Float a) {
             return a;
+        }
+
+        public String getStringWithContext(String prefix, KogitoProcessContext context) {
+            return prefix + "-" + context.getVariable("boy");
+        }
+
+        public String getStringWithContext(KogitoProcessContext context) {
+            return (String) context.getVariable("boy");
         }
     }
 
@@ -54,6 +65,20 @@ public class ReflectionUtilsTest {
                         "primitiveType",
                         Arrays.asList("String", "Float"));
         assertEquals(Float.valueOf(2.0f), m.invoke(instance, "pepe", 2.0f));
+
+        KogitoProcessContext context = new KogitoProcessContextImpl(null) {
+            @Override
+            public Object getVariable(String variableName) {
+                return variableName;
+            }
+        };
+        m = ReflectionUtils.getMethod(Thread.currentThread().getContextClassLoader(),
+                ServiceExample.class, "getStringWithContext", Arrays.asList("String"));
+        assertEquals("dummy-boy", m.invoke(instance, "dummy", context));
+
+        m = ReflectionUtils.getMethod(Thread.currentThread().getContextClassLoader(),
+                ServiceExample.class, "getStringWithContext", Collections.emptyList());
+        assertEquals("boy", m.invoke(instance, context));
     }
 
 }
