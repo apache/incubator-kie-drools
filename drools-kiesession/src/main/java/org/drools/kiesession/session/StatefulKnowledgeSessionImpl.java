@@ -73,7 +73,6 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.impl.EntryPointsManager;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
@@ -101,10 +100,10 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -361,10 +360,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.kieBaseEventListeners = new ArrayList<>();
         this.lock = new ReentrantLock();
-
-        if (this.kBase.getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
-            this.timerService = createTimerService();
-        }
 
         this.lastIdleTimestamp = new AtomicLong(-1);
     }
@@ -1463,6 +1458,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public TimerService getTimerService() {
+        if (this.timerService == null) {
+            synchronized (this) {
+                if (this.timerService == null) {
+                    this.timerService = createTimerService();
+                }
+            }
+        }
+
         return this.timerService;
     }
 
