@@ -1474,17 +1474,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public SessionClock getSessionClock() {
-        return this.timerService != null ? (SessionClock) this.timerService : DummySessionClock.INSTANCE;
-    }
-
-    public static class DummySessionClock implements SessionClock {
-
-        private static final SessionClock INSTANCE = new DummySessionClock();
-
-        @Override
-        public long getCurrentTime() {
-            return 0;
-        }
+        return (SessionClock) getTimerService();
     }
 
     public void startBatchExecution() {
