@@ -64,6 +64,11 @@
     </dependency>
     <!-- TEST -->
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wiring-dynamic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
       <scope>test</scope>
