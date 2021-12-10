@@ -75,12 +75,15 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('kogito-runtimes')
+                        .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
                 }
             }
             post {
                 always {
                     script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
                         cleanContainers()
                     }
                 }
@@ -91,12 +94,15 @@ pipeline {
                 script {
                     getMavenCommand('integration-tests')
                         .withProfiles(['persistence'])
+                        .withProperty('maven.test.failure.ignore', true)
                         .run('clean verify')
                 }
             }
             post {
                 always {
                     script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
                         cleanContainers()
                     }
                 }
@@ -106,12 +112,15 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('optaplanner')
+                        .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
                 }
             }
             post {
                 always {
                     script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
                         cleanContainers()
                     }
                 }
@@ -121,12 +130,15 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('kogito-apps')
+                        .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
                 }
             }
             post {
                 always {
                     script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
                         cleanContainers()
                     }
                 }
@@ -136,12 +148,15 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('kogito-examples')
+                        .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
                 }
             }
             post {
                 always {
                     script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
                         cleanContainers()
                     }
                 }
@@ -152,12 +167,15 @@ pipeline {
                 script {
                     getMavenCommand('kogito-examples-persistence')
                             .withProfiles(['persistence'])
+                            .withProperty('maven.test.failure.ignore', true)
                             .run('clean verify')
                 }
             }
             post {
                 always {
                     script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
                         cleanContainers()
                     }
                 }
@@ -168,12 +186,15 @@ pipeline {
                 script {
                     getMavenCommand('kogito-examples-events')
                             .withProfiles(['events'])
+                            .withProperty('maven.test.failure.ignore', true)
                             .run('clean verify')
                 }
             }
             post {
                 always {
                     script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
                         cleanContainers()
                     }
                 }
@@ -184,11 +205,6 @@ pipeline {
         unsuccessful {
             sendNotification()
         }
-        always {
-            script {
-                junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
-            }
-        }
         cleanup {
             script {
                 util.cleanNode('docker')
@@ -198,9 +214,7 @@ pipeline {
 }
 
 void sendNotification() {
-    emailext body: "**Quarkus ${getQuarkusBranch()} job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
-            subject: "[${params.BUILD_BRANCH_NAME}] Kogito Runtimes",
-            to: env.KOGITO_CI_EMAIL_TO
+    mailer.sendZulipTestSummaryNotification("Quarkus ${getQuarkusBranch()}", "[${getBuildBranch()}] Kogito Runtimes", [env.KOGITO_CI_EMAIL_TO])
 }
 
 void checkoutRepo(String repoName, String dirName=repoName) {
