@@ -98,12 +98,15 @@ pipeline {
         stage('Build & Test') {
             steps {
                 script {
-                    getMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    getMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
                 }
             }
             post {
                 always {
-                    saveReports(params.SKIP_TESTS)
+                    script {
+                        saveReports()
+                        util.archiveConsoleLog()
+                    }
                 }
             }
         }
@@ -184,8 +187,8 @@ pipeline {
     }
 }
 
-void saveReports(boolean allowEmpty=false) {
-    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
+void saveReports() {
+    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
 }
 
 void checkoutRepo() {
@@ -210,9 +213,7 @@ void commitAndCreatePR() {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        emailext body: "**Deploy job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
-             subject: "[${getBuildBranch()}] Drools",
-             to: env.KOGITO_CI_EMAIL_TO
+        mailer.sendZulipTestSummaryNotification('Deploy', "[${getBuildBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }
