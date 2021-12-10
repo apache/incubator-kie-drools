@@ -44,7 +44,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      *     Provided ClassLoader, can be null and then ClassLoader defaults to Thread.currentThread().getContextClassLoader()
      * @return
      */
-    KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader... classLoader);
+    KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader classLoader);
 
     /**
      * DecisionTables need to take a configuration of the InputType and XLS based

@@ -51,13 +51,14 @@ public class StaticServiceRegistry implements ServiceRegistry {
         registerService("org.kie.api.io.KieResources", "org.drools.core.io.impl.ResourceFactoryServiceImpl", true);
         registerService("org.kie.api.concurrent.KieExecutors", "org.drools.core.concurrent.ExecutorProviderImpl", true);
         registerService("org.kie.api.KieServices", "org.drools.compiler.kie.builder.impl.KieServicesImpl", false);
-        registerService("org.kie.internal.builder.KnowledgeBuilderFactoryService", "org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl", true);
+        registerService("org.kie.internal.builder.KnowledgeBuilderFactoryService", "org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl", false);
         registerService("org.kie.api.internal.assembler.KieAssemblers", "org.drools.wiring.statics.StaticKieAssemblers", true);
         registerService("org.kie.api.internal.runtime.KieRuntimes", "org.kie.internal.services.KieRuntimesImpl", true);
         registerService("org.kie.api.internal.weaver.KieWeavers", "org.kie.internal.services.KieWeaversImpl", true);
 
-        registerService("org.drools.compiler.kie.builder.impl.InternalKieModuleProvider", "org.drools.modelcompiler.CanonicalKieModuleProvider", true);
+        registerService("org.drools.compiler.kie.builder.impl.InternalKieModuleProvider", "org.drools.modelcompiler.CanonicalKieModuleProvider", false);
         registerService("org.drools.compiler.compiler.DecisionTableProvider", "org.drools.decisiontable.DecisionTableProviderImpl", false);
+        registerService("org.drools.compiler.kie.builder.impl.KieBaseUpdaters", "org.drools.compiler.kie.builder.impl.KieBaseUpdatersImpl", false);
         registerService("org.drools.core.reteoo.RuntimeComponentFactory", "org.drools.kiesession.factory.RuntimeComponentFactoryImpl", false);
 
         registerService("org.drools.core.marshalling.impl.ProcessMarshallerFactoryService", "org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl", false);
@@ -70,6 +71,10 @@ public class StaticServiceRegistry implements ServiceRegistry {
         // pmml
         registerKieRuntimeService("org.kie.pmml.api.runtime.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService", false);
         registerKieWeaverService("org.kie.pmml.evaluator.assembler.PMMLWeaverService", false);
+
+        // dmn
+        registerKieRuntimeService("org.kie.dmn.api.core.DMNRuntime", "org.kie.dmn.core.runtime.DMNRuntimeService", false);
+        registerKieWeaverService("org.kie.dmn.core.weaver.DMNWeaverService", false);
 
         // marshalling
         registerService(org.kie.api.marshalling.KieMarshallers.class.getCanonicalName(), "org.drools.serialization.protobuf.MarshallerProviderImpl", false);

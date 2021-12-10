@@ -28,9 +28,18 @@ public class SimpleInstanceCreator {
 
     static Object instance(String className) {
         try {
-            return Class.forName(className).newInstance();
+            return Class.forName(className).getConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    static Object tryInstance(String className) {
+        try {
+            return Class.forName(className).getConstructor().newInstance();
+        } catch (Exception e) {
+            // ignore
+        }
+        return null;
     }
 }

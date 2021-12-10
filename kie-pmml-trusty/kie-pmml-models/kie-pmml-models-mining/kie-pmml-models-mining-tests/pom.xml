@@ -15,6 +15,11 @@
     <!-- TEST -->
     <!-- PMML -->
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wiring-dynamic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-mining-model</artifactId>
       <scope>test</scope>

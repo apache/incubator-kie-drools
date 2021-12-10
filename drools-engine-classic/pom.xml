@@ -38,6 +38,10 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wiring-dynamic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-kiesession</artifactId>
     </dependency>
     <dependency>

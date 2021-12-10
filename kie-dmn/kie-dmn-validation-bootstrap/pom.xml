@@ -42,6 +42,11 @@ This is not an user dependency, hence is not added to the boms</description>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wiring-dynamic</artifactId>
+    </dependency>
   </dependencies>
   
   <profiles>

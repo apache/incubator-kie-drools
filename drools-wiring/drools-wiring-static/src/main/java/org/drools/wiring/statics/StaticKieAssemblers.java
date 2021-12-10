@@ -28,6 +28,8 @@ import org.kie.api.io.ResourceWithConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.wiring.statics.SimpleInstanceCreator.tryInstance;
+
 public class StaticKieAssemblers implements KieAssemblers {
 
     private static final Logger log = LoggerFactory.getLogger(StaticKieAssemblers.class);
@@ -35,10 +37,8 @@ public class StaticKieAssemblers implements KieAssemblers {
     private Map<ResourceType, KieAssemblerService> assemblers = new HashMap<>();
 
     public StaticKieAssemblers() {
-        // insert here reflective instantiation to assembler services
-        // this is an ad-interim solution
-        // e.g. assemblers.put(ResourceType.DMN, (KieAssemblerService)
-        //         instance("org.kie.dmn.core.assembler.DMNAssemblerService"));
+        assemblers.put(ResourceType.DMN, (KieAssemblerService) tryInstance("org.kie.dmn.core.assembler.DMNAssemblerService"));
+        assemblers.put(ResourceType.PMML, (KieAssemblerService) tryInstance("org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService"));
     }
 
     @Override

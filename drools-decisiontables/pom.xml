@@ -64,6 +64,11 @@
       <artifactId>poi</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>commons-io</groupId>

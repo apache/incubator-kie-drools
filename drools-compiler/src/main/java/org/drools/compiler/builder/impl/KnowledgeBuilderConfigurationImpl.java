@@ -154,41 +154,31 @@ public class KnowledgeBuilderConfigurationImpl
 
      /**
      * Constructor that sets the parent class loader for the package being built/compiled
-     * @param classLoaders
      */
-    public KnowledgeBuilderConfigurationImpl(ClassLoader... classLoaders) {
-        init(null,
-                classLoaders);
+    public KnowledgeBuilderConfigurationImpl(ClassLoader classLoader) {
+        init(null, classLoader);
     }
 
     /**
      * Programmatic properties file, added with lease precedence
      */
     public KnowledgeBuilderConfigurationImpl(Properties properties) {
-        init(properties,
-                (ClassLoader[]) null);
+        init(properties, null);
     }
 
     /**
      * Programmatic properties file, added with lease precedence
      */
-    public KnowledgeBuilderConfigurationImpl(Properties properties,
-            ClassLoader... classLoaders) {
-        init(properties,
-                classLoaders);
+    public KnowledgeBuilderConfigurationImpl(Properties properties, ClassLoader classLoader) {
+        init(properties, classLoader);
     }
 
     public KnowledgeBuilderConfigurationImpl() {
-        init(null,
-                (ClassLoader[]) null);
+        init(null, null);
     }
 
-    private void init(Properties properties,
-            ClassLoader... classLoaders) {
-        if (classLoaders != null && classLoaders.length > 1) {
-            throw new RuntimeException("Multiple classloaders are no longer supported");
-        }
-        setClassLoader(classLoaders == null || classLoaders.length == 0 ? null : classLoaders[0]);
+    private void init(Properties properties, ClassLoader classLoader) {
+        this.classLoader = ProjectClassLoader.getClassLoader(classLoader, getClass(), isClassLoaderCacheEnabled());
         init(properties);
     }
 
@@ -438,13 +428,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     public ClassLoader getClassLoader() {
         return this.classLoader;
-    }
-
-    /** Use this to override the classLoader that will be used for the rules. */
-    private void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = ProjectClassLoader.getClassLoader(classLoader,
-                getClass(),
-                isClassLoaderCacheEnabled());
     }
 
     public void addSemanticModule(SemanticModule module) {

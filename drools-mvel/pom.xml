@@ -54,6 +54,10 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-wiring-dynamic</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.sun.xml.bind</groupId>

@@ -43,8 +43,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-dynamic</artifactId>
-      <scope>runtime</scope>
+      <artifactId>drools-wiring-static</artifactId>
     </dependency>
 
     <dependency>
