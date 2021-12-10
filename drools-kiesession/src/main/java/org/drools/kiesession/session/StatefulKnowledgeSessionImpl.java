@@ -73,7 +73,6 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.impl.EntryPointsManager;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
@@ -101,6 +100,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -200,7 +200,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private WorkItemManager workItemManager;
 
-    private TimerService timerService;
+    private volatile TimerService timerService;
 
     protected InternalFactHandle initialFactHandle;
 
@@ -305,6 +305,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                          final RuleEventListenerSupport ruleEventListenerSupport,
                                          final InternalAgenda agenda) {
         this.id = id;
+        this.kBase = kBase;
         this.handleFactory = handleFactory;
         this.ruleRuntimeEventSupport = workingMemoryEventSupport;
         this.agendaEventSupport = agendaEventSupport;
@@ -313,7 +314,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.propagationIdCounter = new AtomicLong(propagationContext);
         init( config, environment, propagationContext );
 
-        this.kBase = kBase;
         this.entryPointsManager = new EntryPointsManager(this);
 
         this.nodeMemories = new ConcurrentNodeMemories(kBase);
@@ -328,7 +328,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.sequential = conf.isSequential();
 
         if (initInitFactHandle) {
-            this.initialFactHandle = initInitialFact(kBase, null);
+            this.initialFactHandle = initInitialFact(null);
         }
     }
 
@@ -358,16 +358,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.globalResolver = new MapGlobalResolver();
         }
 
-        this.kieBaseEventListeners = new ArrayList<KieBaseEventListener>();
+        this.kieBaseEventListeners = new ArrayList<>();
         this.lock = new ReentrantLock();
 
-        this.timerService = createTimerService();
-
         this.lastIdleTimestamp = new AtomicLong(-1);
-    }
-
-    protected TimerService createTimerService() {
-        return TimerServiceFactory.getTimerService( this.config );
     }
 
     private void registerReceiveNodes( List<AsyncReceiveNode> nodes ) {
@@ -501,11 +495,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.kBase.removeEventListener(listener);
         }
 
-        if (processRuntime != null) {
+        if (this.processRuntime != null) {
             this.processRuntime.dispose();
         }
 
-        this.timerService.shutdown();
+        if (this.timerService != null) {
+            this.timerService.shutdown();
+        }
 
         if (this.workItemManager != null) {
             ((org.drools.core.process.instance.WorkItemManager)this.workItemManager).dispose();
@@ -593,7 +589,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    public InternalFactHandle initInitialFact(InternalKnowledgeBase kBase, MarshallerReaderContext context) {
+    public InternalFactHandle initInitialFact(MarshallerReaderContext context) {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
         InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
 
@@ -800,10 +796,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         in.readFully( bytes );
     }
 
-    public static class GlobalsAdapter
-            implements
-            GlobalResolver {
-        private Globals globals;
+    public static class GlobalsAdapter implements GlobalResolver {
+        private final Globals globals;
 
         public GlobalsAdapter(Globals globals) {
             this.globals = globals;
@@ -862,14 +856,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.entryPointsManager.reset();
 
-        this.timerService.reset();
+        if (this.timerService != null) {
+            this.timerService.reset();
+        }
 
         if (this.processRuntime != null) {
             this.processRuntime.dispose();
             this.processRuntime = null;
         }
 
-        this.initialFactHandle = initInitialFact(kBase, null);
+        this.initialFactHandle = initInitialFact(null);
     }
 
     public void reset(long handleId,
@@ -1436,7 +1432,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public WorkItemManager getWorkItemManager() {
         if (workItemManager == null) {
             workItemManager = config.getWorkItemManagerFactory().createWorkItemManager(this.getKnowledgeRuntime());
-            Map<String, Object> params = new HashMap<String, Object>();
+            Map<String, Object> params = new HashMap<>();
             params.put("ksession", this.getKnowledgeRuntime());
             Map<String, WorkItemHandler> workItemHandlers = config.getWorkItemHandlers(params);
             if (workItemHandlers != null) {
@@ -1462,11 +1458,23 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public TimerService getTimerService() {
+        if (this.timerService == null) {
+            synchronized (this) {
+                if (this.timerService == null) {
+                    this.timerService = createTimerService();
+                }
+            }
+        }
+
         return this.timerService;
     }
 
+    protected TimerService createTimerService() {
+        return TimerServiceFactory.getTimerService( this.config );
+    }
+
     public SessionClock getSessionClock() {
-        return (SessionClock) this.timerService;
+        return (SessionClock) getTimerService();
     }
 
     public void startBatchExecution() {
@@ -1491,7 +1499,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public Map<String, Channel> getChannels() {
-        if (channels == null) channels = new ConcurrentHashMap<String, Channel>();
+        if (channels == null) channels = new ConcurrentHashMap<>();
         return channels;
     }
 
@@ -1539,7 +1547,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void endOperation() {
         if ( getSessionConfiguration().isThreadSafe() && this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
-            this.lastIdleTimestamp.set(this.timerService.getCurrentTime());
+            if (this.timerService != null) {
+                this.lastIdleTimestamp.set(this.timerService.getCurrentTime());
+            }
             if (this.endOperationListener != null) {
                 this.endOperationListener.endOperation(this.getKnowledgeRuntime());
             }
@@ -1554,7 +1564,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      */
     public long getIdleTime() {
         long lastIdle = this.lastIdleTimestamp.get();
-        return lastIdle > -1 ? timerService.getCurrentTime() - lastIdle : -1;
+        return lastIdle > -1 && timerService != null ? timerService.getCurrentTime() - lastIdle : -1;
     }
 
     public long getLastIdleTimestamp() {
@@ -1575,7 +1585,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      *         there is no job scheduled
      */
     public long getTimeToNextJob() {
-        return this.timerService.getTimeToNextJob();
+        return getTimerService().getTimeToNextJob();
     }
 
     @Override

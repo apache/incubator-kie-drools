@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.core.process.instance.WorkItemManagerFactory;
-import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
@@ -104,8 +103,6 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
     public abstract String getSignalManagerFactory();
 
     public abstract ExecutableRunner getRunner( KieBase kbase, Environment environment );
-
-    public abstract TimerService newTimerService();
 
     public abstract QueryListenerOption getQueryListenerOption();
     public abstract void setQueryListenerOption( QueryListenerOption queryListener );

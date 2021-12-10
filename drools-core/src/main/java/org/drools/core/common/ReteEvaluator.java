@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -31,6 +32,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.TimerService;
+import org.drools.core.time.impl.TimerJobInstance;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -73,6 +75,11 @@ public interface ReteEvaluator {
     InternalFactHandle getFactHandle(Object object);
 
     TimerService getTimerService();
+
+    default Collection<TimerJobInstance> getTimerJobInstances(long id) {
+        TimerService timerService = getTimerService();
+        return timerService != null ? timerService.getTimerJobInstances(id) : Collections.emptyList();
+    }
 
     default void addPropagation(PropagationEntry propagationEntry) {
         addPropagation(propagationEntry, false);

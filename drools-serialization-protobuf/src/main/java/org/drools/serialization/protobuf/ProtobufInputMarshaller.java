@@ -243,7 +243,7 @@ public class ProtobufInputMarshaller {
         List<PropagationContext> pctxs = new ArrayList<PropagationContext>();
 
         if ( _session.getRuleData().hasInitialFact() ) {
-            session.setInitialFactHandle( session.initInitialFact(context.getKnowledgeBase(), context) );
+            session.setInitialFactHandle( session.initInitialFact(context) );
             context.getHandles().put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
         }
 
