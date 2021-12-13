@@ -57,7 +57,9 @@ pipeline {
             }
         }
         unsuccessful {
-            mailer.sendZulipTestSummaryNotification('SonarCloud', "[${getBuildBranch()}] Kogito Runtimes", [env.KOGITO_CI_EMAIL_TO])
+            script {
+                mailer.sendZulipTestSummaryNotification('SonarCloud', "[${params.BUILD_BRANCH_NAME}] Kogito Runtimes", [env.KOGITO_CI_EMAIL_TO])
+            }
         }
         cleanup {
             script {
