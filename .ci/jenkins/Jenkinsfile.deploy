@@ -121,7 +121,7 @@ pipeline {
         stage('Build OptaPlanner') {
             steps {
                 script {
-                    getOptaplannerMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    getOptaplannerMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
                     if (isRelease()) {
                         updateAntoraYaml(optaplannerRepository)
                     }
@@ -129,7 +129,10 @@ pipeline {
             }
             post {
                 always {
-                    archiveJUnitTestResults()
+                    script {
+                        archiveJUnitTestResults()
+                        util.archiveConsoleLog()
+                    }
                 }
             }
         }
@@ -137,12 +140,15 @@ pipeline {
         stage('Build Quickstarts') {
             steps {
                 script {
-                    getOptaplannerQuickstartsMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    getOptaplannerQuickstartsMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
                 }
             }
             post {
                 always {
-                    archiveJUnitTestResults()
+                    script {
+                        archiveJUnitTestResults()
+                        util.archiveConsoleLog()
+                    }
                 }
             }
         }
@@ -155,8 +161,11 @@ pipeline {
             }
             post {
                 always {
-                    archiveJUnitTestResults()
-                    archiveCypressArtifacts()
+                    script {
+                        archiveJUnitTestResults()
+                        archiveCypressArtifacts()
+                        util.archiveConsoleLog()
+                    }
                 }
             }
         }
@@ -169,8 +178,11 @@ pipeline {
             }
             post {
                 always {
-                    archiveJUnitTestResults()
-                    archiveCypressArtifacts()
+                    script {
+                        archiveJUnitTestResults()
+                        archiveCypressArtifacts()
+                        util.archiveConsoleLog()
+                    }
                 }
             }
         }
@@ -281,9 +293,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        emailext body: "**Deploy job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\n@*optaplanner-team* Please look here: ${BUILD_URL}",
-             subject: "[${getBuildBranch()}] Optaplanner",
-             to: env.KOGITO_CI_EMAIL_TO
+        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
     } else {
         echo 'No notification sent per configuration'
     }
@@ -294,7 +304,7 @@ void buildOptaweb(MavenCommand optawebCommand) {
     if (!skipIntegrationTests()) {
         buildCommand = buildCommand.withProfiles(getIntegrationTestProfiles())
     }
-    buildCommand.skipTests(params.SKIP_TESTS).run('clean install')
+    buildCommand.withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
 }
 
 void archiveCypressArtifacts() {
@@ -338,7 +348,7 @@ void gradleVersionsUpdate(String repo, String newVersion) {
 
 void archiveJUnitTestResults() {
     if (!skipUnitTests()) {
-        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: false
+        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
     }
 }
 

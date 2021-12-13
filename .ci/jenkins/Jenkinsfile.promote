@@ -332,9 +332,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        emailext body: "**Promote job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\n@*optaplanner-team* Please look here: ${BUILD_URL}",
-             subject: "[${getBuildBranch()}] Optaplanner",
-             to: env.KOGITO_CI_EMAIL_TO
+        mailer.sendMarkdownTestSummaryNotification('Promote', "[${getBuildBranch()}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
     } else {
         echo 'No notification sent per configuration'
     }

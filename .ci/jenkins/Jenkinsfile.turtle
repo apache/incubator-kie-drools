@@ -41,6 +41,7 @@ pipeline {
                             .withOptions(['-U', '-e', '-fae'])
                             .withProperty('full')
                             .withProperty('runTurtleTests', true)
+                            .withProperty('maven.test.failure.ignore', true)
                             .run('clean install')
                 }
             }
@@ -48,8 +49,13 @@ pipeline {
     }
     post {
         always {
-            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
-            sendEmail()
+            script {
+                junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                util.archiveConsoleLog()
+                sendEmail()
+            }
+        }
+        cleanup {
             cleanWs()
         }
     }
@@ -71,8 +77,5 @@ String getGitAuthor() {
 
 void sendEmail() {
     echo 'Sending a summary email.'
-    String body = """OptaPlanner turtle tests build #${BUILD_NUMBER} was: ${currentBuild.currentResult}.
-        \n@*optaplanner-team* Please have a look here: ${env.BUILD_URL}."""
-    echo body
-    emailext(body: body, subject: 'OptaPlanner turtle tests', to: env.OPTAPLANNER_CI_EMAIL)
+    mailer.sendMarkdownTestSummaryNotification('OptaPlanner turtle tests', 'OptaPlanner turtle tests', [env.OPTAPLANNER_CI_EMAIL], "cc @*optaplanner-team*")
 }

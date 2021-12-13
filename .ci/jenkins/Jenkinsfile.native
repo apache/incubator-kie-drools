@@ -68,12 +68,9 @@ pipeline {
         stage('Build optaplanner') {
             steps {
                 script {
-                    try {
-                        getNativeMavenCommand('optaplanner')
-                            .run('clean install')
-                    }catch(err) {
-                        unstable("optaplanner test not finish correctly")
-                    }
+                    getNativeMavenCommand('optaplanner')
+                        .withProperty('maven.test.failure.ignore', true)
+                        .run('clean install')
                 }
             }
             post {
@@ -87,12 +84,9 @@ pipeline {
         stage('Build optaplanner-quickstarts') {
             steps {
                 script {
-                    try {
-                        getNativeMavenCommand('optaplanner-quickstarts')
-                            .run('clean install')
-                    }catch(err) {
-                        unstable("optaplanner-quickstarts test not finish correctly")
-                    }
+                    getNativeMavenCommand('optaplanner-quickstarts')
+                        .withProperty('maven.test.failure.ignore', true)
+                        .run('clean install')
                 }
             }
             post {
@@ -105,13 +99,14 @@ pipeline {
         }
     }
     post {
-        unsuccessful {
-            sendNotification()
-        }
         always {
             script {
-                junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
+                junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                util.archiveConsoleLog()
             }
+        }
+        unsuccessful {
+            sendNotification()
         }
         cleanup {
             script {
@@ -122,9 +117,7 @@ pipeline {
 }
 
 void sendNotification() {
-    emailext body: "**${NOTIFICATION_JOB_NAME}** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\n@*optaplanner-team* Please look here: ${BUILD_URL}",
-             subject: "[${params.BUILD_BRANCH_NAME}] Optaplanner",
-             to: env.KOGITO_CI_EMAIL_TO
+    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${params.BUILD_BRANCH_NAME}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
 }
 
 void checkoutRuntimesRepo() {
