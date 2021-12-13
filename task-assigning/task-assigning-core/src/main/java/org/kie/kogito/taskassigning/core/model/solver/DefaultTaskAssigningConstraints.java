@@ -33,25 +33,25 @@ public class DefaultTaskAssigningConstraints {
     }
 
     public static Constraint requiredPotentialOwner(ConstraintFactory constraintFactory, Score<?> constraintWeight) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> !TaskAssigningConditions.userMeetsPotentialOwnerOrPlanningUserCondition(taskAssignment.getTask(), taskAssignment.getUser()))
                 .penalize("Required Potential Owner", constraintWeight);
     }
 
     public static Constraint requiredSkills(ConstraintFactory constraintFactory, Score<?> constraintWeight) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> !TaskAssigningConditions.userMeetsRequiredSkillsOrPlanningUserCondition(taskAssignment.getTask(), taskAssignment.getUser()))
                 .penalize("Required Skills", constraintWeight);
     }
 
     public static Constraint planningUserAssignment(ConstraintFactory constraintFactory, Score<?> constraintWeight) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> ModelConstants.IS_PLANNING_USER.test(taskAssignment.getUser().getId()))
                 .penalize("PlanningUser assignment", constraintWeight);
     }
 
     public static Constraint highLevelPriority(ConstraintFactory constraintFactory, Score<?> constraintWeight) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> PriorityHelper.isHighLevel(taskAssignment.getTask().getPriority()))
                 .penalize("High level priority",
                         constraintWeight,
@@ -59,7 +59,7 @@ public class DefaultTaskAssigningConstraints {
     }
 
     public static Constraint desiredAffinities(ConstraintFactory constraintFactory, Score<?> constraintWeight) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> taskAssignment.getUser().isEnabled())
                 .reward("Desired Affinities",
                         constraintWeight,
@@ -67,7 +67,7 @@ public class DefaultTaskAssigningConstraints {
     }
 
     public static Constraint minimizeMakespan(ConstraintFactory constraintFactory, Score<?> constraintWeight) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> taskAssignment.getNextElement() == null)
                 .penalize("Minimize makespan",
                         constraintWeight,
@@ -75,7 +75,7 @@ public class DefaultTaskAssigningConstraints {
     }
 
     public static Constraint mediumLevelPriority(ConstraintFactory constraintFactory, Score<?> constraintWeight) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> PriorityHelper.isMediumLevel(taskAssignment.getTask().getPriority()))
                 .penalize("Medium level priority",
                         constraintWeight,
@@ -83,7 +83,7 @@ public class DefaultTaskAssigningConstraints {
     }
 
     public static Constraint lowLevelPriority(ConstraintFactory constraintFactory, Score<?> constraintWeight) {
-        return constraintFactory.from(TaskAssignment.class)
+        return constraintFactory.forEach(TaskAssignment.class)
                 .filter(taskAssignment -> PriorityHelper.isLowLevel(taskAssignment.getTask().getPriority()))
                 .penalize("Low level priority",
                         constraintWeight,
