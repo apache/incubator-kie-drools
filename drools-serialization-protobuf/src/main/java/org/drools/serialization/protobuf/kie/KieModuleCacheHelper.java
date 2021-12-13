@@ -31,7 +31,9 @@ import org.drools.core.util.KeyStoreHelper;
 import org.drools.serialization.protobuf.kie.KieModuleCache.Header;
 
 public class KieModuleCacheHelper {
-    
+
+    private static KeyStoreHelper keyStoreHelper;
+
     public static void writeToStreamWithHeader( OutputStream stream,
                                                 Message payload ) throws IOException {
         KieModuleCache.Header.Builder _header = KieModuleCache.Header.newBuilder();
@@ -41,17 +43,17 @@ public class KieModuleCacheHelper {
                             .setVersionMinor( Drools.getMinorVersion() )
                             .setVersionRevision( Drools.getRevisionVersion() )
                             .build() );
-        
+
         byte[] buff = payload.toByteArray();
         sign( _header, buff );
         _header.setPayload( ByteString.copyFrom( buff ) );
 
         stream.write( _header.build().toByteArray() );
     }
-    
+
     private static void sign(KieModuleCache.Header.Builder _header,
                              byte[] buff ) {
-        KeyStoreHelper helper = new KeyStoreHelper();
+        KeyStoreHelper helper = getKeyStoreHelper();
         if (helper.isSigned()) {
             try {
                 _header.setSignature( KieModuleCache.Signature.newBuilder()
@@ -64,7 +66,7 @@ public class KieModuleCacheHelper {
             }
         }
     }
-    
+
     public static KieModuleCache.Header readFromStreamWithHeaderPreloaded( InputStream stream, ExtensionRegistry registry ) throws IOException, ClassNotFoundException {
         // we preload the stream into a byte[] to overcome a message size limit
         // imposed by protobuf as per https://issues.jboss.org/browse/DROOLS-25
@@ -76,7 +78,7 @@ public class KieModuleCacheHelper {
 
         return _header;
     }
-    
+
     /* Method that preloads the source stream into a byte array to bypass the message size limitations in Protobuf unmarshalling.
        (Protobuf does not enforce a message size limit when unmarshalling from a byte array)
     */
@@ -94,7 +96,7 @@ public class KieModuleCacheHelper {
 
     private static void checkSignature(Header _header,
                                        byte[] sessionbuff) {
-        KeyStoreHelper helper = new KeyStoreHelper();
+        KeyStoreHelper helper = getKeyStoreHelper();
         boolean signed = _header.hasSignature();
         if ( helper.isSigned() != signed ) {
             throw new RuntimeException( "This environment is configured to work with " +
@@ -128,27 +130,36 @@ public class KieModuleCacheHelper {
             }
         }
     }
-    
+
+
+    private static KeyStoreHelper getKeyStoreHelper() {
+        if (keyStoreHelper == null) {
+            keyStoreHelper = new KeyStoreHelper();
+        }
+        return keyStoreHelper;
+    }
+
+
     public static ExtensionRegistry buildRegistry() {
         ExtensionRegistry registry = ExtensionRegistry.newInstance();
         return registry;
     }
-    
+
     public static final byte[] intToByteArray(int value) {
         return new byte[] {
                 (byte) ((value >>> 24) & 0xFF),
                 (byte) ((value >>> 16) & 0xFF),
                 (byte) ((value >>> 8) & 0xFF),
                 (byte) (value  & 0xFF) };
-    }    
-    
+    }
+
     public static final int byteArrayToInt(byte [] b) {
         return (b[0] << 24)
                 + ((b[1] & 0xFF) << 16)
                 + ((b[2] & 0xFF) << 8)
                 + (b[3] & 0xFF);
     }
-    
+
     // more efficient than instantiating byte buffers and opening streams
     public static final byte[] longToByteArray(long value) {
         return new byte[]{
@@ -171,7 +182,7 @@ public class KieModuleCacheHelper {
                + ((((long)b[5]) & 0xFF) << 16)
                + ((((long)b[6]) & 0xFF) << 8)
                + (((long)b[7]) & 0xFF);
-    }    
+    }
 
 
 }
