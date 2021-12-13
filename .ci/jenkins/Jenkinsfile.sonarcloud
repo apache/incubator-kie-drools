@@ -61,7 +61,9 @@ pipeline {
             }
         }
         unsuccessful {
-            mailer.sendZulipTestSummaryNotification('SonarCloud', "[${getBuildBranch()}] Kogito Apps", [env.KOGITO_CI_EMAIL_TO])
+            script {
+                mailer.sendZulipTestSummaryNotification('SonarCloud', "[${getBuildBranch()}] Kogito Apps", [env.KOGITO_CI_EMAIL_TO])
+            }
         }
         cleanup {
             script {
