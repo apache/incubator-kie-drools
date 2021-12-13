@@ -39,6 +39,15 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-quarkus</artifactId>
     </dependency>
+    <!-- Kogito Drools is necessary to support DRL in Quarkus -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-drools</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-legacy-api</artifactId>
+    </dependency>
 
     <!-- test dependencies -->
     <dependency>
