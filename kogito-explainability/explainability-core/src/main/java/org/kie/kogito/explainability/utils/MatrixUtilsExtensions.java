@@ -17,10 +17,9 @@
 package org.kie.kogito.explainability.utils;
 
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
+import org.apache.commons.math3.linear.*;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 
@@ -29,6 +28,8 @@ public class MatrixUtilsExtensions {
         ROW,
         COLUMN
     }
+
+    private static final String shapeString = "Matrix %s shape: %d x %d";
 
     private MatrixUtilsExtensions() {
         throw new IllegalStateException("Utility class");
@@ -185,8 +186,8 @@ public class MatrixUtilsExtensions {
 
         if (!Arrays.equals(aShape, bShape)) {
             throw new IllegalArgumentException("Shape of matrix A must shape of matrix B" +
-                    String.format("Matrix A shape:  %d x %d, ", aShape[0], aShape[1]) +
-                    String.format("Matrix B shape:  %d x %d,", bShape[0], bShape[1]));
+                    String.format(shapeString, "A", aShape[0], aShape[1]) +
+                    String.format(shapeString, "B", bShape[0], bShape[1]));
         }
 
         double[][] sum = new double[aShape[0]][aShape[1]];
@@ -253,8 +254,8 @@ public class MatrixUtilsExtensions {
 
         if (aShape[1] != bShape[0]) {
             throw new IllegalArgumentException("# columns of matrix A must match # rows of matrix B" +
-                    String.format("Matrix A shape:  %d x %d, ", aShape[0], aShape[1]) +
-                    String.format("Matrix B shape:  %d x %d,", bShape[0], bShape[1]));
+                    String.format(shapeString, "A", aShape[0], aShape[1]) +
+                    String.format(shapeString, "B", bShape[0], bShape[1]));
         }
 
         double[][] product = new double[aShape[0]][bShape[1]];
@@ -263,6 +264,32 @@ public class MatrixUtilsExtensions {
                 for (int k = 0; k < aShape[1]; k++) {
                     product[i][j] += a[i][k] * b[k][j];
                 }
+            }
+        }
+        return product;
+    }
+
+    /**
+     * Find the matrix-vector dot product. Throws an error if the matrix shapes are misaligned
+     *
+     * @param a double[][]; the first matrix in the multiplication
+     * @param b double[]; the vector in the multiplication
+     * @return the matrix dot-product of a and b
+     */
+    public static double[] matrixMultiply(double[][] a, double[] b) {
+        int[] aShape = MatrixUtilsExtensions.getShape(a);
+        int bShape = b.length;
+
+        if (aShape[1] != bShape) {
+            throw new IllegalArgumentException("# columns of matrix A must match length of vector B" +
+                    String.format(shapeString, "A", aShape[0], aShape[1]) +
+                    String.format("Vector B shape:  %d,", bShape));
+        }
+
+        double[] product = new double[aShape[0]];
+        for (int i = 0; i < aShape[0]; i++) {
+            for (int j = 0; j < bShape; j++) {
+                product[i] += a[i][j] * b[j];
             }
         }
         return product;
@@ -467,5 +494,173 @@ public class MatrixUtilsExtensions {
                 x[i][j] += delta * random.nextDouble();
             }
         }
+    }
+
+    // === Extensions to the Apache MatrixUtils =========================================================================
+
+    /**
+     * Sums the rows of a RealMatrix together
+     *
+     * @param m the matrix to be row-summed
+     * @return RealVector, the sum of all rows
+     *
+     */
+    public static RealVector rowSum(RealMatrix m) {
+        RealVector out = org.apache.commons.math3.linear.MatrixUtils.createRealVector(new double[m.getColumnDimension()]);
+        for (int i = 0; i < m.getRowDimension(); i++) {
+            out = out.add(m.getRowVector(i));
+        }
+        return out;
+    }
+
+    /**
+     * Sums the squared rows of a RealMatrix together
+     *
+     * @param m the matrix to be row-square-summed
+     * @return RealVector, the sum of all rows squared
+     *
+     */
+    public static RealVector rowSquareSum(RealMatrix m) {
+        RealVector out = org.apache.commons.math3.linear.MatrixUtils.createRealVector(new double[m.getColumnDimension()]);
+        for (int i = 0; i < m.getRowDimension(); i++) {
+            RealVector rv = m.getRowVector(i);
+            out = out.add(rv.ebeMultiply(rv));
+        }
+        return out;
+    }
+
+    /**
+     * Subtract a vector from each row of a matrix
+     *
+     * @param m the matrix to operate on
+     * @param v the vector to subtract from each row of m
+     * @return RealMatrix m-v
+     *
+     */
+    public static RealMatrix rowDifference(RealMatrix m, RealVector v) {
+        RealMatrix out = m.createMatrix(m.getRowDimension(), m.getColumnDimension());
+        for (int i = 0; i < m.getRowDimension(); i++) {
+            out.setRowVector(i, m.getRowVector(i).subtract(v));
+        }
+        return out;
+    }
+
+    /**
+     * Subtract a vector from each col of a matrix
+     *
+     * @param m the matrix to operate on
+     * @param v the vector to subtract from each col of m
+     * @return RealMatrix m-v
+     *
+     */
+    public static RealMatrix colDifference(RealMatrix m, RealVector v) {
+        RealMatrix out = m.createMatrix(m.getRowDimension(), m.getColumnDimension());
+        for (int i = 0; i < m.getColumnDimension(); i++) {
+            out.setColumnVector(i, m.getColumnVector(i).subtract(v));
+        }
+        return out;
+    }
+
+    /**
+     * Functions to swap the ith and jth element of x in-place
+     *
+     * @param x the object to perform the swap within
+     * @param i the first swap index
+     * @param j the second swap index
+     * @return RealMatrix m-v
+     *
+     */
+    public static void swap(RealMatrix x, int i, int j) {
+        double[] tmp = x.getRow(i);
+        x.setRow(i, x.getRow(j));
+        x.setRow(j, tmp);
+    }
+
+    public static void swap(RealVector x, int i, int j) {
+        double tmp = x.getEntry(i);
+        x.setEntry(i, x.getEntry(j));
+        x.setEntry(j, tmp);
+    }
+
+    public static void swap(int[] x, int i, int j) {
+        int tmp = x[i];
+        x[i] = x[j];
+        x[j] = tmp;
+    }
+
+    /**
+     * Create a one row Matrix from a vector of size n
+     *
+     * @param v the vector to turn into a one-row matrix
+     * @return RealMatrix of shape 1,n
+     *
+     */
+    public static RealMatrix createRowMatrix(RealVector v) {
+        RealMatrix out = MatrixUtils.createRealMatrix(1, v.getDimension());
+        out.setRowVector(0, v);
+        return out;
+    }
+
+    /**
+     * Perform a row-wise dot product between two matrices A and B, where ith,jth value of the
+     * output is the dot product between ith row of A and the jth col of B
+     *
+     * @param a the first matrix in the product of shape x,y
+     * @param b the second matrix in the product of shape y,z
+     * @return RealMatrix of shape x, z
+     *
+     */
+    public static RealMatrix matrixDot(RealMatrix a, RealMatrix b) {
+        int aRows = a.getRowDimension();
+        int aCols = a.getColumnDimension();
+        int bRows = b.getRowDimension();
+        int bCols = b.getColumnDimension();
+
+        if (aCols != bRows) {
+            throw new IllegalArgumentException("Columns of matrix A must match rows of matrix B" +
+                    String.format(shapeString, "A", aRows, aCols) +
+                    String.format(shapeString, "B", bRows, bCols));
+        }
+
+        RealMatrix out = MatrixUtils.createRealMatrix(aRows, bCols);
+        for (int row = 0; row < aRows; row++) {
+            for (int col = 0; col < bCols; col++) {
+                out.setEntry(row, col, a.getRowVector(row).dotProduct(b.getColumnVector(col)));
+            }
+        }
+        return out;
+    }
+
+    // === REAL VECTOR STATISTICS =====================================
+    /**
+     * Find the minimum positive value of a vector. Returns the max double if no values are positive.
+     * this mirrors behavior of https://github.com/scikit-learn/scikit-learn/blob/0d378913be6d7e485b792ea36e9268be31ed52d0/sklearn/utils/arrayfuncs.pyx#L21
+     *
+     * @param v the vector to find the minimum positive double within
+     * @return the minimum positive value if any exist, otherwise the maximum double
+     *
+     */
+
+    public static double minPos(RealVector v) {
+        double minPos = Double.MAX_VALUE;
+        for (int i = 0; i < v.getDimension(); i++) {
+            double vI = v.getEntry(i);
+            if (vI > 0 && vI < minPos) {
+                minPos = vI;
+            }
+        }
+        return minPos;
+    }
+
+    /**
+     * Find the variance of a vector
+     *
+     * @param v the vector to compute the variance of
+     * @return var(v)
+     *
+     */
+    public static double variance(RealVector v) {
+        double mean = Arrays.stream(v.toArray()).sum() / v.getDimension();
+        return Arrays.stream(v.map(a -> Math.pow(a - mean, 2)).toArray()).sum() / v.getDimension();
     }
 }

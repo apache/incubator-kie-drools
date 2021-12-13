@@ -227,7 +227,7 @@ public class WeightedLinearRegression {
      * 
      * @return the mean squared error of the model
      */
-    private static double getMSE(double[][] features,
+    public static double getMSE(double[][] features,
             double[] observations,
             double[] sampleWeights,
             double[][] coefficients) {

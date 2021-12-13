@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.model.*;
 
@@ -382,6 +385,13 @@ class MatrixUtilsExtensionsTest {
         }
     }
 
+    // test multiplying a matrix by another vector
+    @Test
+    void testMatDotProduct() {
+        double[] prod = MatrixUtilsExtensions.matrixMultiply(matSquareSingular, mssSumRow);
+        assertArrayEquals(new double[] { 96., 231., 366. }, prod, 1e-6);
+    }
+
     // test multiplying a matrix by another matrix
     @Test
     void testMatMulNormal() {
@@ -463,4 +473,95 @@ class MatrixUtilsExtensionsTest {
             }
         }
     }
+
+    // === Apache MatrixUtilExtensions Tests ===================
+    RealVector v = MatrixUtils.createRealVector(new double[] { 1, 2, 3 });
+    RealMatrix m = MatrixUtils.createRealMatrix(matSquareSingular);
+
+    @Test
+    void rowSum() {
+        assertArrayEquals(new double[] { 12, 15, 18 }, MatrixUtilsExtensions.rowSum(m).toArray());
+    }
+
+    @Test
+    void rowSquareSum() {
+        assertArrayEquals(new double[] { 66, 93, 126 }, MatrixUtilsExtensions.rowSquareSum(m).toArray());
+    }
+
+    RealMatrix rowDiffResult = MatrixUtils.createRealMatrix(new double[][] { { 0, 0, 0 }, { 3, 3, 3 }, { 6, 6, 6 } });
+
+    @Test
+    void rowDifference() {
+        assertEquals(rowDiffResult, MatrixUtilsExtensions.rowDifference(m, v));
+    }
+
+    RealMatrix colDiffResult = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 2, 3, 4 }, { 4, 5, 6 } });
+
+    @Test
+    void colDifference() {
+        assertEquals(colDiffResult, MatrixUtilsExtensions.colDifference(m, v));
+    }
+
+    RealMatrix swapResult = MatrixUtils.createRealMatrix(new double[][] { { 7, 8, 9 }, { 4, 5, 6 }, { 1, 2, 3 } });
+
+    @Test
+    void testSwapRealMatrix() {
+        RealMatrix mCopy = m.copy();
+        MatrixUtilsExtensions.swap(mCopy, 0, 2);
+        assertEquals(swapResult, mCopy);
+    }
+
+    RealVector swapResultV = MatrixUtils.createRealVector(new double[] { 3, 2, 1 });
+
+    @Test
+    void testSwapRealVector() {
+        RealVector vCopy = v.copy();
+        MatrixUtilsExtensions.swap(vCopy, 0, 2);
+        assertEquals(swapResultV, vCopy);
+    }
+
+    @Test
+    void testSwapIntArr() {
+        int[] arr = new int[] { 1, 2, 3 };
+        MatrixUtilsExtensions.swap(arr, 0, 2);
+        assertArrayEquals(new int[] { 3, 2, 1 }, arr);
+    }
+
+    RealMatrix rowMatrix = MatrixUtils.createRealMatrix(new double[][] { { 1, 2, 3 } });
+
+    @Test
+    void createRowMatrix() {
+        assertEquals(rowMatrix, MatrixUtilsExtensions.createRowMatrix(v));
+    }
+
+    RealMatrix dotInput1 = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 3, 4, 5 } });
+    RealMatrix dotInput2 = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } });
+    RealMatrix dotResult = MatrixUtils.createRealMatrix(new double[][] { { 15, 18, 21 }, { 42, 54, 66 } });
+
+    @Test
+    void matrixDot() {
+        assertEquals(dotResult, MatrixUtilsExtensions.matrixDot(dotInput1, dotInput2));
+    }
+
+    // RealVector statistics tests
+    RealVector vMix = MatrixUtils.createRealVector(new double[] { -3, -2, -1, 1, 2, 3 });
+    RealVector allNeg = MatrixUtils.createRealVector(new double[] { -3, -2, -1 });
+
+    @Test
+    void testMinPos() {
+        assertEquals(1, MatrixUtilsExtensions.minPos(vMix), 1e-4);
+    }
+
+    @Test
+    void testMinPosNoNeg() {
+        assertEquals(Double.MAX_VALUE, MatrixUtilsExtensions.minPos(allNeg), 1e-4);
+    }
+
+    RealVector varInput = MatrixUtils.createRealVector(new double[] { 0, 4, 16, 2, -128, -4 });
+
+    @Test
+    void testVar() {
+        assertEquals(2443.22222222, MatrixUtilsExtensions.variance(varInput), 1e-4);
+    }
+
 }
