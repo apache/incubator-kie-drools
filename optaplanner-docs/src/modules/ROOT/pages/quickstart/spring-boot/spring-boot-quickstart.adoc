@@ -4,9 +4,8 @@
 :imagesdir: ../..
 :sectnums:
 :icons: font
-:quickstartsCloneUrl: https://github.com/kiegroup/optaplanner-quickstarts
-:quickstartsArchiveUrl: https://www.optaplanner.org/download/download.html
-:springBootQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/technology/java-spring-boot
+include::../../_attributes.adoc[]
+
 
 // Keep this in sync with quarkus-quickstart.adoc where applicable
 

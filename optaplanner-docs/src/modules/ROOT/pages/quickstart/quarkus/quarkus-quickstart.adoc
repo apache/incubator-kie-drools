@@ -4,9 +4,7 @@
 :imagesdir: ../..
 :sectnums:
 :icons: font
-:quickstartsCloneUrl: https://github.com/kiegroup/optaplanner-quickstarts
-:quickstartsArchiveUrl: https://www.optaplanner.org/download/download.html
-:quarkusQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/school-timetabling
+include::../../_attributes.adoc[]
 
 // Keep this in sync with the quarkus repo's copy
 // https://github.com/quarkusio/quarkus/blob/main/docs/src/main/asciidoc/optaplanner.adoc

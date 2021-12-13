@@ -1,0 +1,5 @@
+:quickstartsCloneUrl: https://github.com/kiegroup/optaplanner-quickstarts
+:quickstartsArchiveUrl: https://www.optaplanner.org/download/download.html
+:helloWorldJavaQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/hello-world
+:springBootQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/technology/java-spring-boot
+:quarkusQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/school-timetabling

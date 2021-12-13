@@ -4,9 +4,7 @@
 :imagesdir: ../..
 :sectnums:
 :icons: font
-:quickstartsCloneUrl: https://github.com/kiegroup/optaplanner-quickstarts
-:quickstartsArchiveUrl: https://www.optaplanner.org/download/download.html
-:helloWorldJavaQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/hello-world
+include::../../_attributes.adoc[]
 
 This guide walks you through the process of creating a simple Java application
 with https://www.optaplanner.org/[OptaPlanner]'s constraint solving Artificial Intelligence (AI).
