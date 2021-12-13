@@ -19,7 +19,7 @@ image::shared/optaPlannerLogo.png[align="center"]
 endif::[]
 
 include::planner-introduction/planner-introduction.adoc[leveloffset=+1]
-include::quickstart/quickstart.adoc[leveloffset=+1]
+include::quickstart/.quickstart.adoc[leveloffset=+1]
 include::use-cases-and-examples/use-cases-and-examples.adoc[leveloffset=+1]
 include::planner-configuration/planner-configuration.adoc[leveloffset=+1]
 include::score-calculation/score-calculation.adoc[leveloffset=+1]

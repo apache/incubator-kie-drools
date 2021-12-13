@@ -1,5 +1,7 @@
 [[quickStartOverview]]
 = Overview
+// Redirect to this page from .../docs/optaplanner/latest/quickstart/quickstart.html.
+:page-aliases: quickstart/quickstart.adoc
 :imagesdir: ../..
 
 Each _quick start_ gets you up and running with OptaPlanner quickly.

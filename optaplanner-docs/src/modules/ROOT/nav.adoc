@@ -1,5 +1,9 @@
 * xref:planner-introduction/planner-introduction.adoc[leveloffset=+1]
-* xref:quickstart/quickstart.adoc[leveloffset=+1]
+* Quickstart
+** xref:quickstart/overview/overview-quickstarts.adoc[leveloffset=+1]
+** xref:quickstart/hello-world/hello-world-quickstart.adoc[leveloffset=+1]
+** xref:quickstart/quarkus/quarkus-quickstart.adoc[leveloffset=+1]
+** xref:quickstart/spring-boot/spring-boot-quickstart.adoc[leveloffset=+1]
 * xref:use-cases-and-examples/use-cases-and-examples.adoc[leveloffset=+1]
 * xref:planner-configuration/planner-configuration.adoc[leveloffset=+1]
 * xref:score-calculation/score-calculation.adoc[leveloffset=+1]
