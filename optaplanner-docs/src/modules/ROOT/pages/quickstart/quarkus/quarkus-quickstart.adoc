@@ -46,12 +46,12 @@ Alternatively, you can also skip right to the completed example:
 +
 [source,shell,subs=attributes+]
 ----
-$ git clone {quickstartsCloneUrl}
+$ git clone {quickstarts-clone-url}
 ----
 +
-or download an {quickstartsArchiveUrl}[archive].
+or download an {quickstarts-archive-url}[archive].
 
-. Find the solution in {quarkusQuickstartUrl}[the `use-cases` directory]
+. Find the solution in {quarkus-quickstart-url}[the `use-cases` directory]
 and run it (see its README file).
 
 == Prerequisites
@@ -731,4 +731,4 @@ public class TimeTableResourceTest {
 
 . Build an attractive web UI on top of these REST methods to visualize the timetable.
 
-Take a look at {quarkusQuickstartUrl}[the quickstart source code] to see how this all turns out.
+Take a look at {quarkus-quickstart-url}[the quickstart source code] to see how this all turns out.

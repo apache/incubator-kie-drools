@@ -1,5 +1,6 @@
-:quickstartsCloneUrl: https://github.com/kiegroup/optaplanner-quickstarts
-:quickstartsArchiveUrl: https://www.optaplanner.org/download/download.html
-:helloWorldJavaQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/hello-world
-:springBootQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/technology/java-spring-boot
-:quarkusQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/school-timetabling
+// Attributes derived from the maven build, typically versions, are defined in the pom.xml and antora-template.yml.
+:quickstarts-clone-url: https://github.com/kiegroup/optaplanner-quickstarts
+:quickstarts-archive-url: https://www.optaplanner.org/download/download.html
+:hello-world-java-quickstart-url: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/hello-world
+:spring-boot-quickstart-url: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/technology/java-spring-boot
+:quarkus-quickstart-url: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/school-timetabling

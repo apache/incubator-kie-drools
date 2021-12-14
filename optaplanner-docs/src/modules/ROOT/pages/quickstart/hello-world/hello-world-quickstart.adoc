@@ -63,12 +63,12 @@ Alternatively, review the completed example:
 +
 [source,shell,subs=attributes+]
 ----
-$ git clone {quickstartsCloneUrl}
+$ git clone {quickstarts-clone-url}
 ----
 +
-.. Download an {quickstartsArchiveUrl}[archive].
+.. Download an {quickstarts-archive-url}[archive].
 
-. Find the solution in {helloWorldJavaQuickstartUrl}[the `hello-world` directory].
+. Find the solution in {hello-world-java-quickstart-url}[the `hello-world` directory].
 . Follow the instructions in the README file to run the application.
 
 == Prerequisites
@@ -579,7 +579,7 @@ Congratulations!
 You have just developed a Java application with https://www.optaplanner.org/[OptaPlanner]!
 
 If you ran into any issues,
-take a look at {helloWorldJavaQuickstartUrl}[the quickstart source code].
+take a look at {hello-world-java-quickstart-url}[the quickstart source code].
 
 Read the next guide to build a pretty web application for school timetabling
 with a REST service and database integration, by leveraging Quarkus.
