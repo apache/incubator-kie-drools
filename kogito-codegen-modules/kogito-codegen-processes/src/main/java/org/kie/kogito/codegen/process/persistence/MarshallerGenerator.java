@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
 import org.infinispan.protostream.EnumMarshaller;
@@ -89,6 +91,15 @@ public class MarshallerGenerator {
                 .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
                 .withTemplateBasePath(TEMPLATE_PERSISTENCE_FOLDER)
                 .build(context, "MessageMarshaller");
+
+        Predicate<String> typeExclusions = ExclusionTypeUtils.createTypeExclusions();
+
+        // filter types that don't required to create a marshaller
+        Predicate<Descriptor> packagePredicate = (msg) -> !msg.getFileDescriptor().getPackage().equals("kogito");
+        Predicate<Descriptor> jacksonPredicate = (msg) -> !typeExclusions.test(packageFromOption(msg.getFileDescriptor(), msg) + "." + msg.getName());
+
+        Predicate<Descriptor> predicate = packagePredicate.and(jacksonPredicate);
+
         CompilationUnit parsedClazzFile = generator.compilationUnitOrThrow();
 
         SerializationContext serializationContext = new SerializationContextImpl(Configuration.builder().build());
@@ -101,12 +112,7 @@ public class MarshallerGenerator {
         for (Entry<String, FileDescriptor> entry : descriptors.entrySet()) {
 
             FileDescriptor d = entry.getValue();
-
-            if (d.getPackage().equals("kogito")) {
-                continue;
-            }
-
-            List<Descriptor> messages = d.getMessageTypes();
+            List<Descriptor> messages = d.getMessageTypes().stream().filter(predicate).collect(Collectors.toList());
 
             for (Descriptor msg : messages) {
 

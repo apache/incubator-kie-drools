@@ -37,6 +37,11 @@
     </dependency>
 
     <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-jackson-utils</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
     </dependency>

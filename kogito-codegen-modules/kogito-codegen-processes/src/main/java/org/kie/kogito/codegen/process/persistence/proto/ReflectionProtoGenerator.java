@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,6 +42,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.Generated;
 import org.kie.kogito.codegen.VariableInfo;
 import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.process.persistence.ExclusionTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,6 +182,10 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
 
+        Predicate<String> typeExclusions = ExclusionTypeUtils.createTypeExclusions();
+        if (typeExclusions.test(clazz.getCanonicalName())) {
+            return Optional.empty();
+        }
         Generated generatedData = clazz.getAnnotation(Generated.class);
         if (generatedData != null) {
             name = generatedData.name().isEmpty() ? name : generatedData.name();

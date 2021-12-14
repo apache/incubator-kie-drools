@@ -68,68 +68,68 @@ public final class KogitoProcessInstanceProtobuf {
         getIdBytes();
 
     /**
-     * <code>string parent_process_instance_id = 4;</code>
+     * <code>optional string parent_process_instance_id = 4;</code>
      * @return Whether the parentProcessInstanceId field is set.
      */
     boolean hasParentProcessInstanceId();
     /**
-     * <code>string parent_process_instance_id = 4;</code>
+     * <code>optional string parent_process_instance_id = 4;</code>
      * @return The parentProcessInstanceId.
      */
     java.lang.String getParentProcessInstanceId();
     /**
-     * <code>string parent_process_instance_id = 4;</code>
+     * <code>optional string parent_process_instance_id = 4;</code>
      * @return The bytes for parentProcessInstanceId.
      */
     com.google.protobuf.ByteString
         getParentProcessInstanceIdBytes();
 
     /**
-     * <code>string business_key = 5;</code>
+     * <code>optional string business_key = 5;</code>
      * @return Whether the businessKey field is set.
      */
     boolean hasBusinessKey();
     /**
-     * <code>string business_key = 5;</code>
+     * <code>optional string business_key = 5;</code>
      * @return The businessKey.
      */
     java.lang.String getBusinessKey();
     /**
-     * <code>string business_key = 5;</code>
+     * <code>optional string business_key = 5;</code>
      * @return The bytes for businessKey.
      */
     com.google.protobuf.ByteString
         getBusinessKeyBytes();
 
     /**
-     * <code>string deploymentId = 6;</code>
+     * <code>optional string deploymentId = 6;</code>
      * @return Whether the deploymentId field is set.
      */
     boolean hasDeploymentId();
     /**
-     * <code>string deploymentId = 6;</code>
+     * <code>optional string deploymentId = 6;</code>
      * @return The deploymentId.
      */
     java.lang.String getDeploymentId();
     /**
-     * <code>string deploymentId = 6;</code>
+     * <code>optional string deploymentId = 6;</code>
      * @return The bytes for deploymentId.
      */
     com.google.protobuf.ByteString
         getDeploymentIdBytes();
 
     /**
-     * <code>string description = 7;</code>
+     * <code>optional string description = 7;</code>
      * @return Whether the description field is set.
      */
     boolean hasDescription();
     /**
-     * <code>string description = 7;</code>
+     * <code>optional string description = 7;</code>
      * @return The description.
      */
     java.lang.String getDescription();
     /**
-     * <code>string description = 7;</code>
+     * <code>optional string description = 7;</code>
      * @return The bytes for description.
      */
     com.google.protobuf.ByteString
@@ -142,23 +142,23 @@ public final class KogitoProcessInstanceProtobuf {
     int getState();
 
     /**
-     * <code>int64 start_date = 9;</code>
+     * <code>optional int64 start_date = 9;</code>
      * @return Whether the startDate field is set.
      */
     boolean hasStartDate();
     /**
-     * <code>int64 start_date = 9;</code>
+     * <code>optional int64 start_date = 9;</code>
      * @return The startDate.
      */
     long getStartDate();
 
     /**
-     * <code>int64 node_instance_counter = 10;</code>
+     * <code>optional int64 node_instance_counter = 10;</code>
      * @return Whether the nodeInstanceCounter field is set.
      */
     boolean hasNodeInstanceCounter();
     /**
-     * <code>int64 node_instance_counter = 10;</code>
+     * <code>optional int64 node_instance_counter = 10;</code>
      * @return The nodeInstanceCounter.
      */
     long getNodeInstanceCounter();
@@ -170,117 +170,117 @@ public final class KogitoProcessInstanceProtobuf {
     boolean getSignalCompletion();
 
     /**
-     * <code>string root_process_instance_id = 12;</code>
+     * <code>optional string root_process_instance_id = 12;</code>
      * @return Whether the rootProcessInstanceId field is set.
      */
     boolean hasRootProcessInstanceId();
     /**
-     * <code>string root_process_instance_id = 12;</code>
+     * <code>optional string root_process_instance_id = 12;</code>
      * @return The rootProcessInstanceId.
      */
     java.lang.String getRootProcessInstanceId();
     /**
-     * <code>string root_process_instance_id = 12;</code>
+     * <code>optional string root_process_instance_id = 12;</code>
      * @return The bytes for rootProcessInstanceId.
      */
     com.google.protobuf.ByteString
         getRootProcessInstanceIdBytes();
 
     /**
-     * <code>string root_process_id = 13;</code>
+     * <code>optional string root_process_id = 13;</code>
      * @return Whether the rootProcessId field is set.
      */
     boolean hasRootProcessId();
     /**
-     * <code>string root_process_id = 13;</code>
+     * <code>optional string root_process_id = 13;</code>
      * @return The rootProcessId.
      */
     java.lang.String getRootProcessId();
     /**
-     * <code>string root_process_id = 13;</code>
+     * <code>optional string root_process_id = 13;</code>
      * @return The bytes for rootProcessId.
      */
     com.google.protobuf.ByteString
         getRootProcessIdBytes();
 
     /**
-     * <code>string error_node_id = 14;</code>
+     * <code>optional string error_node_id = 14;</code>
      * @return Whether the errorNodeId field is set.
      */
     boolean hasErrorNodeId();
     /**
-     * <code>string error_node_id = 14;</code>
+     * <code>optional string error_node_id = 14;</code>
      * @return The errorNodeId.
      */
     java.lang.String getErrorNodeId();
     /**
-     * <code>string error_node_id = 14;</code>
+     * <code>optional string error_node_id = 14;</code>
      * @return The bytes for errorNodeId.
      */
     com.google.protobuf.ByteString
         getErrorNodeIdBytes();
 
     /**
-     * <code>string error_message = 15;</code>
+     * <code>optional string error_message = 15;</code>
      * @return Whether the errorMessage field is set.
      */
     boolean hasErrorMessage();
     /**
-     * <code>string error_message = 15;</code>
+     * <code>optional string error_message = 15;</code>
      * @return The errorMessage.
      */
     java.lang.String getErrorMessage();
     /**
-     * <code>string error_message = 15;</code>
+     * <code>optional string error_message = 15;</code>
      * @return The bytes for errorMessage.
      */
     com.google.protobuf.ByteString
         getErrorMessageBytes();
 
     /**
-     * <code>string reference_id = 16;</code>
+     * <code>optional string reference_id = 16;</code>
      * @return Whether the referenceId field is set.
      */
     boolean hasReferenceId();
     /**
-     * <code>string reference_id = 16;</code>
+     * <code>optional string reference_id = 16;</code>
      * @return The referenceId.
      */
     java.lang.String getReferenceId();
     /**
-     * <code>string reference_id = 16;</code>
+     * <code>optional string reference_id = 16;</code>
      * @return The bytes for referenceId.
      */
     com.google.protobuf.ByteString
         getReferenceIdBytes();
 
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
      * @return Whether the sla field is set.
      */
     boolean hasSla();
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
      * @return The sla.
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext getSla();
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder getSlaOrBuilder();
 
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
      * @return Whether the context field is set.
      */
     boolean hasContext();
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
      * @return The context.
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext getContext();
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContextOrBuilder getContextOrBuilder();
 
@@ -685,7 +685,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int PARENT_PROCESS_INSTANCE_ID_FIELD_NUMBER = 4;
     private volatile java.lang.Object parentProcessInstanceId_;
     /**
-     * <code>string parent_process_instance_id = 4;</code>
+     * <code>optional string parent_process_instance_id = 4;</code>
      * @return Whether the parentProcessInstanceId field is set.
      */
     @java.lang.Override
@@ -693,7 +693,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string parent_process_instance_id = 4;</code>
+     * <code>optional string parent_process_instance_id = 4;</code>
      * @return The parentProcessInstanceId.
      */
     @java.lang.Override
@@ -710,7 +710,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string parent_process_instance_id = 4;</code>
+     * <code>optional string parent_process_instance_id = 4;</code>
      * @return The bytes for parentProcessInstanceId.
      */
     @java.lang.Override
@@ -731,7 +731,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int BUSINESS_KEY_FIELD_NUMBER = 5;
     private volatile java.lang.Object businessKey_;
     /**
-     * <code>string business_key = 5;</code>
+     * <code>optional string business_key = 5;</code>
      * @return Whether the businessKey field is set.
      */
     @java.lang.Override
@@ -739,7 +739,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>string business_key = 5;</code>
+     * <code>optional string business_key = 5;</code>
      * @return The businessKey.
      */
     @java.lang.Override
@@ -756,7 +756,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string business_key = 5;</code>
+     * <code>optional string business_key = 5;</code>
      * @return The bytes for businessKey.
      */
     @java.lang.Override
@@ -777,7 +777,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int DEPLOYMENTID_FIELD_NUMBER = 6;
     private volatile java.lang.Object deploymentId_;
     /**
-     * <code>string deploymentId = 6;</code>
+     * <code>optional string deploymentId = 6;</code>
      * @return Whether the deploymentId field is set.
      */
     @java.lang.Override
@@ -785,7 +785,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>string deploymentId = 6;</code>
+     * <code>optional string deploymentId = 6;</code>
      * @return The deploymentId.
      */
     @java.lang.Override
@@ -802,7 +802,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string deploymentId = 6;</code>
+     * <code>optional string deploymentId = 6;</code>
      * @return The bytes for deploymentId.
      */
     @java.lang.Override
@@ -823,7 +823,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int DESCRIPTION_FIELD_NUMBER = 7;
     private volatile java.lang.Object description_;
     /**
-     * <code>string description = 7;</code>
+     * <code>optional string description = 7;</code>
      * @return Whether the description field is set.
      */
     @java.lang.Override
@@ -831,7 +831,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>string description = 7;</code>
+     * <code>optional string description = 7;</code>
      * @return The description.
      */
     @java.lang.Override
@@ -848,7 +848,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string description = 7;</code>
+     * <code>optional string description = 7;</code>
      * @return The bytes for description.
      */
     @java.lang.Override
@@ -880,7 +880,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int START_DATE_FIELD_NUMBER = 9;
     private long startDate_;
     /**
-     * <code>int64 start_date = 9;</code>
+     * <code>optional int64 start_date = 9;</code>
      * @return Whether the startDate field is set.
      */
     @java.lang.Override
@@ -888,7 +888,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>int64 start_date = 9;</code>
+     * <code>optional int64 start_date = 9;</code>
      * @return The startDate.
      */
     @java.lang.Override
@@ -899,7 +899,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int NODE_INSTANCE_COUNTER_FIELD_NUMBER = 10;
     private long nodeInstanceCounter_;
     /**
-     * <code>int64 node_instance_counter = 10;</code>
+     * <code>optional int64 node_instance_counter = 10;</code>
      * @return Whether the nodeInstanceCounter field is set.
      */
     @java.lang.Override
@@ -907,7 +907,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
-     * <code>int64 node_instance_counter = 10;</code>
+     * <code>optional int64 node_instance_counter = 10;</code>
      * @return The nodeInstanceCounter.
      */
     @java.lang.Override
@@ -929,7 +929,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int ROOT_PROCESS_INSTANCE_ID_FIELD_NUMBER = 12;
     private volatile java.lang.Object rootProcessInstanceId_;
     /**
-     * <code>string root_process_instance_id = 12;</code>
+     * <code>optional string root_process_instance_id = 12;</code>
      * @return Whether the rootProcessInstanceId field is set.
      */
     @java.lang.Override
@@ -937,7 +937,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
-     * <code>string root_process_instance_id = 12;</code>
+     * <code>optional string root_process_instance_id = 12;</code>
      * @return The rootProcessInstanceId.
      */
     @java.lang.Override
@@ -954,7 +954,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string root_process_instance_id = 12;</code>
+     * <code>optional string root_process_instance_id = 12;</code>
      * @return The bytes for rootProcessInstanceId.
      */
     @java.lang.Override
@@ -975,7 +975,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int ROOT_PROCESS_ID_FIELD_NUMBER = 13;
     private volatile java.lang.Object rootProcessId_;
     /**
-     * <code>string root_process_id = 13;</code>
+     * <code>optional string root_process_id = 13;</code>
      * @return Whether the rootProcessId field is set.
      */
     @java.lang.Override
@@ -983,7 +983,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
-     * <code>string root_process_id = 13;</code>
+     * <code>optional string root_process_id = 13;</code>
      * @return The rootProcessId.
      */
     @java.lang.Override
@@ -1000,7 +1000,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string root_process_id = 13;</code>
+     * <code>optional string root_process_id = 13;</code>
      * @return The bytes for rootProcessId.
      */
     @java.lang.Override
@@ -1021,7 +1021,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int ERROR_NODE_ID_FIELD_NUMBER = 14;
     private volatile java.lang.Object errorNodeId_;
     /**
-     * <code>string error_node_id = 14;</code>
+     * <code>optional string error_node_id = 14;</code>
      * @return Whether the errorNodeId field is set.
      */
     @java.lang.Override
@@ -1029,7 +1029,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000100) != 0);
     }
     /**
-     * <code>string error_node_id = 14;</code>
+     * <code>optional string error_node_id = 14;</code>
      * @return The errorNodeId.
      */
     @java.lang.Override
@@ -1046,7 +1046,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string error_node_id = 14;</code>
+     * <code>optional string error_node_id = 14;</code>
      * @return The bytes for errorNodeId.
      */
     @java.lang.Override
@@ -1067,7 +1067,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int ERROR_MESSAGE_FIELD_NUMBER = 15;
     private volatile java.lang.Object errorMessage_;
     /**
-     * <code>string error_message = 15;</code>
+     * <code>optional string error_message = 15;</code>
      * @return Whether the errorMessage field is set.
      */
     @java.lang.Override
@@ -1075,7 +1075,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000200) != 0);
     }
     /**
-     * <code>string error_message = 15;</code>
+     * <code>optional string error_message = 15;</code>
      * @return The errorMessage.
      */
     @java.lang.Override
@@ -1092,7 +1092,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string error_message = 15;</code>
+     * <code>optional string error_message = 15;</code>
      * @return The bytes for errorMessage.
      */
     @java.lang.Override
@@ -1113,7 +1113,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int REFERENCE_ID_FIELD_NUMBER = 16;
     private volatile java.lang.Object referenceId_;
     /**
-     * <code>string reference_id = 16;</code>
+     * <code>optional string reference_id = 16;</code>
      * @return Whether the referenceId field is set.
      */
     @java.lang.Override
@@ -1121,7 +1121,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000400) != 0);
     }
     /**
-     * <code>string reference_id = 16;</code>
+     * <code>optional string reference_id = 16;</code>
      * @return The referenceId.
      */
     @java.lang.Override
@@ -1138,7 +1138,7 @@ public final class KogitoProcessInstanceProtobuf {
       }
     }
     /**
-     * <code>string reference_id = 16;</code>
+     * <code>optional string reference_id = 16;</code>
      * @return The bytes for referenceId.
      */
     @java.lang.Override
@@ -1159,7 +1159,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int SLA_FIELD_NUMBER = 17;
     private org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext sla_;
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
      * @return Whether the sla field is set.
      */
     @java.lang.Override
@@ -1167,7 +1167,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00000800) != 0);
     }
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
      * @return The sla.
      */
     @java.lang.Override
@@ -1175,7 +1175,7 @@ public final class KogitoProcessInstanceProtobuf {
       return sla_ == null ? org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.getDefaultInstance() : sla_;
     }
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
      */
     @java.lang.Override
     public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder getSlaOrBuilder() {
@@ -1185,7 +1185,7 @@ public final class KogitoProcessInstanceProtobuf {
     public static final int CONTEXT_FIELD_NUMBER = 18;
     private org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext context_;
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
      * @return Whether the context field is set.
      */
     @java.lang.Override
@@ -1193,7 +1193,7 @@ public final class KogitoProcessInstanceProtobuf {
       return ((bitField0_ & 0x00001000) != 0);
     }
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
      * @return The context.
      */
     @java.lang.Override
@@ -1201,7 +1201,7 @@ public final class KogitoProcessInstanceProtobuf {
       return context_ == null ? org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext.getDefaultInstance() : context_;
     }
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
      */
     @java.lang.Override
     public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContextOrBuilder getContextOrBuilder() {
@@ -1297,13 +1297,13 @@ public final class KogitoProcessInstanceProtobuf {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getProcessTypeBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(processType_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, processType_);
       }
-      if (!getProcessIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(processId_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, processId_);
       }
-      if (!getIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, id_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -1366,13 +1366,13 @@ public final class KogitoProcessInstanceProtobuf {
       if (size != -1) return size;
 
       size = 0;
-      if (!getProcessTypeBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(processType_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, processType_);
       }
-      if (!getProcessIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(processId_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, processId_);
       }
-      if (!getIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, id_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -2331,14 +2331,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object parentProcessInstanceId_ = "";
       /**
-       * <code>string parent_process_instance_id = 4;</code>
+       * <code>optional string parent_process_instance_id = 4;</code>
        * @return Whether the parentProcessInstanceId field is set.
        */
       public boolean hasParentProcessInstanceId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string parent_process_instance_id = 4;</code>
+       * <code>optional string parent_process_instance_id = 4;</code>
        * @return The parentProcessInstanceId.
        */
       public java.lang.String getParentProcessInstanceId() {
@@ -2354,7 +2354,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string parent_process_instance_id = 4;</code>
+       * <code>optional string parent_process_instance_id = 4;</code>
        * @return The bytes for parentProcessInstanceId.
        */
       public com.google.protobuf.ByteString
@@ -2371,7 +2371,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string parent_process_instance_id = 4;</code>
+       * <code>optional string parent_process_instance_id = 4;</code>
        * @param value The parentProcessInstanceId to set.
        * @return This builder for chaining.
        */
@@ -2386,7 +2386,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string parent_process_instance_id = 4;</code>
+       * <code>optional string parent_process_instance_id = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearParentProcessInstanceId() {
@@ -2396,7 +2396,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string parent_process_instance_id = 4;</code>
+       * <code>optional string parent_process_instance_id = 4;</code>
        * @param value The bytes for parentProcessInstanceId to set.
        * @return This builder for chaining.
        */
@@ -2414,14 +2414,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object businessKey_ = "";
       /**
-       * <code>string business_key = 5;</code>
+       * <code>optional string business_key = 5;</code>
        * @return Whether the businessKey field is set.
        */
       public boolean hasBusinessKey() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>string business_key = 5;</code>
+       * <code>optional string business_key = 5;</code>
        * @return The businessKey.
        */
       public java.lang.String getBusinessKey() {
@@ -2437,7 +2437,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string business_key = 5;</code>
+       * <code>optional string business_key = 5;</code>
        * @return The bytes for businessKey.
        */
       public com.google.protobuf.ByteString
@@ -2454,7 +2454,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string business_key = 5;</code>
+       * <code>optional string business_key = 5;</code>
        * @param value The businessKey to set.
        * @return This builder for chaining.
        */
@@ -2469,7 +2469,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string business_key = 5;</code>
+       * <code>optional string business_key = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearBusinessKey() {
@@ -2479,7 +2479,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string business_key = 5;</code>
+       * <code>optional string business_key = 5;</code>
        * @param value The bytes for businessKey to set.
        * @return This builder for chaining.
        */
@@ -2497,14 +2497,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object deploymentId_ = "";
       /**
-       * <code>string deploymentId = 6;</code>
+       * <code>optional string deploymentId = 6;</code>
        * @return Whether the deploymentId field is set.
        */
       public boolean hasDeploymentId() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>string deploymentId = 6;</code>
+       * <code>optional string deploymentId = 6;</code>
        * @return The deploymentId.
        */
       public java.lang.String getDeploymentId() {
@@ -2520,7 +2520,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string deploymentId = 6;</code>
+       * <code>optional string deploymentId = 6;</code>
        * @return The bytes for deploymentId.
        */
       public com.google.protobuf.ByteString
@@ -2537,7 +2537,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string deploymentId = 6;</code>
+       * <code>optional string deploymentId = 6;</code>
        * @param value The deploymentId to set.
        * @return This builder for chaining.
        */
@@ -2552,7 +2552,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string deploymentId = 6;</code>
+       * <code>optional string deploymentId = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearDeploymentId() {
@@ -2562,7 +2562,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string deploymentId = 6;</code>
+       * <code>optional string deploymentId = 6;</code>
        * @param value The bytes for deploymentId to set.
        * @return This builder for chaining.
        */
@@ -2580,14 +2580,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object description_ = "";
       /**
-       * <code>string description = 7;</code>
+       * <code>optional string description = 7;</code>
        * @return Whether the description field is set.
        */
       public boolean hasDescription() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
-       * <code>string description = 7;</code>
+       * <code>optional string description = 7;</code>
        * @return The description.
        */
       public java.lang.String getDescription() {
@@ -2603,7 +2603,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string description = 7;</code>
+       * <code>optional string description = 7;</code>
        * @return The bytes for description.
        */
       public com.google.protobuf.ByteString
@@ -2620,7 +2620,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string description = 7;</code>
+       * <code>optional string description = 7;</code>
        * @param value The description to set.
        * @return This builder for chaining.
        */
@@ -2635,7 +2635,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string description = 7;</code>
+       * <code>optional string description = 7;</code>
        * @return This builder for chaining.
        */
       public Builder clearDescription() {
@@ -2645,7 +2645,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string description = 7;</code>
+       * <code>optional string description = 7;</code>
        * @param value The bytes for description to set.
        * @return This builder for chaining.
        */
@@ -2694,7 +2694,7 @@ public final class KogitoProcessInstanceProtobuf {
 
       private long startDate_ ;
       /**
-       * <code>int64 start_date = 9;</code>
+       * <code>optional int64 start_date = 9;</code>
        * @return Whether the startDate field is set.
        */
       @java.lang.Override
@@ -2702,7 +2702,7 @@ public final class KogitoProcessInstanceProtobuf {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
-       * <code>int64 start_date = 9;</code>
+       * <code>optional int64 start_date = 9;</code>
        * @return The startDate.
        */
       @java.lang.Override
@@ -2710,7 +2710,7 @@ public final class KogitoProcessInstanceProtobuf {
         return startDate_;
       }
       /**
-       * <code>int64 start_date = 9;</code>
+       * <code>optional int64 start_date = 9;</code>
        * @param value The startDate to set.
        * @return This builder for chaining.
        */
@@ -2721,7 +2721,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>int64 start_date = 9;</code>
+       * <code>optional int64 start_date = 9;</code>
        * @return This builder for chaining.
        */
       public Builder clearStartDate() {
@@ -2733,7 +2733,7 @@ public final class KogitoProcessInstanceProtobuf {
 
       private long nodeInstanceCounter_ ;
       /**
-       * <code>int64 node_instance_counter = 10;</code>
+       * <code>optional int64 node_instance_counter = 10;</code>
        * @return Whether the nodeInstanceCounter field is set.
        */
       @java.lang.Override
@@ -2741,7 +2741,7 @@ public final class KogitoProcessInstanceProtobuf {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
-       * <code>int64 node_instance_counter = 10;</code>
+       * <code>optional int64 node_instance_counter = 10;</code>
        * @return The nodeInstanceCounter.
        */
       @java.lang.Override
@@ -2749,7 +2749,7 @@ public final class KogitoProcessInstanceProtobuf {
         return nodeInstanceCounter_;
       }
       /**
-       * <code>int64 node_instance_counter = 10;</code>
+       * <code>optional int64 node_instance_counter = 10;</code>
        * @param value The nodeInstanceCounter to set.
        * @return This builder for chaining.
        */
@@ -2760,7 +2760,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>int64 node_instance_counter = 10;</code>
+       * <code>optional int64 node_instance_counter = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearNodeInstanceCounter() {
@@ -2803,14 +2803,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object rootProcessInstanceId_ = "";
       /**
-       * <code>string root_process_instance_id = 12;</code>
+       * <code>optional string root_process_instance_id = 12;</code>
        * @return Whether the rootProcessInstanceId field is set.
        */
       public boolean hasRootProcessInstanceId() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
-       * <code>string root_process_instance_id = 12;</code>
+       * <code>optional string root_process_instance_id = 12;</code>
        * @return The rootProcessInstanceId.
        */
       public java.lang.String getRootProcessInstanceId() {
@@ -2826,7 +2826,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string root_process_instance_id = 12;</code>
+       * <code>optional string root_process_instance_id = 12;</code>
        * @return The bytes for rootProcessInstanceId.
        */
       public com.google.protobuf.ByteString
@@ -2843,7 +2843,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string root_process_instance_id = 12;</code>
+       * <code>optional string root_process_instance_id = 12;</code>
        * @param value The rootProcessInstanceId to set.
        * @return This builder for chaining.
        */
@@ -2858,7 +2858,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string root_process_instance_id = 12;</code>
+       * <code>optional string root_process_instance_id = 12;</code>
        * @return This builder for chaining.
        */
       public Builder clearRootProcessInstanceId() {
@@ -2868,7 +2868,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string root_process_instance_id = 12;</code>
+       * <code>optional string root_process_instance_id = 12;</code>
        * @param value The bytes for rootProcessInstanceId to set.
        * @return This builder for chaining.
        */
@@ -2886,14 +2886,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object rootProcessId_ = "";
       /**
-       * <code>string root_process_id = 13;</code>
+       * <code>optional string root_process_id = 13;</code>
        * @return Whether the rootProcessId field is set.
        */
       public boolean hasRootProcessId() {
         return ((bitField0_ & 0x00000080) != 0);
       }
       /**
-       * <code>string root_process_id = 13;</code>
+       * <code>optional string root_process_id = 13;</code>
        * @return The rootProcessId.
        */
       public java.lang.String getRootProcessId() {
@@ -2909,7 +2909,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string root_process_id = 13;</code>
+       * <code>optional string root_process_id = 13;</code>
        * @return The bytes for rootProcessId.
        */
       public com.google.protobuf.ByteString
@@ -2926,7 +2926,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string root_process_id = 13;</code>
+       * <code>optional string root_process_id = 13;</code>
        * @param value The rootProcessId to set.
        * @return This builder for chaining.
        */
@@ -2941,7 +2941,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string root_process_id = 13;</code>
+       * <code>optional string root_process_id = 13;</code>
        * @return This builder for chaining.
        */
       public Builder clearRootProcessId() {
@@ -2951,7 +2951,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string root_process_id = 13;</code>
+       * <code>optional string root_process_id = 13;</code>
        * @param value The bytes for rootProcessId to set.
        * @return This builder for chaining.
        */
@@ -2969,14 +2969,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object errorNodeId_ = "";
       /**
-       * <code>string error_node_id = 14;</code>
+       * <code>optional string error_node_id = 14;</code>
        * @return Whether the errorNodeId field is set.
        */
       public boolean hasErrorNodeId() {
         return ((bitField0_ & 0x00000100) != 0);
       }
       /**
-       * <code>string error_node_id = 14;</code>
+       * <code>optional string error_node_id = 14;</code>
        * @return The errorNodeId.
        */
       public java.lang.String getErrorNodeId() {
@@ -2992,7 +2992,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string error_node_id = 14;</code>
+       * <code>optional string error_node_id = 14;</code>
        * @return The bytes for errorNodeId.
        */
       public com.google.protobuf.ByteString
@@ -3009,7 +3009,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string error_node_id = 14;</code>
+       * <code>optional string error_node_id = 14;</code>
        * @param value The errorNodeId to set.
        * @return This builder for chaining.
        */
@@ -3024,7 +3024,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string error_node_id = 14;</code>
+       * <code>optional string error_node_id = 14;</code>
        * @return This builder for chaining.
        */
       public Builder clearErrorNodeId() {
@@ -3034,7 +3034,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string error_node_id = 14;</code>
+       * <code>optional string error_node_id = 14;</code>
        * @param value The bytes for errorNodeId to set.
        * @return This builder for chaining.
        */
@@ -3052,14 +3052,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object errorMessage_ = "";
       /**
-       * <code>string error_message = 15;</code>
+       * <code>optional string error_message = 15;</code>
        * @return Whether the errorMessage field is set.
        */
       public boolean hasErrorMessage() {
         return ((bitField0_ & 0x00000200) != 0);
       }
       /**
-       * <code>string error_message = 15;</code>
+       * <code>optional string error_message = 15;</code>
        * @return The errorMessage.
        */
       public java.lang.String getErrorMessage() {
@@ -3075,7 +3075,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string error_message = 15;</code>
+       * <code>optional string error_message = 15;</code>
        * @return The bytes for errorMessage.
        */
       public com.google.protobuf.ByteString
@@ -3092,7 +3092,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string error_message = 15;</code>
+       * <code>optional string error_message = 15;</code>
        * @param value The errorMessage to set.
        * @return This builder for chaining.
        */
@@ -3107,7 +3107,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string error_message = 15;</code>
+       * <code>optional string error_message = 15;</code>
        * @return This builder for chaining.
        */
       public Builder clearErrorMessage() {
@@ -3117,7 +3117,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string error_message = 15;</code>
+       * <code>optional string error_message = 15;</code>
        * @param value The bytes for errorMessage to set.
        * @return This builder for chaining.
        */
@@ -3135,14 +3135,14 @@ public final class KogitoProcessInstanceProtobuf {
 
       private java.lang.Object referenceId_ = "";
       /**
-       * <code>string reference_id = 16;</code>
+       * <code>optional string reference_id = 16;</code>
        * @return Whether the referenceId field is set.
        */
       public boolean hasReferenceId() {
         return ((bitField0_ & 0x00000400) != 0);
       }
       /**
-       * <code>string reference_id = 16;</code>
+       * <code>optional string reference_id = 16;</code>
        * @return The referenceId.
        */
       public java.lang.String getReferenceId() {
@@ -3158,7 +3158,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string reference_id = 16;</code>
+       * <code>optional string reference_id = 16;</code>
        * @return The bytes for referenceId.
        */
       public com.google.protobuf.ByteString
@@ -3175,7 +3175,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>string reference_id = 16;</code>
+       * <code>optional string reference_id = 16;</code>
        * @param value The referenceId to set.
        * @return This builder for chaining.
        */
@@ -3190,7 +3190,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string reference_id = 16;</code>
+       * <code>optional string reference_id = 16;</code>
        * @return This builder for chaining.
        */
       public Builder clearReferenceId() {
@@ -3200,7 +3200,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>string reference_id = 16;</code>
+       * <code>optional string reference_id = 16;</code>
        * @param value The bytes for referenceId to set.
        * @return This builder for chaining.
        */
@@ -3220,14 +3220,14 @@ public final class KogitoProcessInstanceProtobuf {
       private com.google.protobuf.SingleFieldBuilderV3<
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.Builder, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder> slaBuilder_;
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        * @return Whether the sla field is set.
        */
       public boolean hasSla() {
         return ((bitField0_ & 0x00000800) != 0);
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        * @return The sla.
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext getSla() {
@@ -3238,7 +3238,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        */
       public Builder setSla(org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext value) {
         if (slaBuilder_ == null) {
@@ -3254,7 +3254,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        */
       public Builder setSla(
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.Builder builderForValue) {
@@ -3268,7 +3268,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        */
       public Builder mergeSla(org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext value) {
         if (slaBuilder_ == null) {
@@ -3288,7 +3288,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        */
       public Builder clearSla() {
         if (slaBuilder_ == null) {
@@ -3301,7 +3301,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.Builder getSlaBuilder() {
         bitField0_ |= 0x00000800;
@@ -3309,7 +3309,7 @@ public final class KogitoProcessInstanceProtobuf {
         return getSlaFieldBuilder().getBuilder();
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder getSlaOrBuilder() {
         if (slaBuilder_ != null) {
@@ -3320,7 +3320,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 17;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.Builder, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder> 
@@ -3340,14 +3340,14 @@ public final class KogitoProcessInstanceProtobuf {
       private com.google.protobuf.SingleFieldBuilderV3<
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext.Builder, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContextOrBuilder> contextBuilder_;
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        * @return Whether the context field is set.
        */
       public boolean hasContext() {
         return ((bitField0_ & 0x00001000) != 0);
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        * @return The context.
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext getContext() {
@@ -3358,7 +3358,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        */
       public Builder setContext(org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext value) {
         if (contextBuilder_ == null) {
@@ -3374,7 +3374,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        */
       public Builder setContext(
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext.Builder builderForValue) {
@@ -3388,7 +3388,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        */
       public Builder mergeContext(org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext value) {
         if (contextBuilder_ == null) {
@@ -3408,7 +3408,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        */
       public Builder clearContext() {
         if (contextBuilder_ == null) {
@@ -3421,7 +3421,7 @@ public final class KogitoProcessInstanceProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext.Builder getContextBuilder() {
         bitField0_ |= 0x00001000;
@@ -3429,7 +3429,7 @@ public final class KogitoProcessInstanceProtobuf {
         return getContextFieldBuilder().getBuilder();
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContextOrBuilder getContextOrBuilder() {
         if (contextBuilder_ != null) {
@@ -3440,7 +3440,7 @@ public final class KogitoProcessInstanceProtobuf {
         }
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 18;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContext.Builder, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContextOrBuilder> 

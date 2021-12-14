@@ -57,17 +57,17 @@ public final class KogitoNodeInstanceContentsProtobuf {
         getTimerInstanceIdBytes(int index);
 
     /**
-     * <code>string rule_flow_group = 2;</code>
+     * <code>optional string rule_flow_group = 2;</code>
      * @return Whether the ruleFlowGroup field is set.
      */
     boolean hasRuleFlowGroup();
     /**
-     * <code>string rule_flow_group = 2;</code>
+     * <code>optional string rule_flow_group = 2;</code>
      * @return The ruleFlowGroup.
      */
     java.lang.String getRuleFlowGroup();
     /**
-     * <code>string rule_flow_group = 2;</code>
+     * <code>optional string rule_flow_group = 2;</code>
      * @return The bytes for ruleFlowGroup.
      */
     com.google.protobuf.ByteString
@@ -210,7 +210,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int RULE_FLOW_GROUP_FIELD_NUMBER = 2;
     private volatile java.lang.Object ruleFlowGroup_;
     /**
-     * <code>string rule_flow_group = 2;</code>
+     * <code>optional string rule_flow_group = 2;</code>
      * @return Whether the ruleFlowGroup field is set.
      */
     @java.lang.Override
@@ -218,7 +218,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string rule_flow_group = 2;</code>
+     * <code>optional string rule_flow_group = 2;</code>
      * @return The ruleFlowGroup.
      */
     @java.lang.Override
@@ -235,7 +235,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
     /**
-     * <code>string rule_flow_group = 2;</code>
+     * <code>optional string rule_flow_group = 2;</code>
      * @return The bytes for ruleFlowGroup.
      */
     @java.lang.Override
@@ -714,14 +714,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private java.lang.Object ruleFlowGroup_ = "";
       /**
-       * <code>string rule_flow_group = 2;</code>
+       * <code>optional string rule_flow_group = 2;</code>
        * @return Whether the ruleFlowGroup field is set.
        */
       public boolean hasRuleFlowGroup() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>string rule_flow_group = 2;</code>
+       * <code>optional string rule_flow_group = 2;</code>
        * @return The ruleFlowGroup.
        */
       public java.lang.String getRuleFlowGroup() {
@@ -737,7 +737,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string rule_flow_group = 2;</code>
+       * <code>optional string rule_flow_group = 2;</code>
        * @return The bytes for ruleFlowGroup.
        */
       public com.google.protobuf.ByteString
@@ -754,7 +754,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string rule_flow_group = 2;</code>
+       * <code>optional string rule_flow_group = 2;</code>
        * @param value The ruleFlowGroup to set.
        * @return This builder for chaining.
        */
@@ -769,7 +769,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string rule_flow_group = 2;</code>
+       * <code>optional string rule_flow_group = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearRuleFlowGroup() {
@@ -779,7 +779,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string rule_flow_group = 2;</code>
+       * <code>optional string rule_flow_group = 2;</code>
        * @param value The bytes for ruleFlowGroup to set.
        * @return This builder for chaining.
        */
@@ -889,17 +889,17 @@ public final class KogitoNodeInstanceContentsProtobuf {
         getTimerInstanceIdBytes(int index);
 
     /**
-     * <code>string error_handling_process_instance_id = 3;</code>
+     * <code>optional string error_handling_process_instance_id = 3;</code>
      * @return Whether the errorHandlingProcessInstanceId field is set.
      */
     boolean hasErrorHandlingProcessInstanceId();
     /**
-     * <code>string error_handling_process_instance_id = 3;</code>
+     * <code>optional string error_handling_process_instance_id = 3;</code>
      * @return The errorHandlingProcessInstanceId.
      */
     java.lang.String getErrorHandlingProcessInstanceId();
     /**
-     * <code>string error_handling_process_instance_id = 3;</code>
+     * <code>optional string error_handling_process_instance_id = 3;</code>
      * @return The bytes for errorHandlingProcessInstanceId.
      */
     com.google.protobuf.ByteString
@@ -964,90 +964,90 @@ public final class KogitoNodeInstanceContentsProtobuf {
         int index);
 
     /**
-     * <code>string phase_id = 7;</code>
+     * <code>optional string phase_id = 7;</code>
      * @return Whether the phaseId field is set.
      */
     boolean hasPhaseId();
     /**
-     * <code>string phase_id = 7;</code>
+     * <code>optional string phase_id = 7;</code>
      * @return The phaseId.
      */
     java.lang.String getPhaseId();
     /**
-     * <code>string phase_id = 7;</code>
+     * <code>optional string phase_id = 7;</code>
      * @return The bytes for phaseId.
      */
     com.google.protobuf.ByteString
         getPhaseIdBytes();
 
     /**
-     * <code>string phase_status = 8;</code>
+     * <code>optional string phase_status = 8;</code>
      * @return Whether the phaseStatus field is set.
      */
     boolean hasPhaseStatus();
     /**
-     * <code>string phase_status = 8;</code>
+     * <code>optional string phase_status = 8;</code>
      * @return The phaseStatus.
      */
     java.lang.String getPhaseStatus();
     /**
-     * <code>string phase_status = 8;</code>
+     * <code>optional string phase_status = 8;</code>
      * @return The bytes for phaseStatus.
      */
     com.google.protobuf.ByteString
         getPhaseStatusBytes();
 
     /**
-     * <code>string name = 9;</code>
+     * <code>optional string name = 9;</code>
      * @return Whether the name field is set.
      */
     boolean hasName();
     /**
-     * <code>string name = 9;</code>
+     * <code>optional string name = 9;</code>
      * @return The name.
      */
     java.lang.String getName();
     /**
-     * <code>string name = 9;</code>
+     * <code>optional string name = 9;</code>
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>int64 start_date = 10;</code>
+     * <code>optional int64 start_date = 10;</code>
      * @return Whether the startDate field is set.
      */
     boolean hasStartDate();
     /**
-     * <code>int64 start_date = 10;</code>
+     * <code>optional int64 start_date = 10;</code>
      * @return The startDate.
      */
     long getStartDate();
 
     /**
-     * <code>int64 complete_date = 11;</code>
+     * <code>optional int64 complete_date = 11;</code>
      * @return Whether the completeDate field is set.
      */
     boolean hasCompleteDate();
     /**
-     * <code>int64 complete_date = 11;</code>
+     * <code>optional int64 complete_date = 11;</code>
      * @return The completeDate.
      */
     long getCompleteDate();
 
     /**
-     * <code>.google.protobuf.Any work_item_data = 12;</code>
+     * <code>optional .google.protobuf.Any work_item_data = 12;</code>
      * @return Whether the workItemData field is set.
      */
     boolean hasWorkItemData();
     /**
-     * <code>.google.protobuf.Any work_item_data = 12;</code>
+     * <code>optional .google.protobuf.Any work_item_data = 12;</code>
      * @return The workItemData.
      */
     com.google.protobuf.Any getWorkItemData();
     /**
-     * <code>.google.protobuf.Any work_item_data = 12;</code>
+     * <code>optional .google.protobuf.Any work_item_data = 12;</code>
      */
     com.google.protobuf.AnyOrBuilder getWorkItemDataOrBuilder();
   }
@@ -1308,7 +1308,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int ERROR_HANDLING_PROCESS_INSTANCE_ID_FIELD_NUMBER = 3;
     private volatile java.lang.Object errorHandlingProcessInstanceId_;
     /**
-     * <code>string error_handling_process_instance_id = 3;</code>
+     * <code>optional string error_handling_process_instance_id = 3;</code>
      * @return Whether the errorHandlingProcessInstanceId field is set.
      */
     @java.lang.Override
@@ -1316,7 +1316,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string error_handling_process_instance_id = 3;</code>
+     * <code>optional string error_handling_process_instance_id = 3;</code>
      * @return The errorHandlingProcessInstanceId.
      */
     @java.lang.Override
@@ -1333,7 +1333,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
     /**
-     * <code>string error_handling_process_instance_id = 3;</code>
+     * <code>optional string error_handling_process_instance_id = 3;</code>
      * @return The bytes for errorHandlingProcessInstanceId.
      */
     @java.lang.Override
@@ -1449,7 +1449,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int PHASE_ID_FIELD_NUMBER = 7;
     private volatile java.lang.Object phaseId_;
     /**
-     * <code>string phase_id = 7;</code>
+     * <code>optional string phase_id = 7;</code>
      * @return Whether the phaseId field is set.
      */
     @java.lang.Override
@@ -1457,7 +1457,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>string phase_id = 7;</code>
+     * <code>optional string phase_id = 7;</code>
      * @return The phaseId.
      */
     @java.lang.Override
@@ -1474,7 +1474,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
     /**
-     * <code>string phase_id = 7;</code>
+     * <code>optional string phase_id = 7;</code>
      * @return The bytes for phaseId.
      */
     @java.lang.Override
@@ -1495,7 +1495,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int PHASE_STATUS_FIELD_NUMBER = 8;
     private volatile java.lang.Object phaseStatus_;
     /**
-     * <code>string phase_status = 8;</code>
+     * <code>optional string phase_status = 8;</code>
      * @return Whether the phaseStatus field is set.
      */
     @java.lang.Override
@@ -1503,7 +1503,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>string phase_status = 8;</code>
+     * <code>optional string phase_status = 8;</code>
      * @return The phaseStatus.
      */
     @java.lang.Override
@@ -1520,7 +1520,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
     /**
-     * <code>string phase_status = 8;</code>
+     * <code>optional string phase_status = 8;</code>
      * @return The bytes for phaseStatus.
      */
     @java.lang.Override
@@ -1541,7 +1541,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int NAME_FIELD_NUMBER = 9;
     private volatile java.lang.Object name_;
     /**
-     * <code>string name = 9;</code>
+     * <code>optional string name = 9;</code>
      * @return Whether the name field is set.
      */
     @java.lang.Override
@@ -1549,7 +1549,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>string name = 9;</code>
+     * <code>optional string name = 9;</code>
      * @return The name.
      */
     @java.lang.Override
@@ -1566,7 +1566,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
     /**
-     * <code>string name = 9;</code>
+     * <code>optional string name = 9;</code>
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -1587,7 +1587,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int START_DATE_FIELD_NUMBER = 10;
     private long startDate_;
     /**
-     * <code>int64 start_date = 10;</code>
+     * <code>optional int64 start_date = 10;</code>
      * @return Whether the startDate field is set.
      */
     @java.lang.Override
@@ -1595,7 +1595,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>int64 start_date = 10;</code>
+     * <code>optional int64 start_date = 10;</code>
      * @return The startDate.
      */
     @java.lang.Override
@@ -1606,7 +1606,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int COMPLETE_DATE_FIELD_NUMBER = 11;
     private long completeDate_;
     /**
-     * <code>int64 complete_date = 11;</code>
+     * <code>optional int64 complete_date = 11;</code>
      * @return Whether the completeDate field is set.
      */
     @java.lang.Override
@@ -1614,7 +1614,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
-     * <code>int64 complete_date = 11;</code>
+     * <code>optional int64 complete_date = 11;</code>
      * @return The completeDate.
      */
     @java.lang.Override
@@ -1625,7 +1625,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int WORK_ITEM_DATA_FIELD_NUMBER = 12;
     private com.google.protobuf.Any workItemData_;
     /**
-     * <code>.google.protobuf.Any work_item_data = 12;</code>
+     * <code>optional .google.protobuf.Any work_item_data = 12;</code>
      * @return Whether the workItemData field is set.
      */
     @java.lang.Override
@@ -1633,7 +1633,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
-     * <code>.google.protobuf.Any work_item_data = 12;</code>
+     * <code>optional .google.protobuf.Any work_item_data = 12;</code>
      * @return The workItemData.
      */
     @java.lang.Override
@@ -1641,7 +1641,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return workItemData_ == null ? com.google.protobuf.Any.getDefaultInstance() : workItemData_;
     }
     /**
-     * <code>.google.protobuf.Any work_item_data = 12;</code>
+     * <code>optional .google.protobuf.Any work_item_data = 12;</code>
      */
     @java.lang.Override
     public com.google.protobuf.AnyOrBuilder getWorkItemDataOrBuilder() {
@@ -1662,7 +1662,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getWorkItemIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(workItemId_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, workItemId_);
       }
       for (int i = 0; i < timerInstanceId_.size(); i++) {
@@ -1707,7 +1707,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (size != -1) return size;
 
       size = 0;
-      if (!getWorkItemIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(workItemId_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, workItemId_);
       }
       {
@@ -2493,14 +2493,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private java.lang.Object errorHandlingProcessInstanceId_ = "";
       /**
-       * <code>string error_handling_process_instance_id = 3;</code>
+       * <code>optional string error_handling_process_instance_id = 3;</code>
        * @return Whether the errorHandlingProcessInstanceId field is set.
        */
       public boolean hasErrorHandlingProcessInstanceId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>string error_handling_process_instance_id = 3;</code>
+       * <code>optional string error_handling_process_instance_id = 3;</code>
        * @return The errorHandlingProcessInstanceId.
        */
       public java.lang.String getErrorHandlingProcessInstanceId() {
@@ -2516,7 +2516,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string error_handling_process_instance_id = 3;</code>
+       * <code>optional string error_handling_process_instance_id = 3;</code>
        * @return The bytes for errorHandlingProcessInstanceId.
        */
       public com.google.protobuf.ByteString
@@ -2533,7 +2533,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string error_handling_process_instance_id = 3;</code>
+       * <code>optional string error_handling_process_instance_id = 3;</code>
        * @param value The errorHandlingProcessInstanceId to set.
        * @return This builder for chaining.
        */
@@ -2548,7 +2548,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string error_handling_process_instance_id = 3;</code>
+       * <code>optional string error_handling_process_instance_id = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearErrorHandlingProcessInstanceId() {
@@ -2558,7 +2558,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string error_handling_process_instance_id = 3;</code>
+       * <code>optional string error_handling_process_instance_id = 3;</code>
        * @param value The bytes for errorHandlingProcessInstanceId to set.
        * @return This builder for chaining.
        */
@@ -3099,14 +3099,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private java.lang.Object phaseId_ = "";
       /**
-       * <code>string phase_id = 7;</code>
+       * <code>optional string phase_id = 7;</code>
        * @return Whether the phaseId field is set.
        */
       public boolean hasPhaseId() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
-       * <code>string phase_id = 7;</code>
+       * <code>optional string phase_id = 7;</code>
        * @return The phaseId.
        */
       public java.lang.String getPhaseId() {
@@ -3122,7 +3122,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string phase_id = 7;</code>
+       * <code>optional string phase_id = 7;</code>
        * @return The bytes for phaseId.
        */
       public com.google.protobuf.ByteString
@@ -3139,7 +3139,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string phase_id = 7;</code>
+       * <code>optional string phase_id = 7;</code>
        * @param value The phaseId to set.
        * @return This builder for chaining.
        */
@@ -3154,7 +3154,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string phase_id = 7;</code>
+       * <code>optional string phase_id = 7;</code>
        * @return This builder for chaining.
        */
       public Builder clearPhaseId() {
@@ -3164,7 +3164,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string phase_id = 7;</code>
+       * <code>optional string phase_id = 7;</code>
        * @param value The bytes for phaseId to set.
        * @return This builder for chaining.
        */
@@ -3182,14 +3182,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private java.lang.Object phaseStatus_ = "";
       /**
-       * <code>string phase_status = 8;</code>
+       * <code>optional string phase_status = 8;</code>
        * @return Whether the phaseStatus field is set.
        */
       public boolean hasPhaseStatus() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
-       * <code>string phase_status = 8;</code>
+       * <code>optional string phase_status = 8;</code>
        * @return The phaseStatus.
        */
       public java.lang.String getPhaseStatus() {
@@ -3205,7 +3205,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string phase_status = 8;</code>
+       * <code>optional string phase_status = 8;</code>
        * @return The bytes for phaseStatus.
        */
       public com.google.protobuf.ByteString
@@ -3222,7 +3222,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string phase_status = 8;</code>
+       * <code>optional string phase_status = 8;</code>
        * @param value The phaseStatus to set.
        * @return This builder for chaining.
        */
@@ -3237,7 +3237,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string phase_status = 8;</code>
+       * <code>optional string phase_status = 8;</code>
        * @return This builder for chaining.
        */
       public Builder clearPhaseStatus() {
@@ -3247,7 +3247,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string phase_status = 8;</code>
+       * <code>optional string phase_status = 8;</code>
        * @param value The bytes for phaseStatus to set.
        * @return This builder for chaining.
        */
@@ -3265,14 +3265,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private java.lang.Object name_ = "";
       /**
-       * <code>string name = 9;</code>
+       * <code>optional string name = 9;</code>
        * @return Whether the name field is set.
        */
       public boolean hasName() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
-       * <code>string name = 9;</code>
+       * <code>optional string name = 9;</code>
        * @return The name.
        */
       public java.lang.String getName() {
@@ -3288,7 +3288,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string name = 9;</code>
+       * <code>optional string name = 9;</code>
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString
@@ -3305,7 +3305,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string name = 9;</code>
+       * <code>optional string name = 9;</code>
        * @param value The name to set.
        * @return This builder for chaining.
        */
@@ -3320,7 +3320,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string name = 9;</code>
+       * <code>optional string name = 9;</code>
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -3330,7 +3330,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string name = 9;</code>
+       * <code>optional string name = 9;</code>
        * @param value The bytes for name to set.
        * @return This builder for chaining.
        */
@@ -3348,7 +3348,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private long startDate_ ;
       /**
-       * <code>int64 start_date = 10;</code>
+       * <code>optional int64 start_date = 10;</code>
        * @return Whether the startDate field is set.
        */
       @java.lang.Override
@@ -3356,7 +3356,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return ((bitField0_ & 0x00000080) != 0);
       }
       /**
-       * <code>int64 start_date = 10;</code>
+       * <code>optional int64 start_date = 10;</code>
        * @return The startDate.
        */
       @java.lang.Override
@@ -3364,7 +3364,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return startDate_;
       }
       /**
-       * <code>int64 start_date = 10;</code>
+       * <code>optional int64 start_date = 10;</code>
        * @param value The startDate to set.
        * @return This builder for chaining.
        */
@@ -3375,7 +3375,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>int64 start_date = 10;</code>
+       * <code>optional int64 start_date = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearStartDate() {
@@ -3387,7 +3387,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private long completeDate_ ;
       /**
-       * <code>int64 complete_date = 11;</code>
+       * <code>optional int64 complete_date = 11;</code>
        * @return Whether the completeDate field is set.
        */
       @java.lang.Override
@@ -3395,7 +3395,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return ((bitField0_ & 0x00000100) != 0);
       }
       /**
-       * <code>int64 complete_date = 11;</code>
+       * <code>optional int64 complete_date = 11;</code>
        * @return The completeDate.
        */
       @java.lang.Override
@@ -3403,7 +3403,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return completeDate_;
       }
       /**
-       * <code>int64 complete_date = 11;</code>
+       * <code>optional int64 complete_date = 11;</code>
        * @param value The completeDate to set.
        * @return This builder for chaining.
        */
@@ -3414,7 +3414,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>int64 complete_date = 11;</code>
+       * <code>optional int64 complete_date = 11;</code>
        * @return This builder for chaining.
        */
       public Builder clearCompleteDate() {
@@ -3428,14 +3428,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder> workItemDataBuilder_;
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        * @return Whether the workItemData field is set.
        */
       public boolean hasWorkItemData() {
         return ((bitField0_ & 0x00000200) != 0);
       }
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        * @return The workItemData.
        */
       public com.google.protobuf.Any getWorkItemData() {
@@ -3446,7 +3446,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        */
       public Builder setWorkItemData(com.google.protobuf.Any value) {
         if (workItemDataBuilder_ == null) {
@@ -3462,7 +3462,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        */
       public Builder setWorkItemData(
           com.google.protobuf.Any.Builder builderForValue) {
@@ -3476,7 +3476,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        */
       public Builder mergeWorkItemData(com.google.protobuf.Any value) {
         if (workItemDataBuilder_ == null) {
@@ -3496,7 +3496,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        */
       public Builder clearWorkItemData() {
         if (workItemDataBuilder_ == null) {
@@ -3509,7 +3509,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        */
       public com.google.protobuf.Any.Builder getWorkItemDataBuilder() {
         bitField0_ |= 0x00000200;
@@ -3517,7 +3517,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return getWorkItemDataFieldBuilder().getBuilder();
       }
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        */
       public com.google.protobuf.AnyOrBuilder getWorkItemDataOrBuilder() {
         if (workItemDataBuilder_ != null) {
@@ -3528,7 +3528,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>.google.protobuf.Any work_item_data = 12;</code>
+       * <code>optional .google.protobuf.Any work_item_data = 12;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder> 
@@ -3601,17 +3601,17 @@ public final class KogitoNodeInstanceContentsProtobuf {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return Whether the processInstanceId field is set.
      */
     boolean hasProcessInstanceId();
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return The processInstanceId.
      */
     java.lang.String getProcessInstanceId();
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return The bytes for processInstanceId.
      */
     com.google.protobuf.ByteString
@@ -3744,7 +3744,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int PROCESS_INSTANCE_ID_FIELD_NUMBER = 1;
     private volatile java.lang.Object processInstanceId_;
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return Whether the processInstanceId field is set.
      */
     @java.lang.Override
@@ -3752,7 +3752,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return The processInstanceId.
      */
     @java.lang.Override
@@ -3769,7 +3769,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return The bytes for processInstanceId.
      */
     @java.lang.Override
@@ -4173,14 +4173,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private java.lang.Object processInstanceId_ = "";
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @return Whether the processInstanceId field is set.
        */
       public boolean hasProcessInstanceId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @return The processInstanceId.
        */
       public java.lang.String getProcessInstanceId() {
@@ -4196,7 +4196,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @return The bytes for processInstanceId.
        */
       public com.google.protobuf.ByteString
@@ -4213,7 +4213,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @param value The processInstanceId to set.
        * @return This builder for chaining.
        */
@@ -4228,7 +4228,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearProcessInstanceId() {
@@ -4238,7 +4238,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @param value The bytes for processInstanceId to set.
        * @return This builder for chaining.
        */
@@ -4421,17 +4421,17 @@ public final class KogitoNodeInstanceContentsProtobuf {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return Whether the processInstanceId field is set.
      */
     boolean hasProcessInstanceId();
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return The processInstanceId.
      */
     java.lang.String getProcessInstanceId();
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return The bytes for processInstanceId.
      */
     com.google.protobuf.ByteString
@@ -4564,7 +4564,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int PROCESS_INSTANCE_ID_FIELD_NUMBER = 1;
     private volatile java.lang.Object processInstanceId_;
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return Whether the processInstanceId field is set.
      */
     @java.lang.Override
@@ -4572,7 +4572,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return The processInstanceId.
      */
     @java.lang.Override
@@ -4589,7 +4589,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
     /**
-     * <code>string process_instance_id = 1;</code>
+     * <code>optional string process_instance_id = 1;</code>
      * @return The bytes for processInstanceId.
      */
     @java.lang.Override
@@ -4993,14 +4993,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private java.lang.Object processInstanceId_ = "";
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @return Whether the processInstanceId field is set.
        */
       public boolean hasProcessInstanceId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @return The processInstanceId.
        */
       public java.lang.String getProcessInstanceId() {
@@ -5016,7 +5016,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @return The bytes for processInstanceId.
        */
       public com.google.protobuf.ByteString
@@ -5033,7 +5033,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @param value The processInstanceId to set.
        * @return This builder for chaining.
        */
@@ -5048,7 +5048,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearProcessInstanceId() {
@@ -5058,7 +5058,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string process_instance_id = 1;</code>
+       * <code>optional string process_instance_id = 1;</code>
        * @param value The bytes for processInstanceId to set.
        * @return This builder for chaining.
        */
@@ -6297,17 +6297,17 @@ public final class KogitoNodeInstanceContentsProtobuf {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string timer_id = 1;</code>
+     * <code>optional string timer_id = 1;</code>
      * @return Whether the timerId field is set.
      */
     boolean hasTimerId();
     /**
-     * <code>string timer_id = 1;</code>
+     * <code>optional string timer_id = 1;</code>
      * @return The timerId.
      */
     java.lang.String getTimerId();
     /**
-     * <code>string timer_id = 1;</code>
+     * <code>optional string timer_id = 1;</code>
      * @return The bytes for timerId.
      */
     com.google.protobuf.ByteString
@@ -6402,7 +6402,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     public static final int TIMER_ID_FIELD_NUMBER = 1;
     private volatile java.lang.Object timerId_;
     /**
-     * <code>string timer_id = 1;</code>
+     * <code>optional string timer_id = 1;</code>
      * @return Whether the timerId field is set.
      */
     @java.lang.Override
@@ -6410,7 +6410,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string timer_id = 1;</code>
+     * <code>optional string timer_id = 1;</code>
      * @return The timerId.
      */
     @java.lang.Override
@@ -6427,7 +6427,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
     /**
-     * <code>string timer_id = 1;</code>
+     * <code>optional string timer_id = 1;</code>
      * @return The bytes for timerId.
      */
     @java.lang.Override
@@ -6762,14 +6762,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       private java.lang.Object timerId_ = "";
       /**
-       * <code>string timer_id = 1;</code>
+       * <code>optional string timer_id = 1;</code>
        * @return Whether the timerId field is set.
        */
       public boolean hasTimerId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string timer_id = 1;</code>
+       * <code>optional string timer_id = 1;</code>
        * @return The timerId.
        */
       public java.lang.String getTimerId() {
@@ -6785,7 +6785,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string timer_id = 1;</code>
+       * <code>optional string timer_id = 1;</code>
        * @return The bytes for timerId.
        */
       public com.google.protobuf.ByteString
@@ -6802,7 +6802,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
       }
       /**
-       * <code>string timer_id = 1;</code>
+       * <code>optional string timer_id = 1;</code>
        * @param value The timerId to set.
        * @return This builder for chaining.
        */
@@ -6817,7 +6817,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string timer_id = 1;</code>
+       * <code>optional string timer_id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearTimerId() {
@@ -6827,7 +6827,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return this;
       }
       /**
-       * <code>string timer_id = 1;</code>
+       * <code>optional string timer_id = 1;</code>
        * @param value The bytes for timerId to set.
        * @return This builder for chaining.
        */
@@ -7019,23 +7019,23 @@ public final class KogitoNodeInstanceContentsProtobuf {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>int64 node_id = 1;</code>
+       * <code>optional int64 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
       boolean hasNodeId();
       /**
-       * <code>int64 node_id = 1;</code>
+       * <code>optional int64 node_id = 1;</code>
        * @return The nodeId.
        */
       long getNodeId();
 
       /**
-       * <code>int32 counter = 2;</code>
+       * <code>optional int32 counter = 2;</code>
        * @return Whether the counter field is set.
        */
       boolean hasCounter();
       /**
-       * <code>int32 counter = 2;</code>
+       * <code>optional int32 counter = 2;</code>
        * @return The counter.
        */
       int getCounter();
@@ -7132,7 +7132,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       public static final int NODE_ID_FIELD_NUMBER = 1;
       private long nodeId_;
       /**
-       * <code>int64 node_id = 1;</code>
+       * <code>optional int64 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
       @java.lang.Override
@@ -7140,7 +7140,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>int64 node_id = 1;</code>
+       * <code>optional int64 node_id = 1;</code>
        * @return The nodeId.
        */
       @java.lang.Override
@@ -7151,7 +7151,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       public static final int COUNTER_FIELD_NUMBER = 2;
       private int counter_;
       /**
-       * <code>int32 counter = 2;</code>
+       * <code>optional int32 counter = 2;</code>
        * @return Whether the counter field is set.
        */
       @java.lang.Override
@@ -7159,7 +7159,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>int32 counter = 2;</code>
+       * <code>optional int32 counter = 2;</code>
        * @return The counter.
        */
       @java.lang.Override
@@ -7509,7 +7509,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
         private long nodeId_ ;
         /**
-         * <code>int64 node_id = 1;</code>
+         * <code>optional int64 node_id = 1;</code>
          * @return Whether the nodeId field is set.
          */
         @java.lang.Override
@@ -7517,7 +7517,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           return ((bitField0_ & 0x00000001) != 0);
         }
         /**
-         * <code>int64 node_id = 1;</code>
+         * <code>optional int64 node_id = 1;</code>
          * @return The nodeId.
          */
         @java.lang.Override
@@ -7525,7 +7525,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           return nodeId_;
         }
         /**
-         * <code>int64 node_id = 1;</code>
+         * <code>optional int64 node_id = 1;</code>
          * @param value The nodeId to set.
          * @return This builder for chaining.
          */
@@ -7536,7 +7536,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           return this;
         }
         /**
-         * <code>int64 node_id = 1;</code>
+         * <code>optional int64 node_id = 1;</code>
          * @return This builder for chaining.
          */
         public Builder clearNodeId() {
@@ -7548,7 +7548,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
         private int counter_ ;
         /**
-         * <code>int32 counter = 2;</code>
+         * <code>optional int32 counter = 2;</code>
          * @return Whether the counter field is set.
          */
         @java.lang.Override
@@ -7556,7 +7556,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           return ((bitField0_ & 0x00000002) != 0);
         }
         /**
-         * <code>int32 counter = 2;</code>
+         * <code>optional int32 counter = 2;</code>
          * @return The counter.
          */
         @java.lang.Override
@@ -7564,7 +7564,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           return counter_;
         }
         /**
-         * <code>int32 counter = 2;</code>
+         * <code>optional int32 counter = 2;</code>
          * @param value The counter to set.
          * @return This builder for chaining.
          */
@@ -7575,7 +7575,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           return this;
         }
         /**
-         * <code>int32 counter = 2;</code>
+         * <code>optional int32 counter = 2;</code>
          * @return This builder for chaining.
          */
         public Builder clearCounter() {
@@ -12676,7 +12676,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getJobIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(jobId_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, jobId_);
       }
       unknownFields.writeTo(output);
@@ -12688,7 +12688,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (size != -1) return size;
 
       size = 0;
-      if (!getJobIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(jobId_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, jobId_);
       }
       size += unknownFields.getSerializedSize();

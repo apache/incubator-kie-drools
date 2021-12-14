@@ -313,8 +313,10 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
                             || pd.type().name().toString().equals(Date.class.getCanonicalName())) {
                         continue;
                     }
-
-                    dataModelClasses.add(index.getClassByName(pd.type().name()));
+                    ClassInfo clazzInfo = index.getClassByName(pd.type().name());
+                    if (clazzInfo != null) {
+                        dataModelClasses.add(clazzInfo);
+                    }
                 }
             }
             return dataModelClasses;

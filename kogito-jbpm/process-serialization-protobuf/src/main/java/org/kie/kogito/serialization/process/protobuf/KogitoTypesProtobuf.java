@@ -27,6 +27,574 @@ public final class KogitoTypesProtobuf {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface JsonNodeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.kie.kogito.serialization.process.protobuf.JsonNode)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string content = 1;</code>
+     * @return The content.
+     */
+    java.lang.String getContent();
+    /**
+     * <code>string content = 1;</code>
+     * @return The bytes for content.
+     */
+    com.google.protobuf.ByteString
+        getContentBytes();
+  }
+  /**
+   * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.JsonNode}
+   */
+  public static final class JsonNode extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:org.kie.kogito.serialization.process.protobuf.JsonNode)
+      JsonNodeOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use JsonNode.newBuilder() to construct.
+    private JsonNode(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private JsonNode() {
+      content_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new JsonNode();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private JsonNode(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              content_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode.class, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode.Builder.class);
+    }
+
+    public static final int CONTENT_FIELD_NUMBER = 1;
+    private volatile java.lang.Object content_;
+    /**
+     * <code>string content = 1;</code>
+     * @return The content.
+     */
+    @java.lang.Override
+    public java.lang.String getContent() {
+      java.lang.Object ref = content_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        content_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string content = 1;</code>
+     * @return The bytes for content.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getContentBytes() {
+      java.lang.Object ref = content_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        content_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, content_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, content_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode)) {
+        return super.equals(obj);
+      }
+      org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode other = (org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode) obj;
+
+      if (!getContent()
+          .equals(other.getContent())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
+      hash = (53 * hash) + getContent().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.JsonNode}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.kie.kogito.serialization.process.protobuf.JsonNode)
+        org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNodeOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode.class, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode.Builder.class);
+      }
+
+      // Construct using org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        content_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_descriptor;
+      }
+
+      @java.lang.Override
+      public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode getDefaultInstanceForType() {
+        return org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode build() {
+        org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode buildPartial() {
+        org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode result = new org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode(this);
+        result.content_ = content_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode) {
+          return mergeFrom((org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode other) {
+        if (other == org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode.getDefaultInstance()) return this;
+        if (!other.getContent().isEmpty()) {
+          content_ = other.content_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object content_ = "";
+      /**
+       * <code>string content = 1;</code>
+       * @return The content.
+       */
+      public java.lang.String getContent() {
+        java.lang.Object ref = content_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          content_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string content = 1;</code>
+       * @return The bytes for content.
+       */
+      public com.google.protobuf.ByteString
+          getContentBytes() {
+        java.lang.Object ref = content_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          content_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string content = 1;</code>
+       * @param value The content to set.
+       * @return This builder for chaining.
+       */
+      public Builder setContent(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        content_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string content = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearContent() {
+        
+        content_ = getDefaultInstance().getContent();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string content = 1;</code>
+       * @param value The bytes for content to set.
+       * @return This builder for chaining.
+       */
+      public Builder setContentBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        content_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:org.kie.kogito.serialization.process.protobuf.JsonNode)
+    }
+
+    // @@protoc_insertion_point(class_scope:org.kie.kogito.serialization.process.protobuf.JsonNode)
+    private static final org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode();
+    }
+
+    public static org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<JsonNode>
+        PARSER = new com.google.protobuf.AbstractParser<JsonNode>() {
+      @java.lang.Override
+      public JsonNode parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new JsonNode(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<JsonNode> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<JsonNode> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.JsonNode getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface VariableOrBuilder extends
       // @@protoc_insertion_point(interface_extends:org.kie.kogito.serialization.process.protobuf.Variable)
       com.google.protobuf.MessageOrBuilder {
@@ -56,17 +624,17 @@ public final class KogitoTypesProtobuf {
         getDataTypeBytes();
 
     /**
-     * <code>.google.protobuf.Any value = 3;</code>
+     * <code>optional .google.protobuf.Any value = 3;</code>
      * @return Whether the value field is set.
      */
     boolean hasValue();
     /**
-     * <code>.google.protobuf.Any value = 3;</code>
+     * <code>optional .google.protobuf.Any value = 3;</code>
      * @return The value.
      */
     com.google.protobuf.Any getValue();
     /**
-     * <code>.google.protobuf.Any value = 3;</code>
+     * <code>optional .google.protobuf.Any value = 3;</code>
      */
     com.google.protobuf.AnyOrBuilder getValueOrBuilder();
   }
@@ -255,7 +823,7 @@ public final class KogitoTypesProtobuf {
     public static final int VALUE_FIELD_NUMBER = 3;
     private com.google.protobuf.Any value_;
     /**
-     * <code>.google.protobuf.Any value = 3;</code>
+     * <code>optional .google.protobuf.Any value = 3;</code>
      * @return Whether the value field is set.
      */
     @java.lang.Override
@@ -263,7 +831,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.google.protobuf.Any value = 3;</code>
+     * <code>optional .google.protobuf.Any value = 3;</code>
      * @return The value.
      */
     @java.lang.Override
@@ -271,7 +839,7 @@ public final class KogitoTypesProtobuf {
       return value_ == null ? com.google.protobuf.Any.getDefaultInstance() : value_;
     }
     /**
-     * <code>.google.protobuf.Any value = 3;</code>
+     * <code>optional .google.protobuf.Any value = 3;</code>
      */
     @java.lang.Override
     public com.google.protobuf.AnyOrBuilder getValueOrBuilder() {
@@ -292,10 +860,10 @@ public final class KogitoTypesProtobuf {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getNameBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
-      if (!getDataTypeBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(dataType_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, dataType_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -310,10 +878,10 @@ public final class KogitoTypesProtobuf {
       if (size != -1) return size;
 
       size = 0;
-      if (!getNameBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
-      if (!getDataTypeBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(dataType_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, dataType_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -791,14 +1359,14 @@ public final class KogitoTypesProtobuf {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder> valueBuilder_;
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        * @return Whether the value field is set.
        */
       public boolean hasValue() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        * @return The value.
        */
       public com.google.protobuf.Any getValue() {
@@ -809,7 +1377,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        */
       public Builder setValue(com.google.protobuf.Any value) {
         if (valueBuilder_ == null) {
@@ -825,7 +1393,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        */
       public Builder setValue(
           com.google.protobuf.Any.Builder builderForValue) {
@@ -839,7 +1407,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        */
       public Builder mergeValue(com.google.protobuf.Any value) {
         if (valueBuilder_ == null) {
@@ -859,7 +1427,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        */
       public Builder clearValue() {
         if (valueBuilder_ == null) {
@@ -872,7 +1440,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        */
       public com.google.protobuf.Any.Builder getValueBuilder() {
         bitField0_ |= 0x00000001;
@@ -880,7 +1448,7 @@ public final class KogitoTypesProtobuf {
         return getValueFieldBuilder().getBuilder();
       }
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        */
       public com.google.protobuf.AnyOrBuilder getValueOrBuilder() {
         if (valueBuilder_ != null) {
@@ -891,7 +1459,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>.google.protobuf.Any value = 3;</code>
+       * <code>optional .google.protobuf.Any value = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder> 
@@ -997,39 +1565,39 @@ public final class KogitoTypesProtobuf {
     com.google.protobuf.AnyOrBuilder getContentOrBuilder();
 
     /**
-     * <code>int32 level = 4;</code>
+     * <code>optional int32 level = 4;</code>
      * @return Whether the level field is set.
      */
     boolean hasLevel();
     /**
-     * <code>int32 level = 4;</code>
+     * <code>optional int32 level = 4;</code>
      * @return The level.
      */
     int getLevel();
 
     /**
-     * <code>int64 trigger_date = 5;</code>
+     * <code>optional int64 trigger_date = 5;</code>
      * @return Whether the triggerDate field is set.
      */
     boolean hasTriggerDate();
     /**
-     * <code>int64 trigger_date = 5;</code>
+     * <code>optional int64 trigger_date = 5;</code>
      * @return The triggerDate.
      */
     long getTriggerDate();
 
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
      * @return Whether the sla field is set.
      */
     boolean hasSla();
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
      * @return The sla.
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext getSla();
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder getSlaOrBuilder();
   }
@@ -1238,7 +1806,7 @@ public final class KogitoTypesProtobuf {
     public static final int LEVEL_FIELD_NUMBER = 4;
     private int level_;
     /**
-     * <code>int32 level = 4;</code>
+     * <code>optional int32 level = 4;</code>
      * @return Whether the level field is set.
      */
     @java.lang.Override
@@ -1246,7 +1814,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>int32 level = 4;</code>
+     * <code>optional int32 level = 4;</code>
      * @return The level.
      */
     @java.lang.Override
@@ -1257,7 +1825,7 @@ public final class KogitoTypesProtobuf {
     public static final int TRIGGER_DATE_FIELD_NUMBER = 5;
     private long triggerDate_;
     /**
-     * <code>int64 trigger_date = 5;</code>
+     * <code>optional int64 trigger_date = 5;</code>
      * @return Whether the triggerDate field is set.
      */
     @java.lang.Override
@@ -1265,7 +1833,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>int64 trigger_date = 5;</code>
+     * <code>optional int64 trigger_date = 5;</code>
      * @return The triggerDate.
      */
     @java.lang.Override
@@ -1276,7 +1844,7 @@ public final class KogitoTypesProtobuf {
     public static final int SLA_FIELD_NUMBER = 6;
     private org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext sla_;
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
      * @return Whether the sla field is set.
      */
     @java.lang.Override
@@ -1284,7 +1852,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
      * @return The sla.
      */
     @java.lang.Override
@@ -1292,7 +1860,7 @@ public final class KogitoTypesProtobuf {
       return sla_ == null ? org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.getDefaultInstance() : sla_;
     }
     /**
-     * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+     * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
      */
     @java.lang.Override
     public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder getSlaOrBuilder() {
@@ -1313,7 +1881,7 @@ public final class KogitoTypesProtobuf {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
       if (nodeId_ != 0L) {
@@ -1340,7 +1908,7 @@ public final class KogitoTypesProtobuf {
       if (size != -1) return size;
 
       size = 0;
-      if (!getIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
       if (nodeId_ != 0L) {
@@ -1966,7 +2534,7 @@ public final class KogitoTypesProtobuf {
 
       private int level_ ;
       /**
-       * <code>int32 level = 4;</code>
+       * <code>optional int32 level = 4;</code>
        * @return Whether the level field is set.
        */
       @java.lang.Override
@@ -1974,7 +2542,7 @@ public final class KogitoTypesProtobuf {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>int32 level = 4;</code>
+       * <code>optional int32 level = 4;</code>
        * @return The level.
        */
       @java.lang.Override
@@ -1982,7 +2550,7 @@ public final class KogitoTypesProtobuf {
         return level_;
       }
       /**
-       * <code>int32 level = 4;</code>
+       * <code>optional int32 level = 4;</code>
        * @param value The level to set.
        * @return This builder for chaining.
        */
@@ -1993,7 +2561,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>int32 level = 4;</code>
+       * <code>optional int32 level = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearLevel() {
@@ -2005,7 +2573,7 @@ public final class KogitoTypesProtobuf {
 
       private long triggerDate_ ;
       /**
-       * <code>int64 trigger_date = 5;</code>
+       * <code>optional int64 trigger_date = 5;</code>
        * @return Whether the triggerDate field is set.
        */
       @java.lang.Override
@@ -2013,7 +2581,7 @@ public final class KogitoTypesProtobuf {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>int64 trigger_date = 5;</code>
+       * <code>optional int64 trigger_date = 5;</code>
        * @return The triggerDate.
        */
       @java.lang.Override
@@ -2021,7 +2589,7 @@ public final class KogitoTypesProtobuf {
         return triggerDate_;
       }
       /**
-       * <code>int64 trigger_date = 5;</code>
+       * <code>optional int64 trigger_date = 5;</code>
        * @param value The triggerDate to set.
        * @return This builder for chaining.
        */
@@ -2032,7 +2600,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>int64 trigger_date = 5;</code>
+       * <code>optional int64 trigger_date = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearTriggerDate() {
@@ -2046,14 +2614,14 @@ public final class KogitoTypesProtobuf {
       private com.google.protobuf.SingleFieldBuilderV3<
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.Builder, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder> slaBuilder_;
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        * @return Whether the sla field is set.
        */
       public boolean hasSla() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        * @return The sla.
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext getSla() {
@@ -2064,7 +2632,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        */
       public Builder setSla(org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext value) {
         if (slaBuilder_ == null) {
@@ -2080,7 +2648,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        */
       public Builder setSla(
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.Builder builderForValue) {
@@ -2094,7 +2662,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        */
       public Builder mergeSla(org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext value) {
         if (slaBuilder_ == null) {
@@ -2114,7 +2682,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        */
       public Builder clearSla() {
         if (slaBuilder_ == null) {
@@ -2127,7 +2695,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.Builder getSlaBuilder() {
         bitField0_ |= 0x00000004;
@@ -2135,7 +2703,7 @@ public final class KogitoTypesProtobuf {
         return getSlaFieldBuilder().getBuilder();
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        */
       public org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder getSlaOrBuilder() {
         if (slaBuilder_ != null) {
@@ -2146,7 +2714,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>.org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
+       * <code>optional .org.kie.kogito.serialization.process.protobuf.SLAContext sla = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContext.Builder, org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.SLAContextOrBuilder> 
@@ -4128,34 +4696,34 @@ public final class KogitoTypesProtobuf {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string swimlane = 1;</code>
+     * <code>optional string swimlane = 1;</code>
      * @return Whether the swimlane field is set.
      */
     boolean hasSwimlane();
     /**
-     * <code>string swimlane = 1;</code>
+     * <code>optional string swimlane = 1;</code>
      * @return The swimlane.
      */
     java.lang.String getSwimlane();
     /**
-     * <code>string swimlane = 1;</code>
+     * <code>optional string swimlane = 1;</code>
      * @return The bytes for swimlane.
      */
     com.google.protobuf.ByteString
         getSwimlaneBytes();
 
     /**
-     * <code>string actor_id = 2;</code>
+     * <code>optional string actor_id = 2;</code>
      * @return Whether the actorId field is set.
      */
     boolean hasActorId();
     /**
-     * <code>string actor_id = 2;</code>
+     * <code>optional string actor_id = 2;</code>
      * @return The actorId.
      */
     java.lang.String getActorId();
     /**
-     * <code>string actor_id = 2;</code>
+     * <code>optional string actor_id = 2;</code>
      * @return The bytes for actorId.
      */
     com.google.protobuf.ByteString
@@ -4257,7 +4825,7 @@ public final class KogitoTypesProtobuf {
     public static final int SWIMLANE_FIELD_NUMBER = 1;
     private volatile java.lang.Object swimlane_;
     /**
-     * <code>string swimlane = 1;</code>
+     * <code>optional string swimlane = 1;</code>
      * @return Whether the swimlane field is set.
      */
     @java.lang.Override
@@ -4265,7 +4833,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string swimlane = 1;</code>
+     * <code>optional string swimlane = 1;</code>
      * @return The swimlane.
      */
     @java.lang.Override
@@ -4282,7 +4850,7 @@ public final class KogitoTypesProtobuf {
       }
     }
     /**
-     * <code>string swimlane = 1;</code>
+     * <code>optional string swimlane = 1;</code>
      * @return The bytes for swimlane.
      */
     @java.lang.Override
@@ -4303,7 +4871,7 @@ public final class KogitoTypesProtobuf {
     public static final int ACTOR_ID_FIELD_NUMBER = 2;
     private volatile java.lang.Object actorId_;
     /**
-     * <code>string actor_id = 2;</code>
+     * <code>optional string actor_id = 2;</code>
      * @return Whether the actorId field is set.
      */
     @java.lang.Override
@@ -4311,7 +4879,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>string actor_id = 2;</code>
+     * <code>optional string actor_id = 2;</code>
      * @return The actorId.
      */
     @java.lang.Override
@@ -4328,7 +4896,7 @@ public final class KogitoTypesProtobuf {
       }
     }
     /**
-     * <code>string actor_id = 2;</code>
+     * <code>optional string actor_id = 2;</code>
      * @return The bytes for actorId.
      */
     @java.lang.Override
@@ -4689,14 +5257,14 @@ public final class KogitoTypesProtobuf {
 
       private java.lang.Object swimlane_ = "";
       /**
-       * <code>string swimlane = 1;</code>
+       * <code>optional string swimlane = 1;</code>
        * @return Whether the swimlane field is set.
        */
       public boolean hasSwimlane() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string swimlane = 1;</code>
+       * <code>optional string swimlane = 1;</code>
        * @return The swimlane.
        */
       public java.lang.String getSwimlane() {
@@ -4712,7 +5280,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>string swimlane = 1;</code>
+       * <code>optional string swimlane = 1;</code>
        * @return The bytes for swimlane.
        */
       public com.google.protobuf.ByteString
@@ -4729,7 +5297,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>string swimlane = 1;</code>
+       * <code>optional string swimlane = 1;</code>
        * @param value The swimlane to set.
        * @return This builder for chaining.
        */
@@ -4744,7 +5312,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>string swimlane = 1;</code>
+       * <code>optional string swimlane = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearSwimlane() {
@@ -4754,7 +5322,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>string swimlane = 1;</code>
+       * <code>optional string swimlane = 1;</code>
        * @param value The bytes for swimlane to set.
        * @return This builder for chaining.
        */
@@ -4772,14 +5340,14 @@ public final class KogitoTypesProtobuf {
 
       private java.lang.Object actorId_ = "";
       /**
-       * <code>string actor_id = 2;</code>
+       * <code>optional string actor_id = 2;</code>
        * @return Whether the actorId field is set.
        */
       public boolean hasActorId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>string actor_id = 2;</code>
+       * <code>optional string actor_id = 2;</code>
        * @return The actorId.
        */
       public java.lang.String getActorId() {
@@ -4795,7 +5363,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>string actor_id = 2;</code>
+       * <code>optional string actor_id = 2;</code>
        * @return The bytes for actorId.
        */
       public com.google.protobuf.ByteString
@@ -4812,7 +5380,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>string actor_id = 2;</code>
+       * <code>optional string actor_id = 2;</code>
        * @param value The actorId to set.
        * @return This builder for chaining.
        */
@@ -4827,7 +5395,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>string actor_id = 2;</code>
+       * <code>optional string actor_id = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearActorId() {
@@ -4837,7 +5405,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>string actor_id = 2;</code>
+       * <code>optional string actor_id = 2;</code>
        * @param value The bytes for actorId to set.
        * @return This builder for chaining.
        */
@@ -4910,40 +5478,40 @@ public final class KogitoTypesProtobuf {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string sla_timer_id = 1;</code>
+     * <code>optional string sla_timer_id = 1;</code>
      * @return Whether the slaTimerId field is set.
      */
     boolean hasSlaTimerId();
     /**
-     * <code>string sla_timer_id = 1;</code>
+     * <code>optional string sla_timer_id = 1;</code>
      * @return The slaTimerId.
      */
     java.lang.String getSlaTimerId();
     /**
-     * <code>string sla_timer_id = 1;</code>
+     * <code>optional string sla_timer_id = 1;</code>
      * @return The bytes for slaTimerId.
      */
     com.google.protobuf.ByteString
         getSlaTimerIdBytes();
 
     /**
-     * <code>int64 sla_due_date = 2;</code>
+     * <code>optional int64 sla_due_date = 2;</code>
      * @return Whether the slaDueDate field is set.
      */
     boolean hasSlaDueDate();
     /**
-     * <code>int64 sla_due_date = 2;</code>
+     * <code>optional int64 sla_due_date = 2;</code>
      * @return The slaDueDate.
      */
     long getSlaDueDate();
 
     /**
-     * <code>int32 sla_compliance = 3;</code>
+     * <code>optional int32 sla_compliance = 3;</code>
      * @return Whether the slaCompliance field is set.
      */
     boolean hasSlaCompliance();
     /**
-     * <code>int32 sla_compliance = 3;</code>
+     * <code>optional int32 sla_compliance = 3;</code>
      * @return The slaCompliance.
      */
     int getSlaCompliance();
@@ -5047,7 +5615,7 @@ public final class KogitoTypesProtobuf {
     public static final int SLA_TIMER_ID_FIELD_NUMBER = 1;
     private volatile java.lang.Object slaTimerId_;
     /**
-     * <code>string sla_timer_id = 1;</code>
+     * <code>optional string sla_timer_id = 1;</code>
      * @return Whether the slaTimerId field is set.
      */
     @java.lang.Override
@@ -5055,7 +5623,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string sla_timer_id = 1;</code>
+     * <code>optional string sla_timer_id = 1;</code>
      * @return The slaTimerId.
      */
     @java.lang.Override
@@ -5072,7 +5640,7 @@ public final class KogitoTypesProtobuf {
       }
     }
     /**
-     * <code>string sla_timer_id = 1;</code>
+     * <code>optional string sla_timer_id = 1;</code>
      * @return The bytes for slaTimerId.
      */
     @java.lang.Override
@@ -5093,7 +5661,7 @@ public final class KogitoTypesProtobuf {
     public static final int SLA_DUE_DATE_FIELD_NUMBER = 2;
     private long slaDueDate_;
     /**
-     * <code>int64 sla_due_date = 2;</code>
+     * <code>optional int64 sla_due_date = 2;</code>
      * @return Whether the slaDueDate field is set.
      */
     @java.lang.Override
@@ -5101,7 +5669,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>int64 sla_due_date = 2;</code>
+     * <code>optional int64 sla_due_date = 2;</code>
      * @return The slaDueDate.
      */
     @java.lang.Override
@@ -5112,7 +5680,7 @@ public final class KogitoTypesProtobuf {
     public static final int SLA_COMPLIANCE_FIELD_NUMBER = 3;
     private int slaCompliance_;
     /**
-     * <code>int32 sla_compliance = 3;</code>
+     * <code>optional int32 sla_compliance = 3;</code>
      * @return Whether the slaCompliance field is set.
      */
     @java.lang.Override
@@ -5120,7 +5688,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>int32 sla_compliance = 3;</code>
+     * <code>optional int32 sla_compliance = 3;</code>
      * @return The slaCompliance.
      */
     @java.lang.Override
@@ -5496,14 +6064,14 @@ public final class KogitoTypesProtobuf {
 
       private java.lang.Object slaTimerId_ = "";
       /**
-       * <code>string sla_timer_id = 1;</code>
+       * <code>optional string sla_timer_id = 1;</code>
        * @return Whether the slaTimerId field is set.
        */
       public boolean hasSlaTimerId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string sla_timer_id = 1;</code>
+       * <code>optional string sla_timer_id = 1;</code>
        * @return The slaTimerId.
        */
       public java.lang.String getSlaTimerId() {
@@ -5519,7 +6087,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>string sla_timer_id = 1;</code>
+       * <code>optional string sla_timer_id = 1;</code>
        * @return The bytes for slaTimerId.
        */
       public com.google.protobuf.ByteString
@@ -5536,7 +6104,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>string sla_timer_id = 1;</code>
+       * <code>optional string sla_timer_id = 1;</code>
        * @param value The slaTimerId to set.
        * @return This builder for chaining.
        */
@@ -5551,7 +6119,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>string sla_timer_id = 1;</code>
+       * <code>optional string sla_timer_id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearSlaTimerId() {
@@ -5561,7 +6129,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>string sla_timer_id = 1;</code>
+       * <code>optional string sla_timer_id = 1;</code>
        * @param value The bytes for slaTimerId to set.
        * @return This builder for chaining.
        */
@@ -5579,7 +6147,7 @@ public final class KogitoTypesProtobuf {
 
       private long slaDueDate_ ;
       /**
-       * <code>int64 sla_due_date = 2;</code>
+       * <code>optional int64 sla_due_date = 2;</code>
        * @return Whether the slaDueDate field is set.
        */
       @java.lang.Override
@@ -5587,7 +6155,7 @@ public final class KogitoTypesProtobuf {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>int64 sla_due_date = 2;</code>
+       * <code>optional int64 sla_due_date = 2;</code>
        * @return The slaDueDate.
        */
       @java.lang.Override
@@ -5595,7 +6163,7 @@ public final class KogitoTypesProtobuf {
         return slaDueDate_;
       }
       /**
-       * <code>int64 sla_due_date = 2;</code>
+       * <code>optional int64 sla_due_date = 2;</code>
        * @param value The slaDueDate to set.
        * @return This builder for chaining.
        */
@@ -5606,7 +6174,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>int64 sla_due_date = 2;</code>
+       * <code>optional int64 sla_due_date = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearSlaDueDate() {
@@ -5618,7 +6186,7 @@ public final class KogitoTypesProtobuf {
 
       private int slaCompliance_ ;
       /**
-       * <code>int32 sla_compliance = 3;</code>
+       * <code>optional int32 sla_compliance = 3;</code>
        * @return Whether the slaCompliance field is set.
        */
       @java.lang.Override
@@ -5626,7 +6194,7 @@ public final class KogitoTypesProtobuf {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>int32 sla_compliance = 3;</code>
+       * <code>optional int32 sla_compliance = 3;</code>
        * @return The slaCompliance.
        */
       @java.lang.Override
@@ -5634,7 +6202,7 @@ public final class KogitoTypesProtobuf {
         return slaCompliance_;
       }
       /**
-       * <code>int32 sla_compliance = 3;</code>
+       * <code>optional int32 sla_compliance = 3;</code>
        * @param value The slaCompliance to set.
        * @return This builder for chaining.
        */
@@ -5645,7 +6213,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>int32 sla_compliance = 3;</code>
+       * <code>optional int32 sla_compliance = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearSlaCompliance() {
@@ -5712,29 +6280,29 @@ public final class KogitoTypesProtobuf {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string id = 1;</code>
+     * <code>optional string id = 1;</code>
      * @return Whether the id field is set.
      */
     boolean hasId();
     /**
-     * <code>string id = 1;</code>
+     * <code>optional string id = 1;</code>
      * @return The id.
      */
     java.lang.String getId();
     /**
-     * <code>string id = 1;</code>
+     * <code>optional string id = 1;</code>
      * @return The bytes for id.
      */
     com.google.protobuf.ByteString
         getIdBytes();
 
     /**
-     * <code>int32 level = 2;</code>
+     * <code>optional int32 level = 2;</code>
      * @return Whether the level field is set.
      */
     boolean hasLevel();
     /**
-     * <code>int32 level = 2;</code>
+     * <code>optional int32 level = 2;</code>
      * @return The level.
      */
     int getLevel();
@@ -5833,7 +6401,7 @@ public final class KogitoTypesProtobuf {
     public static final int ID_FIELD_NUMBER = 1;
     private volatile java.lang.Object id_;
     /**
-     * <code>string id = 1;</code>
+     * <code>optional string id = 1;</code>
      * @return Whether the id field is set.
      */
     @java.lang.Override
@@ -5841,7 +6409,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string id = 1;</code>
+     * <code>optional string id = 1;</code>
      * @return The id.
      */
     @java.lang.Override
@@ -5858,7 +6426,7 @@ public final class KogitoTypesProtobuf {
       }
     }
     /**
-     * <code>string id = 1;</code>
+     * <code>optional string id = 1;</code>
      * @return The bytes for id.
      */
     @java.lang.Override
@@ -5879,7 +6447,7 @@ public final class KogitoTypesProtobuf {
     public static final int LEVEL_FIELD_NUMBER = 2;
     private int level_;
     /**
-     * <code>int32 level = 2;</code>
+     * <code>optional int32 level = 2;</code>
      * @return Whether the level field is set.
      */
     @java.lang.Override
@@ -5887,7 +6455,7 @@ public final class KogitoTypesProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>int32 level = 2;</code>
+     * <code>optional int32 level = 2;</code>
      * @return The level.
      */
     @java.lang.Override
@@ -6237,14 +6805,14 @@ public final class KogitoTypesProtobuf {
 
       private java.lang.Object id_ = "";
       /**
-       * <code>string id = 1;</code>
+       * <code>optional string id = 1;</code>
        * @return Whether the id field is set.
        */
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string id = 1;</code>
+       * <code>optional string id = 1;</code>
        * @return The id.
        */
       public java.lang.String getId() {
@@ -6260,7 +6828,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>string id = 1;</code>
+       * <code>optional string id = 1;</code>
        * @return The bytes for id.
        */
       public com.google.protobuf.ByteString
@@ -6277,7 +6845,7 @@ public final class KogitoTypesProtobuf {
         }
       }
       /**
-       * <code>string id = 1;</code>
+       * <code>optional string id = 1;</code>
        * @param value The id to set.
        * @return This builder for chaining.
        */
@@ -6292,7 +6860,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>string id = 1;</code>
+       * <code>optional string id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
@@ -6302,7 +6870,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>string id = 1;</code>
+       * <code>optional string id = 1;</code>
        * @param value The bytes for id to set.
        * @return This builder for chaining.
        */
@@ -6320,7 +6888,7 @@ public final class KogitoTypesProtobuf {
 
       private int level_ ;
       /**
-       * <code>int32 level = 2;</code>
+       * <code>optional int32 level = 2;</code>
        * @return Whether the level field is set.
        */
       @java.lang.Override
@@ -6328,7 +6896,7 @@ public final class KogitoTypesProtobuf {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>int32 level = 2;</code>
+       * <code>optional int32 level = 2;</code>
        * @return The level.
        */
       @java.lang.Override
@@ -6336,7 +6904,7 @@ public final class KogitoTypesProtobuf {
         return level_;
       }
       /**
-       * <code>int32 level = 2;</code>
+       * <code>optional int32 level = 2;</code>
        * @param value The level to set.
        * @return This builder for chaining.
        */
@@ -6347,7 +6915,7 @@ public final class KogitoTypesProtobuf {
         return this;
       }
       /**
-       * <code>int32 level = 2;</code>
+       * <code>optional int32 level = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearLevel() {
@@ -7048,6 +7616,11 @@ public final class KogitoTypesProtobuf {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_Variable_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -7094,78 +7667,85 @@ public final class KogitoTypesProtobuf {
       "\n@org/kie/kogito/serialization/process/p" +
       "rotobuf/kogito_types.proto\022-org.kie.kogi" +
       "to.serialization.process.protobuf\032\031googl" +
-      "e/protobuf/any.proto\"_\n\010Variable\022\014\n\004name" +
-      "\030\001 \001(\t\022\021\n\tdata_type\030\002 \001(\t\022(\n\005value\030\003 \001(\013" +
-      "2\024.google.protobuf.AnyH\000\210\001\001B\010\n\006_value\"\361\001" +
-      "\n\014NodeInstance\022\n\n\002id\030\001 \001(\t\022\017\n\007node_id\030\002 " +
-      "\001(\003\022%\n\007content\030\003 \001(\0132\024.google.protobuf.A" +
-      "ny\022\022\n\005level\030\004 \001(\005H\000\210\001\001\022\031\n\014trigger_date\030\005" +
-      " \001(\003H\001\210\001\001\022K\n\003sla\030\006 \001(\01329.org.kie.kogito." +
-      "serialization.process.protobuf.SLAContex" +
-      "tH\002\210\001\001B\010\n\006_levelB\017\n\r_trigger_dateB\006\n\004_sl" +
-      "a\"\343\002\n\017WorkflowContext\022I\n\010variable\030\001 \003(\0132" +
-      "7.org.kie.kogito.serialization.process.p" +
-      "rotobuf.Variable\022R\n\rnode_instance\030\002 \003(\0132" +
-      ";.org.kie.kogito.serialization.process.p" +
-      "rotobuf.NodeInstance\022Y\n\017exclusive_group\030" +
-      "\003 \003(\0132@.org.kie.kogito.serialization.pro" +
-      "cess.protobuf.NodeInstanceGroup\022V\n\017itera" +
-      "tionLevels\030\004 \003(\0132=.org.kie.kogito.serial" +
-      "ization.process.protobuf.IterationLevel\"" +
-      "Y\n\017SwimlaneContext\022\025\n\010swimlane\030\001 \001(\tH\000\210\001" +
-      "\001\022\025\n\010actor_id\030\002 \001(\tH\001\210\001\001B\013\n\t_swimlaneB\013\n" +
-      "\t_actor_id\"\224\001\n\nSLAContext\022\031\n\014sla_timer_i" +
-      "d\030\001 \001(\tH\000\210\001\001\022\031\n\014sla_due_date\030\002 \001(\003H\001\210\001\001\022" +
-      "\033\n\016sla_compliance\030\003 \001(\005H\002\210\001\001B\017\n\r_sla_tim" +
-      "er_idB\017\n\r_sla_due_dateB\021\n\017_sla_complianc" +
-      "e\"F\n\016IterationLevel\022\017\n\002id\030\001 \001(\tH\000\210\001\001\022\022\n\005" +
-      "level\030\002 \001(\005H\001\210\001\001B\005\n\003_idB\010\n\006_level\"3\n\021Nod" +
-      "eInstanceGroup\022\036\n\026group_node_instance_id" +
-      "\030\001 \003(\tB\025B\023KogitoTypesProtobufb\006proto3"
+      "e/protobuf/any.proto\"\033\n\010JsonNode\022\017\n\007cont" +
+      "ent\030\001 \001(\t\"_\n\010Variable\022\014\n\004name\030\001 \001(\t\022\021\n\td" +
+      "ata_type\030\002 \001(\t\022(\n\005value\030\003 \001(\0132\024.google.p" +
+      "rotobuf.AnyH\000\210\001\001B\010\n\006_value\"\361\001\n\014NodeInsta" +
+      "nce\022\n\n\002id\030\001 \001(\t\022\017\n\007node_id\030\002 \001(\003\022%\n\007cont" +
+      "ent\030\003 \001(\0132\024.google.protobuf.Any\022\022\n\005level" +
+      "\030\004 \001(\005H\000\210\001\001\022\031\n\014trigger_date\030\005 \001(\003H\001\210\001\001\022K" +
+      "\n\003sla\030\006 \001(\01329.org.kie.kogito.serializati" +
+      "on.process.protobuf.SLAContextH\002\210\001\001B\010\n\006_" +
+      "levelB\017\n\r_trigger_dateB\006\n\004_sla\"\343\002\n\017Workf" +
+      "lowContext\022I\n\010variable\030\001 \003(\01327.org.kie.k" +
+      "ogito.serialization.process.protobuf.Var" +
+      "iable\022R\n\rnode_instance\030\002 \003(\0132;.org.kie.k" +
+      "ogito.serialization.process.protobuf.Nod" +
+      "eInstance\022Y\n\017exclusive_group\030\003 \003(\0132@.org" +
+      ".kie.kogito.serialization.process.protob" +
+      "uf.NodeInstanceGroup\022V\n\017iterationLevels\030" +
+      "\004 \003(\0132=.org.kie.kogito.serialization.pro" +
+      "cess.protobuf.IterationLevel\"Y\n\017Swimlane" +
+      "Context\022\025\n\010swimlane\030\001 \001(\tH\000\210\001\001\022\025\n\010actor_" +
+      "id\030\002 \001(\tH\001\210\001\001B\013\n\t_swimlaneB\013\n\t_actor_id\"" +
+      "\224\001\n\nSLAContext\022\031\n\014sla_timer_id\030\001 \001(\tH\000\210\001" +
+      "\001\022\031\n\014sla_due_date\030\002 \001(\003H\001\210\001\001\022\033\n\016sla_comp" +
+      "liance\030\003 \001(\005H\002\210\001\001B\017\n\r_sla_timer_idB\017\n\r_s" +
+      "la_due_dateB\021\n\017_sla_compliance\"F\n\016Iterat" +
+      "ionLevel\022\017\n\002id\030\001 \001(\tH\000\210\001\001\022\022\n\005level\030\002 \001(\005" +
+      "H\001\210\001\001B\005\n\003_idB\010\n\006_level\"3\n\021NodeInstanceGr" +
+      "oup\022\036\n\026group_node_instance_id\030\001 \003(\tB\025B\023K" +
+      "ogitoTypesProtobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.AnyProto.getDescriptor(),
         });
-    internal_static_org_kie_kogito_serialization_process_protobuf_Variable_descriptor =
+    internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_JsonNode_descriptor,
+        new java.lang.String[] { "Content", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_Variable_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_org_kie_kogito_serialization_process_protobuf_Variable_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_Variable_descriptor,
         new java.lang.String[] { "Name", "DataType", "Value", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_NodeInstance_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_org_kie_kogito_serialization_process_protobuf_NodeInstance_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_NodeInstance_descriptor,
         new java.lang.String[] { "Id", "NodeId", "Content", "Level", "TriggerDate", "Sla", "Level", "TriggerDate", "Sla", });
     internal_static_org_kie_kogito_serialization_process_protobuf_WorkflowContext_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_org_kie_kogito_serialization_process_protobuf_WorkflowContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_WorkflowContext_descriptor,
         new java.lang.String[] { "Variable", "NodeInstance", "ExclusiveGroup", "IterationLevels", });
     internal_static_org_kie_kogito_serialization_process_protobuf_SwimlaneContext_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_org_kie_kogito_serialization_process_protobuf_SwimlaneContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_SwimlaneContext_descriptor,
         new java.lang.String[] { "Swimlane", "ActorId", "Swimlane", "ActorId", });
     internal_static_org_kie_kogito_serialization_process_protobuf_SLAContext_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_org_kie_kogito_serialization_process_protobuf_SLAContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_SLAContext_descriptor,
         new java.lang.String[] { "SlaTimerId", "SlaDueDate", "SlaCompliance", "SlaTimerId", "SlaDueDate", "SlaCompliance", });
     internal_static_org_kie_kogito_serialization_process_protobuf_IterationLevel_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_org_kie_kogito_serialization_process_protobuf_IterationLevel_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_IterationLevel_descriptor,
         new java.lang.String[] { "Id", "Level", "Id", "Level", });
     internal_static_org_kie_kogito_serialization_process_protobuf_NodeInstanceGroup_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_org_kie_kogito_serialization_process_protobuf_NodeInstanceGroup_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_NodeInstanceGroup_descriptor,

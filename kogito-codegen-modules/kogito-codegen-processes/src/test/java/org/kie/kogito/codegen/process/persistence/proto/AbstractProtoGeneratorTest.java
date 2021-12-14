@@ -32,6 +32,7 @@ import org.kie.kogito.codegen.data.AnswerBrokenV2;
 import org.kie.kogito.codegen.data.AnswerWithAnnotations;
 import org.kie.kogito.codegen.data.EmptyConstructor;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
+import org.kie.kogito.codegen.data.JacksonData;
 import org.kie.kogito.codegen.data.NotEmptyConstructor;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonSubClass;
@@ -69,7 +70,8 @@ public abstract class AbstractProtoGeneratorTest<T> {
             Question.class,
             QuestionWithAnnotatedEnum.class,
             Travels.class,
-            PersonSubClass.class);
+            PersonSubClass.class,
+            JacksonData.class);
 
     protected abstract ProtoGenerator.Builder<T, ? extends AbstractProtoGenerator<T>> protoGeneratorBuilder();
 
@@ -140,6 +142,17 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
+    }
+
+    @Test
+    void testJsonNode() {
+        // this test is for serverless workflow generation data.
+        AbstractProtoGenerator<T> generator = protoGeneratorBuilder()
+                .build(Collections.singleton(convertToType(JacksonData.class)));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
+        assertThat(proto).isNotNull();
+        // there is no messages as there is not classes
+        assertThat(proto.getMessages()).hasSize(0);
     }
 
     @Test

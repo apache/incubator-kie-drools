@@ -6,6 +6,10 @@ option java_outer_classname = "KogitoTypesProtobuf";
 
 import "google/protobuf/any.proto";
 
+message JsonNode {
+    string content = 1;
+}
+
 message Variable {
     string name = 1;
     string data_type = 2;

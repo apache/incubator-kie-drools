@@ -32,68 +32,68 @@ public final class KogitoWorkItemsProtobuf {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string task_name = 1;</code>
+     * <code>optional string task_name = 1;</code>
      * @return Whether the taskName field is set.
      */
     boolean hasTaskName();
     /**
-     * <code>string task_name = 1;</code>
+     * <code>optional string task_name = 1;</code>
      * @return The taskName.
      */
     java.lang.String getTaskName();
     /**
-     * <code>string task_name = 1;</code>
+     * <code>optional string task_name = 1;</code>
      * @return The bytes for taskName.
      */
     com.google.protobuf.ByteString
         getTaskNameBytes();
 
     /**
-     * <code>string task_description = 2;</code>
+     * <code>optional string task_description = 2;</code>
      * @return Whether the taskDescription field is set.
      */
     boolean hasTaskDescription();
     /**
-     * <code>string task_description = 2;</code>
+     * <code>optional string task_description = 2;</code>
      * @return The taskDescription.
      */
     java.lang.String getTaskDescription();
     /**
-     * <code>string task_description = 2;</code>
+     * <code>optional string task_description = 2;</code>
      * @return The bytes for taskDescription.
      */
     com.google.protobuf.ByteString
         getTaskDescriptionBytes();
 
     /**
-     * <code>string task_priority = 3;</code>
+     * <code>optional string task_priority = 3;</code>
      * @return Whether the taskPriority field is set.
      */
     boolean hasTaskPriority();
     /**
-     * <code>string task_priority = 3;</code>
+     * <code>optional string task_priority = 3;</code>
      * @return The taskPriority.
      */
     java.lang.String getTaskPriority();
     /**
-     * <code>string task_priority = 3;</code>
+     * <code>optional string task_priority = 3;</code>
      * @return The bytes for taskPriority.
      */
     com.google.protobuf.ByteString
         getTaskPriorityBytes();
 
     /**
-     * <code>string actual_owner = 4;</code>
+     * <code>optional string actual_owner = 4;</code>
      * @return Whether the actualOwner field is set.
      */
     boolean hasActualOwner();
     /**
-     * <code>string actual_owner = 4;</code>
+     * <code>optional string actual_owner = 4;</code>
      * @return The actualOwner.
      */
     java.lang.String getActualOwner();
     /**
-     * <code>string actual_owner = 4;</code>
+     * <code>optional string actual_owner = 4;</code>
      * @return The bytes for actualOwner.
      */
     com.google.protobuf.ByteString
@@ -225,17 +225,17 @@ public final class KogitoWorkItemsProtobuf {
         getAdminGroupsBytes(int index);
 
     /**
-     * <code>string task_reference_name = 10;</code>
+     * <code>optional string task_reference_name = 10;</code>
      * @return Whether the taskReferenceName field is set.
      */
     boolean hasTaskReferenceName();
     /**
-     * <code>string task_reference_name = 10;</code>
+     * <code>optional string task_reference_name = 10;</code>
      * @return The taskReferenceName.
      */
     java.lang.String getTaskReferenceName();
     /**
-     * <code>string task_reference_name = 10;</code>
+     * <code>optional string task_reference_name = 10;</code>
      * @return The bytes for taskReferenceName.
      */
     com.google.protobuf.ByteString
@@ -703,7 +703,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int TASK_NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object taskName_;
     /**
-     * <code>string task_name = 1;</code>
+     * <code>optional string task_name = 1;</code>
      * @return Whether the taskName field is set.
      */
     @java.lang.Override
@@ -711,7 +711,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string task_name = 1;</code>
+     * <code>optional string task_name = 1;</code>
      * @return The taskName.
      */
     @java.lang.Override
@@ -728,7 +728,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string task_name = 1;</code>
+     * <code>optional string task_name = 1;</code>
      * @return The bytes for taskName.
      */
     @java.lang.Override
@@ -749,7 +749,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int TASK_DESCRIPTION_FIELD_NUMBER = 2;
     private volatile java.lang.Object taskDescription_;
     /**
-     * <code>string task_description = 2;</code>
+     * <code>optional string task_description = 2;</code>
      * @return Whether the taskDescription field is set.
      */
     @java.lang.Override
@@ -757,7 +757,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>string task_description = 2;</code>
+     * <code>optional string task_description = 2;</code>
      * @return The taskDescription.
      */
     @java.lang.Override
@@ -774,7 +774,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string task_description = 2;</code>
+     * <code>optional string task_description = 2;</code>
      * @return The bytes for taskDescription.
      */
     @java.lang.Override
@@ -795,7 +795,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int TASK_PRIORITY_FIELD_NUMBER = 3;
     private volatile java.lang.Object taskPriority_;
     /**
-     * <code>string task_priority = 3;</code>
+     * <code>optional string task_priority = 3;</code>
      * @return Whether the taskPriority field is set.
      */
     @java.lang.Override
@@ -803,7 +803,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>string task_priority = 3;</code>
+     * <code>optional string task_priority = 3;</code>
      * @return The taskPriority.
      */
     @java.lang.Override
@@ -820,7 +820,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string task_priority = 3;</code>
+     * <code>optional string task_priority = 3;</code>
      * @return The bytes for taskPriority.
      */
     @java.lang.Override
@@ -841,7 +841,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int ACTUAL_OWNER_FIELD_NUMBER = 4;
     private volatile java.lang.Object actualOwner_;
     /**
-     * <code>string actual_owner = 4;</code>
+     * <code>optional string actual_owner = 4;</code>
      * @return Whether the actualOwner field is set.
      */
     @java.lang.Override
@@ -849,7 +849,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>string actual_owner = 4;</code>
+     * <code>optional string actual_owner = 4;</code>
      * @return The actualOwner.
      */
     @java.lang.Override
@@ -866,7 +866,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string actual_owner = 4;</code>
+     * <code>optional string actual_owner = 4;</code>
      * @return The bytes for actualOwner.
      */
     @java.lang.Override
@@ -1062,7 +1062,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int TASK_REFERENCE_NAME_FIELD_NUMBER = 10;
     private volatile java.lang.Object taskReferenceName_;
     /**
-     * <code>string task_reference_name = 10;</code>
+     * <code>optional string task_reference_name = 10;</code>
      * @return Whether the taskReferenceName field is set.
      */
     @java.lang.Override
@@ -1070,7 +1070,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>string task_reference_name = 10;</code>
+     * <code>optional string task_reference_name = 10;</code>
      * @return The taskReferenceName.
      */
     @java.lang.Override
@@ -1087,7 +1087,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string task_reference_name = 10;</code>
+     * <code>optional string task_reference_name = 10;</code>
      * @return The bytes for taskReferenceName.
      */
     @java.lang.Override
@@ -1218,7 +1218,7 @@ public final class KogitoWorkItemsProtobuf {
     @java.lang.Override
     public boolean containsStartDeadlines(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       return internalGetStartDeadlines().getMap().containsKey(key);
     }
     /**
@@ -1245,7 +1245,7 @@ public final class KogitoWorkItemsProtobuf {
     public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline getStartDeadlinesOrDefault(
         java.lang.String key,
         org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline> map =
           internalGetStartDeadlines().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -1257,7 +1257,7 @@ public final class KogitoWorkItemsProtobuf {
 
     public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline getStartDeadlinesOrThrow(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline> map =
           internalGetStartDeadlines().getMap();
       if (!map.containsKey(key)) {
@@ -1299,7 +1299,7 @@ public final class KogitoWorkItemsProtobuf {
     @java.lang.Override
     public boolean containsCompletedDeadlines(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       return internalGetCompletedDeadlines().getMap().containsKey(key);
     }
     /**
@@ -1326,7 +1326,7 @@ public final class KogitoWorkItemsProtobuf {
     public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline getCompletedDeadlinesOrDefault(
         java.lang.String key,
         org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline> map =
           internalGetCompletedDeadlines().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -1338,7 +1338,7 @@ public final class KogitoWorkItemsProtobuf {
 
     public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline getCompletedDeadlinesOrThrow(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline> map =
           internalGetCompletedDeadlines().getMap();
       if (!map.containsKey(key)) {
@@ -1380,7 +1380,7 @@ public final class KogitoWorkItemsProtobuf {
     @java.lang.Override
     public boolean containsStartReassigments(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       return internalGetStartReassigments().getMap().containsKey(key);
     }
     /**
@@ -1407,7 +1407,7 @@ public final class KogitoWorkItemsProtobuf {
     public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment getStartReassigmentsOrDefault(
         java.lang.String key,
         org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment> map =
           internalGetStartReassigments().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -1419,7 +1419,7 @@ public final class KogitoWorkItemsProtobuf {
 
     public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment getStartReassigmentsOrThrow(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment> map =
           internalGetStartReassigments().getMap();
       if (!map.containsKey(key)) {
@@ -1461,7 +1461,7 @@ public final class KogitoWorkItemsProtobuf {
     @java.lang.Override
     public boolean containsCompletedReassigments(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       return internalGetCompletedReassigments().getMap().containsKey(key);
     }
     /**
@@ -1488,7 +1488,7 @@ public final class KogitoWorkItemsProtobuf {
     public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment getCompletedReassigmentsOrDefault(
         java.lang.String key,
         org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment> map =
           internalGetCompletedReassigments().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -1500,7 +1500,7 @@ public final class KogitoWorkItemsProtobuf {
 
     public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment getCompletedReassigmentsOrThrow(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment> map =
           internalGetCompletedReassigments().getMap();
       if (!map.containsKey(key)) {
@@ -2352,14 +2352,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object taskName_ = "";
       /**
-       * <code>string task_name = 1;</code>
+       * <code>optional string task_name = 1;</code>
        * @return Whether the taskName field is set.
        */
       public boolean hasTaskName() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string task_name = 1;</code>
+       * <code>optional string task_name = 1;</code>
        * @return The taskName.
        */
       public java.lang.String getTaskName() {
@@ -2375,7 +2375,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string task_name = 1;</code>
+       * <code>optional string task_name = 1;</code>
        * @return The bytes for taskName.
        */
       public com.google.protobuf.ByteString
@@ -2392,7 +2392,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string task_name = 1;</code>
+       * <code>optional string task_name = 1;</code>
        * @param value The taskName to set.
        * @return This builder for chaining.
        */
@@ -2407,7 +2407,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string task_name = 1;</code>
+       * <code>optional string task_name = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearTaskName() {
@@ -2417,7 +2417,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string task_name = 1;</code>
+       * <code>optional string task_name = 1;</code>
        * @param value The bytes for taskName to set.
        * @return This builder for chaining.
        */
@@ -2435,14 +2435,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object taskDescription_ = "";
       /**
-       * <code>string task_description = 2;</code>
+       * <code>optional string task_description = 2;</code>
        * @return Whether the taskDescription field is set.
        */
       public boolean hasTaskDescription() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>string task_description = 2;</code>
+       * <code>optional string task_description = 2;</code>
        * @return The taskDescription.
        */
       public java.lang.String getTaskDescription() {
@@ -2458,7 +2458,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string task_description = 2;</code>
+       * <code>optional string task_description = 2;</code>
        * @return The bytes for taskDescription.
        */
       public com.google.protobuf.ByteString
@@ -2475,7 +2475,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string task_description = 2;</code>
+       * <code>optional string task_description = 2;</code>
        * @param value The taskDescription to set.
        * @return This builder for chaining.
        */
@@ -2490,7 +2490,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string task_description = 2;</code>
+       * <code>optional string task_description = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearTaskDescription() {
@@ -2500,7 +2500,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string task_description = 2;</code>
+       * <code>optional string task_description = 2;</code>
        * @param value The bytes for taskDescription to set.
        * @return This builder for chaining.
        */
@@ -2518,14 +2518,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object taskPriority_ = "";
       /**
-       * <code>string task_priority = 3;</code>
+       * <code>optional string task_priority = 3;</code>
        * @return Whether the taskPriority field is set.
        */
       public boolean hasTaskPriority() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>string task_priority = 3;</code>
+       * <code>optional string task_priority = 3;</code>
        * @return The taskPriority.
        */
       public java.lang.String getTaskPriority() {
@@ -2541,7 +2541,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string task_priority = 3;</code>
+       * <code>optional string task_priority = 3;</code>
        * @return The bytes for taskPriority.
        */
       public com.google.protobuf.ByteString
@@ -2558,7 +2558,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string task_priority = 3;</code>
+       * <code>optional string task_priority = 3;</code>
        * @param value The taskPriority to set.
        * @return This builder for chaining.
        */
@@ -2573,7 +2573,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string task_priority = 3;</code>
+       * <code>optional string task_priority = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearTaskPriority() {
@@ -2583,7 +2583,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string task_priority = 3;</code>
+       * <code>optional string task_priority = 3;</code>
        * @param value The bytes for taskPriority to set.
        * @return This builder for chaining.
        */
@@ -2601,14 +2601,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object actualOwner_ = "";
       /**
-       * <code>string actual_owner = 4;</code>
+       * <code>optional string actual_owner = 4;</code>
        * @return Whether the actualOwner field is set.
        */
       public boolean hasActualOwner() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
-       * <code>string actual_owner = 4;</code>
+       * <code>optional string actual_owner = 4;</code>
        * @return The actualOwner.
        */
       public java.lang.String getActualOwner() {
@@ -2624,7 +2624,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string actual_owner = 4;</code>
+       * <code>optional string actual_owner = 4;</code>
        * @return The bytes for actualOwner.
        */
       public com.google.protobuf.ByteString
@@ -2641,7 +2641,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string actual_owner = 4;</code>
+       * <code>optional string actual_owner = 4;</code>
        * @param value The actualOwner to set.
        * @return This builder for chaining.
        */
@@ -2656,7 +2656,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string actual_owner = 4;</code>
+       * <code>optional string actual_owner = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearActualOwner() {
@@ -2666,7 +2666,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string actual_owner = 4;</code>
+       * <code>optional string actual_owner = 4;</code>
        * @param value The bytes for actualOwner to set.
        * @return This builder for chaining.
        */
@@ -3234,14 +3234,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object taskReferenceName_ = "";
       /**
-       * <code>string task_reference_name = 10;</code>
+       * <code>optional string task_reference_name = 10;</code>
        * @return Whether the taskReferenceName field is set.
        */
       public boolean hasTaskReferenceName() {
         return ((bitField0_ & 0x00000200) != 0);
       }
       /**
-       * <code>string task_reference_name = 10;</code>
+       * <code>optional string task_reference_name = 10;</code>
        * @return The taskReferenceName.
        */
       public java.lang.String getTaskReferenceName() {
@@ -3257,7 +3257,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string task_reference_name = 10;</code>
+       * <code>optional string task_reference_name = 10;</code>
        * @return The bytes for taskReferenceName.
        */
       public com.google.protobuf.ByteString
@@ -3274,7 +3274,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string task_reference_name = 10;</code>
+       * <code>optional string task_reference_name = 10;</code>
        * @param value The taskReferenceName to set.
        * @return This builder for chaining.
        */
@@ -3289,7 +3289,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string task_reference_name = 10;</code>
+       * <code>optional string task_reference_name = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearTaskReferenceName() {
@@ -3299,7 +3299,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string task_reference_name = 10;</code>
+       * <code>optional string task_reference_name = 10;</code>
        * @param value The bytes for taskReferenceName to set.
        * @return This builder for chaining.
        */
@@ -3828,7 +3828,7 @@ public final class KogitoWorkItemsProtobuf {
       @java.lang.Override
       public boolean containsStartDeadlines(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         return internalGetStartDeadlines().getMap().containsKey(key);
       }
       /**
@@ -3855,7 +3855,7 @@ public final class KogitoWorkItemsProtobuf {
       public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline getStartDeadlinesOrDefault(
           java.lang.String key,
           org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline defaultValue) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline> map =
             internalGetStartDeadlines().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -3867,7 +3867,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline getStartDeadlinesOrThrow(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline> map =
             internalGetStartDeadlines().getMap();
         if (!map.containsKey(key)) {
@@ -3887,7 +3887,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public Builder removeStartDeadlines(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         internalGetMutableStartDeadlines().getMutableMap()
             .remove(key);
         return this;
@@ -3906,8 +3906,11 @@ public final class KogitoWorkItemsProtobuf {
       public Builder putStartDeadlines(
           java.lang.String key,
           org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline value) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        if (value == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
         internalGetMutableStartDeadlines().getMutableMap()
             .put(key, value);
         return this;
@@ -3956,7 +3959,7 @@ public final class KogitoWorkItemsProtobuf {
       @java.lang.Override
       public boolean containsCompletedDeadlines(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         return internalGetCompletedDeadlines().getMap().containsKey(key);
       }
       /**
@@ -3983,7 +3986,7 @@ public final class KogitoWorkItemsProtobuf {
       public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline getCompletedDeadlinesOrDefault(
           java.lang.String key,
           org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline defaultValue) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline> map =
             internalGetCompletedDeadlines().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -3995,7 +3998,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline getCompletedDeadlinesOrThrow(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline> map =
             internalGetCompletedDeadlines().getMap();
         if (!map.containsKey(key)) {
@@ -4015,7 +4018,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public Builder removeCompletedDeadlines(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         internalGetMutableCompletedDeadlines().getMutableMap()
             .remove(key);
         return this;
@@ -4034,8 +4037,11 @@ public final class KogitoWorkItemsProtobuf {
       public Builder putCompletedDeadlines(
           java.lang.String key,
           org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Deadline value) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        if (value == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
         internalGetMutableCompletedDeadlines().getMutableMap()
             .put(key, value);
         return this;
@@ -4084,7 +4090,7 @@ public final class KogitoWorkItemsProtobuf {
       @java.lang.Override
       public boolean containsStartReassigments(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         return internalGetStartReassigments().getMap().containsKey(key);
       }
       /**
@@ -4111,7 +4117,7 @@ public final class KogitoWorkItemsProtobuf {
       public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment getStartReassigmentsOrDefault(
           java.lang.String key,
           org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment defaultValue) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment> map =
             internalGetStartReassigments().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -4123,7 +4129,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment getStartReassigmentsOrThrow(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment> map =
             internalGetStartReassigments().getMap();
         if (!map.containsKey(key)) {
@@ -4143,7 +4149,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public Builder removeStartReassigments(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         internalGetMutableStartReassigments().getMutableMap()
             .remove(key);
         return this;
@@ -4162,8 +4168,11 @@ public final class KogitoWorkItemsProtobuf {
       public Builder putStartReassigments(
           java.lang.String key,
           org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment value) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        if (value == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
         internalGetMutableStartReassigments().getMutableMap()
             .put(key, value);
         return this;
@@ -4212,7 +4221,7 @@ public final class KogitoWorkItemsProtobuf {
       @java.lang.Override
       public boolean containsCompletedReassigments(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         return internalGetCompletedReassigments().getMap().containsKey(key);
       }
       /**
@@ -4239,7 +4248,7 @@ public final class KogitoWorkItemsProtobuf {
       public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment getCompletedReassigmentsOrDefault(
           java.lang.String key,
           org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment defaultValue) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment> map =
             internalGetCompletedReassigments().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -4251,7 +4260,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment getCompletedReassigmentsOrThrow(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment> map =
             internalGetCompletedReassigments().getMap();
         if (!map.containsKey(key)) {
@@ -4271,7 +4280,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public Builder removeCompletedReassigments(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         internalGetMutableCompletedReassigments().getMutableMap()
             .remove(key);
         return this;
@@ -4290,8 +4299,11 @@ public final class KogitoWorkItemsProtobuf {
       public Builder putCompletedReassigments(
           java.lang.String key,
           org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf.Reassignment value) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        if (value == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
         internalGetMutableCompletedReassigments().getMutableMap()
             .put(key, value);
         return this;
@@ -4376,45 +4388,45 @@ public final class KogitoWorkItemsProtobuf {
         getIdBytes();
 
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return Whether the content field is set.
      */
     boolean hasContent();
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return The content.
      */
     java.lang.String getContent();
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return The bytes for content.
      */
     com.google.protobuf.ByteString
         getContentBytes();
 
     /**
-     * <code>int64 updatedAt = 3;</code>
+     * <code>optional int64 updatedAt = 3;</code>
      * @return Whether the updatedAt field is set.
      */
     boolean hasUpdatedAt();
     /**
-     * <code>int64 updatedAt = 3;</code>
+     * <code>optional int64 updatedAt = 3;</code>
      * @return The updatedAt.
      */
     long getUpdatedAt();
 
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return Whether the updatedBy field is set.
      */
     boolean hasUpdatedBy();
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return The updatedBy.
      */
     java.lang.String getUpdatedBy();
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return The bytes for updatedBy.
      */
     com.google.protobuf.ByteString
@@ -4566,7 +4578,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int CONTENT_FIELD_NUMBER = 2;
     private volatile java.lang.Object content_;
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return Whether the content field is set.
      */
     @java.lang.Override
@@ -4574,7 +4586,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return The content.
      */
     @java.lang.Override
@@ -4591,7 +4603,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return The bytes for content.
      */
     @java.lang.Override
@@ -4612,7 +4624,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int UPDATEDAT_FIELD_NUMBER = 3;
     private long updatedAt_;
     /**
-     * <code>int64 updatedAt = 3;</code>
+     * <code>optional int64 updatedAt = 3;</code>
      * @return Whether the updatedAt field is set.
      */
     @java.lang.Override
@@ -4620,7 +4632,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>int64 updatedAt = 3;</code>
+     * <code>optional int64 updatedAt = 3;</code>
      * @return The updatedAt.
      */
     @java.lang.Override
@@ -4631,7 +4643,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int UPDATEDBY_FIELD_NUMBER = 4;
     private volatile java.lang.Object updatedBy_;
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return Whether the updatedBy field is set.
      */
     @java.lang.Override
@@ -4639,7 +4651,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return The updatedBy.
      */
     @java.lang.Override
@@ -4656,7 +4668,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return The bytes for updatedBy.
      */
     @java.lang.Override
@@ -4688,7 +4700,7 @@ public final class KogitoWorkItemsProtobuf {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -4709,7 +4721,7 @@ public final class KogitoWorkItemsProtobuf {
       if (size != -1) return size;
 
       size = 0;
-      if (!getIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -5136,14 +5148,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object content_ = "";
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @return Whether the content field is set.
        */
       public boolean hasContent() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @return The content.
        */
       public java.lang.String getContent() {
@@ -5159,7 +5171,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @return The bytes for content.
        */
       public com.google.protobuf.ByteString
@@ -5176,7 +5188,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @param value The content to set.
        * @return This builder for chaining.
        */
@@ -5191,7 +5203,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearContent() {
@@ -5201,7 +5213,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @param value The bytes for content to set.
        * @return This builder for chaining.
        */
@@ -5219,7 +5231,7 @@ public final class KogitoWorkItemsProtobuf {
 
       private long updatedAt_ ;
       /**
-       * <code>int64 updatedAt = 3;</code>
+       * <code>optional int64 updatedAt = 3;</code>
        * @return Whether the updatedAt field is set.
        */
       @java.lang.Override
@@ -5227,7 +5239,7 @@ public final class KogitoWorkItemsProtobuf {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>int64 updatedAt = 3;</code>
+       * <code>optional int64 updatedAt = 3;</code>
        * @return The updatedAt.
        */
       @java.lang.Override
@@ -5235,7 +5247,7 @@ public final class KogitoWorkItemsProtobuf {
         return updatedAt_;
       }
       /**
-       * <code>int64 updatedAt = 3;</code>
+       * <code>optional int64 updatedAt = 3;</code>
        * @param value The updatedAt to set.
        * @return This builder for chaining.
        */
@@ -5246,7 +5258,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>int64 updatedAt = 3;</code>
+       * <code>optional int64 updatedAt = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearUpdatedAt() {
@@ -5258,14 +5270,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object updatedBy_ = "";
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @return Whether the updatedBy field is set.
        */
       public boolean hasUpdatedBy() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @return The updatedBy.
        */
       public java.lang.String getUpdatedBy() {
@@ -5281,7 +5293,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @return The bytes for updatedBy.
        */
       public com.google.protobuf.ByteString
@@ -5298,7 +5310,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @param value The updatedBy to set.
        * @return This builder for chaining.
        */
@@ -5313,7 +5325,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearUpdatedBy() {
@@ -5323,7 +5335,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @param value The bytes for updatedBy to set.
        * @return This builder for chaining.
        */
@@ -5408,62 +5420,62 @@ public final class KogitoWorkItemsProtobuf {
         getIdBytes();
 
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return Whether the content field is set.
      */
     boolean hasContent();
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return The content.
      */
     java.lang.String getContent();
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return The bytes for content.
      */
     com.google.protobuf.ByteString
         getContentBytes();
 
     /**
-     * <code>int64 updatedAt = 3;</code>
+     * <code>optional int64 updatedAt = 3;</code>
      * @return Whether the updatedAt field is set.
      */
     boolean hasUpdatedAt();
     /**
-     * <code>int64 updatedAt = 3;</code>
+     * <code>optional int64 updatedAt = 3;</code>
      * @return The updatedAt.
      */
     long getUpdatedAt();
 
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return Whether the updatedBy field is set.
      */
     boolean hasUpdatedBy();
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return The updatedBy.
      */
     java.lang.String getUpdatedBy();
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return The bytes for updatedBy.
      */
     com.google.protobuf.ByteString
         getUpdatedByBytes();
 
     /**
-     * <code>string name = 5;</code>
+     * <code>optional string name = 5;</code>
      * @return Whether the name field is set.
      */
     boolean hasName();
     /**
-     * <code>string name = 5;</code>
+     * <code>optional string name = 5;</code>
      * @return The name.
      */
     java.lang.String getName();
     /**
-     * <code>string name = 5;</code>
+     * <code>optional string name = 5;</code>
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString
@@ -5622,7 +5634,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int CONTENT_FIELD_NUMBER = 2;
     private volatile java.lang.Object content_;
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return Whether the content field is set.
      */
     @java.lang.Override
@@ -5630,7 +5642,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return The content.
      */
     @java.lang.Override
@@ -5647,7 +5659,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string content = 2;</code>
+     * <code>optional string content = 2;</code>
      * @return The bytes for content.
      */
     @java.lang.Override
@@ -5668,7 +5680,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int UPDATEDAT_FIELD_NUMBER = 3;
     private long updatedAt_;
     /**
-     * <code>int64 updatedAt = 3;</code>
+     * <code>optional int64 updatedAt = 3;</code>
      * @return Whether the updatedAt field is set.
      */
     @java.lang.Override
@@ -5676,7 +5688,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>int64 updatedAt = 3;</code>
+     * <code>optional int64 updatedAt = 3;</code>
      * @return The updatedAt.
      */
     @java.lang.Override
@@ -5687,7 +5699,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int UPDATEDBY_FIELD_NUMBER = 4;
     private volatile java.lang.Object updatedBy_;
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return Whether the updatedBy field is set.
      */
     @java.lang.Override
@@ -5695,7 +5707,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return The updatedBy.
      */
     @java.lang.Override
@@ -5712,7 +5724,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string updatedBy = 4;</code>
+     * <code>optional string updatedBy = 4;</code>
      * @return The bytes for updatedBy.
      */
     @java.lang.Override
@@ -5733,7 +5745,7 @@ public final class KogitoWorkItemsProtobuf {
     public static final int NAME_FIELD_NUMBER = 5;
     private volatile java.lang.Object name_;
     /**
-     * <code>string name = 5;</code>
+     * <code>optional string name = 5;</code>
      * @return Whether the name field is set.
      */
     @java.lang.Override
@@ -5741,7 +5753,7 @@ public final class KogitoWorkItemsProtobuf {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>string name = 5;</code>
+     * <code>optional string name = 5;</code>
      * @return The name.
      */
     @java.lang.Override
@@ -5758,7 +5770,7 @@ public final class KogitoWorkItemsProtobuf {
       }
     }
     /**
-     * <code>string name = 5;</code>
+     * <code>optional string name = 5;</code>
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -5790,7 +5802,7 @@ public final class KogitoWorkItemsProtobuf {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -5814,7 +5826,7 @@ public final class KogitoWorkItemsProtobuf {
       if (size != -1) return size;
 
       size = 0;
-      if (!getIdBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -6264,14 +6276,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object content_ = "";
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @return Whether the content field is set.
        */
       public boolean hasContent() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @return The content.
        */
       public java.lang.String getContent() {
@@ -6287,7 +6299,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @return The bytes for content.
        */
       public com.google.protobuf.ByteString
@@ -6304,7 +6316,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @param value The content to set.
        * @return This builder for chaining.
        */
@@ -6319,7 +6331,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearContent() {
@@ -6329,7 +6341,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>optional string content = 2;</code>
        * @param value The bytes for content to set.
        * @return This builder for chaining.
        */
@@ -6347,7 +6359,7 @@ public final class KogitoWorkItemsProtobuf {
 
       private long updatedAt_ ;
       /**
-       * <code>int64 updatedAt = 3;</code>
+       * <code>optional int64 updatedAt = 3;</code>
        * @return Whether the updatedAt field is set.
        */
       @java.lang.Override
@@ -6355,7 +6367,7 @@ public final class KogitoWorkItemsProtobuf {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>int64 updatedAt = 3;</code>
+       * <code>optional int64 updatedAt = 3;</code>
        * @return The updatedAt.
        */
       @java.lang.Override
@@ -6363,7 +6375,7 @@ public final class KogitoWorkItemsProtobuf {
         return updatedAt_;
       }
       /**
-       * <code>int64 updatedAt = 3;</code>
+       * <code>optional int64 updatedAt = 3;</code>
        * @param value The updatedAt to set.
        * @return This builder for chaining.
        */
@@ -6374,7 +6386,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>int64 updatedAt = 3;</code>
+       * <code>optional int64 updatedAt = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearUpdatedAt() {
@@ -6386,14 +6398,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object updatedBy_ = "";
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @return Whether the updatedBy field is set.
        */
       public boolean hasUpdatedBy() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @return The updatedBy.
        */
       public java.lang.String getUpdatedBy() {
@@ -6409,7 +6421,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @return The bytes for updatedBy.
        */
       public com.google.protobuf.ByteString
@@ -6426,7 +6438,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @param value The updatedBy to set.
        * @return This builder for chaining.
        */
@@ -6441,7 +6453,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearUpdatedBy() {
@@ -6451,7 +6463,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string updatedBy = 4;</code>
+       * <code>optional string updatedBy = 4;</code>
        * @param value The bytes for updatedBy to set.
        * @return This builder for chaining.
        */
@@ -6469,14 +6481,14 @@ public final class KogitoWorkItemsProtobuf {
 
       private java.lang.Object name_ = "";
       /**
-       * <code>string name = 5;</code>
+       * <code>optional string name = 5;</code>
        * @return Whether the name field is set.
        */
       public boolean hasName() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
-       * <code>string name = 5;</code>
+       * <code>optional string name = 5;</code>
        * @return The name.
        */
       public java.lang.String getName() {
@@ -6492,7 +6504,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string name = 5;</code>
+       * <code>optional string name = 5;</code>
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString
@@ -6509,7 +6521,7 @@ public final class KogitoWorkItemsProtobuf {
         }
       }
       /**
-       * <code>string name = 5;</code>
+       * <code>optional string name = 5;</code>
        * @param value The name to set.
        * @return This builder for chaining.
        */
@@ -6524,7 +6536,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string name = 5;</code>
+       * <code>optional string name = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -6534,7 +6546,7 @@ public final class KogitoWorkItemsProtobuf {
         return this;
       }
       /**
-       * <code>string name = 5;</code>
+       * <code>optional string name = 5;</code>
        * @param value The bytes for name to set.
        * @return This builder for chaining.
        */
@@ -6776,7 +6788,7 @@ public final class KogitoWorkItemsProtobuf {
     @java.lang.Override
     public boolean containsContent(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       return internalGetContent().getMap().containsKey(key);
     }
     /**
@@ -6803,7 +6815,7 @@ public final class KogitoWorkItemsProtobuf {
     public java.lang.String getContentOrDefault(
         java.lang.String key,
         java.lang.String defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, java.lang.String> map =
           internalGetContent().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -6815,7 +6827,7 @@ public final class KogitoWorkItemsProtobuf {
 
     public java.lang.String getContentOrThrow(
         java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, java.lang.String> map =
           internalGetContent().getMap();
       if (!map.containsKey(key)) {
@@ -7193,7 +7205,7 @@ public final class KogitoWorkItemsProtobuf {
       @java.lang.Override
       public boolean containsContent(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         return internalGetContent().getMap().containsKey(key);
       }
       /**
@@ -7220,7 +7232,7 @@ public final class KogitoWorkItemsProtobuf {
       public java.lang.String getContentOrDefault(
           java.lang.String key,
           java.lang.String defaultValue) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, java.lang.String> map =
             internalGetContent().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -7232,7 +7244,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public java.lang.String getContentOrThrow(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, java.lang.String> map =
             internalGetContent().getMap();
         if (!map.containsKey(key)) {
@@ -7252,7 +7264,7 @@ public final class KogitoWorkItemsProtobuf {
 
       public Builder removeContent(
           java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
         internalGetMutableContent().getMutableMap()
             .remove(key);
         return this;
@@ -7271,8 +7283,11 @@ public final class KogitoWorkItemsProtobuf {
       public Builder putContent(
           java.lang.String key,
           java.lang.String value) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        if (value == null) { throw new java.lang.NullPointerException(); }
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
         internalGetMutableContent().getMutableMap()
             .put(key, value);
         return this;

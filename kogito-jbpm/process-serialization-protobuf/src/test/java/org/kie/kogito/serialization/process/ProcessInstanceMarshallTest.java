@@ -38,6 +38,9 @@ import org.kie.kogito.serialization.process.impl.ProtobufVariableReader;
 import org.kie.kogito.serialization.process.impl.ProtobufVariableWriter;
 import org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class ProcessInstanceMarshallTest {
 
     @Test
@@ -146,6 +149,24 @@ public class ProcessInstanceMarshallTest {
     public void testRoundtripNullVarMarshaller() {
         Map<String, Object> in = new HashMap<>();
         in.put("object", null);
+        Map<String, Object> out = roundtrip(in);
+        Assertions.assertThat(in).isEqualTo(out);
+    }
+
+    @Test
+    public void testRoundtripJsonNodeVarMarshaller() throws Exception {
+        JsonNode node = new ObjectMapper().readTree("{ \"key\" : \"value\" }");
+        Map<String, Object> in = new HashMap<>();
+        in.put("node", node);
+        Map<String, Object> out = roundtrip(in);
+        Assertions.assertThat(in).isEqualTo(out);
+    }
+
+    @Test
+    public void testRoundtripJsonNodePojoMarshaller() throws Exception {
+        JsonNode node = new ObjectMapper().valueToTree(new MarshableObject("henry"));
+        Map<String, Object> in = new HashMap<>();
+        in.put("node", node);
         Map<String, Object> out = roundtrip(in);
         Assertions.assertThat(in).isEqualTo(out);
     }

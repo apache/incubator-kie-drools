@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jackson.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+package org.kie.kogito.codegen.data;
 
-public class ObjectMapperFactory {
+import com.fasterxml.jackson.databind.JsonNode;
 
-    private ObjectMapperFactory() {
+public class JacksonData {
+
+    private JsonNode node;
+
+    public JsonNode getNode() {
+        return node;
     }
 
-    private static ObjectMapper objectMapper = initObjectMapper();
-
-    private static ObjectMapper initObjectMapper() {
-        TypeFactory typeFactory = TypeFactory.defaultInstance().withClassLoader(Thread.currentThread().getContextClassLoader());
-        return new ObjectMapper().setTypeFactory(typeFactory);
-    }
-
-    public static ObjectMapper get() {
-        return objectMapper;
+    public void setNode(JsonNode node) {
+        this.node = node;
     }
 }

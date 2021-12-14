@@ -6,3 +6,4 @@ org.kie.kogito.serialization.process.impl.marshallers.ProtobufFloatMarshallerStr
 org.kie.kogito.serialization.process.impl.marshallers.ProtobufIntegerMarshallerStrategy
 org.kie.kogito.serialization.process.impl.marshallers.ProtobufDateMarshallerStrategy
 org.kie.kogito.serialization.process.impl.marshallers.ProtobufDoubleMarshallerStrategy
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufJsonNodeMessageMarshaller

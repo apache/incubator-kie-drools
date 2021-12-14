@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jackson.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+package org.kie.kogito.codegen.process.persistence;
 
-public class ObjectMapperFactory {
+import java.util.function.Predicate;
 
-    private ObjectMapperFactory() {
+public final class ExclusionTypeUtils {
+
+    private ExclusionTypeUtils() {
+        // nothing to do
     }
 
-    private static ObjectMapper objectMapper = initObjectMapper();
-
-    private static ObjectMapper initObjectMapper() {
-        TypeFactory typeFactory = TypeFactory.defaultInstance().withClassLoader(Thread.currentThread().getContextClassLoader());
-        return new ObjectMapper().setTypeFactory(typeFactory);
+    public static Predicate<String> createTypeExclusions() {
+        return type -> "com.fasterxml.jackson.databind.JsonNode".equals(type);
     }
 
-    public static ObjectMapper get() {
-        return objectMapper;
-    }
 }
