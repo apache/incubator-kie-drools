@@ -41,7 +41,7 @@ public class AppPaths {
     private final Path resourcesPath;
 
     public static AppPaths fromProjectDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN);
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "main");
     }
 
     public static AppPaths fromQuarkus(Iterable<Path> paths, BuildTool bt) {
@@ -69,7 +69,17 @@ public class AppPaths {
                     break;
             }
         }
-        return new AppPaths(projectPaths, classesPaths, isJar, bt);
+        return new AppPaths(projectPaths, classesPaths, isJar, bt, "main");
+    }
+
+    /**
+     * Builder to be used only for tests, where <b>all</b> resources must be present in "src/test/resources" directory
+     * 
+     * @param projectDir
+     * @return
+     */
+    public static AppPaths fromTestDir(Path projectDir) {
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "test");
     }
 
     private static PathType getPathType(Path archiveLocation) {
@@ -95,14 +105,22 @@ public class AppPaths {
         UNKNOWN
     }
 
-    private AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt) {
+    /**
+     * @param projectPaths
+     * @param classesPaths
+     * @param isJar
+     * @param bt
+     * @param resourcesBasePath "main" or "test"
+     */
+    private AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
+            String resourcesBasePath) {
         this.isJar = isJar;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
         if (bt == BuildTool.GRADLE) {
             resourcesPath = Paths.get(""); // no prefix required
         } else {
-            resourcesPath = Paths.get("src", "main", "resources");
+            resourcesPath = Paths.get("src", resourcesBasePath, "resources");
         }
     }
 

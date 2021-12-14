@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
+import static org.kie.kogito.codegen.core.CustomDashboardGeneratedUtils.loadCustomGrafanaDashboardsList;
 
 public class ApplicationGenerator {
 
@@ -79,6 +80,8 @@ public class ApplicationGenerator {
         generatedFiles.addAll(generateApplicationSections());
 
         generatedFiles.addAll(applicationConfigGenerator.generate());
+
+        generatedFiles.addAll(loadCustomGrafanaDashboardsList(context));
 
         DashboardGeneratedFileUtils.list(generatedFiles).ifPresent(generatedFiles::add);
 
@@ -164,7 +167,9 @@ public class ApplicationGenerator {
             Enumeration<URL> urls = context.getClassLoader().getResources("META-INF/kogito.addon");
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
-                try (InputStream urlStream = url.openStream(); InputStreamReader isr = new InputStreamReader(urlStream)) {
+                try (InputStream urlStream = url.openStream();
+                        InputStreamReader isr =
+                                new InputStreamReader(urlStream)) {
                     String addon = StringUtils.readFileAsString(isr);
                     addons.add(addon);
                 }
