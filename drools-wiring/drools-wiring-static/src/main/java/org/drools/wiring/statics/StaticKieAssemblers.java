@@ -34,11 +34,13 @@ public class StaticKieAssemblers implements KieAssemblers {
 
     private static final Logger log = LoggerFactory.getLogger(StaticKieAssemblers.class);
 
-    private Map<ResourceType, KieAssemblerService> assemblers = new HashMap<>();
+    private final Map<ResourceType, KieAssemblerService> assemblers = new HashMap<>();
 
     public StaticKieAssemblers() {
-        assemblers.put(ResourceType.DMN, (KieAssemblerService) tryInstance("org.kie.dmn.core.assembler.DMNAssemblerService"));
-        assemblers.put(ResourceType.PMML, (KieAssemblerService) tryInstance("org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService"));
+        tryInstance("org.kie.dmn.core.assembler.DMNAssemblerService")
+                .ifPresent(i -> assemblers.put(ResourceType.DMN, (KieAssemblerService) i));
+        tryInstance("org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService")
+                .ifPresent(i -> assemblers.put(ResourceType.PMML, (KieAssemblerService) i));
     }
 
     @Override
