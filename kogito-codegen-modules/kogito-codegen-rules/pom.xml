@@ -37,6 +37,10 @@
             <artifactId>kogito-drools</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-ruleunits</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-xml-support</artifactId>
         </dependency>
@@ -83,7 +87,7 @@
 
 
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.drools</groupId>
             <artifactId>drools-decisiontables</artifactId>
             <scope>test</scope>
         </dependency>

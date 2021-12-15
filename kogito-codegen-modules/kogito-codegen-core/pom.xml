@@ -20,7 +20,7 @@
         <!-- required because of CollectedResourceProducer -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>drools-core</artifactId>
+            <artifactId>kogito-drools</artifactId>
         </dependency>
 
         <dependency>

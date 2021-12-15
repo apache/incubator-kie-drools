@@ -15,13 +15,11 @@
  */
 package $Package$;
 
-import org.drools.core.ClockType;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.impl.KogitoRuleUnitExecutor;
-import org.kie.api.conf.EventProcessingOption;
+import org.kie.kogito.drools.core.impl.KogitoRuleUnitExecutor;
 import org.kie.kogito.rules.RuleEventListenerConfig;
 import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 

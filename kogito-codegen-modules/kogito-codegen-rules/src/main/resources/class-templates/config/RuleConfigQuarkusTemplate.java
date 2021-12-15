@@ -15,17 +15,9 @@
  */
 package $Package$;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.enterprise.inject.Instance;
 
-import org.drools.core.config.AbstractRuleConfig;
+import org.kie.kogito.drools.core.config.AbstractRuleConfig;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.kogito.rules.RuleEventListenerConfig;

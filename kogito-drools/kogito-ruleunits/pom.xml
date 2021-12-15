@@ -31,8 +31,20 @@
   <packaging>jar</packaging>
   
   <properties>
-    <java.module.name>org.kie.kogito.kogito.ruleunits</java.module.name>
+    <java.module.name>org.kie.kogito.rules.units</java.module.name>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-kie-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <!-- Logging -->
   <dependencies>
@@ -42,21 +54,15 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <!-- only for InterpretedRuleUnit -->
-      <optional>true</optional>
+      <artifactId>kogito-drools</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools-model</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->

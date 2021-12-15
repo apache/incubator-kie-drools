@@ -17,9 +17,9 @@ package org.jbpm.process.instance;
 
 import java.util.Optional;
 
-import org.drools.core.event.KogitoProcessEventSupportImpl;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.kogito.drools.core.event.KogitoProcessEventSupportImpl;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;

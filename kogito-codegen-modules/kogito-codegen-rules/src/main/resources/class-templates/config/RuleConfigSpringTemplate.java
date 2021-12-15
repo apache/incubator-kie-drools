@@ -17,7 +17,7 @@ package $Package$;
 
 import java.util.List;
 
-import org.drools.core.config.AbstractRuleConfig;
+import org.kie.kogito.drools.core.config.AbstractRuleConfig;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.kogito.rules.RuleEventListenerConfig;

@@ -15,7 +15,6 @@
  */
 package org.jbpm.workflow.instance.node;
 
-import org.drools.core.common.KogitoInternalAgenda;
 import org.drools.core.spi.Activation;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
@@ -25,6 +24,7 @@ import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.process.EventListener;
+import org.kie.kogito.drools.core.common.KogitoInternalAgenda;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class StateNodeInstance extends CompositeContextNodeInstance implements EventListener {

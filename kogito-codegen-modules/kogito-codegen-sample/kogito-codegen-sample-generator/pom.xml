@@ -27,7 +27,7 @@
 <!--    Required because of FileSystemResource   -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>drools-core</artifactId>
+            <artifactId>kogito-drools</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

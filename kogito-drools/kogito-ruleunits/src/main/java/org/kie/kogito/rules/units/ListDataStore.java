@@ -21,19 +21,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.kogito.factory.KogitoInternalFactHandle;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.ruleunit.InternalStoreCallback;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.kogito.drools.core.factory.KogitoInternalFactHandle;
+import org.kie.kogito.drools.core.ruleunit.InternalStoreCallback;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.DataProcessor;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.units.impl.DataHandleImpl;
 
-public class ListDataStore<T> implements DataStore<T>,
-        InternalStoreCallback {
+public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
     private final Map<Object, DataHandle> store = new IdentityHashMap<>();
 
     private final List<EntryPointDataProcessor> entryPointSubscribers = new ArrayList<>();

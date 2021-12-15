@@ -15,7 +15,6 @@
  */
 package org.jbpm.process.instance.context.exception;
 
-import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -23,6 +22,7 @@ import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.instance.NodeInstance;
+import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 
 public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 

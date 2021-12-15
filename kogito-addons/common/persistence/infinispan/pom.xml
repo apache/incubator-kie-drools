@@ -54,7 +54,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
       <scope>test</scope>
     </dependency>
@@ -65,7 +65,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core</artifactId>
+      <artifactId>kogito-drools</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

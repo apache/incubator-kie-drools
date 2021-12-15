@@ -15,8 +15,8 @@
  */
 package org.jbpm.util;
 
-import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.instance.ProcessInstance;
+import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 

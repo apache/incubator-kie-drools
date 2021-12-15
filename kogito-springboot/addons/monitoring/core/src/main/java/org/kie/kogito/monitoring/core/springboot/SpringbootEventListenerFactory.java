@@ -15,9 +15,9 @@
  */
 package org.kie.kogito.monitoring.core.springboot;
 
-import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.drools.core.config.DefaultRuleEventListenerConfig;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.monitoring.core.common.Constants;
 import org.kie.kogito.monitoring.core.common.MonitoringRegistry;

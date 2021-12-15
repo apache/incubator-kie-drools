@@ -110,7 +110,7 @@
                 <!-- MVEL support -->
                 <exclusion>
                     <groupId>org.drools</groupId>
-                    <artifactId>drools-core</artifactId>
+                    <artifactId>kogito-drools</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.mvel</groupId>

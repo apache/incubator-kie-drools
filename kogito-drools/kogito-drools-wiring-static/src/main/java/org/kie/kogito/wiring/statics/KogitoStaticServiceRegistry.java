@@ -26,6 +26,6 @@ public class KogitoStaticServiceRegistry extends StaticServiceRegistry {
         registerService("org.kie.kogito.rules.DataSource$Factory", "org.kie.kogito.rules.units.impl.DataSourceFactoryImpl", false);
         registerService("org.kie.internal.ruleunit.RuleUnitComponentFactory", "org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl", false);
 
-        registerService("org.drools.core.reteoo.RuntimeComponentFactory", "org.drools.core.kogito.factory.KogitoRuntimeComponentFactory", false);
+        registerService("org.drools.core.reteoo.RuntimeComponentFactory", "org.kie.kogito.drools.core.factory.KogitoRuntimeComponentFactory", false);
     }
 }

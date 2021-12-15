@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.monitoring.core.common.rule;
 
-import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.drools.core.config.DefaultRuleEventListenerConfig;
 
 import io.micrometer.core.instrument.MeterRegistry;
 

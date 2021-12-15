@@ -15,14 +15,12 @@
  */
 package $Package$;
 
-import org.drools.core.ClockType;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionsPool;
+import org.kie.kogito.drools.core.impl.KogitoStatefulKnowledgeSessionImpl;
 import org.kie.kogito.rules.RuleEventListenerConfig;
 import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 
@@ -43,8 +41,8 @@ public class $Name$ extends AbstractRuleUnit<$ModelName$> {
         sessionConfig.setClockType($ClockType$);
 
         KieSession ks = kb.newKieSession(sessionConfig, new EnvironmentImpl());
-        ((org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl)ks).setStateless( /*$IsStateful$*/ true );
-        ((org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl)ks).setApplication( app );
+        ((KogitoStatefulKnowledgeSessionImpl)ks).setStateless( /*$IsStateful$*/ true );
+        ((KogitoStatefulKnowledgeSessionImpl)ks).setApplication( app );
 
         org.kie.kogito.Config config = app.config();
         if (config != null) {
