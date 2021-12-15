@@ -110,7 +110,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.internal.runtime.beliefs.Mode;
+import org.drools.core.beliefsystem.Mode;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Calendars;

@@ -66,7 +66,7 @@ public class ReteooWorkingMemoryTest {
 
         FactHandle fd = ksession.insert( string );
 
-        FactHandle fz = ksession.getTruthMaintenanceSystem().insert( string, null, null, new MockActivation() );
+        FactHandle fz = ksession.getTruthMaintenanceSystem().insert( string, null, new MockActivation() );
 
         assertEquals( 1,
                       tms.getEqualityKeyMap().size() );

@@ -76,8 +76,8 @@ public class KnowledgePackageImpl
     private static final String[] implicitImports = new String[]{
             "org.kie.api.definition.rule.*",
             "org.kie.api.definition.type.*",
-            "org.drools.core.beliefsystem.abductive.Abductive",
-            "org.drools.core.beliefsystem.abductive.Abducible"};
+            "org.drools.tms.beliefsystem.abductive.Abductive",
+            "org.drools.tms.beliefsystem.abductive.Abducible"};
 
     /**
      * Name of the pkg.

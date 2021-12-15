@@ -19,7 +19,6 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.common.BeliefSystemFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPointFactory;
 import org.drools.core.common.PropagationContextFactory;
@@ -52,8 +51,6 @@ public interface RuntimeComponentFactory {
     AgendaGroupFactory getAgendaGroupFactory();
 
     PropagationContextFactory getPropagationContextFactory();
-
-    BeliefSystemFactory getBeliefSystemFactory();
 
     NamedEntryPointFactory getNamedEntryPointFactory();
 

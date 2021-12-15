@@ -40,7 +40,7 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TruthMaintenanceSystemHelper;
+import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -354,7 +354,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
 
         workingMemory.getRuleEventSupport().onDeleteMatch( item );
 
-        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, ( Tuple ) activation, activation.getRule() );
+        TruthMaintenanceSystem.removeLogicalDependencies( activation, ( Tuple ) activation );
     }
 
     @Override

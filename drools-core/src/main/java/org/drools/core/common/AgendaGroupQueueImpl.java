@@ -62,8 +62,6 @@ public class AgendaGroupQueueImpl
     private Activation            lastRemoved;
     private final boolean         sequential;
 
-    private static final Activation visited = new VisitedAgendaGroup();
-
     public AgendaGroupQueueImpl(final String name,
                                 final RuleBase kBase) {
         this.name = name;
@@ -75,7 +73,7 @@ public class AgendaGroupQueueImpl
     @Override
     public void visited() {
         if (sequential) {
-            lastRemoved = visited;
+            lastRemoved = VisitedAgendaGroup.INSTANCE;
         }
     }
 
@@ -166,7 +164,7 @@ public class AgendaGroupQueueImpl
     public void add(final Activation activation) {
         if ( lastRemoved != null ) {
             // this will only be set if sequential. Do not add Match's that are higher in salience + load order than the lastRemoved (fired)
-            if ( lastRemoved == activation || lastRemoved  == visited || PhreakConflictResolver.doCompare( lastRemoved, activation ) < 0 ) {
+            if ( lastRemoved == activation || lastRemoved == VisitedAgendaGroup.INSTANCE || PhreakConflictResolver.doCompare( lastRemoved, activation ) < 0 ) {
                 return;
             }
         }

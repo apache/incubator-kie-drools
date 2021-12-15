@@ -16,12 +16,18 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.kie.api.definition.rule.Query;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.annotation.Annotation;
+import java.util.function.Function;
+
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ObjectType;
+import org.kie.api.definition.rule.Query;
 
 public class QueryImpl extends RuleImpl implements Query {
 
@@ -77,4 +83,23 @@ public class QueryImpl extends RuleImpl implements Query {
         return false;
     }
 
+    public boolean processAbduction(Activation resultLeftTuple, DroolsQuery dquery, Object[] objects, ReteEvaluator reteEvaluator) {
+        return true;
+    }
+
+    public boolean isReturnBound() {
+        return false;
+    }
+
+    public void setReturnType(ObjectType objectType, String[] params, String[] args, Declaration[] declarations ) throws NoSuchMethodException {
+        throw new UnsupportedOperationException("Available only for abductive query");
+    }
+
+    public Class<? extends Annotation> getAbductiveAnnotationClass() {
+        throw new UnsupportedOperationException("Available only for abductive query");
+    }
+
+    public <T extends Annotation> Class<?> getAbductionClass(Function<Class<T>, T> annotationReader) {
+        throw new UnsupportedOperationException("Available only for abductive query");
+    }
 }

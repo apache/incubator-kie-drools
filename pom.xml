@@ -158,8 +158,9 @@
     <module>drools-mvel</module>
     <module>drools-xml-support</module>
     <module>drools-legacy-test-util</module>
-    <module>drools-serialization-protobuf</module>
+    <module>drools-tms</module>
     <module>drools-beliefs</module>
+    <module>drools-serialization-protobuf</module>
     <module>drools-traits</module>
     <module>drools-cdi</module>
     <module>drools-verifier</module>

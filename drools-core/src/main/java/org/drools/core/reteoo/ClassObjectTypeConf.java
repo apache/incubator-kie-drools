@@ -61,8 +61,7 @@ public class ClassObjectTypeConf
     private TypeDeclaration typeDecl;
     
     private boolean tmsEnabled;
-    private boolean traitTmsEnabled;
-    
+
     private boolean isEvent;
 
     private long expirationOffset = -1;
@@ -104,9 +103,6 @@ public class ClassObjectTypeConf
         this.objectType = ruleBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
 
         this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
-
-        Traitable ttbl = cls.getAnnotation( Traitable.class );
-        this.traitTmsEnabled = ttbl != null && ttbl.logical();
     }
 
     public void readExternal(ObjectInput stream) throws IOException,
@@ -118,7 +114,6 @@ public class ClassObjectTypeConf
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
         entryPoint = (EntryPointId) stream.readObject();
         tmsEnabled = stream.readBoolean();
-        traitTmsEnabled = stream.readBoolean();
         isEvent = stream.readBoolean();
         isTrait = stream.readBoolean();
         expirationOffset = stream.readLong();
@@ -132,7 +127,6 @@ public class ClassObjectTypeConf
         stream.writeObject( concreteObjectTypeNode );
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
-        stream.writeBoolean( traitTmsEnabled );
         stream.writeBoolean( isEvent );
         stream.writeBoolean(isTrait);
         stream.writeLong(expirationOffset);
@@ -173,10 +167,6 @@ public class ClassObjectTypeConf
         }
         return pkgName;
 
-    }
-
-    public boolean isTraitTMSEnabled() {
-        return traitTmsEnabled;
     }
 
     public void resetCache() {

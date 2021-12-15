@@ -15,8 +15,12 @@
 
 package org.drools.core.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
+import org.drools.core.beliefsystem.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
@@ -37,10 +41,6 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -383,9 +383,6 @@ public class BinaryHeapQueueTest {
         }
 
         public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
-        }
-
-        public void addBlocked(LinkedListNode<SimpleMode> node) {
         }
 
         public LinkedList getBlockers() {

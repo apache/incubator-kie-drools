@@ -21,13 +21,9 @@ import java.util.List;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.ObjectStore;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
@@ -37,11 +33,11 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.QueryImpl;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -282,54 +278,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             
             RightTuple rightTuple = createResultRightTuple(resultHandle, resultLeftTuple, dquery.isOpen());
 
-            boolean pass = true;
-            if ( reteEvaluator instanceof InternalWorkingMemory && query.isAbductive() ) {
-                InternalWorkingMemory workingMemory = (InternalWorkingMemory) reteEvaluator;
-                AbductiveQuery aq = (( AbductiveQuery) query );
-                int numArgs = aq.getAbducibleArgs().length;
-                Object[] constructorArgs = new Object[ aq.getAbducibleArgs().length ];
-                for ( int j = 0; j < numArgs; j++ ) {
-                    int k = aq.mapArgToParam( j );
-                    if ( objects[ k ] != null ) {
-                        constructorArgs[ j ] = objects[ k ];
-                    } else if ( dquery.getElements()[ k ] != null ) {
-                        constructorArgs[ j ] = dquery.getElements()[ k ];
-                    }
-                }
-                Object abduced = aq.abduce( constructorArgs );
-                if ( abduced != null ) {
-                    boolean firstAssertion = true;
-                    ObjectStore store = workingMemory.getObjectStore();
-                    InternalFactHandle handle = store.getHandleForObject( abduced );
-                    if ( handle != null ) {
-                        abduced = handle.getObject();
-                        firstAssertion = false;
-                    } else {
-                        handle = workingMemory.getTruthMaintenanceSystem().insert( abduced,
-                                                                                   MODE.POSITIVE.getId(),
-                                                                                   query,
-                                                                                   (RuleTerminalNodeLeftTuple) resultLeftTuple );
-                    }
-                    BeliefSet bs = handle.getEqualityKey() != null ? handle.getEqualityKey().getBeliefSet() : null;
-                    if ( bs == null ) {
-                        abduced = handle.getObject();
-                    } else {
-                        if ( ! bs.isPositive() ) {
-                            pass = false;
-                        } else {
-                            if ( !firstAssertion ) {
-                                workingMemory.getTruthMaintenanceSystem().insert( abduced,
-                                                                                  MODE.POSITIVE.getId(),
-                                                                                  query,
-                                                                                  (RuleTerminalNodeLeftTuple) resultLeftTuple );
-                            }
-                        }
-                    }
-                }
-                objects[ objects.length - 1 ] = abduced;
-            }
-
-            if ( pass ) {
+            if ( query.processAbduction((Activation) resultLeftTuple, dquery, objects, reteEvaluator) ) {
                 LeftTupleSink sink = dquery.getLeftTupleSink();
                 LeftTuple childLeftTuple = sink.createLeftTuple( this.leftTuple, rightTuple, sink );
                 boolean stagedInsertWasEmpty = dquery.getResultLeftTupleSets().addInsert(childLeftTuple);
@@ -337,13 +286,11 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
                     dquery.getQueryNodeMemory().setNodeDirtyWithoutNotify();
                 }
             }
-
-
         }
 
         private int determineResultSize( QueryImpl query, DroolsQuery dquery ) {
             int size = dquery.getElements().length;
-            if (query.isAbductive() && (( AbductiveQuery ) query ).isReturnBound()) {
+            if (query.isReturnBound()) {
                 size++;
             }
             return size;

@@ -747,16 +747,14 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             ksession.fireAllRules();
 
-            ksession = getSerialisedStatefulKnowledgeSession(ksession,
-                                                                                 true);
+            ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
 
             FactHandle h = ksession.insert( new Integer( 6 ) );
             assertEquals( 1,
                           ksession.getObjects().size() );
 
             ksession.fireAllRules();
-            ksession = getSerialisedStatefulKnowledgeSession(ksession,
-                                                                                 true);
+            ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             assertEquals( "There should be 2 CheeseEqual in Working Memory, 1 justified, 1 stated",
                           2,
                           ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
@@ -771,8 +769,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                 System.out.println( o );
             }
 
-            ksession = getSerialisedStatefulKnowledgeSession(ksession,
-                                                                                 true);
+            ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             assertEquals( 0,
                           ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
             assertEquals( 0,

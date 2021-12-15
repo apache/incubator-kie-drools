@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.compiler.testframework.RuleCoverageListener;
 import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
+import org.drools.core.beliefsystem.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;

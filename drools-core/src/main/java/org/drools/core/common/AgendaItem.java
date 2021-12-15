@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
+import org.drools.core.beliefsystem.SimpleMode;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;

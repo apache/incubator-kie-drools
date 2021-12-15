@@ -631,14 +631,13 @@ public class ProtobufInputMarshaller {
             tms.put( key );
 
             context.getFilter().fireRNEAs( context.getWorkingMemory() );
-            readBeliefSet( context, tms, key, _key );
+            readBeliefSet( context, tms, _key );
         }
 
     }
 
     private static void readBeliefSet( MarshallerReaderContext context,
                                        TruthMaintenanceSystem tms,
-                                       EqualityKey key,
                                        ProtobufMessages.EqualityKey _key) throws IOException,
                                                                             ClassNotFoundException {
         if( _key.hasBeliefSet() ) {
@@ -672,13 +671,7 @@ public class ProtobufInputMarshaller {
 
                     ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( handle.getEntryPointId(),
                                                                                                                  handle.getObject() );
-                    tms.readLogicalDependency( handle,
-                                               object,
-                                               value,
-                                               activation,
-                                               activation.getPropagationContext(),
-                                               activation.getRule(),
-                                               typeConf );
+                    tms.readLogicalDependency( handle, object, value, activation, typeConf );
                 }
             } else {
                 handle.getEqualityKey().setBeliefSet( tms.getBeliefSystem().newBeliefSet( handle ) );

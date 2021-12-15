@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
+import org.drools.core.beliefsystem.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
@@ -185,7 +185,6 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
         return this.activationNumber;
     }
 
-    @Override
     public void addBlocked(final LogicalDependency<SimpleMode> dep) {
         // Adds the blocked to the blockers list
         if (this.blocked == null) {

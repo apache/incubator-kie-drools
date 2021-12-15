@@ -60,7 +60,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.internal.runtime.beliefs.Mode;
+import org.drools.core.beliefsystem.Mode;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -618,7 +618,6 @@ public class TraitHelperImpl implements Externalizable,
         // iterate to find previous equal logical insertion
         FactHandle handle = workingMemory.getTruthMaintenanceSystem().insert( object,
                                                                               modes,
-                                                                              activation.getRule(),
                                                                               activation );
 
     }

@@ -18,8 +18,6 @@ package org.drools.core.spi;
 
 import org.drools.core.base.ClassObjectType;
 
-public interface AcceptsClassObjectType
-    extends
-    Acceptor {
-    public void setClassObjectType(ClassObjectType classObjectType);
+public interface AcceptsClassObjectType extends Acceptor {
+    void setClassObjectType(ClassObjectType classObjectType);
 }

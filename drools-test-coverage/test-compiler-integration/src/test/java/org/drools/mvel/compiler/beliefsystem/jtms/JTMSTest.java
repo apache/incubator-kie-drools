@@ -22,18 +22,17 @@ import java.util.List;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
-import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.tms.beliefsystem.jtms.JTMSBeliefSystem;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -434,7 +433,7 @@ public class JTMSTest {
         }
               
         assertEquals( 3, key.getBeliefSet().size() );        
-        assertEquals( new Integer(1), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
+        assertEquals( new Integer(1), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
         
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
@@ -445,7 +444,7 @@ public class JTMSTest {
         }
 
         assertEquals( 2, key.getBeliefSet().size() );        
-        assertEquals( new Integer(3), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
+        assertEquals( new Integer(3), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
 
         kSession.retract( fhGo3 );
         kSession.fireAllRules();
@@ -456,7 +455,7 @@ public class JTMSTest {
         }
 
         assertEquals( 1, key.getBeliefSet().size() );        
-        assertEquals( new Integer(2), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
+        assertEquals( new Integer(2), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
     }
     
     @Test(timeout = 10000 )

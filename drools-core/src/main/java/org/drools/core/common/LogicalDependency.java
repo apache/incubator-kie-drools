@@ -21,12 +21,11 @@ import org.drools.core.spi.Activation;
 
 public interface LogicalDependency<M extends ModedAssertion<M>> extends LinkedListNode<LogicalDependency<M>> {
 
-    public Object getJustified();
+    Object getJustified();
 
-    public Activation<M> getJustifier();
+    Activation<M> getJustifier();
 
-    public Object getObject();
+    Object getObject();
 
-    public M getMode();
-
+    M getMode();
 }

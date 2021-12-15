@@ -22,12 +22,11 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.beliefsystem.abductive.Abductive;
-import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.constraint.QueryNameConstraint;
+import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 
@@ -71,8 +70,7 @@ public class QueryBuilder implements EngineElementBuilder {
 
         Class<?> abductionReturnKlass = null;
         if ( query.isAbductive() ) {
-            Abductive abductive = queryDescr.getTypedAnnotation( Abductive.class );
-            abductionReturnKlass = abductive.target();
+            abductionReturnKlass = query.getAbductionClass(queryDescr::getTypedAnnotation);
             params[ numParams ] = "";
             types[ numParams ] = abductionReturnKlass.getName();
         }
@@ -106,15 +104,14 @@ public class QueryBuilder implements EngineElementBuilder {
         if ( query.isAbductive() ) {
             String returnName = "";
             try {
-                AnnotationDescr ann = queryDescr.getAnnotation( Abductive.class );
+                AnnotationDescr ann = queryDescr.getAnnotation( query.getAbductiveAnnotationClass() );
                 Object[] argsVal = ((Object[]) ann.getValue( "args" ));
                 String[] args = argsVal != null ? Arrays.copyOf( argsVal, argsVal.length, String[].class ) : null;
 
                 returnName = types[ numParams ];
-                ObjectType objectType = new ClassObjectType( abductionReturnKlass, false );
-                objectType = context.getPkg().getClassFieldAccessorStore().wireObjectType( objectType, (AbductiveQuery) query );
+                ObjectType objectType = context.getPkg().getClassFieldAccessorStore().wireObjectType( new ClassObjectType( abductionReturnKlass, false ), (AcceptsClassObjectType) query );
 
-                ( (AbductiveQuery) query ).setReturnType( objectType, params, args, declarations );
+                query.setReturnType( objectType, params, args, declarations );
             } catch ( NoSuchMethodException e ) {
                 context.addError( new DescrBuildError( context.getParentDescr(),
                                                        queryDescr,
@@ -123,11 +120,7 @@ public class QueryBuilder implements EngineElementBuilder {
                                                        " with types " + Arrays.toString( types ) ) );
 
             } catch ( IllegalArgumentException e ) {
-                context.addError( new DescrBuildError( context.getParentDescr(),
-                                                       queryDescr,
-                                                       e,
-                                                       e.getMessage() ) );
-
+                context.addError( new DescrBuildError( context.getParentDescr(), queryDescr, e, e.getMessage() ) );
             }
         }
 

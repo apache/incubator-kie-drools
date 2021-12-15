@@ -33,7 +33,7 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TruthMaintenanceSystemHelper;
+import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -207,7 +207,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
         reteEvaluator.getRuleEventSupport().onDeleteMatch( item );
 
-        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, ( Tuple ) activation, activation.getRule() );
+        TruthMaintenanceSystem.removeLogicalDependencies( activation, ( Tuple ) activation );
     }
 
     @Override

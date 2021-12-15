@@ -13,7 +13,7 @@
   <groupId>org.drools</groupId>
   <artifactId>drools-kiesession</artifactId>
 
-  <name>Drools :: Core</name>
+  <name>Drools :: KieSession</name>
 
   <properties>
     <java.module.name>org.drools.kiesession</java.module.name>

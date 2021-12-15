@@ -32,7 +32,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.ByteString.Output;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
-import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
+import org.drools.tms.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;

@@ -83,6 +83,12 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-tms</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-serialization-protobuf</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
