@@ -244,7 +244,7 @@ void commitAndCreatePR() {
 }
 
 MavenCommand getMavenCommand() {
-    mvnCmd = new MavenCommand(this, ['-fae'])
+    mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                     .withSettingsXmlId("${env.MAVEN_SETTINGS_CONFIG_FILE_ID}")
     if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
         mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
