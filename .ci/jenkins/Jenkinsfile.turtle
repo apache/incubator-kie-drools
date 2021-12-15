@@ -38,7 +38,7 @@ pipeline {
                             // Use the same settings.xml as for the nightly builds, including a maven mirror.
                             .withSettingsXmlId('kogito_release_settings')
                             .inDirectory(optaplannerRepo)
-                            .withOptions(['-U', '-e', '-fae'])
+                            .withOptions(['-U', '-e', '-fae', '-ntp'])
                             .withProperty('full')
                             .withProperty('runTurtleTests', true)
                             .withProperty('maven.test.failure.ignore', true)
