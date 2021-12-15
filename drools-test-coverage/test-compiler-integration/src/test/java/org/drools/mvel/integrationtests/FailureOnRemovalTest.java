@@ -103,8 +103,7 @@ public class FailureOnRemovalTest {
     }
 
     private KnowledgeBuilderConfiguration createKnowledgeBuilderConfiguration() {
-        KnowledgeBuilderConfiguration kconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
-                                                                                                        getClass().getClassLoader() );
+        KnowledgeBuilderConfiguration kconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null, getClass().getClassLoader() );
         kconf.setOption( DefaultDialectOption.get( "java" ) );
         return kconf;
     }

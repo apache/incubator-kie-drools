@@ -85,9 +85,8 @@ public class KnowledgeBuilderFactory {
      * @return
      *     The KnowledgeBuilderConfiguration.
      */
-    public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties,
-                                                                                 ClassLoader... classLoaders) {
-        return FactoryServiceHolder.factoryService.newKnowledgeBuilderConfiguration( properties, classLoaders );
+    public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader classLoader) {
+        return FactoryServiceHolder.factoryService.newKnowledgeBuilderConfiguration( properties, classLoader );
     }
 
     /**

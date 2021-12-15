@@ -30,9 +30,12 @@ import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.GenericKieSessionMonitoringImpl;
+import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.KieSessionsPool;
@@ -84,5 +87,9 @@ public interface RuntimeComponentFactory {
 
     static <T> T throwExceptionForMissingRuntime() {
         throw new RuntimeException(NO_RUNTIME);
+    }
+
+    default ObjectMarshallingStrategy createDefaultObjectMarshallingStrategy(ObjectMarshallingStrategyAcceptor acceptor) {
+        return new SerializablePlaceholderResolverStrategy(acceptor);
     }
 }

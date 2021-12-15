@@ -16,6 +16,7 @@
 package org.drools.wiring.statics;
 
 import java.lang.reflect.Constructor;
+import java.util.Optional;
 
 public class SimpleInstanceCreator {
     static Constructor<?> constructor(String className) {
@@ -28,9 +29,17 @@ public class SimpleInstanceCreator {
 
     static Object instance(String className) {
         try {
-            return Class.forName(className).newInstance();
+            return Class.forName(className).getConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    static Optional<Object> tryInstance(String className) {
+        try {
+            return Optional.of( Class.forName(className).getConstructor().newInstance() );
+        } catch (Exception e) {
+            return Optional.empty();
         }
     }
 }

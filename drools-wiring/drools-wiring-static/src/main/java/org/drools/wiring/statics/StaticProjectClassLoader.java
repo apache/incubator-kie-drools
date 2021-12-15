@@ -80,7 +80,7 @@ public class StaticProjectClassLoader extends ProjectClassLoader {
         }
 
         public Class<?> defineClass(String name, byte[] bytecode) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("You're trying to dynamically define a class, please add the module org.drools:drools-wiring-dynamic to your classpath.");
         }
 
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
