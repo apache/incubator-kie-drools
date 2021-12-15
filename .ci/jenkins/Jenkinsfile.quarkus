@@ -262,7 +262,7 @@ void checkoutDroolsRepo() {
 }
 
 MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
-    def mvnCmd = new MavenCommand(this, ['-fae'])
+    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
                 .inDirectory(directory)
     if (addQuarkusVersion) {
