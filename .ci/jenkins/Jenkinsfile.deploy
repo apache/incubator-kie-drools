@@ -226,7 +226,7 @@ void commitAndCreatePR() {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendZulipTestSummaryNotification('Deploy', "[${getBuildBranch()}] Kogito Runtimes", [env.KOGITO_CI_EMAIL_TO])
+        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Kogito Runtimes", [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }

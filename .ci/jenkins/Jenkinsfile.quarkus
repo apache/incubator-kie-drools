@@ -214,7 +214,7 @@ pipeline {
 }
 
 void sendNotification() {
-    mailer.sendZulipTestSummaryNotification("Quarkus ${getQuarkusBranch()}", "[${params.BUILD_BRANCH_NAME}] Kogito Runtimes", [env.KOGITO_CI_EMAIL_TO])
+    mailer.sendMarkdownTestSummaryNotification("Quarkus ${getQuarkusBranch()}", "[${params.BUILD_BRANCH_NAME}] Kogito Runtimes", [env.KOGITO_CI_EMAIL_TO])
 }
 
 void checkoutRepo(String repoName, String dirName=repoName) {
