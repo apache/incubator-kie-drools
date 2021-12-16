@@ -111,7 +111,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendZulipTestSummaryNotification('Promote', "[${getBuildBranch()}] Kogito Apps", [env.KOGITO_CI_EMAIL_TO])
+        mailer.sendMarkdownTestSummaryNotification('Promote', "[${getBuildBranch()}] Kogito Apps", [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }
