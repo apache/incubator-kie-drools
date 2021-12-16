@@ -41,6 +41,16 @@
          <artifactId>quarkus-jackson-jq-deployment</artifactId>
          <version>${version.io.quarkiverse.jackson-jq}</version>
        </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.reactivemessaging.http</groupId>
+        <artifactId>quarkus-reactive-messaging-http</artifactId>
+        <version>${version.io.quarkiverse.reactivemessaging.http}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.reactivemessaging.http</groupId>
+        <artifactId>quarkus-reactive-messaging-http-deployment</artifactId>
+        <version>${version.io.quarkiverse.reactivemessaging.http}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

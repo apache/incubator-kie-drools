@@ -67,14 +67,14 @@
       <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
+      <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-runtime</artifactId>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-jsonpath-expression</artifactId>
     </dependency>

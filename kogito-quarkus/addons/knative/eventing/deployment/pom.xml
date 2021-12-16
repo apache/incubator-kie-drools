@@ -11,7 +11,7 @@
   <name>Kogito Add-On Knative Eventing - Deployment</name>
   <dependencies>
     <dependency>
-      <groupId>io.quarkus</groupId>
+      <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http-deployment</artifactId>
     </dependency>
     <dependency>

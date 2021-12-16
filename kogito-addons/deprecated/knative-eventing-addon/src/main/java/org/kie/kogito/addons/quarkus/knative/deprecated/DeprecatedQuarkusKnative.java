@@ -23,8 +23,7 @@ import org.slf4j.LoggerFactory;
 import io.quarkus.runtime.Startup;
 
 /**
- * @deprecated The library knative-eventing-addon is deprecated and will be removed in a future release! Please use kogito-addons-quarkus-cloudevents and
- *             io.quarkus:quarkus-reactive-messaging-http instead
+ * @deprecated The library knative-eventing-addon is deprecated and will be removed in a future release! This library is deprecated, please use kogito-addons-quarkus-knative-eventing instead.
  */
 @Startup
 @ApplicationScoped
@@ -35,7 +34,7 @@ public class DeprecatedQuarkusKnative {
 
     public DeprecatedQuarkusKnative() {
         LOGGER.warn(
-                "The library knative-eventing-addon is deprecated and will be removed in a future release! Please use kogito-addons-quarkus-cloudevents and io.quarkus:quarkus-reactive-messaging-http instead");
+                "The library knative-eventing-addon is deprecated and will be removed in a future release! Please use kogito-addons-quarkus-knative-eventing instead");
     }
 
 }

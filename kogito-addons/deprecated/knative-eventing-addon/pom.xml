@@ -12,7 +12,7 @@
   <artifactId>knative-eventing-addon</artifactId>
   <packaging>jar</packaging>
   <name>Kogito :: Add-Ons :: Deprecated :: Knative Eventing</name>
-  <description>This library is deprecated, please use kogito-addons-quarkus-cloudevents and io.quarkus:quarkus-reactive-messaging-http instead</description>
+  <description>This library is deprecated, please use kogito-addons-quarkus-knative-eventing instead</description>
 
   <dependencies>
     <dependency>
@@ -20,9 +20,9 @@
       <artifactId>kogito-addons-quarkus-cloudevents</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
+      <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http</artifactId>
-      <version>${version.io.quarkus}</version>
+      <version>${version.io.quarkiverse.reactivemessaging.http}</version>
     </dependency>
   </dependencies>
 

@@ -45,7 +45,7 @@
       <artifactId>quarkus-smallrye-reactive-messaging-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
+      <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http-deployment</artifactId>
     </dependency>
     <dependency>

@@ -52,7 +52,7 @@
 
     <!-- These dependencies are needed in case Smallrye is configured with HTTP connector -->
     <dependency>
-      <groupId>io.quarkus</groupId>
+      <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http</artifactId>
       <optional>true</optional>
     </dependency>
