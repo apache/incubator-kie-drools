@@ -15,7 +15,7 @@
  */
 package org.jbpm.compiler.canonical.descriptors;
 
-import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
@@ -24,10 +24,10 @@ public class SupplierUtils {
     private SupplierUtils() {
     }
 
-    public static Expression getExpression(Class<?> runtimeClass, String... args) {
+    public static ObjectCreationExpr getExpression(Class<?> runtimeClass, String... args) {
         ObjectCreationExpr result = new ObjectCreationExpr().setType(runtimeClass.getCanonicalName());
         for (String arg : args) {
-            result.addArgument(new StringLiteralExpr(arg));
+            result.addArgument(arg == null ? new NullLiteralExpr() : new StringLiteralExpr(arg));
         }
         return result;
     }

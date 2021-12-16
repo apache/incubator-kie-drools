@@ -83,11 +83,31 @@
         
         
         <!-- OpenApi Required Libraries for Codegen Test -->
+        
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-openapi-workitem</artifactId>
-            <scope>test</scope>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-multipart-provider</artifactId>
+          <scope>test</scope>
         </dependency>
+        
+        <dependency>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jackson2-provider</artifactId>
+          <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.openapitools</groupId>
+          <artifactId>jackson-databind-nullable</artifactId>
+          <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-client</artifactId>
+          <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-jsonpath-expression</artifactId>

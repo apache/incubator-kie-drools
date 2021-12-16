@@ -37,18 +37,22 @@ public abstract class AbstractCompositeNodeFactory<T extends RuleFlowNodeContain
         return (CompositeContextNode) node;
     }
 
+    @Override
     public T variable(String name, DataType type) {
         return variable(name, type, null);
     }
 
+    @Override
     public T variable(String name, DataType type, Object value) {
         return variable(name, type, value, null, null);
     }
 
+    @Override
     public T variable(String name, DataType type, String metaDataName, Object metaDataValue) {
         return variable(name, type, null, metaDataName, metaDataValue);
     }
 
+    @Override
     public T variable(String name, DataType type, Object value, String metaDataName, Object metaDataValue) {
         Variable variable = new Variable();
         variable.setName(name);

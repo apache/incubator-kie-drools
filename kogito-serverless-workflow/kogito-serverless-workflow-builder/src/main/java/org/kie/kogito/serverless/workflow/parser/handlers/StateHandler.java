@@ -18,9 +18,11 @@ package org.kie.kogito.serverless.workflow.parser.handlers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.jbpm.process.core.context.exception.CompensationScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.impl.actions.HandleMessageAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
@@ -34,16 +36,22 @@ import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.suppliers.MergeActionSupplier;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.error.Error;
+import io.serverlessworkflow.api.events.EventDefinition;
 import io.serverlessworkflow.api.filters.StateDataFilter;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.transitions.Transition;
+
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 
 public abstract class StateHandler<S extends State> {
 
@@ -86,8 +94,8 @@ public abstract class StateHandler<S extends State> {
             } else {
                 ServerlessWorkflowParser.sendEventNode(
                         endNodeFactory.terminate(false).action(new HandleMessageAction(
-                                ServerlessWorkflowParser.JSON_NODE, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)),
-                        ServerlessWorkflowUtils.getWorkflowEventFor(workflow, produceEvents.get(0).getEventRef()));
+                                ServerlessWorkflowParser.JSON_NODE, DEFAULT_WORKFLOW_VAR)),
+                        eventDefinition(produceEvents.get(0).getEventRef()));
             }
             endNodeFactory.done();
         }
@@ -169,7 +177,8 @@ public abstract class StateHandler<S extends State> {
 
     private ActionNodeFactory<?> handleStateFilter(RuleFlowNodeContainerFactory<?, ?> factory, String filter) {
         ActionNodeFactory<?> result =
-                factory.actionNode(parserContext.newId()).action(new ExpressionActionSupplier(workflow.getExpressionLang(), filter, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR));
+                factory.actionNode(parserContext.newId())
+                        .action(ExpressionActionSupplier.of(workflow.getExpressionLang(), filter).build());
         result.done();
         return result;
     }
@@ -276,18 +285,12 @@ public abstract class StateHandler<S extends State> {
                 }
             } else {
                 final ActionNodeFactory<?> actionNode = factory.actionNode(parserContext.newId());
-                ActionNodeFactory<?> endNode = actionNode;
-                ServerlessWorkflowParser.sendEventNode(actionNode, ServerlessWorkflowUtils.getWorkflowEventFor(workflow,
-                        produceEvents.get(0).getEventRef()));
+                NodeFactory<?, ?> endNode = actionNode;
+                ServerlessWorkflowParser.sendEventNode(actionNode, eventDefinition(produceEvents.get(0).getEventRef()));
                 if (produceEvents.size() > 1) {
                     ListIterator<ProduceEvent> iter = produceEvents.listIterator(1);
                     while (iter.hasNext()) {
-                        ProduceEvent produceEvent = iter.next();
-                        ActionNodeFactory<?> newNode = factory.actionNode(parserContext.newId());
-                        ServerlessWorkflowParser.sendEventNode(newNode, ServerlessWorkflowUtils.getWorkflowEventFor(
-                                workflow, produceEvent.getEventRef())).done().connection(endNode.getNode().getId(),
-                                        newNode.getNode().getId());
-                        endNode = newNode;
+                        endNode = connect(endNode, ServerlessWorkflowParser.sendEventNode(factory.actionNode(parserContext.newId()), eventDefinition(iter.next().getEventRef())));
                     }
                 }
                 factory.connection(sourceId, actionNode.getNode().getId());
@@ -302,6 +305,68 @@ public abstract class StateHandler<S extends State> {
         } else {
             callback.ifPresent(HandleTransitionCallBack::onEmptyTarget);
         }
+    }
+
+    @FunctionalInterface
+    protected interface FilterableNodeSupplier {
+        NodeFactory<?, ?> apply(RuleFlowNodeContainerFactory<?, ?> factory, String inputVar, String outputVar);
+    }
+
+    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String name, String resultExpr, String toStateExpr,
+            FilterableNodeSupplier nodeSupplier) {
+        return filterAndMergeNode(embeddedSubProcess, name, null, resultExpr, toStateExpr, nodeSupplier);
+    }
+
+    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String name, String fromStateExpr, String resultExpr, String toStateExpr,
+            FilterableNodeSupplier nodeSupplier) {
+        String actionVarName = "var_" + name;
+        embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()));
+
+        NodeFactory<?, ?> startNode, currentNode;
+
+        if (fromStateExpr != null) {
+            startNode = embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow.getExpressionLang(), fromStateExpr)
+                    .withVarNames(DEFAULT_WORKFLOW_VAR, actionVarName).build());
+            currentNode = connect(startNode, nodeSupplier.apply(embeddedSubProcess, actionVarName, actionVarName));
+
+        } else {
+            startNode = currentNode = nodeSupplier.apply(embeddedSubProcess, DEFAULT_WORKFLOW_VAR, actionVarName);
+        }
+
+        if (resultExpr != null) {
+            currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow.getExpressionLang(), resultExpr)
+                    .withVarNames(actionVarName, actionVarName).build()));
+        }
+
+        if (toStateExpr != null) {
+            currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId())
+                    .action(new CollectorActionSupplier(workflow.getExpressionLang(), toStateExpr, DEFAULT_WORKFLOW_VAR, actionVarName)));
+        } else {
+            currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(new MergeActionSupplier(actionVarName, DEFAULT_WORKFLOW_VAR)));
+        }
+        currentNode.done();
+        return new MakeNodeResult(startNode, currentNode);
+    }
+
+    protected final NodeFactory<?, ?> connect(NodeFactory<?, ?> currentNode, NodeFactory<?, ?> nodeFactory) {
+        currentNode.done().connection(currentNode.getNode().getId(), nodeFactory.getNode().getId());
+        return nodeFactory;
+    }
+
+    protected final NodeFactory<?, ?> connect(NodeFactory<?, ?> currentNode, MakeNodeResult twoNodes) {
+        connect(currentNode, twoNodes.getIncomingNode()).done();
+        return twoNodes.getOutgoingNode();
+    }
+
+    protected final NodeFactory<?, ?> consumeEventNode(RuleFlowNodeContainerFactory<?, ?> factory, String eventRef, String inputVar, String outputVar) {
+        EventDefinition eventDefinition = eventDefinition(eventRef);
+        return ServerlessWorkflowParser.messageNode(factory.eventNode(parserContext.newId()), eventDefinition, inputVar).variableName(outputVar).eventType("Message-" + eventDefinition.getType());
+    }
+
+    protected final EventDefinition eventDefinition(String eventName) {
+        return workflow.getEvents().getEventDefs().stream()
+                .filter(wt -> wt.getName().equals(eventName))
+                .findFirst().orElseThrow(() -> new NoSuchElementException("No event for " + eventName));
     }
 
     private long compensationEvent(RuleFlowNodeContainerFactory<?, ?> factory, long sourceId) {

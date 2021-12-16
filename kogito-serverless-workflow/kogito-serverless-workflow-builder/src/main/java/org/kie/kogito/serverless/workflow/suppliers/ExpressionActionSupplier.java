@@ -19,24 +19,68 @@ import java.util.function.Supplier;
 
 import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
 import org.kie.kogito.serverless.workflow.actions.ExpressionAction;
+import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 public class ExpressionActionSupplier extends ExpressionAction implements Supplier<Expression> {
 
-    private final String[] varArgs;
+    public static Builder of(String lang, String expr) {
+        return new Builder(lang, expr);
 
-    public ExpressionActionSupplier(String lang, String expr) {
-        this(lang, expr, null);
     }
 
-    public ExpressionActionSupplier(String lang, String expr, String outputVar, String... addVars) {
-        super(lang, expr, outputVar, addVars);
-        this.varArgs = SWFSupplierUtils.getVarArgs(lang, expr, outputVar, addVars);
+    public static class Builder {
+
+        private final String lang;
+        private final String expr;
+        private String inputVar = ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
+        private String outputVar = ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
+        private String collectVar;
+        private String[] addInputVars = new String[0];
+
+        private Builder(String lang, String expr) {
+            this.lang = lang;
+            this.expr = expr;
+        }
+
+        public Builder withVarNames(String varName) {
+            this.inputVar = varName;
+            this.outputVar = varName;
+            return this;
+        }
+
+        public Builder withVarNames(String inputVar, String outputVar) {
+            this.inputVar = inputVar;
+            this.outputVar = outputVar;
+            return this;
+        }
+
+        public Builder withCollectVar(String collectVar) {
+            this.collectVar = collectVar;
+            return this;
+        }
+
+        public Builder withAddInputVars(String[] addInputVars) {
+            this.addInputVars = addInputVars;
+            return this;
+        }
+
+        public ExpressionActionSupplier build() {
+            return new ExpressionActionSupplier(lang, expr, inputVar, outputVar, collectVar, addInputVars);
+        }
+    }
+
+    private final ObjectCreationExpr expression;
+
+    private ExpressionActionSupplier(String lang, String expr, String inputVar, String outputVar, String collectVar, String[] addInputVars) {
+        super(lang, expr, inputVar, outputVar, collectVar, addInputVars);
+        expression = SupplierUtils.getExpression(ExpressionAction.class, SWFSupplierUtils.getVarArgs(lang, expr, inputVar, outputVar, collectVar, addInputVars));
     }
 
     @Override
     public Expression get() {
-        return SupplierUtils.getExpression(ExpressionAction.class, varArgs);
+        return expression;
     }
 }

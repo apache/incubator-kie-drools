@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.openapi.suppliers;
+package org.kie.kogito.serverless.workflow.actions;
 
-import java.util.function.Supplier;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
-import org.kogito.workitem.openapi.JsonNodeResultHandler;
+public class CollectorAction extends BaseExpressionAction {
 
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
+    private String outputVar;
 
-public class JsonNodeResultHandlerExprSupplier implements Supplier<Expression> {
+    public CollectorAction(String lang, String expr, String inputVar, String outputVar) {
+        super(lang, expr, inputVar);
+        this.outputVar = outputVar;
+    }
 
     @Override
-    public Expression get() {
-        return new ObjectCreationExpr().setType(JsonNodeResultHandler.class.getCanonicalName());
+    public void execute(KogitoProcessContext context) throws Exception {
+        assign(context, context.getVariable(outputVar));
     }
 }

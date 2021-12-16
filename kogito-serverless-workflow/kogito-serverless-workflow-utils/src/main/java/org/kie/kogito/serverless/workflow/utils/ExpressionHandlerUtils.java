@@ -17,13 +17,31 @@ package org.kie.kogito.serverless.workflow.utils;
 
 import java.util.Optional;
 
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.jackson.utils.MergeUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class ExpressionHandlerUtils {
 
     private ExpressionHandlerUtils() {
     }
 
+    public static void assign(ObjectNode context, JsonNode target, Object value, String expr) {
+        JsonNode srcNode = JsonObjectUtils.fromValue(value);
+        if (target == null || target.isNull()) {
+            target = srcNode.isArray() ? ObjectMapperFactory.get().createArrayNode() : ObjectMapperFactory.get().createObjectNode();
+        }
+        Optional<String> varName = fallbackVarToName(expr);
+        if (varName.isPresent()) {
+            JsonObjectUtils.addToNode(varName.get(), MergeUtils.merge(srcNode, target), context);
+        }
+    }
+
     public static Optional<String> fallbackVarToName(String expr) {
         int indexOf = expr.lastIndexOf('.');
-        return indexOf >= 0 ? Optional.of(expr.substring(indexOf + 1)) : Optional.empty();
+        return indexOf < 0 ? Optional.empty() : Optional.of(expr.substring(indexOf + 1));
     }
 }

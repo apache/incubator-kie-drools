@@ -15,16 +15,11 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import java.util.NoSuchElementException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.events.EventDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
-import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.mapper.BaseObjectMapper;
 import io.serverlessworkflow.api.mapper.JsonObjectMapper;
 import io.serverlessworkflow.api.mapper.YamlObjectMapper;
@@ -35,7 +30,6 @@ public class ServerlessWorkflowUtils {
     public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
     public static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String APP_PROPERTIES_FUNCTIONS_BASE = "functions.";
-    private static final String APP_PROPERTIES_EVENTS_BASE = "events.";
     public static final String APP_PROPERTIES_STATES_BASE = "states.";
 
     public static final String OPENAPI_OPERATION_SEPARATOR = "#";
@@ -47,12 +41,6 @@ public class ServerlessWorkflowUtils {
 
     public static BaseObjectMapper getObjectMapper(String workflowFormat) {
         return ALTERNATE_WORKFLOW_FORMAT.equals(workflowFormat) ? new YamlObjectMapper() : new JsonObjectMapper();
-    }
-
-    public static EventDefinition getWorkflowEventFor(Workflow workflow, String eventName) {
-        return workflow.getEvents().getEventDefs().stream()
-                .filter(wt -> wt.getName().equals(eventName))
-                .findFirst().orElseThrow(() -> new NoSuchElementException("No event for " + eventName));
     }
 
     public static String conditionScript(String conditionStr) {
@@ -92,48 +80,6 @@ public class ServerlessWorkflowUtils {
 
         LOGGER.warn("Could not resolve function metadata: {}", metadataKey);
         return defaultValue;
-    }
-
-    public static String resolveEvenDefinitiontMetadata(EventDefinition eventDefinition, String metadataKey, WorkflowAppContext workflowAppContext) {
-        if (eventDefinition != null && eventDefinition.getMetadata() != null && eventDefinition.getMetadata().containsKey(metadataKey)) {
-            return eventDefinition.getMetadata().get(metadataKey);
-        }
-
-        if (eventDefinition != null && workflowAppContext != null &&
-                workflowAppContext.getApplicationProperties().containsKey(APP_PROPERTIES_BASE + APP_PROPERTIES_EVENTS_BASE + eventDefinition.getName() + "." + metadataKey)) {
-            return workflowAppContext.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_EVENTS_BASE + eventDefinition.getName() + "." + metadataKey);
-        }
-
-        LOGGER.warn("Could not resolve event definition metadata: {}", metadataKey);
-        return "";
-    }
-
-    public static String resolveStatetMetadata(State state, String metadataKey, WorkflowAppContext workflowAppContext) {
-        if (state != null && state.getMetadata() != null && state.getMetadata().containsKey(metadataKey)) {
-            return state.getMetadata().get(metadataKey);
-        }
-
-        if (state != null && workflowAppContext != null &&
-                workflowAppContext.getApplicationProperties().containsKey(APP_PROPERTIES_BASE + APP_PROPERTIES_STATES_BASE + state.getName() + "." + metadataKey)) {
-            return workflowAppContext.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_STATES_BASE + state.getName() + "." + metadataKey);
-        }
-
-        LOGGER.warn("Could not resolve state metadata: {}", metadataKey);
-        return "";
-    }
-
-    public static String resolveWorkflowMetadata(Workflow workflow, String metadataKey, WorkflowAppContext workflowAppContext) {
-        if (workflow != null && workflow.getMetadata() != null && workflow.getMetadata().containsKey(metadataKey)) {
-            return workflow.getMetadata().get(metadataKey);
-        }
-
-        if (workflow != null && workflowAppContext != null &&
-                workflowAppContext.getApplicationProperties().containsKey(APP_PROPERTIES_BASE + workflow.getId() + "." + metadataKey)) {
-            return workflowAppContext.getApplicationProperty(APP_PROPERTIES_BASE + workflow.getId() + "." + metadataKey);
-        }
-
-        LOGGER.warn("Could not resolve state metadata: {}", metadataKey);
-        return "";
     }
 
     /**

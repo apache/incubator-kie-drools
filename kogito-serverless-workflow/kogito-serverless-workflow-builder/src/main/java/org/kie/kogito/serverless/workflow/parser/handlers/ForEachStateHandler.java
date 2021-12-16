@@ -19,13 +19,16 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.ForEachNodeFactory;
+import org.jbpm.workflow.instance.node.ForEachNodeInstance;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.suppliers.ForEachCollectorActionSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.states.ForEachState;
+
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 
 public class ForEachStateHandler extends CompositeContextNodeHandler<ForEachState> {
 
@@ -44,13 +47,13 @@ public class ForEachStateHandler extends CompositeContextNodeHandler<ForEachStat
                         .outputVariable(outputVarName, new ObjectDataType())
                         .metaData(Metadata.VARIABLE, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
         if (state.getIterationParam() != null) {
-            result.variable(state.getIterationParam(), new ObjectDataType());
             handleActions(result, state.getActions(), outputVarName, state.getIterationParam());
+            result.variable(state.getIterationParam(), new ObjectDataType());
         } else {
             handleActions(result, state.getActions(), outputVarName);
         }
         if (state.getOutputCollection() != null) {
-            result.completionAction(new ForEachCollectorActionSupplier(workflow.getExpressionLang(), state.getOutputCollection()));
+            result.completionAction(new CollectorActionSupplier(workflow.getExpressionLang(), state.getOutputCollection(), DEFAULT_WORKFLOW_VAR, ForEachNodeInstance.TEMP_OUTPUT_VAR));
         }
         return new MakeNodeResult(result);
     }

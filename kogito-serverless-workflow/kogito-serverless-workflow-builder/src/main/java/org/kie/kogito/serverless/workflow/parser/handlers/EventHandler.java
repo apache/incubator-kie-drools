@@ -24,11 +24,13 @@ import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.OnEvents;
+import io.serverlessworkflow.api.filters.EventDataFilter;
 import io.serverlessworkflow.api.states.EventState;
+
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 
 public class EventHandler extends CompositeContextNodeHandler<EventState> {
 
@@ -50,18 +52,30 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
         OnEvents onEvent = state.getOnEvents().get(0);
         CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), onEvent.getActions());
         List<String> onEventRefs = onEvent.getEventRefs();
+        EventDataFilter eventFilter = onEvent.getEventDataFilter();
+        String dataExpr = null;
+        String toExpr = null;
+        if (eventFilter != null) {
+            dataExpr = eventFilter.getData();
+            toExpr = eventFilter.getToStateData();
+        }
+
         if (onEventRefs.size() == 1) {
-            startFactory = ServerlessWorkflowParser.messageStartNode(factory.startNode(parserContext.newId()), ServerlessWorkflowUtils
-                    .getWorkflowEventFor(workflow, onEventRefs.get(0)));
+            startFactory = messageStartNode(factory, onEventRefs.get(0), DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR);
+            // TODO filterAndMergeNode(factory, state.getName(), dataExpr, toExpr, (f, inputVar, outputVar) -> messageStartNode(f, onEventRefs.get(0), inputVar, outputVar)).getOutgoingNode();
         } else {
             startFactory = factory.joinNode(parserContext.newId()).name(state.getName() + "Split").type(Join.TYPE_XOR);
             for (String onEventRef : onEventRefs) {
-                StartNodeFactory<?> newStartNode = factory.startNode(parserContext.newId());
-                ServerlessWorkflowParser.messageStartNode(newStartNode, ServerlessWorkflowUtils.getWorkflowEventFor(workflow, onEventRef)).done().connection(newStartNode.getNode().getId(),
-                        startFactory.getNode().getId());
+                connect(messageStartNode(factory, onEventRef, DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR),
+                        // TODO support merge for events filterAndMergeNode(factory, state.getName(), dataExpr, toExpr, (f, inputVar, outputVar) -> messageStartNode(f, onEventRef, inputVar, outputVar)).getOutgoingNode(),
+                        startFactory);
             }
         }
         return new MakeNodeResult(embeddedSubProcess);
+    }
+
+    private StartNodeFactory<?> messageStartNode(RuleFlowNodeContainerFactory<?, ?> factory, String eventRef, String inputVar, String outputVar) {
+        return ServerlessWorkflowParser.messageNode(factory.startNode(parserContext.newId()), eventDefinition(eventRef), inputVar).trigger(ServerlessWorkflowParser.JSON_NODE, outputVar);
     }
 
     @Override

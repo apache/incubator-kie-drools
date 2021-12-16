@@ -24,9 +24,51 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BigIntegerNode;
+import com.fasterxml.jackson.databind.node.BinaryNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.DecimalNode;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.FloatNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ShortNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 public class JsonObjectUtils {
+
+    public static JsonNode fromValue(Object value) {
+        if (value instanceof JsonNode) {
+            return (JsonNode) value;
+        } else if (value instanceof Boolean) {
+            return BooleanNode.valueOf((Boolean) value);
+        } else if (value instanceof String) {
+            return new TextNode((String) value);
+        } else if (value instanceof Short) {
+            return new ShortNode((Short) value);
+        } else if (value instanceof Integer) {
+            return new IntNode((Integer) value);
+        } else if (value instanceof Long) {
+            return new LongNode((Long) value);
+        } else if (value instanceof Float) {
+            return new FloatNode((Float) value);
+        } else if (value instanceof Double) {
+            return new DoubleNode((Double) value);
+        } else if (value instanceof BigDecimal) {
+            return DecimalNode.valueOf((BigDecimal) value);
+        } else if (value instanceof BigInteger) {
+            return BigIntegerNode.valueOf((BigInteger) value);
+        } else if (value instanceof byte[]) {
+            return BinaryNode.valueOf((byte[]) value);
+        } else if (value instanceof Iterable) {
+            return mapToArray((Iterable<?>) value);
+        } else if (value instanceof Map) {
+            return mapToNode((Map<String, Object>) value);
+        } else {
+            return mapToNode(ObjectMapperFactory.get().convertValue(value, Map.class));
+        }
+    }
 
     public static Object toJavaValue(JsonNode jsonNode) {
         if (jsonNode.isTextual()) {
@@ -53,35 +95,7 @@ public class JsonObjectUtils {
     }
 
     public static void addToNode(String name, Object value, ObjectNode dest) {
-        if (value instanceof JsonNode) {
-            dest.set(name, (JsonNode) value);
-        } else if (value instanceof Boolean) {
-            dest.put(name, (Boolean) value);
-        } else if (value instanceof String) {
-            dest.put(name, (String) value);
-        } else if (value instanceof Short) {
-            dest.put(name, (Short) value);
-        } else if (value instanceof Integer) {
-            dest.put(name, (Integer) value);
-        } else if (value instanceof Long) {
-            dest.put(name, (Long) value);
-        } else if (value instanceof Float) {
-            dest.put(name, (Float) value);
-        } else if (value instanceof Double) {
-            dest.put(name, (Double) value);
-        } else if (value instanceof BigDecimal) {
-            dest.put(name, (BigDecimal) value);
-        } else if (value instanceof BigInteger) {
-            dest.put(name, (BigInteger) value);
-        } else if (value instanceof byte[]) {
-            dest.put(name, (byte[]) value);
-        } else if (value instanceof Iterable) {
-            dest.set(name, mapToArray((Iterable<?>) value));
-        } else if (value instanceof Map) {
-            dest.set(name, mapToNode((Map<String, Object>) value));
-        } else {
-            dest.set(name, mapToNode(ObjectMapperFactory.get().convertValue(value, Map.class)));
-        }
+        dest.set(name, fromValue(value));
     }
 
     private static ObjectNode mapToNode(Map<String, Object> value) {
@@ -96,43 +110,11 @@ public class JsonObjectUtils {
         return mapToArray(iterable, ObjectMapperFactory.get().createArrayNode());
     }
 
-    public static ArrayNode mapToArray(Iterable<?> iterable, ArrayNode arrayNode) {
+    private static ArrayNode mapToArray(Iterable<?> iterable, ArrayNode arrayNode) {
         for (Object item : iterable) {
-            addToArray(arrayNode, item);
+            arrayNode.add(fromValue(item));
         }
         return arrayNode;
-    }
-
-    private static void addToArray(ArrayNode dest, Object value) {
-        if (value instanceof JsonNode) {
-            dest.add((JsonNode) value);
-        } else if (value instanceof Boolean) {
-            dest.add((Boolean) value);
-        } else if (value instanceof String) {
-            dest.add((String) value);
-        } else if (value instanceof Short) {
-            dest.add((Short) value);
-        } else if (value instanceof Integer) {
-            dest.add((Integer) value);
-        } else if (value instanceof Long) {
-            dest.add((Long) value);
-        } else if (value instanceof Float) {
-            dest.add((Float) value);
-        } else if (value instanceof Double) {
-            dest.add((Double) value);
-        } else if (value instanceof BigDecimal) {
-            dest.add((BigDecimal) value);
-        } else if (value instanceof BigInteger) {
-            dest.add((BigInteger) value);
-        } else if (value instanceof byte[]) {
-            dest.add((byte[]) value);
-        } else if (value instanceof Iterable) {
-            dest.add(mapToArray((Iterable<?>) value));
-        } else if (value instanceof Map) {
-            dest.add(mapToNode((Map<String, Object>) value));
-        } else {
-            dest.add(mapToNode(ObjectMapperFactory.get().convertValue(value, Map.class)));
-        }
     }
 
     private JsonObjectUtils() {

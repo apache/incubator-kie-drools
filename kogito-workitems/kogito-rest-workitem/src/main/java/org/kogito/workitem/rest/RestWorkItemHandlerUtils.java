@@ -15,22 +15,6 @@
  */
 package org.kogito.workitem.rest;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 import io.vertx.mutiny.core.Vertx;
 
 public class RestWorkItemHandlerUtils {
@@ -38,7 +22,6 @@ public class RestWorkItemHandlerUtils {
     private RestWorkItemHandlerUtils() {
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandlerUtils.class);
     private static Vertx vertx;
 
     public static synchronized Vertx vertx() {
@@ -46,113 +29,5 @@ public class RestWorkItemHandlerUtils {
             vertx = Vertx.vertx();
         }
         return vertx;
-    }
-
-    public static <T> T mergeObject(T target, JsonObject jsonObject) {
-        return target instanceof ObjectNode ? (T) mergeJson(jsonObject, (ObjectNode) target) : mergeBean(jsonObject, target);
-    }
-
-    private static <T> T mergeBean(JsonObject src, T target) {
-        try {
-            PropertyDescriptor[] propertyDescritors = Introspector.getBeanInfo(target.getClass()).getPropertyDescriptors();
-            src.forEach(e -> setValue(propertyDescritors, target, e.getKey(), e.getValue()));
-            return target;
-        } catch (IntrospectionException e) {
-            throw new IllegalArgumentException("Wrong bean " + target, e);
-        }
-    }
-
-    private static void setValue(PropertyDescriptor[] propertyDescritors, Object target, String name, Object value) {
-        for (PropertyDescriptor descriptor : propertyDescritors) {
-            if (descriptor.getName().equals(name)) {
-                try {
-                    descriptor.getWriteMethod().invoke(target, convert(value, descriptor.getWriteMethod().getParameterTypes()[0]));
-                } catch (ReflectiveOperationException | NumberFormatException e) {
-                    logger.error("Error invoking setter for {} with value {}", name, value, e);
-                }
-                return;
-            }
-        }
-        logger.debug("No property found for name {}", name);
-    }
-
-    private static Object convert(Object value, Class<?> targetClass) {
-        if (Objects.nonNull(value) && !targetClass.isAssignableFrom(value.getClass())) {
-            if (targetClass.isAssignableFrom(Date.class)) {
-                if (value instanceof String) {
-                    return Date.from(Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(value.toString())));
-                } else if (value instanceof Number) {
-                    return new Date(((Number) value).longValue());
-                }
-            } else if (targetClass.isAssignableFrom(Integer.class) && value instanceof String) {
-                return Integer.parseInt(value.toString());
-            } else if (targetClass.isAssignableFrom(Long.class) && value instanceof String) {
-                return Long.parseLong(value.toString());
-            } else if (targetClass.isAssignableFrom(Boolean.class) && value instanceof String) {
-                return Boolean.parseBoolean(value.toString());
-            } else if (targetClass.isAssignableFrom(Float.class) && value instanceof String) {
-                return Float.parseFloat(value.toString());
-            } else if (targetClass.isAssignableFrom(Double.class) && value instanceof String) {
-                return Double.parseDouble(value.toString());
-            }
-        }
-        return value;
-    }
-
-    private static ObjectNode mergeJson(JsonObject src, ObjectNode target) {
-        src.forEach(e -> setValue(target, e.getKey(), e.getValue()));
-        return target;
-    }
-
-    private static void setValue(ObjectNode result, String key, Object value) {
-        if (value instanceof Double) {
-            result.put(key, (Double) value);
-        } else if (value instanceof Float) {
-            result.put(key, (Float) value);
-        } else if (value instanceof Long) {
-            result.put(key, (Long) value);
-        } else if (value instanceof Integer) {
-            result.put(key, (Integer) value);
-        } else if (value instanceof Short) {
-            result.put(key, (Short) value);
-        } else if (value instanceof Boolean) {
-            result.put(key, (Boolean) value);
-        } else if (value instanceof String) {
-            result.put(key, (String) value);
-        } else if (value instanceof JsonObject) {
-            result.set(key, mergeJson((JsonObject) value, result.objectNode()));
-        } else if (value instanceof JsonArray) {
-            ArrayNode array = result.arrayNode();
-            ((JsonArray) value).forEach(v -> addValue(array, v));
-            result.set(key, array);
-        } else {
-            logger.warn("Unrecognized data type for object {} class {}", value, value.getClass());
-        }
-    }
-
-    private static void addValue(ArrayNode result, Object value) {
-        if (value instanceof Double) {
-            result.add((Double) value);
-        } else if (value instanceof Float) {
-            result.add((Float) value);
-        } else if (value instanceof Long) {
-            result.add((Long) value);
-        } else if (value instanceof Integer) {
-            result.add((Integer) value);
-        } else if (value instanceof Short) {
-            result.add((Short) value);
-        } else if (value instanceof Boolean) {
-            result.add((Boolean) value);
-        } else if (value instanceof String) {
-            result.add((String) value);
-        } else if (value instanceof JsonObject) {
-            result.add(mergeJson((JsonObject) value, result.objectNode()));
-        } else if (value instanceof JsonArray) {
-            ArrayNode array = result.arrayNode();
-            ((JsonArray) value).forEach(v -> addValue(array, v));
-            result.add(array);
-        } else {
-            logger.warn("Unrecognized data type for object {} class {}", value, value.getClass());
-        }
     }
 }

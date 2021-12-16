@@ -20,6 +20,7 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
+import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
@@ -196,6 +197,14 @@ public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContain
         exceptionHandler.setFaultVariable(faultVariable);
         return exceptionHandler(faultCode, exceptionHandler);
     }
+
+    public abstract T variable(String name, DataType type);
+
+    public abstract T variable(String name, DataType type, Object value);
+
+    public abstract T variable(String name, DataType type, String metaDataName, Object metaDataValue);
+
+    public abstract T variable(String name, DataType type, Object value, String metaDataName, Object metaDataValue);
 
     private <S extends Context> S getScope(String scopeType, Class<S> scopeClass) {
         ContextContainer contextContainer = (ContextContainer) node;

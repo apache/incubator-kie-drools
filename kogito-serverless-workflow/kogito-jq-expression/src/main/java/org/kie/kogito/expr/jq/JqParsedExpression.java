@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
-import org.kie.kogito.jackson.utils.MergeUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
@@ -54,7 +53,7 @@ public class JqParsedExpression implements ParsedExpression {
         T getResult();
     }
 
-    private <T> TypedOutput<T> output(Object context, Class<T> returnClass) {
+    private <T> TypedOutput<T> output(Class<T> returnClass) {
         TypedOutput<?> out;
         if (Boolean.class.isAssignableFrom(returnClass)) {
             out = new BooleanOutput();
@@ -63,7 +62,7 @@ public class JqParsedExpression implements ParsedExpression {
         } else if (Collection.class.isAssignableFrom(returnClass)) {
             out = new CollectionOutput();
         } else {
-            out = new JsonNodeOutput((JsonNode) context);
+            out = new JsonNodeOutput();
         }
         return (TypedOutput<T>) out;
     }
@@ -124,19 +123,11 @@ public class JqParsedExpression implements ParsedExpression {
 
     private static class JsonNodeOutput implements TypedOutput<JsonNode> {
 
-        private JsonNode context;
         private JsonNode result;
         private boolean arrayCreated;
 
-        public JsonNodeOutput(JsonNode context) {
-            this.context = context;
-        }
-
         @Override
         public void emit(JsonNode out) throws JsonQueryException {
-            if (out.isObject()) {
-                MergeUtils.merge(out, context);
-            }
             if (this.result == null) {
                 this.result = out;
             } else if (!arrayCreated) {
@@ -158,7 +149,7 @@ public class JqParsedExpression implements ParsedExpression {
     @Override
     public <T> T eval(Object context, Class<T> returnClass) {
         try {
-            TypedOutput<T> output = output(context, returnClass);
+            TypedOutput<T> output = output(returnClass);
             query.apply(this.scope, (JsonNode) context, output);
             return output.getResult();
         } catch (JsonQueryException e) {
@@ -168,7 +159,6 @@ public class JqParsedExpression implements ParsedExpression {
 
     @Override
     public void assign(Object context, Object value) {
-        JsonObjectUtils.addToNode(ExpressionHandlerUtils.fallbackVarToName(expr).orElseThrow(() -> new IllegalArgumentException("Cannot find a valid variable name for expression " + expr)), value,
-                (ObjectNode) context);
+        ExpressionHandlerUtils.assign((ObjectNode) context, eval(context, JsonNode.class), value, expr);
     }
 }

@@ -17,20 +17,13 @@ package org.kogito.workitem.rest.resulthandlers;
 
 import java.util.Map;
 
-import org.kogito.workitem.rest.RestWorkItemHandlerUtils;
-import org.kogito.workitem.rest.RestWorkItemTargetInfo;
-
 import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 
 public class DefaultRestWorkItemHandlerResult implements RestWorkItemHandlerResult {
 
     @Override
-    public Object apply(RestWorkItemTargetInfo target, HttpResponse<Buffer> response) {
-        if (target.getTargetInstance() == null) {
-            return target.getTargetClass() == null ? response.bodyAsJson(Map.class) : response.bodyAsJson(target.getTargetClass());
-        } else {
-            return RestWorkItemHandlerUtils.mergeObject(target.getTargetInstance(), response.bodyAsJsonObject());
-        }
+    public Object apply(HttpResponse<Buffer> response, Class<?> target) {
+        return target == null ? response.bodyAsJson(Map.class) : response.bodyAsJson(target);
     }
 }

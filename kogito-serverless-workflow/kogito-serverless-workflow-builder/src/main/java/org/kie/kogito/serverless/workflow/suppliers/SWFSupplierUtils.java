@@ -20,31 +20,28 @@ class SWFSupplierUtils {
     private SWFSupplierUtils() {
     }
 
-    public static String[] getVarArgs(String lang, String expr, String... addVars) {
-        String[] varArgs = new String[2 + addVars.length];
+    public static String[] getVarArgs(String lang, String expr, String inputVar, String... addVars) {
+        String[] varArgs = new String[3 + addVars.length];
         varArgs[0] = lang;
         varArgs[1] = expr;
-        return addVarArgs(varArgs, 2, addVars);
+        varArgs[2] = inputVar;
+        return addVarArgs(varArgs, 3, addVars);
     }
 
-    public static String[] getVarArgs(String lang, String expr, String outputVar, String... addVars) {
-        if (outputVar == null) {
-            return getVarArgs(lang, expr, addVars);
-        } else {
-            String[] varArgs = new String[3 + addVars.length];
-            varArgs[0] = lang;
-            varArgs[1] = expr;
-            varArgs[2] = outputVar;
-            return addVarArgs(varArgs, 3, addVars);
-        }
-
+    public static String[] getVarArgs(String lang, String expr, String inputVar, String outputVar, String collectVar, String... addVars) {
+        String[] varArgs = new String[5 + addVars.length];
+        varArgs[0] = lang;
+        varArgs[1] = expr;
+        varArgs[2] = inputVar;
+        varArgs[3] = outputVar;
+        varArgs[4] = collectVar;
+        return addVarArgs(varArgs, 5, addVars);
     }
 
     private static String[] addVarArgs(String[] varArgs, int startFrom, String... addVars) {
-        for (int i = 0; i < addVars.length; i++) {
-            varArgs[i + startFrom] = addVars[i];
+        for (String addVar : addVars) {
+            varArgs[startFrom++] = addVar;
         }
         return varArgs;
-
     }
 }

@@ -54,10 +54,9 @@ class JqExpressionHandlerTest {
 
     @Test
     void testNumericAssignment() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".result = .number*.number");
+        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse("{\"result\" : .number*.number}");
         JsonNode node = new ObjectMapper().createObjectNode().put("number", 2);
-        parsedExpression.eval(node, JsonNode.class);
-        assertEquals(4, node.get("result").asInt());
+        assertEquals(4, parsedExpression.eval(node, JsonNode.class).get("result").asInt());
     }
 
     @Test

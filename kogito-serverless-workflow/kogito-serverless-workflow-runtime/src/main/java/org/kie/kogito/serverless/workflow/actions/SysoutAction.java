@@ -18,8 +18,8 @@ package org.kie.kogito.serverless.workflow.actions;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public class SysoutAction extends BaseExpressionAction {
-    public SysoutAction(String lang, String expr, String... addAttrs) {
-        super(lang, expr, addAttrs);
+    public SysoutAction(String lang, String expr, String inputVar, String... addVars) {
+        super(lang, expr, inputVar, addVars);
     }
 
     @Override

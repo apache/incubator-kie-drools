@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.kogito.workitem.rest.bodybuilders.ParamsRestWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.resulthandlers.DefaultRestWorkItemHandlerResult;
@@ -47,7 +48,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
 import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
@@ -113,7 +113,7 @@ public class RestWorkItemHandlerTest {
 
         when(request.sendJsonAndAwait(any())).thenReturn(response);
         when(request.sendAndAwait()).thenReturn(response);
-        when(response.bodyAsJsonObject()).thenReturn(JsonObject.mapFrom(Collections.singletonMap("num", 1)));
+        when(response.bodyAsJson(ObjectNode.class)).thenReturn(ObjectMapperFactory.get().createObjectNode().put("num", 1));
 
         workItem = new KogitoWorkItemImpl();
         workItem.setId("2");
@@ -212,11 +212,9 @@ public class RestWorkItemHandlerTest {
         RestWorkItemHandlerResult resultHandler = new DefaultRestWorkItemHandlerResult();
         HttpResponse<Buffer> response = mock(HttpResponse.class);
         when(response.bodyAsJson(ObjectNode.class)).thenReturn(objectNode);
-        RestWorkItemTargetInfo targetInfo = new RestWorkItemTargetInfo(null, ObjectNode.class);
-        assertSame(objectNode, resultHandler.apply(targetInfo, response));
+        assertSame(objectNode, resultHandler.apply(response, ObjectNode.class));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetRestTaskHandler() {
         parameters.put("id", 26);
@@ -230,23 +228,6 @@ public class RestWorkItemHandlerTest {
         assertResult(manager, argCaptor);
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testEmptyGet() {
-        parameters.put("id", 25);
-        parameters.put(RestWorkItemHandler.URL, "http://localhost:8080/results/{id}");
-        parameters.put(RestWorkItemHandler.METHOD, "GET");
-
-        when(node.getOutMapping(RestWorkItemHandler.RESULT)).thenReturn(null);
-
-        handler.executeWorkItem(workItem, manager);
-
-        verify(manager).completeWorkItem(anyString(), argCaptor.capture());
-        Map<String, Object> results = argCaptor.getValue();
-        assertEquals(0, results.size());
-    }
-
-    @SuppressWarnings("unchecked")
     @Test
     public void testParametersPostRestTaskHandler() {
         parameters.put("id", 26);
@@ -301,7 +282,6 @@ public class RestWorkItemHandlerTest {
         assertResult(manager, argCaptor);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testContentPostRestTaskHandler() {
         parameters.put(RestWorkItemHandler.METHOD, "POST");

@@ -15,18 +15,15 @@
  */
 package org.kie.kogito.serverless.workflow.actions;
 
-import java.util.Iterator;
-
 import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.jackson.utils.MergeUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.kie.kogito.serverless.workflow.actions.ActionUtils.getWorkflowData;
-import static org.kie.kogito.serverless.workflow.actions.ActionUtils.setWorkflowData;
 
 public class InjectAction implements Action {
 
@@ -50,12 +47,6 @@ public class InjectAction implements Action {
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        ObjectNode mainNode = getWorkflowData(context);
-        Iterator<String> fieldNames = node.fieldNames();
-        while (fieldNames.hasNext()) {
-            String fieldName = fieldNames.next();
-            mainNode.set(fieldName, node.get(fieldName));
-        }
-        setWorkflowData(context, mainNode);
+        MergeUtils.merge(node, getWorkflowData(context));
     }
 }

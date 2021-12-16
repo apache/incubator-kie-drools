@@ -28,12 +28,25 @@
       <artifactId>svm</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <!-- OpenApi Client -->
+    
+     <!--  open api libraries -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-openapi-workitem</artifactId>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>jackson-databind-nullable</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client</artifactId>
@@ -42,6 +55,7 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-jackson</artifactId>
     </dependency>
+        
 
     <!-- Support CloudEvents OotB -->
     <dependency>

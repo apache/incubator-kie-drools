@@ -129,14 +129,13 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
                     .addVariable(new VariableDeclarator(
                             new ClassOrInterfaceType(null, Object.class.getCanonicalName()),
                             RESULT_NAME));
-            final Expression callServiceResult = this.handleServiceCallResult(executeWorkItemBody, callService);
             executeWorkItemBody.addStatement(resultField);
             executeWorkItemBody
                     .addStatement(
                             tryStmt(
                                     new AssignExpr(
                                             new NameExpr(RESULT_NAME),
-                                            callServiceResult,
+                                            callService,
                                             AssignExpr.Operator.ASSIGN),
                                     exceptions));
             results = new MethodCallExpr(new NameExpr("java.util.Collections"), "singletonMap")

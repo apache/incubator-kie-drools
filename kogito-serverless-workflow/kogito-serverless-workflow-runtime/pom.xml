@@ -19,8 +19,8 @@
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-jackson-utils</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -47,15 +47,10 @@
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-jsonpath-expression</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-jackson-utils</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -18,22 +18,22 @@ package org.kie.kogito.serverless.workflow.suppliers;
 import java.util.function.Supplier;
 
 import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
-import org.kie.kogito.serverless.workflow.actions.ForEachCollectorAction;
+import org.kie.kogito.serverless.workflow.actions.CollectorAction;
 
 import com.github.javaparser.ast.expr.Expression;
 
-public class ForEachCollectorActionSupplier extends ForEachCollectorAction implements Supplier<Expression> {
+public class CollectorActionSupplier extends CollectorAction implements Supplier<Expression> {
 
-    private String[] varArgs;
+    private Expression expression;
 
-    public ForEachCollectorActionSupplier(String lang, String expr) {
-        super(lang, expr);
-        varArgs = SWFSupplierUtils.getVarArgs(lang, expr);
+    public CollectorActionSupplier(String lang, String expr, String inputVar, String outputVar) {
+        super(lang, expr, inputVar, outputVar);
+        expression = SupplierUtils.getExpression(CollectorAction.class, lang, expr, inputVar, outputVar);
     }
 
     @Override
     public Expression get() {
-        return SupplierUtils.getExpression(ForEachCollectorAction.class, varArgs);
+        return expression;
     }
 
 }

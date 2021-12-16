@@ -21,34 +21,41 @@ import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.kie.kogito.serverless.workflow.actions.ActionUtils.getWorkflowData;
+import static org.kie.kogito.serverless.workflow.actions.ActionUtils.getJsonNode;
 
 public abstract class BaseExpressionAction implements Action {
 
-    private ParsedExpression expr;
-    private String[] addVars;
+    protected final ParsedExpression expr;
+    protected final String modelVar;
+    protected final String[] addInputVars;
 
-    public BaseExpressionAction(String lang, String expr, String... addVars) {
+    public BaseExpressionAction(String lang, String expr, String inputVar, String... addVars) {
         this.expr = ExpressionHandlerFactory.get(lang).parse(expr);
-        this.addVars = addVars;
+        this.modelVar = inputVar;
+        this.addInputVars = addVars;
     }
 
     protected final <T> T evaluate(KogitoProcessContext context, Class<T> resultClass) {
-        ObjectNode node = getWorkflowData(context);
-        for (String addVar : addVars) {
-            JsonObjectUtils.addToNode(addVar, context.getVariable(addVar), node);
+        JsonNode node = getJsonNode(context, modelVar);
+        if (node instanceof ObjectNode) {
+            for (String addVar : addInputVars) {
+                JsonObjectUtils.addToNode(addVar, context.getVariable(addVar), (ObjectNode) node);
+            }
         }
         T result = expr.eval(node, resultClass);
-        for (String addVar : addVars) {
-            context.setVariable(addVar, JsonObjectUtils.toJavaValue(node.remove(addVar)));
+        if (node instanceof ObjectNode) {
+            for (String addVar : addInputVars) {
+                context.setVariable(addVar, JsonObjectUtils.toJavaValue(((ObjectNode) node).remove(addVar)));
+            }
         }
         return result;
     }
 
     protected final <T> T assign(KogitoProcessContext context, T value) {
-        expr.assign(getWorkflowData(context), value);
+        expr.assign(getJsonNode(context, modelVar), value);
         return value;
     }
 }

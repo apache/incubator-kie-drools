@@ -15,25 +15,24 @@
  */
 package org.kie.kogito.serverless.workflow.actions;
 
-import org.jbpm.workflow.instance.node.ForEachNodeInstance;
+import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.jackson.utils.JsonObjectUtils;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.jackson.utils.MergeUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import static org.kie.kogito.serverless.workflow.actions.ActionUtils.getJsonNode;
 
-public class ForEachCollectorAction extends BaseExpressionAction {
+public class MergeAction implements Action {
 
-    public ForEachCollectorAction(String lang, String expr) {
-        super(lang, expr);
+    protected String inputName;
+    protected String outputName;
+
+    public MergeAction(String inputName, String outputName) {
+        this.inputName = inputName;
+        this.outputName = outputName;
     }
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        Iterable<?> collectedValues = (Iterable<?>) context.getVariable(ForEachNodeInstance.TEMP_OUTPUT_VAR);
-        JsonNode node = evaluate(context, JsonNode.class);
-        ArrayNode arrayNode = node instanceof ArrayNode ? (ArrayNode) node : assign(context, ObjectMapperFactory.get().createArrayNode());
-        JsonObjectUtils.mapToArray(collectedValues, arrayNode);
+        MergeUtils.merge(getJsonNode(context, inputName), getJsonNode(context, outputName));
     }
 }
