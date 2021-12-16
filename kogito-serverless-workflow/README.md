@@ -230,7 +230,7 @@ Alternatively to retries, you can use our [error handling](#Workflow-Error-Handl
 Data manipulation (transformation) on Kogito is fully implemented and can be used either `jq`
 or `jsonpath`. [State](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#state-data-filters)
 and [Action](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#action-data-filters) data
-filtering is not currently supported, but it's in our priorities for the upcoming versions.
+filtering is also supported.
 
 ### Workflow Expressions
 
