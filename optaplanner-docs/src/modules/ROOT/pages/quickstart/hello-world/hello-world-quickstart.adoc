@@ -168,7 +168,7 @@ plugins {
 }
 
 def optaplannerVersion = "{optaplanner-version}"
-def logbackVersion = "1.2.3"
+def logbackVersion = "1.2.9"
 
 group = "org.acme"
 version = "1.0-SNAPSHOT"
