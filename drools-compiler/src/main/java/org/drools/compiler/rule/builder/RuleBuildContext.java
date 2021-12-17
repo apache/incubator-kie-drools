@@ -220,7 +220,7 @@ public class RuleBuildContext extends PackageBuildContext {
             }
         }
 
-        return rule.getPackage() + "." + classNameBuilder.reverse().toString();
+        return rule.getPackage() + "." + classNameBuilder.reverse();
     }
 
     public void increaseXpathChuckNr() {

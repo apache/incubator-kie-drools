@@ -16,6 +16,7 @@ package org.drools.core.base;
 
 import java.io.IOException;
 
+import org.drools.core.common.MissingDependencyException;
 import org.drools.core.rule.DialectRuntimeData;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.Drools;
@@ -30,7 +31,7 @@ public interface CoreComponentsBuilder {
         if (Drools.isNativeImage()) {
             return null;
         }
-        throw new RuntimeException(NO_MVEL);
+        throw new MissingDependencyException(NO_MVEL);
     }
 
     class Holder {

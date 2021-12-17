@@ -49,6 +49,6 @@ public interface TruthMaintenanceSystemFactory {
     QueryImpl createTmsQuery(String name, Predicate<Class<? extends Annotation>> hasAnnotation);
 
     static <T> T throwExceptionForMissingTms() {
-        throw new RuntimeException(NO_TMS);
+        throw new MissingDependencyException(NO_TMS);
     }
 }

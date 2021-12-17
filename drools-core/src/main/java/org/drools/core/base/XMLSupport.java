@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.drools.core.common.MissingDependencyException;
 import org.drools.core.util.Drools;
 import org.kie.api.internal.utils.ServiceRegistry;
 
@@ -30,7 +31,7 @@ public interface XMLSupport {
         if (Drools.isNativeImage()) {
             return null;
         }
-        throw new RuntimeException(NO_XML_SUPPORT);
+        throw new MissingDependencyException(NO_XML_SUPPORT);
     }
 
     class Holder {
