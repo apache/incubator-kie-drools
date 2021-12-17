@@ -33,6 +33,9 @@ exports[`FormErrorsWrapper tests Snapshot 1`] = `
             >
               <h4
                 className="pf-c-title pf-m-lg"
+                data-ouia-component-id="OUIA-Generated-Title-1"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe={true}
               >
                 Error displaying form:
               </h4>
@@ -94,6 +97,9 @@ exports[`FormErrorsWrapper tests Snapshot 2`] = `
             >
               <h4
                 className="pf-c-title pf-m-lg"
+                data-ouia-component-id="OUIA-Generated-Title-1"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe={true}
               >
                 Error displaying form:
               </h4>

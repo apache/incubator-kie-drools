@@ -26,7 +26,7 @@ import { FormsListEnvelopeContext } from '../FormsListEnvelopeContext';
 
 describe('FormsListEnvelopeApiImpl tests', () => {
   it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeBusController = MockedEnvelopeBusController;
     const view = new MockedFormsListEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       FormsListEnvelopeApi,

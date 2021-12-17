@@ -23,12 +23,17 @@ import { mount } from 'enzyme';
 const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@patternfly/react-icons', () => ({
-  ...jest.requireActual('@patternfly/react-icons'),
-  InfoCircleIcon: () => {
-    return <MockedIcon />;
-  }
-}));
+jest.mock('@patternfly/react-icons', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-icons'),
+    {
+      InfoCircleIcon: () => {
+        return <MockedIcon/>;
+      }
+    }
+  )
+));
 
 const errorModalAction: JSX.Element[] = [
   <Button key="confirm-selection" variant="primary">

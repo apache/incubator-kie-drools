@@ -13,6 +13,7 @@ exports[`DisablePopup component tests snapshot testing for no process-management
     isDisabled={false}
     isValid={true}
     onChange={[Function]}
+    ouiaSafe={true}
   />
 </Tooltip>
 `;
@@ -30,6 +31,7 @@ exports[`DisablePopup component tests snapshot testing for no service URL and no
     isDisabled={false}
     isValid={true}
     onChange={[Function]}
+    ouiaSafe={true}
   />
 </Tooltip>
 `;
@@ -47,6 +49,7 @@ exports[`DisablePopup component tests snapshot testing for no service URL and on
     isDisabled={false}
     isValid={true}
     onChange={[Function]}
+    ouiaSafe={true}
   />
 </Tooltip>
 `;
@@ -64,6 +67,7 @@ exports[`DisablePopup component tests snapshot testing for service URL and proce
     isDisabled={false}
     isValid={true}
     onChange={[Function]}
+    ouiaSafe={true}
   />
 </Tooltip>
 `;

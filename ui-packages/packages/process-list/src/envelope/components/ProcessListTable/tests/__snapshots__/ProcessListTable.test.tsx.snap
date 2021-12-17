@@ -890,6 +890,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                             isValid={true}
                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             onChange={[Function]}
+                            ouiaSafe={true}
                           >
                             <div
                               className="pf-c-check pf-m-standalone"
@@ -899,6 +900,9 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                 aria-label="process-list-checkbox"
                                 checked={false}
                                 className="pf-c-check__input"
+                                data-ouia-component-id="OUIA-Generated-Checkbox-7"
+                                data-ouia-component-type="PF4/Checkbox"
+                                data-ouia-safe={true}
                                 disabled={false}
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -1580,6 +1584,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                             isValid={true}
                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             onChange={[Function]}
+                            ouiaSafe={true}
                           >
                             <div
                               className="pf-c-check pf-m-standalone"
@@ -1589,6 +1594,9 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                 aria-label="process-list-checkbox"
                                 checked={false}
                                 className="pf-c-check__input"
+                                data-ouia-component-id="OUIA-Generated-Checkbox-8"
+                                data-ouia-component-type="PF4/Checkbox"
+                                data-ouia-safe={true}
                                 disabled={false}
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"

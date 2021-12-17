@@ -17,7 +17,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import _ from 'lodash';
-import { AutoForm } from 'uniforms-patternfly';
+import { AutoForm } from 'uniforms-patternfly/dist/es6';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 import FormRenderer from '../FormRenderer';
@@ -55,15 +55,20 @@ const MockedComponent = (): React.ReactElement => {
 };
 
 jest.mock('../../FormFooter/FormFooter');
-jest.mock('uniforms-patternfly', () => ({
-  ...jest.requireActual('uniforms-patternfly'),
-  AutoFields: () => {
-    return <MockedComponent />;
-  },
-  ErrorsField: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('uniforms-patternfly/dist/es6', () => (
+  Object.assign(
+    {},
+    jest.requireActual('uniforms-patternfly/dist/es6'),
+    {
+      AutoFields: () => {
+        return <MockedComponent />;
+      },
+      ErrorsField: () => {
+        return <MockedComponent />;
+      }
+    }
+  )
+));
 
 let model;
 let props;

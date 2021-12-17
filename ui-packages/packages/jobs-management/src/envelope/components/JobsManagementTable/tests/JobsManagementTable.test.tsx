@@ -33,21 +33,26 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => ({
-  ...jest.requireActual('@patternfly/react-icons'),
-  HistoryIcon: () => {
-    return <MockedIcon />;
-  },
-  ClockIcon: () => {
-    return <MockedIcon />;
-  },
-  BanIcon: () => {
-    return <MockedIcon />;
-  },
-  CheckCircleIcon: () => {
-    return <MockedIcon />;
-  }
-}));
+jest.mock('@patternfly/react-icons', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-icons'),
+    {
+      HistoryIcon: () => {
+        return <MockedIcon />;
+      },
+      ClockIcon: () => {
+        return <MockedIcon />;
+      },
+      BanIcon: () => {
+        return <MockedIcon />;
+      },
+      CheckCircleIcon: () => {
+        return <MockedIcon />;
+      }
+    }
+  )
+));
 
 describe('Jobs management table component tests', () => {
   const props = {
@@ -183,8 +188,6 @@ describe('Jobs management table component tests', () => {
   });
 
   it('test sorting controls', async () => {
-    const handleSort: any = jest.spyOn(React, 'useState');
-    handleSort.mockImplementation(sortBy => [sortBy, props.setSortBy]);
     let wrapper;
     await act(async () => {
       wrapper = mount(<JobsManagementTable {...props} />);
@@ -240,8 +243,7 @@ describe('Jobs management table component tests', () => {
   it('test job cancel action', async () => {
     const modalTitle = 'success';
     const modalContent = 'Cancel successfull';
-    // @ts-ignore
-    props.driver.cancelJob.mockImplementationOnce(() =>
+    (props.driver.cancelJob as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({ modalTitle, modalContent })
     );
     mockedAxios.delete.mockResolvedValue({});

@@ -160,6 +160,9 @@ exports[`CounterfactualAnalysis displays a warning message for unsupported low s
                                         >
                                           <h3
                                             className="pf-c-title pf-m-2xl"
+                                            data-ouia-component-id="OUIA-Generated-Title-17"
+                                            data-ouia-component-type="PF4/Title"
+                                            data-ouia-safe={true}
                                           >
                                             Counterfactual analysis
                                           </h3>
@@ -310,6 +313,9 @@ exports[`CounterfactualAnalysis displays a warning message for unsupported low s
                                   >
                                     <h4
                                       className="pf-c-title pf-m-md"
+                                      data-ouia-component-id="OUIA-Generated-Title-18"
+                                      data-ouia-component-type="PF4/Title"
+                                      data-ouia-safe={true}
                                     >
                                       Screen size not supported
                                     </h4>
@@ -513,6 +519,9 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                         >
                                           <h3
                                             className="pf-c-title pf-m-2xl"
+                                            data-ouia-component-id="OUIA-Generated-Title-1"
+                                            data-ouia-component-type="PF4/Title"
+                                            data-ouia-safe={true}
                                           >
                                             Counterfactual analysis
                                           </h3>
@@ -769,6 +778,9 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                   >
                                     <div
                                       className="pf-c-toolbar"
+                                      data-ouia-component-id="OUIA-Generated-Toolbar-1"
+                                      data-ouia-component-type="PF4/Toolbar"
+                                      data-ouia-safe={true}
                                       id="cf-toolbar"
                                     >
                                       <ToolbarContent

@@ -91,42 +91,62 @@ const MockedComponent = (): React.ReactElement => {
 jest.mock('../components/FormNotification/FormNotification');
 jest.mock('../components/TaskFormContainer/TaskFormContainer');
 
-jest.mock('@patternfly/react-core', () => ({
-  ...jest.requireActual('@patternfly/react-core'),
-  Breadcrumb: () => {
-    return <MockedComponent />;
-  },
-  BreadcrumbItem: () => {
-    return <MockedComponent />;
-  },
-  Button: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@patternfly/react-core', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-core'),
+    {
+      Breadcrumb: () => {
+        return <MockedComponent/>;
+      },
+      BreadcrumbItem: () => {
+        return <MockedComponent/>;
+      },
+      Button: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 
-jest.mock('@kogito-apps/components-common', () => ({
-  ...jest.requireActual('@kogito-apps/components-common'),
-  KogitoEmptyState: () => {
-    return <MockedComponent />;
-  },
-  ServerErrors: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/components-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/components-common'),
+    {
+      KogitoEmptyState: () => {
+        return <MockedComponent/>;
+      },
+      ServerErrors: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 
-jest.mock('@kogito-apps/consoles-common', () => ({
-  ...jest.requireActual('@kogito-apps/consoles-common'),
-  PageTitle: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/consoles-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/consoles-common'),
+    {
+      PageTitle: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 
-jest.mock('@kogito-apps/task-details', () => ({
-  ...jest.requireActual('@kogito-apps/task-details'),
-  EmbeddedTaskDetails: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/task-details', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/task-details'),
+    {
+      EmbeddedTaskDetails: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 
 const getUserTaskByIdMock = jest.fn();
 

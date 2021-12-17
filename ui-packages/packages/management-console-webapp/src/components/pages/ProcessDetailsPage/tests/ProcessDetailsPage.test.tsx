@@ -153,8 +153,7 @@ describe('WebApp - ProcessDetailsPage tests', () => {
     gatewayApi = new MockProcessDetailsGatewayApi();
   });
   it('Snapshot test with default values', async () => {
-    //@ts-ignore
-    getProcessDetails.mockReturnValue(data);
+    (getProcessDetails as jest.Mock).mockReturnValue(data);
     let wrapper;
     await act(async () => {
       wrapper = mount(

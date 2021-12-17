@@ -26,7 +26,7 @@ import { JobsManagementEnvelopeContext } from '../JobsManagementEnvelopeContext'
 
 describe('JobsManagementEnvelopeApiImpl tests', () => {
   it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeBusController = MockedEnvelopeBusController;
     const view = new MockedJobsManagementEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       JobsManagementEnvelopeApi,

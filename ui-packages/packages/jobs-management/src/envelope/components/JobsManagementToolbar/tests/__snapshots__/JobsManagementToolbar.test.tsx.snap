@@ -81,6 +81,9 @@ exports[`Jobs Management toolbar tests Snapshot test with default props 1`] = `
   >
     <div
       className="pf-c-toolbar pf-m-toggle-group-container"
+      data-ouia-component-id="OUIA-Generated-Toolbar-1"
+      data-ouia-component-type="PF4/Toolbar"
+      data-ouia-safe={true}
       id="data-toolbar-with-chip-groups"
     >
       <ToolbarContent
@@ -141,10 +144,12 @@ exports[`Jobs Management toolbar tests Snapshot test with default props 1`] = `
                           favorites={Array []}
                           favoritesLabel="Favorites"
                           hasInlineFilter={false}
+                          hasPlaceholderStyle={false}
                           id="status-select"
                           inlineFilterPlaceholderText={null}
                           inputIdPrefix=""
                           isCreatable={false}
+                          isCreateSelectOptionObject={false}
                           isDisabled={false}
                           isGrouped={false}
                           isInputValuePersisted={false}
@@ -160,6 +165,7 @@ exports[`Jobs Management toolbar tests Snapshot test with default props 1`] = `
                           onTypeaheadInputChanged={null}
                           ouiaSafe={true}
                           placeholderText="Status"
+                          position="left"
                           removeSelectionAriaLabel="Remove"
                           selections={
                             Array [
@@ -190,6 +196,7 @@ exports[`Jobs Management toolbar tests Snapshot test with default props 1`] = `
                                 handleTypeaheadKeys={[Function]}
                                 hasClearButton={false}
                                 hasFooter={false}
+                                hasPlaceholderStyle={false}
                                 id="pf-select-toggle-id-1"
                                 isActive={false}
                                 isDisabled={false}
@@ -214,6 +221,7 @@ exports[`Jobs Management toolbar tests Snapshot test with default props 1`] = `
                                     >
                                       <button
                                         aria-expanded="false"
+                                        aria-label="Options menu"
                                         aria-labelledby=" pf-select-toggle-id-1"
                                         class="pf-c-select__toggle"
                                         id="pf-select-toggle-id-1"
@@ -264,6 +272,7 @@ exports[`Jobs Management toolbar tests Snapshot test with default props 1`] = `
                                 <button
                                   aria-expanded={false}
                                   aria-haspopup={null}
+                                  aria-label="Options menu"
                                   aria-labelledby=" pf-select-toggle-id-1"
                                   className="pf-c-select__toggle"
                                   disabled={false}

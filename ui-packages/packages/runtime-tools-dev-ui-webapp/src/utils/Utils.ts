@@ -18,6 +18,13 @@ import { GraphQL, User } from '@kogito-apps/consoles-common';
 
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
+declare global {
+  interface Window {
+    KOGITO_TASK_STATES_LIST: string;
+    KOGITO_TASK_ACTIVE_STATES_LIST: string;
+  }
+}
+
 export const getTaskSchemaEndPoint = (
   task: UserTaskInstance,
   user: User
@@ -69,14 +76,10 @@ export const trimTaskEndpoint = (userTask: UserTaskInstance): string => {
 };
 
 export const getAllTaskStates = (): string[] => {
-  // @ts-ignore
   if (window.KOGITO_TASK_STATES_LIST) {
-    // @ts-ignore
     return window.KOGITO_TASK_STATES_LIST.split(',').map(state => state.trim());
   }
-  // @ts-ignore
   if (process.env.KOGITO_TASK_STATES_LIST) {
-    // @ts-ignore
     return process.env.KOGITO_TASK_STATES_LIST.split(',').map(state =>
       state.trim()
     );
@@ -85,16 +88,12 @@ export const getAllTaskStates = (): string[] => {
 };
 
 export const getActiveTaskStates = (): string[] => {
-  // @ts-ignore
   if (window.KOGITO_TASK_ACTIVE_STATES_LIST) {
-    // @ts-ignore
     return window.KOGITO_TASK_ACTIVE_STATES_LIST.split(',').map(state =>
       state.trim()
     );
   }
-  // @ts-ignore
   if (process.env.KOGITO_TASK_ACTIVE_STATES_LIST) {
-    // @ts-ignore
     return process.env.KOGITO_TASK_ACTIVE_STATES_LIST.split(',').map(state =>
       state.trim()
     );

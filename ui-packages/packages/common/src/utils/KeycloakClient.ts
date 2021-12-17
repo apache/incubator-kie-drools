@@ -1,12 +1,16 @@
 import axios from 'axios';
-import { User, UserContext } from '../..';
 import { TestUserContextImpl } from '../environment/auth/TestUserContext';
 import { KeycloakUserContext } from '../environment/auth/KeycloakUserContext';
 import { isTestUserSystemEnabled } from './Utils';
-import { ANONYMOUS_USER } from '../environment/auth/Auth';
+import { ANONYMOUS_USER, User, UserContext } from '../environment/auth/Auth';
+
+declare global {
+  interface Window {
+    KOGITO_AUTH_ENABLED: boolean;
+  }
+}
 
 export const isAuthEnabled = (): boolean => {
-  // @ts-ignore
   return window.KOGITO_AUTH_ENABLED;
 };
 
@@ -72,7 +76,7 @@ export const appRenderWithAxiosInterceptorConfig = (
     axios.interceptors.response.use(
       response => response,
       error => {
-        if (error.response.status === 401) {
+        if (error.response && error.config && error.response.status === 401) {
           loadSecurityContext(() => {
             /* tslint:disable:no-string-literal */
             axios.defaults.headers.common['Authorization'] =

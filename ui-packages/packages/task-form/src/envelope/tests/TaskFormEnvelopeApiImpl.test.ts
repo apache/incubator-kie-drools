@@ -31,7 +31,7 @@ import { TaskFormEnvelopeApiImpl } from '../TaskFormEnvelopeApiImpl';
 
 describe('TaskFormEnvelopeApiImpl tests', () => {
   it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeBusController = MockedEnvelopeBusController;
     const view = new MockedTaskFormEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       TaskFormEnvelopeApi,

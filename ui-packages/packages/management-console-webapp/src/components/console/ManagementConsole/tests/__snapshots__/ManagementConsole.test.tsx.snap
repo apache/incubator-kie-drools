@@ -2,34 +2,7 @@
 
 exports[`ManagementConsole tests Snapshot test with default props 1`] = `
 <ManagementConsole
-  apolloClient={
-    ApolloClient {
-      "__actionHookForDevTools": [MockFunction],
-      "__requestRaw": [MockFunction],
-      "addResolvers": [MockFunction],
-      "clearStore": [MockFunction],
-      "extract": [MockFunction],
-      "getResolvers": [MockFunction],
-      "initQueryManager": [MockFunction],
-      "mutate": [MockFunction],
-      "onClearStore": [MockFunction],
-      "onResetStore": [MockFunction],
-      "query": [MockFunction],
-      "reFetchObservableQueries": [MockFunction],
-      "readFragment": [MockFunction],
-      "readQuery": [MockFunction],
-      "resetStore": [MockFunction],
-      "restore": [MockFunction],
-      "setLocalStateFragmentMatcher": [MockFunction],
-      "setResolvers": [MockFunction],
-      "stop": [MockFunction],
-      "subscribe": [MockFunction],
-      "watchQuery": [MockFunction],
-      "writeData": [MockFunction],
-      "writeFragment": [MockFunction],
-      "writeQuery": [MockFunction],
-    }
-  }
+  apolloClient={[MockFunction]}
   userContext={
     Object {
       "getCurrentUser": [MockFunction],
@@ -37,34 +10,7 @@ exports[`ManagementConsole tests Snapshot test with default props 1`] = `
   }
 >
   <ApolloProvider
-    client={
-      ApolloClient {
-        "__actionHookForDevTools": [MockFunction],
-        "__requestRaw": [MockFunction],
-        "addResolvers": [MockFunction],
-        "clearStore": [MockFunction],
-        "extract": [MockFunction],
-        "getResolvers": [MockFunction],
-        "initQueryManager": [MockFunction],
-        "mutate": [MockFunction],
-        "onClearStore": [MockFunction],
-        "onResetStore": [MockFunction],
-        "query": [MockFunction],
-        "reFetchObservableQueries": [MockFunction],
-        "readFragment": [MockFunction],
-        "readQuery": [MockFunction],
-        "resetStore": [MockFunction],
-        "restore": [MockFunction],
-        "setLocalStateFragmentMatcher": [MockFunction],
-        "setResolvers": [MockFunction],
-        "stop": [MockFunction],
-        "subscribe": [MockFunction],
-        "watchQuery": [MockFunction],
-        "writeData": [MockFunction],
-        "writeFragment": [MockFunction],
-        "writeQuery": [MockFunction],
-      }
-    }
+    client={[MockFunction]}
   >
     <KogitoAppContextProvider
       userContext={
@@ -74,94 +20,13 @@ exports[`ManagementConsole tests Snapshot test with default props 1`] = `
       }
     >
       <ProcessListContextProvider
-        apolloClient={
-          ApolloClient {
-            "__actionHookForDevTools": [MockFunction],
-            "__requestRaw": [MockFunction],
-            "addResolvers": [MockFunction],
-            "clearStore": [MockFunction],
-            "extract": [MockFunction],
-            "getResolvers": [MockFunction],
-            "initQueryManager": [MockFunction],
-            "mutate": [MockFunction],
-            "onClearStore": [MockFunction],
-            "onResetStore": [MockFunction],
-            "query": [MockFunction],
-            "reFetchObservableQueries": [MockFunction],
-            "readFragment": [MockFunction],
-            "readQuery": [MockFunction],
-            "resetStore": [MockFunction],
-            "restore": [MockFunction],
-            "setLocalStateFragmentMatcher": [MockFunction],
-            "setResolvers": [MockFunction],
-            "stop": [MockFunction],
-            "subscribe": [MockFunction],
-            "watchQuery": [MockFunction],
-            "writeData": [MockFunction],
-            "writeFragment": [MockFunction],
-            "writeQuery": [MockFunction],
-          }
-        }
+        apolloClient={[MockFunction]}
       >
         <ProcessDetailsContextProvider
-          apolloClient={
-            ApolloClient {
-              "__actionHookForDevTools": [MockFunction],
-              "__requestRaw": [MockFunction],
-              "addResolvers": [MockFunction],
-              "clearStore": [MockFunction],
-              "extract": [MockFunction],
-              "getResolvers": [MockFunction],
-              "initQueryManager": [MockFunction],
-              "mutate": [MockFunction],
-              "onClearStore": [MockFunction],
-              "onResetStore": [MockFunction],
-              "query": [MockFunction],
-              "reFetchObservableQueries": [MockFunction],
-              "readFragment": [MockFunction],
-              "readQuery": [MockFunction],
-              "resetStore": [MockFunction],
-              "restore": [MockFunction],
-              "setLocalStateFragmentMatcher": [MockFunction],
-              "setResolvers": [MockFunction],
-              "stop": [MockFunction],
-              "subscribe": [MockFunction],
-              "watchQuery": [MockFunction],
-              "writeData": [MockFunction],
-              "writeFragment": [MockFunction],
-              "writeQuery": [MockFunction],
-            }
-          }
+          apolloClient={[MockFunction]}
         >
           <JobsManagementContextProvider
-            apolloClient={
-              ApolloClient {
-                "__actionHookForDevTools": [MockFunction],
-                "__requestRaw": [MockFunction],
-                "addResolvers": [MockFunction],
-                "clearStore": [MockFunction],
-                "extract": [MockFunction],
-                "getResolvers": [MockFunction],
-                "initQueryManager": [MockFunction],
-                "mutate": [MockFunction],
-                "onClearStore": [MockFunction],
-                "onResetStore": [MockFunction],
-                "query": [MockFunction],
-                "reFetchObservableQueries": [MockFunction],
-                "readFragment": [MockFunction],
-                "readQuery": [MockFunction],
-                "resetStore": [MockFunction],
-                "restore": [MockFunction],
-                "setLocalStateFragmentMatcher": [MockFunction],
-                "setResolvers": [MockFunction],
-                "stop": [MockFunction],
-                "subscribe": [MockFunction],
-                "watchQuery": [MockFunction],
-                "writeData": [MockFunction],
-                "writeFragment": [MockFunction],
-                "writeQuery": [MockFunction],
-              }
-            }
+            apolloClient={[MockFunction]}
           >
             <BrowserRouter>
               <Router

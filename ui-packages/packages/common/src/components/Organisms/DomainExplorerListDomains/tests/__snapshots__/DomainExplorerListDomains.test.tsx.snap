@@ -67,6 +67,9 @@ exports[`DomainExplorerListDomains Component test cases Assertions 1`] = `
         >
           <h5
             className="pf-c-title pf-m-lg"
+            data-ouia-component-id="OUIA-Generated-Title-2"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe={true}
           >
             Domains List
           </h5>
@@ -217,6 +220,9 @@ exports[`DomainExplorerListDomains Component test cases Snapshot with mock useGe
         >
           <h5
             className="pf-c-title pf-m-lg"
+            data-ouia-component-id="OUIA-Generated-Title-1"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe={true}
           >
             Domains List
           </h5>

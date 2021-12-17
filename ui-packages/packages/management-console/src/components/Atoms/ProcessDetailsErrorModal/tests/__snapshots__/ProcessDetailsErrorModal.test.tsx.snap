@@ -120,6 +120,9 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
                 >
                   <h1
                     class="pf-c-title pf-m-2xl"
+                    data-ouia-component-id="OUIA-Generated-Title-1"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe="true"
                   >
                     <span>
                       Process Visualization
@@ -325,6 +328,9 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
                         >
                           <h1
                             className="pf-c-title pf-m-2xl"
+                            data-ouia-component-id="OUIA-Generated-Title-1"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
                           >
                             <InfoCircleIcon
                               className="pf-u-mr-sm"

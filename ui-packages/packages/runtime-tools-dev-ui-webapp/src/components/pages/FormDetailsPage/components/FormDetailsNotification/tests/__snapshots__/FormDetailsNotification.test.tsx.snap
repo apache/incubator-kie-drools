@@ -41,7 +41,7 @@ exports[`FormDetailsNotification test Notification with details 1`] = `
       onMouseEnter={[Function]}
       onMouseLeave={[Function]}
     >
-      <Component
+      <AlertIcon
         variant="danger"
       >
         <div
@@ -72,7 +72,7 @@ exports[`FormDetailsNotification test Notification with details 1`] = `
             </svg>
           </ExclamationCircleIcon>
         </div>
-      </Component>
+      </AlertIcon>
       <h4
         className="pf-c-alert__title"
       >
@@ -224,7 +224,7 @@ exports[`FormDetailsNotification test Notification with details 2`] = `
       onMouseEnter={[Function]}
       onMouseLeave={[Function]}
     >
-      <Component
+      <AlertIcon
         variant="danger"
       >
         <div
@@ -255,7 +255,7 @@ exports[`FormDetailsNotification test Notification with details 2`] = `
             </svg>
           </ExclamationCircleIcon>
         </div>
-      </Component>
+      </AlertIcon>
       <h4
         className="pf-c-alert__title"
       >
@@ -405,7 +405,7 @@ exports[`FormDetailsNotification test Simple notification 1`] = `
       onMouseEnter={[Function]}
       onMouseLeave={[Function]}
     >
-      <Component
+      <AlertIcon
         variant="success"
       >
         <div
@@ -436,7 +436,7 @@ exports[`FormDetailsNotification test Simple notification 1`] = `
             </svg>
           </CheckCircleIcon>
         </div>
-      </Component>
+      </AlertIcon>
       <h4
         className="pf-c-alert__title"
       >

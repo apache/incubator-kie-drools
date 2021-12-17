@@ -28,8 +28,7 @@ import {
 export default class FormDetailsEnvelopeViewDriver
   implements FormDetailsDriver {
   constructor(
-    // @ts-ignore
-    private readonly channelApi: MessageBusClientApi<FormDetailsChannelApi>
+    protected readonly channelApi: MessageBusClientApi<FormDetailsChannelApi>
   ) {}
   getFormContent(formName: string): Promise<Form> {
     return this.channelApi.requests.formDetails__getFormContent(formName);

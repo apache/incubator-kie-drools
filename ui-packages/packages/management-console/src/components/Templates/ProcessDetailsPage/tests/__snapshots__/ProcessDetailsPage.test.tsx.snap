@@ -191,6 +191,7 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
           >
             <h1
               className="pf-c-title pf-m-4xl"
+              data-ouia-component-id="OUIA-Generated-Title-1"
               data-ouia-component-type="page-title"
               data-ouia-safe={true}
             >
@@ -470,6 +471,9 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                         >
                           <h2
                             className="pf-c-title pf-m-4xl kogito-management-console--details__title"
+                            data-ouia-component-id="OUIA-Generated-Title-2"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
                           >
                             <ItemDescriptor
                               itemDescription={
@@ -1484,6 +1488,7 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
           >
             <h1
               className="pf-c-title pf-m-4xl"
+              data-ouia-component-id="OUIA-Generated-Title-7"
               data-ouia-component-type="page-title"
               data-ouia-safe={true}
             >
@@ -1763,6 +1768,9 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                         >
                           <h2
                             className="pf-c-title pf-m-4xl kogito-management-console--details__title"
+                            data-ouia-component-id="OUIA-Generated-Title-8"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
                           >
                             <ItemDescriptor
                               itemDescription={
@@ -2674,6 +2682,7 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
           >
             <h1
               className="pf-c-title pf-m-4xl"
+              data-ouia-component-id="OUIA-Generated-Title-9"
               data-ouia-component-type="page-title"
               data-ouia-safe={true}
             >
@@ -2953,6 +2962,9 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                         >
                           <h2
                             className="pf-c-title pf-m-4xl kogito-management-console--details__title"
+                            data-ouia-component-id="OUIA-Generated-Title-10"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
                           >
                             <ItemDescriptor
                               itemDescription={

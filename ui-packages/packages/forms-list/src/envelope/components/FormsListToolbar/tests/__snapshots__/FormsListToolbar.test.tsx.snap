@@ -17,6 +17,7 @@ exports[`forms list toolbar tests render toolbar 1`] = `
   >
     <div
       className="pf-c-toolbar pf-m-toggle-group-container"
+      data-ouia-component-id="OUIA-Generated-Toolbar-1"
       data-ouia-component-type="forms-list-toolbar"
       data-ouia-safe={true}
       id="forms-list-with-filter"
@@ -151,6 +152,7 @@ exports[`forms list toolbar tests render toolbar 1`] = `
                                     name="formName"
                                     onChange={[Function]}
                                     onKeyPress={[Function]}
+                                    ouiaSafe={true}
                                     placeholder="Filter by Form name"
                                     type="search"
                                     validated="default"
@@ -160,6 +162,9 @@ exports[`forms list toolbar tests render toolbar 1`] = `
                                       aria-invalid={false}
                                       aria-label="form name"
                                       className="pf-c-form-control"
+                                      data-ouia-component-id="OUIA-Generated-TextInputBase-2"
+                                      data-ouia-component-type="PF4/TextInput"
+                                      data-ouia-safe={true}
                                       disabled={false}
                                       id="formName"
                                       name="formName"

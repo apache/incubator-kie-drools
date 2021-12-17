@@ -27,6 +27,12 @@ import '../../styles.css';
 import aboutPageBackground from '../../../static/kogitoAbout.png';
 import { useBrandContext } from '../BrandContext/BrandContext';
 
+declare global {
+  interface Window {
+    DATA_INDEX_ENDPOINT: string;
+  }
+}
+
 export interface IOwnProps {
   isOpenProp: boolean;
   handleModalToggleProp: any;
@@ -37,9 +43,7 @@ const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  const dataIndexURL =
-    // @ts-ignore
-    window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL;
+  const dataIndexURL = window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL;
   const brandContext = useBrandContext();
   return (
     <AboutModal

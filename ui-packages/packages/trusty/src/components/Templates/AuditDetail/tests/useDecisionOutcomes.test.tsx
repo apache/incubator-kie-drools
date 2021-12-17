@@ -3,6 +3,7 @@ import { act } from 'react-test-renderer';
 import * as api from '../../../../utils/api/httpClient';
 import useDecisionOutcomes from '../useDecisionOutcomes';
 import { Execution, Outcome, RemoteDataStatus } from '../../../../types';
+import { AxiosPromise } from "axios";
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
@@ -53,8 +54,7 @@ describe('useDecisionOutcome', () => {
       }
     };
 
-    // @ts-ignore
-    apiMock.mockImplementation(() => Promise.resolve(outcomes));
+    apiMock.mockImplementation(() => Promise.resolve(outcomes) as AxiosPromise);
 
     const { result } = renderHook(() => {
       // tslint:disable-next-line:react-hooks-nesting

@@ -38,26 +38,41 @@ const MockedJobsRescheduleModal = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => ({
-  ...jest.requireActual('@patternfly/react-core'),
-  ModalBoxBody: () => <MockedComponent />
-}));
+jest.mock('@patternfly/react-core', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-core'),
+    {
+      ModalBoxBody: () => <MockedComponent />
+    }
+  ))
+);
 
-jest.mock('@kogito-apps/management-console-shared', () => ({
-  ...jest.requireActual('@kogito-apps/management-console-shared'),
-  BulkList: () => <MockedBulkList />,
-  JobsRescheduleModal: () => <MockedJobsRescheduleModal />
-}));
+jest.mock('@kogito-apps/management-console-shared', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/management-console-shared'),
+    {
+      BulkList: () => <MockedBulkList />,
+      JobsRescheduleModal: () => <MockedJobsRescheduleModal />
+    }
+  )
+));
 
-jest.mock('@patternfly/react-icons', () => ({
-  ...jest.requireActual('@patternfly/react-icons'),
-  InfoCircleIcon: () => {
-    return <MockedIcon />;
-  },
-  TimesIcon: () => {
-    return <MockedIcon />;
-  }
-}));
+jest.mock('@patternfly/react-icons', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-icons'),
+    {
+      InfoCircleIcon: () => {
+        return <MockedIcon />;
+      },
+      TimesIcon: () => {
+        return <MockedIcon />;
+      }
+    }
+  )
+));
 
 const props = {
   job: {
@@ -132,8 +147,7 @@ describe('job actions kebab tests', () => {
     const modalTitle = 'success';
     const modalContent =
       'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 is rescheduled successfully';
-    // @ts-ignore
-    prop2.driver.rescheduleJob.mockImplementationOnce(() =>
+    (prop2.driver.rescheduleJob as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({ modalTitle, modalContent })
     );
     let wrapper = mount(<JobActionsKebab {...prop2} />);
@@ -185,8 +199,7 @@ describe('job actions kebab tests', () => {
   it('trigger/test apply reschedule method', async () => {
     const modalTitle = 'failure';
     const modalContent = 'The job reschedule is failed';
-    // @ts-ignore
-    prop2.driver.rescheduleJob.mockImplementationOnce(() =>
+    (prop2.driver.rescheduleJob as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({ modalTitle, modalContent })
     );
     const repeatInterval = 0;
@@ -224,8 +237,7 @@ describe('job actions kebab tests', () => {
     await act(async () => {
       wrapper
         .find('JobsRescheduleModal')
-        .props()
-        ['handleJobReschedule'](repeatInterval, repeatLimit, scheduleDate);
+        .props()['handleJobReschedule'](repeatInterval, repeatLimit, scheduleDate);
     });
     expect(prop2.driver.rescheduleJob).toHaveBeenCalledWith(
       prop2.job,
@@ -240,8 +252,7 @@ describe('job actions kebab tests', () => {
       const modalTitle = 'success';
       const modalContent =
         'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 is canceled successfully';
-      // @ts-ignore
-      prop2.driver.cancelJob.mockImplementationOnce(() =>
+      (prop2.driver.cancelJob as jest.Mock).mockImplementationOnce(() =>
         Promise.resolve({ modalTitle, modalContent })
       );
       let wrapper = mount(<JobActionsKebab {...prop2} />);
@@ -281,8 +292,7 @@ describe('job actions kebab tests', () => {
       const modalTitle = 'failure';
       const modalContent =
         'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 failed. Message: 404 not found';
-      // @ts-ignore
-      prop2.driver.cancelJob.mockImplementationOnce(() =>
+      (prop2.driver.cancelJob as jest.Mock).mockImplementationOnce(() =>
         Promise.resolve({ modalTitle, modalContent })
       );
       let wrapper = mount(<JobActionsKebab {...prop2} />);

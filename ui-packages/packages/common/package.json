@@ -16,8 +16,8 @@
   ],
   "scripts": {
     "precommit": "lint-staged",
-    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js",
-    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.dev.js --watch",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
+    "build": "rimraf dist && tsc -m commonjs -p tsconfig.json && yarn run copy:css",
     "build:prod": "yarn run clean && yarn run lint && yarn run build",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
@@ -28,6 +28,9 @@
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "clean": "rimraf dist",
     "codegen": "graphql-codegen"
+  },
+  "dependencies": {
+    "@kogito-apps/patternfly-base": "^1.0.0"
   },
   "devDependencies": {
     "@kogito-apps/ouia-tools": "^1.0.0",
@@ -42,7 +45,6 @@
     "@storybook/addon-viewport": "5.3.18",
     "@storybook/react": "5.3.18",
     "@storybook/source-loader": "5.3.18",
-    "babel-loader": "8.1.0",
     "react-docgen-typescript-loader": "3.7.2",
     "storybook-react-router": "1.0.8"
   },

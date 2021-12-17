@@ -25,8 +25,7 @@ import {
  * Implementation of the TaskInboxChannelApi delegating to a TaskInboxDriver
  */
 export class FormDetailsChannelApiImpl implements FormDetailsChannelApi {
-  // @ts-ignore
-  constructor(private readonly driver: FormDetailsDriver) {}
+  constructor(protected readonly driver: FormDetailsDriver) {}
 
   formDetails__getFormContent(formName: string): Promise<Form> {
     return this.driver.getFormContent(formName);

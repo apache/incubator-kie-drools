@@ -37,12 +37,17 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => ({
-  ...jest.requireActual('@kogito-apps/components-common'),
-  KogitoSpinner: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/components-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/components-common'),
+    {
+      KogitoSpinner: () => {
+        return <MockedComponent />;
+      }
+    }
+  )
+));
 
 let props: TaskFormProps;
 let driverDoSubmitSpy;

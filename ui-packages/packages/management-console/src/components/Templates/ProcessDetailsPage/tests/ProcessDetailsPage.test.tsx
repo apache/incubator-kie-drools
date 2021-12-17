@@ -40,40 +40,50 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => ({
-  ...jest.requireActual('@patternfly/react-icons'),
-  OnRunningIcon: () => {
-    return <MockedComponent />;
-  },
-  CheckCircleIcon: () => {
-    return <MockedComponent />;
-  },
-  BanIcon: () => {
-    return <MockedComponent />;
-  },
-  PausedIcon: () => {
-    return <MockedComponent />;
-  },
-  ErrorCircleOIcon: () => {
-    return <MockedComponent />;
-  },
-  AngleRightIcon: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@patternfly/react-icons', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-icons'),
+    {
+      OnRunningIcon: () => {
+        return <MockedComponent/>;
+      },
+      CheckCircleIcon: () => {
+        return <MockedComponent/>;
+      },
+      BanIcon: () => {
+        return <MockedComponent/>;
+      },
+      PausedIcon: () => {
+        return <MockedComponent/>;
+      },
+      ErrorCircleOIcon: () => {
+        return <MockedComponent/>;
+      },
+      AngleRightIcon: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 
-jest.mock('@kogito-apps/common', () => ({
-  ...jest.requireActual('@kogito-apps/common'),
-  ItemDescriptor: () => {
-    return <MockedComponent />;
-  },
-  KogitoSpinner: () => {
-    return <MockedComponent />;
-  },
-  ServerErrors: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/common'),
+    {
+      ItemDescriptor: () => {
+        return <MockedComponent/>;
+      },
+      KogitoSpinner: () => {
+        return <MockedComponent/>;
+      },
+      ServerErrors: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 
 const props = {
   match: {
@@ -633,9 +643,10 @@ describe('Process Details Page component tests', () => {
   it('Test refresh and save button', async () => {
     mockedAxios.post.mockResolvedValue({});
     const { location } = window;
-    delete window.location;
-    // @ts-ignore
-    window.location = { reload: jest.fn() };
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { reload: jest.fn() },
+    });
     let wrapper;
     await act(async () => {
       wrapper = mount(
@@ -671,16 +682,20 @@ describe('Process Details Page component tests', () => {
       .at(1)
       .props()
       ['onClose']();
-    window.location = location;
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: location,
+    });
     expect(handleVariableUpdateSpy).toHaveBeenCalled();
   });
   it('Test error axios response', async () => {
     mockedAxios.post.mockRejectedValue({ message: '404 error' });
     jest.setTimeout(2000);
     const { location } = window;
-    delete window.location;
-    // @ts-ignore
-    window.location = { reload: jest.fn() };
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { reload: jest.fn() },
+    });
     let wrapper;
     await act(async () => {
       wrapper = mount(
@@ -704,7 +719,10 @@ describe('Process Details Page component tests', () => {
         .first()
         .simulate('click');
     });
-    window.location = location;
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: location,
+    });
     expect(handleVariableUpdateSpy).toHaveBeenCalled();
   });
   it('test node trigger presence', async () => {

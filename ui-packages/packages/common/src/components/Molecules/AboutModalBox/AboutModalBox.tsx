@@ -15,15 +15,18 @@ export interface IOwnProps {
   isOpenProp: boolean;
   handleModalToggleProp: any;
 }
+declare global {
+  interface Window {
+    DATA_INDEX_ENDPOINT: string;
+  }
+}
 const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({
   isOpenProp,
   handleModalToggleProp,
   ouiaId,
   ouiaSafe
 }) => {
-  const dataIndexURL =
-    // @ts-ignore
-    window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL;
+  const dataIndexURL = window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL;
   const logoSrc = useContext(aboutLogoContext);
   return (
     <AboutModal

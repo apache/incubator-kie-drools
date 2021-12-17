@@ -29,26 +29,26 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => ({
-  ...jest.requireActual('@kogito-apps/components-common'),
-  ServerErrors: () => {
-    return <MockedComponent />;
-  },
-  KogitoEmptyState: () => {
-    return <MockedComponent />;
-  },
-  LoadMore: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/components-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/components-common'),
+    {
+      ServerErrors: () => {
+        return <MockedComponent />;
+      },
+      KogitoEmptyState: () => {
+        return <MockedComponent />;
+      },
+      LoadMore: () => {
+        return <MockedComponent />;
+      }
+    }
+  )
+));
 
-//@ts-ignore
-let driverInitialLoadMock;
-//@ts-ignore
 let driverQueryMock;
-//@ts-ignore
 let driverApplyFilterMock;
-//@ts-ignore
 let driverApplySortingMock;
 
 const getProcessListDriver = (items: number): TestProcessListDriver => {
@@ -56,7 +56,7 @@ const getProcessListDriver = (items: number): TestProcessListDriver => {
     processInstances.slice(0, items),
     []
   );
-  driverInitialLoadMock = jest.spyOn(driver, 'initialLoad');
+  jest.spyOn(driver, 'initialLoad');
   driverApplyFilterMock = jest.spyOn(driver, 'applyFilter');
   driverApplySortingMock = jest.spyOn(driver, 'applySorting');
   driverQueryMock = jest.spyOn(driver, 'query');

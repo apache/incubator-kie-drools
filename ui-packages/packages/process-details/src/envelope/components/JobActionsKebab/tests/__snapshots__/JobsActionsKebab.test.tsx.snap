@@ -575,6 +575,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
                     "onKeyPress",
                   ]
                 }
+                isAriaDisabled={false}
                 isDisabled={false}
                 isHovered={false}
                 isPlainText={false}

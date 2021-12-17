@@ -60,10 +60,10 @@ module.exports = merge(common, {
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/components-common/dist/src/components/styles.css'
+            '../../node_modules/@kogito-apps/components-common/dist/components/styles.css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/consoles-common/dist/src/components/styles.css'
+            '../../node_modules/@kogito-apps/consoles-common/dist/components/styles.css'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/task-console-shared/dist/envelope/styles.css'

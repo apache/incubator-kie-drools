@@ -27,31 +27,41 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => ({
-  ...jest.requireActual('@kogito-apps/components-common'),
-  ServerErrors: () => {
-    return <MockedComponent />;
-  },
-  KogitoSpinner: () => {
-    return <MockedComponent />;
-  },
-  KogitoEmptyState: () => {
-    return <MockedComponent />;
-  },
-  ItemDescriptor: () => {
-    return <MockedComponent />;
-  },
-  EndpointLink: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/components-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/components-common'),
+    {
+      ServerErrors: () => {
+        return <MockedComponent />;
+      },
+      KogitoSpinner: () => {
+        return <MockedComponent />;
+      },
+      KogitoEmptyState: () => {
+        return <MockedComponent />;
+      },
+      ItemDescriptor: () => {
+        return <MockedComponent />;
+      },
+      EndpointLink: () => {
+        return <MockedComponent />;
+      }
+    }
+  )
+));
 
-jest.mock('@kogito-apps/management-console-shared', () => ({
-  ...jest.requireActual('@kogito-apps/management-console-shared'),
-  ProcessInfoModal: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/management-console-shared', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/management-console-shared'),
+    {
+      ProcessInfoModal: () => {
+        return <MockedComponent />;
+      }
+    }
+  )
+));
 describe('ProcessListChildTable test', () => {
   it('render table', async () => {
     const driver = new TestProcessListDriver([], childProcessInstances);

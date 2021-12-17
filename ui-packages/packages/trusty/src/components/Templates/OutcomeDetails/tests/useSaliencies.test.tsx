@@ -7,6 +7,7 @@ import {
   SaliencyStatus
 } from '../../../../types';
 import { act } from 'react-test-renderer';
+import { AxiosPromise } from "axios";
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
@@ -38,8 +39,7 @@ describe('useSaliencies', () => {
       } as Saliencies
     };
 
-    // @ts-ignore
-    apiMock.mockImplementation(() => Promise.resolve(saliencies));
+    apiMock.mockImplementation(() => Promise.resolve(saliencies) as AxiosPromise);
 
     const { result } = renderHook(() => {
       // tslint:disable-next-line:react-hooks-nesting

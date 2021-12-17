@@ -28,21 +28,23 @@ const MockedComponent = (): React.ReactElement => {
 jest.mock('../../TaskConsoleNav/TaskConsoleNav');
 jest.mock('../../TaskConsoleRoutes/TaskConsoleRoutes');
 
-jest.mock('@kogito-apps/consoles-common', () => ({
-  ...jest.requireActual('@kogito-apps/consoles-common'),
-  PageLayout: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/consoles-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/consoles-common'),
+    {
+      PageLayout: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 
 jest.mock('apollo-client');
-const ApolloClientMock = ApolloClient as jest.MockedClass<typeof ApolloClient>;
 
 describe('TaskConsole tests', () => {
   it('Snapshot', () => {
-    // @ts-ignore
-    const client = new ApolloClientMock();
-    // @ts-ignore
+    const client = jest.fn().mockImplementation() as unknown as ApolloClient<any>;
     const testContext = new TestUserContext();
     const props = {
       apolloClient: client,

@@ -31,24 +31,29 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => ({
-  ...jest.requireActual('@patternfly/react-icons'),
-  UserIcon: () => {
-    return <MockedIcon />;
-  },
-  CheckCircleIcon: () => {
-    return <MockedIcon />;
-  },
-  ErrorCircleOIcon: () => {
-    return <MockedIcon />;
-  },
-  OnRunningIcon: () => {
-    return <MockedIcon />;
-  },
-  OutlinedClockIcon: () => {
-    return <MockedIcon />;
-  }
-}));
+jest.mock('@patternfly/react-icons', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-icons'),
+    {
+      UserIcon: () => {
+        return <MockedIcon />;
+      },
+      CheckCircleIcon: () => {
+        return <MockedIcon />;
+      },
+      ErrorCircleOIcon: () => {
+        return <MockedIcon />;
+      },
+      OnRunningIcon: () => {
+        return <MockedIcon />;
+      },
+      OutlinedClockIcon: () => {
+        return <MockedIcon />;
+      }
+    }
+  )
+));
 
 const driver = new TestProcessDetailsDriver(
   '2d962eef-45b8-48a9-ad4e-9cde0ad6af89'
@@ -725,7 +730,6 @@ describe('ProcessDetailsTimelinePanel component tests', () => {
       const modalTitle = 'success';
       const modalContent =
         'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 is canceled successfully';
-      // @ts-ignore
       const cancelJobSuccess = jest.spyOn(driver, 'cancelJob');
       cancelJobSuccess.mockImplementationOnce(() =>
         Promise.resolve({ modalTitle, modalContent })

@@ -37,6 +37,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
               data-ouia-component-id="process-instances"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current={null}
@@ -79,6 +80,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
               data-ouia-component-id="jobs-management"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current="page"
@@ -155,6 +157,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
               data-ouia-component-id="process-instances"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current="page"
@@ -197,6 +200,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
               data-ouia-component-id="jobs-management"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current={null}

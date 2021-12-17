@@ -59,7 +59,7 @@ module.exports = {
             '../../node_modules/@patternfly/patternfly/assets/pficon'
           ),
           path.resolve(
-              '../../node_modules/@kogito-apps/consoles-common/dist/src/static'
+              '../../node_modules/@kogito-apps/consoles-common/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/form-displayer/dist/static'
@@ -122,7 +122,7 @@ module.exports = {
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images'
           ),
           path.resolve(
-              '../../node_modules/@kogito-apps/consoles-common/dist/src/static'
+              '../../node_modules/@kogito-apps/consoles-common/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/form-displayer/dist/static'

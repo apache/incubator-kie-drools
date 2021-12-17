@@ -371,7 +371,6 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const renderTimerIcon = (id: string): JSX.Element => {
-    // @ts-ignore
     return jobs.map((job, idx) => {
       if (id === job.nodeInstanceId) {
         return (
@@ -384,7 +383,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           </Tooltip>
         );
       }
-    });
+    })[0];
   };
 
   const detailsAction: JSX.Element[] = [

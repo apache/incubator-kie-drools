@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`KogitoEmptyState component tests Info test 1`] = `
-<Component
+<KogitoEmptyState
   body="This process has no related sub processes"
   ouiaId="empty-state-ouia-id"
   title="No child process instances"
@@ -45,6 +45,9 @@ exports[`KogitoEmptyState component tests Info test 1`] = `
             >
               <h5
                 className="pf-c-title pf-m-lg"
+                data-ouia-component-id="OUIA-Generated-Title-3"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe={true}
               >
                 No child process instances
               </h5>
@@ -61,11 +64,11 @@ exports[`KogitoEmptyState component tests Info test 1`] = `
       </EmptyState>
     </div>
   </Bullseye>
-</Component>
+</KogitoEmptyState>
 `;
 
 exports[`KogitoEmptyState component tests Refresh test 1`] = `
-<Component
+<KogitoEmptyState
   body="This process has no related sub processes"
   onClick={[MockFunction]}
   ouiaId="empty-state-ouia-id"
@@ -110,6 +113,9 @@ exports[`KogitoEmptyState component tests Refresh test 1`] = `
             >
               <h5
                 className="pf-c-title pf-m-lg"
+                data-ouia-component-id="OUIA-Generated-Title-4"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe={true}
               >
                 No child process instances
               </h5>
@@ -151,11 +157,11 @@ exports[`KogitoEmptyState component tests Refresh test 1`] = `
       </EmptyState>
     </div>
   </Bullseye>
-</Component>
+</KogitoEmptyState>
 `;
 
 exports[`KogitoEmptyState component tests Reset test 1`] = `
-<Component
+<KogitoEmptyState
   body="This process has no related sub processes"
   onClick={[MockFunction]}
   ouiaId="empty-state-ouia-id"
@@ -200,6 +206,9 @@ exports[`KogitoEmptyState component tests Reset test 1`] = `
             >
               <h5
                 className="pf-c-title pf-m-lg"
+                data-ouia-component-id="OUIA-Generated-Title-2"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe={true}
               >
                 No child process instances
               </h5>
@@ -241,11 +250,11 @@ exports[`KogitoEmptyState component tests Reset test 1`] = `
       </EmptyState>
     </div>
   </Bullseye>
-</Component>
+</KogitoEmptyState>
 `;
 
 exports[`KogitoEmptyState component tests Search test 1`] = `
-<Component
+<KogitoEmptyState
   body="This process has no related sub processes"
   ouiaId="empty-state-ouia-id"
   title="No child process instances"
@@ -287,6 +296,9 @@ exports[`KogitoEmptyState component tests Search test 1`] = `
             >
               <h5
                 className="pf-c-title pf-m-lg"
+                data-ouia-component-id="OUIA-Generated-Title-1"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe={true}
               >
                 No child process instances
               </h5>
@@ -303,5 +315,5 @@ exports[`KogitoEmptyState component tests Search test 1`] = `
       </EmptyState>
     </div>
   </Bullseye>
-</Component>
+</KogitoEmptyState>
 `;

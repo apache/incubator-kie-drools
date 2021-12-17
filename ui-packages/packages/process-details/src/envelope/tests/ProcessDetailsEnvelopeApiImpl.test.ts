@@ -31,7 +31,7 @@ import {
 
 describe('ProcessDetailsEnvelopeApiImpl tests', () => {
   it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeBusController = MockedEnvelopeBusController;
     const view = new MockedProcessDetailsEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       ProcessDetailsEnvelopeApi,

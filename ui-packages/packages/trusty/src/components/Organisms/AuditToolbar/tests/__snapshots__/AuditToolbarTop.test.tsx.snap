@@ -29,10 +29,10 @@ exports[`Audit top toolbar renders correctly 1`] = `
         <InputGroup>
           <TextInput
             aria-label="search executions"
-            data-ouia-component-id="search-input"
             id="audit-search-input"
             name="audit-search-input"
             onKeyDown={[Function]}
+            ouiaId="search-input"
             placeholder="Search by ID"
             type="search"
           />

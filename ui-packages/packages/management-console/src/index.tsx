@@ -22,7 +22,6 @@ import PageLayout from './components/Templates/PageLayout/PageLayout';
 
 const appRender = (ctx: UserContext) => {
   const httpLink = new HttpLink({
-    // @ts-ignore
     uri: window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL
   });
 

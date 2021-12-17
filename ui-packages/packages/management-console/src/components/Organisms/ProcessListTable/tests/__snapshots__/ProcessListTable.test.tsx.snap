@@ -48,6 +48,9 @@ exports[`ProcessListPage tests snapshot for loading state 1`] = `
         >
           <h3
             className="pf-c-title pf-m-lg"
+            data-ouia-component-id="OUIA-Generated-Title-6"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe={true}
           >
             Loading process instances...
           </h3>
@@ -836,6 +839,7 @@ exports[`ProcessListPage tests snapshot test for disabled process and non "error
                                 isDisabled={true}
                                 isValid={true}
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             }
                             processInstanceData={
@@ -1548,6 +1552,7 @@ exports[`ProcessListPage tests snapshot test for disabled process and non "error
                             isValid={true}
                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             onChange={[Function]}
+                            ouiaSafe={true}
                           >
                             <div
                               className="pf-c-check pf-m-standalone"
@@ -1557,6 +1562,9 @@ exports[`ProcessListPage tests snapshot test for disabled process and non "error
                                 aria-label="process-list-checkbox"
                                 checked={true}
                                 className="pf-c-check__input"
+                                data-ouia-component-id="OUIA-Generated-Checkbox-9"
+                                data-ouia-component-type="PF4/Checkbox"
+                                data-ouia-safe={true}
                                 disabled={false}
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -3020,6 +3028,7 @@ exports[`ProcessListPage tests snapshot test for process list - without expanded
                             isValid={true}
                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             onChange={[Function]}
+                            ouiaSafe={true}
                           >
                             <div
                               className="pf-c-check pf-m-standalone"
@@ -3029,6 +3038,9 @@ exports[`ProcessListPage tests snapshot test for process list - without expanded
                                 aria-label="process-list-checkbox"
                                 checked={false}
                                 className="pf-c-check__input"
+                                data-ouia-component-id="OUIA-Generated-Checkbox-7"
+                                data-ouia-component-type="PF4/Checkbox"
+                                data-ouia-safe={true}
                                 disabled={false}
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -3794,6 +3806,7 @@ exports[`ProcessListPage tests snapshot test for process list - without expanded
                             isValid={true}
                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             onChange={[Function]}
+                            ouiaSafe={true}
                           >
                             <div
                               className="pf-c-check pf-m-standalone"
@@ -3803,6 +3816,9 @@ exports[`ProcessListPage tests snapshot test for process list - without expanded
                                 aria-label="process-list-checkbox"
                                 checked={true}
                                 className="pf-c-check__input"
+                                data-ouia-component-id="OUIA-Generated-Checkbox-8"
+                                data-ouia-component-type="PF4/Checkbox"
+                                data-ouia-safe={true}
                                 disabled={false}
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"

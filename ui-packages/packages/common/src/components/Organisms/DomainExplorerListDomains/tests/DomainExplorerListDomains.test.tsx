@@ -9,8 +9,7 @@ jest.mock('../../../../graphql/types');
 jest.mock('@patternfly/react-icons');
 describe('DomainExplorerListDomains Component test cases', () => {
   it('Snapshot with mock useGetQueryFieldsQuery', () => {
-    // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    (useGetQueryFieldsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -48,8 +47,7 @@ describe('DomainExplorerListDomains Component test cases', () => {
     expect(wrapper.find(DomainExplorerListDomains)).toMatchSnapshot();
   });
   it('Assertions', () => {
-    // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    (useGetQueryFieldsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {

@@ -31,6 +31,13 @@ interface ReactFormRendererProps {
   setIsExecuting: (isExecuting: boolean) => void;
 }
 
+declare global {
+  interface Window {
+    PatternFlyReact: any;
+    PatternFly: any;
+  }
+}
+
 const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
   source,
   resources,
@@ -51,7 +58,6 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
         window.React = React;
         window.ReactDOM = ReactDOM;
 
-        // @ts-ignore
         window.PatternFlyReact = Patternfly;
 
         const container: HTMLElement = document.getElementById('formContainer');

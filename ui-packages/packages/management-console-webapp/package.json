@@ -41,6 +41,7 @@
   "devDependencies": {
     "@kogito-apps/cypress-ouia": "^1.0.0",
     "@kogito-apps/ouia-tools": "^1.0.0",
+    "@kogito-apps/patternfly-base": "^1.0.0",
     "core-js": "3.6.5",
     "serve": "^12.0.1"
   },

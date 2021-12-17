@@ -57,7 +57,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
 
   useEffect(() => {
     window.onpopstate = () => {
-      props.history.push({ state: { ...props.location.state } });
+      props.history.push({ state: Object.assign({}, props.location.state) });
     };
   });
 
@@ -76,7 +76,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
         let prevPath;
         /* istanbul ignore else */
         if (currentPage) {
-          currentPage = { ...currentPage, ...props.location.state };
+          currentPage = Object.assign({}, currentPage, props.location.state);
           const tempPath = currentPage.prev.split('/');
           prevPath = tempPath.filter(item => item);
         }
@@ -92,7 +92,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
                   .trim()
                   .toLowerCase()}`
               : 'Go to process instances',
-            rememberedData: { ...props.location.state }
+            rememberedData: Object.assign({}, props.location.state)
           }
         });
       }
@@ -145,7 +145,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
         breadcrumbText={['Home', 'Processes', processName]}
         breadcrumbPath={[
           '/',
-          { pathname: '/ProcessInstances', state: { ...props.location.state } }
+          { pathname: '/ProcessInstances', state: Object.assign({}, props.location.state) }
         ]}
       />
       <PageSection>{renderItems()}</PageSection>

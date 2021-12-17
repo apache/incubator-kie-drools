@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 const useCFSizes = (containerRef?: HTMLDivElement) => {
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
-  const [windowSize, setWindowSize] = useState();
+  const [windowSize, setWindowSize] = useState(0);
 
   useEffect(() => {
     const getContainerWidth = () => {

@@ -16,6 +16,8 @@
 
 import { TaskDetailsChannelApi, TaskDetailsEnvelopeApi } from '../../../api';
 import { TaskDetailsEnvelopeViewApi } from '../../TaskDetailsEnvelopeView';
+import { MessageBusServer } from '@kogito-tooling/envelope-bus/dist/api';
+import { EnvelopeBusMessageManager } from '@kogito-tooling/envelope-bus/dist/common';
 import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
@@ -57,13 +59,43 @@ export const MockedMessageBusClientApi = jest.fn<
   unsubscribe: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = jest.fn<
-  EnvelopeBusController<TaskDetailsEnvelopeApi, TaskDetailsChannelApi>,
-  []
->(() => ({
+export const MockedMessageBusServer = jest.fn<
+    MessageBusServer<TaskDetailsEnvelopeApi, TaskDetailsChannelApi>,
+    []
+    >(() => ({
+  receive: jest.fn()
+}));
+
+export const MockedEnvelopeBusMessageManager = jest.fn<
+    Partial<EnvelopeBusMessageManager<TaskDetailsEnvelopeApi, TaskDetailsChannelApi>>,
+    []
+    >(() => ({
+  callbacks: jest.fn(),
+  remoteSubscriptions: jest.fn(),
+  localSubscriptions: jest.fn(),
+  send: jest.fn(),
+  name: jest.fn(),
+  requestIdCounter: jest.fn(),
+  clientApi: new MockedMessageBusClientApi(),
+  server: new MockedMessageBusServer(),
+  requests: jest.fn(),
+  notifications: jest.fn(),
+  subscribe: jest.fn(),
+  unsubscribe: jest.fn(),
+  request: jest.fn(),
+  notify: jest.fn(),
+  respond: jest.fn(),
+  callback: jest.fn(),
+  receive: jest.fn(),
+  getNextRequestId: jest.fn()
+}));
+
+export const MockedEnvelopeBusControllerDefinition = jest.fn<
+    Partial<EnvelopeBusController<TaskDetailsEnvelopeApi, TaskDetailsChannelApi>>,
+    []
+    >(() => ({
   bus: jest.fn(),
-  // @ts-ignore
-  manager: jest.fn(),
+  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<TaskDetailsEnvelopeApi, TaskDetailsChannelApi>,
   associate: jest.fn(),
   channelApi: new MockedMessageBusClientApi(),
   startListening: jest.fn(),
@@ -71,6 +103,8 @@ export const MockedEnvelopeBusController = jest.fn<
   send: jest.fn(),
   receive: jest.fn()
 }));
+
+export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<TaskDetailsEnvelopeApi, TaskDetailsChannelApi>;
 
 export const MockedTaskDetailsEnvelopeViewApi = jest.fn<
   TaskDetailsEnvelopeViewApi,

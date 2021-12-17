@@ -16,8 +16,8 @@
   ],
   "scripts": {
     "precommit": "lint-staged",
-    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js",
-    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.dev.js --watch",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
+    "build": "rimraf dist && tsc -m commonjs -p tsconfig.json && yarn run copy:css",
     "build:prod": "yarn run clean && yarn run lint && yarn run build",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
@@ -29,12 +29,12 @@
   },
   "dependencies": {
     "@kogito-apps/components-common": "^1.0.0",
-    "@kogito-apps/form-displayer": "^1.0.0",
+    "@kogito-apps/patternfly-base": "^1.0.0",
     "@kogito-apps/task-console-shared": "^1.0.0",
-    "ajv": "6.12.2",
-    "uniforms": "3.0.0",
-    "uniforms-bridge-json-schema": "3.0.0",
-    "uniforms-patternfly": "4.1.2"
+    "ajv": "^6.12.6",
+    "uniforms": "^3.5.5",
+    "uniforms-bridge-json-schema": "^3.5.5",
+    "uniforms-patternfly": "^4.7.3"
   },
   "devDependencies": {
     "@kogito-apps/ouia-tools": "^1.0.0",
@@ -67,7 +67,9 @@
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
+    "transformIgnorePatterns": [],
     "transform": {
+      "^.+\\.jsx?$": "babel-jest",
       "^.+\\.(ts|tsx)$": "ts-jest",
       "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
     },

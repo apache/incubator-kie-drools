@@ -106,8 +106,7 @@ describe('JobsManagementChannelApiImpl tests', () => {
     const modalTitle = 'failure';
     const modalContent =
       'The job: eff4ee-11qw23-6675-pokau97-qwedjut45a0fj_0 failed to cancel. Error message: Network Error';
-    //@ts-ignore
-    jobCancel.mockReturnValueOnce({ modalTitle, modalContent });
+    (jobCancel as jest.Mock).mockReturnValueOnce({ modalTitle, modalContent });
     const result = await gatewayApi.cancelJob(job);
 
     expect(result).toEqual({ modalTitle, modalContent });
@@ -116,8 +115,7 @@ describe('JobsManagementChannelApiImpl tests', () => {
   it('bulkCancel', async () => {
     const successJobs = [];
     const failedJobs = [job];
-    //@ts-ignore
-    performMultipleCancel.mockReturnValue({ successJobs, failedJobs });
+    (performMultipleCancel as jest.Mock).mockReturnValue({ successJobs, failedJobs });
     const result = await gatewayApi.bulkCancel([job]);
 
     expect(result).toEqual({ successJobs, failedJobs });

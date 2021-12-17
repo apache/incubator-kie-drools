@@ -3,6 +3,7 @@ import { act } from 'react-test-renderer';
 import useInputData from '../useInputData';
 import * as api from '../../../../utils/api/httpClient';
 import { ItemObject, RemoteDataStatus } from '../../../../types';
+import { AxiosPromise } from "axios";
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
@@ -32,8 +33,7 @@ describe('useInputData', () => {
       }
     };
 
-    // @ts-ignore
-    apiMock.mockImplementation(() => Promise.resolve(inputData));
+    apiMock.mockImplementation(() => Promise.resolve(inputData) as AxiosPromise);
 
     const { result } = renderHook(() => {
       // tslint:disable-next-line:react-hooks-nesting

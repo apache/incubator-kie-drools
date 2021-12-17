@@ -33,6 +33,7 @@ exports[`TaskConsoleNav tests Snapshot 1`] = `
               data-ouia-component-id="OUIA-Generated-NavItem-1"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current={null}
@@ -107,6 +108,7 @@ exports[`TaskConsoleNav tests Snapshot with pathname 1`] = `
               data-ouia-component-id="OUIA-Generated-NavItem-2"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current="page"

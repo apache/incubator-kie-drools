@@ -1,0 +1,24 @@
+{
+  "name": "@kogito-apps/patternfly-base",
+  "version": "1.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "dependencies": {
+    "@patternfly/patternfly": "^4.108.2",
+    "@patternfly/react-charts": "^6.14.29",
+    "@patternfly/react-code-editor": "4.2.92",
+    "@patternfly/react-core": "4.128.2",
+    "@patternfly/react-icons": "4.11.0",
+    "@patternfly/react-styles": "4.11.0",
+    "@patternfly/react-table": "4.29.0",
+    "@patternfly/react-tokens": "4.12.0"
+  }
+}

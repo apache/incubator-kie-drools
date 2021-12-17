@@ -1,7 +1,12 @@
 import axios, { AxiosRequestConfig, CancelTokenSource } from 'axios';
 
+declare global {
+  interface Window {
+    TRUSTY_ENDPOINT: string;
+  }
+}
+
 export const httpClient = axios.create({
-  // @ts-ignore
   baseURL: window.TRUSTY_ENDPOINT || process.env.KOGITO_TRUSTY_API_HTTP_URL,
   timeout: 5000,
   headers: {}

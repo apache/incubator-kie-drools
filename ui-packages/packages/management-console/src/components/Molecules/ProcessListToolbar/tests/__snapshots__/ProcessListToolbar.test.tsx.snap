@@ -154,6 +154,7 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
   >
     <div
       className="pf-c-toolbar pf-m-toggle-group-container kogito-management-console__state-dropdown-list"
+      data-ouia-component-id="OUIA-Generated-Toolbar-1"
       data-ouia-component-type="process-list-toolbar"
       data-ouia-safe={true}
       id="data-toolbar-with-filter"
@@ -650,10 +651,12 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                               favorites={Array []}
                               favoritesLabel="Favorites"
                               hasInlineFilter={false}
+                              hasPlaceholderStyle={false}
                               id="status-select"
                               inlineFilterPlaceholderText={null}
                               inputIdPrefix=""
                               isCreatable={false}
+                              isCreateSelectOptionObject={false}
                               isDisabled={false}
                               isGrouped={false}
                               isInputValuePersisted={false}
@@ -669,6 +672,7 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                               onTypeaheadInputChanged={null}
                               ouiaSafe={true}
                               placeholderText="Status"
+                              position="left"
                               removeSelectionAriaLabel="Remove"
                               selections={
                                 Array [
@@ -703,6 +707,7 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
                                     hasFooter={false}
+                                    hasPlaceholderStyle={false}
                                     id="pf-select-toggle-id-1"
                                     isActive={false}
                                     isDisabled={false}
@@ -727,6 +732,7 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                         >
                                           <button
                                             aria-expanded="false"
+                                            aria-label="Options menu"
                                             aria-labelledby=" pf-select-toggle-id-1"
                                             class="pf-c-select__toggle"
                                             id="pf-select-toggle-id-1"
@@ -777,6 +783,7 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                     <button
                                       aria-expanded={false}
                                       aria-haspopup={null}
+                                      aria-label="Options menu"
                                       aria-labelledby=" pf-select-toggle-id-1"
                                       className="pf-c-select__toggle"
                                       disabled={false}
@@ -1492,6 +1499,7 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                     name="businessKey"
                                     onChange={[Function]}
                                     onKeyPress={[Function]}
+                                    ouiaSafe={true}
                                     placeholder="Filter by business key"
                                     type="search"
                                     validated="default"
@@ -1501,6 +1509,9 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                       aria-invalid={false}
                                       aria-label="business key"
                                       className="pf-c-form-control"
+                                      data-ouia-component-id="OUIA-Generated-TextInputBase-2"
+                                      data-ouia-component-type="PF4/TextInput"
+                                      data-ouia-safe={true}
                                       disabled={false}
                                       id="businessKey"
                                       name="businessKey"
@@ -3160,10 +3171,12 @@ Array [
         favorites={Array []}
         favoritesLabel="Favorites"
         hasInlineFilter={false}
+        hasPlaceholderStyle={false}
         id="status-select"
         inlineFilterPlaceholderText={null}
         inputIdPrefix=""
         isCreatable={false}
+        isCreateSelectOptionObject={false}
         isDisabled={false}
         isGrouped={false}
         isInputValuePersisted={false}
@@ -3179,6 +3192,7 @@ Array [
         onTypeaheadInputChanged={null}
         ouiaSafe={true}
         placeholderText="Status"
+        position="left"
         removeSelectionAriaLabel="Remove"
         selections={Array []}
         toggleAriaLabel="Options menu"
@@ -3205,6 +3219,7 @@ Array [
               handleTypeaheadKeys={[Function]}
               hasClearButton={false}
               hasFooter={false}
+              hasPlaceholderStyle={false}
               id="pf-select-toggle-id-3"
               isActive={false}
               isDisabled={false}
@@ -3229,6 +3244,7 @@ Array [
                   >
                     <button
                       aria-expanded="false"
+                      aria-label="Options menu"
                       aria-labelledby=" pf-select-toggle-id-3"
                       class="pf-c-select__toggle"
                       id="pf-select-toggle-id-3"
@@ -3270,6 +3286,7 @@ Array [
               <button
                 aria-expanded={false}
                 aria-haspopup={null}
+                aria-label="Options menu"
                 aria-labelledby=" pf-select-toggle-id-3"
                 className="pf-c-select__toggle"
                 disabled={false}
@@ -3356,6 +3373,7 @@ Array [
               name="businessKey"
               onChange={[Function]}
               onKeyPress={[Function]}
+              ouiaSafe={true}
               placeholder="Filter by business key"
               type="search"
               validated="default"
@@ -3365,6 +3383,9 @@ Array [
                 aria-invalid={false}
                 aria-label="business key"
                 className="pf-c-form-control"
+                data-ouia-component-id="OUIA-Generated-TextInputBase-4"
+                data-ouia-component-type="PF4/TextInput"
+                data-ouia-safe={true}
                 disabled={true}
                 id="businessKey"
                 name="businessKey"

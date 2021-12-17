@@ -48,6 +48,9 @@ exports[`Process List Child Table tests snapshot empty results 1`] = `
       >
         <h5
           className="pf-c-title pf-m-lg"
+          data-ouia-component-id="OUIA-Generated-Title-5"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe={true}
         >
           No child process instances
         </h5>
@@ -171,6 +174,9 @@ Cannot read property 'ProcessInstances' of undefined]
                 >
                   <h1
                     className="pf-c-title pf-m-4xl"
+                    data-ouia-component-id="OUIA-Generated-Title-3"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe={true}
                   >
                     Error fetching data
                   </h1>
@@ -494,6 +500,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                   isValid={true}
                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                   onChange={[Function]}
+                  ouiaSafe={true}
                 />
               </React.Fragment>,
             },
@@ -2213,6 +2220,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -2402,6 +2410,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -2584,6 +2593,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -2797,6 +2807,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -2979,6 +2990,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -3480,6 +3492,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -3662,6 +3675,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -3902,6 +3916,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -4084,6 +4099,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -4299,6 +4315,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                     isValid={true}
                                     name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                     onChange={[Function]}
+                                    ouiaSafe={true}
                                   />
                                 </React.Fragment>,
                               },
@@ -4481,6 +4498,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -4999,6 +5017,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                           isValid={true}
                                           name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                           onChange={[Function]}
+                                          ouiaSafe={true}
                                         />
                                       </React.Fragment>,
                                     },
@@ -5181,6 +5200,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                         isValid={true}
                                         name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                         onChange={[Function]}
+                                        ouiaSafe={true}
                                       />
                                     </React.Fragment>,
                                   },
@@ -5396,6 +5416,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                             isValid={true}
                                             name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                             onChange={[Function]}
+                                            ouiaSafe={true}
                                           />
                                         </React.Fragment>,
                                       },
@@ -5578,6 +5599,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                           isValid={true}
                                           name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                           onChange={[Function]}
+                                          ouiaSafe={true}
                                         />
                                       </React.Fragment>,
                                     },
@@ -5835,6 +5857,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                                 isValid={true}
                                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                                 onChange={[Function]}
+                                                ouiaSafe={true}
                                               >
                                                 <div
                                                   className="pf-c-check pf-m-standalone"
@@ -5844,6 +5867,9 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                                     aria-label="process-list-checkbox"
                                                     checked={false}
                                                     className="pf-c-check__input"
+                                                    data-ouia-component-id="OUIA-Generated-Checkbox-1"
+                                                    data-ouia-component-type="PF4/Checkbox"
+                                                    data-ouia-safe={true}
                                                     disabled={false}
                                                     id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                                     name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"

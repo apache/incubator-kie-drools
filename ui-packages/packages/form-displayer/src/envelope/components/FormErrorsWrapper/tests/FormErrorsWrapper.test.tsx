@@ -24,12 +24,17 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => ({
-  ...jest.requireActual('@patternfly/react-core'),
-  Button: () => <MockedComponent />,
-  EmptyStateIcon: () => <MockedComponent />,
-  ClipboardCopy: () => <MockedComponent />
-}));
+jest.mock('@patternfly/react-core', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-core'),
+    {
+      Button: () => <MockedComponent/>,
+      EmptyStateIcon: () => <MockedComponent/>,
+      ClipboardCopy: () => <MockedComponent/>
+    }
+  )
+));
 
 describe('FormErrorsWrapper tests', () => {
   it('Snapshot', () => {

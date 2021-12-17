@@ -126,6 +126,9 @@ exports[`Process details node trigger component tests Node trigger failure tests
                 >
                   <h1
                     class="pf-c-title pf-m-2xl"
+                    data-ouia-component-id="OUIA-Generated-Title-6"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe="true"
                   >
                     <svg
                       aria-hidden="true"
@@ -348,6 +351,9 @@ exports[`Process details node trigger component tests Node trigger failure tests
                         >
                           <h1
                             className="pf-c-title pf-m-2xl"
+                            data-ouia-component-id="OUIA-Generated-Title-6"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
                           >
                             <InfoCircleIcon
                               className="pf-u-mr-sm"
@@ -588,6 +594,9 @@ exports[`Process details node trigger component tests Node trigger success tests
                 >
                   <h1
                     class="pf-c-title pf-m-2xl"
+                    data-ouia-component-id="OUIA-Generated-Title-4"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe="true"
                   >
                     <svg
                       aria-hidden="true"
@@ -810,6 +819,9 @@ exports[`Process details node trigger component tests Node trigger success tests
                         >
                           <h1
                             className="pf-c-title pf-m-2xl"
+                            data-ouia-component-id="OUIA-Generated-Title-4"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
                           >
                             <InfoCircleIcon
                               className="pf-u-mr-sm"
@@ -1050,6 +1062,9 @@ exports[`Process details node trigger component tests failed to retrieve nodes 1
                 >
                   <h1
                     class="pf-c-title pf-m-2xl"
+                    data-ouia-component-id="OUIA-Generated-Title-8"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe="true"
                   >
                     <svg
                       aria-hidden="true"
@@ -1272,6 +1287,9 @@ exports[`Process details node trigger component tests failed to retrieve nodes 1
                         >
                           <h1
                             className="pf-c-title pf-m-2xl"
+                            data-ouia-component-id="OUIA-Generated-Title-8"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
                           >
                             <InfoCircleIcon
                               className="pf-u-mr-sm"
@@ -1528,6 +1546,9 @@ exports[`Process details node trigger component tests select a node test  1`] = 
           >
             <h3
               className="pf-c-title pf-m-xl"
+              data-ouia-component-id="OUIA-Generated-Title-2"
+              data-ouia-component-type="PF4/Title"
+              data-ouia-safe={true}
             >
               Node Trigger
             </h3>
@@ -2172,6 +2193,9 @@ exports[`Process details node trigger component tests snapshot testing with none
           >
             <h3
               className="pf-c-title pf-m-xl"
+              data-ouia-component-id="OUIA-Generated-Title-1"
+              data-ouia-component-type="PF4/Title"
+              data-ouia-safe={true}
             >
               Node Trigger
             </h3>

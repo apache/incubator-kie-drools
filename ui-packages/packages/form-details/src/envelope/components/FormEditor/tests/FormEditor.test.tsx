@@ -10,12 +10,16 @@ import FormDetailsContextProvider from '../../contexts/FormDetailsContextProvide
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@patternfly/react-code-editor', () => ({
-  ...jest.requireActual('@patternfly/react-code-editor'),
-  CodeEditor: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@patternfly/react-code-editor', () => (
+  Object.assign(
+    jest.requireActual('@patternfly/react-code-editor'),
+    {
+      CodeEditor: () => {
+        return <MockedComponent />;
+      }
+    }
+  )
+));
 
 const formContent = {
   formInfo: {

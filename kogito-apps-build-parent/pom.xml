@@ -21,9 +21,9 @@
         <tests.quarkus.http.port>0</tests.quarkus.http.port>
 
         <version.frontend.plugin>1.9.1</version.frontend.plugin>
-        <version.node>v12.20.0</version.node>
+        <version.node>v16.2.0</version.node>
         <version.npm>6.10.3</version.npm>
-        <version.yarn>v1.19.1</version.yarn>
+        <version.yarn>v1.22.10</version.yarn>
 
         <!-- external containers used for testing -->
         <container.image.redis>redislabs/redisearch:${version.org.redis}</container.image.redis>

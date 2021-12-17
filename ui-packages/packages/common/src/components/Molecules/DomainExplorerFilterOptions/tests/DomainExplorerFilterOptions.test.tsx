@@ -86,16 +86,6 @@ describe('Domain explorer filter options component tests', () => {
     jest.clearAllMocks();
   });
 
-  let useEffect;
-
-  const mockUseEffect = () => {
-    useEffect.mockImplementationOnce(f => f());
-  };
-
-  beforeEach(() => {
-    useEffect = jest.spyOn(React, 'useEffect');
-    mockUseEffect();
-  });
   it('Snapshot test with default props', async () => {
     const props = {
       filterArgument: 'TravelsArgument',
@@ -253,8 +243,7 @@ describe('Domain explorer filter options component tests', () => {
         }
       }
     };
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -268,8 +257,7 @@ describe('Domain explorer filter options component tests', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -426,13 +414,11 @@ describe('Domain explorer filter options component tests', () => {
     wrapper.update();
     wrapper.setProps({});
 
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -551,13 +537,11 @@ describe('Domain explorer filter options component tests', () => {
     );
     wrapper.update();
     wrapper.setProps({});
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -634,13 +618,11 @@ describe('Domain explorer filter options component tests', () => {
     });
   });
   it('check isNull operator', async () => {
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -779,13 +761,11 @@ describe('Domain explorer filter options component tests', () => {
       .simulate('click');
   });
   it('check equal operator on enumSingleSelection', async () => {
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -957,13 +937,11 @@ describe('Domain explorer filter options component tests', () => {
       .simulate('click');
   });
   it('check in operator on enumSingleSelection', async () => {
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -1139,13 +1117,11 @@ describe('Domain explorer filter options component tests', () => {
       .simulate('click');
   });
   it('check equal operator on user task enumSingleSelection', async () => {
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -1299,13 +1275,11 @@ describe('Domain explorer filter options component tests', () => {
     expect(wrapper.find('#button-with-enumMultiSelection')).toBeTruthy();
   });
   it('test empty parent string', () => {
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -1534,13 +1508,11 @@ describe('Domain explorer filter options component tests', () => {
       },
       reset: true
     };
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {

@@ -25,20 +25,23 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/consoles-common', () => ({
-  ...jest.requireActual('@kogito-apps/consoles-common'),
-  PageLayout: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/consoles-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/consoles-common'),
+    {
+      PageLayout: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 
 jest.mock('apollo-client');
-const ApolloClientMock = ApolloClient as jest.MockedClass<typeof ApolloClient>;
 
 describe('ManagementConsole tests', () => {
   it('Snapshot test with default props', () => {
-    // @ts-ignore
-    const client = new ApolloClientMock();
+    const client = jest.fn().mockImplementation() as unknown as ApolloClient<any>;
     const props = {
       apolloClient: client,
       userContext: { getCurrentUser: jest.fn() }
@@ -52,8 +55,7 @@ describe('ManagementConsole tests', () => {
   });
 
   it('test brandClick prop on PageLayout', async () => {
-    // @ts-ignore
-    const client = new ApolloClientMock();
+    const client = jest.fn().mockImplementation() as unknown as ApolloClient<any>;
     const props = {
       apolloClient: client,
       userContext: { getCurrentUser: jest.fn() }

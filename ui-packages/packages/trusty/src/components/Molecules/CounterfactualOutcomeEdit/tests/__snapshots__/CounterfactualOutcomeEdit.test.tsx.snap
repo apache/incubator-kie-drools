@@ -238,6 +238,7 @@ exports[`CounterfactualOutcomeEdit renders an number input for numerical goals 1
       </TextContent>
     }
     onChange={[Function]}
+    ouiaSafe={true}
   >
     <div
       className="pf-c-check counterfactual-outcome__floating"
@@ -246,6 +247,9 @@ exports[`CounterfactualOutcomeEdit renders an number input for numerical goals 1
         aria-invalid={false}
         checked={false}
         className="pf-c-check__input"
+        data-ouia-component-id="OUIA-Generated-Checkbox-1"
+        data-ouia-component-type="PF4/Checkbox"
+        data-ouia-safe={true}
         disabled={false}
         id="goal1"
         onChange={[Function]}

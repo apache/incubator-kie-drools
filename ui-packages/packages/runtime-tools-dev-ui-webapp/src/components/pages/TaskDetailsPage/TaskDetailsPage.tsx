@@ -59,7 +59,7 @@ import '../../styles.css';
 import { EmbeddedTaskDetails } from '@kogito-apps/task-details';
 
 interface Props {
-  taskId: string;
+  taskId?: string;
 }
 
 const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({

@@ -24,7 +24,6 @@ const JobsManagementContainer: React.FC<OUIAProps> = () => {
   const gatewayApi: JobsManagementGatewayApi = useJobsManagementGatewayApi();
   return (
     <EmbeddedJobsManagement
-      //@ts-ignore
       driver={gatewayApi}
       targetOrigin={window.location.origin}
     />

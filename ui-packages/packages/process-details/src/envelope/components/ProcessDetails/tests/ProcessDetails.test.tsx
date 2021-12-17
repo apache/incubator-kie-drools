@@ -154,12 +154,9 @@ describe('ProcessDetails tests', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      //@ts-ignore
-      props.driver.jobsQuery.mockImplementationOnce(() => Jobs);
-      //@ts-ignore
-      props.driver.getProcessDiagram.mockImplementationOnce(() => svgResults);
-      //@ts-ignore
-      props.driver.handleProcessVariableUpdate.mockImplementationOnce(
+      (props.driver.jobsQuery as jest.Mock).mockImplementationOnce(() => Jobs);
+      (props.driver.getProcessDiagram as jest.Mock).mockImplementationOnce(() => svgResults);
+      (props.driver.handleProcessVariableUpdate as jest.Mock).mockImplementationOnce(
         () =>
           new Promise((resolve, reject) => {
             resolve(data.variables);
@@ -333,14 +330,10 @@ describe('ProcessDetails tests', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      //@ts-ignore
-      props.driver.processDetailsQuery.mockImplementationOnce(() => data);
-      //@ts-ignore
-      props.driver.jobsQuery.mockImplementationOnce(() => Jobs);
-      //@ts-ignore
-      props.driver.getProcessDiagram.mockImplementationOnce(() => svgResults);
-      //@ts-ignore
-      props.driver.handleProcessVariableUpdate.mockImplementationOnce(
+      (props.driver.processDetailsQuery as jest.Mock).mockImplementationOnce(() => data);
+      (props.driver.jobsQuery as jest.Mock).mockImplementationOnce(() => Jobs);
+      (props.driver.getProcessDiagram as jest.Mock).mockImplementationOnce(() => svgResults);
+      (props.driver.handleProcessVariableUpdate as jest.Mock).mockImplementationOnce(
         () =>
           new Promise((resolve, reject) => {
             resolve(data.variables);
@@ -362,7 +355,8 @@ describe('ProcessDetails tests', () => {
           ['handleErrorModal']();
       });
       expect(
-        wrapper.find('MockedProcessDetailsErrorModal').props()['errorModalOpen']
+        wrapper.find('MockedProcessDetailsErrorModal').props()
+            ['errorModalOpen']
       ).toEqual(true);
     });
 
@@ -406,8 +400,7 @@ describe('ProcessDetails tests', () => {
         wrapper
           .find('Modal')
           .at(1)
-          .props()
-          ['onClose']();
+          .props()['onClose']();
       });
       wrapper = wrapper.update();
       await act(async () => {
@@ -421,7 +414,8 @@ describe('ProcessDetails tests', () => {
         wrapper
           .find('Modal')
           .at(1)
-          .props()['isOpen']
+          .props()
+          ['isOpen']
       ).toEqual(false);
     });
 

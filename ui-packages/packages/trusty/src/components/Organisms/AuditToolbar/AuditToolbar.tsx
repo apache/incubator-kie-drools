@@ -88,7 +88,7 @@ export const AuditToolbarTop = (props: toolbarBaseProps & topToolbarProps) => {
                 aria-label="search executions"
                 onKeyDown={onSearchEnter}
                 placeholder="Search by ID"
-                data-ouia-component-id="search-input"
+                ouiaId="search-input"
               />
               <Button
                 id="audit-search"

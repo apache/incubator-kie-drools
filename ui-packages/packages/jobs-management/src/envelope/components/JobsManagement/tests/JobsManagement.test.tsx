@@ -43,25 +43,35 @@ const MockedJobsRescheduleModal = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => ({
-  ...jest.requireActual('@kogito-apps/components-common'),
-  LoadMore: () => {
-    return <MockedLoadMore />;
-  }
-}));
+jest.mock('@kogito-apps/components-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/components-common'),
+    {
+      LoadMore: () => {
+        return <MockedLoadMore />;
+      }
+    }
+  )
+));
 
-jest.mock('@kogito-apps/management-console-shared', () => ({
-  ...jest.requireActual('@kogito-apps/management-console-shared'),
-  JobsCancelModal: () => {
-    return <MockedJobsCancelModal />;
-  },
-  JobsDetailsModal: () => {
-    return <MockedJobsDetailsModal />;
-  },
-  JobsRescheduleModal: () => {
-    return <MockedJobsRescheduleModal />;
-  }
-}));
+jest.mock('@kogito-apps/management-console-shared', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/management-console-shared'),
+    {
+      JobsCancelModal: () => {
+        return <MockedJobsCancelModal />;
+      },
+      JobsDetailsModal: () => {
+        return <MockedJobsDetailsModal />;
+      },
+      JobsRescheduleModal: () => {
+        return <MockedJobsRescheduleModal />;
+      }
+    }
+  )
+));
 describe('JobsManagement component tests', () => {
   const props = {
     ouiaId: null,
@@ -70,8 +80,7 @@ describe('JobsManagement component tests', () => {
     isEnvelopeConnectedToChannel: true
   };
   it('Snapshot tests with default props', async () => {
-    // @ts-ignore
-    await props.driver.query.mockImplementationOnce(() =>
+    await (props.driver.query as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
     let wrapper;
@@ -85,8 +94,7 @@ describe('JobsManagement component tests', () => {
   });
 
   it('Test LoadMore handler', async () => {
-    // @ts-ignore
-    await props.driver.query.mockImplementationOnce(() =>
+    await (props.driver.query as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
     const selectedStatus = [JobStatus.Scheduled];
@@ -154,8 +162,7 @@ describe('JobsManagement component tests', () => {
   });
 
   it('Test Job cancel modal', async () => {
-    // @ts-ignore
-    await props.driver.query.mockImplementationOnce(() =>
+    await (props.driver.query as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
     let wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
@@ -172,8 +179,7 @@ describe('JobsManagement component tests', () => {
   });
 
   it('Test Job details modal', async () => {
-    // @ts-ignore
-    await props.driver.query.mockImplementationOnce(() =>
+    await (props.driver.query as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
     let wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
@@ -197,8 +203,7 @@ describe('JobsManagement component tests', () => {
   });
 
   it('Test Job reschedule modal', async () => {
-    // @ts-ignore
-    await props.driver.query.mockImplementationOnce(() =>
+    await (props.driver.query as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
     const wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
@@ -211,14 +216,12 @@ describe('JobsManagement component tests', () => {
   });
 
   it('Test Bulk cancel method', async () => {
-    // @ts-ignore
-    await props.driver.query.mockImplementationOnce(() =>
+    await (props.driver.query as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
     const successJobs = [];
     const failedJobs = [];
-    // @ts-ignore
-    await props.driver.bulkCancel.mockImplementationOnce(() =>
+    await (props.driver.bulkCancel as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({ successJobs, failedJobs })
     );
     let wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');

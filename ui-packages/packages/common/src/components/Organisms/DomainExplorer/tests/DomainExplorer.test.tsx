@@ -181,45 +181,15 @@ describe('Domain Explorer component', () => {
     });
   };
 
-  let useEffect;
-
-  const mockUseEffect = () => {
-    useEffect.mockImplementationOnce(() => {
-      const setParameters = jest.fn(() => [
-        { flight: ['arrival'] },
-        { flight: ['departure'] },
-        { flight: ['gate'] },
-        {
-          metadata: [
-            {
-              processInstances: [
-                'id',
-                'processName',
-                'state',
-                'start',
-                'lastUpdate',
-                'businessKey'
-              ]
-            }
-          ]
-        }
-      ]);
-      return setParameters();
-    });
-  };
-
   beforeEach(() => {
     act(() => {
       useApolloClient = jest.spyOn(reactApollo, 'useApolloClient');
       mockUseApolloClient();
     });
-    useEffect = jest.spyOn(React, 'useEffect');
-    mockUseEffect();
   });
   it('Snapshot test with default prop', async () => {
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    (useGetColumnPickerAttributesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -252,8 +222,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    (useGetQueryFieldsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -285,8 +254,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    (useGetQueryTypesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __schema: {
@@ -335,13 +303,11 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
@@ -369,8 +335,7 @@ describe('Domain Explorer component', () => {
     });
   });
   it('Check error response for getQueryFields query', async () => {
-    // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    (useGetQueryFieldsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: null,
       error: {}
@@ -393,8 +358,7 @@ describe('Domain Explorer component', () => {
   });
   it('Mock query testing', async () => {
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    (useGetQueryFieldsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -426,8 +390,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    (useGetColumnPickerAttributesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -460,8 +423,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    (useGetQueryTypesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __schema: {
@@ -538,8 +500,7 @@ describe('Domain Explorer component', () => {
     });
   });
   it('Check error response for getPicker query', async () => {
-    // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    (useGetColumnPickerAttributesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: null,
       error: {}
@@ -560,8 +521,7 @@ describe('Domain Explorer component', () => {
     expect(wrapper.find('h1').text()).toEqual('Error fetching data');
   });
   it('Check error response for getQueryTypes', async () => {
-    // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    (useGetQueryTypesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: null,
       error: {}
@@ -583,8 +543,7 @@ describe('Domain Explorer component', () => {
   });
   it('check assertions on rememberedParams', async () => {
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    (useGetColumnPickerAttributesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -617,8 +576,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    (useGetQueryFieldsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -650,8 +608,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    (useGetQueryTypesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __schema: {
@@ -700,13 +657,11 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetInputFieldsFromTypeQuery.mockReturnValue({
+    (useGetInputFieldsFromTypeQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
-    // @ts-ignore
-    useGetInputFieldsFromQueryQuery.mockReturnValue({
+    (useGetInputFieldsFromQueryQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {}
     });
@@ -727,8 +682,7 @@ describe('Domain Explorer component', () => {
   });
   it('Check generated query', async () => {
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    (useGetQueryFieldsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -760,8 +714,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    (useGetColumnPickerAttributesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -794,8 +747,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    (useGetQueryTypesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __schema: {
@@ -872,8 +824,7 @@ describe('Domain Explorer component', () => {
   });
   it('Check null response for generated query', async () => {
     client.query.mockReturnValueOnce(mGraphQLResponse2);
-    // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    (useGetQueryFieldsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -905,8 +856,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    (useGetColumnPickerAttributesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -939,8 +889,7 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    (useGetQueryTypesQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         __schema: {

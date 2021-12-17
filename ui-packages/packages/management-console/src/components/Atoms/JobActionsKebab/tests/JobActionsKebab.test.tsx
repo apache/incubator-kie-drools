@@ -21,20 +21,30 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => ({
-  ...jest.requireActual('@patternfly/react-core'),
-  ModalBoxBody: () => <MockedComponent />
-}));
+jest.mock('@patternfly/react-core', () =>
+    Object.assign(
+      {},
+      jest.requireActual('@patternfly/react-core'),
+      {
+        ModalBoxBody: () => <MockedComponent />
+      }
+    )
+);
 
-jest.mock('@patternfly/react-icons', () => ({
-  ...jest.requireActual('@patternfly/react-icons'),
-  InfoCircleIcon: () => {
-    return <MockedIcon />;
-  },
-  TimesIcon: () => {
-    return <MockedIcon />;
-  }
-}));
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-icons'),
+    {
+      InfoCircleIcon: () => {
+        return <MockedIcon/>;
+      },
+      TimesIcon: () => {
+        return <MockedIcon/>;
+      }
+    }
+  )
+);
 
 const props = {
   job: {

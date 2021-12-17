@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,16 +17,16 @@
 export {
   default as DataTable,
   DataTableColumn
-} from './src/components/DataTable/DataTable';
+} from './components/DataTable/DataTable';
 export {
   default as ItemDescriptor,
   ItemDescription
-} from './src/components/ItemDescriptor/ItemDescriptor';
+} from './components/ItemDescriptor/ItemDescriptor';
 export {
   default as KogitoEmptyState,
   KogitoEmptyStateType
-} from './src/components/KogitoEmptyState/KogitoEmptyState';
-export { default as KogitoSpinner } from './src/components/KogitoSpinner/KogitoSpinner';
-export { default as LoadMore } from './src/components/LoadMore/LoadMore';
-export { default as ServerErrors } from './src/components/ServerErrors/ServerErrors';
-export { default as EndpointLink } from './src/components/EndpointLink/EndpointLink';
+} from './components/KogitoEmptyState/KogitoEmptyState';
+export { default as KogitoSpinner } from './components/KogitoSpinner/KogitoSpinner';
+export { default as LoadMore } from './components/LoadMore/LoadMore';
+export { default as ServerErrors } from './components/ServerErrors/ServerErrors';
+export { default as EndpointLink } from './components/EndpointLink/EndpointLink';

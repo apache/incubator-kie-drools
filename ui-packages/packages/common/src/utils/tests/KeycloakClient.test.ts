@@ -5,6 +5,12 @@ import { TestUserContextImpl } from '../../environment/auth/TestUserContext';
 import { KeycloakUserContext } from '../../environment/auth/KeycloakUserContext';
 import { ANONYMOUS_USER } from '../../environment/auth/Auth';
 
+declare global {
+  interface Window {
+    KOGITO_AUTH_ENABLED: boolean;
+  }
+}
+
 const isAuthEnabledMock = jest.spyOn(KeycloakClient, 'isAuthEnabled');
 const isTestUserSystemEnabledMock = jest.spyOn(
   Utils,
@@ -41,8 +47,7 @@ describe('Tests for keycloak client functions', () => {
   });
 
   it('Test isAuthEnabled with processEnv function', () => {
-    // @ts-ignore
-    window.KOGITO_AUTH_ENABLED = 'true';
+    window.KOGITO_AUTH_ENABLED = true;
     expect(KeycloakClient.isAuthEnabled()).toEqual(true);
   });
 
@@ -130,22 +135,21 @@ describe('Tests for keycloak client functions', () => {
     KeycloakClient.appRenderWithAxiosInterceptorConfig(renderMock);
 
     expect(
-      // @ts-ignore
-      // tslint:disable-next-line:no-floating-promises
-      axios.interceptors.response.handlers[0].rejected({
+      (axios.interceptors.response as any).handlers[0].rejected({
         response: {
           status: 401,
           config: 'http://originalRequest'
         }
       })
     ).rejects.toMatchObject({
-      status: 401,
-      config: 'http://originalRequest'
+      response: {
+        status: 401,
+        config: 'http://originalRequest'
+      }
     });
 
     expect(
-      // @ts-ignore
-      axios.interceptors.request.handlers[0].fulfilled({
+      (axios.interceptors.request as any).handlers[0].fulfilled({
         headers: { Authorization: 'Bearer No token' }
       })
     ).toMatchObject({

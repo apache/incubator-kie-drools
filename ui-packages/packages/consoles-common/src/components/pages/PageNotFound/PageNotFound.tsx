@@ -35,9 +35,7 @@ interface IOwnProps {
   defaultButton: string;
 }
 
-interface LocationProps extends H.LocationState {
-  prev?: string;
-}
+export type LocationProps = H.LocationState & { prev?: string };
 
 const PageNotFound: React.FC<IOwnProps &
   // eslint-disable-next-line @typescript-eslint/ban-types

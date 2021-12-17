@@ -26,7 +26,7 @@ import { TaskInboxEnvelopeContext } from '../TaskInboxEnvelopeContext';
 
 describe('TaskInboxEnvelopeApiImpl tests', () => {
   it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeBusController = MockedEnvelopeBusController;
     const view = new MockedTaskInboxEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       TaskInboxEnvelopeApi,

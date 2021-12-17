@@ -19,6 +19,8 @@ import {
   RequestPropertyNames
 } from '@kogito-tooling/envelope-bus/dist/api';
 import { FormDetailsChannelApi, FormDetailsEnvelopeApi } from '../../../api';
+import { MessageBusServer } from '@kogito-tooling/envelope-bus/dist/api';
+import { EnvelopeBusMessageManager } from '@kogito-tooling/envelope-bus/dist/common';
 import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
 import { FormDetailsEnvelopeViewApi } from '../../FormDetailsEnvelopeView';
 
@@ -31,22 +33,52 @@ export const MockedApiRequests = jest.fn<
 }));
 
 export const MockedMessageBusClientApi = jest.fn<
-  MessageBusClientApi<FormDetailsChannelApi>,
-  []
->(() => ({
+    MessageBusClientApi<FormDetailsChannelApi>,
+    []
+    >(() => ({
   requests: new MockedApiRequests(),
   notifications: jest.fn(),
   subscribe: jest.fn(),
   unsubscribe: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = jest.fn<
-  EnvelopeBusController<FormDetailsEnvelopeApi, FormDetailsChannelApi>,
+export const MockedMessageBusServer = jest.fn<
+    MessageBusServer<FormDetailsEnvelopeApi, FormDetailsChannelApi>,
+    []
+    >(() => ({
+  receive: jest.fn()
+}));
+
+export const MockedEnvelopeBusMessageManager = jest.fn<
+    Partial<EnvelopeBusMessageManager<FormDetailsEnvelopeApi, FormDetailsChannelApi>>,
+    []
+    >(() => ({
+  callbacks: jest.fn(),
+  remoteSubscriptions: jest.fn(),
+  localSubscriptions: jest.fn(),
+  send: jest.fn(),
+  name: jest.fn(),
+  requestIdCounter: jest.fn(),
+  clientApi: new MockedMessageBusClientApi(),
+  server: new MockedMessageBusServer(),
+  requests: jest.fn(),
+  notifications: jest.fn(),
+  subscribe: jest.fn(),
+  unsubscribe: jest.fn(),
+  request: jest.fn(),
+  notify: jest.fn(),
+  respond: jest.fn(),
+  callback: jest.fn(),
+  receive: jest.fn(),
+  getNextRequestId: jest.fn()
+}));
+
+export const MockedEnvelopeBusControllerDefinition = jest.fn<
+  Partial<EnvelopeBusController<FormDetailsEnvelopeApi, FormDetailsChannelApi>>,
   []
 >(() => ({
   bus: jest.fn(),
-  // @ts-ignore
-  manager: jest.fn(),
+  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<FormDetailsEnvelopeApi, FormDetailsChannelApi>,
   associate: jest.fn(),
   channelApi: new MockedMessageBusClientApi(),
   startListening: jest.fn(),
@@ -54,6 +86,8 @@ export const MockedEnvelopeBusController = jest.fn<
   send: jest.fn(),
   receive: jest.fn()
 }));
+
+export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<FormDetailsEnvelopeApi, FormDetailsChannelApi>;
 
 export const MockedFormDetailsEnvelopeViewApi = jest.fn<
   FormDetailsEnvelopeViewApi,

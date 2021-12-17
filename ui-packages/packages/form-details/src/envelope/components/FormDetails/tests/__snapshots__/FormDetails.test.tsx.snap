@@ -78,6 +78,7 @@ exports[`form details tests render form details - config 1`] = `
                   leftScrollAriaLabel="Scroll left"
                   mountOnEnter={false}
                   onSelect={[Function]}
+                  onToggle={[Function]}
                   ouiaSafe={true}
                   rightScrollAriaLabel="Scroll right"
                   unmountOnExit={false}
@@ -126,66 +127,112 @@ exports[`form details tests render form details - config 1`] = `
                       className="pf-c-tabs__list"
                       onScroll={[Function]}
                     >
-                      <li
-                        className="pf-c-tabs__item"
-                        key="0"
+                      <Tab
+                        aria-labelledby="source-tab"
+                        eventKey={0}
+                        id="source-tab"
+                        key=".0"
+                        title={
+                          <TabTitleText>
+                            Source
+                          </TabTitleText>
+                        }
                       >
-                        <TabButton
-                          aria-controls="pf-tab-section-0-source-tab"
+                        <TabBase
                           aria-labelledby="source-tab"
-                          className="pf-c-tabs__link"
-                          id="pf-tab-0-source-tab"
-                          onClick={[Function]}
-                        >
-                          <button
-                            aria-controls="pf-tab-section-0-source-tab"
-                            aria-labelledby="source-tab"
-                            className="pf-c-tabs__link"
-                            data-ouia-component-type="PF4/TabButton"
-                            data-ouia-safe={true}
-                            id="pf-tab-0-source-tab"
-                            onClick={[Function]}
-                          >
+                          eventKey={0}
+                          id="source-tab"
+                          innerRef={null}
+                          title={
                             <TabTitleText>
-                              <span
-                                className="pf-c-tabs__item-text"
-                              >
-                                Source
-                              </span>
+                              Source
                             </TabTitleText>
-                          </button>
-                        </TabButton>
-                      </li>
-                      <li
-                        className="pf-c-tabs__item pf-m-current"
-                        key="1"
+                          }
+                        >
+                          <li
+                            className="pf-c-tabs__item"
+                          >
+                            <TabButton
+                              aria-controls="pf-tab-section-0-source-tab"
+                              aria-labelledby="source-tab"
+                              className="pf-c-tabs__link"
+                              id="pf-tab-0-source-tab"
+                              onClick={[Function]}
+                            >
+                              <button
+                                aria-controls="pf-tab-section-0-source-tab"
+                                aria-labelledby="source-tab"
+                                className="pf-c-tabs__link"
+                                data-ouia-component-type="PF4/TabButton"
+                                data-ouia-safe={true}
+                                id="pf-tab-0-source-tab"
+                                onClick={[Function]}
+                              >
+                                <TabTitleText>
+                                  <span
+                                    className="pf-c-tabs__item-text"
+                                  >
+                                    Source
+                                  </span>
+                                </TabTitleText>
+                              </button>
+                            </TabButton>
+                          </li>
+                        </TabBase>
+                      </Tab>
+                      <Tab
+                        aria-labelledby="config-tab"
+                        eventKey={1}
+                        id="config-tab"
+                        key=".1"
+                        title={
+                          <TabTitleText>
+                            Connections
+                          </TabTitleText>
+                        }
                       >
-                        <TabButton
-                          aria-controls="pf-tab-section-1-config-tab"
+                        <TabBase
                           aria-labelledby="config-tab"
-                          className="pf-c-tabs__link"
-                          id="pf-tab-1-config-tab"
-                          onClick={[Function]}
-                        >
-                          <button
-                            aria-controls="pf-tab-section-1-config-tab"
-                            aria-labelledby="config-tab"
-                            className="pf-c-tabs__link"
-                            data-ouia-component-type="PF4/TabButton"
-                            data-ouia-safe={true}
-                            id="pf-tab-1-config-tab"
-                            onClick={[Function]}
-                          >
+                          eventKey={1}
+                          id="config-tab"
+                          innerRef={null}
+                          title={
                             <TabTitleText>
-                              <span
-                                className="pf-c-tabs__item-text"
-                              >
-                                Connections
-                              </span>
+                              Connections
                             </TabTitleText>
-                          </button>
-                        </TabButton>
-                      </li>
+                          }
+                        >
+                          <li
+                            className="pf-c-tabs__item pf-m-current"
+                          >
+                            <TabButton
+                              aria-controls="pf-tab-section-1-config-tab"
+                              aria-labelledby="config-tab"
+                              className="pf-c-tabs__link"
+                              id="pf-tab-1-config-tab"
+                              onClick={[Function]}
+                            >
+                              <button
+                                aria-controls="pf-tab-section-1-config-tab"
+                                aria-labelledby="config-tab"
+                                className="pf-c-tabs__link"
+                                data-ouia-component-type="PF4/TabButton"
+                                data-ouia-safe={true}
+                                id="pf-tab-1-config-tab"
+                                onClick={[Function]}
+                              >
+                                <TabTitleText>
+                                  <span
+                                    className="pf-c-tabs__item-text"
+                                  >
+                                    Connections
+                                  </span>
+                                </TabTitleText>
+                              </button>
+                            </TabButton>
+                          </li>
+                        </TabBase>
+                      </Tab>
                     </ul>
                     <button
                       aria-hidden={true}
@@ -639,6 +686,7 @@ exports[`form details tests render form details - source 1`] = `
                   leftScrollAriaLabel="Scroll left"
                   mountOnEnter={false}
                   onSelect={[Function]}
+                  onToggle={[Function]}
                   ouiaSafe={true}
                   rightScrollAriaLabel="Scroll right"
                   unmountOnExit={false}
@@ -687,66 +735,112 @@ exports[`form details tests render form details - source 1`] = `
                       className="pf-c-tabs__list"
                       onScroll={[Function]}
                     >
-                      <li
-                        className="pf-c-tabs__item pf-m-current"
-                        key="0"
+                      <Tab
+                        aria-labelledby="source-tab"
+                        eventKey={0}
+                        id="source-tab"
+                        key=".0"
+                        title={
+                          <TabTitleText>
+                            Source
+                          </TabTitleText>
+                        }
                       >
-                        <TabButton
-                          aria-controls="pf-tab-section-0-source-tab"
+                        <TabBase
                           aria-labelledby="source-tab"
-                          className="pf-c-tabs__link"
-                          id="pf-tab-0-source-tab"
-                          onClick={[Function]}
-                        >
-                          <button
-                            aria-controls="pf-tab-section-0-source-tab"
-                            aria-labelledby="source-tab"
-                            className="pf-c-tabs__link"
-                            data-ouia-component-type="PF4/TabButton"
-                            data-ouia-safe={true}
-                            id="pf-tab-0-source-tab"
-                            onClick={[Function]}
-                          >
+                          eventKey={0}
+                          id="source-tab"
+                          innerRef={null}
+                          title={
                             <TabTitleText>
-                              <span
-                                className="pf-c-tabs__item-text"
-                              >
-                                Source
-                              </span>
+                              Source
                             </TabTitleText>
-                          </button>
-                        </TabButton>
-                      </li>
-                      <li
-                        className="pf-c-tabs__item"
-                        key="1"
+                          }
+                        >
+                          <li
+                            className="pf-c-tabs__item pf-m-current"
+                          >
+                            <TabButton
+                              aria-controls="pf-tab-section-0-source-tab"
+                              aria-labelledby="source-tab"
+                              className="pf-c-tabs__link"
+                              id="pf-tab-0-source-tab"
+                              onClick={[Function]}
+                            >
+                              <button
+                                aria-controls="pf-tab-section-0-source-tab"
+                                aria-labelledby="source-tab"
+                                className="pf-c-tabs__link"
+                                data-ouia-component-type="PF4/TabButton"
+                                data-ouia-safe={true}
+                                id="pf-tab-0-source-tab"
+                                onClick={[Function]}
+                              >
+                                <TabTitleText>
+                                  <span
+                                    className="pf-c-tabs__item-text"
+                                  >
+                                    Source
+                                  </span>
+                                </TabTitleText>
+                              </button>
+                            </TabButton>
+                          </li>
+                        </TabBase>
+                      </Tab>
+                      <Tab
+                        aria-labelledby="config-tab"
+                        eventKey={1}
+                        id="config-tab"
+                        key=".1"
+                        title={
+                          <TabTitleText>
+                            Connections
+                          </TabTitleText>
+                        }
                       >
-                        <TabButton
-                          aria-controls="pf-tab-section-1-config-tab"
+                        <TabBase
                           aria-labelledby="config-tab"
-                          className="pf-c-tabs__link"
-                          id="pf-tab-1-config-tab"
-                          onClick={[Function]}
-                        >
-                          <button
-                            aria-controls="pf-tab-section-1-config-tab"
-                            aria-labelledby="config-tab"
-                            className="pf-c-tabs__link"
-                            data-ouia-component-type="PF4/TabButton"
-                            data-ouia-safe={true}
-                            id="pf-tab-1-config-tab"
-                            onClick={[Function]}
-                          >
+                          eventKey={1}
+                          id="config-tab"
+                          innerRef={null}
+                          title={
                             <TabTitleText>
-                              <span
-                                className="pf-c-tabs__item-text"
-                              >
-                                Connections
-                              </span>
+                              Connections
                             </TabTitleText>
-                          </button>
-                        </TabButton>
-                      </li>
+                          }
+                        >
+                          <li
+                            className="pf-c-tabs__item"
+                          >
+                            <TabButton
+                              aria-controls="pf-tab-section-1-config-tab"
+                              aria-labelledby="config-tab"
+                              className="pf-c-tabs__link"
+                              id="pf-tab-1-config-tab"
+                              onClick={[Function]}
+                            >
+                              <button
+                                aria-controls="pf-tab-section-1-config-tab"
+                                aria-labelledby="config-tab"
+                                className="pf-c-tabs__link"
+                                data-ouia-component-type="PF4/TabButton"
+                                data-ouia-safe={true}
+                                id="pf-tab-1-config-tab"
+                                onClick={[Function]}
+                              >
+                                <TabTitleText>
+                                  <span
+                                    className="pf-c-tabs__item-text"
+                                  >
+                                    Connections
+                                  </span>
+                                </TabTitleText>
+                              </button>
+                            </TabButton>
+                          </li>
+                        </TabBase>
+                      </Tab>
                     </ul>
                     <button
                       aria-hidden={true}

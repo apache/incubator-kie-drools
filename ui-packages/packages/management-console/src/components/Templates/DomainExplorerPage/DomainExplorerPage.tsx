@@ -22,15 +22,15 @@ interface IOwnProps {
 }
 
 interface MatchProps {
-  domainName: string;
+  domainName?: string;
 }
 
-interface LocationProps extends H.LocationState {
+export type LocationProps = H.LocationState & {
   parameters?: Record<string, unknown>[];
   selected?: string[];
   finalFilters?: Record<string, unknown>;
   filterChips?: string[];
-}
+};
 
 const DomainExplorerPage: React.FC<IOwnProps &
   RouteComponentProps<MatchProps, StaticContext, LocationProps> &

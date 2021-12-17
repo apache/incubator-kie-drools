@@ -38,7 +38,7 @@ module.exports = merge(common, {
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/common/dist/src/components/styles.css'
+            '../../node_modules/@kogito-apps/common/dist/components/styles.css'
           ),
           path.resolve(
             '../../node_modules/react-calendar/dist/Calendar.css'

@@ -3,6 +3,7 @@ import { act } from 'react-test-renderer';
 import useModelData from '../useModelData';
 import * as api from '../../../../utils/api/httpClient';
 import { ModelData, RemoteDataStatus } from '../../../../types';
+import { AxiosPromise } from "axios";
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
@@ -13,8 +14,7 @@ beforeEach(() => {
 
 describe('useModelData', () => {
   test('returns the model info of a specific execution', async () => {
-    // @ts-ignore
-    apiMock.mockImplementation(() => Promise.resolve(modelData));
+    apiMock.mockImplementation(() => Promise.resolve(modelData) as AxiosPromise);
 
     const { result } = renderHook(() => {
       // tslint:disable-next-line:react-hooks-nesting

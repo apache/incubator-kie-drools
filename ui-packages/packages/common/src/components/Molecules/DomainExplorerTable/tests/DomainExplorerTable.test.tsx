@@ -12,15 +12,6 @@ global.Math.random = () => 0.7218415351930461;
 jest.mock('../../ItemDescriptor/ItemDescriptor');
 
 describe('Domain Explorer Table Component', () => {
-  let useEffect;
-  const mockUseEffect = () => {
-    useEffect.mockImplementationOnce(f => f());
-  };
-  beforeEach(() => {
-    useEffect = jest.spyOn(React, 'useEffect');
-    mockUseEffect();
-    mockUseEffect();
-  });
   const props = {
     columnFilters: [
       {

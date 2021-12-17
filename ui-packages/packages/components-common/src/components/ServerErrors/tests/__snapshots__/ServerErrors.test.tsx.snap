@@ -67,6 +67,9 @@ exports[`ServerErrors component tests snapshot testing  1`] = `
                 >
                   <h1
                     className="pf-c-title pf-m-4xl"
+                    data-ouia-component-id="OUIA-Generated-Title-1"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe={true}
                   >
                     Error fetching data
                   </h1>
@@ -180,6 +183,9 @@ exports[`ServerErrors component tests snapshot testing with small variant  1`] =
             >
               <h1
                 className="pf-c-title pf-m-4xl"
+                data-ouia-component-id="OUIA-Generated-Title-4"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe={true}
               >
                 Error fetching data
               </h1>
@@ -297,6 +303,9 @@ exports[`ServerErrors component tests snapshot with children  1`] = `
                 >
                   <h1
                     className="pf-c-title pf-m-4xl"
+                    data-ouia-component-id="OUIA-Generated-Title-2"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe={true}
                   >
                     Error fetching data
                   </h1>

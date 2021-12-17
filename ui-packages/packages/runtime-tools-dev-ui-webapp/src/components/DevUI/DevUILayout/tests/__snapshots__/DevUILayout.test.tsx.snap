@@ -94,6 +94,7 @@ exports[`DevUILayout tests Snapshot test with default props 1`] = `
                           data-ouia-component-id="OUIA-Generated-NavItem-1"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
+                          onMouseOver={[Function]}
                         >
                           <Link
                             aria-current={null}
@@ -135,6 +136,7 @@ exports[`DevUILayout tests Snapshot test with default props 1`] = `
                           data-ouia-component-id="OUIA-Generated-NavItem-2"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
+                          onMouseOver={[Function]}
                         >
                           <Link
                             aria-current={null}
@@ -176,6 +178,7 @@ exports[`DevUILayout tests Snapshot test with default props 1`] = `
                           data-ouia-component-id="OUIA-Generated-NavItem-3"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
+                          onMouseOver={[Function]}
                         >
                           <Link
                             aria-current={null}
@@ -217,6 +220,7 @@ exports[`DevUILayout tests Snapshot test with default props 1`] = `
                           data-ouia-component-id="OUIA-Generated-NavItem-4"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
+                          onMouseOver={[Function]}
                         >
                           <Link
                             aria-current={null}

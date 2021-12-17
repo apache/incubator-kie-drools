@@ -17,12 +17,17 @@ const MockedServerErrors = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/common', () => ({
-  ...jest.requireActual('@kogito-apps/common'),
-  ServerErrors: () => {
-    return <MockedServerErrors />;
-  }
-}));
+jest.mock('@kogito-apps/common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/common'),
+    {
+      ServerErrors: () => {
+        return <MockedServerErrors/>;
+      }
+    }
+  )
+));
 
 const MockedBreadcrumb = (): React.ReactElement => {
   return <></>;
@@ -31,17 +36,27 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => ({
-  ...jest.requireActual('@patternfly/react-core'),
-  Breadcrumb: () => <MockedBreadcrumb />
-}));
+jest.mock('@patternfly/react-core', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-core'),
+    {
+      Breadcrumb: () => <MockedBreadcrumb/>
+    }
+  )
+));
 
-jest.mock('@patternfly/react-icons', () => ({
-  ...jest.requireActual('@patternfly/react-icons'),
-  SyncIcon: () => {
-    return <MockedIcon />;
-  }
-}));
+jest.mock('@patternfly/react-icons', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-icons'),
+    {
+      SyncIcon: () => {
+        return <MockedIcon/>;
+      }
+    }
+  )
+));
 describe('Jobs management page tests', () => {
   const mockOffset1: number = 0;
   const mockLimit1: number = 10;
@@ -193,13 +208,17 @@ describe('Jobs management page tests', () => {
   ];
   const { location } = window;
   beforeEach(() => {
-    delete window.location;
-    // @ts-ignore
-    window.location = { reload: jest.fn() };
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { reload: jest.fn() },
+    });
   });
 
   afterAll(() => {
-    window.location = location;
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: location,
+    });
   });
   it('snapshot test with mock data', async () => {
     let wrapper;

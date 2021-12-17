@@ -9,7 +9,7 @@ const CounterfactualProgressBar = (props: CounterfactualProgressBarProps) => {
   const { maxRunningTimeSeconds } = props;
 
   const [value, setValue] = useState(0);
-  const [timeLimit, setTimeLimit] = useState();
+  const [timeLimit, setTimeLimit] = useState(-1);
   const intervalID = useRef(null);
 
   useEffect(() => {

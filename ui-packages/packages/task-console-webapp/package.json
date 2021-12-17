@@ -31,6 +31,7 @@
   "dependencies": {
     "@kogito-apps/components-common": "^1.0.0",
     "@kogito-apps/consoles-common": "^1.0.0",
+    "@kogito-apps/patternfly-base": "^1.0.0",
     "@kogito-apps/task-details": "1.0.0",
     "@kogito-apps/form-displayer": "^1.0.0",
     "@kogito-apps/task-form": "^1.0.0",
@@ -59,7 +60,9 @@
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
+    "transformIgnorePatterns": [],
     "transform": {
+      "^.+\\.jsx?$": "babel-jest",
       "^.+\\.(ts|tsx)$": "ts-jest",
       "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
     },

@@ -17,21 +17,27 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => ({
-  ...jest.requireActual('@patternfly/react-icons'),
-  HistoryIcon: () => {
-    return <MockedIcon />;
-  },
-  ClockIcon: () => {
-    return <MockedIcon />;
-  },
-  BanIcon: () => {
-    return <MockedIcon />;
-  },
-  CheckCircleIcon: () => {
-    return <MockedIcon />;
-  }
-}));
+jest.mock('@patternfly/react-icons', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-icons'),
+    {
+      HistoryIcon: () => {
+        return <MockedIcon/>;
+      },
+      ClockIcon: () => {
+        return <MockedIcon/>;
+      },
+      BanIcon: () => {
+        return <MockedIcon/>;
+      },
+      CheckCircleIcon: () => {
+        return <MockedIcon/>;
+      }
+    }
+  )
+));
+
 describe('Jobs management table component tests', () => {
   const props = {
     data: {
@@ -325,8 +331,6 @@ describe('Jobs management table component tests', () => {
     expect(props.setSelectedJobInstances).toHaveBeenCalled();
   });
   it('test sorting controls', async () => {
-    const handleSort: any = jest.spyOn(React, 'useState');
-    handleSort.mockImplementation(sortBy => [sortBy, props.setSortBy]);
     let wrapper;
     await act(async () => {
       wrapper = mount(<JobsManagementTable {...props} />);

@@ -397,6 +397,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                   isValid={true}
                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                   onChange={[Function]}
+                  ouiaSafe={true}
                 />
               </React.Fragment>,
             },
@@ -661,6 +662,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                   isValid={true}
                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                   onChange={[Function]}
+                  ouiaSafe={true}
                 />
               </React.Fragment>,
             },
@@ -923,6 +925,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                   isValid={true}
                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                   onChange={[Function]}
+                  ouiaSafe={true}
                 />
               </React.Fragment>,
             },
@@ -2905,6 +2908,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -3169,6 +3173,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -3431,6 +3436,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -3883,6 +3889,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -4146,6 +4153,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -4426,6 +4434,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -4687,6 +4696,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -4965,6 +4975,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -5408,6 +5419,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -5874,6 +5886,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -6137,6 +6150,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -6417,6 +6431,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -6678,6 +6693,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -6956,6 +6972,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -7399,6 +7416,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
+                              ouiaSafe={true}
                             />
                           </React.Fragment>,
                         },
@@ -8153,6 +8171,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -8416,6 +8435,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -8696,6 +8716,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -8957,6 +8978,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -9235,6 +9257,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -9678,6 +9701,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -10171,6 +10195,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -10434,6 +10459,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -10714,6 +10740,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -10975,6 +11002,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -11253,6 +11281,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -11696,6 +11725,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
+                                ouiaSafe={true}
                               />
                             </React.Fragment>,
                           },
@@ -12164,6 +12194,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     isValid={true}
                                     name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                     onChange={[Function]}
+                                    ouiaSafe={true}
                                   />
                                 </React.Fragment>,
                               },
@@ -12427,6 +12458,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -12707,6 +12739,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     isValid={true}
                                     name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                     onChange={[Function]}
+                                    ouiaSafe={true}
                                   />
                                 </React.Fragment>,
                               },
@@ -12968,6 +13001,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -13246,6 +13280,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     isValid={true}
                                     name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                     onChange={[Function]}
+                                    ouiaSafe={true}
                                   />
                                 </React.Fragment>,
                               },
@@ -13689,6 +13724,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
+                                  ouiaSafe={true}
                                 />
                               </React.Fragment>,
                             },
@@ -14460,6 +14496,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           isValid={true}
                                           name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           onChange={[Function]}
+                                          ouiaSafe={true}
                                         />
                                       </React.Fragment>,
                                     },
@@ -14723,6 +14760,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         isValid={true}
                                         name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                         onChange={[Function]}
+                                        ouiaSafe={true}
                                       />
                                     </React.Fragment>,
                                   },
@@ -15011,6 +15049,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                             isValid={true}
                                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                             onChange={[Function]}
+                                            ouiaSafe={true}
                                           />
                                         </React.Fragment>,
                                       },
@@ -15274,6 +15313,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           isValid={true}
                                           name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           onChange={[Function]}
+                                          ouiaSafe={true}
                                         />
                                       </React.Fragment>,
                                     },
@@ -15611,6 +15651,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                 isValid={true}
                                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                 onChange={[Function]}
+                                                ouiaSafe={true}
                                               >
                                                 <div
                                                   className="pf-c-check pf-m-standalone"
@@ -15620,6 +15661,9 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     aria-label="process-list-checkbox"
                                                     checked={false}
                                                     className="pf-c-check__input"
+                                                    data-ouia-component-id="OUIA-Generated-Checkbox-1"
+                                                    data-ouia-component-type="PF4/Checkbox"
+                                                    data-ouia-safe={true}
                                                     disabled={false}
                                                     id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                     name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -15944,9 +15988,17 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     positionModifiers={
                                                       Object {
                                                         "bottom": "pf-m-bottom",
+                                                        "bottom-end": "pf-m-bottom-right",
+                                                        "bottom-start": "pf-m-bottom-left",
                                                         "left": "pf-m-left",
+                                                        "left-end": "pf-m-left-bottom",
+                                                        "left-start": "pf-m-left-top",
                                                         "right": "pf-m-right",
+                                                        "right-end": "pf-m-right-bottom",
+                                                        "right-start": "pf-m-right-top",
                                                         "top": "pf-m-top",
+                                                        "top-end": "pf-m-top-right",
+                                                        "top-start": "pf-m-top-left",
                                                       }
                                                     }
                                                     trigger={
@@ -16852,6 +16904,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           isValid={true}
                                           name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           onChange={[Function]}
+                                          ouiaSafe={true}
                                         />
                                       </React.Fragment>,
                                     },
@@ -17113,6 +17166,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         isValid={true}
                                         name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                         onChange={[Function]}
+                                        ouiaSafe={true}
                                       />
                                     </React.Fragment>,
                                   },
@@ -17399,6 +17453,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                             isValid={true}
                                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                             onChange={[Function]}
+                                            ouiaSafe={true}
                                           />
                                         </React.Fragment>,
                                       },
@@ -17660,6 +17715,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           isValid={true}
                                           name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           onChange={[Function]}
+                                          ouiaSafe={true}
                                         />
                                       </React.Fragment>,
                                     },
@@ -17995,6 +18051,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                 isValid={true}
                                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                 onChange={[Function]}
+                                                ouiaSafe={true}
                                               >
                                                 <div
                                                   className="pf-c-check pf-m-standalone"
@@ -18004,6 +18061,9 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     aria-label="process-list-checkbox"
                                                     checked={false}
                                                     className="pf-c-check__input"
+                                                    data-ouia-component-id="OUIA-Generated-Checkbox-2"
+                                                    data-ouia-component-type="PF4/Checkbox"
+                                                    data-ouia-safe={true}
                                                     disabled={false}
                                                     id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                     name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -18327,9 +18387,17 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     positionModifiers={
                                                       Object {
                                                         "bottom": "pf-m-bottom",
+                                                        "bottom-end": "pf-m-bottom-right",
+                                                        "bottom-start": "pf-m-bottom-left",
                                                         "left": "pf-m-left",
+                                                        "left-end": "pf-m-left-bottom",
+                                                        "left-start": "pf-m-left-top",
                                                         "right": "pf-m-right",
+                                                        "right-end": "pf-m-right-bottom",
+                                                        "right-start": "pf-m-right-top",
                                                         "top": "pf-m-top",
+                                                        "top-end": "pf-m-top-right",
+                                                        "top-start": "pf-m-top-left",
                                                       }
                                                     }
                                                     trigger={
@@ -19234,6 +19302,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           isValid={true}
                                           name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                           onChange={[Function]}
+                                          ouiaSafe={true}
                                         />
                                       </React.Fragment>,
                                     },
@@ -19677,6 +19746,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         isValid={true}
                                         name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                         onChange={[Function]}
+                                        ouiaSafe={true}
                                       />
                                     </React.Fragment>,
                                   },
@@ -20145,6 +20215,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                             isValid={true}
                                             name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                             onChange={[Function]}
+                                            ouiaSafe={true}
                                           />
                                         </React.Fragment>,
                                       },
@@ -20588,6 +20659,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           isValid={true}
                                           name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                           onChange={[Function]}
+                                          ouiaSafe={true}
                                         />
                                       </React.Fragment>,
                                     },
@@ -21105,6 +21177,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                 isValid={true}
                                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                                 onChange={[Function]}
+                                                ouiaSafe={true}
                                               >
                                                 <div
                                                   className="pf-c-check pf-m-standalone"
@@ -21114,6 +21187,9 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     aria-label="process-list-checkbox"
                                                     checked={false}
                                                     className="pf-c-check__input"
+                                                    data-ouia-component-id="OUIA-Generated-Checkbox-3"
+                                                    data-ouia-component-type="PF4/Checkbox"
+                                                    data-ouia-safe={true}
                                                     disabled={false}
                                                     id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                                     name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
@@ -21528,9 +21604,17 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     positionModifiers={
                                                       Object {
                                                         "bottom": "pf-m-bottom",
+                                                        "bottom-end": "pf-m-bottom-right",
+                                                        "bottom-start": "pf-m-bottom-left",
                                                         "left": "pf-m-left",
+                                                        "left-end": "pf-m-left-bottom",
+                                                        "left-start": "pf-m-left-top",
                                                         "right": "pf-m-right",
+                                                        "right-end": "pf-m-right-bottom",
+                                                        "right-start": "pf-m-right-top",
                                                         "top": "pf-m-top",
+                                                        "top-end": "pf-m-top-right",
+                                                        "top-start": "pf-m-top-left",
                                                       }
                                                     }
                                                     trigger={

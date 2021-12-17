@@ -23,19 +23,29 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => ({
-  ...jest.requireActual('@kogito-apps/components-common'),
-  KogitoSpinner: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/components-common', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/components-common'),
+    {
+      KogitoSpinner: () => {
+        return <MockedComponent />;
+      }
+    }
+  )
+));
 
-jest.mock('@kogito-apps/task-console-shared', () => ({
-  ...jest.requireActual('@kogito-apps/task-console-shared'),
-  TaskState: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/task-console-shared', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@kogito-apps/task-console-shared'),
+    {
+      TaskState: () => {
+        return <MockedComponent />;
+      }
+    }
+  )
+));
 
 const userTaskInstance: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

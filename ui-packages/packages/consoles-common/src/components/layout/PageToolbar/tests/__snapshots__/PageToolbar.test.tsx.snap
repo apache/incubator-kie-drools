@@ -15,6 +15,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
     >
       <div
         className="pf-c-toolbar"
+        data-ouia-component-id="OUIA-Generated-Toolbar-1"
         data-ouia-component-type="page-toolbar"
         data-ouia-safe={true}
         id="pf-random-id-0"
@@ -368,6 +369,7 @@ exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
     >
       <div
         className="pf-c-toolbar"
+        data-ouia-component-id="OUIA-Generated-Toolbar-2"
         data-ouia-component-type="page-toolbar"
         data-ouia-safe={true}
         id="pf-random-id-1"

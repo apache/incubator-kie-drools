@@ -26,10 +26,15 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => ({
-  ...jest.requireActual('@patternfly/react-core'),
-  Bullseye: () => <MockedComponent />
-}));
+jest.mock('@patternfly/react-core', () => (
+  Object.assign(
+    {},
+    jest.requireActual('@patternfly/react-core'),
+    {
+      Bullseye: () => <MockedComponent />
+    }
+  )
+));
 
 jest.mock('../../ReactFormRenderer/ReactFormRenderer');
 jest.mock('../../HtmlFormRenderer/HtmlFormRenderer');

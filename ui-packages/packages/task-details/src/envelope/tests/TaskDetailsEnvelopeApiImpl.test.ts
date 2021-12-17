@@ -28,7 +28,7 @@ import {
 
 describe('TaskDetailsEnvelopeApiImpl tests', () => {
   it('init', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeBusController = MockedEnvelopeBusController;
     const view = new MockedTaskDetailsEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       TaskDetailsEnvelopeApi,

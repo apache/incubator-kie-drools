@@ -31,7 +31,7 @@ import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 
 describe('ProcessListEnvelopeApiImpl tests', () => {
   it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeBusController = MockedEnvelopeBusController;
     const view = new MockedProcessListEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       ProcessListEnvelopeApi,

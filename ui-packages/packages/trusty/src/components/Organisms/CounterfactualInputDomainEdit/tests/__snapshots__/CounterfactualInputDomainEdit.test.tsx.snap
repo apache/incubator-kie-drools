@@ -38,6 +38,9 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
           >
             <h4
               className="pf-c-title pf-m-xl"
+              data-ouia-component-id="OUIA-Generated-Title-1"
+              data-ouia-component-type="PF4/Title"
+              data-ouia-safe={true}
             >
               field
             </h4>
@@ -221,6 +224,9 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
               >
                 <h5
                   className="pf-c-title pf-m-md"
+                  data-ouia-component-id="OUIA-Generated-Title-2"
+                  data-ouia-component-type="PF4/Title"
+                  data-ouia-safe={true}
                 >
                   Constraint
                 </h5>
@@ -312,6 +318,7 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                                       isRequired={true}
                                       name="min"
                                       onChange={[Function]}
+                                      ouiaSafe={true}
                                       type="number"
                                       validated="default"
                                       value=""
@@ -320,6 +327,9 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                                         aria-invalid={false}
                                         aria-label={null}
                                         className="pf-c-form-control"
+                                        data-ouia-component-id="OUIA-Generated-TextInputBase-1"
+                                        data-ouia-component-type="PF4/TextInput"
+                                        data-ouia-safe={true}
                                         disabled={false}
                                         id="min"
                                         name="min"
@@ -394,6 +404,7 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                                       isRequired={true}
                                       name="max"
                                       onChange={[Function]}
+                                      ouiaSafe={true}
                                       type="number"
                                       validated="default"
                                       value=""
@@ -402,6 +413,9 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                                         aria-invalid={false}
                                         aria-label={null}
                                         className="pf-c-form-control"
+                                        data-ouia-component-id="OUIA-Generated-TextInputBase-2"
+                                        data-ouia-component-type="PF4/TextInput"
+                                        data-ouia-safe={true}
                                         disabled={false}
                                         id="max"
                                         name="max"

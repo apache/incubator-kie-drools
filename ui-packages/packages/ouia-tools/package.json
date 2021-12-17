@@ -16,8 +16,8 @@
   ],
   "scripts": {
     "precommit": "lint-staged",
-    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js",
-    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.dev.js --watch",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
+    "build": "rimraf dist && tsc -m commonjs -p tsconfig.json && yarn run copy:css",
     "build:prod": "yarn run clean && yarn run lint && yarn run build",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
@@ -28,7 +28,6 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
-    "babel-loader": "8.1.0",
     "react-docgen-typescript-loader": "3.7.2"
   },
   "jest": {

@@ -26,6 +26,7 @@ exports[`Domain Explorer Landing Page Component Snapshot test with default props
           >
             <h1
               className="pf-c-title pf-m-4xl"
+              data-ouia-component-id="OUIA-Generated-Title-1"
               data-ouia-component-type="page-title"
               data-ouia-safe={true}
             >

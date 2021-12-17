@@ -613,18 +613,7 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for servic
               component="p"
             >
               Book flight
-              <span>
-                <Tooltip
-                  content="Node has job"
-                  key="1"
-                >
-                  <OutlinedClockIcon
-                    className="pf-u-ml-sm"
-                    color="var(--pf-global--icon--Color--dark)"
-                    onClick={[Function]}
-                  />
-                </Tooltip>
-              </span>
+              <span />
               <Text
                 component="small"
               >
@@ -1676,6 +1665,9 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
           >
             <h3
               className="pf-c-title pf-m-xl"
+              data-ouia-component-id="OUIA-Generated-Title-24"
+              data-ouia-component-type="PF4/Title"
+              data-ouia-safe={true}
             >
               Timeline
             </h3>
@@ -1735,7 +1727,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           popper={
                             <div
                               className="pf-c-tooltip"
-                              id="pf-tooltip-537"
+                              id="pf-tooltip-470"
                               role="tooltip"
                               style={
                                 Object {
@@ -1836,7 +1828,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                     popper={
                                       <div
                                         className="pf-c-tooltip"
-                                        id="pf-tooltip-538"
+                                        id="pf-tooltip-471"
                                         role="tooltip"
                                         style={
                                           Object {
@@ -1952,7 +1944,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           popper={
                             <div
                               className="pf-c-tooltip"
-                              id="pf-tooltip-539"
+                              id="pf-tooltip-472"
                               role="tooltip"
                               style={
                                 Object {
@@ -2089,7 +2081,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           popper={
                             <div
                               className="pf-c-tooltip"
-                              id="pf-tooltip-540"
+                              id="pf-tooltip-473"
                               role="tooltip"
                               style={
                                 Object {
@@ -2188,7 +2180,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                     popper={
                                       <div
                                         className="pf-c-tooltip"
-                                        id="pf-tooltip-541"
+                                        id="pf-tooltip-474"
                                         role="tooltip"
                                         style={
                                           Object {

@@ -3,6 +3,12 @@
 
 import { isAuthEnabled } from './KeycloakClient';
 
+declare global {
+  interface Window {
+    TEST_USER_SYSTEM_ENABLED: boolean;
+  }
+}
+
 const nestedCheck = (ele, valueObj) => {
   for (const key in ele) {
     const temp = ele[key];
@@ -154,8 +160,7 @@ export const removeDuplicates = (arr, comp) => {
 
 export const isTestUserSystemEnabled = () => {
   const testSystemEnabled: boolean =
-    // @ts-ignore
-    window.TEST_USER_SYSTEM_ENABLED || process.env.TEST_USER_SYSTEM_ENABLED;
+    window.TEST_USER_SYSTEM_ENABLED || process.env.TEST_USER_SYSTEM_ENABLED === 'true';
 
   return !isAuthEnabled() && testSystemEnabled;
 };

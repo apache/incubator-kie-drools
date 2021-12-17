@@ -280,10 +280,12 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         favorites={Array []}
         favoritesLabel="Favorites"
         hasInlineFilter={false}
+        hasPlaceholderStyle={false}
         id="select-field"
         inlineFilterPlaceholderText={null}
         inputIdPrefix=""
         isCreatable={false}
+        isCreateSelectOptionObject={false}
         isDisabled={false}
         isGrouped={true}
         isInputValuePersisted={false}
@@ -300,6 +302,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         onTypeaheadInputChanged={null}
         ouiaSafe={true}
         placeholderText="Select a field"
+        position="left"
         removeSelectionAriaLabel="Remove"
         selections=""
         toggleAriaLabel="Options menu"
@@ -321,12 +324,13 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
           >
             <SelectToggle
               aria-label="Options menu"
-              aria-labelledby="Select a field pf-select-toggle-id-4"
+              aria-labelledby="Select a field pf-select-toggle-id-2"
               className=""
               handleTypeaheadKeys={[Function]}
               hasClearButton={false}
               hasFooter={false}
-              id="pf-select-toggle-id-4"
+              hasPlaceholderStyle={false}
+              id="pf-select-toggle-id-2"
               isActive={false}
               isDisabled={false}
               isOpen={false}
@@ -351,9 +355,10 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
                     <button
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      aria-labelledby="Select a field pf-select-toggle-id-4"
+                      aria-label="Options menu"
+                      aria-labelledby="Select a field pf-select-toggle-id-2"
                       class="pf-c-select__toggle"
-                      id="pf-select-toggle-id-4"
+                      id="pf-select-toggle-id-2"
                       type="button"
                     >
                       <div
@@ -392,10 +397,11 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
               <button
                 aria-expanded={false}
                 aria-haspopup="listbox"
-                aria-labelledby="Select a field pf-select-toggle-id-4"
+                aria-label="Options menu"
+                aria-labelledby="Select a field pf-select-toggle-id-2"
                 className="pf-c-select__toggle"
                 disabled={false}
-                id="pf-select-toggle-id-4"
+                id="pf-select-toggle-id-2"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 type="button"
@@ -457,10 +463,12 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         favorites={Array []}
         favoritesLabel="Favorites"
         hasInlineFilter={false}
+        hasPlaceholderStyle={false}
         id="select-operator"
         inlineFilterPlaceholderText={null}
         inputIdPrefix=""
         isCreatable={false}
+        isCreateSelectOptionObject={false}
         isDisabled={false}
         isGrouped={false}
         isInputValuePersisted={false}
@@ -476,6 +484,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         onTypeaheadInputChanged={null}
         ouiaSafe={true}
         placeholderText="operator"
+        position="left"
         removeSelectionAriaLabel="Remove"
         selections=""
         toggleAriaLabel="Options menu"
@@ -497,12 +506,13 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
           >
             <SelectToggle
               aria-label="Options menu"
-              aria-labelledby=" pf-select-toggle-id-5"
+              aria-labelledby=" pf-select-toggle-id-3"
               className=""
               handleTypeaheadKeys={[Function]}
               hasClearButton={false}
               hasFooter={false}
-              id="pf-select-toggle-id-5"
+              hasPlaceholderStyle={false}
+              id="pf-select-toggle-id-3"
               isActive={false}
               isDisabled={false}
               isOpen={false}
@@ -527,9 +537,10 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
                     <button
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      aria-labelledby=" pf-select-toggle-id-5"
+                      aria-label="Options menu"
+                      aria-labelledby=" pf-select-toggle-id-3"
                       class="pf-c-select__toggle"
-                      id="pf-select-toggle-id-5"
+                      id="pf-select-toggle-id-3"
                       type="button"
                     >
                       <div
@@ -568,10 +579,11 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
               <button
                 aria-expanded={false}
                 aria-haspopup="listbox"
-                aria-labelledby=" pf-select-toggle-id-5"
+                aria-label="Options menu"
+                aria-labelledby=" pf-select-toggle-id-3"
                 className="pf-c-select__toggle"
                 disabled={false}
-                id="pf-select-toggle-id-5"
+                id="pf-select-toggle-id-3"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 type="button"
@@ -639,6 +651,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
           isRequired={false}
           name="filterText"
           onChange={[Function]}
+          ouiaSafe={true}
           placeholder="value"
           type="search"
           validated="default"
@@ -648,6 +661,9 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
             aria-invalid={false}
             aria-label="filter text for "
             className="pf-c-form-control kogito-common--filter-options__inputs"
+            data-ouia-component-id="OUIA-Generated-TextInputBase-1"
+            data-ouia-component-type="PF4/TextInput"
+            data-ouia-safe={true}
             disabled={false}
             id="textBox-input"
             name="filterText"

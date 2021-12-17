@@ -3,6 +3,7 @@ import useExecutions from '../useExecutions';
 import * as api from '../../../../utils/api/httpClient';
 import { act } from 'react-test-renderer';
 import { RemoteDataStatus } from '../../../../types';
+import { AxiosPromise } from "axios";
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'callOnceHandler');
@@ -64,8 +65,7 @@ describe('useExecutions', () => {
     };
 
     apiMock.mockImplementation(() => () =>
-      // @ts-ignore
-      Promise.resolve(executionsResponse)
+      Promise.resolve(executionsResponse) as AxiosPromise
     );
     const { result } = renderHook(() => {
       return useExecutions({

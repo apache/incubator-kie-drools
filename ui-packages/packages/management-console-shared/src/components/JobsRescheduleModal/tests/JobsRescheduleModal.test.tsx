@@ -20,6 +20,7 @@ import { JobStatus } from '../../../types';
 import { mount } from 'enzyme';
 import { Button } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
+import * as MockDate from "mockdate";
 jest.mock('react-datetime-picker');
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline
@@ -83,23 +84,10 @@ const props2 = {
   handleJobReschedule: jest.fn()
 };
 
-Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 describe('Job reschedule modal tests', () => {
   beforeEach(() => {
     const DATE_TO_USE = new Date('2017-02-02T12:54:59.218Z');
-    const _Date = Date;
-    const MockDate: any = (...args) => {
-      switch (args.length) {
-        case 0:
-          return DATE_TO_USE;
-        default:
-          // @ts-ignore
-          return new _Date(...args);
-      }
-    };
-    MockDate.UTC = _Date.UTC;
-    MockDate.now = () => DATE_TO_USE.getTime();
-    global.Date = MockDate;
+    MockDate.set(DATE_TO_USE);
   });
   it('test job reschedule modal', async () => {
     const wrapper = mount(<JobsRescheduleModal {...props} />).find(

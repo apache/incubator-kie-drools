@@ -80,7 +80,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
-  const [variableError, setVariableError] = useState();
+  const [variableError, setVariableError] = useState<string>();
   const [svgError, setSvgError] = useState<string>('');
   const [svg, setSvg] = React.useState(null);
   const [svgErrorModalOpen, setSvgErrorModalOpen] = useState<boolean>(false);
@@ -106,7 +106,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
 
   useEffect(() => {
     window.onpopstate = () => {
-      props.history.push({ state: { ...props.location.state } });
+      props.history.push({ state: Object.assign({}, props.location.state) });
     };
   });
 
@@ -359,7 +359,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
     const result = data.ProcessInstances;
     /* istanbul ignore else */
     if (currentPage) {
-      currentPage = { ...currentPage, ...props.location.state };
+      currentPage = Object.assign({}, currentPage, props.location.state);
       const tempPath = currentPage.prev.split('/');
       prevPath = tempPath.filter(item => item);
       BreadCrumb.push(...prevPath);
@@ -381,7 +381,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
                     .trim()
                     .toLowerCase()}`
                 : 'Go to process instances',
-              rememberedData: { ...props.location.state }
+              rememberedData: Object.assign({}, props.location.state)
             }
           }}
         />
@@ -406,7 +406,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
       <Flex direction={{ default: 'column' }} flex={{ default: 'flex_1' }}>
         {currentPage && (
           <FlexItem>
-            <ProcessDetails data={data} from={currentPage} />
+            <ProcessDetails data={data as any} from={currentPage} />
           </FlexItem>
         )}
         {data.ProcessInstances[0].milestones.length > 0 && (
@@ -505,7 +505,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
                               to={
                                 props.location.state && {
                                   pathname: BreadCrumbRoute[index],
-                                  state: { ...props.location.state }
+                                  state: Object.assign({}, props.location.state)
                                 }
                               }
                             >

@@ -17,12 +17,16 @@ jest.mock('uuid', () => {
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('../../../Atoms/KogitoEmptyState/KogitoEmptyState', () => ({
-  ...jest.requireActual('../../../Atoms/KogitoEmptyState/KogitoEmptyState'),
-  KogitoEmptyState: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('../../../Atoms/KogitoEmptyState/KogitoEmptyState', () => (
+  Object.assign(
+    jest.requireActual('../../../Atoms/KogitoEmptyState/KogitoEmptyState'),
+    {
+      KogitoEmptyState: () => {
+        return <MockedComponent/>;
+      }
+    }
+  )
+));
 jest.mock('../../../Atoms/KogitoSpinner/KogitoSpinner');
 
 const data = [

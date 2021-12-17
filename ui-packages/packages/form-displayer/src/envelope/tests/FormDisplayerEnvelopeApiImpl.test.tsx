@@ -30,7 +30,7 @@ import { FormDisplayerEnvelopeContext } from '../FormDisplayerEnvelopeContext';
 
 describe('FormDisplayerEnvelopeApiImpl tests', () => {
   it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeBusController = MockedEnvelopeBusController;
     const view = new MockedFormDisplayerEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       FormDisplayerEnvelopeApi,

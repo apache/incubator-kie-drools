@@ -8,6 +8,7 @@ import {
   CFSearchInput,
   RemoteDataStatus
 } from '../../../../types';
+import { AxiosPromise } from "axios";
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
@@ -107,11 +108,10 @@ describe('useCounterfactualExecution', () => {
     };
 
     apiMock
-      // @ts-ignore
-      .mockImplementationOnce(() => Promise.resolve(CFAnalysisResponse))
-      .mockImplementationOnce(() => Promise.resolve(CFResultsOne))
-      .mockImplementationOnce(() => Promise.resolve(CFResultsTwo))
-      .mockImplementationOnce(() => Promise.resolve(CFResultsThree));
+      .mockImplementationOnce(() => Promise.resolve(CFAnalysisResponse) as AxiosPromise)
+      .mockImplementationOnce(() => Promise.resolve(CFResultsOne) as AxiosPromise)
+      .mockImplementationOnce(() => Promise.resolve(CFResultsTwo) as AxiosPromise)
+      .mockImplementationOnce(() => Promise.resolve(CFResultsThree) as AxiosPromise);
 
     const { result } = renderHook(() => {
       return useCounterfactualExecution('7ffd3240-2ad4-4999-b67c-9437efcd449a');
