@@ -94,9 +94,7 @@ public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         for (Object entity : pillar) {
-            innerScoreDirector.beforeVariableChanged(variableDescriptor, entity);
-            variableDescriptor.setValue(entity, toPlanningValue);
-            innerScoreDirector.afterVariableChanged(variableDescriptor, entity);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, entity, toPlanningValue);
         }
     }
 

@@ -111,14 +111,10 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
             Object oldRightValue = variableDescriptor.getValue(rightPillar.get(0));
             if (!Objects.equals(oldLeftValue, oldRightValue)) {
                 for (Object leftEntity : leftPillar) {
-                    innerScoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
-                    variableDescriptor.setValue(leftEntity, oldRightValue);
-                    innerScoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
+                    innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
                 }
                 for (Object rightEntity : rightPillar) {
-                    innerScoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
-                    variableDescriptor.setValue(rightEntity, oldLeftValue);
-                    innerScoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
+                    innerScoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
                 }
             }
         }

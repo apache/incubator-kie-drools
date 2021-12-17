@@ -46,14 +46,6 @@ public class SwapMove<Solution_> extends AbstractMove<Solution_> {
         this.rightEntity = rightEntity;
     }
 
-    public List<String> getVariableNameList() {
-        List<String> variableNameList = new ArrayList<>(variableDescriptorList.size());
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
-            variableNameList.add(variableDescriptor.getVariableName());
-        }
-        return variableNameList;
-    }
-
     public Object getLeftEntity() {
         return leftEntity;
     }
@@ -110,12 +102,8 @@ public class SwapMove<Solution_> extends AbstractMove<Solution_> {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!Objects.equals(oldLeftValue, oldRightValue)) {
-                innerScoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
-                variableDescriptor.setValue(leftEntity, oldRightValue);
-                innerScoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
-                innerScoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
-                variableDescriptor.setValue(rightEntity, oldLeftValue);
-                innerScoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
             }
         }
     }
