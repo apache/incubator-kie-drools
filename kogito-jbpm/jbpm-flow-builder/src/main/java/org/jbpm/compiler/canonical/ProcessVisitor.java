@@ -124,6 +124,7 @@ public class ProcessVisitor extends AbstractVisitor {
 
     public void visitProcess(WorkflowProcess process, MethodDeclaration processMethod, ProcessMetaData metadata) {
         BlockStmt body = new BlockStmt();
+        processMethod.setBody(body);
 
         ClassOrInterfaceType processFactoryType = new ClassOrInterfaceType(null, RuleFlowProcessFactory.class.getSimpleName());
 
@@ -170,7 +171,6 @@ public class ProcessVisitor extends AbstractVisitor {
 
         MethodCallExpr getProcessMethod = new MethodCallExpr(new NameExpr(FACTORY_FIELD_NAME), "getProcess");
         body.addStatement(new ReturnStmt(getProcessMethod));
-        processMethod.setBody(body);
     }
 
     private void visitSubVariableScopes(org.kie.api.definition.process.Node[] nodes, BlockStmt body, Set<String> visitedVariables) {

@@ -169,15 +169,11 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
                 VariableScope.VARIABLE_SCOPE);
         Variable variable = variableScope.findVariable(varName);
         if (variable != null) {
-            try {
-                return getClassLoader().loadClass(variable.getType().getStringType());
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException("Problem loading type " + variable.getType().getStringType(), e);
-            }
+            return variable.getType().getObjectClass();
         } else {
             logger.warn("Cannot find definition for variable {}", varName);
+            return null;
         }
-        return null;
     }
 
     @Override

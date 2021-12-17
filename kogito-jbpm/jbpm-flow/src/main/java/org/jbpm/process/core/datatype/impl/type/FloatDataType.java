@@ -28,33 +28,38 @@ public final class FloatDataType implements DataType {
 
     private static final long serialVersionUID = 510l;
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
+    @Override
     public boolean verifyDataType(final Object value) {
-        if (value instanceof Float) {
-            return true;
-        } else if (value == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return value == null || value instanceof Float;
     }
 
+    @Override
     public Object readValue(String value) {
         return Float.valueOf(value);
     }
 
+    @Override
     public String writeValue(Object value) {
         Float f = (Float) value;
         return f == null ? "" : f.toString();
     }
 
+    @Override
     public String getStringType() {
         return "java.lang.Float";
+    }
+
+    @Override
+    public Class<?> getObjectClass() {
+        return Float.class;
     }
 
 }

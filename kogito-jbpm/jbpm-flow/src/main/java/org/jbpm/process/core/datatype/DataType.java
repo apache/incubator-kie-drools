@@ -36,4 +36,8 @@ public interface DataType extends Externalizable {
      */
     String getStringType();
 
+    default Class<?> getObjectClass() {
+        return Object.class;
+    }
+
 }

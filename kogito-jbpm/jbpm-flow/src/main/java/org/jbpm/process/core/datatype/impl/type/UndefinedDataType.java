@@ -36,27 +36,30 @@ public final class UndefinedDataType implements DataType {
         return instance;
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
+    @Override
     public boolean verifyDataType(final Object value) {
-        if (value == null) {
-            return true;
-        }
-        return false;
+        return value == null;
     }
 
+    @Override
     public Object readValue(String value) {
         throw new IllegalArgumentException("Undefined datatype");
     }
 
+    @Override
     public String writeValue(Object value) {
         throw new IllegalArgumentException("Undefined datatype");
     }
 
+    @Override
     public String getStringType() {
         return "java.lang.Object";
     }

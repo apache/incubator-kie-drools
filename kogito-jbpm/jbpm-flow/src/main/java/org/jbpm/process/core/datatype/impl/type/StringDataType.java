@@ -28,31 +28,36 @@ public class StringDataType implements DataType {
 
     private static final long serialVersionUID = 510l;
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
+    @Override
     public boolean verifyDataType(final Object value) {
-        if (value instanceof String) {
-            return true;
-        } else if (value == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return value == null || value instanceof String;
     }
 
+    @Override
     public Object readValue(String value) {
         return value;
     }
 
+    @Override
     public String writeValue(Object value) {
         return (String) value;
     }
 
+    @Override
     public String getStringType() {
         return "java.lang.String";
+    }
+
+    @Override
+    public Class<?> getObjectClass() {
+        return String.class;
     }
 }

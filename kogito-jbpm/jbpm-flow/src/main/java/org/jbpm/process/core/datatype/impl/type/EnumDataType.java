@@ -50,29 +50,32 @@ public class EnumDataType implements DataType {
         this.className = className;
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         className = (String) in.readObject();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(className);
     }
 
+    @Override
     public boolean verifyDataType(final Object value) {
-        if (value == null) {
-            return true;
-        }
-        return getValueMap(null).containsValue(value);
+        return value == null || getValueMap().containsValue(value);
     }
 
+    @Override
     public Object readValue(String value) {
         return getValueMap(null).get(value);
     }
 
+    @Override
     public String writeValue(Object value) {
         return value == null ? "" : value.toString();
     }
 
+    @Override
     public String getStringType() {
         return className == null ? "java.lang.Object" : className;
     }
@@ -145,5 +148,10 @@ public class EnumDataType implements DataType {
     @Override
     public int hashCode() {
         return Objects.hash(className);
+    }
+
+    @Override
+    public Class<?> getObjectClass() {
+        return Enum.class;
     }
 }

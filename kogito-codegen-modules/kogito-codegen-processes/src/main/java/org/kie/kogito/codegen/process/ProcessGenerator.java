@@ -26,12 +26,9 @@ import java.util.Optional;
 import javax.lang.model.SourceVersion;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.KieFunctions;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Model;
@@ -142,10 +139,8 @@ public class ProcessGenerator {
 
     public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
-        compilationUnit.addImport(ObjectDataType.class);
-        compilationUnit.addImport(RuleFlowProcessFactory.class);
-        compilationUnit.addImport(KieFunctions.class);
         compilationUnit.getTypes().add(classDeclaration());
+        processExecutable.generate().getGeneratedClassModel().getImports().forEach(compilationUnit::addImport);
         return compilationUnit;
     }
 
@@ -343,6 +338,7 @@ public class ProcessGenerator {
                 .setName(targetTypeName)
                 .setModifiers(Modifier.Keyword.PUBLIC);
         ProcessMetaData processMetaData = processExecutable.generate();
+
         ConstructorDeclaration constructor = getConstructorDeclaration().addParameter(appCanonicalName, APPLICATION);
 
         MethodCallExpr handlersCollection = new MethodCallExpr(new NameExpr("java.util.Arrays"), "asList");
