@@ -43,7 +43,6 @@ import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.RestBodyBuilderSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.SysoutActionSupplier;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
-import org.kie.kogito.serverless.workflow.utils.WorkflowAppContext;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -75,8 +74,6 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     private static final String SERVICE_INTERFACE_KEY = "interface";
     private static final String SERVICE_OPERATION_KEY = "operation";
     private static final String SERVICE_IMPL_KEY = "implementation";
-
-    protected final WorkflowAppContext workflowAppContext = WorkflowAppContext.ofAppResources();
 
     protected CompositeContextNodeHandler(S state, Workflow workflow, ParserContext parserContext) {
         super(state, workflow, parserContext);
@@ -165,17 +162,17 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                         .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, SERVICE_TASK_TYPE)
                         .workName(SERVICE_TASK_TYPE)
                         .workParameter(WORKITEM_INTERFACE, ServerlessWorkflowUtils.resolveFunctionMetadata(
-                                actionFunction, SERVICE_INTERFACE_KEY, workflowAppContext))
+                                actionFunction, SERVICE_INTERFACE_KEY, parserContext.getContext()))
                         .workParameter(WORKITEM_OPERATION, ServerlessWorkflowUtils.resolveFunctionMetadata(
-                                actionFunction, SERVICE_OPERATION_KEY, workflowAppContext))
+                                actionFunction, SERVICE_OPERATION_KEY, parserContext.getContext()))
                         .workParameter(WORKITEM_INTERFACE_IMPL, ServerlessWorkflowUtils
                                 .resolveFunctionMetadata(actionFunction, SERVICE_INTERFACE_KEY,
-                                        workflowAppContext))
+                                        parserContext.getContext()))
                         .workParameter(WORKITEM_OPERATION_IMPL, ServerlessWorkflowUtils
                                 .resolveFunctionMetadata(actionFunction, SERVICE_OPERATION_KEY,
-                                        workflowAppContext))
+                                        parserContext.getContext()))
                         .workParameter(SERVICE_IMPL_KEY, ServerlessWorkflowUtils.resolveFunctionMetadata(
-                                actionFunction, SERVICE_IMPL_KEY, workflowAppContext, "Java"))
+                                actionFunction, SERVICE_IMPL_KEY, parserContext.getContext(), "Java"))
                         .inMapping(WORKITEM_PARAM, inputVar);
 
                 if (functionArgs == null || functionArgs.isEmpty()) {
@@ -195,24 +192,22 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                         .workParameter(RestWorkItemHandler.URL, actionFunction.getOperation())
                         .workParameter(RestWorkItemHandler.METHOD, ServerlessWorkflowUtils
                                 .resolveFunctionMetadata(actionFunction, "method",
-                                        workflowAppContext))
+                                        parserContext.getContext()))
                         .workParameter(RestWorkItemHandler.USER, ServerlessWorkflowUtils
                                 .resolveFunctionMetadata(actionFunction, "user",
-                                        workflowAppContext))
+                                        parserContext.getContext()))
                         .workParameter(RestWorkItemHandler.PASSWORD, ServerlessWorkflowUtils
                                 .resolveFunctionMetadata(actionFunction, "password",
-                                        workflowAppContext))
+                                        parserContext.getContext()))
                         .workParameter(RestWorkItemHandler.HOST, ServerlessWorkflowUtils
                                 .resolveFunctionMetadata(actionFunction, "host",
-                                        workflowAppContext))
+                                        parserContext.getContext()))
                         .workParameter(RestWorkItemHandler.PORT, ServerlessWorkflowUtils
                                 .resolveFunctionMetadataAsInt(actionFunction, "port",
-                                        workflowAppContext))
+                                        parserContext.getContext()))
                         .workParameter(RestWorkItemHandler.BODY_BUILDER, new RestBodyBuilderSupplier())
-                        .inMapping(RestWorkItemHandler.CONTENT_DATA,
-                                inputVar)
-                        .outMapping(RestWorkItemHandler.RESULT,
-                                outputVar);
+                        .inMapping(RestWorkItemHandler.CONTENT_DATA, inputVar)
+                        .outMapping(RestWorkItemHandler.RESULT, outputVar);
                 if (functionArgs != null && !functionArgs.isEmpty()) {
                     processArgs(workItemFactory, functionArgs, RestWorkItemHandler.CONTENT_DATA, ObjectResolver.class);
                 }
@@ -250,7 +245,8 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         Map<String, Object> map = functionsToMap(functionArgs);
         map.entrySet().forEach(
                 entry -> workItemFactory
-                        .workParameter(entry.getKey(), AbstractServiceTaskDescriptor.processWorkItemValue(workflow.getExpressionLang(), entry.getValue(), paramName, clazz, expressionHandler::isExpr))
+                        .workParameter(entry.getKey(),
+                                AbstractServiceTaskDescriptor.processWorkItemValue(workflow.getExpressionLang(), entry.getValue(), paramName, clazz, expressionHandler::isExpr))
                         .workParameterDefinition(entry.getKey(),
                                 DataTypeResolver.fromObject(entry.getValue(), expressionHandler::isExpr)));
     }

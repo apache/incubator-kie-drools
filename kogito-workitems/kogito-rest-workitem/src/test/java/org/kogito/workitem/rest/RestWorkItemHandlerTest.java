@@ -192,7 +192,7 @@ public class RestWorkItemHandlerTest {
     }
 
     @Test
-    public void testReplaceTemplateBadEnpoint() {
+    public void testReplaceTemplateBadEndpoint() {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", 26);
         parameters.put("name", "pepe");
@@ -242,6 +242,23 @@ public class RestWorkItemHandlerTest {
         Map<String, Object> bodyMap = bodyCaptor.getValue();
         assertEquals(26, bodyMap.get("id"));
         assertEquals("pepe", bodyMap.get("name"));
+
+        assertResult(manager, argCaptor);
+    }
+
+    @Test
+    public void testContentDataPostRestTaskHandler() {
+        parameters.put(RestWorkItemHandler.METHOD, "POST");
+        parameters.put(BODY_BUILDER, new ParamsRestWorkItemHandlerBodyBuilder());
+        parameters.put(RestWorkItemHandler.CONTENT_DATA, workflowData);
+
+        handler.executeWorkItem(workItem, manager);
+
+        ArgumentCaptor<ObjectNode> bodyCaptor = ArgumentCaptor.forClass(ObjectNode.class);
+        verify(request).sendJsonAndAwait(bodyCaptor.capture());
+        ObjectNode bodyMap = bodyCaptor.getValue();
+        assertEquals(26, bodyMap.get("id").asInt());
+        assertEquals("pepe", bodyMap.get("name").asText());
 
         assertResult(manager, argCaptor);
     }

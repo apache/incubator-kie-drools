@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,12 +55,12 @@ public class ServerlessWorkflowUtils {
         return conditionStr.trim();
     }
 
-    public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext) {
-        return resolveFunctionMetadata(function, metadataKey, workflowAppContext, "");
+    public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, KogitoBuildContext context) {
+        return resolveFunctionMetadata(function, metadataKey, context, "");
     }
 
-    public static Integer resolveFunctionMetadataAsInt(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext) {
-        String value = resolveFunctionMetadata(function, metadataKey, workflowAppContext);
+    public static Integer resolveFunctionMetadataAsInt(FunctionDefinition function, String metadataKey, KogitoBuildContext context) {
+        String value = resolveFunctionMetadata(function, metadataKey, context);
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException ex) {
@@ -68,14 +69,14 @@ public class ServerlessWorkflowUtils {
         }
     }
 
-    public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext, String defaultValue) {
+    public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, KogitoBuildContext context, String defaultValue) {
         if (function != null && function.getMetadata() != null && function.getMetadata().containsKey(metadataKey)) {
             return function.getMetadata().get(metadataKey);
         }
 
-        if (function != null && workflowAppContext != null &&
-                workflowAppContext.getApplicationProperties().containsKey(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey)) {
-            return workflowAppContext.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey);
+        if (function != null && context != null &&
+                context.getApplicationProperties().contains(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey)) {
+            return context.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey).get();
         }
 
         LOGGER.warn("Could not resolve function metadata: {}", metadataKey);

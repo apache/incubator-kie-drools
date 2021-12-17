@@ -15,9 +15,13 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.io.File;
 import java.util.Collections;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.mapper.BaseObjectMapper;
@@ -28,6 +32,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class WorkflowUtilsTest {
+
+    private static final String TEST_RESOURCES = "src/test/resources";
+
+    KogitoBuildContext context;
+
+    @BeforeEach
+    protected void setup() {
+        context = JavaKogitoBuildContext.builder()
+                .withApplicationProperties(new File(TEST_RESOURCES))
+                .withPackageName(this.getClass().getPackage().getName())
+                .build();
+    }
 
     @Test
     public void testGetObjectMapper() {
@@ -43,12 +59,10 @@ public class WorkflowUtilsTest {
     @Test
     public void testResolveFunctionMetadata() {
         FunctionDefinition function = new FunctionDefinition().withName("testfunction1").withMetadata(Collections.singletonMap("testprop1", "customtestprop1val"));
-        String testProp1Val = ServerlessWorkflowUtils.resolveFunctionMetadata(function, "testprop1",
-                WorkflowAppContext.ofAppResources());
+        String testProp1Val = ServerlessWorkflowUtils.resolveFunctionMetadata(function, "testprop1", context);
         assertThat(testProp1Val).isNotNull().isEqualTo("customtestprop1val");
 
-        String testProp2Val = ServerlessWorkflowUtils.resolveFunctionMetadata(function, "testprop2",
-                WorkflowAppContext.ofAppResources());
+        String testProp2Val = ServerlessWorkflowUtils.resolveFunctionMetadata(function, "testprop2", context);
         assertThat(testProp2Val).isNotNull().isEqualTo("testprop2val");
     }
 }

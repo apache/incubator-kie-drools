@@ -34,11 +34,11 @@
       <artifactId>kogito-addons-quarkus-messaging-deployment</artifactId>
       <version>${project.version}</version>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>io.quarkiverse.jackson-jq</groupId>
       <artifactId>quarkus-jackson-jq-deployment</artifactId>
     </dependency>
-    
+
     <!-- Quarkus Deployment Extensions Dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -63,8 +63,8 @@
       <artifactId>kogito-codegen-openapi</artifactId>
     </dependency>
   </dependencies>
-  
-   <build>
+
+  <build>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

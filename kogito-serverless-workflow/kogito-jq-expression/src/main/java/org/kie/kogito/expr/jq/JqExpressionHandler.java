@@ -16,18 +16,17 @@
 package org.kie.kogito.expr.jq;
 
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
 import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 import net.thisptr.jackson.jq.BuiltinFunctionLoader;
+import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.Scope;
 import net.thisptr.jackson.jq.Versions;
+import net.thisptr.jackson.jq.exception.JsonQueryException;
 
 public class JqExpressionHandler implements ExpressionHandler {
-
-    private static final Pattern jqRegExpr = Pattern.compile("^((\\$\\[).*|(\\.).*)");
 
     private static Supplier<Scope> scopeSupplier = JqExpressionHandler::getDefaultScope;
 
@@ -49,7 +48,12 @@ public class JqExpressionHandler implements ExpressionHandler {
 
     @Override
     public boolean isExpr(String expr) {
-        return jqRegExpr.matcher(expr).matches();
+        try {
+            JsonQuery.compile(expr, Versions.JQ_1_6);
+            return true;
+        } catch (JsonQueryException e) {
+            return false;
+        }
     }
 
     @Override

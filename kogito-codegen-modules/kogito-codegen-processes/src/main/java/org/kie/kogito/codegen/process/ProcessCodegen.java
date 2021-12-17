@@ -56,6 +56,7 @@ import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.ContextAttributesConstants;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
@@ -140,7 +141,7 @@ public class ProcessCodegen extends AbstractGenerator {
                         return SUPPORTED_SW_EXTENSIONS.entrySet()
                                 .stream()
                                 .filter(e -> resource.getSourcePath().endsWith(e.getKey()))
-                                .map(e -> parseWorkflowFile(resource, e.getValue()));
+                                .map(e -> parseWorkflowFile(resource, e.getValue(), context));
                     }
                 })
                 //Validate parsed processes
@@ -233,7 +234,7 @@ public class ProcessCodegen extends AbstractGenerator {
                     SUPPORTED_SW_EXTENSIONS.entrySet()
                             .stream()
                             .filter(e -> processSourceFile.getPath().endsWith(e.getKey()))
-                            .forEach(e -> processes.add(parseWorkflowFile(r, e.getValue())));
+                            .forEach(e -> processes.add(parseWorkflowFile(r, e.getValue(), JavaKogitoBuildContext.builder().build())));
                 }
                 if (processes.isEmpty()) {
                     throw new IllegalArgumentException("Unable to process file with unsupported extension: " + processSourceFile);
@@ -245,9 +246,9 @@ public class ProcessCodegen extends AbstractGenerator {
         return processes;
     }
 
-    private static Process parseWorkflowFile(Resource r, String parser) {
+    private static Process parseWorkflowFile(Resource r, String parser, KogitoBuildContext context) {
         try (Reader reader = r.getReader()) {
-            ServerlessWorkflowParser workflowParser = ServerlessWorkflowParser.of(reader, parser);
+            ServerlessWorkflowParser workflowParser = ServerlessWorkflowParser.of(reader, parser, context);
             return workflowParser.getProcess();
         } catch (IOException e) {
             throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);

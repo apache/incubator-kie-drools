@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 
 import io.serverlessworkflow.api.transitions.Transition;
@@ -28,12 +29,14 @@ public class ParserContext {
     private final Map<String, StateHandler<?>> stateHandlers = new LinkedHashMap<>();
     private final RuleFlowProcessFactory factory;
     private final NodeIdGenerator idGenerator;
+    private final KogitoBuildContext context;
 
     private boolean isCompensation;
 
-    public ParserContext(NodeIdGenerator idGenerator, RuleFlowProcessFactory factory) {
+    public ParserContext(NodeIdGenerator idGenerator, RuleFlowProcessFactory factory, KogitoBuildContext context) {
         this.idGenerator = idGenerator;
         this.factory = factory;
+        this.context = context;
     }
 
     public void add(StateHandler<?> stateHandler) {
@@ -66,5 +69,9 @@ public class ParserContext {
 
     public void setCompensation() {
         isCompensation = true;
+    }
+
+    public KogitoBuildContext getContext() {
+        return context;
     }
 }

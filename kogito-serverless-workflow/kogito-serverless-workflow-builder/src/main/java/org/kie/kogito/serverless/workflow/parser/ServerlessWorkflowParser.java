@@ -30,6 +30,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.kie.api.definition.process.Process;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
@@ -54,14 +55,14 @@ public class ServerlessWorkflowParser {
     private NodeIdGenerator idGenerator = DefaultNodeIdGenerator.get();
     private Workflow workflow;
     private Process process;
+    private KogitoBuildContext context;
 
-    public static ServerlessWorkflowParser of(Reader workflowFile,
-            String workflowFormat) throws IOException {
-        return of(ServerlessWorkflowUtils.getObjectMapper(workflowFormat).readValue(workflowFile, Workflow.class));
+    public static ServerlessWorkflowParser of(Reader workflowFile, String workflowFormat, KogitoBuildContext context) throws IOException {
+        return of(ServerlessWorkflowUtils.getObjectMapper(workflowFormat).readValue(workflowFile, Workflow.class), context);
     }
 
-    public static ServerlessWorkflowParser of(Workflow workflow) {
-        return new ServerlessWorkflowParser(workflow);
+    public static ServerlessWorkflowParser of(Workflow workflow, KogitoBuildContext context) {
+        return new ServerlessWorkflowParser(workflow, context);
     }
 
     public ServerlessWorkflowParser withIdGenerator(NodeIdGenerator idGenerator) {
@@ -69,8 +70,9 @@ public class ServerlessWorkflowParser {
         return this;
     }
 
-    private ServerlessWorkflowParser(Workflow workflow) {
+    private ServerlessWorkflowParser(Workflow workflow, KogitoBuildContext context) {
         this.workflow = workflow;
+        this.context = context;
     }
 
     private Process parseProcess() {
@@ -85,7 +87,7 @@ public class ServerlessWorkflowParser {
                         DEFAULT_PACKAGE) : DEFAULT_PACKAGE)
                 .visibility("Public")
                 .variable(DEFAULT_WORKFLOW_VAR, JsonNode.class);
-        ParserContext parserContext = new ParserContext(idGenerator, factory);
+        ParserContext parserContext = new ParserContext(idGenerator, factory, context);
         Collection<StateHandler<?>> handlers =
                 workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, parserContext))
                         .filter(Optional::isPresent).map(Optional::get).filter(state -> !state.usedForCompensation()).collect(Collectors.toList());
