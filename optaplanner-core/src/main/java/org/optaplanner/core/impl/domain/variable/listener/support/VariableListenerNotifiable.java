@@ -21,14 +21,14 @@ import java.util.Collection;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 
-public class VariableListenerNotifiable implements Comparable<VariableListenerNotifiable> {
+final class VariableListenerNotifiable<Solution_> implements Comparable<VariableListenerNotifiable<Solution_>> {
 
-    protected final VariableListener variableListener;
-    protected final int globalOrder;
+    private final VariableListener<Solution_, ?> variableListener;
+    private final int globalOrder;
 
-    protected final Collection<VariableListenerNotification> notificationQueue;
+    private final Collection<VariableListenerNotification> notificationQueue;
 
-    public VariableListenerNotifiable(VariableListener variableListener, int globalOrder) {
+    public VariableListenerNotifiable(VariableListener<Solution_, ?> variableListener, int globalOrder) {
         this.variableListener = variableListener;
         this.globalOrder = globalOrder;
         if (variableListener.requiresUniqueEntityEvents()) {
@@ -38,8 +38,8 @@ public class VariableListenerNotifiable implements Comparable<VariableListenerNo
         }
     }
 
-    public VariableListener getVariableListener() {
-        return variableListener;
+    public <Entity_> VariableListener<Solution_, Entity_> getVariableListener() {
+        return (VariableListener<Solution_, Entity_>) variableListener;
     }
 
     public int getGlobalOrder() {
@@ -51,7 +51,7 @@ public class VariableListenerNotifiable implements Comparable<VariableListenerNo
     }
 
     @Override
-    public int compareTo(VariableListenerNotifiable other) {
+    public int compareTo(VariableListenerNotifiable<Solution_> other) {
         if (globalOrder < other.globalOrder) {
             return -1;
         } else if (globalOrder > other.globalOrder) {

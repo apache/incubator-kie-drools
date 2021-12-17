@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
-public class VariableListenerNotification {
+final class VariableListenerNotification {
 
     private final Object entity;
     private final VariableListenerNotificationType type;

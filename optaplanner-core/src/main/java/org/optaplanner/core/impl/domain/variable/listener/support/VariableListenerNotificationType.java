@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-public enum VariableListenerNotificationType {
+enum VariableListenerNotificationType {
     ENTITY_ADDED,
     VARIABLE_CHANGED,
-    ENTITY_REMOVED;
+    ENTITY_REMOVED
 }

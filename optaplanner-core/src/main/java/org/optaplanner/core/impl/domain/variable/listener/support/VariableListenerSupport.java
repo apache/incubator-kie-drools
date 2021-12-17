@@ -40,17 +40,17 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class VariableListenerSupport<Solution_> implements SupplyManager<Solution_> {
+public final class VariableListenerSupport<Solution_> implements SupplyManager<Solution_> {
 
-    protected final InnerScoreDirector<Solution_, ?> scoreDirector;
+    private final InnerScoreDirector<Solution_, ?> scoreDirector;
 
-    protected final List<VariableListenerNotifiable> notifiableList;
-    protected final Map<VariableDescriptor<Solution_>, List<VariableListenerNotifiable>> sourceVariableToNotifiableMap;
-    protected final Map<EntityDescriptor<Solution_>, List<VariableListenerNotifiable>> sourceEntityToNotifiableMap;
-    protected final Map<Demand<Solution_, ?>, Supply> supplyMap;
-    protected int nextGlobalOrder = 0;
+    private final List<VariableListenerNotifiable<Solution_>> notifiableList;
+    private final Map<VariableDescriptor<Solution_>, List<VariableListenerNotifiable<Solution_>>> sourceVariableToNotifiableMap;
+    private final Map<EntityDescriptor<Solution_>, List<VariableListenerNotifiable<Solution_>>> sourceEntityToNotifiableMap;
+    private final Map<Demand<Solution_, ?>, Supply> supplyMap;
+    private int nextGlobalOrder = 0;
 
-    protected boolean notificationQueuesAreEmpty;
+    private boolean notificationQueuesAreEmpty;
 
     public VariableListenerSupport(InnerScoreDirector<Solution_, ?> scoreDirector) {
         this.scoreDirector = scoreDirector;
@@ -82,11 +82,13 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
                     if (nextGlobalOrder <= globalOrder) {
                         nextGlobalOrder = globalOrder + 1;
                     }
-                    VariableListenerNotifiable notifiable = new VariableListenerNotifiable(variableListener, globalOrder);
+                    VariableListenerNotifiable<Solution_> notifiable =
+                            new VariableListenerNotifiable<>(variableListener, globalOrder);
                     for (VariableDescriptor<Solution_> source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
-                        List<VariableListenerNotifiable> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
+                        List<VariableListenerNotifiable<Solution_>> variableNotifiableList =
+                                sourceVariableToNotifiableMap.get(source);
                         variableNotifiableList.add(notifiable);
-                        List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap
+                        List<VariableListenerNotifiable<Solution_>> entityNotifiableList = sourceEntityToNotifiableMap
                                 .get(source.getEntityDescriptor());
                         if (!entityNotifiableList.contains(notifiable)) {
                             entityNotifiableList.add(notifiable);
@@ -112,11 +114,12 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
                     variableListener.resetWorkingSolution(scoreDirector);
                 }
                 VariableDescriptor<Solution_> source = variableListener.getSourceVariableDescriptor();
-                VariableListenerNotifiable notifiable = new VariableListenerNotifiable(variableListener, nextGlobalOrder);
+                VariableListenerNotifiable<Solution_> notifiable =
+                        new VariableListenerNotifiable<>(variableListener, nextGlobalOrder);
                 nextGlobalOrder++;
-                List<VariableListenerNotifiable> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
+                List<VariableListenerNotifiable<Solution_>> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
                 variableNotifiableList.add(notifiable);
-                List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap
+                List<VariableListenerNotifiable<Solution_>> entityNotifiableList = sourceEntityToNotifiableMap
                         .get(source.getEntityDescriptor());
                 if (!entityNotifiableList.contains(notifiable)) {
                     entityNotifiableList.add(notifiable);
@@ -134,27 +137,30 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
     // ************************************************************************
 
     public void resetWorkingSolution() {
-        for (VariableListenerNotifiable notifiable : notifiableList) {
+        for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
             VariableListener<Solution_, ?> variableListener = notifiable.getVariableListener();
             variableListener.resetWorkingSolution(scoreDirector);
         }
     }
 
     public void clearWorkingSolution() {
-        for (VariableListenerNotifiable notifiable : notifiableList) {
+        for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
             VariableListener<Solution_, ?> variableListener = notifiable.getVariableListener();
             variableListener.close();
         }
     }
 
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        List<VariableListenerNotifiable> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
-        for (VariableListenerNotifiable notifiable : notifiableList) {
-            Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
-            boolean added = notificationQueue.add(
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED));
-            if (added) {
-                notifiable.getVariableListener().beforeEntityAdded(scoreDirector, entity);
+        List<VariableListenerNotifiable<Solution_>> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
+        if (!notifiableList.isEmpty()) {
+            VariableListenerNotification notification =
+                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED);
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
+                Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
+                boolean added = notificationQueue.add(notification);
+                if (added) {
+                    notifiable.getVariableListener().beforeEntityAdded(scoreDirector, entity);
+                }
             }
         }
         notificationQueuesAreEmpty = false;
@@ -165,14 +171,18 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
     }
 
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
-        List<VariableListenerNotifiable> notifiableList = sourceVariableToNotifiableMap.getOrDefault(variableDescriptor,
-                Collections.emptyList()); // Avoids null for chained swap move on an unchained var.
-        for (VariableListenerNotifiable notifiable : notifiableList) {
-            Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
-            boolean added = notificationQueue.add(
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED));
-            if (added) {
-                notifiable.getVariableListener().beforeVariableChanged(scoreDirector, entity);
+        List<VariableListenerNotifiable<Solution_>> notifiableList =
+                sourceVariableToNotifiableMap.getOrDefault(variableDescriptor,
+                        Collections.emptyList()); // Avoids null for chained swap move on an unchained var.
+        if (!notifiableList.isEmpty()) {
+            VariableListenerNotification notification =
+                    new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED);
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
+                Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
+                boolean added = notificationQueue.add(notification);
+                if (added) {
+                    notifiable.getVariableListener().beforeVariableChanged(scoreDirector, entity);
+                }
             }
         }
         notificationQueuesAreEmpty = false;
@@ -183,13 +193,16 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        List<VariableListenerNotifiable> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
-        for (VariableListenerNotifiable notifiable : notifiableList) {
-            Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
-            boolean added = notificationQueue.add(
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED));
-            if (added) {
-                notifiable.getVariableListener().beforeEntityRemoved(scoreDirector, entity);
+        List<VariableListenerNotifiable<Solution_>> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
+        if (!notifiableList.isEmpty()) {
+            VariableListenerNotification notification =
+                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED);
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
+                Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
+                boolean added = notificationQueue.add(notification);
+                if (added) {
+                    notifiable.getVariableListener().beforeEntityRemoved(scoreDirector, entity);
+                }
             }
         }
         notificationQueuesAreEmpty = false;
@@ -200,7 +213,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
     }
 
     public void triggerVariableListenersInNotificationQueues() {
-        for (VariableListenerNotifiable notifiable : notifiableList) {
+        for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
             Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
             int notifiedCount = 0;
             VariableListener<Solution_, Object> variableListener = notifiable.getVariableListener();
@@ -258,5 +271,4 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
                     + " before calling " + ScoreDirector.class.getSimpleName() + ".calculateScore().");
         }
     }
-
 }
