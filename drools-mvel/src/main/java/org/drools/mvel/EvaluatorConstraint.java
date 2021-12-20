@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.rule.constraint;
+package org.drools.mvel;
 
 import java.io.IOException;
 import java.io.ObjectInput;

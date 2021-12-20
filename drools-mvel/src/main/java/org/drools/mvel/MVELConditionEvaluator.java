@@ -20,9 +20,8 @@ import java.util.Map;
 
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.constraint.ConditionEvaluator;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MvelEvaluator;
@@ -48,7 +47,7 @@ import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
 import org.mvel2.util.ASTLinkedList;
 
-import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
+import static org.drools.mvel.EvaluatorHelper.valuesAsMap;
 import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELConditionEvaluator implements ConditionEvaluator {
@@ -93,16 +92,16 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
         this.evaluator = createMvelEvaluator( executableStatement );
     }
 
-    public boolean evaluate(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
-        return evaluate(evaluator, handle, workingMemory, tuple);
+    public boolean evaluate(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple) {
+        return evaluate(evaluator, handle, reteEvaluator, tuple);
     }
 
-    private boolean evaluate(MvelEvaluator<Boolean> evaluator, InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
+    private boolean evaluate(MvelEvaluator<Boolean> evaluator, InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple) {
         if (compilationUnit == null) {
-            Map<String, Object> vars = valuesAsMap(handle.getObject(), workingMemory, tuple, declarations);
+            Map<String, Object> vars = valuesAsMap(handle.getObject(), reteEvaluator, tuple, declarations);
             if (operators.length > 0) {
                 if (vars == null) {
-                    vars = new HashMap<String, Object>();
+                    vars = new HashMap<>();
                 }
                 InternalFactHandle[] handles = tuple != null ? tuple.toFactHandles() : new InternalFactHandle[0];
                 for (EvaluatorWrapper operator : operators) {
@@ -114,8 +113,8 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
         }
 
         VariableResolverFactory factory = compilationUnit.createFactory();
-        compilationUnit.updateFactory( handle, tuple, null, workingMemory,
-                                       workingMemory.getGlobalResolver(),
+        compilationUnit.updateFactory( handle, tuple, null, reteEvaluator,
+                                       reteEvaluator.getGlobalResolver(),
                                        factory );
 
         return evaluator.evaluate( handle.getObject(), factory );
@@ -127,41 +126,41 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
                 evaluator.evaluate( object, vars );
     }
 
-    ConditionAnalyzer.Condition getAnalyzedCondition( InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple leftTuple) {
-        ensureCompleteEvaluation(handle, workingMemory, leftTuple);
+    ConditionAnalyzer.Condition getAnalyzedCondition( InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple leftTuple) {
+        ensureCompleteEvaluation(handle, reteEvaluator, leftTuple);
         return new ConditionAnalyzer(executableStatement, declarations, operators, conditionClass).analyzeCondition();
     }
 
-    private void ensureCompleteEvaluation(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
+    private void ensureCompleteEvaluation(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple) {
         if (!evaluated) {
             ASTNode rootNode = getRootNode(executableStatement);
             if (rootNode != null) {
-                ensureCompleteEvaluation(rootNode, handle, workingMemory, tuple);
+                ensureCompleteEvaluation(rootNode, handle, reteEvaluator, tuple);
             }
             evaluated = true;
         }
     }
 
-    private void ensureCompleteEvaluation(ASTNode node, InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
+    private void ensureCompleteEvaluation(ASTNode node, InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple) {
         node = unwrap(node);
         if (!(node instanceof And || node instanceof Or)) {
-            evaluateIfNecessary(handle, workingMemory, tuple, node);
+            evaluateIfNecessary(handle, reteEvaluator, tuple, node);
             return;
         }
-        ensureBranchEvaluation(handle, workingMemory, tuple, ((BooleanNode)node).getLeft());
-        ensureBranchEvaluation(handle, workingMemory, tuple, ((BooleanNode)node).getRight());
+        ensureBranchEvaluation(handle, reteEvaluator, tuple, ((BooleanNode)node).getLeft());
+        ensureBranchEvaluation(handle, reteEvaluator, tuple, ((BooleanNode)node).getRight());
     }
 
-    private void ensureBranchEvaluation(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple, ASTNode node) {
-        evaluateIfNecessary( handle, workingMemory, tuple, node );
-        ensureCompleteEvaluation(node, handle, workingMemory, tuple);
+    private void ensureBranchEvaluation(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple, ASTNode node) {
+        evaluateIfNecessary( handle, reteEvaluator, tuple, node );
+        ensureCompleteEvaluation(node, handle, reteEvaluator, tuple);
     }
 
-    private void evaluateIfNecessary( InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple, ASTNode node ) {
+    private void evaluateIfNecessary( InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple, ASTNode node ) {
         if (!isEvaluated(node)) {
             ASTNode next = node.nextASTNode;
             node.nextASTNode = null;
-            evaluate( createMvelEvaluator(evaluator, asCompiledExpression(node) ), handle, workingMemory, tuple);
+            evaluate( createMvelEvaluator(evaluator, asCompiledExpression(node) ), handle, reteEvaluator, tuple);
             node.nextASTNode = next;
         }
     }

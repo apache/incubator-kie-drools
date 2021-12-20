@@ -31,10 +31,9 @@ import java.util.regex.Pattern;
 
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.mvel.asm.ClassGenerator;
-import org.drools.mvel.asm.GeneratorHelper;
+import org.drools.core.spi.Tuple;
 import org.drools.mvel.ConditionAnalyzer.AritmeticExpression;
 import org.drools.mvel.ConditionAnalyzer.AritmeticOperator;
 import org.drools.mvel.ConditionAnalyzer.ArrayAccessInvocation;
@@ -56,19 +55,18 @@ import org.drools.mvel.ConditionAnalyzer.MapAccessInvocation;
 import org.drools.mvel.ConditionAnalyzer.MethodInvocation;
 import org.drools.mvel.ConditionAnalyzer.SingleCondition;
 import org.drools.mvel.ConditionAnalyzer.VariableExpression;
-import org.drools.core.rule.constraint.ConditionEvaluator;
-import org.drools.core.rule.constraint.EvaluatorHelper;
-import org.drools.core.spi.Tuple;
+import org.drools.mvel.asm.ClassGenerator;
+import org.drools.mvel.asm.GeneratorHelper;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.util.NullType;
 
-import static org.drools.mvel.asm.GeneratorHelper.matchDeclarationsToTuple;
-import static org.drools.mvel.ConditionAnalyzer.isFixed;
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+import static org.drools.compiler.lang.DescrDumper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.mvel.ConditionAnalyzer.isFixed;
+import static org.drools.mvel.asm.GeneratorHelper.matchDeclarationsToTuple;
 import static org.mvel2.asm.Opcodes.AALOAD;
 import static org.mvel2.asm.Opcodes.ACC_FINAL;
 import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
@@ -124,7 +122,7 @@ public class ASMConditionEvaluatorJitter {
 
         generator.addMethod(ACC_PUBLIC,
                             "evaluate",
-                            generator.methodDescr(boolean.class, InternalFactHandle.class, InternalWorkingMemory.class, Tuple.class),
+                            generator.methodDescr(boolean.class, InternalFactHandle.class, ReteEvaluator.class, Tuple.class),
                             new EvaluateMethodGenerator(condition, declarations, operators, tuple));
 
         if (operators.length == 0) {

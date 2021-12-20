@@ -13,12 +13,12 @@
  * limitations under the License.
 */
 
-package org.drools.core.rule.constraint;
+package org.drools.mvel;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.Tuple;
 
 public interface ConditionEvaluator {
-    boolean evaluate(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple);
+    boolean evaluate(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple);
 }

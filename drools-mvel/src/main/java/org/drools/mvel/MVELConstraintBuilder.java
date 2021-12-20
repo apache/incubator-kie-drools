@@ -57,7 +57,6 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
-import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.Evaluator;
@@ -95,7 +94,7 @@ import static org.drools.compiler.rule.builder.PatternBuilder.registerDescrBuild
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+import static org.drools.compiler.lang.DescrDumper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 import static org.drools.mvel.builder.MVELExprAnalyzer.analyze;

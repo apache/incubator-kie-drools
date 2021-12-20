@@ -37,7 +37,6 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -48,7 +47,6 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.ConditionEvaluator;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.FieldValue;
@@ -282,7 +280,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             }
         }
         try {
-            return conditionEvaluator.evaluate(handle, (InternalWorkingMemory) reteEvaluator, tuple);
+            return conditionEvaluator.evaluate(handle, reteEvaluator, tuple);
         } catch (Exception e) {
             throw new ConstraintEvaluationException(expression, evaluationContext, e);
         }
@@ -304,7 +302,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     protected ConditionEvaluator forceJitEvaluator(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple) {
         ConditionEvaluator mvelEvaluator = createMvelConditionEvaluator(reteEvaluator);
         try {
-            mvelEvaluator.evaluate(handle, (InternalWorkingMemory) reteEvaluator, tuple);
+            mvelEvaluator.evaluate(handle, reteEvaluator, tuple);
         } catch (ClassCastException cce) {
         } catch (Exception e) {
             return createMvelConditionEvaluator(reteEvaluator);
@@ -351,7 +349,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
         try {
             if (analyzedCondition == null) {
-                analyzedCondition = (( MVELConditionEvaluator ) mvelEvaluator).getAnalyzedCondition(handle, (InternalWorkingMemory) reteEvaluator, tuple);
+                analyzedCondition = (( MVELConditionEvaluator ) mvelEvaluator).getAnalyzedCondition(handle, reteEvaluator, tuple);
             }
             ClassLoader jitClassLoader = kBase.getRootClassLoader() instanceof ProjectClassLoader ?
                     ((ProjectClassLoader) kBase.getRootClassLoader()).getTypesClassLoader() :
@@ -787,7 +785,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
      * Splits the expression in token (words) ignoring everything that is between quotes
      */
     private static List<String> splitExpression(String expression) {
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         int lastStart = -1;
         boolean isQuoted = false;
         for (int i = 0; i < expression.length(); i++) {

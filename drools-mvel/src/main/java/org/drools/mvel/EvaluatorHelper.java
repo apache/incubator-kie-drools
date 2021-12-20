@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.rule.constraint;
+package org.drools.mvel;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,27 +22,25 @@ import java.util.Map;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 
 public class EvaluatorHelper {
 
-    public static final String WM_ARGUMENT = "_workingMemory_";
-
     private EvaluatorHelper() { }
 
-    public static Map<String, Object> valuesAsMap(Object object, InternalWorkingMemory workingMemory, Tuple tuple, Declaration[] declarations) {
+    public static Map<String, Object> valuesAsMap(Object object, ReteEvaluator reteEvaluator, Tuple tuple, Declaration[] declarations) {
         if (declarations.length == 0) {
             return null;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         for (Declaration declaration : declarations) {
             if (tuple == null) {
-                map.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, object));
+                map.put(declaration.getBindingName(), declaration.getExtractor().getValue(reteEvaluator, object));
             } else {
                 Object fact = tuple.getObject(declaration);
-                map.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, fact != null ? fact : object));
+                map.put(declaration.getBindingName(), declaration.getExtractor().getValue(reteEvaluator, fact != null ? fact : object));
             }
         }
         return map;

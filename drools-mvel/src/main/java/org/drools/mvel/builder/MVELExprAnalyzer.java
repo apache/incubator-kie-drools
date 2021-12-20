@@ -43,7 +43,7 @@ import org.mvel2.util.PropertyTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+import static org.drools.compiler.lang.DescrDumper.WM_ARGUMENT;
 
 /**
  * Expression analyzer.
