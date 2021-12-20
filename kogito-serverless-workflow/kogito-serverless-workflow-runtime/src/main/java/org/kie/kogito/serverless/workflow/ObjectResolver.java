@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,7 +33,7 @@ public class ObjectResolver extends ExpressionWorkItemResolver {
 
     @Override
     protected Object evalExpression(Object inputModel) {
-        return readValue(expressionHandler.parse(expression).eval(inputModel, JsonNode.class));
+        return readValue(ExpressionHandlerFactory.get(language, expression).eval(inputModel, JsonNode.class));
     }
 
     private Object readValue(JsonNode node) {

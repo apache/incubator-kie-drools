@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.core.ParameterDefinition;
@@ -135,18 +135,16 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
         private Class<?> paramResolverOutputType;
         private String modelParameter = "Parameter";
         private Map<String, Object> functionArgs;
-        private Predicate<String> exprTest;
 
         private WorkItemBuilder(final String interfaceResource, final String operation) {
             this.operation = operation;
             this.interfaceResource = interfaceResource;
         }
 
-        public WorkItemBuilder withArgs(Map<String, Object> map, Class<? extends ExpressionWorkItemResolver> resolverClass, Class<?> outputClass, Predicate<String> exprTest) {
+        public WorkItemBuilder withArgs(Map<String, Object> map, Class<? extends ExpressionWorkItemResolver> resolverClass, Class<?> outputClass) {
             this.functionArgs = map;
             this.paramResolverClass = resolverClass;
             this.paramResolverOutputType = outputClass;
-            this.exprTest = exprTest;
             return this;
         }
 
@@ -179,15 +177,15 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
             factory.workParameter(KEY_WORKITEM_OPERATION, this.operation);
             if (functionArgs != null) {
                 factory.metaData(PARAM_META_PARAM_RESOLVER_TYPE, this.paramResolverOutputType.getCanonicalName());
-                functionArgs.entrySet().forEach(
-                        entry -> factory.workParameter(entry.getKey(), processWorkItemValue(exprLang, entry.getValue(), modelParameter, this.paramResolverClass, this.exprTest))
-                                .workParameterDefinition(
-                                        entry.getKey(),
-                                        DataTypeResolver.fromObject(entry.getValue(), this.exprTest)));
+                functionArgs.entrySet().forEach(entry -> build(entry, factory));
             }
-
             factory.metaData(MODEL_PARAMETER, modelParameter);
             return factory;
+        }
+
+        private <T extends RuleFlowNodeContainerFactory<T, ?>> void build(Entry<String, Object> entry, WorkItemNodeFactory<T> factory) {
+            factory.workParameter(entry.getKey(), processWorkItemValue(exprLang, entry.getValue(), this.modelParameter, this.paramResolverClass, true))
+                    .workParameterDefinition(entry.getKey(), DataTypeResolver.fromObject(entry.getValue(), true));
         }
 
         protected WorkItemNode build() {
@@ -202,15 +200,17 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
 
             if (functionArgs != null) {
                 workItemNode.setMetaData(PARAM_META_PARAM_RESOLVER_TYPE, this.paramResolverOutputType.getCanonicalName());
-                functionArgs.entrySet().forEach(entry -> {
-                    work.setParameter(entry.getKey(), processWorkItemValue(exprLang, entry.getValue(), modelParameter, this.paramResolverClass, this.exprTest));
-                    work.addParameterDefinition(new ParameterDefinitionImpl(entry.getKey(), DataTypeResolver.fromObject(entry.getValue(), this.exprTest)));
-                });
+                functionArgs.entrySet().forEach(entry -> build(entry, work));
             }
             workItemNode.setMetaData(MODEL_PARAMETER, modelParameter);
 
             workItemNode.setWork(work);
             return workItemNode;
+        }
+
+        private <T extends RuleFlowNodeContainerFactory<T, ?>> void build(Entry<String, Object> entry, Work work) {
+            work.setParameter(entry.getKey(), processWorkItemValue(exprLang, entry.getValue(), modelParameter, this.paramResolverClass, true));
+            work.addParameterDefinition(new ParameterDefinitionImpl(entry.getKey(), DataTypeResolver.fromObject(entry.getValue(), true)));
         }
 
     }

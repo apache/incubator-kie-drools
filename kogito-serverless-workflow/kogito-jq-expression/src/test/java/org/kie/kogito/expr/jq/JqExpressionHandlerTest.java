@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,51 +33,50 @@ class JqExpressionHandlerTest {
 
     @Test
     void testStringExpression() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo");
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", "javierito");
         assertEquals("javierito", parsedExpression.eval(node, String.class));
     }
 
     @Test
     void testBooleanExpression() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo");
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", true);
         assertTrue(parsedExpression.eval(node, Boolean.class));
     }
 
     @Test
     void testNumericExpression() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".number*.number");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".number*.number");
         JsonNode node = new ObjectMapper().createObjectNode().put("number", 2);
         assertEquals(4, parsedExpression.eval(node, JsonNode.class).asInt());
     }
 
     @Test
     void testNumericAssignment() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse("{\"result\" : .number*.number}");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", "{\"result\" : .number*.number}");
         JsonNode node = new ObjectMapper().createObjectNode().put("number", 2);
         assertEquals(4, parsedExpression.eval(node, JsonNode.class).get("result").asInt());
     }
 
     @Test
     void testJsonNodeExpression() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo");
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode compositeNode = mapper.createObjectNode().put("name", "Javierito");
-        JsonNode node = mapper.createObjectNode().set("foo", compositeNode);
+        JsonNode node = mapper.createObjectNode().set("foo", mapper.createObjectNode().put("name", "Javierito"));
         assertEquals("Javierito", parsedExpression.eval(node, ObjectNode.class).get("name").asText());
     }
 
     @Test
     void testMultiExpression() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo,.main,.another");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo,.main,.another");
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", "Javierito").put("main", "Pepito").put("another", "Fulanito");
         assertEquals("Javierito Pepito Fulanito", parsedExpression.eval(node, String.class));
     }
 
     @Test
     void testCollection() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jq").parse(".foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo");
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode node = objectMapper.createObjectNode().set("foo", objectMapper.createArrayNode().add("pepe").add(false).add(3).add(objectMapper.createArrayNode().add(1.1).add(1.2).add(1.3)));
         assertEquals(Arrays.asList("pepe", false, 3, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(node, Collection.class));

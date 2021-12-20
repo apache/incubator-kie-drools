@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,21 +33,21 @@ class JsonPathExpressionHandlerTest {
 
     @Test
     void testStringExpression() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jsonpath").parse("$.foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", "javierito");
         assertEquals("javierito", parsedExpression.eval(node, String.class));
     }
 
     @Test
     void testBooleanExpression() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jsonpath").parse("$.foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", true);
         assertTrue(parsedExpression.eval(node, Boolean.class));
     }
 
     @Test
     void testJsonNodeExpression() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jsonpath").parse("$.foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
         ObjectMapper mapper = new ObjectMapper();
         JsonNode compositeNode = mapper.createObjectNode().put("name", "Javierito");
         JsonNode node = mapper.createObjectNode().set("foo", compositeNode);
@@ -56,7 +56,7 @@ class JsonPathExpressionHandlerTest {
 
     @Test
     void testCollection() {
-        ParsedExpression parsedExpression = ExpressionHandlerFactory.get("jsonpath").parse("$.foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode node = objectMapper.createObjectNode().set("foo", objectMapper.createArrayNode().add("pepe").add(false).add(3).add(objectMapper.createArrayNode().add(1.1).add(1.2).add(1.3)));
         assertEquals(Arrays.asList("pepe", false, 3, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(node, Collection.class));

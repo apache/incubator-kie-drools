@@ -17,10 +17,11 @@ package org.kie.kogito.expr.jq;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
+import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,20 +34,16 @@ import net.thisptr.jackson.jq.Scope;
 import net.thisptr.jackson.jq.Versions;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 
-public class JqParsedExpression implements ParsedExpression {
+public class JqExpression implements Expression {
 
-    private Scope scope;
+    private final Supplier<Scope> scope;
+    private final String expr;
     private JsonQuery query;
-    private String expr;
+    private Boolean isValid;
 
-    public JqParsedExpression(Scope scope, String expr) {
+    public JqExpression(Supplier<Scope> scope, String expr) {
         this.expr = expr;
         this.scope = scope;
-        try {
-            this.query = JsonQuery.compile(expr, Versions.JQ_1_6);
-        } catch (JsonQueryException e) {
-            throw new IllegalArgumentException("Unable to compile expression " + expr, e);
-        }
     }
 
     private interface TypedOutput<T> extends Output {
@@ -150,7 +147,8 @@ public class JqParsedExpression implements ParsedExpression {
     public <T> T eval(Object context, Class<T> returnClass) {
         try {
             TypedOutput<T> output = output(returnClass);
-            query.apply(this.scope, (JsonNode) context, output);
+            compile();
+            query.apply(this.scope.get(), (JsonNode) context, output);
             return output.getResult();
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using query " + query, e);
@@ -160,5 +158,24 @@ public class JqParsedExpression implements ParsedExpression {
     @Override
     public void assign(Object context, Object value) {
         ExpressionHandlerUtils.assign((ObjectNode) context, eval(context, JsonNode.class), value, expr);
+    }
+
+    private void compile() throws JsonQueryException {
+        if (this.query == null) {
+            this.query = JsonQuery.compile(expr, Versions.JQ_1_6);
+        }
+    }
+
+    @Override
+    public boolean isValid() {
+        if (isValid == null) {
+            try {
+                compile();
+                isValid = true;
+            } catch (JsonQueryException e) {
+                isValid = false;
+            }
+        }
+        return isValid;
     }
 }

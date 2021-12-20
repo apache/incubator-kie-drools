@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.process.workitems.impl.expr.Expression;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,22 +36,17 @@ public class JsonNodeResolver extends ExpressionWorkItemResolver {
         super(exprLang, jsonPathExpr, paramName);
     }
 
-    private JsonNode parse(final Object input) {
-        if (input instanceof JsonNode) {
-            return (JsonNode) input;
-        }
-        ObjectMapper objectMapper = ObjectMapperFactory.get();
-        if (input instanceof String) {
-            if (expressionHandler.isExpr((String) input)) {
-                return TextNode.valueOf((String) input);
-            }
+    private JsonNode parse(String exprStr) {
+        if (ExpressionHandlerFactory.get(language, exprStr).isValid()) {
+            return TextNode.valueOf(exprStr);
+        } else {
+            ObjectMapper objectMapper = ObjectMapperFactory.get();
             try {
-                return objectMapper.readTree((String) input);
+                return objectMapper.readTree(exprStr);
             } catch (JsonProcessingException e) {
                 throw new IllegalArgumentException("Failed to parse input model from ordinary String to Json tree", e);
             }
         }
-        return objectMapper.valueToTree(input);
     }
 
     @Override
@@ -66,8 +63,9 @@ public class JsonNodeResolver extends ExpressionWorkItemResolver {
             return processedDefinition;
         } else if (expression.isValueNode()) {
             final String jsonPathExpr = expression.asText();
-            if (expressionHandler.isExpr(jsonPathExpr)) {
-                return expressionHandler.parse(jsonPathExpr).eval(inputModel, JsonNode.class);
+            Expression evalExpr = ExpressionHandlerFactory.get(language, jsonPathExpr);
+            if (evalExpr.isValid()) {
+                return evalExpr.eval(inputModel, JsonNode.class);
             }
             return expression.deepCopy();
         }

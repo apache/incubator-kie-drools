@@ -15,9 +15,11 @@
  */
 package org.kie.kogito.process.workitems.impl.expr;
 
-public interface ParsedExpression {
+public interface Expression {
 
     <T> T eval(Object context, Class<T> returnClass);
+
+    boolean isValid();
 
     void assign(Object context, Object value);
 }

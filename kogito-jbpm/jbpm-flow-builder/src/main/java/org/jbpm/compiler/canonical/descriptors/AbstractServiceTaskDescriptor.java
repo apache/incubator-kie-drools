@@ -17,7 +17,6 @@ package org.jbpm.compiler.canonical.descriptors;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 
 import org.jbpm.compiler.canonical.NodeValidator;
 import org.jbpm.workflow.core.node.DataAssociation;
@@ -220,8 +219,8 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
         return cls;
     }
 
-    public static Object processWorkItemValue(String exprLang, Object object, String paramName, Class<? extends ExpressionWorkItemResolver> clazz, Predicate<String> isExpression) {
-        return object instanceof CharSequence && isExpression.test(object.toString())
+    public static Object processWorkItemValue(String exprLang, Object object, String paramName, Class<? extends ExpressionWorkItemResolver> clazz, boolean isExpression) {
+        return isExpression
                 ? new WorkItemParamResolverSupplier(clazz, () -> new StringLiteralExpr(exprLang), () -> new StringLiteralExpr(object.toString()), () -> new StringLiteralExpr(paramName))
                 : object;
     }

@@ -52,7 +52,7 @@ class OpenApiTaskDescriptorTest {
 
         final WorkItemNode workItemNode =
                 OpenApiTaskDescriptor.builderFor("http://myspec.com", "add")
-                        .withArgs(Collections.singletonMap("body", "jeje"), DummyWorkItemHandlerResolver.class, Object.class, s -> true)
+                        .withArgs(Collections.singletonMap("body", "jeje"), DummyWorkItemHandlerResolver.class, Object.class)
                         .build();
         final OpenApiTaskDescriptor taskDescriptor = new OpenApiTaskDescriptor(workItemNode);
         taskDescriptor.handleParametersForServiceCall(execWorkItem, serviceCallMethod);
@@ -64,7 +64,7 @@ class OpenApiTaskDescriptorTest {
     void verifyModifierWithSingleParameter() {
         final WorkItemNode workItemNode =
                 OpenApiTaskDescriptor.builderFor("http://myspec.com", "add")
-                        .withArgs(Collections.singletonMap("bodyRequest", "jeje"), DummyWorkItemHandlerResolver.class, Object.class, s -> true)
+                        .withArgs(Collections.singletonMap("bodyRequest", "jeje"), DummyWorkItemHandlerResolver.class, Object.class)
                         .build();
         final OpenApiTaskDescriptor.WorkItemModifier modifier = OpenApiTaskDescriptor.modifierFor(workItemNode);
         modifier.modify(this.getClass().getCanonicalName(), "add", Collections.singletonList("body"));
@@ -76,7 +76,7 @@ class OpenApiTaskDescriptorTest {
     void verifyModifierWithSingleParameterSpecNone() {
         final WorkItemNode workItemNode =
                 OpenApiTaskDescriptor.builderFor("http://myspec.com", "add")
-                        .withArgs(Collections.singletonMap("body", "jeje"), DummyWorkItemHandlerResolver.class, Object.class, s -> true)
+                        .withArgs(Collections.singletonMap("body", "jeje"), DummyWorkItemHandlerResolver.class, Object.class)
                         .build();
         final OpenApiTaskDescriptor.WorkItemModifier modifier = OpenApiTaskDescriptor.modifierFor(workItemNode);
         assertThrows(IllegalArgumentException.class, () -> {
@@ -100,7 +100,7 @@ class OpenApiTaskDescriptorTest {
     void verifyModifierWithManyParametersDiffNames() {
         final WorkItemNode workItemNode =
                 OpenApiTaskDescriptor.builderFor("http://myspec.com", "add")
-                        .withArgs(Collections.singletonMap("body", "jeje"), DummyWorkItemHandlerResolver.class, Object.class, s -> true)
+                        .withArgs(Collections.singletonMap("body", "jeje"), DummyWorkItemHandlerResolver.class, Object.class)
                         .build();
         final OpenApiTaskDescriptor.WorkItemModifier modifier = OpenApiTaskDescriptor.modifierFor(workItemNode);
         assertThrows(IllegalArgumentException.class, () -> {

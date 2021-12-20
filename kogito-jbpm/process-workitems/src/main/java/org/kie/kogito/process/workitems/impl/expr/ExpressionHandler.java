@@ -17,7 +17,7 @@ package org.kie.kogito.process.workitems.impl.expr;
 
 public interface ExpressionHandler {
 
-    boolean isExpr(String expr);
+    Expression get(String expr);
 
-    ParsedExpression parse(String expr);
+    String lang();
 }

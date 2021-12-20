@@ -17,11 +17,13 @@ package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
 import org.kie.kogito.expr.jq.JqExpressionHandler;
 import org.kie.kogito.expr.jsonpath.JsonPathExpressionHandler;
+import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 
 /**
@@ -35,9 +37,10 @@ public class ServerlessWorkflowAssetsProcessor {
     }
 
     @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
-    void addExpressionHandlers(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+    void addExpressionHandlers(BuildProducer<ReflectiveClassBuildItem> reflectiveClass, BuildProducer<ServiceProviderBuildItem> serviceProvider) {
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, JsonPathExpressionHandler.class));
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, JqExpressionHandler.class));
+        serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath(ExpressionHandler.class.getCanonicalName()));
     }
 
 }

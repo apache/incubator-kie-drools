@@ -20,12 +20,12 @@ import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
 
 public abstract class ExpressionWorkItemResolver implements WorkItemParamResolver {
 
-    protected final ExpressionHandler expressionHandler;
+    protected final String language;
     protected final String expression;
     private final String paramName;
 
     protected ExpressionWorkItemResolver(String language, String expression, String paramName) {
-        this.expressionHandler = ExpressionHandlerFactory.get(language);
+        this.language = language;
         this.expression = expression;
         this.paramName = paramName;
     }

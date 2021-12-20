@@ -32,7 +32,6 @@ import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 import org.kie.kogito.serverless.workflow.JsonNodeResolver;
@@ -218,7 +217,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                         ServerlessWorkflowUtils.getOpenApiOperationId(actionFunction))
                         .withExprLang(workflow.getExpressionLang())
                         .withModelParameter(WORKITEM_PARAM)
-                        .withArgs(functionsToMap(functionArgs), JsonNodeResolver.class, JsonNode.class, s -> true)
+                        .withArgs(functionsToMap(functionArgs), JsonNodeResolver.class, JsonNode.class)
                         .build(embeddedSubProcess.workItemNode(parserContext.newId())).name(functionRef.getRefName())
                         .inMapping(WORKITEM_PARAM, inputVar)
                         .outMapping(WORKITEM_RESULT, outputVar);
@@ -241,14 +240,20 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
 
     private void processArgs(WorkItemNodeFactory<?> workItemFactory,
             JsonNode functionArgs, String paramName, Class<? extends ExpressionWorkItemResolver> clazz) {
-        ExpressionHandler expressionHandler = ExpressionHandlerFactory.get(workflow.getExpressionLang());
-        Map<String, Object> map = functionsToMap(functionArgs);
-        map.entrySet().forEach(
-                entry -> workItemFactory
-                        .workParameter(entry.getKey(),
-                                AbstractServiceTaskDescriptor.processWorkItemValue(workflow.getExpressionLang(), entry.getValue(), paramName, clazz, expressionHandler::isExpr))
-                        .workParameterDefinition(entry.getKey(),
-                                DataTypeResolver.fromObject(entry.getValue(), expressionHandler::isExpr)));
+        functionsToMap(functionArgs).entrySet().forEach(entry -> processArg(entry, workItemFactory, paramName, clazz));
+    }
+
+    private void processArg(Entry<String, Object> entry, WorkItemNodeFactory<?> workItemFactory, String paramName, Class<? extends ExpressionWorkItemResolver> clazz) {
+        boolean isExpr = isExpression(entry.getValue());
+        workItemFactory
+                .workParameter(entry.getKey(),
+                        AbstractServiceTaskDescriptor.processWorkItemValue(workflow.getExpressionLang(), entry.getValue(), paramName, clazz, isExpr))
+                .workParameterDefinition(entry.getKey(),
+                        DataTypeResolver.fromObject(entry.getValue(), isExpr));
+    }
+
+    private boolean isExpression(Object expr) {
+        return expr instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), expr.toString()).isValid();
     }
 
     private enum ActionType {

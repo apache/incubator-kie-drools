@@ -27,8 +27,8 @@ import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 /**
  * A for each node.
@@ -51,7 +51,7 @@ public class ForEachNode extends CompositeContextNode {
     private Action finishAction;
     private boolean waitForCompletion = true;
     private boolean sequential = true;
-    private ParsedExpression evaluateExpression;
+    private Expression evaluateExpression;
 
     public ForEachNode() {
         // Split
@@ -122,9 +122,9 @@ public class ForEachNode extends CompositeContextNode {
         this.finishAction = finishAction;
     }
 
-    public ParsedExpression getEvaluateExpression() {
+    public Expression getEvaluateExpression() {
         if (evaluateExpression == null && ExpressionHandlerFactory.isSupported(exprLanguage)) {
-            evaluateExpression = ExpressionHandlerFactory.get(exprLanguage).parse(collectionExpression);
+            evaluateExpression = ExpressionHandlerFactory.get(exprLanguage, collectionExpression);
         }
         return evaluateExpression;
     }

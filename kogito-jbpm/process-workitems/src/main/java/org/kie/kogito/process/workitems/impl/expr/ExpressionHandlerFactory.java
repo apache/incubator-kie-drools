@@ -15,40 +15,21 @@
  */
 package org.kie.kogito.process.workitems.impl.expr;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ServiceLoader;
 
 public class ExpressionHandlerFactory {
 
     private ExpressionHandlerFactory() {
     }
 
-    private static final Map<String, String> expHandlerClasses = new HashMap<>();
-    private static final Map<String, ExpressionHandler> expHandlerInstances = new ConcurrentHashMap<>();
+    private static final ServiceLoader<ExpressionHandler> serviceLoader = ServiceLoader.load(ExpressionHandler.class);
 
-    private static final String JSONPATH_CLASSNAME = "org.kie.kogito.expr.jsonpath.JsonPathExpressionHandler";
-    private static final String JSONPATH_LANG = "jsonpath";
-
-    private static final String JQ_CLASSNAME = "org.kie.kogito.expr.jq.JqExpressionHandler";
-    private static final String JQ_LANG = "jq";
-
-    static {
-        expHandlerClasses.put(JSONPATH_LANG, JSONPATH_CLASSNAME);
-        expHandlerClasses.put(JQ_LANG, JQ_CLASSNAME);
-    }
-
-    public static ExpressionHandler get(String lang) {
-        return expHandlerInstances.computeIfAbsent(lang, c -> {
-            try {
-                return Class.forName(expHandlerClasses.getOrDefault(c, JSONPATH_CLASSNAME)).asSubclass(ExpressionHandler.class).getConstructor().newInstance();
-            } catch (ReflectiveOperationException e) {
-                throw new IllegalStateException(e);
-            }
-        });
+    public static Expression get(String lang, String expr) {
+        return serviceLoader.stream().filter(p -> p.get().lang().equals(lang)).findFirst().orElseThrow(
+                () -> new IllegalArgumentException("Unsupported language " + lang)).get().get(expr);
     }
 
     public static boolean isSupported(String lang) {
-        return lang != null && expHandlerClasses.containsKey(lang);
+        return serviceLoader.stream().anyMatch(p -> p.get().lang().equals(lang));
     }
 }

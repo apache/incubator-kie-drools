@@ -15,7 +15,9 @@
  */
 package org.kie.kogito.expr.jsonpath;
 
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
+import java.util.regex.Pattern;
+
+import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,7 +30,7 @@ import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
-public class JsonPathParsedExpression implements ParsedExpression {
+public class JsonPathExpression implements Expression {
 
     private static final Configuration jsonPathConfig = Configuration
             .builder()
@@ -36,12 +38,14 @@ public class JsonPathParsedExpression implements ParsedExpression {
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
 
-    private String expr;
-    private ParseContext jsonPath;
+    private static final Pattern jsonPathRegexPattern = Pattern.compile("^((\\$\\[).*|(\\$\\.).*)");
 
-    public JsonPathParsedExpression(String expr) {
-        jsonPath = JsonPath
-                .using(jsonPathConfig);
+    private final String expr;
+    private final ParseContext jsonPath;
+    private Boolean isValid;
+
+    public JsonPathExpression(String expr) {
+        jsonPath = JsonPath.using(jsonPathConfig);
         this.expr = expr;
     }
 
@@ -65,4 +69,13 @@ public class JsonPathParsedExpression implements ParsedExpression {
     public void assign(Object context, Object value) {
         ExpressionHandlerUtils.assign((ObjectNode) context, eval(context, JsonNode.class), value, expr);
     }
+
+    @Override
+    public boolean isValid() {
+        if (isValid == null) {
+            isValid = jsonPathRegexPattern.matcher(expr).matches();
+        }
+        return isValid;
+    }
+
 }

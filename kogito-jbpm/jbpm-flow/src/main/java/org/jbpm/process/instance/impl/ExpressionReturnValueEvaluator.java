@@ -16,15 +16,15 @@
 package org.jbpm.process.instance.impl;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 public class ExpressionReturnValueEvaluator implements ReturnValueEvaluator {
-    private ParsedExpression expression;
+    private Expression expression;
     private String rootName;
 
     public ExpressionReturnValueEvaluator(String lang, String expression, String rootName) {
-        this.expression = ExpressionHandlerFactory.get(lang).parse(expression);
+        this.expression = ExpressionHandlerFactory.get(lang, expression);
         this.rootName = rootName;
     }
 

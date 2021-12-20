@@ -15,22 +15,18 @@
  */
 package org.kie.kogito.expr.jsonpath;
 
-import java.util.regex.Pattern;
-
+import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
-import org.kie.kogito.process.workitems.impl.expr.ParsedExpression;
 
 public class JsonPathExpressionHandler implements ExpressionHandler {
 
-    private static final Pattern jsonPathRegexPattern = Pattern.compile("^((\\$\\[).*|(\\$\\.).*)");
-
     @Override
-    public boolean isExpr(String expr) {
-        return jsonPathRegexPattern.matcher(expr).matches();
+    public Expression get(String expr) {
+        return new JsonPathExpression(expr);
     }
 
     @Override
-    public ParsedExpression parse(String expr) {
-        return new JsonPathParsedExpression(expr);
+    public String lang() {
+        return "jsonpath";
     }
 }
