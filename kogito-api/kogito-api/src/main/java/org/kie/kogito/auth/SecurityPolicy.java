@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.auth;
 
+import java.util.Collection;
 import java.util.Objects;
 
 import org.kie.kogito.process.workitem.Policy;
@@ -27,6 +28,14 @@ import org.kie.kogito.process.workitem.Policy;
 public class SecurityPolicy implements Policy<IdentityProvider> {
 
     private IdentityProvider identity;
+
+    /**
+     * Creates new SecurityPolicy for given name, roles
+     *
+     */
+    public static SecurityPolicy of(String name, Collection<String> roles) {
+        return new SecurityPolicy(IdentityProviders.of(name, roles));
+    }
 
     /**
      * Creates new SecurityPolicy for given identity provider

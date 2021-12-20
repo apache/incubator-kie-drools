@@ -48,6 +48,8 @@ import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.process.workitem.TaskModel;
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.auth.IdentityProviders;
+import org.kie.kogito.auth.SecurityPolicy;
 
 @Path("/$name$")
 public class $Type$ReactiveResource {

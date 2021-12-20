@@ -31,6 +31,7 @@ import org.kie.kogito.Application;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
@@ -41,7 +42,7 @@ import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.AttachmentInfo;
 import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
-import org.kie.kogito.process.workitem.Policies;
+import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
 public class ProcessServiceImpl implements ProcessService {
@@ -130,10 +131,10 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public <T extends Model> Optional<List<WorkItem>> getTasks(Process<T> process, String id, String user, List<String> groups) {
+    public <T extends Model> Optional<List<WorkItem>> getTasks(Process<T> process, String id, SecurityPolicy policy) {
         return process.instances()
                 .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(pi -> pi.workItems(HumanTaskNodeInstance.class::isInstance, Policies.of(user, groups)));
+                .map(pi -> pi.workItems(HumanTaskNodeInstance.class::isInstance, policy));
     }
 
     @Override
@@ -158,39 +159,17 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public <T extends MappableToModel<R>, R> Optional<R> completeTask(Process<T> process,
-            String id,
-            String taskId,
-            String phase,
-            String user,
-            List<String> groups,
-            MapOutput taskModel) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process
-                .instances()
-                .findById(id)
-                .map(pi -> {
-                    pi.transitionWorkItem(
-                            taskId,
-                            HumanTaskTransition.withModel(phase, taskModel, Policies.of(user, groups)));
-                    return pi;
-                })
-                .map(ProcessInstance::variables)
-                .map(MappableToModel::toModel));
-    }
-
-    @Override
     public <T extends Model, R extends MapOutput> Optional<R> saveTask(Process<T> process,
             String id,
             String taskId,
-            String user,
-            List<String> groups,
+            SecurityPolicy policy,
             MapOutput model,
             Function<Map<String, Object>, R> mapper) {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process
                 .instances()
                 .findById(id)
-                .map(pi -> pi.updateWorkItem(taskId, wi -> HumanTaskHelper.updateContent(wi, model), Policies.of(user, groups))))
-                .map(mapper::apply);
+                .map(pi -> pi.updateWorkItem(taskId, wi -> HumanTaskHelper.updateContent(wi, model), policy)))
+                .map(mapper);
     }
 
     @Override
@@ -199,59 +178,37 @@ public class ProcessServiceImpl implements ProcessService {
             String id,
             String taskId,
             String phase,
-            String user,
-            List<String> groups,
+            SecurityPolicy policy,
             MapOutput model) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> {
-                            pi.transitionWorkItem(
-                                    taskId,
-                                    HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
-                            return pi.variables().toModel();
-                        }));
+        HumanTaskTransition transition =
+                model == null ? HumanTaskTransition.withoutModel(phase, policy)
+                        : HumanTaskTransition.withModel(phase, model, policy);
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process
+                .instances()
+                .findById(id)
+                .map(pi -> {
+                    pi.transitionWorkItem(taskId, transition);
+                    return pi.variables().toModel();
+                }));
     }
 
     @Override
     public <T extends MappableToModel<?>, R> Optional<R> getTask(Process<T> process,
             String id,
             String taskId,
-            String user,
-            List<String> groups,
+            SecurityPolicy policy,
             Function<WorkItem, R> mapper) {
         return process.instances()
                 .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(pi -> pi.workItem(taskId, Policies.of(user, groups)))
-                .map(mapper::apply);
-    }
-
-    @Override
-    public <T extends MappableToModel<R>, R> Optional<R> abortTask(Process<T> process,
-            String id,
-            String taskId,
-            String phase,
-            String user,
-            List<String> groups) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> {
-                            pi.transitionWorkItem(taskId,
-                                    HumanTaskTransition.withoutModel(phase,
-                                            Policies.of(user, groups)));
-                            return pi.variables().toModel();
-                        }));
+                .map(pi -> pi.workItem(taskId, policy))
+                .map(mapper);
     }
 
     @Override
     public <T extends Model> Optional<Comment> addComment(Process<T> process,
             String id,
             String taskId,
-            String user,
-            List<String> groups,
+            SecurityPolicy policy,
             String commentInfo) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(), () -> process
@@ -259,8 +216,8 @@ public class ProcessServiceImpl implements ProcessService {
                         .findById(id)
                         .map(pi -> pi.updateWorkItem(
                                 taskId,
-                                wi -> HumanTaskHelper.addComment(wi, commentInfo, user),
-                                Policies.of(user, groups))));
+                                wi -> HumanTaskHelper.addComment(wi, commentInfo, policy.value().getName()),
+                                policy)));
     }
 
     @Override
@@ -268,8 +225,7 @@ public class ProcessServiceImpl implements ProcessService {
             String id,
             String taskId,
             String commentId,
-            String user,
-            List<String> groups,
+            SecurityPolicy policy,
             String commentInfo) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(), () -> process
@@ -277,8 +233,8 @@ public class ProcessServiceImpl implements ProcessService {
                         .findById(id)
                         .map(pi -> pi.updateWorkItem(
                                 taskId,
-                                wi -> HumanTaskHelper.updateComment(wi, commentId, commentInfo, user),
-                                Policies.of(user, groups))));
+                                wi -> HumanTaskHelper.updateComment(wi, commentId, commentInfo, policy.value().getName()),
+                                policy)));
     }
 
     @Override
@@ -286,24 +242,22 @@ public class ProcessServiceImpl implements ProcessService {
             String id,
             String taskId,
             String commentId,
-            String user,
-            List<String> groups) {
+            SecurityPolicy policy) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(), () -> process
                         .instances()
                         .findById(id)
                         .map(pi -> pi.updateWorkItem(
                                 taskId,
-                                wi -> HumanTaskHelper.deleteComment(wi, commentId, user),
-                                Policies.of(user, groups))));
+                                wi -> HumanTaskHelper.deleteComment(wi, commentId, policy.value().getName()),
+                                policy)));
     }
 
     @Override
     public <T extends Model> Optional<Attachment> addAttachment(Process<T> process,
             String id,
             String taskId,
-            String user,
-            List<String> groups,
+            SecurityPolicy policy,
             AttachmentInfo attachmentInfo) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(), () -> process
@@ -311,8 +265,8 @@ public class ProcessServiceImpl implements ProcessService {
                         .findById(id)
                         .map(pi -> pi.updateWorkItem(
                                 taskId,
-                                wi -> HumanTaskHelper.addAttachment(wi, attachmentInfo, user),
-                                Policies.of(user, groups))));
+                                wi -> HumanTaskHelper.addAttachment(wi, attachmentInfo, policy.value().getName()),
+                                policy)));
     }
 
     @Override
@@ -320,8 +274,7 @@ public class ProcessServiceImpl implements ProcessService {
             String id,
             String taskId,
             String attachmentId,
-            String user,
-            List<String> groups,
+            SecurityPolicy policy,
             AttachmentInfo attachment) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(), () -> process
@@ -329,8 +282,8 @@ public class ProcessServiceImpl implements ProcessService {
                         .findById(id)
                         .map(pi -> pi.updateWorkItem(
                                 taskId,
-                                wi -> HumanTaskHelper.updateAttachment(wi, attachmentId, attachment, user),
-                                Policies.of(user, groups))));
+                                wi -> HumanTaskHelper.updateAttachment(wi, attachmentId, attachment, policy.value().getName()),
+                                policy)));
     }
 
     @Override
@@ -338,16 +291,15 @@ public class ProcessServiceImpl implements ProcessService {
             String id,
             String taskId,
             String attachmentId,
-            String user,
-            List<String> groups) {
+            SecurityPolicy policy) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(), () -> process
                         .instances()
                         .findById(id)
                         .map(pi -> pi.updateWorkItem(
                                 taskId,
-                                wi -> HumanTaskHelper.deleteAttachment(wi, attachmentId, user),
-                                Policies.of(user, groups))));
+                                wi -> HumanTaskHelper.deleteAttachment(wi, attachmentId, policy.value().getName()),
+                                policy)));
     }
 
     @Override
@@ -355,10 +307,9 @@ public class ProcessServiceImpl implements ProcessService {
             String id,
             String taskId,
             String attachmentId,
-            String user,
-            List<String> groups) {
+            SecurityPolicy policy) {
         return process.instances().findById(id)
-                .map(pi -> HumanTaskHelper.findTask(pi, taskId, Policies.of(user, groups)))
+                .map(pi -> HumanTaskHelper.findTask(pi, taskId, policy))
                 .map(HumanTaskWorkItem::getAttachments)
                 .map(attachments -> attachments.get(attachmentId));
     }
@@ -367,10 +318,9 @@ public class ProcessServiceImpl implements ProcessService {
     public <T extends Model> Optional<Collection<Attachment>> getAttachments(Process<T> process,
             String id,
             String taskId,
-            String user,
-            List<String> groups) {
+            SecurityPolicy policy) {
         return process.instances().findById(id)
-                .map(pi -> HumanTaskHelper.findTask(pi, taskId, Policies.of(user, groups)))
+                .map(pi -> HumanTaskHelper.findTask(pi, taskId, policy))
                 .map(HumanTaskWorkItem::getAttachments)
                 .map(Map::values);
     }
@@ -380,10 +330,9 @@ public class ProcessServiceImpl implements ProcessService {
             String id,
             String taskId,
             String commentId,
-            String user,
-            List<String> groups) {
+            SecurityPolicy policy) {
         return process.instances().findById(id)
-                .map(pi -> HumanTaskHelper.findTask(pi, taskId, Policies.of(user, groups)))
+                .map(pi -> HumanTaskHelper.findTask(pi, taskId, policy))
                 .map(HumanTaskWorkItem::getComments)
                 .map(comments -> comments.get(commentId));
     }
@@ -392,10 +341,9 @@ public class ProcessServiceImpl implements ProcessService {
     public <T extends Model> Optional<Collection<Comment>> getComments(Process<T> process,
             String id,
             String taskId,
-            String user,
-            List<String> groups) {
+            SecurityPolicy policy) {
         return process.instances().findById(id)
-                .map(pi -> HumanTaskHelper.findTask(pi, taskId, Policies.of(user, groups)))
+                .map(pi -> HumanTaskHelper.findTask(pi, taskId, policy))
                 .map(HumanTaskWorkItem::getComments)
                 .map(Map::values);
     }
@@ -416,14 +364,13 @@ public class ProcessServiceImpl implements ProcessService {
             String id,
             String taskId,
             String taskName,
-            String user,
-            List<String> groups) {
+            SecurityPolicy policy) {
         return JsonSchemaUtil.addPhases(
                 process,
                 application.config().get(ProcessConfig.class).workItemHandlers().forName("Human Task"),
                 id,
                 taskId,
-                Policies.of(user, groups),
+                new Policy<?>[] { policy },
                 JsonSchemaUtil.load(Thread.currentThread().getContextClassLoader(), process.id(), taskName));
     }
 
