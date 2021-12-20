@@ -29,6 +29,13 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.ObjectHashMap;
 import org.kie.api.runtime.rule.FactHandle;
 
+/**
+ * The Truth Maintenance System is responsible for tracking two things. Firstly
+ * It maintains a Map to track the classes with the same Equality, using the
+ * EqualityKey. The EqualityKey has an internal data structure which references
+ * all the handles which are equal. Secondly It maintains another map tracking
+ * the justifications for logically asserted facts.
+ */
 public interface TruthMaintenanceSystem {
 
     ObjectHashMap getEqualityKeyMap();

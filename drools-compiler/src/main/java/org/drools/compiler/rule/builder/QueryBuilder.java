@@ -15,10 +15,7 @@
 
 package org.drools.compiler.rule.builder;
 
-import java.util.Arrays;
-
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
@@ -26,14 +23,12 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.constraint.QueryNameConstraint;
-import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 
 
 public class QueryBuilder implements EngineElementBuilder {
-    public Pattern build(final RuleBuildContext context,
-                         final QueryDescr queryDescr) {
+    public Pattern build(RuleBuildContext context, QueryDescr queryDescr) {
         ObjectType queryObjectType = ClassObjectType.DroolsQuery_ObjectType;
         final Pattern pattern = new Pattern( context.getNextPatternId(),
                                              0, // tupleIndex is 0 by default
@@ -55,25 +50,10 @@ public class QueryBuilder implements EngineElementBuilder {
 
         QueryImpl query = ((QueryImpl) context.getRule());
 
-        String[] params;
-        String[] types;
-        int numParams = queryDescr.getParameters().length;
-        if ( query.isAbductive() ) {
-            params = Arrays.copyOf( queryDescr.getParameters(), queryDescr.getParameters().length + 1 );
-            types = Arrays.copyOf( queryDescr.getParameterTypes(), queryDescr.getParameterTypes().length + 1 );
-        } else {
-            params = queryDescr.getParameters();
-            types = queryDescr.getParameterTypes();
-        }
+        String[] params = getQueryParams(queryDescr);
+        String[] types = getQueryTypes(queryDescr, query);
 
         Declaration[] declarations = new Declaration[ params.length ];
-
-        Class<?> abductionReturnKlass = null;
-        if ( query.isAbductive() ) {
-            abductionReturnKlass = query.getAbductionClass(queryDescr::getTypedAnnotation);
-            params[ numParams ] = "";
-            types[ numParams ] = abductionReturnKlass.getName();
-        }
 
         int i = 0;
         try {
@@ -101,29 +81,19 @@ public class QueryBuilder implements EngineElementBuilder {
         }
         context.setPrefixPattern( pattern );
 
-        if ( query.isAbductive() ) {
-            String returnName = "";
-            try {
-                AnnotationDescr ann = queryDescr.getAnnotation( query.getAbductiveAnnotationClass() );
-                Object[] argsVal = ((Object[]) ann.getValue( "args" ));
-                String[] args = argsVal != null ? Arrays.copyOf( argsVal, argsVal.length, String[].class ) : null;
-
-                returnName = types[ numParams ];
-                ObjectType objectType = context.getPkg().getClassFieldAccessorStore().wireObjectType( new ClassObjectType( abductionReturnKlass, false ), (AcceptsClassObjectType) query );
-
-                query.setReturnType( objectType, params, args, declarations );
-            } catch ( NoSuchMethodException e ) {
-                context.addError( new DescrBuildError( context.getParentDescr(),
-                                                       queryDescr,
-                                                       e,
-                                                       "Unable to resolve abducible constructor for type : " + returnName +
-                                                       " with types " + Arrays.toString( types ) ) );
-
-            } catch ( IllegalArgumentException e ) {
-                context.addError( new DescrBuildError( context.getParentDescr(), queryDescr, e, e.getMessage() ) );
-            }
-        }
+        postBuild(context, queryDescr, query, params, types, declarations);
 
         return pattern;
+    }
+
+    protected void postBuild(RuleBuildContext context, QueryDescr queryDescr, QueryImpl query, String[] params, String[] types, Declaration[] declarations) {
+    }
+
+    protected String[] getQueryParams(QueryDescr queryDescr) {
+        return queryDescr.getParameters();
+    }
+
+    protected String[] getQueryTypes(QueryDescr queryDescr, QueryImpl query) {
+        return queryDescr.getParameterTypes();
     }
 }

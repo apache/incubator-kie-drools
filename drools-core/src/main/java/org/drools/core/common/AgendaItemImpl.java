@@ -67,7 +67,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     private           long                                           activationNumber;
     private           int                                            index;
     private           boolean                                        queued;
-    private           LinkedList<LogicalDependency<T>>  justified;
+    private           LinkedList<LogicalDependency<T>>               justified;
     private           LinkedList<LogicalDependency<SimpleMode>>      blocked;
     private           LinkedList<SimpleMode>                         blockers;
     private transient InternalAgendaGroup                            agendaGroup;
@@ -188,7 +188,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     public void addBlocked(final LogicalDependency<SimpleMode> dep) {
         // Adds the blocked to the blockers list
         if (this.blocked == null) {
-            this.blocked = new LinkedList<LogicalDependency<SimpleMode>>();
+            this.blocked = new LinkedList<>();
         }
 
         this.blocked.add(dep);

@@ -59,6 +59,7 @@ import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
+import org.drools.compiler.rule.builder.AbductiveQueryBuilder;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.CollectBuilder;
 import org.drools.compiler.rule.builder.ConditionalBranchBuilder;
@@ -90,6 +91,7 @@ import org.drools.core.io.internal.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.LineMappings;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.Wireable;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -119,6 +121,7 @@ public class JavaDialect
     // builders
     protected static final PatternBuilder PATTERN_BUILDER = new PatternBuilder();
     protected static final QueryBuilder QUERY_BUILDER = new QueryBuilder();
+    protected static final QueryBuilder ABDUCTIVE_QUERY_BUILDER = new AbductiveQueryBuilder();
     protected static final SalienceBuilder SALIENCE_BUILDER = new MVELSalienceBuilder();
     protected static final EnabledBuilder ENABLED_BUILDER = new MVELEnabledBuilder();
     protected static final JavaAccumulateBuilder ACCUMULATE_BUILDER = new JavaAccumulateBuilder();
@@ -348,8 +351,8 @@ public class JavaDialect
         return PATTERN_BUILDER;
     }
 
-    public QueryBuilder getQueryBuilder() {
-        return QUERY_BUILDER;
+    public QueryBuilder getQueryBuilder(QueryImpl query) {
+        return query.isAbductive() ? ABDUCTIVE_QUERY_BUILDER : QUERY_BUILDER;
     }
 
     public SalienceBuilder getSalienceBuilder() {

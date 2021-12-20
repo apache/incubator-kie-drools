@@ -59,6 +59,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
 import org.junit.After;
@@ -362,7 +363,7 @@ public class PackageBuilderConfigurationTest {
             return null;
         }
 
-        public QueryBuilder getQueryBuilder() {
+        public QueryBuilder getQueryBuilder(QueryImpl query) {
             return null;
         }
 

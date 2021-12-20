@@ -39,6 +39,7 @@ public class TruthMaintenanceSystemFactoryImpl implements TruthMaintenanceSystem
         return new TMSKnowledgeHelper( reteEvaluator );
     }
 
+    @Override
     public QueryImpl createTmsQuery(String name, Predicate<Class<? extends Annotation>> hasAnnotation) {
         return hasAnnotation.test(Abductive.class) ? new AbductiveQuery(name) : new QueryImpl(name);
     }

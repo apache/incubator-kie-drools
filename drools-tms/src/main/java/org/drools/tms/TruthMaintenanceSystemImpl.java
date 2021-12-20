@@ -39,13 +39,6 @@ import org.drools.tms.beliefsystem.jtms.JTMSBeliefSetImpl;
 import org.drools.core.beliefsystem.Mode;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
- * The Truth Maintenance System is responsible for tracking two things. Firstly
- * It maintains a Map to track the classes with the same Equality, using the
- * EqualityKey. The EqualityKey has an internal data structure which references
- * all the handles which are equal. Secondly It maintains another map tracking
- * the justifications for logically asserted facts.
- */
 public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
 
     private InternalWorkingMemoryEntryPoint ep;

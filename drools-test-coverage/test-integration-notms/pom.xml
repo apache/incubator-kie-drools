@@ -37,11 +37,6 @@
     <dependencies>
         <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
             <artifactId>drools-mvel</artifactId>
             <scope>test</scope>
         </dependency>
@@ -49,6 +44,11 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
             <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-model-compiler</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
