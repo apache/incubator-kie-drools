@@ -57,9 +57,13 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationUtils;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.model.DomainClassMetadata;
@@ -72,9 +76,11 @@ import org.drools.model.WindowReference;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.FunctionGenerator;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.WindowReferenceGenerator;
 import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -160,7 +166,7 @@ public class PackageModel {
 
     private boolean oneClassPerRule;
 
-    public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
+    private PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
     }
 
@@ -168,13 +174,30 @@ public class PackageModel {
         this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(gav, name));
     }
 
-    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
+    private PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
         this.name = name;
         this.pkgUUID = pkgUUID;
         this.rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
+    }
+
+    public static PackageModel createPackageModel(KnowledgeBuilderConfigurationImpl configuration, PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName, ReleaseId releaseId, DRLIdGenerator exprIdGenerator) {
+        return packageDescr.getPreferredPkgUUID()
+                .map(pkgUUI -> new PackageModel(pkgName, configuration, pkgRegistry.getDialectCompiletimeRegistry(), exprIdGenerator, pkgUUI))
+                .orElse(new PackageModel(releaseId, pkgName, configuration, pkgRegistry.getDialectCompiletimeRegistry(), exprIdGenerator));
+    }
+
+    public static void initPackageModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, TypeResolver typeResolver, PackageDescr packageDescr, PackageModel packageModel ) {
+        packageModel.addImports( pkg.getImports().keySet());
+        packageModel.addStaticImports( pkg.getStaticImports());
+        packageModel.addEntryPoints( packageDescr.getEntryPointDeclarations());
+        packageModel.addGlobals( pkg );
+        packageModel.setAccumulateFunctions( pkg.getAccumulateFunctions());
+        packageModel.setInternalKnowledgePackage( pkg );
+        new WindowReferenceGenerator( packageModel, typeResolver ).addWindowReferences( kbuilder, packageDescr.getWindowDeclarations());
+        packageModel.addAllFunctions( packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
     }
 
     public Map<String, CreatedClass> getLambdaClasses() {
