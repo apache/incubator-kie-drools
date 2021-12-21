@@ -80,8 +80,6 @@ public interface KnowledgeHelper
 
     InternalFactHandle insertLogical(Object object, Mode... beliefs) ;
     
-    void cancelRemainingPreviousLogicalDependencies();
-    
     InternalFactHandle getFactHandle(Object object);
     
     InternalFactHandle getFactHandle(InternalFactHandle handle);

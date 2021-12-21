@@ -188,8 +188,6 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         return null;
     }
 
-    public void cancelRemainingPreviousLogicalDependencies() { }
-    
     public void cancelMatch(Match act) {
         AgendaItem match = ( AgendaItem ) act;
         ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match, reteEvaluator);

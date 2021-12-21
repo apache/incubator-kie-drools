@@ -455,7 +455,6 @@ public class RuleExecutor {
             ruleEventSupport.onAfterMatchFire( activation );
 
             activation.setActive(false);
-            knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
             activationsManager.handleException( activation, e );

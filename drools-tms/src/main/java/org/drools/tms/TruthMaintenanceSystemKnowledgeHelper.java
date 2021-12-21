@@ -56,6 +56,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
     }
 
     public void reset() {
+        cancelRemainingPreviousLogicalDependencies();
         super.reset();
         this.previousJustified = null;
         this.previousBlocked = null;
