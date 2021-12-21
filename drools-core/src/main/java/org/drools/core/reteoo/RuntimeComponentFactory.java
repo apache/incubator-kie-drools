@@ -75,11 +75,20 @@ public interface RuntimeComponentFactory {
     GenericKieSessionMonitoringImpl createStatelessSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
 
     class Holder {
-        private static final RuntimeComponentFactory INSTANCE = ServiceRegistry.getService( RuntimeComponentFactory.class );
+        private static final RuntimeComponentFactory INSTANCE = createInstance();
+
+        static RuntimeComponentFactory createInstance() {
+            RuntimeComponentFactory factory = ServiceRegistry.getService( RuntimeComponentFactory.class );
+            if (factory == null) {
+                throwExceptionForMissingRuntime();
+                return null;
+            }
+            return factory;
+        }
     }
 
     static RuntimeComponentFactory get() {
-        return RuntimeComponentFactory.Holder.INSTANCE != null ? RuntimeComponentFactory.Holder.INSTANCE : throwExceptionForMissingRuntime();
+        return RuntimeComponentFactory.Holder.INSTANCE;
     }
 
     static <T> T throwExceptionForMissingRuntime() {

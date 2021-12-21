@@ -20,15 +20,12 @@ import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 
 import org.drools.core.rule.QueryImpl;
-import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface TruthMaintenanceSystemFactory {
     String NO_TMS = "You're trying to use the Truth Maintenance System without having imported it. Please add the module org.drools:drools-tms to your classpath.";
 
     TruthMaintenanceSystem createTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint);
-
-    KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator);
 
     class Holder {
         private static final TruthMaintenanceSystemFactory INSTANCE = ServiceRegistry.getService( TruthMaintenanceSystemFactory.class );

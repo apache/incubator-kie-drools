@@ -36,15 +36,15 @@ import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.tms.beliefsystem.simple.SimpleLogicalDependency;
 import org.kie.api.runtime.rule.Match;
 
-public class TMSKnowledgeHelper<T extends ModedAssertion<T>> extends DefaultKnowledgeHelper {
+public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> extends DefaultKnowledgeHelper {
 
     private LinkedList<LogicalDependency<T>> previousJustified;
 
     private LinkedList<LogicalDependency<SimpleMode>> previousBlocked;
 
-    public TMSKnowledgeHelper() { }
+    public TruthMaintenanceSystemKnowledgeHelper() { }
 
-    public TMSKnowledgeHelper(ReteEvaluator reteEvaluator) {
+    public TruthMaintenanceSystemKnowledgeHelper(ReteEvaluator reteEvaluator) {
         super(reteEvaluator);
     }
 

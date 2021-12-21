@@ -30,7 +30,6 @@ import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -41,7 +40,6 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.kiesession.agenda.DefaultAgendaFactory;
-import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.management.KieSessionMonitoringImpl;
 import org.drools.kiesession.management.StatelessKieSessionMonitoringImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -101,9 +99,7 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
     }
 
     public final KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator) {
-        return TruthMaintenanceSystemFactory.present() ?
-                TruthMaintenanceSystemFactory.get().createKnowledgeHelper( reteEvaluator ) :
-                new DefaultKnowledgeHelper( reteEvaluator );
+        return KnowledgeHelperFactory.get().createKnowledgeHelper(reteEvaluator);
     }
 
     public InternalWorkingMemory createStatefulSession(RuleBase ruleBase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool) {
