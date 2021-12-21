@@ -13,21 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.actions;
+package org.kie.kogito.quarkus.workflows;
 
-import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import io.quarkus.test.junit.NativeImageTest;
 
-public class CollectorAction extends BaseExpressionAction {
+@NativeImageTest
+class NativePojoServiceIT extends PojoServiceIT {
 
-    private String outputVar;
-
-    public CollectorAction(String lang, String expr, String inputVar, String outputVar) {
-        super(lang, expr, inputVar);
-        this.outputVar = outputVar;
-    }
-
-    @Override
-    public void execute(KogitoProcessContext context) throws Exception {
-        assign(context, ActionUtils.getJsonNode(context, outputVar));
-    }
 }

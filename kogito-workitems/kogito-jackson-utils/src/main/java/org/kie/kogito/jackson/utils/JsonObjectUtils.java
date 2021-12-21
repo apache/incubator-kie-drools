@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.LongNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ShortNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -39,7 +40,9 @@ import com.fasterxml.jackson.databind.node.TextNode;
 public class JsonObjectUtils {
 
     public static JsonNode fromValue(Object value) {
-        if (value instanceof JsonNode) {
+        if (value == null) {
+            return NullNode.instance;
+        } else if (value instanceof JsonNode) {
             return (JsonNode) value;
         } else if (value instanceof Boolean) {
             return BooleanNode.valueOf((Boolean) value);

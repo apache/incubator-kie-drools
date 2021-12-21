@@ -102,12 +102,40 @@ public class MergeUtilsTest {
         assertEquals(srcNode, MergeUtils.merge(srcNode, null));
     }
 
+    private static class Person {
+        private String name;
+
+        public Person() {
+        }
+
+        public Person(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+    }
+
+    @Test
+    void testMergeWithPojo() {
+        Person person = new Person("javierito");
+        ObjectNode target = ObjectMapperFactory.get().createObjectNode().put("name", "fulanito");
+        assertEquals(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"), MergeUtils.merge(JsonObjectUtils.fromValue(person), target));
+
+    }
+
     private static ObjectNode getCustomer(String name, int age, double salary, boolean hasJob, String city, Iterable<String> addresses) {
         ArrayNode addressesArray = ObjectMapperFactory.get().createArrayNode();
         for (String address : addresses) {
             addressesArray.add(ObjectMapperFactory.get().createObjectNode().put("address", address).put("city", city));
         }
         return ObjectMapperFactory.get().createObjectNode().put("name", name).put("age", age).put("salary", salary).put("hasJob", hasJob).set("addresses", addressesArray);
-
     }
+
 }

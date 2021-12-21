@@ -67,7 +67,7 @@ public class JsonPathExpression implements Expression {
 
     @Override
     public void assign(Object context, Object value) {
-        ExpressionHandlerUtils.assign((ObjectNode) context, eval(context, JsonNode.class), value, expr);
+        ExpressionHandlerUtils.assign((ObjectNode) context, eval(context, JsonNode.class), (JsonNode) value, expr);
     }
 
     @Override

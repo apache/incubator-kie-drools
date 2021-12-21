@@ -16,7 +16,7 @@
 package org.kie.kogito.serverless.workflow.actions;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -32,7 +32,6 @@ class ActionUtils {
     }
 
     protected static JsonNode getJsonNode(KogitoProcessContext context, String variableName) {
-        JsonNode jsonNode = (JsonNode) context.getVariable(variableName);
-        return jsonNode == null ? ObjectMapperFactory.get().createObjectNode() : jsonNode;
+        return JsonObjectUtils.fromValue(context.getVariable(variableName));
     }
 }

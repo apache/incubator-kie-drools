@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.actions;
+package org.kie.kogito.workflows.services;
 
-import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+public class AgePerson extends Person {
 
-public class CollectorAction extends BaseExpressionAction {
+    private int age;
 
-    private String outputVar;
-
-    public CollectorAction(String lang, String expr, String inputVar, String outputVar) {
-        super(lang, expr, inputVar);
-        this.outputVar = outputVar;
+    public AgePerson() {
     }
 
-    @Override
-    public void execute(KogitoProcessContext context) throws Exception {
-        assign(context, ActionUtils.getJsonNode(context, outputVar));
+    public AgePerson(String name, int age) {
+        super(name);
+        this.age = age;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }

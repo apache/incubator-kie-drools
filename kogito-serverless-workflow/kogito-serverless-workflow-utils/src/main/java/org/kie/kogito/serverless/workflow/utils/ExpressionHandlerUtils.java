@@ -29,14 +29,13 @@ public class ExpressionHandlerUtils {
     private ExpressionHandlerUtils() {
     }
 
-    public static void assign(ObjectNode context, JsonNode target, Object value, String expr) {
-        JsonNode srcNode = JsonObjectUtils.fromValue(value);
+    public static void assign(ObjectNode context, JsonNode target, JsonNode value, String expr) {
         if (target == null || target.isNull()) {
-            target = srcNode.isArray() ? ObjectMapperFactory.get().createArrayNode() : ObjectMapperFactory.get().createObjectNode();
+            target = value.isArray() ? ObjectMapperFactory.get().createArrayNode() : ObjectMapperFactory.get().createObjectNode();
         }
         Optional<String> varName = fallbackVarToName(expr);
         if (varName.isPresent()) {
-            JsonObjectUtils.addToNode(varName.get(), MergeUtils.merge(srcNode, target), context);
+            JsonObjectUtils.addToNode(varName.get(), MergeUtils.merge(value, target), context);
         }
     }
 

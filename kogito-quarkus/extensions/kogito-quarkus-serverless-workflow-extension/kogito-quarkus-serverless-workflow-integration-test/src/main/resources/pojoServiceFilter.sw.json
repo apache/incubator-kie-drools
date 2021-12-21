@@ -1,0 +1,65 @@
+{
+  "id": "pojoServiceFilter",
+  "version": "1.0",
+  "name": "Workflow test",
+  "description": "Testing service returning pojo with filter",
+  "start": "callService",
+  "functions": [
+    {
+      "name": "getPerson",
+      "metadata": {
+        "interface": "org.kie.kogito.workflows.services.AgePersonService",
+        "operation": "from",
+        "type": "service"
+      }
+    },
+    {
+      "name": "printMessage",
+      "metadata": {
+        "type": "sysout"
+      }
+    }
+  ],
+  "states": [
+    {
+      "name": "callService",
+      "type": "operation",
+      "actions": [ 
+        {
+          "name": "callAction",
+          "functionRef": {
+            "refName": "getPerson",
+            "arguments": {
+              "name": ".name",
+              "age": ".age"
+            }
+          },
+          "actionDataFilter": {
+             "results" : "{name: .name}"
+          } 
+        }],
+      "stateDataFilter" : {
+        "output" : "{name: .name}"
+      },
+      "transition": "finish"
+    },
+    {
+      "name": "finish",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "printAction",
+          "functionRef": {
+            "refName": "printMessage",
+            "arguments": {
+              "message": ".name"
+            }
+          }
+        }
+      ],
+      "end": {
+        "terminate": "true"
+      }
+    }
+  ]
+}

@@ -172,11 +172,11 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                                         parserContext.getContext()))
                         .workParameter(SERVICE_IMPL_KEY, ServerlessWorkflowUtils.resolveFunctionMetadata(
                                 actionFunction, SERVICE_IMPL_KEY, parserContext.getContext(), "Java"))
-                        .inMapping(WORKITEM_PARAM, inputVar);
+                        .inMapping(WORKITEM_PARAM, inputVar)
+                        .outMapping(WORKITEM_PARAM, outputVar);
 
                 if (functionArgs == null || functionArgs.isEmpty()) {
-                    serviceFactory.workParameter(WORKITEM_PARAM_TYPE, ServerlessWorkflowParser.JSON_NODE)
-                            .outMapping(WORKITEM_PARAM, outputVar);
+                    serviceFactory.workParameter(WORKITEM_PARAM_TYPE, ServerlessWorkflowParser.JSON_NODE);
                 } else {
                     processArgs(serviceFactory, functionArgs, WORKITEM_PARAM, ObjectResolver.class);
                 }
