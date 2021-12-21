@@ -105,7 +105,7 @@ public class QueryGenerator {
         String queryDefVariableName = toQueryDef(queryDescr.getName());
         RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
 
-        context.addGlobalDeclarations(packageModel.getGlobals());
+        context.addGlobalDeclarations();
         context.setDialectFromAttributes(queryDescr.getAttributes().values());
 
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());

@@ -67,7 +67,6 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static java.util.stream.Collectors.toList;
 import static org.drools.kiesession.session.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -130,7 +129,6 @@ public class ModelGenerator {
 
     public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         TypeResolver typeResolver = pkg.getTypeResolver();
-        initPackageModel( kbuilder, pkg, typeResolver, packageDescr, packageModel );
 
         List<RuleDescr> ruleDescrs = packageDescr.getRules();
         if (ruleDescrs.isEmpty()) {
@@ -178,21 +176,10 @@ public class ModelGenerator {
         }
     }
 
-    public static void initPackageModel( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, TypeResolver typeResolver, PackageDescr packageDescr, PackageModel packageModel ) {
-        packageModel.addImports( pkg.getImports().keySet());
-        packageModel.addStaticImports( pkg.getStaticImports());
-        packageModel.addEntryPoints( packageDescr.getEntryPointDeclarations());
-        packageModel.addGlobals( pkg );
-        packageModel.setAccumulateFunctions( pkg.getAccumulateFunctions());
-        packageModel.setInternalKnowledgePackage( pkg );
-        new WindowReferenceGenerator( packageModel, typeResolver ).addWindowReferences( kbuilder, packageDescr.getWindowDeclarations());
-        packageModel.addAllFunctions( packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
-    }
-
     private static void processRule(PackageDescr packageDescr, RuleContext context) {
         PackageModel packageModel = context.getPackageModel();
         RuleDescr ruleDescr = context.getRuleDescr();
-        context.addGlobalDeclarations(packageModel.getGlobals());
+        context.addGlobalDeclarations();
         context.setDialectFromAttributes(ruleDescr.getAttributes().values());
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {

@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationFactory;
-import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
@@ -112,7 +111,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
         storeGeneratedPojosInPackages( packages );
-        buildOtherDeclarations(packages);
+        buildOtherDeclarations( packages );
         deregisterTypeDeclarations( packages );
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
@@ -266,17 +265,13 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-        generateModel(this, pkg, packageDescr, model);
+        PackageModel packageModel = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
+        PackageModel.initPackageModel( this, pkgRegistry.getPackage(), pkgRegistry.getTypeResolver(), packageDescr, packageModel );
+        generateModel(this, pkg, packageDescr, packageModel);
     }
 
-    protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry,  String pkgName) {
-        return packageModels.computeIfAbsent(pkgName, s -> {
-            final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return packageDescr.getPreferredPkgUUID()
-                    .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
-                    .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator));
-        });
+    protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {
+        return packageModels.computeIfAbsent(pkgName, s -> PackageModel.createPackageModel(getBuilderConfiguration(), packageDescr, pkgRegistry, pkgName, releaseId, exprIdGenerator));
     }
 
     public Collection<T> getPackageSources() {

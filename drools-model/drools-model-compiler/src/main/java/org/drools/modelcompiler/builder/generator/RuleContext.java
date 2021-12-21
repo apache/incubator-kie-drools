@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -298,8 +299,19 @@ public class RuleContext {
         return dec == null ? empty() : ofNullable( dec.getBindingExpr() );
     }
 
-    public void addGlobalDeclarations(Map<String, Class<?>> globals) {
-        for(Map.Entry<String, Class<?>> ks : globals.entrySet()) {
+    public void addGlobalDeclarations() {
+        Map<String, Class<?>> globals = packageModel.getGlobals();
+
+        // also takes globals defined in different packages imported with a wildcard
+        packageModel.getImports().stream()
+                .filter( imp -> imp.endsWith(".*") )
+                .map( imp -> imp.substring(0, imp.length()-2) )
+                .map( imp -> kbuilder.getPackageRegistry(imp) )
+                .filter( Objects::nonNull )
+                .map( pkgRegistry -> pkgRegistry.getPackage().getGlobals() )
+                .forEach( globals::putAll );
+        
+        for (Map.Entry<String, Class<?>> ks : globals.entrySet()) {
             definedVars.put(ks.getKey(), ks.getKey());
             addDeclaration(new DeclarationSpec(ks.getKey(), ks.getValue(), true));
         }
