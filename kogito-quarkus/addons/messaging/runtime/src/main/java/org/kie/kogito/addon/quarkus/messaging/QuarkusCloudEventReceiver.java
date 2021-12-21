@@ -35,12 +35,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.smallrye.reactive.messaging.ChannelRegistar;
-import io.smallrye.reactive.messaging.DefaultMediatorConfiguration;
 import io.smallrye.reactive.messaging.MediatorConfiguration;
 import io.smallrye.reactive.messaging.Shape;
 import io.smallrye.reactive.messaging.annotations.Merge;
 import io.smallrye.reactive.messaging.annotations.Merge.Mode;
-import io.smallrye.reactive.messaging.extension.MediatorManager;
+import io.smallrye.reactive.messaging.providers.DefaultMediatorConfiguration;
+import io.smallrye.reactive.messaging.providers.extension.MediatorManager;
 
 @ApplicationScoped
 @Named(KogitoEventStreams.DEFAULT_INCOMING_BEAN_NAME)

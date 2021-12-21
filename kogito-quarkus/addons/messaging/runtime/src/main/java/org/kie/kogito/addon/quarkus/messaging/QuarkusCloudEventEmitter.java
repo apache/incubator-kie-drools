@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 
 import io.smallrye.reactive.messaging.ChannelRegistar;
 import io.smallrye.reactive.messaging.ChannelRegistry;
-import io.smallrye.reactive.messaging.extension.EmitterConfiguration;
-import io.smallrye.reactive.messaging.extension.MediatorManager;
+import io.smallrye.reactive.messaging.providers.extension.EmitterConfiguration;
+import io.smallrye.reactive.messaging.providers.extension.MediatorManager;
 
 @ApplicationScoped
 @Named(KogitoEventStreams.DEFAULT_OUTGOING_BEAN_NAME)
