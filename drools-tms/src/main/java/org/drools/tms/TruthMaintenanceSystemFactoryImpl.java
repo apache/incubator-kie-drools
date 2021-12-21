@@ -17,6 +17,9 @@
 package org.drools.tms;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -24,14 +27,28 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.rule.QueryImpl;
-import org.drools.core.spi.KnowledgeHelper;
 import org.drools.tms.beliefsystem.abductive.Abductive;
 
 public class TruthMaintenanceSystemFactoryImpl implements TruthMaintenanceSystemFactory {
 
+    private final Map<InternalWorkingMemoryEntryPoint, TruthMaintenanceSystem> tmsForEntryPoints = Collections.synchronizedMap(new IdentityHashMap<>());
+
     @Override
-    public TruthMaintenanceSystem createTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint) {
-        return new TruthMaintenanceSystemImpl(entryPoint);
+    public TruthMaintenanceSystem getOrCreateTruthMaintenanceSystem(ReteEvaluator reteEvaluator) {
+        return getOrCreateTruthMaintenanceSystem((InternalWorkingMemoryEntryPoint) reteEvaluator.getDefaultEntryPoint());
+    }
+
+    @Override
+    public TruthMaintenanceSystem getOrCreateTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint) {
+        return tmsForEntryPoints.computeIfAbsent(entryPoint, TruthMaintenanceSystemImpl::new);
+    }
+
+    @Override
+    public void clearTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint) {
+        TruthMaintenanceSystem tms = tmsForEntryPoints.get(entryPoint);
+        if (tms != null) {
+            tms.clear();
+        }
     }
 
     @Override

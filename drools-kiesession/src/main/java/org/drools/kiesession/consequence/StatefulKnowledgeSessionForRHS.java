@@ -337,10 +337,6 @@ public class StatefulKnowledgeSessionForRHS
         delegate.retract(handle);
     }
 
-    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        return delegate.getTruthMaintenanceSystem();
-    }
-
     public InternalAgenda getAgenda() {
         return delegate.getAgenda();
     }

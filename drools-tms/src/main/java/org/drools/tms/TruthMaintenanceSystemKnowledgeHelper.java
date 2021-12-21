@@ -26,6 +26,7 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -110,7 +111,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
             return ( (BeliefSet) dep.getJustified() ).getFactHandle();
         } else {
             // no previous matching logical dependency, so create a new one
-            return toStatefulKnowledgeSession().getTruthMaintenanceSystem().insert( object, value, this.activation );
+            return TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(toStatefulKnowledgeSession()).insert( object, value, this.activation );
         }
     }
 
@@ -157,7 +158,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
             beliefSet = handle.getEqualityKey().getBeliefSet();
         }
 
-        BeliefSystem beliefSystem = value instanceof Mode ? ((Mode) value).getBeliefSystem() : toStatefulKnowledgeSession().getTruthMaintenanceSystem().getBeliefSystem();
+        BeliefSystem beliefSystem = value instanceof Mode ? ((Mode) value).getBeliefSystem() : TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(toStatefulKnowledgeSession()).getBeliefSystem();
         if ( beliefSet == null ) {
             beliefSet = beliefSystem.newBeliefSet( handle );
             handle.getEqualityKey().setBeliefSet( beliefSet );

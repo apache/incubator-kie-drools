@@ -64,8 +64,6 @@ public class NamedEntryPoint
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[] addRemovePropertyChangeListenerArgs = new Object[]{this};
 
-    private TruthMaintenanceSystem tms;
-
     protected ObjectStore objectStore;
 
     protected transient RuleBase ruleBase;
@@ -121,8 +119,8 @@ public class NamedEntryPoint
 
     public void reset() {
         this.objectStore.clear();
-        if (tms != null) {
-            tms.clear();
+        if (TruthMaintenanceSystemFactory.present()) {
+            TruthMaintenanceSystemFactory.get().clearTruthMaintenanceSystem(this);
         }
     }
 
@@ -193,7 +191,7 @@ public class NamedEntryPoint
                         return handle;
                     }
 
-                    handle = getTruthMaintenanceSystem().insertOnTms(object, typeConf, propagationContext, handle, this::createHandle);
+                    handle = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).insertOnTms(object, typeConf, propagationContext, handle, this::createHandle);
                 } else {
                     // TMS not enabled for this object type
                     if ( handle != null ) {
@@ -337,7 +335,7 @@ public class NamedEntryPoint
                         handle, entryPoint, mask, modifiedClass, null);
 
                 if (typeConf.isTMSEnabled()) {
-                    getTruthMaintenanceSystem().updateOnTms(handle, object, activation);
+                    TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).updateOnTms(handle, object, activation);
                 }
 
                 beforeUpdate(handle, object, activation, originalObject, propagationContext);
@@ -451,13 +449,13 @@ public class NamedEntryPoint
 
     private void deleteFromTMS( InternalFactHandle handle, EqualityKey key, ObjectTypeConf typeConf, PropagationContext propagationContext ) {
         if ( typeConf.isTMSEnabled() && key != null ) { // key can be null if we're expiring an event that has been already deleted
-            getTruthMaintenanceSystem().deleteFromTms( handle, key, propagationContext );
+            TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).deleteFromTms( handle, key, propagationContext );
         }
     }
 
     private void deleteLogical(EqualityKey key) {
         if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
-            getTruthMaintenanceSystem().delete( key.getLogicalFactHandle() );
+            TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).delete( key.getLogicalFactHandle() );
         }
     }
 
@@ -645,13 +643,6 @@ public class NamedEntryPoint
                 }
             }
         }
-    }
-
-    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        if (tms == null) {
-            tms = TruthMaintenanceSystemFactory.get().createTruthMaintenanceSystem(this);
-        }
-        return tms;
     }
 
     public TraitHelper getTraitHelper() {

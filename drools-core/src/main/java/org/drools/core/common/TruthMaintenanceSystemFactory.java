@@ -25,7 +25,9 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public interface TruthMaintenanceSystemFactory {
     String NO_TMS = "You're trying to use the Truth Maintenance System without having imported it. Please add the module org.drools:drools-tms to your classpath.";
 
-    TruthMaintenanceSystem createTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint);
+    TruthMaintenanceSystem getOrCreateTruthMaintenanceSystem(ReteEvaluator reteEvaluator);
+    TruthMaintenanceSystem getOrCreateTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint);
+    void clearTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint);
 
     class Holder {
         private static final TruthMaintenanceSystemFactory INSTANCE = ServiceRegistry.getService( TruthMaintenanceSystemFactory.class );

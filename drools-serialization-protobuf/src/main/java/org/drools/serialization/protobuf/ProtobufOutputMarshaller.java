@@ -52,6 +52,7 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -471,7 +472,7 @@ public class ProtobufOutputMarshaller {
     public static void writeTruthMaintenanceSystem( MarshallerWriteContext context,
                                                     EntryPoint wmep,
                                                     ProtobufMessages.EntryPoint.Builder _epb) throws IOException {
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((NamedEntryPoint) wmep);
         ObjectHashMap justifiedMap = tms.getEqualityKeyMap();
 
         if ( !justifiedMap.isEmpty() ) {

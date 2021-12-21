@@ -16,8 +16,8 @@
 package org.drools.tms;
 
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.EntryPointId;
 import org.drools.kiesession.MockActivation;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -51,8 +51,7 @@ public class LazyTMSEnablingTest {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        tms = ksession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ).getTruthMaintenanceSystem();
-
+        tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ksession);
     }
 
     @Test
@@ -68,7 +67,7 @@ public class LazyTMSEnablingTest {
 
         final String fact2 = "logical";
 
-        ksession.getTruthMaintenanceSystem().insert( fact2, null, new MockActivation() );
+        TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ksession).insert( fact2, null, new MockActivation() );
 
         assertEquals(
                 "Now that a logical insert was done, it should have an element.",
@@ -114,7 +113,8 @@ public class LazyTMSEnablingTest {
 
         }
 
-        ksession.getTruthMaintenanceSystem().insert( stringFact2, null, new MockActivation() );
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ksession);
+        tms.insert( stringFact2, null, new MockActivation() );
 
         assertTrue("Should have enabled TMS for Strings.", stringTypeConf
                 .isTMSEnabled());
@@ -122,7 +122,7 @@ public class LazyTMSEnablingTest {
         assertFalse("Shouldn't have enabled TMS for Integers.", intTypeConf
                 .isTMSEnabled());
 
-        ksession.getTruthMaintenanceSystem().insert( intFact2, null, new MockActivation() );
+        tms.insert( intFact2, null, new MockActivation() );
 
         assertTrue("Now it should have enabled TMS for Integers!.", intTypeConf
                 .isTMSEnabled());

@@ -43,18 +43,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.WorkingMemory;
-import org.drools.core.impl.RuleBase;
-import org.drools.kiesession.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
@@ -62,6 +60,8 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
+import org.drools.kiesession.audit.WorkingMemoryFileLogger;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.OrderEvent;
 import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.model.StockTickEvent;
@@ -99,11 +99,11 @@ import org.kie.api.time.SessionPseudoClock;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -4212,7 +4212,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.fireAllRules();
 
             assertEquals(0, ksession.getObjects().size());
-            assertEquals(0, ((NamedEntryPoint) ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId())).getTruthMaintenanceSystem().getEqualityKeyMap().size());
+            assertEquals(0, TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((ReteEvaluator) ksession).getEqualityKeyMap().size());
         } finally {
             ksession.dispose();
         }

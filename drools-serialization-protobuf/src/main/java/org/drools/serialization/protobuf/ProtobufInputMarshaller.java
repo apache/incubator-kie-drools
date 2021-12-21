@@ -49,6 +49,7 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.kiesession.factory.PhreakWorkingMemoryFactory;
@@ -586,7 +587,7 @@ public class ProtobufInputMarshaller {
                                                    ProtobufMessages.EntryPoint _ep,
                                                    List<PropagationContext> pctxs) throws IOException,
                                                                                      ClassNotFoundException {
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((NamedEntryPoint) wmep);
         
         boolean wasOTCSerialized = _ep.getOtcCount() > 0; // if 0, then the OTC was not serialized (older versions of drools)
         Set<String> tmsEnabled = new HashSet<String>();

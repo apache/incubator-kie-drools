@@ -34,6 +34,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.AcceptsClassObjectType;
@@ -190,7 +191,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
                 abduced = handle.getObject();
                 firstAssertion = false;
             } else {
-                handle = workingMemory.getTruthMaintenanceSystem().insertPositive( abduced, resultLeftTuple);
+                handle = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(workingMemory).insertPositive( abduced, resultLeftTuple);
             }
             BeliefSet bs = handle.getEqualityKey() != null ? handle.getEqualityKey().getBeliefSet() : null;
             if ( bs == null ) {
@@ -200,7 +201,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
                     pass = false;
                 } else {
                     if ( !firstAssertion ) {
-                        workingMemory.getTruthMaintenanceSystem().insertPositive( abduced, resultLeftTuple);
+                        TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(workingMemory).insertPositive( abduced, resultLeftTuple);
                     }
                 }
             }
