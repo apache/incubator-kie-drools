@@ -16,10 +16,10 @@
 
 package org.drools.tms.beliefsystem.simple;
 
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.common.LogicalDependency;
+import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.spi.Activation;
+import org.drools.tms.LogicalDependency;
+import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
 
 /**
  * LogicalDependency is a special node for LinkedLists that maintains
@@ -28,19 +28,19 @@ import org.drools.core.spi.Activation;
 public class SimpleLogicalDependency<T extends ModedAssertion<T>> extends AbstractBaseLinkedListNode<LogicalDependency<T>>
         implements
         LogicalDependency<T> {
-    private final Activation<T>     justifier;
+    private final TruthMaintenanceSystemActivation<T> justifier;
     private final Object            justified;
     private       Object            object;
     private       T                 mode;
 
-    public SimpleLogicalDependency(final Activation<T> justifier, final Object justified, final T mode) {
+    public SimpleLogicalDependency(final TruthMaintenanceSystemActivation<T> justifier, final Object justified, final T mode) {
         super();
         this.justifier = justifier;
         this.justified = justified;
         this.mode = mode;
     }
 
-    public SimpleLogicalDependency(final Activation<T> justifier,
+    public SimpleLogicalDependency(final TruthMaintenanceSystemActivation<T> justifier,
                                    final Object justified,
                                    final Object object,
                                    final T mode) {
@@ -70,7 +70,7 @@ public class SimpleLogicalDependency<T extends ModedAssertion<T>> extends Abstra
     /* (non-Javadoc)
      * @see org.kie.common.LogicalDependency#getJustifier()
      */
-    public Activation<T> getJustifier() {
+    public TruthMaintenanceSystemActivation<T> getJustifier() {
         return this.justifier;
     }
 

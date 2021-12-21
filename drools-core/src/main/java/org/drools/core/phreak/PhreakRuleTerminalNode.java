@@ -173,7 +173,7 @@ public class PhreakRuleTerminalNode {
 
         boolean blocked = false;
         if( executor.isDeclarativeAgendaEnabled() ) {
-           if ( rtnLeftTuple.getBlockers() != null && !rtnLeftTuple.getBlockers().isEmpty() ) {
+           if ( rtnLeftTuple.hasBlockers() ) {
                blocked = true; // declarativeAgenda still blocking LeftTuple, so don't add back ot list
            }
         } else {
@@ -244,7 +244,7 @@ public class PhreakRuleTerminalNode {
         RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
         rtnLt.setMatched( false );
 
-        activationsManager.cancelActivation( rtnLt );
+        rtnLt.cancelActivation( activationsManager );
 
         if ( leftTuple.getMemory() != null ) {
             // Expiration propagations should not be removed from the list, as they still need to fire

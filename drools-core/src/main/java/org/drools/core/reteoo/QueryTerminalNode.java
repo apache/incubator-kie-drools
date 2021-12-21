@@ -200,26 +200,26 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
-        return new RuleTerminalNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
+        return AgendaComponentFactory.get().createTerminalTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
                                      final Sink sink) {
-        return new RuleTerminalNodeLeftTuple(factHandle,leftTuple, sink );
+        return AgendaComponentFactory.get().createTerminalTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      Sink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
-        return new RuleTerminalNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
+        return AgendaComponentFactory.get().createTerminalTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
-        return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, sink );
+        return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, sink );
     }   
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
@@ -228,7 +228,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
                                      LeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }    
     
     

@@ -15,11 +15,11 @@
 
 package org.drools.tms.beliefsystem.simple;
 
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.SimpleMode;
+import org.drools.tms.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.BeliefSystem;
+import org.drools.tms.SimpleMode;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
+import org.drools.tms.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;

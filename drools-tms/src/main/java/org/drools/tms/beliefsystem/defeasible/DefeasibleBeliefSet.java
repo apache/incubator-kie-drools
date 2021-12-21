@@ -15,12 +15,11 @@
 
 package org.drools.tms.beliefsystem.defeasible;
 
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.tms.beliefsystem.jtms.JTMSBeliefSet;
-import org.drools.tms.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -28,10 +27,12 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListNode;
+import org.drools.tms.LogicalDependency;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.jtms.JTMSBeliefSet;
+import org.drools.tms.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBeliefSet<M> {
     private BeliefSystem beliefSystem;
@@ -510,7 +511,7 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
             if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
                 //DefeasibleBeliefSet bs = (DefeasibleBeliefSet) getTruthMaintenanceSystem().getJustifiedMap().get(((DefaultFactHandle) h).getId());
 
-                DefeasibleBeliefSet bs = (DefeasibleBeliefSet) key.getBeliefSet();
+                DefeasibleBeliefSet bs = (DefeasibleBeliefSet) ((TruthMaintenanceSystemEqualityKey)key).getBeliefSet();
 
 
                 if ( bs.getStatus() != DefeasibilityStatus.DEFINITELY ) {

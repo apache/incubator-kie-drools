@@ -15,9 +15,9 @@
 
 package org.drools.tms.beliefsystem.jtms;
 
-import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
+import org.drools.tms.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;

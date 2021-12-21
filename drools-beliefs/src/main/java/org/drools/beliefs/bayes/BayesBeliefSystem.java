@@ -15,16 +15,17 @@
 
 package org.drools.beliefs.bayes;
 
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.tms.LogicalDependency;
+import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
+import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.simple.SimpleLogicalDependency;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -50,7 +51,7 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
     }
 
     @Override
-    public BeliefSet<M> insert( M mode, RuleImpl rule, Activation activation, Object ldPayload, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf ) {
+    public BeliefSet<M> insert( M mode, RuleImpl rule, TruthMaintenanceSystemActivation activation, Object ldPayload, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf ) {
         boolean wasDecided = beliefSet.isDecided();
 
         beliefSet.add( mode );
@@ -137,7 +138,7 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
     }
 
     @Override
-    public LogicalDependency<M> newLogicalDependency(Activation<M> activation, BeliefSet<M> beliefSet, Object object, Object value) {
+    public LogicalDependency<M> newLogicalDependency(TruthMaintenanceSystemActivation<M> activation, BeliefSet<M> beliefSet, Object object, Object value) {
         BayesHardEvidence<M> mode = (M) value;
         SimpleLogicalDependency dep = new SimpleLogicalDependency( activation, beliefSet, object, (M) value );
         mode.setLogicalDependency( dep );

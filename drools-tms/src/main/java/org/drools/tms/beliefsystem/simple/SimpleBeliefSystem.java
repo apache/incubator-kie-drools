@@ -16,13 +16,11 @@
 package org.drools.tms.beliefsystem.simple;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.SimpleMode;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
@@ -30,6 +28,10 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.tms.LogicalDependency;
+import org.drools.tms.SimpleMode;
+import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
+import org.drools.tms.beliefsystem.BeliefSystem;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
@@ -80,7 +82,7 @@ public class SimpleBeliefSystem
 
     public BeliefSet<SimpleMode> insert( SimpleMode mode,
                                          RuleImpl rule,
-                                         Activation activation,
+                                         TruthMaintenanceSystemActivation activation,
                                          Object payload,
                                          BeliefSet<SimpleMode> beliefSet,
                                          PropagationContext context,
@@ -136,7 +138,7 @@ public class SimpleBeliefSystem
             // if the beliefSet is empty, we must null the logical handle
             EqualityKey key = bfh.getEqualityKey();
             key.setLogicalFactHandle( null );
-            key.setBeliefSet( null );
+            ((TruthMaintenanceSystemEqualityKey)key).setBeliefSet( null );
 
             if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                 // if it's stated, there will be other handles, so leave it in the TMS
@@ -176,7 +178,7 @@ public class SimpleBeliefSystem
         return new SimpleBeliefSet( this, fh );
     }
 
-    public LogicalDependency newLogicalDependency(Activation activation,
+    public LogicalDependency newLogicalDependency(TruthMaintenanceSystemActivation activation,
                                                   BeliefSet beliefSet,
                                                   Object object,
                                                   Object value) {

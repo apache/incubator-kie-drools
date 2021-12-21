@@ -13,14 +13,16 @@
  * limitations under the License.
 */
 
-package org.drools.core.beliefsystem;
+package org.drools.tms;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.common.LogicalDependency;
+import org.drools.tms.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.Mode;
 import org.drools.core.util.LinkedListEntry;
+import org.drools.tms.beliefsystem.ModedAssertion;
 
 public class SimpleMode extends LinkedListEntry<SimpleMode, LogicalDependency<SimpleMode>>
        implements ModedAssertion<SimpleMode> {

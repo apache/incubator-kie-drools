@@ -13,10 +13,19 @@
  * limitations under the License.
 */
 
-package org.drools.core.beliefsystem;
+package org.drools.tms;
 
 import org.drools.core.util.LinkedListNode;
+import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
+import org.drools.tms.beliefsystem.ModedAssertion;
 
-public interface ModedAssertion<M extends ModedAssertion> extends Mode, LinkedListNode<M> {
+public interface LogicalDependency<M extends ModedAssertion<M>> extends LinkedListNode<LogicalDependency<M>> {
 
+    Object getJustified();
+
+    TruthMaintenanceSystemActivation<M> getJustifier();
+
+    Object getObject();
+
+    M getMode();
 }

@@ -16,8 +16,8 @@
 package org.drools.tms.beliefsystem.jtms;
 
 
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.ModedAssertion;
+import org.drools.tms.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.ModedAssertion;
 
 public interface JTMSBeliefSet<M extends ModedAssertion<M>> extends BeliefSet<M> {
 

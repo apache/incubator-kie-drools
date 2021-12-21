@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.core.common;
+package org.drools.tms;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.test.model.Cheese;
+import org.drools.core.common.EqualityKey;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
+import org.drools.core.test.model.Cheese;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class EqualityKeyTest {
     @Test
@@ -28,7 +32,7 @@ public class EqualityKeyTest {
         ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
         
         InternalFactHandle ch1 = factory.newFactHandle( new Cheese ("c", 10), null, null, null );
-        EqualityKey key = new EqualityKey( ch1 );
+        EqualityKey key = new TruthMaintenanceSystemEqualityKey( ch1 );
         
         assertSame( ch1, key.getFactHandle() );
         assertEquals( 1, key.size() );
@@ -47,7 +51,7 @@ public class EqualityKeyTest {
         assertNull( key.getFactHandle() );
         assertEquals( 0, key.size() );
         
-        key = new EqualityKey( ch2 );
+        key = new TruthMaintenanceSystemEqualityKey( ch2 );
         key.addFactHandle( ch1 );
         assertSame( ch2, key.getFactHandle() );
         assertEquals( 2, key.size() );

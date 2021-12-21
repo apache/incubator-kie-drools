@@ -22,7 +22,6 @@ import java.util.List;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -35,6 +34,8 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.defeasible.DefeasibilityStatus;
 import org.drools.tms.beliefsystem.defeasible.DefeasibleBeliefSet;
 import org.junit.Ignore;
@@ -108,7 +109,7 @@ public class DefeasibilityTest {
 
     private void checkStatus( EqualityKey key, int support, DefeasibilityStatus status ) {
         assertEquals( EqualityKey.JUSTIFIED, key.getStatus() );
-        BeliefSet set = key.getBeliefSet();
+        BeliefSet set = ((TruthMaintenanceSystemEqualityKey)key).getBeliefSet();
         assertTrue( set instanceof DefeasibleBeliefSet );
         DefeasibleBeliefSet dfs = ( DefeasibleBeliefSet ) set;
 
@@ -644,7 +645,7 @@ public class DefeasibilityTest {
 
         Object posBar = posList.get( 0 );
         InternalFactHandle posHandle = (InternalFactHandle) session.getFactHandle( posBar );
-        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) posHandle.getEqualityKey().getBeliefSet();
+        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) ((TruthMaintenanceSystemEqualityKey)posHandle.getEqualityKey()).getBeliefSet();
         assertEquals( 1, dbs.size() );
         assertFalse( dbs.isNegated() );
         assertTrue( dbs.isDecided() );
@@ -658,7 +659,7 @@ public class DefeasibilityTest {
         Object negBar = negList.get( 0 );
 
         InternalFactHandle negHandle = (InternalFactHandle) getNegativeHandles(session).get(0);
-        dbs = (DefeasibleBeliefSet) negHandle.getEqualityKey().getBeliefSet();
+        dbs = (DefeasibleBeliefSet) ((TruthMaintenanceSystemEqualityKey)negHandle.getEqualityKey()).getBeliefSet();
         assertEquals( 1, dbs.size() );
         assertFalse( dbs.isPositive() );
         assertTrue( dbs.isDecided() );
@@ -836,7 +837,7 @@ public class DefeasibilityTest {
         for ( Object o : session.getObjects( new ClassObjectFilter( factType.getFactClass() ) ) ) {
             if ( "wibble".equals( factType.get( o, "fact" ) ) ) {
                 InternalFactHandle handle = (InternalFactHandle) session.getFactHandle( o );
-                DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) handle.getEqualityKey().getBeliefSet();
+                DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).getBeliefSet();
 
                 assertEquals( 3, dbs.size() );
                 assertTrue( dbs.isConflicting() );

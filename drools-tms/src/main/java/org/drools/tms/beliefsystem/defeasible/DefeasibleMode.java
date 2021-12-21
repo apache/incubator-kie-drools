@@ -17,7 +17,7 @@ package org.drools.tms.beliefsystem.defeasible;
 
 import java.util.Arrays;
 
-import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.jtms.JTMSMode;
 import org.drools.core.beliefsystem.Mode;
 

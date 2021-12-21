@@ -16,7 +16,7 @@
 package org.drools.tms;
 
 import org.drools.core.BeliefSystemType;
-import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.defeasible.DefeasibleBeliefSystem;
 import org.drools.tms.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.tms.beliefsystem.simple.SimpleBeliefSystem;

@@ -44,6 +44,5 @@ public interface KnowledgeHelperFactory {
         public KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator) {
             return new DefaultKnowledgeHelper( reteEvaluator );
         }
-
     }
 }

@@ -17,9 +17,9 @@ package org.drools.beliefs.bayes;
 
 import java.util.Arrays;
 
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.common.LogicalDependency;
+import org.drools.tms.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.ModedAssertion;
+import org.drools.tms.LogicalDependency;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.beliefsystem.Mode;
 

@@ -18,14 +18,9 @@ package org.drools.core.common;
 
 import java.util.function.BiFunction;
 
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
-import org.drools.core.util.LinkedList;
 import org.drools.core.util.ObjectHashMap;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -52,8 +47,6 @@ public interface TruthMaintenanceSystem {
 
     void clear();
 
-    BeliefSystem getBeliefSystem();
-
     InternalFactHandle insertOnTms(Object object, ObjectTypeConf typeConf, PropagationContext propagationContext,
                                    InternalFactHandle handle, BiFunction<Object, ObjectTypeConf, InternalFactHandle> fhFactory);
 
@@ -61,22 +54,5 @@ public interface TruthMaintenanceSystem {
 
     void deleteFromTms(InternalFactHandle handle, EqualityKey key, PropagationContext propagationContext );
 
-    static <M extends ModedAssertion<M>> void removeLogicalDependencies(Activation<M> activation, Tuple leftTuple) {
-        final LinkedList<LogicalDependency<M>> list = activation.getLogicalDependencies();
-        if ( list == null || list.isEmpty() ) {
-            return;
-        }
 
-        PropagationContext context = leftTuple.findMostRecentPropagationContext();
-
-        for ( LogicalDependency<M> node = list.getFirst(); node != null; node = node.getNext() ) {
-            removeLogicalDependency( node, context );
-        }
-        activation.setLogicalDependencies( null );
-    }
-
-    static <M extends ModedAssertion<M>> void removeLogicalDependency(final LogicalDependency<M> node, final PropagationContext context) {
-        final BeliefSet<M> beliefSet = ( BeliefSet ) node.getJustified();
-        beliefSet.getBeliefSystem().delete( node, beliefSet, context );
-    }
 }

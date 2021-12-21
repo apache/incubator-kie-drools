@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.common.EqualityKey;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
@@ -34,6 +33,8 @@ import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.TruthMaintenanceSystemImpl;
 import org.drools.tms.beliefsystem.jtms.JTMSBeliefSystem;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -331,9 +332,9 @@ public class JTMSTest {
         ObjectHashMap equalityMap =  TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ep).getEqualityKeyMap();
         assertEquals( 1, equalityMap.size() ); // Only Person type is logical
         org.drools.core.util.Iterator it = equalityMap.iterator();
-        EqualityKey key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+        TruthMaintenanceSystemEqualityKey key = (TruthMaintenanceSystemEqualityKey) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
-            key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+            key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
               
         assertEquals( 3, key.getBeliefSet().size() );        
@@ -342,9 +343,9 @@ public class JTMSTest {
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
         it = equalityMap.iterator();
-        key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+        key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
-            key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+            key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
               
         assertEquals( 2, key.getBeliefSet().size() );        
@@ -353,9 +354,9 @@ public class JTMSTest {
         kSession.retract( fhGo3 );
         kSession.fireAllRules();
         it = equalityMap.iterator();
-        key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+        key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
-            key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+            key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
               
         assertEquals( 1, key.getBeliefSet().size() );        
@@ -429,9 +430,9 @@ public class JTMSTest {
         ObjectHashMap equalityMap =  TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ep).getEqualityKeyMap();
         assertEquals( 1, equalityMap.size() ); // Only Person type is logical
         org.drools.core.util.Iterator it = equalityMap.iterator();
-        EqualityKey key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+        TruthMaintenanceSystemEqualityKey key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
-            key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+            key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
               
         assertEquals( 3, key.getBeliefSet().size() );        
@@ -440,9 +441,9 @@ public class JTMSTest {
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
         it = equalityMap.iterator();
-        key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+        key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
-            key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+            key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
 
         assertEquals( 2, key.getBeliefSet().size() );        
@@ -451,9 +452,9 @@ public class JTMSTest {
         kSession.retract( fhGo3 );
         kSession.fireAllRules();
         it = equalityMap.iterator();
-        key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+        key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
-            key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+            key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
 
         assertEquals( 1, key.getBeliefSet().size() );        
@@ -523,9 +524,9 @@ public class JTMSTest {
         ObjectHashMap equalityMap =  tms.getEqualityKeyMap();
         assertEquals( 2, equalityMap.size() ); // go1, neg are two different strings.
         org.drools.core.util.Iterator it = equalityMap.iterator();
-        EqualityKey key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+        TruthMaintenanceSystemEqualityKey key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( "neg") ) {
-            key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
+            key = ( TruthMaintenanceSystemEqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
         
         assertEquals( 3, key.getBeliefSet().size() );
@@ -549,7 +550,7 @@ public class JTMSTest {
 
         
         NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
-        JTMSBeliefSystem bs = ( JTMSBeliefSystem ) TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ep).getBeliefSystem();
+        JTMSBeliefSystem bs = ( JTMSBeliefSystem ) ((TruthMaintenanceSystemImpl) TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ep)).getBeliefSystem();
         bs.STRICT = true;
 
         try {

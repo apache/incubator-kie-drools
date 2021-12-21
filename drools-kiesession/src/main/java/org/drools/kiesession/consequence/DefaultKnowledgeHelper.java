@@ -28,18 +28,15 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
@@ -47,7 +44,6 @@ import org.drools.core.spi.AbstractProcessContext;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -96,10 +92,6 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public void setActivation(final Activation agendaItem) {
         this.activation = agendaItem;
-        // -- JBRULES-2558: logical inserts must be properly preserved
-        agendaItem.setLogicalDependencies( null );
-        agendaItem.setBlocked( null );
-        // -- JBRULES-2558: end
         this.tuple = agendaItem.getTuple();
     }
 
@@ -109,42 +101,11 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     public void blockMatch(Match act) {
-        AgendaItem targetMatch = ( AgendaItem ) act;
-        if ( targetMatch.getBlockers().size() == 1 && targetMatch.isQueued()  ) {
-            if ( targetMatch.getRuleAgendaItem() == null ) {
-                // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
-                targetMatch.remove();
-            } else {
-                targetMatch.getRuleAgendaItem().getRuleExecutor().removeLeftTuple(targetMatch.getTuple());
-            }
-
-            if ( targetMatch.getActivationGroupNode() != null ) {
-                targetMatch.getActivationGroupNode().getActivationGroup().removeActivation( targetMatch );
-            }
-
-            if ( targetMatch.getActivationNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) targetMatch.getActivationNode().getParentContainer();
-                ruleFlowGroup.remove( targetMatch );
-            }
-        }
+        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
     }
 
     public void unblockAllMatches(Match act) {
-        AgendaItem targetMatch = ( AgendaItem ) act;
-        boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
-
-        for ( LinkedListEntry entry = ( LinkedListEntry ) targetMatch.getBlockers().getFirst(); entry != null;  ) {
-            LinkedListEntry tmp = ( LinkedListEntry ) entry.getNext();
-            LogicalDependency dep = ( LogicalDependency ) entry.getObject();
-            ((AgendaItem)dep.getJustifier()).removeBlocked( dep );
-            entry = tmp;
-        }
-        
-        if ( wasBlocked ) {
-            RuleAgendaItem ruleAgendaItem = targetMatch.getRuleAgendaItem();
-            InternalAgenda agenda = toStatefulKnowledgeSession().getAgenda();
-            agenda.stageLeftTuple(ruleAgendaItem, targetMatch);
-        }
+        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
     }
 
     public FactHandle insertAsync( final Object object ) {

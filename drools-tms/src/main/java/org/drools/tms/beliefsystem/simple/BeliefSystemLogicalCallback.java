@@ -17,7 +17,8 @@ package org.drools.tms.beliefsystem.simple;
 
 import java.io.IOException;
 
-import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
@@ -80,7 +81,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
     public void execute(ReteEvaluator reteEvaluator) {
         NamedEntryPoint nep = (NamedEntryPoint) handle.getEntryPoint(reteEvaluator) ;
 
-        BeliefSet bs = handle.getEqualityKey().getBeliefSet();
+        BeliefSet bs = ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).getBeliefSet();
         bs.setWorkingMemoryAction( null );
 
         if ( update ) {

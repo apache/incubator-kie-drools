@@ -52,8 +52,6 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.kiesession.factory.PhreakWorkingMemoryFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ActivationKey;
 import org.drools.core.marshalling.impl.KieSessionInitializer;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -79,10 +77,14 @@ import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.kiesession.factory.PhreakWorkingMemoryFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.serialization.protobuf.ProtobufMessages.FactHandle;
 import org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration;
 import org.drools.serialization.protobuf.ProtobufMessages.RuleData;
 import org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.TruthMaintenanceSystemImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -609,8 +611,7 @@ public class ProtobufInputMarshaller {
                 typeConf.enableTMS();
             }
 
-            EqualityKey key = new EqualityKey( handle,
-                                               _key.getStatus() );
+            EqualityKey key = new TruthMaintenanceSystemEqualityKey( handle, _key.getStatus() );
             handle.setEqualityKey( key );
 
             if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
@@ -675,7 +676,7 @@ public class ProtobufInputMarshaller {
                     tms.readLogicalDependency( handle, object, value, activation, typeConf );
                 }
             } else {
-                handle.getEqualityKey().setBeliefSet( tms.getBeliefSystem().newBeliefSet( handle ) );
+                ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).setBeliefSet( ((TruthMaintenanceSystemImpl)tms).getBeliefSystem().newBeliefSet( handle ) );
             }
         }
     }

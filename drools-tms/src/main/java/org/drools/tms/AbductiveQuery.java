@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
@@ -193,7 +193,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
             } else {
                 handle = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(workingMemory).insertPositive( abduced, resultLeftTuple);
             }
-            BeliefSet bs = handle.getEqualityKey() != null ? handle.getEqualityKey().getBeliefSet() : null;
+            BeliefSet bs = handle.getEqualityKey() != null ? ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).getBeliefSet() : null;
             if ( bs == null ) {
                 abduced = handle.getObject();
             } else {

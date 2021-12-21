@@ -16,20 +16,22 @@
 package org.drools.tms.beliefsystem.jtms;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.tms.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
-import org.drools.tms.beliefsystem.simple.SimpleLogicalDependency;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.tms.LogicalDependency;
+import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
+import org.drools.tms.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
+import org.drools.tms.beliefsystem.simple.SimpleLogicalDependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +57,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
     }
 
     @Override
-    public BeliefSet<M> insert( M mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf ) {
+    public BeliefSet<M> insert( M mode, RuleImpl rule, TruthMaintenanceSystemActivation activation, Object payload, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf ) {
         if ( log.isTraceEnabled() ) {
             log.trace( "TMSInsert {} {}", payload, mode.getValue() );
         }
@@ -180,7 +182,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
             // if the beliefSet is empty, we must null the logical handle
             EqualityKey key = fh.getEqualityKey();
             key.setLogicalFactHandle( null );
-            key.setBeliefSet(null);
+            ((TruthMaintenanceSystemEqualityKey)key).setBeliefSet(null);
 
             if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                 // if it's stated, there will be other handles, so leave it in the TMS
@@ -246,7 +248,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         return new JTMSBeliefSetImpl( this, fh );
     }
 
-    public LogicalDependency newLogicalDependency(Activation<M> activation,
+    public LogicalDependency newLogicalDependency(TruthMaintenanceSystemActivation<M> activation,
                                                   BeliefSet<M> beliefSet,
                                                   Object object,
                                                   Object value) {

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.beliefsystem;
+package org.drools.tms.beliefsystem;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.WorkingMemoryAction;

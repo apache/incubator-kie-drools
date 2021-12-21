@@ -65,6 +65,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
         // tms
         registerService("org.drools.core.common.TruthMaintenanceSystemFactory", "org.drools.tms.TruthMaintenanceSystemFactoryImpl", false);
         registerService("org.drools.kiesession.factory.KnowledgeHelperFactory", "org.drools.tms.TruthMaintenanceSystemKnowledgeHelperFactoryImpl", false);
+        registerService("org.drools.core.reteoo.AgendaComponentFactory", "org.drools.tms.TruthMaintenanceSystemAgendaComponentFactory", false);
 
         registerService("org.drools.core.marshalling.impl.ProcessMarshallerFactoryService", "org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl", false);
         registerService("org.drools.core.runtime.process.ProcessRuntimeFactoryService", "org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl", false);

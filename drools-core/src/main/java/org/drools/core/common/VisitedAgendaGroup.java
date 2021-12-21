@@ -17,14 +17,12 @@ package org.drools.core.common;
 
 import java.util.List;
 
-import org.drools.core.beliefsystem.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class VisitedAgendaGroup implements Activation {
@@ -70,41 +68,6 @@ public class VisitedAgendaGroup implements Activation {
 
     @Override
     public void remove() {
-
-    }
-
-    @Override
-    public void addBlocked(LogicalDependency node) {
-
-    }
-
-    @Override
-    public LinkedList<LogicalDependency<SimpleMode>> getBlocked() {
-        return null;
-    }
-
-    @Override
-    public void setBlocked(LinkedList justified) {
-
-    }
-
-    @Override
-    public LinkedList<SimpleMode> getBlockers() {
-        return null;
-    }
-
-    @Override
-    public void addLogicalDependency(LogicalDependency node) {
-
-    }
-
-    @Override
-    public LinkedList getLogicalDependencies() {
-        return null;
-    }
-
-    @Override
-    public void setLogicalDependencies(LinkedList justified) {
 
     }
 

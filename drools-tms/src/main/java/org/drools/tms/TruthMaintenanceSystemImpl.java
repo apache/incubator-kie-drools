@@ -20,23 +20,26 @@ import java.util.Iterator;
 import java.util.function.BiFunction;
 
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.SimpleMode;
+import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EqualityKeyComparator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
+import org.drools.tms.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.BeliefSystemMode;
+import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.tms.beliefsystem.jtms.JTMSBeliefSetImpl;
-import org.drools.core.beliefsystem.Mode;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
@@ -91,11 +94,11 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         // get the key for other "equal" objects, returns null if none exist
         EqualityKey key = get(object);
 
-        InternalFactHandle fh = null;
+        InternalFactHandle fh;
         if ( key == null ) {
             // no EqualityKey exits, so we construct one. We know it can only be justified.
             fh =  ep.getHandleFactory().newFactHandle(object, typeConf, ep.getReteEvaluator(), ep );
-            key = new EqualityKey( fh, EqualityKey.JUSTIFIED );
+            key = new TruthMaintenanceSystemEqualityKey( fh, EqualityKey.JUSTIFIED );
             fh.setEqualityKey( key );
             put(key);
         } else {
@@ -109,7 +112,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         }
 
         // Any logical propagations are handled via the TMS.addLogicalDependency
-        return addLogicalDependency(fh, object, tmsValue, activation, typeConf, false);
+        return addLogicalDependency(fh, object, tmsValue, (TruthMaintenanceSystemActivation) activation, typeConf, false);
     }
 
     @Override
@@ -130,7 +133,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         final PropagationContext propagationContext = ep.getPctxFactory().createPropagationContext( ep.getReteEvaluator().getNextPropagationIdCounter(),
                                                                                                     PropagationContext.Type.DELETION,
                                                                                                     null, null, ifh, ep.getEntryPoint());
-        BeliefSet beliefSet = key.getBeliefSet();
+        BeliefSet beliefSet = ((TruthMaintenanceSystemEqualityKey)key).getBeliefSet();
         if ( beliefSet != null && !beliefSet.isEmpty() ) {
             beliefSet.cancel(propagationContext);
         }
@@ -173,25 +176,25 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
                                       final Object value,
                                       final Activation activation,
                                       final ObjectTypeConf typeConf) {
-        addLogicalDependency( handle, object, value, activation, typeConf, true );
+        addLogicalDependency( handle, object, value, (TruthMaintenanceSystemActivation) activation, typeConf, true );
     }
 
     private InternalFactHandle addLogicalDependency(final InternalFactHandle handle,
                                                     final Object object,
                                                     final Object value,
-                                                    final Activation activation,
+                                                    final TruthMaintenanceSystemActivation activation,
                                                     final ObjectTypeConf typeConf,
                                                     final boolean read) {
         BeliefSystem beliefSystem = defaultBeliefSystem;
-        if ( value != null && value instanceof Mode & !( value instanceof SimpleMode ) ) {
-            Mode mode = (Mode) value;
+        if (value instanceof Mode & !(value instanceof SimpleMode)) {
+            BeliefSystemMode mode = (BeliefSystemMode) value;
             beliefSystem = mode.getBeliefSystem();
         }
 
-        BeliefSet beliefSet = handle.getEqualityKey().getBeliefSet();
+        BeliefSet beliefSet = ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).getBeliefSet();
         if ( beliefSet == null ) {
             beliefSet = beliefSystem.newBeliefSet( handle );
-            handle.getEqualityKey().setBeliefSet( beliefSet );
+            ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).setBeliefSet( beliefSet );
         }
 
         final LogicalDependency node = beliefSystem.newLogicalDependency( activation, beliefSet, object, value );
@@ -213,7 +216,6 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         this.equalityKeyMap.clear();
     }
 
-    @Override
     public BeliefSystem getBeliefSystem() {
         return defaultBeliefSystem;
     }
@@ -233,7 +235,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         while (it.hasNext()) {
             InternalFactHandle handle = it.next();
             if (handle != null && handle.getEqualityKey() == null) {
-                EqualityKey key = new EqualityKey(handle);
+                EqualityKey key = new TruthMaintenanceSystemEqualityKey(handle);
                 handle.setEqualityKey(key);
                 key.setStatus(EqualityKey.STATED);
                 put(key);
@@ -251,13 +253,13 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
 
         if ( handle != null && key != null && key.getStatus() == EqualityKey.JUSTIFIED) {
             // The justified set needs to be staged, before we can continue with the stated insert
-            BeliefSet bs = handle.getEqualityKey().getBeliefSet();
+            BeliefSet bs = ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).getBeliefSet();
             bs.getBeliefSystem().stage(propagationContext, bs ); // staging will set it's status to stated
         }
 
         handle = fhFactory.apply(object, typeConf); // we know the handle is null
         if ( key == null ) {
-            key = new EqualityKey(handle, EqualityKey.STATED  );
+            key = new TruthMaintenanceSystemEqualityKey(handle, EqualityKey.STATED  );
             put( key );
         } else {
             key.addFactHandle(handle);
@@ -271,7 +273,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         EqualityKey newKey = get(object);
         EqualityKey oldKey = handle.getEqualityKey();
 
-        if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null) && newKey != oldKey) {
+        if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || ((TruthMaintenanceSystemEqualityKey)oldKey).getBeliefSet() != null) && newKey != oldKey) {
             // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
             throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
                     "Rule " + (activation == null ? "" : activation.getRule().getName()) + " attempted an illegal operation");
@@ -279,7 +281,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
 
         if (newKey == null) {
             oldKey.removeFactHandle(handle);
-            newKey = new EqualityKey(handle, EqualityKey.STATED); // updates are always stated
+            newKey = new TruthMaintenanceSystemEqualityKey(handle, EqualityKey.STATED); // updates are always stated
             handle.setEqualityKey(newKey);
             put(newKey);
         } else if (newKey != oldKey) {
@@ -306,8 +308,27 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         } else if ( key.getLogicalFactHandle() != null ) {
             // The justified set can be unstaged, now that the last stated has been deleted
             final InternalFactHandle justifiedHandle = key.getLogicalFactHandle();
-            BeliefSet bs = justifiedHandle.getEqualityKey().getBeliefSet();
+            BeliefSet bs = ((TruthMaintenanceSystemEqualityKey)justifiedHandle.getEqualityKey()).getBeliefSet();
             bs.getBeliefSystem().unstage( propagationContext, bs );
         }
+    }
+
+    public static <M extends ModedAssertion<M>> void removeLogicalDependencies(TruthMaintenanceSystemActivation<M> activation) {
+        final LinkedList<LogicalDependency<M>> list = activation.getLogicalDependencies();
+        if ( list == null || list.isEmpty() ) {
+            return;
+        }
+
+        PropagationContext context = ((Tuple)activation).findMostRecentPropagationContext();
+
+        for ( LogicalDependency<M> node = list.getFirst(); node != null; node = node.getNext() ) {
+            removeLogicalDependency( node, context );
+        }
+        activation.setLogicalDependencies( null );
+    }
+
+    public static <M extends ModedAssertion<M>> void removeLogicalDependency(final LogicalDependency<M> node, final PropagationContext context) {
+        final BeliefSet<M> beliefSet = ( BeliefSet ) node.getJustified();
+        beliefSet.getBeliefSystem().delete( node, beliefSet, context );
     }
 }
