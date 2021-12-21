@@ -21,12 +21,9 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Enabled;

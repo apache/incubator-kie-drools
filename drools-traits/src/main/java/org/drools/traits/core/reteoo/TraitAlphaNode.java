@@ -23,7 +23,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.constraint.EvaluatorConstraint;
+import org.drools.mvel.EvaluatorConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.Operator;

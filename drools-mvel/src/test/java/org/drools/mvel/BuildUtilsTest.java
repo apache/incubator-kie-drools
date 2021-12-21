@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.builder;
+package org.drools.mvel;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.AfterEvaluatorDefinition;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.reteoo.builder.BuildUtils;
 import org.drools.core.test.model.StockTick;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.junit.Before;

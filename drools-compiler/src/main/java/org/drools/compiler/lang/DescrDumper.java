@@ -33,11 +33,12 @@ import org.drools.core.rule.XpathBackReference;
 import org.drools.core.util.ReflectiveVisitor;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.findClass;
 import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
 
 public class DescrDumper extends ReflectiveVisitor implements ExpressionRewriter {
+
+    public static final String WM_ARGUMENT = "_workingMemory_";
 
     private static final DescrDumper INSTANCE = new DescrDumper();
 

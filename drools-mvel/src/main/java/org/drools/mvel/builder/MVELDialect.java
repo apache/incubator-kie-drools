@@ -95,7 +95,7 @@ import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
 
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+import static org.drools.compiler.lang.DescrDumper.WM_ARGUMENT;
 
 public class MVELDialect
         implements
