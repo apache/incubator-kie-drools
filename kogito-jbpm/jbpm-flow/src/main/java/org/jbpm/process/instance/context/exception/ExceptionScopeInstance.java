@@ -18,6 +18,7 @@ package org.jbpm.process.instance.context.exception;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.instance.context.AbstractContextInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public abstract class ExceptionScopeInstance extends AbstractContextInstance {
 
@@ -31,7 +32,7 @@ public abstract class ExceptionScopeInstance extends AbstractContextInstance {
         return (ExceptionScope) getContext();
     }
 
-    public void handleException(String exception, Object params) {
+    public void handleException(String exception, KogitoProcessContext params) {
         ExceptionHandler handler = getExceptionScope().getExceptionHandler(exception);
         if (handler == null) {
             throw new IllegalArgumentException(
@@ -40,6 +41,6 @@ public abstract class ExceptionScopeInstance extends AbstractContextInstance {
         handleException(handler, exception, params);
     }
 
-    public abstract void handleException(ExceptionHandler handler, String exception, Object params);
+    public abstract void handleException(ExceptionHandler handler, String exception, KogitoProcessContext params);
 
 }

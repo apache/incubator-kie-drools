@@ -50,7 +50,7 @@
         <targetRef>_2_param</targetRef>
         <transformation language="http://www.mvel.org/2.0"><![CDATA[
           StringWriter result = new java.io.StringWriter();
-          JAXBContext.newInstance(Person, Address).createMarshaller().marshal(Parameter, result);
+          JAXBContext.newInstance(Person, Address).createMarshaller().marshal(s, result);
           return result.toString();]]>
       </transformation>
       </dataInputAssociation>

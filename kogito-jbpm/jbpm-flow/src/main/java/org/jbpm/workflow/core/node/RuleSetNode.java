@@ -18,7 +18,6 @@ package org.jbpm.workflow.core.node;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -27,7 +26,6 @@ import java.util.function.Supplier;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
-import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
@@ -38,7 +36,7 @@ import org.kie.kogito.rules.RuleUnitData;
 /**
  * Default implementation of a RuleSet node.
  */
-public class RuleSetNode extends StateBasedNode implements ContextContainer, Mappable {
+public class RuleSetNode extends StateBasedNode implements ContextContainer {
 
     public static abstract class RuleType implements Serializable {
 
@@ -186,9 +184,6 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer, Map
 
     private RuleType ruleType;
 
-    private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
-    private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
-
     private Map<String, Object> parameters = new HashMap<String, Object>();
 
     private Supplier<DecisionModel> decisionModel;
@@ -263,72 +258,6 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer, Map
         }
     }
 
-    public void addInMapping(String parameterName, String variableName) {
-        inMapping.add(new DataAssociation(variableName, parameterName, null, null));
-    }
-
-    public void setInMappings(Map<String, String> inMapping) {
-        this.inMapping = new LinkedList<DataAssociation>();
-        for (Map.Entry<String, String> entry : inMapping.entrySet()) {
-            addInMapping(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public String getInMapping(String parameterName) {
-        return getInMappings().get(parameterName);
-    }
-
-    public Map<String, String> getInMappings() {
-        Map<String, String> in = new HashMap<String, String>();
-        for (DataAssociation a : inMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                in.put(a.getTarget(), a.getSources().get(0));
-            }
-        }
-        return in;
-    }
-
-    public void addInAssociation(DataAssociation dataAssociation) {
-        inMapping.add(dataAssociation);
-    }
-
-    public List<DataAssociation> getInAssociations() {
-        return Collections.unmodifiableList(inMapping);
-    }
-
-    public void addOutMapping(String parameterName, String variableName) {
-        outMapping.add(new DataAssociation(parameterName, variableName, null, null));
-    }
-
-    public void setOutMappings(Map<String, String> outMapping) {
-        this.outMapping = new LinkedList<>();
-        for (Map.Entry<String, String> entry : outMapping.entrySet()) {
-            addOutMapping(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public String getOutMapping(String parameterName) {
-        return getOutMappings().get(parameterName);
-    }
-
-    public Map<String, String> getOutMappings() {
-        Map<String, String> out = new HashMap<>();
-        for (DataAssociation a : outMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                out.put(a.getSources().get(0), a.getTarget());
-            }
-        }
-        return out;
-    }
-
-    public void addOutAssociation(DataAssociation dataAssociation) {
-        outMapping.add(dataAssociation);
-    }
-
-    public List<DataAssociation> getOutAssociations() {
-        return Collections.unmodifiableList(outMapping);
-    }
-
     public Map<String, Object> getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
@@ -383,4 +312,5 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer, Map
         }
         return super.getContext(contextId);
     }
+
 }

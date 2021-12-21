@@ -17,6 +17,7 @@ package org.jbpm.integrationtests;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,9 +93,9 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
                         "        </parameter>\n" +
                         "      </work>\n" +
                         "      <mapping type=\"in\" from=\"MyObject\" to=\"Attachment\" />" +
-                        "      <mapping type=\"in\" from=\"Person.name\" to=\"Comment\" />" +
+                        "      <mapping type=\"in\" from=\"#{Person.name}\" to=\"Comment\" />" +
                         "      <mapping type=\"out\" from=\"Result\" to=\"MyObject\" />" +
-                        "      <mapping type=\"out\" from=\"Result.length()\" to=\"Number\" />" +
+                        "      <mapping type=\"out\" from=\"#{Result.length()}\" to=\"Number\" />" +
                         "    </workItem>\n" +
                         "    <end id=\"3\" name=\"End\" />\n" +
                         "  </nodes>\n" +
@@ -122,7 +123,7 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
         assertEquals("John Doe", workItem.getParameter("ActorId"));
         assertEquals("John Doe", workItem.getParameter("Content"));
         assertEquals("John Doe", workItem.getParameter("Comment"));
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.singletonMap("Result", ""));
         assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         parameters = new HashMap<String, Object>();
         parameters.put("UserName", "Jane Doe");

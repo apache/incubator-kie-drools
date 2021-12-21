@@ -156,7 +156,7 @@ public class RuleUnitHandler {
     }
 
     private Map<String, String> getInputMappings(ProcessContextMetaModel variableScope, RuleSetNode node) {
-        Map<String, String> entries = node.getInMappings();
+        Map<String, String> entries = node.getIoSpecification().getInputMapping();
         if (entries.isEmpty()) {
             entries = new HashMap<>();
             for (String varName : variableScope.getVariableNames()) {
@@ -205,9 +205,9 @@ public class RuleUnitHandler {
     }
 
     private Map<String, String> getOutputMappings(ProcessContextMetaModel variableScope, RuleSetNode node) {
-        Map<String, String> entries = node.getOutMappings();
+        Map<String, String> entries = node.getIoSpecification().getOutputMappingBySources();
         // if both are empty we use automatic binding, otherwise we do nothing
-        if (node.getInMappings().isEmpty() && entries.isEmpty()) {
+        if (node.getIoSpecification().getInputMapping().isEmpty() && entries.isEmpty()) {
             entries = new HashMap<>();
             for (String varName : variableScope.getVariableNames()) {
                 entries.put(varName, varName);

@@ -16,12 +16,13 @@
 package org.jbpm.compiler.canonical.descriptors;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jbpm.compiler.canonical.ReflectionUtils;
 import org.jbpm.process.core.ParameterDefinition;
@@ -45,7 +46,26 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
 
     public static final String TYPE = "Service Task";
-    protected final Map<String, String> parameters;
+
+    public static class Argument {
+        private String type;
+        private String name;
+
+        public Argument(String type, String name) {
+            this.type = type;
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getType() {
+            return type;
+        }
+    }
+
+    protected final List<Argument> parameters;
     private final String mangledName;
     private final Class<?> cls;
     private final Method method;
@@ -65,7 +85,7 @@ public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
                                     interfaceName));
         }
         try {
-            method = ReflectionUtils.getMethod(contextClassLoader, cls, operationName, parameters.values());
+            method = ReflectionUtils.getMethod(contextClassLoader, cls, operationName, parameters.stream().map(Argument::getType).collect(Collectors.toList()));
         } catch (ReflectiveOperationException ex) {
             throw new IllegalArgumentException(
                     MessageFormat
@@ -109,34 +129,37 @@ public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
 
     @Override
     protected void handleParametersForServiceCall(final BlockStmt executeWorkItemBody, final MethodCallExpr callServiceMethod) {
-        int i = 0;
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        for (String paramName : parameters.keySet()) {
-            Class<?> clazz = parameterTypes[i++];
-            MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(paramName));
+        Parameter[] methodParameter = method.getParameters();
+        for (int i = 0; i < this.parameters.size(); i++) {
+            Argument argument = this.parameters.get(i);
+            MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(argument.getName()));
+            Class<?> clazz = methodParameter[i].getType();
+
             callServiceMethod.addArgument(
                     new CastExpr(clazz.isPrimitive() ? new PrimitiveType(Primitive.valueOf(clazz.getCanonicalName().toUpperCase())) : parseClassOrInterfaceType(clazz.getCanonicalName()),
                             getParamMethod));
+
         }
-        if (parameterTypes.length > i && KogitoProcessContext.class.isAssignableFrom(parameterTypes[i])) {
+
+        // adding a dynamic argument at the end of all parameters of the class
+        if (methodParameter.length > this.parameters.size() && KogitoProcessContext.class.isAssignableFrom(methodParameter[this.parameters.size()].getType())) {
             callServiceMethod.addArgument(new MethodCallExpr(new TypeExpr(parseClassOrInterfaceType(ContextFactory.class.getCanonicalName())), "fromItem").addArgument(new NameExpr("workItem")));
         }
     }
 
-    private Map<String, String> extractTaskParameters() {
+    private List<Argument> extractTaskParameters() {
         String type = (String) workItemNode.getWork().getParameter("ParameterType");
-        Map<String, String> methodParameters = null;
+        List<Argument> arguments = new ArrayList<>();
+
         if (type != null) {
             type = inferParameterType(type);
-            methodParameters = Collections.singletonMap("Parameter", type);
+            arguments.add(new Argument(type, "Parameter"));
         } else {
-            methodParameters = new LinkedHashMap<>();
-
             for (ParameterDefinition def : workItemNode.getWork().getParameterDefinitions()) {
-                methodParameters.put(def.getName(), def.getType().getStringType());
+                arguments.add(new Argument(def.getType().getStringType(), def.getName()));
             }
         }
-        return methodParameters;
+        return arguments;
     }
 
     private String inferParameterType(String type) {

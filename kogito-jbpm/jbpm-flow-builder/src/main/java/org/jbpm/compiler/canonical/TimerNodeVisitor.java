@@ -56,6 +56,7 @@ public class TimerNodeVisitor extends AbstractNodeVisitor<TimerNode> {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_DATE, new StringLiteralExpr(timer.getDate())));
         }
 
+        addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }

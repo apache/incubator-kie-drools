@@ -131,6 +131,9 @@ public class VariableScope extends AbstractContext {
     }
 
     public void addVariable(Variable variable) {
+        if (this.variables.stream().anyMatch(v -> v.getName().equals(variable.getName()))) {
+            return;
+        }
         this.variables.add(variable);
     }
 }

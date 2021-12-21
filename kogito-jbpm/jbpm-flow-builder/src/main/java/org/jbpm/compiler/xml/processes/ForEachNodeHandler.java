@@ -20,13 +20,16 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.kie.api.definition.process.Connection;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import static java.lang.Thread.currentThread;
 
 public class ForEachNodeHandler extends CompositeNodeHandler {
 
@@ -80,11 +83,13 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
         ForEachNode forEachNode = (ForEachNode) node;
         final String variableName = element.getAttribute("variableName");
         if (variableName != null && variableName.length() != 0) {
-            forEachNode.setVariable(variableName, new ObjectDataType());
+            forEachNode.setInputRef(variableName);
+            forEachNode.addContextVariable(variableName, variableName, DataTypeResolver.fromType("java.lang.Object", currentThread().getContextClassLoader()));
         }
         final String collectionExpression = element.getAttribute("collectionExpression");
         if (collectionExpression != null && collectionExpression.length() != 0) {
             forEachNode.setCollectionExpression(collectionExpression);
+            forEachNode.getMultiInstanceSpecification().setLoopDataInputRef(DataDefinition.toExpression(collectionExpression));
         }
         final String waitForCompletion = element.getAttribute("waitForCompletion");
         if ("false".equals(waitForCompletion)) {
@@ -93,6 +98,8 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
         final String isSequential = element.getAttribute("isSequential");
         if ("false".equals(isSequential)) {
             forEachNode.setSequential(false);
+        } else {
+            forEachNode.setSequential(true);
         }
     }
 }

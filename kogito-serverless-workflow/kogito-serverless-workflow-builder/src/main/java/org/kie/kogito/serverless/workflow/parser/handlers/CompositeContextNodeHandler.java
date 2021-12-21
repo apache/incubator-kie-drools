@@ -172,7 +172,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                                         parserContext.getContext()))
                         .workParameter(SERVICE_IMPL_KEY, ServerlessWorkflowUtils.resolveFunctionMetadata(
                                 actionFunction, SERVICE_IMPL_KEY, parserContext.getContext(), "Java"))
-                        .inMapping(WORKITEM_PARAM, inputVar)
+                        .inMapping(inputVar, WORKITEM_PARAM)
                         .outMapping(WORKITEM_PARAM, outputVar);
 
                 if (functionArgs == null || functionArgs.isEmpty()) {
@@ -205,8 +205,9 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                                 .resolveFunctionMetadataAsInt(actionFunction, "port",
                                         parserContext.getContext()))
                         .workParameter(RestWorkItemHandler.BODY_BUILDER, new RestBodyBuilderSupplier())
-                        .inMapping(RestWorkItemHandler.CONTENT_DATA, inputVar)
+                        .inMapping(inputVar, RestWorkItemHandler.CONTENT_DATA)
                         .outMapping(RestWorkItemHandler.RESULT, outputVar);
+
                 if (functionArgs != null && !functionArgs.isEmpty()) {
                     processArgs(workItemFactory, functionArgs, RestWorkItemHandler.CONTENT_DATA, ObjectResolver.class);
                 }
@@ -218,7 +219,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                         .withModelParameter(WORKITEM_PARAM)
                         .withArgs(functionsToMap(functionArgs), JsonNodeResolver.class, JsonNode.class)
                         .build(embeddedSubProcess.workItemNode(parserContext.newId())).name(functionRef.getRefName())
-                        .inMapping(WORKITEM_PARAM, inputVar)
+                        .inMapping(inputVar, WORKITEM_PARAM)
                         .outMapping(WORKITEM_RESULT, outputVar);
             default:
                 return emptyNode(embeddedSubProcess, actionName);

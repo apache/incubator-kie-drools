@@ -17,7 +17,7 @@ package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.core.context.variable.Mappable;
@@ -26,9 +26,14 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.ruleflow.core.factory.MappableNodeFactory;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.DataDefinition;
+import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -61,8 +66,6 @@ import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
-import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_IN_MAPPING;
-import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_OUT_MAPPING;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_DONE;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_NAME;
 
@@ -100,6 +103,13 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
 
     protected AssignExpr getAssignedFactoryMethod(String factoryField, Class<?> typeClass, String variableName, String methodName, Expression... args) {
         return getAssignedFactoryMethod(factoryField, typeClass, variableName, methodName, new WildcardType(), args);
+    }
+
+    public Expression buildDataResolver(String type) {
+        MethodCallExpr currentThread = new MethodCallExpr(null, "java.lang.Thread.currentThread");
+        MethodCallExpr classLoaderMethodCallExpr = new MethodCallExpr(currentThread, "getContextClassLoader");
+        return new MethodCallExpr(null, "org.jbpm.process.core.datatype.DataTypeResolver.fromType",
+                new NodeList<>(new StringLiteralExpr(type), classLoaderMethodCallExpr));
     }
 
     protected AssignExpr getAssignedFactoryMethod(String factoryField, Class<?> typeClass, String variableName, String methodName, Type parentType, Expression... args) {
@@ -160,12 +170,80 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
     }
 
     protected void addNodeMappings(Mappable node, BlockStmt body, String variableName) {
-        for (Entry<String, String> entry : node.getInMappings().entrySet()) {
-            body.addStatement(getFactoryMethod(variableName, METHOD_IN_MAPPING, new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue())));
+        for (DataAssociation entry : node.getInAssociations()) {
+            body.addStatement(getFactoryMethod(variableName, MappableNodeFactory.METHOD_IN_ASSOCIATION, buildDataAssociationExpression(entry)));
         }
-        for (Entry<String, String> entry : node.getOutMappings().entrySet()) {
-            body.addStatement(getFactoryMethod(variableName, METHOD_OUT_MAPPING, new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue())));
+        for (DataAssociation entry : node.getOutAssociations()) {
+            body.addStatement(getFactoryMethod(variableName, MappableNodeFactory.METHOD_OUT_ASSOCIATION, buildDataAssociationExpression(entry)));
         }
+    }
+
+    protected Expression buildDataAssociationsExpression(List<DataAssociation> dataAssociations) {
+        NodeList<Expression> expressions = NodeList.nodeList(dataAssociations.stream().map(this::buildDataAssociationExpression).collect(Collectors.toList()));
+        return new MethodCallExpr(null, "java.util.Arrays.asList", NodeList.nodeList(expressions));
+    }
+
+    protected Expression buildDataAssociationExpression(DataAssociation dataAssociation) {
+        List<DataDefinition> sourceExpr = dataAssociation.getSources();
+        DataDefinition targetExpr = dataAssociation.getTarget();
+        Transformation transformation = dataAssociation.getTransformation();
+        List<Assignment> assignments = dataAssociation.getAssignments();
+        return toDataAssociation(toDataDef(sourceExpr), toDataDef(targetExpr), toAssignmentExpr(assignments), toTransformation(transformation));
+    }
+
+    private Expression toAssignmentExpr(List<Assignment> assignments) {
+        if (assignments == null || assignments.isEmpty()) {
+            return new NullLiteralExpr();
+        }
+
+        List<Expression> expressions = new ArrayList<>();
+        for (Assignment assignment : assignments) {
+            Expression lang = assignment.getDialect() != null ? new StringLiteralExpr(assignment.getDialect()) : new NullLiteralExpr();
+            Expression from = toDataDef(assignment.getFrom());
+            Expression to = toDataDef(assignment.getTo());
+            ClassOrInterfaceType clazz = new ClassOrInterfaceType(null, "org.jbpm.workflow.core.node.Assignment");
+            expressions.add(new ObjectCreationExpr(null, clazz, NodeList.nodeList(lang, from, to)));
+        }
+
+        return new MethodCallExpr(null, "java.util.Arrays.asList", NodeList.nodeList(expressions));
+    }
+
+    protected Expression toTransformation(Transformation transformation) {
+        if (transformation == null) {
+            return new NullLiteralExpr();
+        }
+        Expression lang = new StringLiteralExpr(transformation.getLanguage());
+        Expression expression = new StringLiteralExpr(transformation.getExpression());
+        Expression source = new StringLiteralExpr(transformation.getSource());
+        ClassOrInterfaceType clazz = new ClassOrInterfaceType(null, "org.jbpm.workflow.core.node.Transformation");
+        return new ObjectCreationExpr(null, clazz, NodeList.nodeList(lang, expression, source));
+
+    }
+
+    protected Expression toDataAssociation(Expression sourceExprs, Expression target, Expression transformation, Expression assignments) {
+        ClassOrInterfaceType clazz = new ClassOrInterfaceType(null, "org.jbpm.workflow.core.impl.DataAssociation");
+        return new ObjectCreationExpr(null, clazz, NodeList.nodeList(sourceExprs, target, transformation, assignments));
+    }
+
+    private Expression toDataDef(List<DataDefinition> sourceExpr) {
+        List<Expression> expressions = sourceExpr.stream().map(this::toDataDef).collect(Collectors.toList());
+        return new MethodCallExpr(null, "java.util.Arrays.asList", NodeList.nodeList(expressions));
+    }
+
+    private Expression toDataDef(DataDefinition sourceExpr) {
+        if (sourceExpr == null) {
+            return new NullLiteralExpr();
+        }
+        Expression id = new StringLiteralExpr(sourceExpr.getId());
+        Expression label = new StringLiteralExpr(escape(sourceExpr.getLabel()));
+        Expression type = new StringLiteralExpr(sourceExpr.getType());
+        Expression expression = sourceExpr.getExpression() != null ? new StringLiteralExpr(escape(sourceExpr.getExpression())) : new NullLiteralExpr();
+        ClassOrInterfaceType clazz = new ClassOrInterfaceType(null, "org.jbpm.workflow.core.impl.DataDefinition");
+        return new ObjectCreationExpr(null, clazz, NodeList.nodeList(id, label, type, expression));
+    }
+
+    private String escape(String escape) {
+        return escape.replace("\"", "\\\"");
     }
 
     protected String extractVariableFromExpression(String variableExpression) {
@@ -213,12 +291,13 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
                 conditionBody);
     }
 
-    public static ObjectCreationExpr buildAction(String signalName, String variable, String scope) {
+    public static ObjectCreationExpr buildAction(String signalName, String variable, String inputVariable, String scope) {
         return new ObjectCreationExpr(null,
                 parseClassOrInterfaceType(SignalProcessInstanceAction.class.getCanonicalName()),
                 new NodeList<>(new StringLiteralExpr(signalName), variable != null ? new StringLiteralExpr(variable.replace("\"", "\\\""))
                         : new CastExpr(
                                 parseClassOrInterfaceType(String.class.getCanonicalName()), new NullLiteralExpr()),
+                        inputVariable != null ? new StringLiteralExpr(inputVariable) : new NullLiteralExpr(),
                         scope != null ? new StringLiteralExpr(scope)
                                 : new CastExpr(
                                         parseClassOrInterfaceType(String.class.getCanonicalName()), new NullLiteralExpr())));

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.core.context.variable.Mappable;
+import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.DataDefinition;
 
 public class Trigger implements Mappable, Serializable {
 
@@ -30,8 +32,12 @@ public class Trigger implements Mappable, Serializable {
 
     private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
 
-    public void addInMapping(String subVariableName, String variableName) {
-        inMapping.add(new DataAssociation(subVariableName, variableName, null, null));
+    public void addInMapping(String mapping) {
+        addInMapping(mapping, mapping);
+    }
+
+    public void addInMapping(String source, String target) {
+        inMapping.add(new DataAssociation(DataDefinition.toSimpleDefinition(source), DataDefinition.toSimpleDefinition(target), null, null));
     }
 
     public void setInMappings(Map<String, String> inMapping) {
@@ -49,7 +55,7 @@ public class Trigger implements Mappable, Serializable {
         Map<String, String> in = new HashMap<String, String>();
         for (DataAssociation a : inMapping) {
             if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                in.put(a.getSources().get(0), a.getTarget());
+                in.put(a.getSources().get(0).getLabel(), a.getTarget().getLabel());
             }
         }
         return in;

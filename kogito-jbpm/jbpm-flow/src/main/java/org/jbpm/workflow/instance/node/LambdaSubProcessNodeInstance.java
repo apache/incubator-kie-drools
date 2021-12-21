@@ -25,30 +25,23 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
-import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.instance.impl.MVELProcessHelper;
-import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of a SubFlow node.
@@ -57,7 +50,6 @@ import org.slf4j.LoggerFactory;
 public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance implements KogitoEventListener, ContextInstanceContainer {
 
     private static final long serialVersionUID = 510l;
-    private static final Logger logger = LoggerFactory.getLogger(LambdaSubProcessNodeInstance.class);
 
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
@@ -185,7 +177,11 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
             ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
             if (exceptionScopeInstance != null) {
 
-                exceptionScopeInstance.handleException(faultName, processInstance.getFaultData());
+                KogitoProcessContextImpl context = new KogitoProcessContextImpl(this.getProcessInstance().getKnowledgeRuntime());
+                context.setProcessInstance(this.getProcessInstance());
+                context.setNodeInstance(this);
+                context.getContextData().put("Exception", processInstance.getFaultData());
+                exceptionScopeInstance.handleException(faultName, context);
                 if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()) {
                     cancel();
                 }
@@ -276,28 +272,6 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     @Override
     public ContextContainer getContextContainer() {
         return getSubProcessNode();
-    }
-
-    protected Map<String, Object> getSourceParameters(DataAssociation association) {
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        for (String sourceParam : association.getSources()) {
-            Object parameterValue = null;
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
-            if (variableScopeInstance != null) {
-                parameterValue = variableScopeInstance.getVariable(sourceParam);
-            } else {
-                try {
-                    parameterValue = MVELProcessHelper.evaluator().eval(sourceParam, new NodeInstanceResolverFactory(this));
-                } catch (Throwable t) {
-                    logger.warn("Could not find variable scope for variable {}", sourceParam);
-                }
-            }
-            if (parameterValue != null) {
-                parameters.put(association.getTarget(), parameterValue);
-            }
-        }
-
-        return parameters;
     }
 
 }

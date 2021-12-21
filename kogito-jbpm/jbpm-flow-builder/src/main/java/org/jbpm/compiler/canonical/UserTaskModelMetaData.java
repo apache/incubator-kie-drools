@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.kie.kogito.UserTask;
@@ -66,7 +66,6 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
-import static org.jbpm.ruleflow.core.Metadata.DATA_OUTPUTS;
 
 public class UserTaskModelMetaData {
 
@@ -77,7 +76,8 @@ public class UserTaskModelMetaData {
     private static final String WORK_ITEM = "workItem";
     private static final String PARAMS = "params";
 
-    protected static final List<String> INTERNAL_FIELDS = Arrays.asList(TASK_NAME, "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale");
+    protected static final List<String> INTERNAL_FIELDS = Arrays.asList(TASK_NAME, "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale",
+            "NotStartedNotify", "NotCompletedNotify", "NotCompletedReassign", "NotStartedReassign");
 
     private final String packageName;
 
@@ -186,13 +186,25 @@ public class UserTaskModelMetaData {
         staticFromMap.addStatement(new AssignExpr(itemField, new ObjectCreationExpr(null, modelType, NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
         NameExpr item = new NameExpr("item");
 
-        for (Entry<String, String> entry : humanTaskNode.getInMappings().entrySet()) {
+        // map is task input -> context variable / process variable
+        Map<String, String> inputTypes = humanTaskNode.getIoSpecification().getInputTypes();
+        for (Entry<String, String> entry : humanTaskNode.getIoSpecification().getInputMapping().entrySet()) {
+            if (INTERNAL_FIELDS.contains(entry.getKey())) {
+                continue;
+            }
 
             Variable variable = Optional.ofNullable(variableScope.findVariable(entry.getValue()))
                     .orElse(processVariableScope.findVariable(entry.getValue()));
 
             if (variable == null) {
-                throw new IllegalStateException("Task " + humanTaskNode.getName() + " (input) " + entry.getKey() + " reference not existing variable " + entry.getValue());
+                Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(entry.getValue());
+                if (matcher.find()) {
+                    variable = new Variable();
+                    variable.setName(entry.getKey());
+                    variable.setType(DataTypeResolver.fromType(inputTypes.get(entry.getKey()), Thread.currentThread().getContextClassLoader()));
+                } else {
+                    throw new IllegalStateException("Task " + humanTaskNode.getName() + " (input) " + entry.getKey() + " reference not existing variable " + entry.getValue());
+                }
             }
 
             FieldDeclaration fd = new FieldDeclaration().addVariable(
@@ -290,7 +302,9 @@ public class UserTaskModelMetaData {
         toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null,
                 HashMap.class.getSimpleName() + "<>"), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
 
-        for (Entry<String, String> entry : humanTaskNode.getOutMappings().entrySet()) {
+        // map is task output -> context variable / process variable
+        Map<String, String> outputTypes = humanTaskNode.getIoSpecification().getOutputTypes();
+        for (Entry<String, String> entry : humanTaskNode.getIoSpecification().getOutputMappingBySources().entrySet()) {
             if (entry.getValue() == null || INTERNAL_FIELDS.contains(entry.getKey())) {
                 continue;
             }
@@ -302,10 +316,9 @@ public class UserTaskModelMetaData {
                 // check if given mapping is an expression
                 Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(entry.getValue());
                 if (matcher.find()) {
-                    Map<String, String> dataOutputs = (Map<String, String>) humanTaskNode.getMetaData(DATA_OUTPUTS);
                     variable = new Variable();
                     variable.setName(entry.getKey());
-                    variable.setType(new ObjectDataType(dataOutputs.get(entry.getKey())));
+                    variable.setType(DataTypeResolver.fromType(outputTypes.get(entry.getKey()), Thread.currentThread().getContextClassLoader()));
                 } else {
                     throw new IllegalStateException("Task " + humanTaskNode.getName() + " (output) " + entry.getKey() + " reference not existing variable " + entry.getValue());
                 }

@@ -15,11 +15,12 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
+import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 
-public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> {
+public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> implements MappableNodeFactory<T> {
 
     public static final String METHOD_NAME = "name";
     public static final String METHOD_METADATA = "metaData";
@@ -59,5 +60,10 @@ public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlo
 
     public P done() {
         return this.nodeContainerFactory;
+    }
+
+    @Override
+    public Mappable getMappableNode() {
+        return (Mappable) node;
     }
 }

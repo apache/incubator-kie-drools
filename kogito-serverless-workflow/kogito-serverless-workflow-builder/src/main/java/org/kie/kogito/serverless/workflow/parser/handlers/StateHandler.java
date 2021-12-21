@@ -383,7 +383,11 @@ public abstract class StateHandler<S extends State> {
 
     protected final NodeFactory<?, ?> consumeEventNode(RuleFlowNodeContainerFactory<?, ?> factory, String eventRef, String inputVar, String outputVar) {
         EventDefinition eventDefinition = eventDefinition(eventRef);
-        return ServerlessWorkflowParser.messageNode(factory.eventNode(parserContext.newId()), eventDefinition, inputVar).variableName(outputVar).eventType("Message-" + eventDefinition.getType());
+        return ServerlessWorkflowParser.messageNode(factory.eventNode(parserContext.newId()), eventDefinition, inputVar)
+                .inputVariableName(inputVar)
+                .variableName(outputVar)
+                .outMapping(inputVar, outputVar)
+                .eventType("Message-" + eventDefinition.getType());
     }
 
     protected final EventDefinition eventDefinition(String eventName) {

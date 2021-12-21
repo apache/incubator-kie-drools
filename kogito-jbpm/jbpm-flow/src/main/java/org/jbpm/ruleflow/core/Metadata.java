@@ -28,7 +28,9 @@ public class Metadata {
     public static final String NODE_TYPE = "NodeType";
     public static final String TRIGGER_TYPE = "TriggerType";
     public static final String TRIGGER_MAPPING = "TriggerMapping";
+    public static final String TRIGGER_MAPPING_INPUT = "TriggerMappingInput";
     public static final String MAPPING_VARIABLE = "MappingVariable";
+    public static final String MAPPING_VARIABLE_INPUT = "MappingVariableInput";
     public static final String EVENT_TYPE = "EventType";
     public static final String EVENT_TYPE_TIMER = "Timer";
     public static final String EVENT_TYPE_SIGNAL = "signal";

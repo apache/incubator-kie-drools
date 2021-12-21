@@ -42,11 +42,15 @@ public class EventNodeHandler extends AbstractNodeHandler {
         String variableName = element.getAttribute("variableName");
         if (variableName != null && variableName.length() != 0) {
             eventNode.setVariableName(variableName);
+            eventNode.setInputVariableName(variableName);
         }
         String scope = element.getAttribute("scope");
         if (scope != null && scope.length() != 0) {
             eventNode.setScope(scope);
         }
+
+        eventNode.getIoSpecification().addOutputMapping(variableName, variableName);
+
     }
 
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {

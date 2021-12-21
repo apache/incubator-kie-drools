@@ -42,7 +42,7 @@
       <dataInputAssociation>
         <sourceRef>s</sourceRef>        
         <targetRef>_2_param</targetRef>
-        <transformation language="http://www.mvel.org/2.0">Parameter.toUpperCase()</transformation>
+        <transformation language="http://www.mvel.org/2.0">s.toUpperCase()</transformation>
       </dataInputAssociation>
       <dataOutputAssociation>
         <sourceRef>_2_result</sourceRef>

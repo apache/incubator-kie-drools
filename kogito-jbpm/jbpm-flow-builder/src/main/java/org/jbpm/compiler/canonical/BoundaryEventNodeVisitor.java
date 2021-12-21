@@ -31,6 +31,7 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory.METHOD_ADD_COMPENSATION_HANDLER;
 import static org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory.METHOD_ATTACHED_TO;
 import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_EVENT_TYPE;
+import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_INPUT_VARIABLE_NAME;
 import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_SCOPE;
 import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_VARIABLE_NAME;
 
@@ -54,6 +55,10 @@ public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventN
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_VARIABLE_NAME, new StringLiteralExpr(node.getVariableName())));
             variable = variableScope.findVariable(node.getVariableName());
         }
+        if (node.getInputVariableName() != null) {
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_INPUT_VARIABLE_NAME, new StringLiteralExpr(node.getInputVariableName())));
+        }
+
         final String eventType = (String) node.getMetaData(EVENT_TYPE);
         if (EVENT_TYPE_SIGNAL.equals(eventType)) {
             metadata.addSignal(node.getType(), variable != null ? variable.getType().getStringType() : null);
@@ -62,7 +67,7 @@ public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventN
         } else if (EVENT_TYPE_COMPENSATION.equalsIgnoreCase(eventType) && node.getAttachedToNodeId() != null) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ADD_COMPENSATION_HANDLER, new StringLiteralExpr(node.getAttachedToNodeId())));
         }
-
+        addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }

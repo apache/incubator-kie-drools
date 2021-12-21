@@ -50,7 +50,6 @@ public class ForEachNode extends CompositeContextNode {
     private String exprLanguage;
     private Action finishAction;
     private boolean waitForCompletion = true;
-    private boolean sequential = true;
     private Expression evaluateExpression;
 
     public ForEachNode() {
@@ -227,40 +226,30 @@ public class ForEachNode extends CompositeContextNode {
         return super.getLinkedOutgoingNode(inType);
     }
 
-    public void setVariable(String variableName, DataType type) {
-        this.variableName = variableName;
-        VariableScope variableScope = (VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
-        List<Variable> variables = variableScope.getVariables();
-        if (variables == null) {
-            variables = new ArrayList<Variable>();
-            variableScope.setVariables(variables);
-        }
-        Variable variable = new Variable();
-        variable.setId(variableName);
-        variable.setName(variableName);
-        variable.setType(type);
-        variables.add(variable);
+    public void setInputRef(String varRef) {
+        this.variableName = varRef;
     }
 
-    public void setOutputVariable(String variableName, DataType type) {
-        this.outputVariableName = variableName;
-        VariableScope variableScope = (VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
+    public void setOutputRef(String varRef) {
+        this.outputVariableName = varRef;
+    }
+
+    public void addContextVariable(String varRef, String variableName, DataType type) {
+        this.addVariableToContext(getCompositeNode(), varRef, variableName, type);
+    }
+
+    private void addVariableToContext(CompositeContextNode compositeContextNode, String varRef, String variableName, DataType type) {
+        VariableScope variableScope = (VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         List<Variable> variables = variableScope.getVariables();
         if (variables == null) {
             variables = new ArrayList<Variable>();
             variableScope.setVariables(variables);
         }
         Variable variable = new Variable();
-        variable.setId(variableName);
+        variable.setId(varRef);
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
-
-        Variable tmpvariable = new Variable();
-        variable.setId("foreach_output");
-        tmpvariable.setName("foreach_output");
-        tmpvariable.setType(type);
-        variables.add(tmpvariable);
     }
 
     public String getCollectionExpression() {
@@ -348,10 +337,10 @@ public class ForEachNode extends CompositeContextNode {
     }
 
     public boolean isSequential() {
-        return sequential;
+        return getMultiInstanceSpecification().isSequential();
     }
 
     public void setSequential(boolean sequential) {
-        this.sequential = sequential;
+        this.getMultiInstanceSpecification().setSequential(sequential);
     }
 }

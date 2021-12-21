@@ -19,16 +19,18 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbpm.workflow.core.impl.DataDefinition;
+
 public class Assignment implements Serializable {
 
     private static final long serialVersionUID = 5L;
 
     private String dialect;
-    private String from;
-    private String to;
+    private DataDefinition from; // this is an expression
+    private DataDefinition to; // this is another expression
     private Map<String, Object> metaData = new HashMap<String, Object>();
 
-    public Assignment(String dialect, String from, String to) {
+    public Assignment(String dialect, DataDefinition from, DataDefinition to) {
         this.dialect = dialect;
         this.from = from;
         this.to = to;
@@ -42,19 +44,19 @@ public class Assignment implements Serializable {
         this.dialect = dialect;
     }
 
-    public String getFrom() {
+    public DataDefinition getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(DataDefinition from) {
         this.from = from;
     }
 
-    public String getTo() {
+    public DataDefinition getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(DataDefinition to) {
         this.to = to;
     }
 

@@ -23,12 +23,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.exclusive.ExclusiveGroup;
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
@@ -40,6 +43,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
 import org.jbpm.util.ContextFactory;
+import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -51,6 +55,7 @@ import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -219,6 +224,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         try {
             internalTrigger(from, type);
         } catch (Exception e) {
+            logger.debug("Node instance causing process instance error in id {}", this.getStringId(), e);
             captureError(e);
             // stop after capturing error
             return;
@@ -242,20 +248,23 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
      * 
      * @param action An {@link Action} instance.
      */
-    protected void executeAction(Action action) {
-
+    protected void executeAction(Action action, KogitoProcessContext context) {
         try {
-            action.execute(ContextFactory.fromNode(this));
+            action.execute(context);
         } catch (Exception e) {
             String exceptionName = e.getClass().getName();
             ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
             if (exceptionScopeInstance == null) {
                 throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
             }
-
-            exceptionScopeInstance.handleException(exceptionName, e);
+            context.getContextData().put("Exception", e);
+            exceptionScopeInstance.handleException(exceptionName, context);
             cancel();
         }
+    }
+
+    protected void executeAction(Action action) {
+        executeAction(action, ContextFactory.fromNode(this));
     }
 
     public void triggerCompleted(String type, boolean remove) {
@@ -615,5 +624,85 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     @Override
     public Date getLeaveTime() {
         return leaveTime;
+    }
+
+    protected Object resolveValue(Object value) {
+        return (value instanceof String) ? resolveExpression((String) value) : value;
+    }
+
+    protected boolean isExpression(String expression) {
+        return expression != null && PatternConstants.PARAMETER_MATCHER.matcher(expression).find();
+    }
+
+    protected String resolveExpression(String expression) {
+        return isExpression(expression) ? (String) resolveValue(expression) : expression;
+    }
+
+    protected Object resolveValue(String expression) {
+        return resolveValue(expression, (replacements) -> {
+            String expr = expression;
+            for (Map.Entry<String, Object> replacement : replacements.entrySet()) {
+                expr = expr.replace("#{" + replacement.getKey() + "}", replacement.getValue() != null ? replacement.getValue().toString() : "");
+            }
+            return expr;
+        });
+    }
+
+    protected Object resolveFirstValue(String expression) {
+        return resolveValue(expression, (replacements) -> replacements.isEmpty() ? null : replacements.values().iterator().next());
+    }
+
+    // resolve expression based on variables or mvel expressions
+    protected Object resolveValue(String expression, Function<Map<String, Object>, Object> converter) {
+        if (expression == null) {
+            return null;
+        }
+        Object outcome = null;
+        // cannot parse delay, trying to interpret it
+        Map<String, Object> replacements = new HashMap<>();
+        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(expression);
+        if (matcher.find()) {
+            matcher.reset();
+            while (matcher.find()) {
+                String paramName = matcher.group(1);
+                if (replacements.get(paramName) == null) {
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                    if (variableScopeInstance != null) {
+                        Object variableValue = variableScopeInstance.getVariable(paramName);
+                        replacements.put(paramName, variableValue);
+                    } else {
+                        try {
+                            Object variableValue = MVELProcessHelper.evaluator().eval(paramName, new NodeInstanceResolverFactory(this));
+                            replacements.put(paramName, variableValue);
+                        } catch (Throwable t) {
+                            logger.error("Could not find variable scope for variable {}", paramName);
+                            logger.error("when trying to replace variable in processId for node {}", getNodeName());
+                            logger.error("Continuing without setting process id.");
+                        }
+                    }
+                }
+            }
+            outcome = converter.apply(replacements);
+        } else if (getVariable(expression) != null) {
+            outcome = getVariable(expression);
+        } else {
+            outcome = expression;
+        }
+        return outcome;
+    }
+
+    protected void mapDynamicOutputData(Map<String, Object> results) {
+        if (results != null && !results.isEmpty()) {
+            VariableScope variableScope = (VariableScope) ((ContextContainer) getProcessInstance().getProcess()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
+            for (Entry<String, Object> result : results.entrySet()) {
+                String variableName = result.getKey();
+                Variable variable = variableScope.findVariable(variableName);
+                if (variable != null) {
+                    variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), variableName, result.getValue());
+                    variableScopeInstance.setVariable(this, variableName, result.getValue());
+                }
+            }
+        }
     }
 }

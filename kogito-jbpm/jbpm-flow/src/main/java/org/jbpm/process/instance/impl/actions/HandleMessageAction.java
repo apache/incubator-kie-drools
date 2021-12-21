@@ -16,12 +16,12 @@
 package org.jbpm.process.instance.impl.actions;
 
 import java.io.Serializable;
+import java.util.Map;
 
-import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.instance.impl.Action;
-import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.ruleflow.core.Metadata;
-import org.jbpm.workflow.core.node.Transformation;
+import org.jbpm.workflow.core.impl.NodeIoHelper;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
@@ -33,36 +33,24 @@ public class HandleMessageAction implements Action, Serializable {
     private final String messageType;
     private String variableName;
 
-    private Transformation transformation;
-
     public HandleMessageAction(String messageType, String variableName) {
         this.messageType = messageType;
         this.variableName = variableName;
     }
 
-    public HandleMessageAction(String messageType, String variableName, Transformation transformation) {
-        this.messageType = messageType;
-        this.variableName = variableName;
-        this.transformation = transformation;
-    }
-
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        Object variable = VariableUtil.resolveVariable(variableName, context.getNodeInstance());
-
-        if (transformation != null) {
-            variable = new EventTransformerImpl(transformation).transformEvent(variable);
-        }
-
         KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setName("Send Task");
         workItem.setNodeInstanceId((context.getNodeInstance()).getStringId());
         workItem.setProcessInstanceId((context.getProcessInstance()).getStringId());
         workItem.setNodeId(context.getNodeInstance().getNodeId());
         workItem.setParameter(Metadata.MESSAGE_TYPE, messageType);
-        if (variable != null) {
-            workItem.setParameter("Message", variable);
-        }
+
+        // compute inputs for message action
+        NodeInstanceImpl impl = ((NodeInstanceImpl) context.getNodeInstance());
+        Map<String, Object> inputSet = NodeIoHelper.processInputs(impl, varRef -> impl.getVariable(varRef));
+        workItem.getParameters().put(variableName, inputSet.get(variableName));
 
         ((InternalKogitoWorkItemManager) context.getKogitoProcessRuntime().getKogitoWorkItemManager()).internalExecuteWorkItem(workItem);
     }

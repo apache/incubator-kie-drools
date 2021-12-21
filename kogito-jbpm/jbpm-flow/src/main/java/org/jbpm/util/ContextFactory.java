@@ -32,6 +32,7 @@ public class ContextFactory {
     public static KogitoProcessContextImpl fromNode(KogitoNodeInstance instance) {
         KogitoProcessContextImpl context = new KogitoProcessContextImpl(((ProcessInstance) instance.getProcessInstance()).getKnowledgeRuntime());
         context.setNodeInstance(instance);
+        context.setProcessInstance(instance.getProcessInstance());
         return context;
     }
 

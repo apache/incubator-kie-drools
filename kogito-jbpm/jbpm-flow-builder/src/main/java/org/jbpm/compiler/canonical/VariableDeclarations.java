@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 
 public class VariableDeclarations {
 
@@ -72,7 +72,7 @@ public class VariableDeclarations {
             for (Entry<String, String> entry : vscope.entrySet()) {
                 Variable variable = new Variable();
                 variable.setName(entry.getKey());
-                variable.setType(new ObjectDataType(entry.getValue()));
+                variable.setType(DataTypeResolver.fromType(entry.getValue(), Thread.currentThread().getContextClassLoader()));
                 vs.put(entry.getKey(), variable);
             }
         }

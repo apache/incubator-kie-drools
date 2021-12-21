@@ -21,30 +21,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Matcher;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
-import org.jbpm.process.core.ContextContainer;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
-import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
-import org.jbpm.workflow.instance.impl.MVELProcessHelper;
-import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieRuntime;
@@ -146,8 +137,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             switch (timer.getTimeType()) {
                 case Timer.TIME_CYCLE:
 
-                    String tempDelay = resolveVariable(timer.getDelay());
-                    String tempPeriod = resolveVariable(timer.getPeriod());
+                    String tempDelay = resolveExpression(timer.getDelay());
+                    String tempPeriod = resolveExpression(timer.getPeriod());
                     if (DateTimeUtils.isRepeatable(tempDelay)) {
                         String[] values = DateTimeUtils.parseISORepeatable(tempDelay);
                         String tempRepeatLimit = values[0];
@@ -176,7 +167,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                     }
 
                 case Timer.TIME_DURATION:
-                    delay = resolveVariable(timer.getDelay());
+                    delay = resolveExpression(timer.getDelay());
 
                     return DurationExpirationTime.repeat(businessCalendar.calculateBusinessTimeAsDuration(delay));
                 case Timer.TIME_DATE:
@@ -198,14 +189,14 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             case Timer.TIME_CYCLE:
                 if (timer.getPeriod() != null) {
 
-                    long actualDelay = DateTimeUtils.parseDuration(resolveVariable(timer.getDelay()));
+                    long actualDelay = DateTimeUtils.parseDuration(resolveExpression(timer.getDelay()));
                     if (timer.getPeriod() == null) {
                         return DurationExpirationTime.repeat(actualDelay, actualDelay, Integer.MAX_VALUE);
                     } else {
-                        return DurationExpirationTime.repeat(actualDelay, DateTimeUtils.parseDuration(resolveVariable(timer.getPeriod())), Integer.MAX_VALUE);
+                        return DurationExpirationTime.repeat(actualDelay, DateTimeUtils.parseDuration(resolveExpression(timer.getPeriod())), Integer.MAX_VALUE);
                     }
                 } else {
-                    String resolvedDelay = resolveVariable(timer.getDelay());
+                    String resolvedDelay = resolveExpression(timer.getDelay());
 
                     // when using ISO date/time period is not set
                     long[] repeatValues = null;
@@ -235,7 +226,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                     duration = DateTimeUtils.parseDuration(timer.getDelay());
                 } catch (RuntimeException e) {
                     // cannot parse delay, trying to interpret it
-                    s = resolveVariable(timer.getDelay());
+                    s = resolveExpression(timer.getDelay());
                     duration = DateTimeUtils.parseDuration(s);
                 }
                 return DurationExpirationTime.after(duration);
@@ -245,46 +236,11 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                     return ExactExpirationTime.of(timer.getDate());
                 } catch (RuntimeException e) {
                     // cannot parse delay, trying to interpret it
-                    s = resolveVariable(timer.getDate());
+                    s = resolveExpression(timer.getDate());
                     return ExactExpirationTime.of(s);
                 }
         }
         throw new UnsupportedOperationException("Not supported timer definition");
-    }
-
-    protected String resolveVariable(String s) {
-        if (s == null) {
-            return null;
-        }
-        // cannot parse delay, trying to interpret it
-        Map<String, String> replacements = new HashMap<>();
-        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(s);
-        while (matcher.find()) {
-            String paramName = matcher.group(1);
-            if (replacements.get(paramName) == null) {
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
-                if (variableScopeInstance != null) {
-                    Object variableValue = variableScopeInstance.getVariable(paramName);
-                    String variableValueString = variableValue == null ? "" : variableValue.toString();
-                    replacements.put(paramName, variableValueString);
-                } else {
-                    try {
-                        Object variableValue = MVELProcessHelper.evaluator().eval(paramName, new NodeInstanceResolverFactory(this));
-                        String variableValueString = variableValue == null ? "" : variableValue.toString();
-                        replacements.put(paramName, variableValueString);
-                    } catch (Throwable t) {
-                        logger.error("Could not find variable scope for variable {}", paramName);
-                        logger.error("when trying to replace variable in processId for sub process {}", getNodeName());
-                        logger.error("Continuing without setting process id.");
-                    }
-                }
-            }
-        }
-        for (Map.Entry<String, String> replacement : replacements.entrySet()) {
-            s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
-        }
-
-        return s;
     }
 
     protected void handleSLAViolation() {
@@ -461,21 +417,6 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         Object var = getVariable(matchVariable);
 
         return var.equals(dec);
-    }
-
-    protected void mapDynamicOutputData(Map<String, Object> results) {
-        if (results != null && !results.isEmpty()) {
-            VariableScope variableScope = (VariableScope) ((ContextContainer) getProcessInstance().getProcess()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
-            for (Entry<String, Object> result : results.entrySet()) {
-                String variableName = result.getKey();
-                Variable variable = variableScope.findVariable(variableName);
-                if (variable != null) {
-                    variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), variableName, result.getValue());
-                    variableScopeInstance.setVariable(this, variableName, result.getValue());
-                }
-            }
-        }
     }
 
     public Map<String, String> extractTimerEventInformation() {

@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
-import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.jbpm.process.core.impl.WorkImpl;
@@ -28,8 +27,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.WorkItemNode;
 
-public class AbstractWorkItemNodeFactory<T extends AbstractWorkItemNodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends StateBasedNodeFactory<T, P>
-        implements MappableNodeFactory<T> {
+public class AbstractWorkItemNodeFactory<T extends AbstractWorkItemNodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends StateBasedNodeFactory<T, P> {
 
     public static final String METHOD_WORK_NAME = "workName";
     public static final String METHOD_WORK_PARAMETER = "workParameter";
@@ -40,11 +38,6 @@ public class AbstractWorkItemNodeFactory<T extends AbstractWorkItemNodeFactory<T
 
     public WorkItemNode getWorkItemNode() {
         return (WorkItemNode) getNode();
-    }
-
-    @Override
-    public Mappable getMappableNode() {
-        return getWorkItemNode();
     }
 
     public T waitForCompletion(boolean waitForCompletion) {

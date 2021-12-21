@@ -45,6 +45,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -54,7 +55,6 @@ import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.CompositeNode.CompositeNodeEnd;
 import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
-import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -1089,16 +1089,22 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
     private void validateDataAssignmentsOut(List<ProcessValidationError> errors, RuleFlowProcess process, org.kie.api.definition.process.Node node, DataAssociation da) {
         if (node instanceof StartNode || node instanceof EventNode) {
+            String var = (String) node.getMetaData().get(MAPPING_VARIABLE);
+            if (var == null) {
+                return;
+            }
             String type = getEventVariableType(node);
             if (type == null || type.trim().isEmpty()) {
                 return;
             }
-            String var = da.getSources().get(0);
+
             Variable variable = process.getVariableScope().findVariable(var);
             DataType dataType = DataTypeResolver.fromType(type, Thread.currentThread().getContextClassLoader());
             if (!variable.getType().equals(dataType)) {
                 addErrorMessage(process, node, errors,
-                        format("Target variable '%s':'%s' has different data type from '%s':'%s' in data output assignment", var, variable.getType().getStringType(), da.getTarget(),
+                        format("Target variable '%s':'%s' has different data type from '%s':'%s' in data output assignment", var,
+                                variable.getType().getStringType(),
+                                da.getSources().get(0).getLabel(),
                                 dataType.getStringType()));
             }
         }
@@ -1106,16 +1112,22 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
     private void validateDataAssignmentsIn(List<ProcessValidationError> errors, RuleFlowProcess process, org.kie.api.definition.process.Node node, DataAssociation da) {
         if (node instanceof EndNode || node instanceof ActionNode) {
+            String var = (String) node.getMetaData().get(MAPPING_VARIABLE);
+            if (var == null) {
+                return;
+            }
             String type = getEventVariableType(node);
             if (type == null || type.trim().isEmpty()) {
                 return;
             }
-            String var = (String) node.getMetaData().get(MAPPING_VARIABLE);
+
             Variable variable = process.getVariableScope().findVariable(var);
             DataType dataType = DataTypeResolver.fromType(type, Thread.currentThread().getContextClassLoader());
             if (!variable.getType().equals(dataType)) {
                 addErrorMessage(process, node, errors,
-                        format("Source variable '%s':'%s' has different data type from '%s':'%s' in data input assignment", var, variable.getType().getStringType(), da.getSources().get(0),
+                        format("Source variable '%s':'%s' has different data type from '%s':'%s' in data input assignment", var,
+                                variable.getType().getStringType(),
+                                da.getTarget().getLabel(),
                                 dataType.getStringType()));
             }
         }

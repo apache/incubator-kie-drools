@@ -491,7 +491,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         if (inMappings != null && !inMappings.isEmpty()) {
             result += "        java.util.Map params = new java.util.HashMap();\n";
             for (Map.Entry<String, String> entry : inMappings.entrySet()) {
-                result += "        params.put(\"" + entry.getKey() + "\", " + entry.getValue() + ");\n";
+                result += "        params.put(\"" + entry.getValue() + "\", " + entry.getKey() + ");\n";
             }
             result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\""
                     + process.getId() + "\", params, \"conditional\");\n" + "end\n\n";

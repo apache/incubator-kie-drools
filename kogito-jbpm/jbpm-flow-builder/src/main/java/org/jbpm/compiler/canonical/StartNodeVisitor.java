@@ -16,7 +16,6 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -52,6 +51,7 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
                 .addStatement(getNameMethod(node, "Start"))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_INTERRUPTING, new BooleanLiteralExpr(node.isInterrupting())));
 
+        addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
         if (node.getTimer() != null) {
@@ -78,33 +78,32 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
     protected void handleSignal(StartNode startNode, Map<String, Object> nodeMetaData, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         if (EVENT_TYPE_SIGNAL.equalsIgnoreCase((String) startNode.getMetaData(TRIGGER_TYPE))) {
             Variable variable = null;
-            Map<String, String> variableMapping = startNode.getOutMappings();
-            if (variableMapping != null && !variableMapping.isEmpty()) {
-                Entry<String, String> varInfo = variableMapping.entrySet().iterator().next();
+            if (!startNode.getIoSpecification().getDataOutputAssociation().isEmpty()) {
 
                 body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
                         new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)),
-                        getOrNullExpr(varInfo.getKey()),
-                        getOrNullExpr(varInfo.getValue())));
-                variable = variableScope.findVariable(varInfo.getKey());
+                        buildDataAssociationsExpression(startNode.getIoSpecification().getDataOutputAssociation())));
+
+                String triggerMapping = (String) nodeMetaData.get(TRIGGER_MAPPING);
+                variable = variableScope.findVariable(triggerMapping);
 
                 if (variable == null) {
                     // check parent node container
-                    VariableScope vscope = (VariableScope) startNode.resolveContext(VariableScope.VARIABLE_SCOPE, varInfo.getKey());
-                    variable = vscope.findVariable(varInfo.getKey());
+                    VariableScope vscope = (VariableScope) startNode.resolveContext(VariableScope.VARIABLE_SCOPE, triggerMapping);
+                    variable = vscope.findVariable(triggerMapping);
                 }
+
+                metadata.addSignal((String) nodeMetaData.get(MESSAGE_TYPE), variable != null ? variable.getType().getStringType() : null);
             } else {
                 body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
                         new StringLiteralExpr((String) nodeMetaData.get(MESSAGE_TYPE)),
-                        new StringLiteralExpr(getOrDefault((String) nodeMetaData.get(TRIGGER_MAPPING), ""))));
+                        buildDataAssociationsExpression(startNode.getIoSpecification().getDataOutputAssociation())));
             }
             metadata.addSignal((String) nodeMetaData.get(MESSAGE_TYPE), variable != null ? variable.getType().getStringType() : null);
         } else {
-            String triggerMapping = (String) nodeMetaData.get(TRIGGER_MAPPING);
             body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
                     new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)),
-                    new StringLiteralExpr(getOrDefault((String) nodeMetaData.get(TRIGGER_MAPPING), "")),
-                    new StringLiteralExpr(getOrDefault(startNode.getOutMapping(triggerMapping), ""))));
+                    buildDataAssociationsExpression(startNode.getIoSpecification().getDataOutputAssociation())));
         }
     }
 

@@ -54,7 +54,7 @@ public class MappingHandler extends BaseAbstractHandler
         final String toName = attrs.getValue("to");
         emptyAttributeCheck(localName, "to", toName, parser);
         if ("in".equals(type)) {
-            mappable.addInMapping(toName, fromName);
+            mappable.addInMapping(fromName, toName);
         } else if ("out".equals(type)) {
             mappable.addOutMapping(fromName, toName);
         } else {

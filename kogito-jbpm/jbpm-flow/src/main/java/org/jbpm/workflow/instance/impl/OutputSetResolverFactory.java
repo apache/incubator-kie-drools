@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,28 @@
  */
 package org.jbpm.workflow.instance.impl;
 
-import org.kie.api.runtime.process.WorkItem;
+import java.util.Map;
+
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.ImmutableDefaultFactory;
 import org.mvel2.integration.impl.SimpleValueResolver;
 
-public class WorkItemResolverFactory extends ImmutableDefaultFactory {
+public class OutputSetResolverFactory extends ImmutableDefaultFactory {
 
     private static final long serialVersionUID = 510l;
 
-    private WorkItem workItem;
+    private Map<String, Object> outputSet;
 
-    public WorkItemResolverFactory(WorkItem workItem) {
-        this.workItem = workItem;
+    public OutputSetResolverFactory(Map<String, Object> outputSet) {
+        this.outputSet = outputSet;
     }
 
     public boolean isResolveable(String name) {
-        return workItem.getResult(name) != null;
+        return outputSet.containsKey(name);
     }
 
     public VariableResolver getVariableResolver(String name) {
-        return new SimpleValueResolver(workItem.getResult(name));
+        return new SimpleValueResolver(outputSet.get(name));
     }
 
 }

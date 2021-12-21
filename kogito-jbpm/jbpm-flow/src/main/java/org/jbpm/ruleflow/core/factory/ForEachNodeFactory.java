@@ -19,13 +19,16 @@ import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.ForEachNode;
 
 public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<ForEachNodeFactory<T>, T> {
 
     public static final String METHOD_COLLECTION_EXPRESSION = "collectionExpression";
     public static final String METHOD_OUTPUT_COLLECTION_EXPRESSION = "outputCollectionExpression";
+    public static final String METHOD_INPUT_VARIABLE = "variable";
     public static final String METHOD_OUTPUT_VARIABLE = "outputVariable";
+    public static final String METHOD_OUTPUT_TEMP = "tempVariable";
     public static final String METHOD_SEQUENTIAL = "sequential";
 
     public ForEachNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
@@ -38,17 +41,24 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
 
     public ForEachNodeFactory<T> collectionExpression(String collectionExpression) {
         getForEachNode().setCollectionExpression(collectionExpression);
+        getForEachNode().getMultiInstanceSpecification().setLoopDataInputRef(DataDefinition.toExpression(collectionExpression));
         return this;
     }
 
-    @Override
     public ForEachNodeFactory<T> variable(String variableName, DataType dataType) {
-        getForEachNode().setVariable(variableName, dataType);
+        return variable(variableName, variableName, dataType);
+    }
+
+    public ForEachNodeFactory<T> variable(String varRef, String variableName, DataType dataType) {
+        getForEachNode().setInputRef(variableName);
+        getForEachNode().addContextVariable(varRef, variableName, dataType);
+        getForEachNode().getMultiInstanceSpecification().setInputDataItem(new DataDefinition(varRef, variableName, dataType.getStringType()));
         return this;
     }
 
     public ForEachNodeFactory<T> outputCollectionExpression(String collectionExpression) {
         getForEachNode().setOutputCollectionExpression(collectionExpression);
+        getForEachNode().getMultiInstanceSpecification().setLoopDataOutputRef(DataDefinition.toExpression(collectionExpression));
         return this;
     }
 
@@ -63,7 +73,23 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     }
 
     public ForEachNodeFactory<T> outputVariable(String variableName, DataType dataType) {
-        getForEachNode().setOutputVariable(variableName, dataType);
+        return outputVariable(variableName, variableName, dataType);
+    }
+
+    public ForEachNodeFactory<T> tempVariable(String variableName, DataType dataType) {
+        getForEachNode().addContextVariable(variableName, variableName, dataType);
+        return this;
+    }
+
+    public ForEachNodeFactory<T> tempVariable(String varRef, String variableName, DataType dataType) {
+        getForEachNode().addContextVariable(varRef, variableName, dataType);
+        return this;
+    }
+
+    public ForEachNodeFactory<T> outputVariable(String varRef, String variableName, DataType dataType) {
+        getForEachNode().setOutputRef(variableName);
+        getForEachNode().addContextVariable(varRef, variableName, dataType);
+        getForEachNode().getMultiInstanceSpecification().setOutputDataItem(new DataDefinition(varRef, variableName, dataType.getStringType()));
         return this;
     }
 

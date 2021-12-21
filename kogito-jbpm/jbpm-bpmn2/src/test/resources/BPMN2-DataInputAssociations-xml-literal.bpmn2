@@ -32,8 +32,8 @@
       </ioSpecification>
       <dataInputAssociation>
         <targetRef>coId</targetRef>
-        <assignment>
-          <from><id>some text</id></from>
+        <assignment language="XPath">
+          <from><![CDATA[<id>some text</id>]]></from>
           <to>.</to>
         </assignment>
       </dataInputAssociation>

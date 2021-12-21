@@ -108,6 +108,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessHandler.class);
 
+    public static final String CURRENT_PROCESS = "BPMN.Process";
     public static final String CONNECTIONS = "BPMN.Connections";
     public static final String LINKS = "BPMN.ThrowLinks";
     public static final String ASSOCIATIONS = "BPMN.Associations";
@@ -171,7 +172,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             visibility = KogitoWorkflowProcess.NONE_VISIBILITY;
         }
         process.setVisibility(visibility);
-
+        ((ProcessBuildData) parser.getData()).setMetaData(CURRENT_PROCESS, process);
         ((ProcessBuildData) parser.getData()).addProcess(process);
         // register the definitions object as metadata of process.
         process.setMetaData("Definitions", parser.getParent());
@@ -477,7 +478,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         String variable = ((EventNode) node).getVariableName();
         ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
         DroolsConsequenceAction action =
-                createJavaAction(new SignalProcessInstanceAction("Escalation-" + attachedTo + "-" + escalationCode, variable, SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
+                createJavaAction(new SignalProcessInstanceAction("Escalation-" + attachedTo + "-" + escalationCode, variable, null, SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
         exceptionHandler.setAction(action);
         exceptionHandler.setFaultVariable(variable);
         exceptionScope.setExceptionHandler(escalationCode, exceptionHandler);
@@ -511,8 +512,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
 
         String variable = ((EventNode) node).getVariableName();
-
-        DroolsConsequenceAction action = createJavaAction(new SignalProcessInstanceAction("Error-" + attachedTo + "-" + errorCode, variable, SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
+        SignalProcessInstanceAction signalAction = new SignalProcessInstanceAction("Error-" + attachedTo + "-" + errorCode, variable, null, SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE);
+        DroolsConsequenceAction action = createJavaAction(signalAction);
         exceptionHandler.setAction(action);
         exceptionHandler.setFaultVariable(variable);
         exceptionScope.setExceptionHandler(hasErrorCode ? errorCode : null, exceptionHandler);
@@ -881,12 +882,12 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                             }
                                             String faultVariable = null;
                                             if (trigger.getInAssociations() != null && !trigger.getInAssociations().isEmpty()) {
-                                                faultVariable = findVariable(trigger.getInAssociations().get(0).getTarget(), process.getVariableScope());
+                                                faultVariable = findVariable(trigger.getInAssociations().get(0).getTarget().getLabel(), process.getVariableScope());
                                             }
 
                                             ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
                                             DroolsConsequenceAction action = new DroolsConsequenceAction("java", "");
-                                            action.setMetaData("Action", new SignalProcessInstanceAction(signalType, faultVariable, SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
+                                            action.setMetaData("Action", new SignalProcessInstanceAction(signalType, faultVariable, null, SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
                                             exceptionHandler.setAction(action);
                                             exceptionHandler.setFaultVariable(faultVariable);
                                             if (faultCode != null) {

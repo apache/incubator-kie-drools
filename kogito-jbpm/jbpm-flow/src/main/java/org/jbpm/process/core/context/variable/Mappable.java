@@ -18,13 +18,11 @@ package org.jbpm.process.core.context.variable;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.workflow.core.node.DataAssociation;
+import org.jbpm.workflow.core.impl.DataAssociation;
 
 public interface Mappable {
 
-    void addInMapping(String parameterName, String variableName);
-
-    void setInMappings(Map<String, String> inMapping);
+    void addInMapping(String fromName, String toName);
 
     String getInMapping(String parameterName);
 
@@ -34,9 +32,7 @@ public interface Mappable {
 
     List<DataAssociation> getInAssociations();
 
-    void addOutMapping(String parameterName, String variableName);
-
-    void setOutMappings(Map<String, String> outMapping);
+    void addOutMapping(String fromName, String toName);
 
     String getOutMapping(String parameterName);
 

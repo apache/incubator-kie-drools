@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -42,13 +43,13 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
-import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
+import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.Assignment;
-import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -1683,10 +1684,15 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
             @Override
             public AssignmentBuilder getAssignmentBuilder() {
-                return (context, assignment, sourceExpr, targetExpr, contextResolver, isInput) -> assignment.setMetaData("Action", (AssignmentAction) (workItem, context1) -> {
-                    assertEquals("from_expression", assignment.getFrom());
-                    assertEquals("to_expression", assignment.getTo());
-                });
+                return new AssignmentBuilder() {
+
+                    @Override
+                    public void build(PackageBuildContext context, Assignment assignment,
+                            List<DataDefinition> sourceExpr, DataDefinition targetExpr) {
+                        assertEquals("from_expression", assignment.getFrom().getExpression());
+                        assertEquals("to_expression", assignment.getTo().getExpression());
+                    }
+                };
             }
 
             @Override
@@ -1732,8 +1738,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         Assignment assignment = association.getAssignments().get(0);
         assertThat(assignment.getDialect()).isEqualTo("custom");
-        assertThat(assignment.getFrom()).isEqualTo("from_expression");
-        assertThat(assignment.getTo()).isEqualTo("to_expression");
+        assertThat(assignment.getFrom().getExpression()).isEqualTo("from_expression");
+        assertThat(assignment.getTo().getExpression()).isEqualTo("to_expression");
 
         association = outputs.get(0);
         assertThat(association.getAssignments()).hasSize(1);
@@ -1741,8 +1747,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         assignment = association.getAssignments().get(0);
         assertThat(assignment.getDialect()).isEqualTo("custom");
-        assertThat(assignment.getFrom()).isEqualTo("from_expression");
-        assertThat(assignment.getTo()).isEqualTo("to_expression");
+        assertThat(assignment.getFrom().getExpression()).isEqualTo("from_expression");
+        assertThat(assignment.getTo().getExpression()).isEqualTo("to_expression");
 
         return true;
     }

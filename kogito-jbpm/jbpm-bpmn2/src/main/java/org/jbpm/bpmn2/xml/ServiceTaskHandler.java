@@ -39,9 +39,9 @@ public class ServiceTaskHandler extends TaskHandler {
     }
 
     @SuppressWarnings("unchecked")
-    protected void handleNode(final Node node, final Element element, final String uri,
+    protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
-        super.handleNode(node, element, uri, localName, parser);
+        Node currentNode = super.handleNode(node, element, uri, localName, parser);
         WorkItemNode workItemNode = (WorkItemNode) node;
         String operationRef = element.getAttribute("operationRef");
         String implementation = element.getAttribute("implementation");
@@ -50,9 +50,8 @@ public class ServiceTaskHandler extends TaskHandler {
         workItemNode.setMetaData("OperationRef", operationRef);
         workItemNode.setMetaData("Implementation", implementation);
         workItemNode.setMetaData("Type", "Service Task");
-        if (interfaces != null) {
-            //            throw new IllegalArgumentException("No interfaces found");
 
+        if (interfaces != null) {
             Operation operation = null;
             for (Interface i : interfaces) {
                 operation = i.getOperation(operationRef);
@@ -81,6 +80,7 @@ public class ServiceTaskHandler extends TaskHandler {
                 workItemNode.getWork().setParameter("implementation", implementation);
             }
         }
+        return currentNode;
     }
 
     protected String getTaskName(final Element element) {

@@ -16,14 +16,8 @@
 package org.jbpm.workflow.core.node;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import org.jbpm.process.core.context.variable.Mappable;
-import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
@@ -33,7 +27,7 @@ import org.kie.api.definition.process.Connection;
  * Default implementation of a start node.
  * 
  */
-public class StartNode extends ExtendedNodeImpl implements Mappable {
+public class StartNode extends ExtendedNodeImpl {
 
     private static final String[] EVENT_TYPES = new String[] { EVENT_NODE_EXIT };
 
@@ -43,11 +37,7 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
 
     private boolean isInterrupting;
 
-    private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
-
     private Timer timer;
-
-    private EventTransformer transformer;
 
     public void addTrigger(Trigger trigger) {
         if (triggers == null) {
@@ -104,85 +94,12 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
         this.isInterrupting = isInterrupting;
     }
 
-    @Override
-    public void addInMapping(String parameterName, String variableName) {
-        throw new IllegalArgumentException("A start event [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] does not support input mappings");
-    }
-
-    @Override
-    public void setInMappings(Map<String, String> inMapping) {
-        throw new IllegalArgumentException("A start event [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] does not support input mappings");
-    }
-
-    @Override
-    public String getInMapping(String parameterName) {
-        return null;
-    }
-
-    @Override
-    public Map<String, String> getInMappings() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public void addInAssociation(DataAssociation dataAssociation) {
-        throw new IllegalArgumentException("A start event does not support input mappings");
-    }
-
-    @Override
-    public List<DataAssociation> getInAssociations() {
-        return Collections.emptyList();
-    }
-
-    public void addOutMapping(String parameterName, String variableName) {
-        outMapping.add(new DataAssociation(parameterName, variableName, null, null));
-    }
-
-    public void setOutMappings(Map<String, String> outMapping) {
-        this.outMapping = new LinkedList<>();
-        for (Map.Entry<String, String> entry : outMapping.entrySet()) {
-            addOutMapping(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public String getOutMapping(String parameterName) {
-        return getOutMappings().get(parameterName);
-    }
-
-    public Map<String, String> getOutMappings() {
-        Map<String, String> out = new HashMap<String, String>();
-        for (DataAssociation assoc : outMapping) {
-            if (assoc.getSources().size() == 1
-                    && (assoc.getAssignments() == null || assoc.getAssignments().size() == 0)
-                    && assoc.getTransformation() == null) {
-                out.put(assoc.getSources().get(0), assoc.getTarget());
-            }
-        }
-        return out;
-    }
-
-    public void addOutAssociation(DataAssociation dataAssociation) {
-        outMapping.add(dataAssociation);
-    }
-
-    public List<DataAssociation> getOutAssociations() {
-        return Collections.unmodifiableList(outMapping);
-    }
-
     public Timer getTimer() {
         return timer;
     }
 
     public void setTimer(Timer timer) {
         this.timer = timer;
-    }
-
-    public void setEventTransformer(EventTransformer transformer) {
-        this.transformer = transformer;
-    }
-
-    public EventTransformer getEventTransformer() {
-        return transformer;
     }
 
 }

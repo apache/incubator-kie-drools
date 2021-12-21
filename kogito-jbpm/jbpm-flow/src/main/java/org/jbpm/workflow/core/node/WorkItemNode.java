@@ -15,18 +15,12 @@
  */
 package org.jbpm.workflow.core.node;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.AbstractContext;
-import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
@@ -35,7 +29,7 @@ import org.kie.api.definition.process.Connection;
  * Default implementation of a task node.
  * 
  */
-public class WorkItemNode extends StateBasedNode implements Mappable, ContextContainer {
+public class WorkItemNode extends StateBasedNode implements ContextContainer {
 
     private static final long serialVersionUID = 510l;
     // NOTE: ContextInstances are not persisted as current functionality (exception scope) does not require it
@@ -43,10 +37,7 @@ public class WorkItemNode extends StateBasedNode implements Mappable, ContextCon
 
     private Work work;
 
-    private List<DataAssociation> inMapping = new LinkedList<>();
-    private List<DataAssociation> outMapping = new LinkedList<>();
     private boolean waitForCompletion = true;
-    // TODO boolean independent (cancel work item if node gets cancelled?)
 
     public Work getWork() {
         return work;
@@ -54,82 +45,6 @@ public class WorkItemNode extends StateBasedNode implements Mappable, ContextCon
 
     public void setWork(Work work) {
         this.work = work;
-    }
-
-    public void addInMapping(String parameterName, String variableName) {
-        inMapping.add(new DataAssociation(variableName, parameterName, null, null));
-    }
-
-    public void setInMappings(Map<String, String> inMapping) {
-        this.inMapping = new LinkedList<DataAssociation>();
-        for (Map.Entry<String, String> entry : inMapping.entrySet()) {
-            addInMapping(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public String getInMapping(String parameterName) {
-        return getInMappings().get(parameterName);
-    }
-
-    public Map<String, String> getInMappings() {
-        Map<String, String> in = new HashMap<String, String>();
-        for (DataAssociation a : inMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                in.put(a.getTarget(), a.getSources().get(0));
-            }
-        }
-        return in;
-    }
-
-    public void addInAssociation(DataAssociation dataAssociation) {
-        inMapping.add(dataAssociation);
-    }
-
-    public List<DataAssociation> getInAssociations() {
-        return Collections.unmodifiableList(inMapping);
-    }
-
-    public void addOutMapping(String parameterName, String variableName) {
-        outMapping.add(new DataAssociation(parameterName, variableName, null, null));
-    }
-
-    public void adjustOutMapping(String forEachOutVariable) {
-        Iterator<DataAssociation> it = outMapping.iterator();
-        while (it.hasNext()) {
-            DataAssociation association = it.next();
-            if (forEachOutVariable != null && forEachOutVariable.equals(association.getTarget())) {
-                it.remove();
-            }
-        }
-    }
-
-    public void setOutMappings(Map<String, String> outMapping) {
-        this.outMapping = new LinkedList<>();
-        for (Map.Entry<String, String> entry : outMapping.entrySet()) {
-            addOutMapping(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public String getOutMapping(String parameterName) {
-        return getOutMappings().get(parameterName);
-    }
-
-    public Map<String, String> getOutMappings() {
-        Map<String, String> out = new HashMap<>();
-        for (DataAssociation a : outMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                out.put(a.getSources().get(0), a.getTarget());
-            }
-        }
-        return out;
-    }
-
-    public void addOutAssociation(DataAssociation dataAssociation) {
-        outMapping.add(dataAssociation);
-    }
-
-    public List<DataAssociation> getOutAssociations() {
-        return Collections.unmodifiableList(outMapping);
     }
 
     public boolean isWaitForCompletion() {

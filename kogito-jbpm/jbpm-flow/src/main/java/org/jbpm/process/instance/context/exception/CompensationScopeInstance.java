@@ -37,6 +37,7 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 import static org.jbpm.process.core.context.exception.CompensationScope.IMPLICIT_COMPENSATION_PREFIX;
 
@@ -54,7 +55,7 @@ public class CompensationScopeInstance extends ExceptionScopeInstance {
         this.compensationInstances.addAll(generatedInstances);
     }
 
-    public void handleException(String activityRef, Object dunno) {
+    public void handleException(String activityRef, KogitoProcessContext dunno) {
         assert activityRef != null : "It should not be possible for the compensation activity reference to be null here.";
 
         CompensationScope compensationScope = (CompensationScope) getExceptionScope();
@@ -91,7 +92,7 @@ public class CompensationScopeInstance extends ExceptionScopeInstance {
         }
     }
 
-    public void handleException(ExceptionHandler handler, String compensationActivityRef, Object dunno) {
+    public void handleException(ExceptionHandler handler, String compensationActivityRef, KogitoProcessContext dunno) {
         WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) getProcessInstance();
         NodeInstanceContainer nodeInstanceContainer = (NodeInstanceContainer) getContextInstanceContainer();
         if (handler instanceof CompensationHandler) {

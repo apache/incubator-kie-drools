@@ -38,7 +38,7 @@ public class SendTaskHandler extends TaskHandler {
     }
 
     @SuppressWarnings("unchecked")
-    protected void handleNode(final Node node, final Element element, final String uri,
+    protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         WorkItemNode workItemNode = (WorkItemNode) node;
@@ -52,6 +52,7 @@ public class SendTaskHandler extends TaskHandler {
             throw new ProcessParsingValidationException("Could not find message " + messageRef);
         }
         workItemNode.getWork().setParameter("MessageType", message.getType());
+        return node;
     }
 
     protected String getTaskName(final Element element) {

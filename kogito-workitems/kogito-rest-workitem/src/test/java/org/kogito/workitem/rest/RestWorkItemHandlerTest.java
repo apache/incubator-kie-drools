@@ -26,6 +26,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.core.impl.IOSpecification;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,6 +93,9 @@ public class RestWorkItemHandlerTest {
     private WorkItemNodeInstance nodeInstance;
 
     @Mock
+    private IOSpecification ioSpecification;
+
+    @Mock
     private WorkItemNode node;
 
     @Captor
@@ -140,9 +144,11 @@ public class RestWorkItemHandlerTest {
         when(process.getDefaultContext(VariableScope.VARIABLE_SCOPE)).thenReturn(variableScope);
         when(variableScope.findVariable(DEFAULT_WORKFLOW_VAR)).thenReturn(variable);
 
+        when(node.getIoSpecification()).thenReturn(ioSpecification);
         workItem.setNodeInstance(nodeInstance);
         when(nodeInstance.getNode()).thenReturn(node);
-        when(node.getOutMapping(RestWorkItemHandler.RESULT)).thenReturn(DEFAULT_WORKFLOW_VAR);
+        Map<String, String> outputMapping = Collections.singletonMap(RestWorkItemHandler.RESULT, DEFAULT_WORKFLOW_VAR);
+        when(ioSpecification.getOutputMappingBySources()).thenReturn(outputMapping);
 
         handler = new RestWorkItemHandler(webClient);
     }
@@ -226,6 +232,21 @@ public class RestWorkItemHandlerTest {
         handler.executeWorkItem(workItem, manager);
 
         assertResult(manager, argCaptor);
+    }
+
+    @Test
+    public void testEmptyGet() {
+        parameters.put("id", 25);
+        parameters.put(RestWorkItemHandler.URL, "http://localhost:8080/results/{id}");
+        parameters.put(RestWorkItemHandler.METHOD, "GET");
+
+        when(ioSpecification.getOutputMappingBySources()).thenReturn(Collections.singletonMap(RestWorkItemHandler.RESULT, DEFAULT_WORKFLOW_VAR));
+
+        handler.executeWorkItem(workItem, manager);
+
+        verify(manager).completeWorkItem(anyString(), argCaptor.capture());
+        Map<String, Object> results = argCaptor.getValue();
+        assertEquals(1, results.size());
     }
 
     @Test

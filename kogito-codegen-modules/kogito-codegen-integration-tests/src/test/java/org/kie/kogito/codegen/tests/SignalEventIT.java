@@ -76,7 +76,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         ArgumentCaptor<SignalEvent> signalEvent = ArgumentCaptor.forClass(SignalEvent.class);
         verify(listener).onSignal(signalEvent.capture());
         assertThat(signalEvent.getValue().getSignalName()).isEqualTo("Signal1");
-        assertThat(signalEvent.getValue().getSignal()).isEqualTo("\"Some value\"");
+        assertThat(signalEvent.getValue().getSignal()).isEqualTo("Some value");
     }
 
     @Test

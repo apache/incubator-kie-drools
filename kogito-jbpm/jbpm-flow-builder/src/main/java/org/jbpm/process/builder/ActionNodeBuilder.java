@@ -22,15 +22,11 @@ import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.drl.ast.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
-import org.kie.api.runtime.process.DataTransformer;
 
 public class ActionNodeBuilder extends ExtendedNodeBuilder {
 
@@ -46,18 +42,15 @@ public class ActionNodeBuilder extends ExtendedNodeBuilder {
         actionDescr.setResource(processDescr.getResource());
 
         ProcessDialect dialect = ProcessDialectRegistry.getDialect(action.getDialect());
-        dialect.getActionBuilder().build(context, action, actionDescr, (NodeImpl) node);
+        dialect.getActionBuilder().build(context, action, actionDescr, actionNode);
 
-        Transformation transformation = (Transformation) node.getMetaData().get("Transformation");
-        if (transformation != null) {
-            WorkflowProcess wfProcess = (WorkflowProcess) process;
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("imports", wfProcess.getImports());
-            parameters.put("classloader", context.getConfiguration().getClassLoader());
+        WorkflowProcess wfProcess = (WorkflowProcess) process;
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("imports", wfProcess.getImports());
+        parameters.put("classloader", context.getConfiguration().getClassLoader());
 
-            DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-            transformation.setCompiledExpression(transformer.compile(transformation.getExpression(), parameters));
-        }
+        buildDataAssociation(context, ((ActionNode) node).getInAssociations(), parameters);
+        buildDataAssociation(context, ((ActionNode) node).getOutAssociations(), parameters);
     }
 
 }

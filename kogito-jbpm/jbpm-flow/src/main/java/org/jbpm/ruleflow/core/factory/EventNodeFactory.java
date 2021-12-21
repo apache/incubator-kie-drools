@@ -24,6 +24,7 @@ public class EventNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> exte
     public static final String METHOD_EVENT_TYPE = "eventType";
     public static final String METHOD_SCOPE = "scope";
     public static final String METHOD_VARIABLE_NAME = "variableName";
+    public static final String METHOD_INPUT_VARIABLE_NAME = "inputVariableName";
 
     public EventNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, new EventNode(), id);

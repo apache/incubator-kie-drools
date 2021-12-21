@@ -82,7 +82,6 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
                             "Rule task \"{0}\" is invalid: you did not set a unit name, a rule flow group or a decision model.", nodeName));
         }
 
-        addNodeMappings(node, body, getNodeId(node));
         addParams(node, body, getNodeId(node));
 
         NameExpr methodScope = new NameExpr(getNodeId(node));
@@ -101,7 +100,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         }
         m.setScope(methodScope);
         body.addStatement(m);
-
+        addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }

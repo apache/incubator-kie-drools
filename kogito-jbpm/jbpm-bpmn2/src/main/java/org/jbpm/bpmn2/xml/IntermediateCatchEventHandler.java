@@ -25,20 +25,19 @@ import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
-import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.core.event.EventTypeFilter;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.IOSpecification;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.TimerNode;
-import org.jbpm.workflow.core.node.Transformation;
-import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.Attributes;
@@ -59,33 +58,32 @@ import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 
 public class IntermediateCatchEventHandler extends AbstractNodeHandler {
 
-    private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
-
     protected Node createNode(Attributes attrs) {
         return new EventNode();
     }
 
-    @SuppressWarnings("unchecked")
-    public Class generateNodeFor() {
+    public Class<EventNode> generateNodeFor() {
         return EventNode.class;
     }
 
-    public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
-        final Element element = parser.endElementBuilder();
-        Node node = (Node) parser.getCurrent();
+    @Override
+    protected Node handleNode(Node newNode, Element element, String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+        NodeImpl node = (NodeImpl) newNode;
         // determine type of event definition, so the correct type of node
         // can be generated
+        IOSpecification ioSpecification = readCatchSpecification(parser, element);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("signalEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
+                setCatchVariable(ioSpecification, node);
                 handleSignalNode(node, element, uri, localName, parser);
                 node.setMetaData(EVENT_TYPE, EVENT_TYPE_SIGNAL);
                 break;
             } else if ("messageEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
+                setCatchVariable(ioSpecification, node);
                 handleMessageNode(node, element, uri, localName, parser);
                 node.setMetaData(EVENT_TYPE, EVENT_TYPE_MESSAGE);
                 break;
@@ -97,6 +95,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 timerNode.setMetaData("UniqueId",
                         node.getMetaData().get("UniqueId"));
                 node = timerNode;
+                setCatchVariable(ioSpecification, node);
                 node.setMetaData(EVENT_TYPE, EVENT_TYPE_TIMER);
                 handleTimerNode(node, element, uri, localName, parser);
                 break;
@@ -105,9 +104,9 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 StateNode stateNode = new StateNode();
                 stateNode.setId(node.getId());
                 stateNode.setName(node.getName());
-                stateNode.setMetaData("UniqueId",
-                        node.getMetaData().get("UniqueId"));
+                stateNode.setMetaData("UniqueId", node.getMetaData().get("UniqueId"));
                 node = stateNode;
+                setCatchVariable(ioSpecification, node);
                 node.setMetaData(EVENT_TYPE, EVENT_TYPE_CONDITIONAL);
                 handleStateNode(node, element, uri, localName, parser);
                 break;
@@ -115,15 +114,14 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 CatchLinkNode linkNode = new CatchLinkNode();
                 linkNode.setId(node.getId());
                 node = linkNode;
+                setCatchVariable(ioSpecification, node);
                 node.setMetaData(EVENT_TYPE, EVENT_TYPE_LINK);
                 handleLinkNode(element, node, xmlNode, parser);
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
         }
-        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-        nodeContainer.addNode(node);
-        ((ProcessBuildData) parser.getData()).addNode(node);
+
         return node;
     }
 
@@ -182,7 +180,6 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     protected void handleSignalNode(final Node node, final Element element,
             final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
@@ -191,15 +188,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataOutput".equals(nodeName)) {
-                String id = ((Element) xmlNode).getAttribute("id");
-                String outputName = ((Element) xmlNode).getAttribute("name");
-                String type = ((Element) xmlNode).getAttribute("dtype");
-                dataOutputs.put(id, outputName);
-                dataOutputTypes.put(outputName, type);
-            } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, eventNode);
-            } else if ("signalEventDefinition".equals(nodeName)) {
+            if ("signalEventDefinition".equals(nodeName)) {
                 String type = ((Element) xmlNode).getAttribute("signalRef");
                 if (type != null && type.trim().length() > 0) {
 
@@ -211,9 +200,12 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                 }
-                if (dataOutputTypes.size() == 1) {
-                    eventNode.setMetaData(SIGNAL_TYPE, dataOutputTypes.values().iterator().next());
+                List<DataAssociation> inputs = eventNode.getIoSpecification().getDataInputAssociation();
+                if (!inputs.isEmpty()) {
+                    String signalType = inputs.get(0).getTarget().getType();
+                    eventNode.setMetaData(SIGNAL_TYPE, signalType);
                 }
+
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -230,11 +222,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             String nodeName = xmlNode.getNodeName();
             String id = ((Element) xmlNode).getAttribute("id");
             String name = ((Element) xmlNode).getAttribute("name");
-            if ("dataOutput".equals(nodeName)) {
-                dataOutputs.put(id, name);
-            } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, eventNode);
-            } else if ("messageEventDefinition".equals(nodeName)) {
+            if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode)
                         .getAttribute("messageRef");
                 Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser
@@ -328,32 +316,6 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             }
             xmlNode = xmlNode.getNextSibling();
         }
-    }
-
-    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, EventNode eventNode) {
-        // sourceRef
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        String from = subNode.getTextContent();
-        // targetRef
-        subNode = subNode.getNextSibling();
-        String to = subNode.getTextContent();
-        eventNode.setVariableName(to);
-        // transformation
-        Transformation transformation = null;
-        subNode = subNode.getNextSibling();
-        if (subNode != null && "transformation".equals(subNode.getNodeName())) {
-            String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
-            String expression = subNode.getTextContent();
-            DataTransformer transformer = transformerRegistry.find(lang);
-            if (transformer == null) {
-                throw new ProcessParsingValidationException("No transformer registered for language " + lang);
-            }
-            transformation = new Transformation(lang, expression, dataOutputs.get(from));
-            eventNode.setMetaData("Transformation", transformation);
-
-            eventNode.setEventTransformer(new EventTransformerImpl(transformation));
-        }
-        eventNode.addOutMapping(dataOutputs.get(from), to);
     }
 
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {

@@ -15,10 +15,10 @@
  */
 package org.jbpm.process.instance.impl;
 
-import org.kie.api.runtime.process.ProcessContext;
-import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
+import java.util.function.Function;
 
 public interface AssignmentAction {
 
-    void execute(InternalKogitoWorkItem workItem, ProcessContext context) throws Exception;
+    void execute(Function<String, Object> sourceResolver, Function<String, Object> targetResolver, AssignmentProducer producer) throws Exception;
+
 }

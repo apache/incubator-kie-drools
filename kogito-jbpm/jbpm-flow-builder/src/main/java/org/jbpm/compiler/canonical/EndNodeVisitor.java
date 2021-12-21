@@ -38,6 +38,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_SCOPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE_INPUT;
 import static org.jbpm.ruleflow.core.Metadata.REF;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.ruleflow.core.Metadata.VARIABLE;
@@ -71,8 +72,9 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildAction((String) node.getMetaData(REF),
-                    (String) node.getMetaData(VARIABLE), (String) node.getMetaData(CUSTOM_SCOPE))));
+                    (String) node.getMetaData(VARIABLE), (String) node.getMetaData(MAPPING_VARIABLE_INPUT), (String) node.getMetaData(CUSTOM_SCOPE))));
         }
+        addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }

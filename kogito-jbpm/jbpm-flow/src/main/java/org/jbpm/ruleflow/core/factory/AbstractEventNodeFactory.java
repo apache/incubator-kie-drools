@@ -16,7 +16,6 @@
 package org.jbpm.ruleflow.core.factory;
 
 import org.jbpm.process.core.event.EventFilter;
-import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
@@ -38,6 +37,11 @@ public abstract class AbstractEventNodeFactory<T extends AbstractEventNodeFactor
         return (T) this;
     }
 
+    public T inputVariableName(String variableName) {
+        getEventNode().setInputVariableName(variableName);
+        return (T) this;
+    }
+
     public T eventFilter(EventFilter eventFilter) {
         getEventNode().addEventFilter(eventFilter);
         return (T) this;
@@ -47,11 +51,6 @@ public abstract class AbstractEventNodeFactory<T extends AbstractEventNodeFactor
         EventTypeFilter filter = new EventTypeFilter();
         filter.setType(eventType);
         return eventFilter(filter);
-    }
-
-    public T eventTransformer(EventTransformer transformer) {
-        getEventNode().setEventTransformer(transformer);
-        return (T) this;
     }
 
     public T scope(String scope) {

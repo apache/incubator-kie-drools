@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jbpm.process.builder;
 
+import java.util.List;
+
 import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.jbpm.process.core.ContextResolver;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.Assignment;
 
 public interface AssignmentBuilder {
 
     public void build(final PackageBuildContext context,
             final Assignment assignment,
-            final String sourceExpr,
-            final String targetExpr,
-            final ContextResolver contextResolver,
-            boolean isInput);
+            final List<DataDefinition> sourceExpr,
+            final DataDefinition targetExpr);
 
 }

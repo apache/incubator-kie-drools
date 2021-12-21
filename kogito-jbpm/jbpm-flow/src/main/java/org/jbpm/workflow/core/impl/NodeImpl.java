@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextResolver;
+import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
@@ -33,7 +34,7 @@ import org.kie.api.definition.process.NodeContainer;
 /**
  * Default implementation of a node.
  */
-public abstract class NodeImpl implements Node, ContextResolver {
+public abstract class NodeImpl implements Node, ContextResolver, Mappable {
 
     private static final long serialVersionUID = 510l;
 
@@ -49,10 +50,73 @@ public abstract class NodeImpl implements Node, ContextResolver {
 
     protected Map<ConnectionRef, Constraint> constraints = new HashMap<ConnectionRef, Constraint>();
 
+    private IOSpecification ioSpecification;
+    private MultiInstanceSpecification multiInstanceSpecification;
+
     public NodeImpl() {
         this.id = -1;
         this.incomingConnections = new HashMap<>();
         this.outgoingConnections = new HashMap<>();
+        this.ioSpecification = new IOSpecification();
+        this.multiInstanceSpecification = new MultiInstanceSpecification();
+    }
+
+    public void setMultiInstanceSpecification(MultiInstanceSpecification multiInstanceSpecification) {
+        this.multiInstanceSpecification = multiInstanceSpecification;
+    }
+
+    public MultiInstanceSpecification getMultiInstanceSpecification() {
+        return multiInstanceSpecification;
+    }
+
+    public void setIoSpecification(IOSpecification ioSpecification) {
+        this.ioSpecification = ioSpecification;
+    }
+
+    public IOSpecification getIoSpecification() {
+        return ioSpecification;
+    }
+
+    public Map<String, String> getInMappings() {
+        return getIoSpecification().getInputMapping();
+    }
+
+    public Map<String, String> getOutMappings() {
+        return getIoSpecification().getOutputMappingBySources();
+    }
+
+    public String getInMapping(String key) {
+        return getIoSpecification().getInputMapping().get(key);
+    }
+
+    public String getOutMapping(String key) {
+        return getIoSpecification().getOutputMappingBySources().get(key);
+    }
+
+    public void addInMapping(String from, String to) {
+        getIoSpecification().addInputMapping(from, to);
+    }
+
+    public void addOutMapping(String from, String to) {
+        getIoSpecification().addOutputMapping(from, to);
+    }
+
+    public void addInAssociation(DataAssociation dataAssociation) {
+        getIoSpecification().getDataInputs().add(dataAssociation.getTarget());
+        getIoSpecification().getDataInputAssociation().add(dataAssociation);
+    }
+
+    public List<DataAssociation> getInAssociations() {
+        return getIoSpecification().getDataInputAssociation();
+    }
+
+    public void addOutAssociation(DataAssociation dataAssociation) {
+        dataAssociation.getSources().forEach(s -> getIoSpecification().getDataOutputs().add(s));
+        getIoSpecification().getDataOutputAssociation().add(dataAssociation);
+    }
+
+    public List<DataAssociation> getOutAssociations() {
+        return getIoSpecification().getDataOutputAssociation();
     }
 
     public long getId() {

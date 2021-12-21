@@ -25,7 +25,6 @@ import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.impl.actions.HandleEscalationAction;
 import org.jbpm.process.instance.impl.actions.HandleMessageAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
@@ -33,16 +32,14 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.IOSpecification;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ThrowLinkNode;
-import org.jbpm.workflow.core.node.Transformation;
-import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -50,21 +47,19 @@ import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE_INPUT;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.PRODUCE_MESSAGE;
 import static org.jbpm.ruleflow.core.Metadata.SIGNAL_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.VARIABLE;
 
 public class IntermediateThrowEventHandler extends AbstractNodeHandler {
-
-    private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
     public static final String LINK_NAME = "linkName";
     public static final String LINK_SOURCE = "source";
     public static final String LINK_TARGET = "target";
-
-    private static final String TRANSFORMATION_KEY = "Transformation";
 
     @Override
     protected Node createNode(Attributes attrs) {
@@ -72,57 +67,57 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Class generateNodeFor() {
+    public Class<Node> generateNodeFor() {
         return Node.class;
     }
 
     @Override
-    public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
-        final Element element = parser.endElementBuilder();
-        ActionNode node = (ActionNode) parser.getCurrent();
-        // determine type of event definition, so the correct type of node
-        // can be generated
+    protected Node handleNode(Node newNode, Element element, String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+        Node node = newNode;
+
+        IOSpecification ioSpecification = readThrowSpecification(parser, element);
+
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("signalEventDefinition".equals(nodeName)) {
                 // reuse already created ActionNode
+                setThrowVariable(ioSpecification, node);
                 handleSignalNode(node, element, uri, localName, parser);
                 break;
             } else if ("messageEventDefinition".equals(nodeName)) {
                 // reuse already created ActionNode
+                setThrowVariable(ioSpecification, node);
                 handleMessageNode(node, element, uri, localName, parser);
                 break;
             } else if ("escalationEventDefinition".equals(nodeName)) {
                 // reuse already created ActionNode
+                setThrowVariable(ioSpecification, node);
                 handleEscalationNode(node, element, uri, localName, parser);
                 break;
             } else if ("compensateEventDefinition".equals(nodeName)) {
                 // reuse already created ActionNode
+                setThrowVariable(ioSpecification, node);
                 handleThrowCompensationEventNode(node, element, uri, localName, parser);
                 break;
             } else if ("linkEventDefinition".equals(nodeName)) {
                 ThrowLinkNode linkNode = new ThrowLinkNode();
                 linkNode.setId(node.getId());
-                handleLinkNode(element, linkNode, xmlNode, parser);
-                NodeContainer nodeContainer = (NodeContainer) parser
-                        .getParent();
-                nodeContainer.addNode(linkNode);
-                ((ProcessBuildData) parser.getData()).addNode(node);
-                // we break the while and stop the execution of this method.
-                return linkNode;
+                node = linkNode;
+                setThrowVariable(ioSpecification, node);
+                handleLinkNode(element, node, xmlNode, parser);
             }
             xmlNode = xmlNode.getNextSibling();
         }
-        // none event definition
-        if (node.getAction() == null) {
-            node.setAction(new DroolsConsequenceAction("java", ""));
-            node.setMetaData("NodeType", "IntermediateThrowEvent-None");
+
+        if (node instanceof ActionNode) {
+            ActionNode actionNode = (ActionNode) node;
+            if (actionNode.getAction() == null) {
+                actionNode.setAction(new DroolsConsequenceAction("java", ""));
+                actionNode.setMetaData("NodeType", "IntermediateThrowEvent-None");
+            }
         }
-        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-        nodeContainer.addNode(node);
+
         return node;
     }
 
@@ -203,35 +198,32 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataInput".equals(nodeName)) {
-                String id = ((Element) xmlNode).getAttribute("id");
-                String inputName = ((Element) xmlNode).getAttribute("name");
-                String type = ((Element) xmlNode).getAttribute("dtype");
-                dataInputs.put(id, inputName);
-                dataInputTypes.put(inputName, type);
-            } else if ("dataInputAssociation".equals(nodeName)) {
-                readDataInputAssociation(xmlNode, actionNode, parser);
-            } else if ("signalEventDefinition".equals(nodeName)) {
+            if ("signalEventDefinition".equals(nodeName)) {
                 String signalName = ((Element) xmlNode).getAttribute("signalRef");
                 String variable = findVariable((String) actionNode.getMetaData(MAPPING_VARIABLE), parser);
-
+                String inputVariable = findVariable((String) actionNode.getMetaData(MAPPING_VARIABLE_INPUT), parser);
                 signalName = checkSignalAndConvertToRealSignalNam(parser, signalName);
 
                 actionNode.setMetaData(EVENT_TYPE, "signal");
                 actionNode.setMetaData(Metadata.REF, signalName);
                 actionNode.setMetaData(Metadata.VARIABLE, variable);
 
-                if (dataInputTypes.size() == 1) {
-                    actionNode.setMetaData(SIGNAL_TYPE, dataInputTypes.values().iterator().next());
+                List<DataAssociation> inputs = actionNode.getIoSpecification().getDataInputAssociation();
+                if (!inputs.isEmpty()) {
+                    String type = inputs.get(0).getTarget().getType();
+                    actionNode.setMetaData(SIGNAL_TYPE, type);
                 }
 
                 // check if signal should be send async
-                if (dataInputs.containsValue("async")) {
+                if (actionNode.getIoSpecification().containsInputLabel("async")) {
                     signalName = "ASYNC-" + signalName;
                 }
 
                 DroolsConsequenceAction action = createJavaAction(
-                        new SignalProcessInstanceAction(signalName, variable, (String) actionNode.getMetaData("customScope"), (Transformation) actionNode.getMetaData().get(TRANSFORMATION_KEY)));
+                        new SignalProcessInstanceAction(signalName,
+                                variable,
+                                inputVariable,
+                                (String) actionNode.getMetaData("customScope")));
                 actionNode.setAction(action);
             }
             xmlNode = xmlNode.getNextSibling();
@@ -246,13 +238,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataInput".equals(nodeName)) {
-                String id = ((Element) xmlNode).getAttribute("id");
-                String inputName = ((Element) xmlNode).getAttribute("name");
-                dataInputs.put(id, inputName);
-            } else if ("dataInputAssociation".equals(nodeName)) {
-                readDataInputAssociation(xmlNode, actionNode, parser);
-            } else if ("messageEventDefinition".equals(nodeName)) {
+            if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode)
                         .getAttribute("messageRef");
                 Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser
@@ -275,7 +261,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                 actionNode.setMetaData(TRIGGER_TYPE, PRODUCE_MESSAGE);
                 actionNode.setMetaData(TRIGGER_REF, message.getName());
 
-                DroolsConsequenceAction action = createJavaAction(new HandleMessageAction(message.getType(), variable, (Transformation) actionNode.getMetaData().get(TRANSFORMATION_KEY)));
+                DroolsConsequenceAction action = createJavaAction(new HandleMessageAction(message.getType(), variable));
                 actionNode.setAction(action);
             }
             xmlNode = xmlNode.getNextSibling();
@@ -290,9 +276,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataInputAssociation".equals(nodeName)) {
-                readDataInputAssociation(xmlNode, actionNode, parser);
-            } else if ("escalationEventDefinition".equals(nodeName)) {
+            if ("escalationEventDefinition".equals(nodeName)) {
                 String escalationRef = ((Element) xmlNode)
                         .getAttribute("escalationRef");
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
@@ -317,69 +301,6 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                 }
             }
             xmlNode = xmlNode.getNextSibling();
-        }
-    }
-
-    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode,
-            ActionNode actionNode, final ExtensibleXmlParser parser) {
-
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        if ("sourceRef".equals(subNode.getNodeName())) {
-            // sourceRef
-            String eventVariable = subNode.getTextContent();
-            // targetRef
-            subNode = subNode.getNextSibling();
-            String target = subNode.getTextContent();
-            // transformation
-            Transformation transformation = null;
-            subNode = subNode.getNextSibling();
-            if (subNode != null && "transformation".equals(subNode.getNodeName())) {
-                String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
-                String expression = subNode.getTextContent();
-
-                DataTransformer transformer = transformerRegistry.find(lang);
-                if (transformer == null) {
-                    throw new ProcessParsingValidationException("No transformer registered for language " + lang);
-                }
-                transformation = new Transformation(lang, expression, dataInputs.get(target));
-                actionNode.setMetaData(TRANSFORMATION_KEY, transformation);
-            }
-
-            if (eventVariable != null && eventVariable.trim().length() > 0) {
-                if (dataInputs.containsKey(eventVariable)) {
-                    eventVariable = dataInputs.get(eventVariable);
-                }
-
-                actionNode.setMetaData(MAPPING_VARIABLE, findVariable(eventVariable, parser));
-                actionNode.addInMapping(eventVariable, dataInputs.get(target));
-            }
-        } else {
-            // targetRef
-            // assignment
-            subNode = subNode.getNextSibling();
-            if (subNode != null) {
-                org.w3c.dom.Node subSubNode = subNode.getFirstChild();
-                NodeList nl = subSubNode.getChildNodes();
-                if (nl.getLength() > 1) {
-                    actionNode.setMetaData(MAPPING_VARIABLE, subSubNode.getTextContent());
-                    return;
-                } else if (nl.getLength() == 0) {
-                    return;
-                }
-                Object result = null;
-                Object from = nl.item(0);
-                if (from instanceof Text) {
-                    String text = ((Text) from).getTextContent();
-                    if (text.startsWith("\"") && text.endsWith("\"")) {
-                        result = text.substring(1, text.length() - 1);
-                    } else {
-                        result = text;
-                    }
-                } else {
-                    result = nl.item(0);
-                }
-                actionNode.setMetaData(MAPPING_VARIABLE, "\"" + findVariable(result.toString(), parser) + "\"");
-            }
         }
     }
 

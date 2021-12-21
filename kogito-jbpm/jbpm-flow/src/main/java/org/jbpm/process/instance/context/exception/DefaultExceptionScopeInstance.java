@@ -23,6 +23,7 @@ import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 
@@ -32,7 +33,7 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
         return ExceptionScope.EXCEPTION_SCOPE;
     }
 
-    public void handleException(ExceptionHandler handler, String exception, Object params) {
+    public void handleException(ExceptionHandler handler, String exception, KogitoProcessContext params) {
 
         if (handler instanceof ActionExceptionHandler) {
             ActionExceptionHandler exceptionHandler = (ActionExceptionHandler) handler;
@@ -44,12 +45,14 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
                 if (contextInstanceContainer instanceof NodeInstance) {
                     processContext.setNodeInstance((NodeInstance) contextInstanceContainer);
                 } else {
-                    processContext.setProcessInstance(processInstance);
+                    processContext.setNodeInstance(((KogitoProcessContext) params).getNodeInstance());
                 }
+                processContext.setProcessInstance(processInstance);
                 String faultVariable = exceptionHandler.getFaultVariable();
                 if (faultVariable != null) {
-                    processContext.setVariable(faultVariable, params);
+                    processContext.setVariable(faultVariable, ((KogitoProcessContext) params).getContextData().get("Exception"));
                 }
+
                 action.execute(processContext);
             } catch (Exception e) {
                 throw new RuntimeException("unable to execute Action", e);

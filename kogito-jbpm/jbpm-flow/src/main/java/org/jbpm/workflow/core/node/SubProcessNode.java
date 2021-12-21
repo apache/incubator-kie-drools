@@ -15,17 +15,11 @@
  */
 package org.jbpm.workflow.core.node;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
-import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
@@ -34,7 +28,7 @@ import org.kie.api.definition.process.Connection;
  * Default implementation of a sub-flow node.
  * 
  */
-public class SubProcessNode extends StateBasedNode implements Mappable, ContextContainer {
+public class SubProcessNode extends StateBasedNode implements ContextContainer {
 
     private static final long serialVersionUID = 510l;
 
@@ -45,11 +39,8 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     private String processName;
     private boolean waitForCompletion = true;
 
-    private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
-    private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
-
     private boolean independent = true;
-    private SubProcessFactory subProcessFactory;
+    private SubProcessFactory<?> subProcessFactory;
 
     public void setProcessId(final String processId) {
         this.processId = processId;
@@ -65,93 +56,6 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
 
     public void setWaitForCompletion(boolean waitForCompletion) {
         this.waitForCompletion = waitForCompletion;
-    }
-
-    public void addInMapping(String parameterName, String variableName) {
-        inMapping.add(new DataAssociation(variableName, parameterName, null, null));
-    }
-
-    public void addInMapping(String parameterName, String variableName, Transformation transformation) {
-        inMapping.add(new DataAssociation(variableName, parameterName, null, transformation));
-    }
-
-    public void setInMappings(Map<String, String> inMapping) {
-        this.inMapping = new LinkedList<DataAssociation>();
-        for (Map.Entry<String, String> entry : inMapping.entrySet()) {
-            addInMapping(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public String getInMapping(String parameterName) {
-        return getInMappings().get(parameterName);
-    }
-
-    public Map<String, String> getInMappings() {
-        Map<String, String> in = new HashMap<>();
-        for (DataAssociation a : inMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                in.put(a.getTarget(), a.getSources().get(0));
-            }
-        }
-        return in;
-    }
-
-    public void addInAssociation(DataAssociation dataAssociation) {
-        inMapping.add(dataAssociation);
-    }
-
-    public List<DataAssociation> getInAssociations() {
-        return Collections.unmodifiableList(inMapping);
-    }
-
-    public void addOutMapping(String parameterName, String variableName) {
-        outMapping.add(new DataAssociation(parameterName, variableName, null, null));
-    }
-
-    public void addOutMapping(String parameterName, String variableName, Transformation transformation) {
-        outMapping.add(new DataAssociation(parameterName, variableName, null, transformation));
-    }
-
-    public void setOutMappings(Map<String, String> outMapping) {
-        this.outMapping = new LinkedList<DataAssociation>();
-        for (Map.Entry<String, String> entry : outMapping.entrySet()) {
-            addOutMapping(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public String getOutMapping(String parameterName) {
-        return getOutMappings().get(parameterName);
-    }
-
-    public Map<String, String> getOutMappings() {
-        Map<String, String> out = new HashMap<String, String>();
-        for (DataAssociation a : outMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                out.put(a.getSources().get(0), a.getTarget());
-            }
-        }
-        return out;
-    }
-
-    public void adjustOutMapping(String forEachOutVariable) {
-        if (forEachOutVariable == null) {
-            return;
-        }
-        Iterator<DataAssociation> it = outMapping.iterator();
-        while (it.hasNext()) {
-            DataAssociation association = it.next();
-            if (forEachOutVariable.equals(association.getTarget())) {
-                it.remove();
-            }
-        }
-    }
-
-    public void addOutAssociation(DataAssociation dataAssociation) {
-        outMapping.add(dataAssociation);
-    }
-
-    public List<DataAssociation> getOutAssociations() {
-        return Collections.unmodifiableList(outMapping);
     }
 
     public boolean isIndependent() {
@@ -243,7 +147,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
         this.subProcessFactory = subProcessFactory;
     }
 
-    public SubProcessFactory getSubProcessFactory() {
+    public SubProcessFactory<?> getSubProcessFactory() {
         return subProcessFactory;
     }
 }

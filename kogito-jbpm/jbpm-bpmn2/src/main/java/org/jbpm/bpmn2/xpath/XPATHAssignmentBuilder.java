@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,20 @@
  */
 package org.jbpm.bpmn2.xpath;
 
+import java.util.List;
+
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.jbpm.process.builder.AssignmentBuilder;
-import org.jbpm.process.core.ContextResolver;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.Assignment;
 
 public class XPATHAssignmentBuilder implements AssignmentBuilder {
 
-    public void build(PackageBuildContext context, Assignment assignment, String sourceExpr, String targetExpr,
-            ContextResolver contextResolver, boolean isInput) {
-        assignment.setMetaData("Action", new XPATHAssignmentAction(assignment, sourceExpr, targetExpr, isInput));
+    @Override
+    public void build(PackageBuildContext context,
+            Assignment assignment,
+            List<DataDefinition> sources,
+            DataDefinition target) {
+        assignment.setMetaData("Action", new XPATHAssignmentAction(assignment, sources, target));
     }
-
 }

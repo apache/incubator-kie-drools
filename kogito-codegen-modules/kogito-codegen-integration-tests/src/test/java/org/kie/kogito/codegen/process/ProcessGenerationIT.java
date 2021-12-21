@@ -40,13 +40,13 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CompositeNode;
-import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -469,9 +469,7 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
             return;
         }
         if (expected.isEmpty()) {
-            assertEquals(1, current.size());
-            assertEquals(1, current.get(0).getSources().size());
-            assertEquals("", current.get(0).getSources().get(0));
+            assertEquals(0, current.size());
         } else {
             assertEquals(expected.size(), current.size());
             for (int i = 0; i < expected.size(); i++) {

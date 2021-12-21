@@ -31,6 +31,7 @@ import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,7 +129,11 @@ public class FaultNodeInstance extends NodeInstanceImpl {
     }
 
     protected void handleException(String faultName, ExceptionScopeInstance exceptionScopeInstance) {
-        exceptionScopeInstance.handleException(faultName, getFaultData());
+        KogitoProcessContextImpl context = new KogitoProcessContextImpl(this.getProcessInstance().getKnowledgeRuntime());
+        context.setProcessInstance(this.getProcessInstance());
+        context.setNodeInstance(this);
+        context.getContextData().put("Exception", getFaultData());
+        exceptionScopeInstance.handleException(faultName, context);
     }
 
 }

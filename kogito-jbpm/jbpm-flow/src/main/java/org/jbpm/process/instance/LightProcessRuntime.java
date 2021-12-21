@@ -28,12 +28,13 @@ import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.event.EventFilter;
-import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.NodeIoHelper;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
@@ -60,9 +61,13 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.jobs.impl.InMemoryJobService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING_INPUT;
 
 public class LightProcessRuntime extends AbstractProcessRuntime {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(LightProcessRuntime.class);
     private ProcessRuntimeContext runtimeContext;
     private final InternalKnowledgeRuntime knowledgeRuntime;
 
@@ -260,12 +265,8 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
                                             type = ((EventTypeFilter) filter).getType();
                                         }
                                     }
-                                    StartProcessEventListener listener = new StartProcessEventListener(process.getId(),
-                                            filters,
-                                            trigger.getInMappings(),
-                                            startNode.getEventTransformer());
-                                    signalManager.addEventListener(type,
-                                            listener);
+                                    StartProcessEventListener listener = new StartProcessEventListener(startNode, trigger, process.getId(), filters);
+                                    signalManager.addEventListener(type, listener);
                                     ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventType", type);
                                     ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventListener", listener);
                                 }
@@ -278,20 +279,16 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     private class StartProcessEventListener implements EventListener {
-
         private String processId;
         private List<EventFilter> eventFilters;
-        private Map<String, String> inMappings;
-        private EventTransformer eventTransformer;
+        private Trigger trigger;
+        private StartNode startNode;
 
-        public StartProcessEventListener(String processId,
-                List<EventFilter> eventFilters,
-                Map<String, String> inMappings,
-                EventTransformer eventTransformer) {
+        public StartProcessEventListener(StartNode startNode, Trigger trigger, String processId, List<EventFilter> eventFilters) {
+            this.startNode = startNode;
+            this.trigger = trigger;
             this.processId = processId;
             this.eventFilters = eventFilters;
-            this.inMappings = inMappings;
-            this.eventTransformer = eventTransformer;
         }
 
         @Override
@@ -300,35 +297,33 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         }
 
         @Override
-        public void signalEvent(final String type,
-                Object event) {
+        public void signalEvent(final String type, Object event) {
             for (EventFilter filter : eventFilters) {
                 if (!filter.acceptsEvent(type, event, varName -> null)) {
                     return;
                 }
             }
-            if (eventTransformer != null) {
-                event = eventTransformer.transformEvent(event);
+            Map<String, Object> outputSet = new HashMap<>();
+            for (Map.Entry<String, String> entry : trigger.getInMappings().entrySet()) {
+                outputSet.put(entry.getKey(), entry.getKey());
             }
-            Map<String, Object> params = null;
-            if (inMappings != null && !inMappings.isEmpty()) {
-                params = new HashMap<String, Object>();
-
-                if (inMappings.size() == 1) {
-                    params.put(inMappings.keySet().iterator().next(), event);
-                } else {
-                    for (Map.Entry<String, String> entry : inMappings.entrySet()) {
-                        if ("event".equals(entry.getValue())) {
-                            params.put(entry.getKey(),
-                                    event);
-                        } else {
-                            params.put(entry.getKey(),
-                                    entry.getValue());
-                        }
-                    }
+            // data association needs to be corrected as it is not input mapping but output mapping
+            boolean eventFound = false;
+            for (DataAssociation dataAssociation : trigger.getInAssociations()) {
+                if ("event".equals(dataAssociation.getSources().get(0).getLabel())) {
+                    eventFound = true;
                 }
             }
-            startProcessWithParamsAndTrigger(processId, params, type, false);
+
+            if (!eventFound && !trigger.getInAssociations().isEmpty()) {
+                String inputLabel = (String) startNode.getMetaData(TRIGGER_MAPPING_INPUT);
+                outputSet.put(inputLabel, event);
+            } else {
+                outputSet.put("event", event);
+            }
+
+            Map<String, Object> parameters = NodeIoHelper.processOutputs(trigger.getInAssociations(), key -> outputSet.get(key));
+            startProcessWithParamsAndTrigger(processId, parameters, type, false);
         }
     }
 

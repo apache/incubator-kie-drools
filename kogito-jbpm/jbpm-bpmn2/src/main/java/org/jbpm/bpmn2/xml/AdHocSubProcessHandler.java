@@ -52,7 +52,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void handleNode(final Node node, final Element element, final String uri,
+    protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         DynamicNode dynamicNode = (DynamicNode) node;
@@ -81,6 +81,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
 
         handleScript(dynamicNode, element, "onEntry");
         handleScript(dynamicNode, element, "onExit");
+        return node;
     }
 
     @Override

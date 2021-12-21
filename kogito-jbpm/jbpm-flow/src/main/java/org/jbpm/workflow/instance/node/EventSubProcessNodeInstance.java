@@ -91,6 +91,6 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
     }
 
     protected List<String> resolveVariables(List<String> events) {
-        return events.stream().map(event -> resolveVariable(event)).collect(Collectors.toList());
+        return events.stream().map(event -> resolveExpression(event)).collect(Collectors.toList());
     }
 }

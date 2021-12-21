@@ -15,50 +15,30 @@
  */
 package org.jbpm.bpmn2.xml;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.drools.core.xml.ExtensibleXmlParser;
-import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.ProcessBuildData;
-import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.impl.NodeImpl;
-import org.jbpm.workflow.core.node.Assignment;
-import org.jbpm.workflow.core.node.DataAssociation;
-import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.MilestoneNode;
-import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import static org.jbpm.ruleflow.core.Metadata.CONDITION;
 
 public class TaskHandler extends AbstractNodeHandler {
-
-    private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
-    private Map<String, ItemDefinition> itemDefinitions;
-
-    Map<String, String> dataTypeInputs = new LinkedHashMap<String, String>();
-    Map<String, String> dataTypeOutputs = new LinkedHashMap<String, String>();
 
     protected Node createNode(Attributes attrs) {
         return new WorkItemNode();
@@ -68,33 +48,29 @@ public class TaskHandler extends AbstractNodeHandler {
         return Node.class;
     }
 
-    protected void handleNode(final Node node, final Element element, final String uri,
+    protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-
-        itemDefinitions = (Map<String, ItemDefinition>) ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-        dataTypeInputs.clear();
-        dataTypeOutputs.clear();
 
         WorkItemNode workItemNode = (WorkItemNode) node;
         String name = getTaskName(element);
         Work work = new WorkImpl();
         work.setName(name);
         workItemNode.setWork(work);
-        org.w3c.dom.Node xmlNode = element.getFirstChild();
-        while (xmlNode != null) {
-            String nodeName = xmlNode.getNodeName();
-            if ("ioSpecification".equals(nodeName)) {
-                readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes);
-            } else if ("dataInputAssociation".equals(nodeName)) {
-                readDataInputAssociation(xmlNode, workItemNode, dataInputs);
-            } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, workItemNode, dataOutputs);
-            }
-            xmlNode = xmlNode.getNextSibling();
+
+        Node currentNode = workItemNode;
+        workItemNode.setIoSpecification(readIOEspecification(parser, element));
+        workItemNode.setMultiInstanceSpecification(readMultiInstanceSpecification(parser, element, workItemNode.getIoSpecification()));
+        if (workItemNode.getMultiInstanceSpecification().hasMultiInstanceInput()) {
+            currentNode = decorateMultiInstanceSpecificationActivity(workItemNode, workItemNode.getMultiInstanceSpecification());
         }
-        workItemNode.setMetaData("DataInputs", new HashMap<String, String>(dataTypeInputs));
-        workItemNode.setMetaData("DataOutputs", new HashMap<String, String>(dataTypeOutputs));
+
+        // this is a hack as most of the examples in kogito depends on this evaluation
+        work.setParameter("NodeName", workItemNode.getName());
+        setParameter(work, "TaskName", workItemNode.getIoSpecification().getDataInputAssociation());
+        workItemNode.setMetaData("DataInputs", new HashMap<String, String>());
+        workItemNode.setMetaData("DataOutputs", new HashMap<String, String>());
+
         handleScript(workItemNode, element, "onEntry");
         handleScript(workItemNode, element, "onExit");
 
@@ -106,191 +82,27 @@ public class TaskHandler extends AbstractNodeHandler {
             }
         }
 
-        for (Entry<String, String> entryInputTypes : dataTypeInputs.entrySet()) {
+        for (DataDefinition dd : workItemNode.getIoSpecification().getDataInputs()) {
+            workItemNode.getWork().addParameterDefinition(new ParameterDefinitionImpl(dd.getLabel(),
+                    DataTypeResolver.fromType(dd.getType(), Thread.currentThread().getContextClassLoader())));
+        }
+        return currentNode;
+    }
 
-            ParameterDefinition parameterDefinition = new ParameterDefinitionImpl();
-            parameterDefinition.setName(entryInputTypes.getKey());
-            parameterDefinition.setType(new ObjectDataType(entryInputTypes.getValue()));
-            work.addParameterDefinition(parameterDefinition);
+    protected void setParameter(Work work, String label, Collection<DataAssociation> dataAssociations) {
+        for (DataAssociation dataAssociation : dataAssociations) {
+            if (!dataAssociation.getAssignments().isEmpty()) {
+                if (label.equals(dataAssociation.getAssignments().get(0).getTo().getLabel())) {
+                    DataDefinition from = dataAssociation.getAssignments().get(0).getFrom();
+                    work.setParameter(label, from.hasExpression() ? from.getExpression() : from.getLabel());
+                    return;
+                }
+            }
         }
     }
 
     protected String getTaskName(final Element element) {
         return element.getAttribute("taskName");
-    }
-
-    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs, Map<String, String> dataInputTypes) {
-
-        dataTypeInputs.clear();
-        dataTypeOutputs.clear();
-
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        while (subNode instanceof Element) {
-            String subNodeName = subNode.getNodeName();
-            if ("dataInput".equals(subNodeName)) {
-                String id = ((Element) subNode).getAttribute("id");
-                String inputName = ((Element) subNode).getAttribute("name");
-                dataInputs.put(id, inputName);
-
-                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
-                if (itemSubjectRef == null || itemSubjectRef.isEmpty()) {
-                    String dataType = ((Element) subNode).getAttribute("dtype");
-                    if (dataType == null || dataType.isEmpty()) {
-                        dataType = "java.lang.String";
-                    }
-                    dataTypeInputs.put(inputName, dataType);
-                } else if (itemDefinitions.get(itemSubjectRef) != null) {
-                    dataTypeInputs.put(inputName, itemDefinitions.get(itemSubjectRef).getStructureRef());
-                } else {
-                    dataTypeInputs.put(inputName, "java.lang.Object");
-                }
-            }
-            if ("dataOutput".equals(subNodeName)) {
-                String id = ((Element) subNode).getAttribute("id");
-                String outputName = ((Element) subNode).getAttribute("name");
-                dataOutputs.put(id, outputName);
-
-                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
-
-                if (itemSubjectRef == null || itemSubjectRef.isEmpty()) {
-                    String dataType = ((Element) subNode).getAttribute("dtype");
-                    if (dataType == null || dataType.isEmpty()) {
-                        dataType = "java.lang.String";
-                    }
-                    dataTypeOutputs.put(outputName, dataType);
-                } else if (itemDefinitions.get(itemSubjectRef) != null) {
-                    dataTypeOutputs.put(outputName, itemDefinitions.get(itemSubjectRef).getStructureRef());
-                } else {
-                    dataTypeOutputs.put(outputName, "java.lang.Object");
-                }
-            }
-            subNode = subNode.getNextSibling();
-        }
-    }
-
-    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataInputs) {
-        // sourceRef
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        if ("sourceRef".equals(subNode.getNodeName())) {
-            List<String> sources = new ArrayList<>();
-            sources.add(subNode.getTextContent());
-
-            subNode = subNode.getNextSibling();
-
-            while ("sourceRef".equals(subNode.getNodeName())) {
-                sources.add(subNode.getTextContent());
-                subNode = subNode.getNextSibling();
-            }
-
-            // targetRef    		
-            String target = subNode.getTextContent();
-            // transformation
-            Transformation transformation = null;
-            subNode = subNode.getNextSibling();
-            if (subNode != null && "transformation".equals(subNode.getNodeName())) {
-                String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
-                String expression = subNode.getTextContent();
-
-                DataTransformer transformer = transformerRegistry.find(lang);
-                if (transformer == null) {
-                    throw new ProcessParsingValidationException("No transformer registered for language " + lang);
-                }
-                transformation = new Transformation(lang, expression);
-                //    			transformation.setCompiledExpression(transformer.compile(expression));
-
-                subNode = subNode.getNextSibling();
-            }
-            // assignments    	
-            List<Assignment> assignments = new LinkedList<Assignment>();
-            while (subNode != null) {
-                String expressionLang = ((Element) subNode).getAttribute("expressionLanguage");
-                if (expressionLang == null || expressionLang.trim().isEmpty()) {
-                    expressionLang = "XPath";
-                }
-                org.w3c.dom.Node ssubNode = subNode.getFirstChild();
-                String from = ssubNode.getTextContent();
-                String to = ssubNode.getNextSibling().getTextContent();
-                assignments.add(new Assignment(expressionLang, from, to));
-                subNode = subNode.getNextSibling();
-            }
-
-            workItemNode.addInAssociation(new DataAssociation(
-                    sources,
-                    dataInputs.get(target), assignments, transformation));
-        } else {
-            // targetRef
-            String to = subNode.getTextContent();
-            // assignment
-            subNode = subNode.getNextSibling();
-            if (subNode != null) {
-                org.w3c.dom.Node subSubNode = subNode.getFirstChild();
-                NodeList nl = subSubNode.getChildNodes();
-                if (nl.getLength() > 1) {
-                    // not supported ?
-                    workItemNode.getWork().setParameter(dataInputs.get(to), subSubNode.getTextContent());
-                    return;
-                } else if (nl.getLength() == 0) {
-                    return;
-                }
-                Object result = null;
-                Object from = nl.item(0);
-                if (from instanceof Text) {
-                    String text = ((Text) from).getTextContent();
-                    if (text.startsWith("\"") && text.endsWith("\"")) {
-                        result = text.substring(1, text.length() - 1);
-                    } else {
-                        result = text;
-                    }
-                } else {
-                    result = nl.item(0);
-                }
-                workItemNode.getWork().setParameter(dataInputs.get(to), result);
-            }
-        }
-    }
-
-    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataOutputs) {
-        // sourceRef
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        List<String> sources = new ArrayList<>();
-        sources.add(subNode.getTextContent());
-
-        subNode = subNode.getNextSibling();
-
-        while ("sourceRef".equals(subNode.getNodeName())) {
-            sources.add(subNode.getTextContent());
-            subNode = subNode.getNextSibling();
-        }
-        // targetRef
-        String target = subNode.getTextContent();
-        // transformation
-        Transformation transformation = null;
-        subNode = subNode.getNextSibling();
-        if (subNode != null && "transformation".equals(subNode.getNodeName())) {
-            String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
-            String expression = subNode.getTextContent();
-            DataTransformer transformer = transformerRegistry.find(lang);
-            if (transformer == null) {
-                throw new ProcessParsingValidationException("No transformer registered for language " + lang);
-            }
-            transformation = new Transformation(lang, expression);
-            //			transformation.setCompiledExpression(transformer.compile(expression));
-            subNode = subNode.getNextSibling();
-        }
-        // assignments  
-        List<Assignment> assignments = new LinkedList<Assignment>();
-        while (subNode != null) {
-            String expressionLang = ((Element) subNode).getAttribute("expressionLanguage");
-            if (expressionLang == null || expressionLang.trim().isEmpty()) {
-                expressionLang = "XPath";
-            }
-            org.w3c.dom.Node ssubNode = subNode.getFirstChild();
-            String from = ssubNode.getTextContent();
-            String to = ssubNode.getNextSibling().getTextContent();
-            assignments.add(new Assignment(expressionLang, from, to));
-            subNode = subNode.getNextSibling();
-        }
-        workItemNode.addOutAssociation(new DataAssociation(sources.stream().map(source -> dataOutputs.get(source)).collect(Collectors.toList()), target, assignments, transformation));
     }
 
     @Override
@@ -303,40 +115,13 @@ public class TaskHandler extends AbstractNodeHandler {
         final Element element = parser.endElementBuilder();
         Node node = (Node) parser.getCurrent();
         // determine type of event definition, so the correct type of node can be generated
-        handleNode(node, element, uri, localName, parser);
 
-        org.w3c.dom.Node xmlNode = element.getFirstChild();
-        int uniqueIdGen = 1;
-        while (xmlNode != null) {
-            String nodeName = xmlNode.getNodeName();
-            if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
-                // create new timerNode
-                ForEachNode forEachNode = new ForEachNode();
-                forEachNode.setId(node.getId());
-                String uniqueId = (String) node.getMetaData().get("UniqueId");
-                forEachNode.setMetaData("UniqueId", uniqueId);
-                node.setMetaData("UniqueId", uniqueId + ":" + uniqueIdGen++);
-                forEachNode.addNode(node);
-                forEachNode.linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);
-                forEachNode.linkOutgoingConnections(node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE, NodeImpl.CONNECTION_DEFAULT_TYPE);
-                forEachNode.setSequential(Boolean.parseBoolean(((Element) xmlNode).getAttribute("isSequential")));
+        node = handleNode(node, element, uri, localName, parser);
 
-                Node orignalNode = node;
-                node = forEachNode;
-                handleForEachNode(node, element, uri, localName, parser);
-                // remove output collection data output of for each to avoid problems when running in variable strict mode
-                if (orignalNode instanceof WorkItemNode) {
-                    ((WorkItemNode) orignalNode).adjustOutMapping(forEachNode.getOutputCollectionExpression());
-                }
-
-                break;
-            }
-            xmlNode = xmlNode.getNextSibling();
-        }
         // replace node in case it's milestone
         if (node instanceof WorkItemNode && ((WorkItemNode) node).getWork().getName().equals("Milestone")) {
             WorkItemNode workItemNode = (WorkItemNode) node;
-
+            setParameter(((WorkItemNode) node).getWork(), CONDITION, ((NodeImpl) node).getIoSpecification().getDataInputAssociation());
             String milestoneCondition = (String) ((WorkItemNode) node).getWork().getParameter(CONDITION);
             MilestoneNode milestoneNode = new MilestoneNode();
             milestoneNode.setId(workItemNode.getId());
@@ -353,24 +138,6 @@ public class TaskHandler extends AbstractNodeHandler {
         ((ProcessBuildData) parser.getData()).addNode(node);
 
         return node;
-    }
-
-    protected void handleForEachNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) {
-        ForEachNode forEachNode = (ForEachNode) node;
-        org.w3c.dom.Node xmlNode = element.getFirstChild();
-
-        while (xmlNode != null) {
-            String nodeName = xmlNode.getNodeName();
-            if ("dataInputAssociation".equals(nodeName)) {
-                readDataInputAssociation(xmlNode, inputAssociation);
-            } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, outputAssociation);
-            } else if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
-                readMultiInstanceLoopCharacteristics(xmlNode, forEachNode, parser);
-            }
-            xmlNode = xmlNode.getNextSibling();
-        }
     }
 
 }

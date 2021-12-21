@@ -33,7 +33,7 @@
       <dataInputAssociation>
         <sourceRef>instanceMetadata</sourceRef>
         <targetRef>coId</targetRef>
-        <assignment>
+        <assignment expressionLanguage="XPath">
           <from>@hello</from>
           <to>.</to>
         </assignment>

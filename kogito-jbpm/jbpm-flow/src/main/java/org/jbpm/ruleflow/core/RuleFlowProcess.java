@@ -137,7 +137,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
                                             event = null;
                                             break;
                                         case 1:
-                                            event = varResolver.apply(mappings.keySet().iterator().next());
+                                            event = varResolver.apply(mappings.values().iterator().next());
                                             break;
                                         default:
                                             event = varResolver.apply("event");

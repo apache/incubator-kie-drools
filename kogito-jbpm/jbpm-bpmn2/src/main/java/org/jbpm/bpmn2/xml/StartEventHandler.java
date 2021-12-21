@@ -29,10 +29,8 @@ import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.correlation.CorrelationManager;
 import org.jbpm.process.core.event.EventFilter;
-import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
@@ -41,24 +39,21 @@ import org.jbpm.workflow.core.node.ConstraintTrigger;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.core.node.Trigger;
-import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING_INPUT;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 
 public class StartEventHandler extends AbstractNodeHandler {
-
-    private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
     @Override
     protected Node createNode(Attributes attrs) {
@@ -73,32 +68,28 @@ public class StartEventHandler extends AbstractNodeHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void handleNode(final Node node, final Element element, final String uri,
+    protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StartNode startNode = (StartNode) node;
         // TODO: StartEventHandler.handleNode(): the parser doesn't discriminate between the schema default and the actual set value
         // However, while the schema says the "isInterrupting" attr should default to true
         // The spec says that Escalation start events should default to not interrupting..
+
         startNode.setInterrupting(Boolean.parseBoolean(element.getAttribute("isInterrupting")));
+        startNode.setIoSpecification(readCatchSpecification(parser, element));
+        findTargetMappingVar(startNode.getIoSpecification().getDataOutputAssociation()).ifPresent(data -> {
+            startNode.getMetaData().put(TRIGGER_MAPPING, data.getLabel());
+            startNode.getMetaData().put(MAPPING_VARIABLE, data.getLabel());
+        });
+        findSourceMappingVar(startNode.getIoSpecification().getDataOutputAssociation()).ifPresent(data -> {
+            startNode.getMetaData().put(TRIGGER_MAPPING_INPUT, data.getLabel());
+        });
 
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataOutput".equals(nodeName)) {
-                readDataOutput(xmlNode);
-            } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, startNode);
-            } else if ("outputSet".equals(nodeName)) {
-                // p. 225, BPMN2 spec (2011-01-03)
-                // InputSet and OutputSet elements imply that process execution should wait for them to be filled
-                // and are therefore not applicable to catch events
-                String message = "Ignoring <" + nodeName + "> element: "
-                        + "<" + nodeName + "> elements should not be used on start or other catch events.";
-                SAXParseException saxpe = new SAXParseException(message, parser.getLocator());
-                parser.warning(saxpe);
-                // no exception thrown for backwards compatibility (we used to ignore these elements)
-            } else if ("conditionalEventDefinition".equals(nodeName)) {
+            if ("conditionalEventDefinition".equals(nodeName)) {
                 String constraint = null;
                 org.w3c.dom.Node subNode = xmlNode.getFirstChild();
                 while (subNode != null) {
@@ -196,6 +187,11 @@ public class StartEventHandler extends AbstractNodeHandler {
             }
             xmlNode = xmlNode.getNextSibling();
         }
+
+        if (startNode.getName() == null) {
+            startNode.setName("Start");
+        }
+        return startNode;
     }
 
     private void addTriggerWithInMappings(StartNode startNode, String triggerEventType) {
@@ -211,59 +207,10 @@ public class StartEventHandler extends AbstractNodeHandler {
         trigger.addEventFilter(eventFilter);
         String mapping = (String) startNode.getMetaData(TRIGGER_MAPPING);
         if (mapping != null) {
-            trigger.addInMapping(mapping, startNode.getOutMapping(mapping));
+            startNode.getIoSpecification().getDataOutputAssociation().forEach(da -> trigger.addInAssociation(da));
         }
 
         startNode.addTrigger(trigger);
-    }
-
-    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, StartNode startNode) {
-        // sourceRef
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        if (!"sourceRef".equals(subNode.getNodeName())) {
-            throw new ProcessParsingValidationException("No sourceRef found in dataOutputAssociation in startEvent");
-        }
-        String source = subNode.getTextContent();
-        if (dataOutputs.get(source) == null) {
-            throw new ProcessParsingValidationException("No dataOutput could be found for the dataOutputAssociation.");
-        }
-
-        // targetRef
-        subNode = subNode.getNextSibling();
-        if (!"targetRef".equals(subNode.getNodeName())) {
-            throw new ProcessParsingValidationException("No targetRef found in dataOutputAssociation in startEvent");
-        }
-        String target = subNode.getTextContent();
-        startNode.setMetaData(TRIGGER_MAPPING, target);
-        // transformation
-        Transformation transformation = null;
-        subNode = subNode.getNextSibling();
-        if (subNode != null && "transformation".equals(subNode.getNodeName())) {
-            String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
-            String expression = subNode.getTextContent();
-            DataTransformer transformer = transformerRegistry.find(lang);
-            if (transformer == null) {
-                throw new ProcessParsingValidationException("No transformer registered for language " + lang);
-            }
-            transformation = new Transformation(lang, expression, dataOutputs.get(source));
-            startNode.setMetaData("Transformation", transformation);
-
-            startNode.setEventTransformer(new EventTransformerImpl(transformation));
-            subNode = subNode.getNextSibling();
-        }
-
-        if (subNode != null) {
-            // no support for assignments
-            throw new UnsupportedOperationException(subNode.getNodeName() + " elements in dataOutputAssociations are not yet supported.");
-        }
-        startNode.addOutMapping(target, dataOutputs.get(source));
-    }
-
-    // The results of this method are only used to check syntax
-    protected void readDataOutput(org.w3c.dom.Node xmlNode) {
-        String id = ((Element) xmlNode).getAttribute("id");
-        String outputName = ((Element) xmlNode).getAttribute("name");
-        dataOutputs.put(id, outputName);
     }
 
     @Override
@@ -426,7 +373,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                     trigger.addEventFilter(eventFilter);
                     String mapping = (String) startNode.getMetaData(TRIGGER_MAPPING);
                     if (mapping != null) {
-                        trigger.addInMapping(mapping, "event");
+                        trigger.addInMapping("event", mapping);
                     }
                     startNode.addTrigger(trigger);
                     ((EventSubProcessNode) parser.getParent()).addTimer(timer, new DroolsConsequenceAction("java", ""));
@@ -473,7 +420,7 @@ public class StartEventHandler extends AbstractNodeHandler {
         startNode.setTriggers(startTriggers);
         String mapping = (String) startNode.getMetaData(TRIGGER_MAPPING);
         if (mapping != null) {
-            startTrigger.addInMapping(mapping, startNode.getOutMapping(mapping));
+            startNode.getIoSpecification().getDataOutputAssociation().forEach(da -> startTrigger.addInAssociation(da));
         }
     }
 }

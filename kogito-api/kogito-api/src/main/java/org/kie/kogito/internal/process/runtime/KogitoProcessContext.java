@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.internal.process.runtime;
 
+import java.util.Map;
+
 import org.kie.api.runtime.KieRuntime;
 
 public interface KogitoProcessContext {
@@ -70,4 +72,6 @@ public interface KogitoProcessContext {
     KieRuntime getKieRuntime();
 
     KogitoProcessRuntime getKogitoProcessRuntime();
+
+    Map<String, Object> getContextData();
 }

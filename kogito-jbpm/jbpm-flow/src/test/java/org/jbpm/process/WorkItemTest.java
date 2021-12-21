@@ -234,14 +234,10 @@ public class WorkItemTest extends AbstractBaseTest {
         WorkItemNode workItemNode = new WorkItemNode();
         workItemNode.setName("workItemNode");
         workItemNode.setId(2);
-        workItemNode.addInMapping("Comment",
-                "Person.name");
-        workItemNode.addInMapping("Attachment",
-                "MyObject");
-        workItemNode.addOutMapping("Result",
-                "MyObject");
-        workItemNode.addOutMapping("Result.length()",
-                "Number");
+        workItemNode.getIoSpecification().addInputMapping("#{Person.name}", "Comment");
+        workItemNode.getIoSpecification().addInputMapping("MyObject", "Attachment");
+        workItemNode.getIoSpecification().addOutputMapping("Result", "MyObject");
+        workItemNode.getIoSpecification().addOutputMapping("Result.length()", "Number");
         Work work = new WorkImpl();
         work.setName(workName);
         Set<ParameterDefinition> parameterDefinitions = new HashSet<ParameterDefinition>();
@@ -255,10 +251,8 @@ public class WorkItemTest extends AbstractBaseTest {
                 new StringDataType());
         parameterDefinitions.add(parameterDefinition);
         work.setParameterDefinitions(parameterDefinitions);
-        work.setParameter("ActorId",
-                "#{UserName}");
-        work.setParameter("Content",
-                "#{Person.name}");
+        work.setParameter("ActorId", "#{UserName}");
+        work.setParameter("Content", "#{Person.name}");
         workItemNode.setWork(work);
 
         EndNode endNode = new EndNode();

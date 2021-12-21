@@ -30,6 +30,8 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
+import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
@@ -115,13 +117,17 @@ public class ServerlessWorkflowParser {
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> SubProcessNodeFactory<T> subprocessNode(SubProcessNodeFactory<T> nodeFactory) {
         Map<String, String> types = Collections.singletonMap(DEFAULT_WORKFLOW_VAR, JSON_NODE);
+        DataAssociation da = new DataAssociation(
+                new DataDefinition(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR, JSON_NODE),
+                new DataDefinition(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR, JSON_NODE), null, null);
+
         VariableScope variableScope = new VariableScope();
         return nodeFactory
                 .independent(true)
                 .metaData("BPMN.InputTypes", types)
                 .metaData("BPMN.OutputTypes", types)
-                .inMapping(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR)
-                .outMapping(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR)
+                .mapDataInputAssociation(da)
+                .mapDataOutputAssociation(da)
                 .context(variableScope)
                 .defaultContext(variableScope);
     }

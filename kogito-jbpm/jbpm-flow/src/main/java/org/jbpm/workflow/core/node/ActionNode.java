@@ -16,14 +16,11 @@
 package org.jbpm.workflow.core.node;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
 
@@ -31,13 +28,11 @@ import org.kie.api.definition.process.Connection;
  * Default implementation of an action node.
  * 
  */
-public class ActionNode extends ExtendedNodeImpl implements Mappable {
+public class ActionNode extends ExtendedNodeImpl {
 
     private static final long serialVersionUID = 510l;
 
     private DroolsAction action;
-    private List<DataAssociation> inMapping = new LinkedList<>();
-    private List<DataAssociation> outMapping = new LinkedList<>();
 
     public DroolsAction getAction() {
         return action;
@@ -76,81 +71,8 @@ public class ActionNode extends ExtendedNodeImpl implements Mappable {
     }
 
     @Override
-    public void addInAssociation(DataAssociation dataAssociation) {
-        inMapping.add(dataAssociation);
-    }
-
-    @Override
-    public List<DataAssociation> getInAssociations() {
-        return Collections.unmodifiableList(inMapping);
-    }
-
-    @Override
-    public void addOutAssociation(DataAssociation dataAssociation) {
-        outMapping.add(dataAssociation);
-    }
-
-    @Override
     public List<DataAssociation> getOutAssociations() {
-        return Collections.unmodifiableList(outMapping);
-    }
-
-    @Override
-    public void addOutMapping(String parameterName, String variableName) {
-        outMapping.add(new DataAssociation(parameterName, variableName, null, null));
-    }
-
-    @Override
-    public String getOutMapping(String parameterName) {
-        return getOutMappings().get(parameterName);
-    }
-
-    @Override
-    public Map<String, String> getOutMappings() {
-        Map<String, String> out = new HashMap<>();
-        for (DataAssociation a : outMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                out.put(a.getSources().get(0), a.getTarget());
-            }
-        }
-        return out;
-    }
-
-    @Override
-    public void setOutMappings(Map<String, String> outMapping) {
-        this.outMapping = new LinkedList<>();
-        for (Map.Entry<String, String> entry : outMapping.entrySet()) {
-            addOutMapping(entry.getKey(), entry.getValue());
-        }
-    }
-
-    @Override
-    public void addInMapping(String parameterName, String variableName) {
-        inMapping.add(new DataAssociation(variableName, parameterName, null, null));
-    }
-
-    @Override
-    public String getInMapping(String parameterName) {
-        return getInMappings().get(parameterName);
-    }
-
-    @Override
-    public Map<String, String> getInMappings() {
-        Map<String, String> in = new HashMap<>();
-        for (DataAssociation a : inMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                in.put(a.getTarget(), a.getSources().get(0));
-            }
-        }
-        return in;
-    }
-
-    @Override
-    public void setInMappings(Map<String, String> inMapping) {
-        this.inMapping = new LinkedList<>();
-        for (Map.Entry<String, String> entry : inMapping.entrySet()) {
-            addInMapping(entry.getKey(), entry.getValue());
-        }
+        return Collections.unmodifiableList(getIoSpecification().getDataOutputAssociation());
     }
 
 }

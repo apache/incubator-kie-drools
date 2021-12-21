@@ -19,14 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.drl.ast.descr.ProcessDescr;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.WorkflowProcess;
-import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
-import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
-import org.kie.api.runtime.process.DataTransformer;
 
 public class RuleSetNodeBuilder extends EventBasedNodeBuilder {
 
@@ -38,25 +34,8 @@ public class RuleSetNodeBuilder extends EventBasedNodeBuilder {
         parameters.put("imports", wfProcess.getImports());
         parameters.put("classloader", context.getConfiguration().getClassLoader());
 
-        for (DataAssociation dataAssociation : ((RuleSetNode) node).getInAssociations()) {
-            Transformation transformation = dataAssociation.getTransformation();
-            if (transformation != null) {
-
-                DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-                transformation.setCompiledExpression(transformer.compile(transformation.getExpression(), parameters));
-
-            }
-        }
-
-        for (DataAssociation dataAssociation : ((RuleSetNode) node).getOutAssociations()) {
-            Transformation transformation = dataAssociation.getTransformation();
-            if (transformation != null) {
-
-                DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-                transformation.setCompiledExpression(transformer.compile(transformation.getExpression(), parameters));
-
-            }
-        }
+        buildDataAssociation(context, ((RuleSetNode) node).getInAssociations(), parameters);
+        buildDataAssociation(context, ((RuleSetNode) node).getOutAssociations(), parameters);
     }
 
 }

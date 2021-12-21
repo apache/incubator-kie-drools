@@ -26,12 +26,11 @@ import java.util.regex.Matcher;
 
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.NodeIoHelper;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
@@ -62,23 +61,12 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
                 handleSLAViolation();
             }
         } else if (("slaViolation:" + getStringId()).equals(type)) {
-
             handleSLAViolation();
-
         } else {
-            String variableName = getEventNode().getVariableName();
-            if (variableName != null) {
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
-                if (variableScopeInstance == null) {
-                    throw new IllegalArgumentException(
-                            "Could not find variable for event node: " + variableName);
-                }
-                EventTransformer transformer = getEventNode().getEventTransformer();
-                if (transformer != null) {
-                    event = transformer.transformEvent(event);
-                }
-                variableScopeInstance.setVariable(this, variableName, event);
-            }
+            EventNode eventNode = (EventNode) getNode();
+            Map<String, Object> outputSet = new HashMap<>();
+            outputSet.put(eventNode.getInputVariableName(), event);
+            NodeIoHelper.processOutputs(this, key -> outputSet.get(key), varName -> this.getVariable(varName));
             triggerCompleted();
         }
     }
@@ -248,7 +236,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
     }
 
     public String getEventType() {
-        return resolveVariable(getEventNode().getType());
+        return resolveExpression(getEventNode().getType());
     }
 
     protected KogitoEventListener getEventListener() {
@@ -265,31 +253,6 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
         }
 
         return false;
-    }
-
-    private String resolveVariable(String s) {
-        if (s == null) {
-            return null;
-        }
-
-        Map<String, String> replacements = new HashMap<String, String>();
-        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(s);
-        while (matcher.find()) {
-            String paramName = matcher.group(1);
-            if (replacements.get(paramName) == null) {
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
-                if (variableScopeInstance != null) {
-                    Object variableValue = variableScopeInstance.getVariable(paramName);
-                    String variableValueString = variableValue == null ? "" : variableValue.toString();
-                    replacements.put(paramName, variableValueString);
-                }
-            }
-        }
-        for (Map.Entry<String, String> replacement : replacements.entrySet()) {
-            s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
-        }
-
-        return s;
     }
 
     private void callSignal(String type, Object event) {

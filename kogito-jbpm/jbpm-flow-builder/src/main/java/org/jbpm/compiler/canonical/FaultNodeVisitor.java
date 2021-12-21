@@ -47,7 +47,7 @@ public class FaultNodeVisitor extends AbstractNodeVisitor<FaultNode> {
         }
 
         body.addStatement(getFactoryMethod(getNodeId(node), METHOD_TERMINATE_PARENT, new BooleanLiteralExpr(node.isTerminateParent())));
-
+        addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }

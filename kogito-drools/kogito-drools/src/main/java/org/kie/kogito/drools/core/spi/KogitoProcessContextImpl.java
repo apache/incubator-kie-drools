@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.drools.core.spi;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.spi.AbstractProcessContext;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.CaseAssignment;
@@ -26,8 +29,11 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 public class KogitoProcessContextImpl extends AbstractProcessContext implements KogitoProcessContext {
 
+    private Map<String, Object> contextData;
+
     public KogitoProcessContextImpl(KieRuntime kruntime) {
         super(kruntime);
+        contextData = new HashMap<>();
     }
 
     @Override
@@ -53,5 +59,15 @@ public class KogitoProcessContextImpl extends AbstractProcessContext implements 
     @Override
     public CaseData getCaseData() {
         throw new UnsupportedOperationException();
+    }
+
+    public void setContextData(Map<String, Object> contextData) {
+        this.contextData = contextData;
+
+    }
+
+    @Override
+    public Map<String, Object> getContextData() {
+        return contextData;
     }
 }

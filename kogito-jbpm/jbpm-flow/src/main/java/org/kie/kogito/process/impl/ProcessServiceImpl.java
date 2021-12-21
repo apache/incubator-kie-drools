@@ -95,10 +95,11 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public <T extends MappableToModel<R>, R> Optional<R> findById(Process<T> process, String id) {
-        return process.instances()
-                .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(ProcessInstance::variables)
-                .map(MappableToModel::toModel);
+        Optional<ProcessInstance<T>> instance = process.instances()
+                .findById(id, ProcessInstanceReadMode.READ_ONLY);
+        Optional<T> mappable = instance.map(ProcessInstance::variables);
+        Optional<R> data = mappable.map(MappableToModel::toModel);
+        return data;
     }
 
     @Override

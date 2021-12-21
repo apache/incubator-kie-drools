@@ -115,8 +115,8 @@ public class RuleSetTest extends AbstractBaseTest {
         ruleSetNode.setRuleType(RuleSetNode.RuleType.decision(namespace, modelName, decisionName));
         ruleSetNode.setLanguage(RuleSetNode.DMN_LANG);
         ruleSetNode.setDecisionModel(() -> dmnDecisionModel);
-        ruleSetNode.addInMapping("Person", "person");
-        ruleSetNode.addOutMapping("isAdult", "isAdult");
+        ruleSetNode.getIoSpecification().addInputMapping("person", "Person");
+        ruleSetNode.getIoSpecification().addOutputMapping("isAdult", "isAdult");
 
         EndNode endNode = new EndNode();
         endNode.setName("End");

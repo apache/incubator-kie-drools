@@ -109,7 +109,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testObjectStructureRef() throws Exception {
 
         String personAsXml = "<org.jbpm.bpmn2.objects.Person><id>1</id><name>john</name></org.jbpm.bpmn2.objects.Person>";
-        TypeConverterRegistry.get().register("org.jbpm.bpmn2.objects.Person", (s) -> new XStream().fromXML(personAsXml));
+        TypeConverterRegistry.get().register("org.jbpm.bpmn2.objects.Person", (s) -> new XStream().fromXML(s));
         kruntime = createKogitoProcessRuntime("BPMN2-ObjectStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();

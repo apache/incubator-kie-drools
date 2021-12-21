@@ -15,6 +15,9 @@
  */
 package org.jbpm.bpmn2.xpath;
 
+import java.util.List;
+import java.util.function.Function;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -23,9 +26,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.jbpm.process.instance.impl.AssignmentAction;
+import org.jbpm.process.instance.impl.AssignmentProducer;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.Assignment;
-import org.kie.api.runtime.process.ProcessContext;
-import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,21 +37,21 @@ import org.w3c.dom.Text;
 
 public class XPATHAssignmentAction implements AssignmentAction {
 
-    private String sourceExpr;
-    private String targetExpr;
     private Assignment assignment;
-    private boolean isInput;
+    private List<DataDefinition> sourcesDefinitions;
+    private DataDefinition targetDefinition;
 
-    public XPATHAssignmentAction(Assignment assignment, String sourceExpr, String targetExpr, boolean isInput) {
+    public XPATHAssignmentAction(Assignment assignment,
+            List<DataDefinition> sources, DataDefinition target) {
         this.assignment = assignment;
-        this.sourceExpr = sourceExpr;
-        this.targetExpr = targetExpr;
-        this.isInput = isInput;
+        this.sourcesDefinitions = sources;
+        this.targetDefinition = target;
     }
 
-    public void execute(InternalKogitoWorkItem workItem, ProcessContext context) throws Exception {
-        String from = assignment.getFrom();
-        String to = assignment.getTo();
+    public void execute(Function<String, Object> sourceResolver, Function<String, Object> targetResolver, AssignmentProducer producer) throws Exception {
+
+        String from = assignment.getFrom().getExpression();
+        String to = assignment.getTo().getExpression();
 
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpathFrom = factory.newXPath();
@@ -59,16 +62,15 @@ public class XPATHAssignmentAction implements AssignmentAction {
 
         XPathExpression exprTo = xpathTo.compile(to);
 
-        Object target;
-        Object source;
+        Object target = null;
+        Object source = null;
 
-        if (isInput) {
-            source = context.getVariable(sourceExpr);
-            target = workItem.getParameter(targetExpr);
+        if (!sourcesDefinitions.isEmpty()) {
+            source = sourceResolver.apply(sourcesDefinitions.get(0).getLabel());
         } else {
-            target = context.getVariable(targetExpr);
-            source = workItem.getResult(sourceExpr);
+            source = assignment.getFrom().getExpression();
         }
+        target = targetResolver.apply(targetDefinition.getLabel());
 
         Object targetElem = null;
 
@@ -80,7 +82,7 @@ public class XPATHAssignmentAction implements AssignmentAction {
             targetElem = exprTo.evaluate(parent, XPathConstants.NODE);
 
             if (targetElem == null) {
-                throw new RuntimeException("Nothing was selected by the to expression " + to + " on " + targetExpr);
+                throw new RuntimeException("Nothing was selected by the to expression " + to + " on " + target);
             }
         }
         NodeList nl = null;
@@ -95,11 +97,11 @@ public class XPATHAssignmentAction implements AssignmentAction {
             nl = temp.getChildNodes();
         } else if (source == null) {
             // don't throw errors yet ?
-            throw new RuntimeException("Source value was null for source " + sourceExpr);
+            throw new RuntimeException("Source value was null for source " + source);
         }
 
         if (nl == null || nl.getLength() == 0) {
-            throw new RuntimeException("Nothing was selected by the from expression " + from + " on " + sourceExpr);
+            throw new RuntimeException("Nothing was selected by the from expression " + from + " on " + source);
         }
         for (int i = 0; i < nl.getLength(); i++) {
 
@@ -124,11 +126,7 @@ public class XPATHAssignmentAction implements AssignmentAction {
             }
         }
 
-        if (isInput) {
-            workItem.setParameter(targetExpr, target);
-        } else {
-            context.setVariable(targetExpr, target);
-        }
+        producer.accept(targetDefinition.getLabel(), target);
     }
 
 }

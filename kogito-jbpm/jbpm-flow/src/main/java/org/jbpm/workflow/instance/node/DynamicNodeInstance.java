@@ -46,7 +46,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 
     @Override
     public String getNodeName() {
-        return resolveVariable(super.getNodeName());
+        return resolveExpression(super.getNodeName());
     }
 
     @Override

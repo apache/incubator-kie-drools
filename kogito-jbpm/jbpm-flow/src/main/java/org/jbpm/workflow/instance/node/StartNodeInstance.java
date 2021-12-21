@@ -15,21 +15,27 @@
  */
 package org.jbpm.workflow.instance.node;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.event.EventTransformer;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.NodeIoHelper;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING_INPUT;
 
 /**
  * Runtime counterpart of a start node.
  * 
  */
 public class StartNodeInstance extends NodeInstanceImpl {
+
+    protected static final Logger logger = LoggerFactory.getLogger(StartNodeInstance.class);
 
     private static final long serialVersionUID = 510l;
 
@@ -43,24 +49,15 @@ public class StartNodeInstance extends NodeInstanceImpl {
                     "A StartNode can only be triggered by the process itself!");
         }
         triggerTime = new Date();
+
         triggerCompleted();
     }
 
     public void signalEvent(String type, Object event) {
-        String variableName = (String) getStartNode().getMetaData("TriggerMapping");
+        String variableName = (String) getStartNode().getMetaData(TRIGGER_MAPPING_INPUT);
         if (variableName != null) {
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
-            if (variableScopeInstance == null) {
-                throw new IllegalArgumentException(
-                        "Could not find variable for start node: " + variableName);
-            }
-
-            EventTransformer transformer = getStartNode().getEventTransformer();
-            if (transformer != null) {
-                event = transformer.transformEvent(event);
-            }
-
-            variableScopeInstance.setVariable(this, variableName, event);
+            Map<String, Object> outputSet = Collections.singletonMap(variableName, event);
+            NodeIoHelper.processOutputs(this, key -> outputSet.get(key), varName -> this.getVariable(varName));
         }
         triggerCompleted();
     }

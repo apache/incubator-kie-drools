@@ -15,13 +15,6 @@
  */
 package org.jbpm.workflow.core.node;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
@@ -32,7 +25,7 @@ import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
  * Default implementation of an end node.
  * 
  */
-public class EndNode extends ExtendedNodeImpl implements Mappable {
+public class EndNode extends ExtendedNodeImpl {
 
     public static final int CONTAINER_SCOPE = 0;
     public static final int PROCESS_SCOPE = 1;
@@ -42,7 +35,6 @@ public class EndNode extends ExtendedNodeImpl implements Mappable {
 
     private boolean terminate = true;
     private int scope = CONTAINER_SCOPE;
-    private List<DataAssociation> inMapping = new LinkedList<>();
 
     public boolean isTerminate() {
         return terminate;
@@ -88,76 +80,4 @@ public class EndNode extends ExtendedNodeImpl implements Mappable {
         return scope;
     }
 
-    @Override
-    public void addInAssociation(DataAssociation dataAssociation) {
-        inMapping.add(dataAssociation);
-    }
-
-    @Override
-    public List<DataAssociation> getInAssociations() {
-        return Collections.unmodifiableList(inMapping);
-    }
-
-    @Override
-    public void addOutAssociation(DataAssociation dataAssociation) {
-        throwUnsupported();
-    }
-
-    @Override
-    public List<DataAssociation> getOutAssociations() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void addOutMapping(String parameterName, String variableName) {
-        throwUnsupported();
-    }
-
-    private void throwUnsupported() {
-        throw new IllegalArgumentException("An end event [" + this.getMetaData(UNIQUE_ID) + ", " + this.getName() + "] does not support output mappings");
-    }
-
-    @Override
-    public String getOutMapping(String parameterName) {
-        return null;
-    }
-
-    @Override
-    public Map<String, String> getOutMappings() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public void setOutMappings(Map<String, String> outMapping) {
-        throwUnsupported();
-    }
-
-    @Override
-    public void addInMapping(String parameterName, String variableName) {
-        inMapping.add(new DataAssociation(variableName, parameterName, null, null));
-    }
-
-    @Override
-    public String getInMapping(String parameterName) {
-        return getInMappings().get(parameterName);
-    }
-
-    @Override
-    public Map<String, String> getInMappings() {
-        Map<String, String> in = new HashMap<>();
-        for (DataAssociation a : inMapping) {
-            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
-                in.put(a.getTarget(), a.getSources().get(0));
-            }
-        }
-        return in;
-    }
-
-    @Override
-    public void setInMappings(Map<String, String> inMapping) {
-        this.inMapping = new LinkedList<>();
-        for (Map.Entry<String, String> entry : inMapping.entrySet()) {
-            addInMapping(entry.getKey(), entry.getValue());
-        }
-    }
 }
