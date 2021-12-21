@@ -17,11 +17,16 @@
 package org.drools.modelcompiler;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.modelcompiler.domain.InputDataTypes;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
@@ -450,5 +455,47 @@ public class GlobalTest extends BaseModelTest {
         ksession.insert(new InputDataTypes());
 
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testGlobalInDifferentPackage() throws InstantiationException, IllegalAccessException {
+        // DROOLS-6657
+        String def =
+                "package org.drools.reproducer.definitions\n" +
+                "declare Fact\n" +
+                "  value : String\n" +
+                "end\n" +
+                "global java.util.List<String> globalList;\n" +
+                "\n";
+
+        String rule =
+                "package org.drools.reproducer.rulesA\n" +
+                "import org.drools.reproducer.definitions.*\n" +
+                "\n" +
+                "rule \"Rule\"\n" +
+                "when\n" +
+                "   Fact( value == \"FOO\")\n" +
+                "then\n" +
+                "    globalList.add(\"FOO matched\");\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( rule, def );
+        KieBase kb = ksession.getKieBase();
+
+        assertEquals( 0, ksession.fireAllRules() );
+
+        FactType ft = kb.getFactType("org.drools.reproducer.definitions", "Fact");
+
+        KieSession ks = kb.newKieSession();
+        ks.setGlobal("globalList", new ArrayList<String>());
+        Object f = ft.newInstance();
+        ft.set(f, "value", "FOO");
+        ks.insert(f);
+
+        ks.fireAllRules();
+
+        List<String> globalList = (List<String>)ks.getGlobal("globalList");
+        Assert.assertEquals(1, globalList.size());
+        Assert.assertEquals("FOO matched", globalList.get(0));
     }
 }
