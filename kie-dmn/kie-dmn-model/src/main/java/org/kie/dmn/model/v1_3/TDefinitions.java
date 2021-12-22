@@ -183,11 +183,15 @@ public class TDefinitions extends TNamedElement implements Definitions {
         }
     }
 
-    private static void processQNameURIs(ItemDefinition iDef) {
+    private void processQNameURIs(ItemDefinition iDef) {
         final QName typeRef = iDef.getTypeRef();
         if (typeRef != null && XMLConstants.NULL_NS_URI.equals(typeRef.getNamespaceURI())) {
-            final String namespace = iDef.getNamespaceURI(typeRef.getPrefix());
-            iDef.setTypeRef(new QName(namespace, typeRef.getLocalPart(), typeRef.getPrefix()));
+            if (XMLConstants.DEFAULT_NS_PREFIX.equals(typeRef.getPrefix())) {
+                iDef.setTypeRef(new QName(namespace, typeRef.getLocalPart(), typeRef.getPrefix())); // use model namespace
+            } else {
+                final String resolvedNamespace = iDef.getNamespaceURI(typeRef.getPrefix());
+                iDef.setTypeRef(new QName(resolvedNamespace, typeRef.getLocalPart(), typeRef.getPrefix()));
+            }
         }
         for (ItemDefinition comp : iDef.getItemComponent()) {
             processQNameURIs(comp);

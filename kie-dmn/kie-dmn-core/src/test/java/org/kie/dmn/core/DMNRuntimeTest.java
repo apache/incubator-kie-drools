@@ -1057,7 +1057,49 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
         assertThat( result.get( "My Decision" ), is( "The person John Doe is located at 100 East Davie Street" ) );
     }
-    
+
+    @Test
+    public void testItemDefDependenciesDifferentDefaultNamespace() {
+        // DROOLS-6748
+        // namespace and xmlns have different values
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("itemDef-dependency-different-default-namespace.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel(
+                "http://example.org/",
+                "0070-feel-instance-of" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        final DMNContext context = runtime.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
+
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        final DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "function_025" ), is( true ) );
+        assertThat( result.get( "function_027" ), is( true ) );
+        assertThat( result.get( "function_029" ), is( true ) );
+    }
+
+    @Test
+    public void testItemDefDependenciesWithNs() {
+        // DROOLS-6748
+        // namespace and xmlns have different values. But typeRef is prefixed with "ns."
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("itemDef-dependency-with-ns.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel(
+                "http://example.org/",
+                "0070-feel-instance-of" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        final DMNContext context = runtime.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
+
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        final DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "function_025" ), is( true ) );
+        assertThat( result.get( "function_027" ), is( true ) );
+        assertThat( result.get( "function_029" ), is( true ) );
+    }
+
     @Test
     public void testDecisionResultTypeCheck() {
         // DROOLS-1513

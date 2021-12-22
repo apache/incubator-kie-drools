@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://example.org/" name="0070-feel-instance-of" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>FEEL instance of</description>
+
+    <itemDefinition name="tListOfFunctions" isCollection="true">
+        <typeRef>tStringFunctionWithSimpleTypedParams</typeRef>
+    </itemDefinition>
+
+    <itemDefinition name="tContextWithFunction">
+        <itemComponent name="prop1">
+            <typeRef>tStringFunctionWithSimpleTypedParams</typeRef>
+        </itemComponent>
+    </itemDefinition>
+
+    <itemDefinition name="tStringFunctionWithSimpleTypedParams">
+        <functionItem outputTypeRef="string">
+            <parameters name="p1" typeRef="string"></parameters>
+            <parameters name="p2" typeRef="number"></parameters>
+        </functionItem>
+    </itemDefinition>
+
+    <decision name="function_025" id="_function_025">
+        <variable name="function_025"/>
+        <literalExpression>
+            <text>(function(a: string, b: number) "123") instance of tStringFunctionWithSimpleTypedParams</text>
+        </literalExpression>
+    </decision>
+
+
+    <decision name="function_027" id="_function_027">
+        <variable name="function_027"/>
+        <literalExpression>
+            <!-- note that the param names differ to each other and also tListOfFunctions - FEEL type conformance does
+            not consider param names -->
+            <text>[(function(a: string, b: number) "123"), (function(c: string, d: number) "456")] instance of tListOfFunctions</text>
+        </literalExpression>
+    </decision>
+
+
+    <decision name="function_029" id="_function_029">
+        <variable name="function_029"/>
+        <literalExpression>
+            <text>{prop1: (function(a: string, b: number) "123")} instance of tContextWithFunction</text>
+        </literalExpression>
+    </decision>
+
+
+</definitions>
+
