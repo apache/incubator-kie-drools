@@ -75,6 +75,7 @@ public class QueryImpl extends RuleImpl implements Query {
         return KnowledgeType.QUERY;
     }
 
+    @Override
     public boolean isQuery() {
         return true;
     }
