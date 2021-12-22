@@ -29,7 +29,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
-import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
@@ -64,8 +63,6 @@ public class NamedEntryPoint
 
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[] addRemovePropertyChangeListenerArgs = new Object[]{this};
-
-    private TruthMaintenanceSystem tms;
 
     protected ObjectStore objectStore;
 
@@ -122,8 +119,8 @@ public class NamedEntryPoint
 
     public void reset() {
         this.objectStore.clear();
-        if (tms != null) {
-            tms.clear();
+        if (TruthMaintenanceSystemFactory.present()) {
+            TruthMaintenanceSystemFactory.get().clearTruthMaintenanceSystem(this);
         }
     }
 
@@ -177,11 +174,7 @@ public class NamedEntryPoint
             if ( this.reteEvaluator.isSequential() ) {
                 InternalFactHandle handle = createHandle( object, typeConf );
                 propagationContext.setFactHandle(handle);
-                insert( handle,
-                        object,
-                        rule,
-                        typeConf,
-                        propagationContext );
+                insert( handle, object, rule, typeConf, propagationContext );
                 return handle;
             }
 
@@ -192,39 +185,19 @@ public class NamedEntryPoint
                 // check if the object already exists in the WM
                 handle = this.objectStore.getHandleForObject( object );
 
-                if ( !typeConf.isTMSEnabled() ) {
+                if ( typeConf.isTMSEnabled() ) {
+                    if ( handle != null && handle.getEqualityKey().getStatus() == EqualityKey.STATED ) {
+                        // it's already stated, so just return the handle
+                        return handle;
+                    }
+
+                    handle = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).insertOnTms(object, typeConf, propagationContext, handle, this::createHandle);
+                } else {
                     // TMS not enabled for this object type
                     if ( handle != null ) {
                         return handle;
                     }
-                    handle = createHandle( object,
-                            typeConf );
-                } else {
-                    TruthMaintenanceSystem truthMaintenanceSystem = getTruthMaintenanceSystem();
-
-                    EqualityKey key;
-                    if ( handle != null && handle.getEqualityKey().getStatus() == EqualityKey.STATED ) {
-                        // it's already stated, so just return the handle
-                        return handle;
-                    } else {
-                        key = truthMaintenanceSystem.get( object );
-                    }
-
-                    if ( handle != null && key != null && key.getStatus() == EqualityKey.JUSTIFIED && handle != null) {
-                        // The justified set needs to be staged, before we can continue with the stated insert
-                        BeliefSet bs = handle.getEqualityKey().getBeliefSet();
-                        bs.getBeliefSystem().stage( propagationContext, bs ); // staging will set it's status to stated
-                    }
-
-                    handle = createHandle( object,
-                            typeConf ); // we know the handle is null
-                    if ( key == null ) {
-                        key = new EqualityKey( handle, EqualityKey.STATED  );
-                        truthMaintenanceSystem.put( key );
-                    } else {
-                        key.addFactHandle( handle );
-                    }
-                    handle.setEqualityKey( key );
+                    handle = createHandle( object, typeConf );
                 }
 
                 propagationContext.setFactHandle(handle);
@@ -362,31 +335,7 @@ public class NamedEntryPoint
                         handle, entryPoint, mask, modifiedClass, null);
 
                 if (typeConf.isTMSEnabled()) {
-                    EqualityKey newKey = tms.get(object);
-                    EqualityKey oldKey = handle.getEqualityKey();
-
-                    if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null) && newKey != oldKey) {
-                        // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
-                        throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
-                                "Rule " + (activation == null ? "" : activation.getRule().getName()) + " attempted an illegal operation");
-                    }
-
-                    if (newKey == null) {
-                        oldKey.removeFactHandle(handle);
-                        newKey = new EqualityKey(handle,
-                                EqualityKey.STATED); // updates are always stated
-                        handle.setEqualityKey(newKey);
-                        getTruthMaintenanceSystem().put(newKey);
-                    } else if (newKey != oldKey) {
-                        oldKey.removeFactHandle(handle);
-                        handle.setEqualityKey(newKey);
-                        newKey.addFactHandle(handle);
-                    }
-
-                    // If the old equality key is now empty, and no justified entries, remove it
-                    if (oldKey.isEmpty() && oldKey.getLogicalFactHandle() == null) {
-                        getTruthMaintenanceSystem().remove(oldKey);
-                    }
+                    TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).updateOnTms(handle, object, activation);
                 }
 
                 beforeUpdate(handle, object, activation, originalObject, propagationContext);
@@ -500,27 +449,13 @@ public class NamedEntryPoint
 
     private void deleteFromTMS( InternalFactHandle handle, EqualityKey key, ObjectTypeConf typeConf, PropagationContext propagationContext ) {
         if ( typeConf.isTMSEnabled() && key != null ) { // key can be null if we're expiring an event that has been already deleted
-            TruthMaintenanceSystem truthMaintenanceSystem = getTruthMaintenanceSystem();
-
-            // Update the equality key, which maintains a list of stated FactHandles
-            key.removeFactHandle( handle );
-            handle.setEqualityKey( null );
-
-            // If the equality key is now empty, then remove it, as it's no longer state either
-            if ( key.isEmpty() && key.getLogicalFactHandle() == null ) {
-                truthMaintenanceSystem.remove( key );
-            } else if ( key.getLogicalFactHandle() != null ) {
-                // The justified set can be unstaged, now that the last stated has been deleted
-                final InternalFactHandle justifiedHandle = key.getLogicalFactHandle();
-                BeliefSet bs = justifiedHandle.getEqualityKey().getBeliefSet();
-                bs.getBeliefSystem().unstage( propagationContext, bs );
-            }
+            TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).deleteFromTms( handle, key, propagationContext );
         }
     }
 
     private void deleteLogical(EqualityKey key) {
         if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
-            getTruthMaintenanceSystem().delete( key.getLogicalFactHandle() );
+            TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).delete( key.getLogicalFactHandle() );
         }
     }
 
@@ -638,10 +573,6 @@ public class NamedEntryPoint
         return this.reteEvaluator;
     }
 
-    public FactHandle getFactHandleByIdentity(final Object object) {
-        return this.objectStore.getHandleForObjectIdentity( object );
-    }
-
     public Object getObject(FactHandle factHandle) {
         return this.objectStore.getObjectForHandle((InternalFactHandle)factHandle);
     }
@@ -656,13 +587,11 @@ public class NamedEntryPoint
         return new ObjectStoreWrapper( this.objectStore, filter, ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    @SuppressWarnings("unchecked")
-    public Collection<? extends Object> getObjects() {
+    public Collection<?> getObjects() {
         return new ObjectStoreWrapper( this.objectStore, null, ObjectStoreWrapper.OBJECT );
     }
 
-    @SuppressWarnings("unchecked")
-    public Collection<? extends Object> getObjects(org.kie.api.runtime.ObjectFilter filter) {
+    public Collection<?> getObjects(org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore, filter, ObjectStoreWrapper.OBJECT );
     }
 
@@ -714,13 +643,6 @@ public class NamedEntryPoint
                 }
             }
         }
-    }
-
-    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        if (tms == null) {
-            tms = new TruthMaintenanceSystem(reteEvaluator, this);
-        }
-        return tms;
     }
 
     public TraitHelper getTraitHelper() {

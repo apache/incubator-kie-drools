@@ -23,11 +23,9 @@ import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.FieldFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.common.BeliefSystemFactory;
 import org.drools.core.common.DefaultNamedEntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPointFactory;
-import org.drools.core.common.PhreakBeliefSystemFactory;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
@@ -35,7 +33,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
@@ -43,9 +40,9 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.kiesession.agenda.DefaultAgendaFactory;
-import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.management.KieSessionMonitoringImpl;
 import org.drools.kiesession.management.StatelessKieSessionMonitoringImpl;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.KieSessionsPoolImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
@@ -77,13 +74,6 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return propagationFactory;
     }
 
-    private final BeliefSystemFactory bsFactory = new PhreakBeliefSystemFactory();
-
-    
-    public BeliefSystemFactory getBeliefSystemFactory() {
-        return bsFactory;
-    }
-
     public AgendaFactory getAgendaFactory() {
         return agendaFactory;
     }
@@ -108,8 +98,8 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return ClassBuilderFactory.get();
     }
 
-    public KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator) {
-        return new DefaultKnowledgeHelper( reteEvaluator );
+    public final KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator) {
+        return KnowledgeHelperFactory.get().createKnowledgeHelper(reteEvaluator);
     }
 
     public InternalWorkingMemory createStatefulSession(RuleBase ruleBase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool) {

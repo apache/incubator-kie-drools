@@ -39,9 +39,8 @@ import org.drools.compiler.rule.builder.FromBuilder;
 import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
+import org.drools.compiler.rule.builder.PatternBuilderForQuery;
 import org.drools.compiler.rule.builder.PredicateBuilder;
-import org.drools.compiler.rule.builder.QueryBuilder;
-import org.drools.compiler.rule.builder.ReturnValueBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
@@ -49,6 +48,7 @@ import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.QueryImpl;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
@@ -79,15 +79,13 @@ public interface Dialect {
 
     PatternBuilder getPatternBuilder();
 
-    QueryBuilder getQueryBuilder();
+    PatternBuilderForQuery getPatternBuilderForQuery(QueryImpl query);
 
     RuleConditionBuilder getEvalBuilder();
 
     AccumulateBuilder getAccumulateBuilder();
 
     PredicateBuilder getPredicateBuilder();
-
-    ReturnValueBuilder getReturnValueBuilder();
 
     ConsequenceBuilder getConsequenceBuilder();
 
@@ -252,7 +250,7 @@ public interface Dialect {
         }
 
         @Override
-        public QueryBuilder getQueryBuilder() {
+        public PatternBuilderForQuery getPatternBuilderForQuery(QueryImpl query) {
             return throwExceptionForMissingMvel();
         }
 
@@ -268,11 +266,6 @@ public interface Dialect {
 
         @Override
         public PredicateBuilder getPredicateBuilder() {
-            return throwExceptionForMissingMvel();
-        }
-
-        @Override
-        public ReturnValueBuilder getReturnValueBuilder() {
             return throwExceptionForMissingMvel();
         }
 

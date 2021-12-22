@@ -22,20 +22,22 @@ import java.util.List;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.defeasible.DefeasibilityStatus;
-import org.drools.core.beliefsystem.defeasible.DefeasibleBeliefSet;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.defeasible.DefeasibilityStatus;
+import org.drools.tms.beliefsystem.defeasible.DefeasibleBeliefSet;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,7 +109,7 @@ public class DefeasibilityTest {
 
     private void checkStatus( EqualityKey key, int support, DefeasibilityStatus status ) {
         assertEquals( EqualityKey.JUSTIFIED, key.getStatus() );
-        BeliefSet set = key.getBeliefSet();
+        BeliefSet set = ((TruthMaintenanceSystemEqualityKey)key).getBeliefSet();
         assertTrue( set instanceof DefeasibleBeliefSet );
         DefeasibleBeliefSet dfs = ( DefeasibleBeliefSet ) set;
 
@@ -122,7 +124,7 @@ public class DefeasibilityTest {
         KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/strict.drl" );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Ctype = kSession.getKieBase().getFactType( "org.drools.defeasible", "C" );
         FactType Dtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "D" );
 
@@ -153,7 +155,7 @@ public class DefeasibilityTest {
         KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/strictOverride.drl" );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Ctype = kSession.getKieBase().getFactType( "org.drools.defeasible", "C" );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
@@ -185,7 +187,7 @@ public class DefeasibilityTest {
         KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/defeat.drl" );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
 
@@ -213,7 +215,7 @@ public class DefeasibilityTest {
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
         ObjectHashMap keys = tms.getEqualityKeyMap();
@@ -243,7 +245,7 @@ public class DefeasibilityTest {
         KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/multiDefeat.drl" );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
 
@@ -278,7 +280,7 @@ public class DefeasibilityTest {
         FactHandle h = kSession.insert( "go" );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Ctype = kSession.getKieBase().getFactType( "org.drools.defeasible", "C" );
         FactType Atype = kSession.getKieBase().getFactType( "org.drools.defeasible", "A" );
 
@@ -323,7 +325,7 @@ public class DefeasibilityTest {
         FactHandle h = kSession.insert( "go" );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Ctype = kSession.getKieBase().getFactType( "org.drools.defeasible", "C" );
         FactType Atype = kSession.getKieBase().getFactType( "org.drools.defeasible", "A" );
 
@@ -371,7 +373,7 @@ public class DefeasibilityTest {
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
         ObjectHashMap keys = tms.getEqualityKeyMap();
@@ -454,7 +456,7 @@ public class DefeasibilityTest {
         kSession.fireAllRules();
 
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
         ObjectHashMap keys = tms.getEqualityKeyMap();
@@ -506,7 +508,7 @@ public class DefeasibilityTest {
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
         ObjectHashMap keys = tms.getEqualityKeyMap();
@@ -643,7 +645,7 @@ public class DefeasibilityTest {
 
         Object posBar = posList.get( 0 );
         InternalFactHandle posHandle = (InternalFactHandle) session.getFactHandle( posBar );
-        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) posHandle.getEqualityKey().getBeliefSet();
+        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) ((TruthMaintenanceSystemEqualityKey)posHandle.getEqualityKey()).getBeliefSet();
         assertEquals( 1, dbs.size() );
         assertFalse( dbs.isNegated() );
         assertTrue( dbs.isDecided() );
@@ -657,7 +659,7 @@ public class DefeasibilityTest {
         Object negBar = negList.get( 0 );
 
         InternalFactHandle negHandle = (InternalFactHandle) getNegativeHandles(session).get(0);
-        dbs = (DefeasibleBeliefSet) negHandle.getEqualityKey().getBeliefSet();
+        dbs = (DefeasibleBeliefSet) ((TruthMaintenanceSystemEqualityKey)negHandle.getEqualityKey()).getBeliefSet();
         assertEquals( 1, dbs.size() );
         assertFalse( dbs.isPositive() );
         assertTrue( dbs.isDecided() );
@@ -835,7 +837,7 @@ public class DefeasibilityTest {
         for ( Object o : session.getObjects( new ClassObjectFilter( factType.getFactClass() ) ) ) {
             if ( "wibble".equals( factType.get( o, "fact" ) ) ) {
                 InternalFactHandle handle = (InternalFactHandle) session.getFactHandle( o );
-                DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) handle.getEqualityKey().getBeliefSet();
+                DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).getBeliefSet();
 
                 assertEquals( 3, dbs.size() );
                 assertTrue( dbs.isConflicting() );

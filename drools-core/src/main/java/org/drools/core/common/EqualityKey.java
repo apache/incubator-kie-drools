@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.util.LinkedList;
 
 /**
@@ -30,26 +29,16 @@ import org.drools.core.util.LinkedList;
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
  */
-public class EqualityKey extends LinkedList<DefaultFactHandle>
-    implements
-    Externalizable {
+public abstract class EqualityKey extends LinkedList<DefaultFactHandle> implements Externalizable {
     public final static int    STATED    = 1;
     public final static int    JUSTIFIED = 2;
 
-//    /** this is an optimisation so single stated equalities can tracked  without the overhead of  an ArrayList */
-//    private InternalFactHandle handle;
-//
-//    /** this is always lazily maintainned  and deleted  when empty to minimise memory consumption */
-//    private List<InternalFactHandle>               instances;
-    
     /** This is cached in the constructor from the first added Object */
     private int          hashCode;
 
     /** Tracks whether this Fact is Stated or Justified */
     private int          status;
     
-    private  BeliefSet   beliefSet;
-
     public EqualityKey() {
 
     }
@@ -78,22 +67,9 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
         out.writeInt(status);
     }
 
-    public InternalFactHandle getLogicalFactHandle() {
-        if ( beliefSet == null ) {
-            return null;
-        }
+    public abstract InternalFactHandle getLogicalFactHandle();
 
-        return getFirst();
-    }
-
-    public void setLogicalFactHandle(InternalFactHandle logicalFactHandle) {
-        if ( logicalFactHandle == null && beliefSet != null ) {
-            // beliefSet needs to not be null, otherwise someone else has already set the LFH to null
-            removeFirst();
-        } else {
-            addFirst((DefaultFactHandle) logicalFactHandle);
-        }
-    }
+    public abstract void setLogicalFactHandle(InternalFactHandle logicalFactHandle);
 
     public InternalFactHandle getFactHandle() {
         return getFirst();
@@ -113,14 +89,6 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
     public int getStatus() {
         return this.status;
     }  
-
-    public BeliefSet getBeliefSet() {
-        return beliefSet;
-    }
-
-    public void setBeliefSet(BeliefSet beliefSet) {
-        this.beliefSet = beliefSet;
-    }
 
     /**
      * @param status the status to set

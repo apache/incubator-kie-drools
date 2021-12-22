@@ -31,8 +31,10 @@ import java.util.Map;
 import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.ModedAssertion;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItem;
+import org.drools.tms.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
@@ -44,7 +46,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
-import org.drools.core.common.LogicalDependency;
+import org.drools.tms.LogicalDependency;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.NodeMemories;
@@ -52,6 +54,7 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -471,7 +474,7 @@ public class ProtobufOutputMarshaller {
     public static void writeTruthMaintenanceSystem( MarshallerWriteContext context,
                                                     EntryPoint wmep,
                                                     ProtobufMessages.EntryPoint.Builder _epb) throws IOException {
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((NamedEntryPoint) wmep);
         ObjectHashMap justifiedMap = tms.getEqualityKeyMap();
 
         if ( !justifiedMap.isEmpty() ) {
@@ -502,8 +505,8 @@ public class ProtobufOutputMarshaller {
                     }
                 }
 
-                if ( key.getBeliefSet() != null ) {
-                    writeBeliefSet( context, key.getBeliefSet(), _key );
+                if ( ((TruthMaintenanceSystemEqualityKey)key).getBeliefSet() != null ) {
+                    writeBeliefSet( context, ((TruthMaintenanceSystemEqualityKey)key).getBeliefSet(), _key );
                 }
 
                 _tms.addKey( _key.build() );
@@ -701,7 +704,7 @@ public class ProtobufOutputMarshaller {
     }
 
     public static <M extends ModedAssertion<M>> ProtobufMessages.Activation writeActivation( MarshallerWriteContext context,
-                                                                                             AgendaItem<M> agendaItem,
+                                                                                             AgendaItem agendaItem,
                                                                                              boolean isDormient) {
         ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
 
@@ -721,17 +724,19 @@ public class ProtobufOutputMarshaller {
             _activation.setHandleId( agendaItem.getActivationFactHandle().getId() );
         }
 
-        org.drools.core.util.LinkedList<LogicalDependency<M>> list = agendaItem.getLogicalDependencies();
-        if ( list != null && !list.isEmpty() ) {
-            for ( LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext() ) {
-                _activation.addLogicalDependency( ((BeliefSet) node.getJustified()).getFactHandle().getId() );
+        if (agendaItem instanceof TruthMaintenanceSystemAgendaItem) {
+            org.drools.core.util.LinkedList<LogicalDependency<M>> list = ((TruthMaintenanceSystemAgendaItem)agendaItem).getLogicalDependencies();
+            if (list != null && !list.isEmpty()) {
+                for (LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext()) {
+                    _activation.addLogicalDependency(((BeliefSet) node.getJustified()).getFactHandle().getId());
+                }
             }
         }
 
         return _activation.build();
     }
 
-    public static Tuple writeTuple( MarshallerWriteContext context, Activation<?> activation, boolean isDormient ) {
+    public static Tuple writeTuple( MarshallerWriteContext context, Activation activation, boolean isDormient ) {
         org.drools.core.spi.Tuple tuple = activation.getTuple();
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
 

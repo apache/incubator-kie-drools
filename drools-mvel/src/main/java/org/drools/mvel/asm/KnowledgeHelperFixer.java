@@ -17,6 +17,7 @@ package org.drools.mvel.asm;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
@@ -34,6 +35,9 @@ public class KnowledgeHelperFixer {
         macros.put( "insertLogical",
                     new Macro() {
                         public String doMacro() {
+                            if (!TruthMaintenanceSystemFactory.present()) {
+                                TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
+                            }
                             return "drools.insertLogical";
                         }
                     } );

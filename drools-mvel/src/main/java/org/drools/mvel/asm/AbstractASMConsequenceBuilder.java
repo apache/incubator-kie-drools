@@ -16,11 +16,13 @@ package org.drools.mvel.asm;
 
 import java.util.Map;
 
+import org.drools.compiler.compiler.MissingDependencyError;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.common.MissingDependencyException;
+import org.drools.core.rule.Declaration;
 import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.mvel.java.JavaRuleBuilderHelper;
-import org.drools.core.rule.Declaration;
 
 public abstract class AbstractASMConsequenceBuilder implements ConsequenceBuilder {
     public void build(RuleBuildContext context, String consequenceName) {
@@ -51,8 +53,13 @@ public abstract class AbstractASMConsequenceBuilder implements ConsequenceBuilde
         }
 
         // this will fix modify, retract, insert, update, entrypoints and channels
-        String fixedConsequence = KnowledgeHelperFixer.fix( AsmUtil.fixBlockDescr(context, analysis, decls) );
-        return JavaRuleBuilderHelper.createConsequenceContext(context, consequenceName, className, fixedConsequence, decls, analysis.getBoundIdentifiers());
+        try {
+            String fixedConsequence = KnowledgeHelperFixer.fix(AsmUtil.fixBlockDescr(context, analysis, decls));
+            return JavaRuleBuilderHelper.createConsequenceContext(context, consequenceName, className, fixedConsequence, decls, analysis.getBoundIdentifiers());
+        } catch (MissingDependencyException e) {
+            context.addError(new MissingDependencyError(context.getRuleDescr().getResource(), e));
+        }
+        return null;
     }
 
     protected abstract byte[] createConsequenceBytecode(RuleBuildContext ruleContext, final Map<String, Object> consequenceContext);

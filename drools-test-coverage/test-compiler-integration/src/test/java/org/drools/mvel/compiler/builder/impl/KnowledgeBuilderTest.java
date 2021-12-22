@@ -52,17 +52,13 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -81,10 +77,9 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.DroolsTestCase;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListNode;
 import org.drools.ecj.EclipseJavaCompiler;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MockBetaNode;
@@ -1335,9 +1330,8 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       fieldsBean2.get( 2 ).getType() );
     }
 
-    class MockActivation<T extends ModedAssertion<T>>
-        implements
-        Activation<T> {
+    class MockActivation implements Activation {
+
         private RuleImpl               rule;
         private int                salience;
         private final GroupElement subrule;
@@ -1378,13 +1372,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         }
 
         public void remove() {
-        }
-
-        public void addLogicalDependency( final LogicalDependency<T> node ) {
-        }
-
-        public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
-            return null;
         }
 
         public boolean isQueued() {
@@ -1443,20 +1430,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             return false;
         }
         
-        public void addBlocked(LogicalDependency node) {
-        }
-
-        public LinkedList getBlocked() {
-            return null;
-        }
-
-        public void addBlocked(LinkedListNode node) {
-        }
-
-        public LinkedList getBlockers() {
-            return null;
-        }
-
         public boolean isMatched() {
             return false;
         }
@@ -1471,16 +1444,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         public boolean isRuleAgendaItem() {
             return false;
-        }
-
-        @Override
-        public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
-
-        }
-
-        @Override
-        public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified) {
-
         }
 
         @Override

@@ -20,16 +20,12 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.Match;
 
 /**
@@ -38,10 +34,7 @@ import org.kie.api.runtime.rule.Match;
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
  * from a single insert, update, retract are assgigned the same Activation number.
  */
-public interface Activation<T extends ModedAssertion<T>>
-    extends
-    Serializable,
-    Match {
+public interface Activation extends Serializable, Match {
     
     /**
      * 
@@ -90,20 +83,6 @@ public interface Activation<T extends ModedAssertion<T>>
      */
     void remove();
     
-    void addBlocked(final LogicalDependency<SimpleMode> node);
-    
-    LinkedList<LogicalDependency<SimpleMode>> getBlocked();
-
-    void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified);
-    
-    LinkedList<SimpleMode> getBlockers();
-    
-    void addLogicalDependency(LogicalDependency<T> node);
-
-    LinkedList<LogicalDependency<T>> getLogicalDependencies();
-
-    void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified);
-
     void setQueued(boolean activated);
     
     boolean isQueued();

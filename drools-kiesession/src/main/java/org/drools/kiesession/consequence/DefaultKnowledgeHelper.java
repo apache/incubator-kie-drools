@@ -26,42 +26,27 @@ import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
-import org.drools.core.beliefsystem.simple.SimpleMode;
+import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.EqualityKey;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.LogicalDependency;
-import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TruthMaintenanceSystemHelper;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.AbstractProcessContext;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.internal.runtime.beliefs.Mode;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
@@ -76,10 +61,7 @@ import org.kie.api.runtime.rule.Match;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
-public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
-    implements
-    KnowledgeHelper,
-    Externalizable {
+public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     private static final long                         serialVersionUID = 510l;
 
@@ -89,21 +71,10 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     protected ReteEvaluator reteEvaluator;
     private StatefulKnowledgeSessionForRHS wrappedEvaluator;
 
-    private LinkedList<LogicalDependency<T>>          previousJustified;
-
-    private LinkedList<LogicalDependency<SimpleMode>> previousBlocked;
-    
-    public DefaultKnowledgeHelper() {
-
-    }
+    public DefaultKnowledgeHelper() { }
 
     public DefaultKnowledgeHelper(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
-    }
-
-    public DefaultKnowledgeHelper(Activation activation, ReteEvaluator reteEvaluator) {
-        this.reteEvaluator = reteEvaluator;
-        this.activation = activation;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -121,81 +92,20 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public void setActivation(final Activation agendaItem) {
         this.activation = agendaItem;
-        // -- JBRULES-2558: logical inserts must be properly preserved
-        this.previousJustified = agendaItem.getLogicalDependencies();
-        this.previousBlocked = agendaItem.getBlocked();
-        agendaItem.setLogicalDependencies( null );
-        agendaItem.setBlocked( null );
-        // -- JBRULES-2558: end
         this.tuple = agendaItem.getTuple();
     }
 
     public void reset() {
         this.activation = null;
         this.tuple = null;
-        this.previousJustified = null;
-        this.previousBlocked = null;
-    }
-
-    public LinkedList<LogicalDependency<T>> getpreviousJustified() {
-        return previousJustified;
     }
 
     public void blockMatch(Match act) {
-        AgendaItem targetMatch = ( AgendaItem ) act;
-        // iterate to find previous equal logical insertion
-        LogicalDependency<SimpleMode> dep = null;
-        if ( this.previousBlocked != null ) {
-            for ( dep = this.previousBlocked.getFirst(); dep != null; dep = dep.getNext() ) {
-                if ( targetMatch ==  dep.getJustified() ) {
-                    this.previousBlocked.remove( dep );
-                    break;
-                }
-            }
-        }
-
-        if ( dep == null ) {
-            SimpleMode mode = new SimpleMode();
-            dep = new SimpleLogicalDependency( activation, targetMatch, mode );
-            mode.setObject( dep );
-        }
-        this.activation.addBlocked(  dep );
-
-        if ( targetMatch.getBlockers().size() == 1 && targetMatch.isQueued()  ) {
-            if ( targetMatch.getRuleAgendaItem() == null ) {
-                // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
-                targetMatch.remove();
-            } else {
-                targetMatch.getRuleAgendaItem().getRuleExecutor().removeLeftTuple(targetMatch.getTuple());
-            }
-
-            if ( targetMatch.getActivationGroupNode() != null ) {
-                targetMatch.getActivationGroupNode().getActivationGroup().removeActivation( targetMatch );
-            }
-
-            if ( targetMatch.getActivationNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) targetMatch.getActivationNode().getParentContainer();
-                ruleFlowGroup.remove( targetMatch );
-            }
-        }
+        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
     }
 
     public void unblockAllMatches(Match act) {
-        AgendaItem targetMatch = ( AgendaItem ) act;
-        boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
-
-        for ( LinkedListEntry entry = ( LinkedListEntry ) targetMatch.getBlockers().getFirst(); entry != null;  ) {
-            LinkedListEntry tmp = ( LinkedListEntry ) entry.getNext();
-            LogicalDependency dep = ( LogicalDependency ) entry.getObject();
-            ((AgendaItem)dep.getJustifier()).removeBlocked( dep );
-            entry = tmp;
-        }
-        
-        if ( wasBlocked ) {
-            RuleAgendaItem ruleAgendaItem = targetMatch.getRuleAgendaItem();
-            InternalAgenda agenda = toStatefulKnowledgeSession().getAgenda();
-            agenda.stageLeftTuple(ruleAgendaItem, targetMatch);
-        }
+        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
     }
 
     public FactHandle insertAsync( final Object object ) {
@@ -213,136 +123,32 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     @Override
     public InternalFactHandle insertLogical(Object object, Mode belief) {
-        return insertLogical( object, belief, false );
+        return insertLogical( object, belief );
     }
 
     @Override
     public InternalFactHandle insertLogical(Object object, Mode... beliefs) {
-        return insertLogical( object, beliefs, false );
+        return insertLogical( object, beliefs );
     }
 
     public InternalFactHandle insertLogical(final Object object) {
-        return insertLogical( object, false );
-    }
-    
-    public InternalFactHandle insertLogical(final Object object,final boolean dynamic) {
-        return insertLogical( object, null, dynamic );
-    }    
-
-    public InternalFactHandle insertLogical(final Object object, final Object value) {
-        return insertLogical( object, value, false );
+        return insertLogical( object, (Object) null );
     }
 
-    public InternalFactHandle insertLogical(final Object object,
-                                    final Object value,
-                                    final boolean dynamic) {
-
-        if ( object == null ) {
-            // prevent nulls from being inserted logically
-            return null;
-        }
-
-        if ( !activation.isMatched() ) {
-            // Activation is already unmatched, can't do logical insertions against it
-            return null;
-        }
-        // iterate to find previous equal logical insertion
-        LogicalDependency<T> dep = null;
-        if ( this.previousJustified != null ) {
-            for ( dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {                
-                if ( object.equals( ((BeliefSet)dep.getJustified()).getFactHandle().getObject() ) ) {
-                    this.previousJustified.remove( dep );
-                    break;
-                }
-            }
-        }
-
-        if ( dep != null ) {
-            // Add the previous matching logical dependency back into the list           
-            this.activation.addLogicalDependency( dep );
-            return ( (BeliefSet) dep.getJustified() ).getFactHandle();
-        } else {
-            // no previous matching logical dependency, so create a new one
-            return toStatefulKnowledgeSession().getTruthMaintenanceSystem().insert( object,
-                                                                     value,
-                                                                     this.activation.getRule(),
-                                                                     this.activation );
-        }
+    public InternalFactHandle insertLogical(Object object, Object value) {
+        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
+        return null;
     }
 
     public InternalFactHandle bolster( final Object object ) {
         return bolster( object, null );
     }
 
-    public InternalFactHandle bolster( final Object object,
-                                     final Object value ) {
-
-        if ( object == null || ! activation.isMatched() ) {
-            return null;
-        }
-
-        InternalFactHandle handle = getFactHandleFromWM( object );
-        NamedEntryPoint ep = (NamedEntryPoint) reteEvaluator.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() );
-        ObjectTypeConf otc = ep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( ep.getEntryPoint(), object );
-
-        BeliefSystem beliefSystem;
-        if ( value == null ) {
-            beliefSystem = toStatefulKnowledgeSession().getTruthMaintenanceSystem().getBeliefSystem();
-        } else {
-            if ( value instanceof Mode ) {
-                Mode m = (Mode) value;
-                beliefSystem = (BeliefSystem) m.getBeliefSystem();
-            } else {
-                beliefSystem = toStatefulKnowledgeSession().getTruthMaintenanceSystem().getBeliefSystem();
-            }
-        }
-
-        BeliefSet beliefSet = null;
-        if ( handle == null ) {
-            handle = RuntimeComponentFactory.get().getFactHandleFactoryService().newFactHandle( object, otc, reteEvaluator, ep );
-        }
-        if ( handle.getEqualityKey() == null ) {
-            handle.setEqualityKey( new EqualityKey( handle, EqualityKey.STATED ) );
-        } else {
-            beliefSet = handle.getEqualityKey().getBeliefSet();
-        }
-        if ( beliefSet == null ) {
-            beliefSet = beliefSystem.newBeliefSet( handle );
-            handle.getEqualityKey().setBeliefSet( beliefSet );
-        }
-
-        return beliefSystem.insert( beliefSystem.asMode( value ),
-                                    activation.getRule(),
-                                    activation,
-                                    object,
-                                    beliefSet,
-                                    activation.getPropagationContext(),
-                                    otc ).getFactHandle();
+    public InternalFactHandle bolster( final Object object, final Object value ) {
+        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
+        return null;
     }
 
-    public void cancelRemainingPreviousLogicalDependencies() {
-        if ( this.previousJustified != null ) {
-            for ( LogicalDependency<T> dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {
-                TruthMaintenanceSystemHelper.removeLogicalDependency( dep, activation.getPropagationContext() );
-            }
-        }
-        
-        if ( this.previousBlocked != null ) {
-            for ( LogicalDependency<SimpleMode> dep = this.previousBlocked.getFirst(); dep != null; ) {
-                LogicalDependency<SimpleMode> tmp = dep.getNext();
-                this.previousBlocked.remove( dep );
-
-                AgendaItem justified = ( AgendaItem ) dep.getJustified();
-                justified.getBlockers().remove( dep.getMode());
-                if (justified.getBlockers().isEmpty() ) {
-                    RuleAgendaItem ruleAgendaItem = justified.getRuleAgendaItem();
-                    toStatefulKnowledgeSession().getAgenda().stageLeftTuple(ruleAgendaItem, justified);
-                }
-                dep = tmp;
-            }
-        }        
-    }
-    
     public void cancelMatch(Match act) {
         AgendaItem match = ( AgendaItem ) act;
         ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match, reteEvaluator);
@@ -502,7 +308,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return Collections.unmodifiableMap( toStatefulKnowledgeSession().getChannels() );
     }
 
-    private InternalFactHandle getFactHandleFromWM(final Object object) {
+    protected InternalFactHandle getFactHandleFromWM(final Object object) {
         return getFactHandleFromWM(reteEvaluator, object);
     }
 

@@ -40,7 +40,6 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -54,6 +53,7 @@ import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SynchronizedBypassPropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.phreak.ThreadUnsafePropagationList;
+import org.drools.core.reteoo.AgendaComponentFactory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
@@ -195,7 +195,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
                                                final PathMemory rs,
                                                final TerminalNode rtn ) {
         String ruleFlowGroupName = rtn.getRule().getRuleFlowGroup();
-        return new RuleAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(),
+        return AgendaComponentFactory.get().createAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(),
                 (InternalAgendaGroup) getAgendaGroup( !StringUtils.isEmpty(ruleFlowGroupName) ? ruleFlowGroupName : rtn.getRule().getAgendaGroup() ));
     }
 
@@ -322,7 +322,6 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public void cancelActivation(final Activation activation) {
         AgendaItem item = (AgendaItem) activation;
-        item.removeAllBlockersAndBlocked( this );
 
         workingMemory.cancelActivation( activation, isDeclarativeAgenda() );
 
@@ -353,8 +352,6 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         }
 
         workingMemory.getRuleEventSupport().onDeleteMatch( item );
-
-        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, ( Tuple ) activation, activation.getRule() );
     }
 
     @Override

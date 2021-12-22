@@ -24,18 +24,16 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.beliefsystem.abductive.Abductive;
+import org.drools.core.addon.TypeResolver;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.util.ClassUtils;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.drools.core.addon.TypeResolver;
 
 /**
  * A context for the current build
@@ -74,16 +72,7 @@ public class RuleBuildContext extends PackageBuildContext {
                             final Dialect defaultDialect) {
         this.ruleDescr = ruleDescr;
 
-        if (ruleDescr instanceof QueryDescr) {
-            Abductive abductive = ruleDescr.getTypedAnnotation(Abductive.class);
-            if (abductive == null) {
-                this.rule = new QueryImpl(ruleDescr.getName());
-            } else {
-                this.rule = new AbductiveQuery(ruleDescr.getName());
-            }
-        } else {
-            this.rule = ruleDescr.toRule();
-        }
+        this.rule = ruleDescr instanceof QueryDescr ? TruthMaintenanceSystemFactory.createQuery(ruleDescr.getName(), ruleDescr::hasAnnotation) : ruleDescr.toRule();
         this.rule.setPackage(pkg.getName());
         this.rule.setDialect(ruleDescr.getDialect());
         this.rule.setLoadOrder(ruleDescr.getLoadOrder());
@@ -231,7 +220,7 @@ public class RuleBuildContext extends PackageBuildContext {
             }
         }
 
-        return rule.getPackage() + "." + classNameBuilder.reverse().toString();
+        return rule.getPackage() + "." + classNameBuilder.reverse();
     }
 
     public void increaseXpathChuckNr() {

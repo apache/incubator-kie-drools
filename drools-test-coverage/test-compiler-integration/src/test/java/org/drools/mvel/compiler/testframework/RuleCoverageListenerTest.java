@@ -19,14 +19,11 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.drools.compiler.testframework.RuleCoverageListener;
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.rule.impl.AfterActivationFiredEventImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -34,7 +31,6 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.LinkedList;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -91,16 +87,11 @@ public class RuleCoverageListenerTest {
 }
 
 @SuppressWarnings("serial")
-class MockActivation<T extends ModedAssertion<T>>
-    implements
-    Activation<T> {
+class MockActivation implements Activation {
     private String ruleName;
 
     public MockActivation(String ruleName) {
         this.ruleName = ruleName;
-    }
-
-    public void addLogicalDependency(LogicalDependency<T> node) {
     }
 
     public ActivationGroupNode getActivationGroupNode() {
@@ -116,10 +107,6 @@ class MockActivation<T extends ModedAssertion<T>>
     }
 
     public InternalRuleFlowGroup getRuleFlowGroup() {
-        return null;
-    }
-
-    public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
         return null;
     }
 
@@ -205,31 +192,6 @@ class MockActivation<T extends ModedAssertion<T>>
 
     public boolean isRuleAgendaItem() {
         return false;
-    }
-
-    @Override
-    public void addBlocked(LogicalDependency<SimpleMode> node) {
-
-    }
-
-    @Override
-    public LinkedList<LogicalDependency<SimpleMode>> getBlocked() {
-        return null;
-    }
-
-    @Override
-    public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
-
-    }
-
-    @Override
-    public LinkedList<SimpleMode> getBlockers() {
-        return null;
-    }
-
-    @Override
-    public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified) {
-
     }
 
     @Override

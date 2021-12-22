@@ -24,9 +24,10 @@ import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.rule.EntryPointId;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
@@ -91,7 +92,7 @@ public class BayesBeliefSystemTest {
 
         NamedEntryPoint ep = (NamedEntryPoint) ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId());
 
-        BayesBeliefSystem bayesBeliefSystem = new BayesBeliefSystem( ep, ep.getTruthMaintenanceSystem());
+        BayesBeliefSystem bayesBeliefSystem = new BayesBeliefSystem( ep, TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ep));
 
         BayesModeFactoryImpl bayesModeFactory = new BayesModeFactoryImpl(bayesBeliefSystem);
 

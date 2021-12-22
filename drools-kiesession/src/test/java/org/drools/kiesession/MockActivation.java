@@ -17,14 +17,11 @@ package org.drools.kiesession;
 
 import java.util.List;
 
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -33,12 +30,9 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class MockActivation<T extends ModedAssertion<T>>
-        implements
-        Activation<T> {
+public class MockActivation implements Activation {
 
     private RuleImpl rule;
 
@@ -71,13 +65,6 @@ public class MockActivation<T extends ModedAssertion<T>>
     }
 
     public void remove() {
-    }
-
-    public void addLogicalDependency( final LogicalDependency<T> node ) {
-    }
-
-    public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
-        return null;
     }
 
     public boolean isQueued() {
@@ -136,17 +123,7 @@ public class MockActivation<T extends ModedAssertion<T>>
         return false;
     }
 
-    public void addBlocked(LogicalDependency node) {
-    }
-
     public LinkedList getBlocked() {
-        return null;
-    }
-
-    public void addBlocked(LinkedListNode node) {
-    }
-
-    public LinkedList getBlockers() {
         return null;
     }
 
@@ -164,16 +141,6 @@ public class MockActivation<T extends ModedAssertion<T>>
 
     public boolean isRuleAgendaItem() {
         return false;
-    }
-
-    @Override
-    public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
-
-    }
-
-    @Override
-    public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified) {
-
     }
 
     @Override

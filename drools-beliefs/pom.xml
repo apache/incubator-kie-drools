@@ -33,6 +33,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-tms</artifactId>
+    </dependency>
 
     <!--
       following are required for parser (lang). May be refactored out of

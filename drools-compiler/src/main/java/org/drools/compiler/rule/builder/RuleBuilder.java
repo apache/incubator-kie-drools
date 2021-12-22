@@ -45,6 +45,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Salience;
 import org.drools.core.time.TimeUtils;
@@ -87,8 +88,7 @@ public class RuleBuilder {
         buildMetaAttributes( context );
 
         if ( context.getRuleDescr() instanceof QueryDescr ) {
-            context.getDialect().getQueryBuilder().build( context,
-                                                          (QueryDescr) context.getRuleDescr() );
+            context.getDialect().getPatternBuilderForQuery(((QueryImpl) context.getRule())).build( context, (QueryDescr) context.getRuleDescr() );
         }
 
         context.initRule();

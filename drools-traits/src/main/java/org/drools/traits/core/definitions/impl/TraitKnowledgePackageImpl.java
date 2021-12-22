@@ -49,8 +49,8 @@ public class TraitKnowledgePackageImpl extends KnowledgePackageImpl {
             "org.drools.core.factmodel.traits.Alias",
             "org.drools.core.factmodel.traits.Trait",
             "org.drools.core.factmodel.traits.Traitable",
-            "org.drools.core.beliefsystem.abductive.Abductive",
-            "org.drools.core.beliefsystem.abductive.Abducible"};
+            "org.drools.tms.beliefsystem.abductive.Abductive",
+            "org.drools.tms.beliefsystem.abductive.Abducible"};
 
     public TraitKnowledgePackageImpl() {
     }

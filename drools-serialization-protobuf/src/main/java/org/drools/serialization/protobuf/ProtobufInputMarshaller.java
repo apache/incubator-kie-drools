@@ -49,10 +49,9 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.kiesession.factory.PhreakWorkingMemoryFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ActivationKey;
 import org.drools.core.marshalling.impl.KieSessionInitializer;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -78,10 +77,14 @@ import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.kiesession.factory.PhreakWorkingMemoryFactory;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.serialization.protobuf.ProtobufMessages.FactHandle;
 import org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration;
 import org.drools.serialization.protobuf.ProtobufMessages.RuleData;
 import org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.TruthMaintenanceSystemImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -586,7 +589,7 @@ public class ProtobufInputMarshaller {
                                                    ProtobufMessages.EntryPoint _ep,
                                                    List<PropagationContext> pctxs) throws IOException,
                                                                                      ClassNotFoundException {
-        TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((NamedEntryPoint) wmep);
         
         boolean wasOTCSerialized = _ep.getOtcCount() > 0; // if 0, then the OTC was not serialized (older versions of drools)
         Set<String> tmsEnabled = new HashSet<String>();
@@ -608,8 +611,7 @@ public class ProtobufInputMarshaller {
                 typeConf.enableTMS();
             }
 
-            EqualityKey key = new EqualityKey( handle,
-                                               _key.getStatus() );
+            EqualityKey key = new TruthMaintenanceSystemEqualityKey( handle, _key.getStatus() );
             handle.setEqualityKey( key );
 
             if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
@@ -631,14 +633,13 @@ public class ProtobufInputMarshaller {
             tms.put( key );
 
             context.getFilter().fireRNEAs( context.getWorkingMemory() );
-            readBeliefSet( context, tms, key, _key );
+            readBeliefSet( context, tms, _key );
         }
 
     }
 
     private static void readBeliefSet( MarshallerReaderContext context,
                                        TruthMaintenanceSystem tms,
-                                       EqualityKey key,
                                        ProtobufMessages.EqualityKey _key) throws IOException,
                                                                             ClassNotFoundException {
         if( _key.hasBeliefSet() ) {
@@ -672,16 +673,10 @@ public class ProtobufInputMarshaller {
 
                     ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( handle.getEntryPointId(),
                                                                                                                  handle.getObject() );
-                    tms.readLogicalDependency( handle,
-                                               object,
-                                               value,
-                                               activation,
-                                               activation.getPropagationContext(),
-                                               activation.getRule(),
-                                               typeConf );
+                    tms.readLogicalDependency( handle, object, value, activation, typeConf );
                 }
             } else {
-                handle.getEqualityKey().setBeliefSet( tms.getBeliefSystem().newBeliefSet( handle ) );
+                ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).setBeliefSet( ((TruthMaintenanceSystemImpl)tms).getBeliefSystem().newBeliefSet( handle ) );
             }
         }
     }

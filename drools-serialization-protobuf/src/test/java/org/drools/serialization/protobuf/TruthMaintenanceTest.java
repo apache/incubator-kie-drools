@@ -23,11 +23,11 @@ import java.util.Map;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.rule.EntryPointId;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.CommonTestMethodBase;
@@ -390,7 +390,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             assertEquals( 0,
                           ksession.getObjects().size() );
 
-            TruthMaintenanceSystem tms =  ((NamedEntryPoint)ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
+            TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((ReteEvaluator) ksession);
 
             final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "equalityKeyMap" );
             field.setAccessible( true );
@@ -447,7 +447,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                           1,
                           list.size() );
 
-            TruthMaintenanceSystem tms =  ((NamedEntryPoint)ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
+            TruthMaintenanceSystem tms =  TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) ksession );
             assertTrue(tms.getEqualityKeyMap().isEmpty());
         } finally {
             ksession.dispose();
@@ -558,7 +558,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             assertEquals( 0,
                           list.size() );
 
-            TruthMaintenanceSystem tms =  ((NamedEntryPoint)ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
+            TruthMaintenanceSystem tms =  TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) ksession );
 
             final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "equalityKeyMap" );
             field.setAccessible( true );
@@ -747,16 +747,14 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             ksession.fireAllRules();
 
-            ksession = getSerialisedStatefulKnowledgeSession(ksession,
-                                                                                 true);
+            ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
 
             FactHandle h = ksession.insert( new Integer( 6 ) );
             assertEquals( 1,
                           ksession.getObjects().size() );
 
             ksession.fireAllRules();
-            ksession = getSerialisedStatefulKnowledgeSession(ksession,
-                                                                                 true);
+            ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             assertEquals( "There should be 2 CheeseEqual in Working Memory, 1 justified, 1 stated",
                           2,
                           ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
@@ -771,8 +769,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                 System.out.println( o );
             }
 
-            ksession = getSerialisedStatefulKnowledgeSession(ksession,
-                                                                                 true);
+            ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             assertEquals( 0,
                           ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
             assertEquals( 0,

@@ -33,7 +33,6 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -44,6 +43,7 @@ import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SynchronizedPropagationList;
+import org.drools.core.reteoo.AgendaComponentFactory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
@@ -178,7 +178,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn) {
-        return new RuleAgendaItem( activationCounter++, null, salience, null, pathMemory, rtn, false, agendaGroupsManager.getMainAgendaGroup());
+        return AgendaComponentFactory.get().createAgendaItem( activationCounter++, null, salience, null, pathMemory, rtn, false, agendaGroupsManager.getMainAgendaGroup());
     }
 
     @Override
@@ -190,7 +190,6 @@ public class ActivationsManagerImpl implements ActivationsManager {
     @Override
     public void cancelActivation(Activation activation) {
         AgendaItem item = (AgendaItem) activation;
-        item.removeAllBlockersAndBlocked( this );
 
         if ( activation.isQueued() ) {
             if ( activation.getActivationGroupNode() != null ) {
@@ -206,8 +205,6 @@ public class ActivationsManagerImpl implements ActivationsManager {
         }
 
         reteEvaluator.getRuleEventSupport().onDeleteMatch( item );
-
-        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, ( Tuple ) activation, activation.getRule() );
     }
 
     @Override

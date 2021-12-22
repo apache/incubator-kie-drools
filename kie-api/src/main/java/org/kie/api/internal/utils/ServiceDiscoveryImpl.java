@@ -50,7 +50,7 @@ public class ServiceDiscoveryImpl {
             "", // This is to reserve the path META-INF/kie/kie.conf for user specific customizations
             "drools-alphanetwork-compiler", "drools-beliefs", "drools-compiler", "drools-core", "drools-decisiontables",
             "drools-kiesession", "drools-metric", "drools-model-compiler", "drools-mvel", "drools-persistence-jpa",
-            "drools-scorecards", "drools-serialization-protobuf", "drools-traits", "drools-wiring-dynamic", "drools-workbench-models-guided-dtable",
+            "drools-scorecards", "drools-serialization-protobuf", "drools-tms", "drools-traits", "drools-wiring-dynamic", "drools-workbench-models-guided-dtable",
             "drools-workbench-models-guided-scorecard", "drools-workbench-models-guided-template", "drools-xml-support",
             "jbpm-bpmn2", "jbpm-case-mgmt-cmmn", "jbpm-flow", "jbpm-flow-builder", "jbpm-human-task-jpa",
             "kie-ci", "kie-dmn-core", "kie-dmn-jpmml", "kie-internal", "kie-pmml", "kie-pmml-evaluator-assembler",

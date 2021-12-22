@@ -20,27 +20,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends BaseLeftTuple implements
-                                                                    AgendaItem<T> {
+public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaItem {
     private static final long serialVersionUID = 540l;
     /**
      * The salience
@@ -52,9 +46,6 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     private           long                                           activationNumber;
     private           int                                            queueIndex;
     private           boolean                                        queued;
-    private           LinkedList<LogicalDependency<T>>               justified;
-    private           LinkedList<LogicalDependency<SimpleMode>>      blocked;
-    private           LinkedList<SimpleMode>                         blockers;
     private transient InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
@@ -62,7 +53,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
-    private           RuleAgendaItem                                 ruleAgendaItem;
+    protected         RuleAgendaItem                                 ruleAgendaItem;
 
     private Runnable callback;
 
@@ -192,85 +183,6 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
         return this.activationNumber;
     }
 
-    public void addBlocked(final LogicalDependency<SimpleMode> dep) {
-        // Adds the blocked to the blockers list
-        if (this.blocked == null) {
-            this.blocked = new LinkedList<LogicalDependency<SimpleMode>>();
-        }
-
-        this.blocked.add(dep);
-
-        // now ad the blocker to the blocked's list - we need to check that references are null first
-        RuleTerminalNodeLeftTuple blocked = (RuleTerminalNodeLeftTuple) dep.getJustified();
-        if (blocked.blockers == null) {
-            blocked.blockers = new LinkedList<SimpleMode>();
-            blocked.blockers.add(dep.getMode());
-        } else if (dep.getMode().getNext() == null && dep.getMode().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getMode()) {
-            blocked.blockers.add(dep.getMode());
-        }
-    }
-
-    public void removeAllBlockersAndBlocked(ActivationsManager activationsManager) {
-        if (this.blockers != null) {
-            // Iterate and remove this node's logical dependency list from each of it's blockers
-            for (SimpleMode node = blockers.getFirst(); node != null; node = node.getNext()) {
-                LogicalDependency dep = node.getObject();
-                dep.getJustifier().getBlocked().remove(dep);
-            }
-        }
-        this.blockers = null;
-
-        if (this.blocked != null) {
-            // Iterate and remove this node's logical dependency list from each of it's blocked
-            for (LogicalDependency<SimpleMode> dep = blocked.getFirst(); dep != null; ) {
-                LogicalDependency<SimpleMode> tmp = dep.getNext();
-                removeBlocked(dep);
-                RuleTerminalNodeLeftTuple justified = (RuleTerminalNodeLeftTuple) dep.getJustified();
-                if (justified.getBlockers().isEmpty() && justified.isActive()) {
-                    activationsManager.stageLeftTuple(ruleAgendaItem, justified);
-
-                }
-                dep = tmp;
-            }
-        }
-        this.blocked = null;
-    }
-
-    public void removeBlocked(final LogicalDependency<SimpleMode> dep) {
-        this.blocked.remove(dep);
-
-        RuleTerminalNodeLeftTuple blocked = (RuleTerminalNodeLeftTuple) dep.getJustified();
-        blocked.blockers.remove(dep.getMode());
-    }
-
-    public LinkedList<LogicalDependency<SimpleMode>> getBlocked() {
-        return this.blocked;
-    }
-
-    public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
-        this.blocked = justified;
-    }
-
-    public LinkedList<SimpleMode> getBlockers() {
-        return this.blockers;
-    }
-
-    public void addLogicalDependency(final LogicalDependency<T> node) {
-        if (this.justified == null) {
-            this.justified = new LinkedList<LogicalDependency<T>>();
-        }
-
-        this.justified.add(node);
-    }
-
-    public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
-        return this.justified;
-    }
-
-    public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified) {
-        this.justified = justified;
-    }
-
     public boolean isQueued() {
         return this.queued;
     }
@@ -391,6 +303,10 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
         return false;
     }
 
+    public boolean hasBlockers() {
+        return false;
+    }
+
     @Override
     public Runnable getCallback() {
         return callback;
@@ -404,5 +320,9 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     @Override
     public String toString() {
         return "["+toExternalForm()+" [ " + super.toString()+ " ] ]";
+    }
+
+    public void cancelActivation(ActivationsManager activationsManager) {
+        activationsManager.cancelActivation( this );
     }
 }

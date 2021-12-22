@@ -27,7 +27,7 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.Declaration;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.internal.runtime.beliefs.Mode;
+import org.drools.core.beliefsystem.Mode;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -72,18 +72,13 @@ public interface KnowledgeHelper
      * @param dynamic -
      *            specifies the object implements onPropertyChangeListener
      */
-    InternalFactHandle insert(Object object,
-                boolean dynamic) ;
+    InternalFactHandle insert(Object object, boolean dynamic);
     
     InternalFactHandle insertLogical(Object object) ;
     
-    InternalFactHandle insertLogical(Object object, boolean dynamic) ;
-
     InternalFactHandle insertLogical(Object object, Mode belief) ;
 
     InternalFactHandle insertLogical(Object object, Mode... beliefs) ;
-    
-    void cancelRemainingPreviousLogicalDependencies();
     
     InternalFactHandle getFactHandle(Object object);
     

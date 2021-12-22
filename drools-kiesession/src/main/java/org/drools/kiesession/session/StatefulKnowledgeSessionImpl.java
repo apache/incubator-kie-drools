@@ -46,6 +46,7 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
+import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.EndOperationListener;
@@ -62,7 +63,6 @@ import org.drools.core.common.ObjectStoreWrapper;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.ProcessEventSupport;
@@ -110,7 +110,6 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Calendars;
@@ -373,11 +372,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.mbeanRegisteredCBSKey = new DroolsManagementAgent.CBSKey( containerId, kbaseName, ksessionName );
             DroolsManagementAgent.getInstance().registerKnowledgeSessionUnderName( mbeanRegisteredCBSKey, this );
         }
-    }
-
-    @Override
-    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        return entryPointsManager.getDefaultEntryPoint().getTruthMaintenanceSystem();
     }
 
     @Override

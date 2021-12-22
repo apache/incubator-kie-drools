@@ -48,7 +48,7 @@ import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.PredicateBuilder;
-import org.drools.compiler.rule.builder.QueryBuilder;
+import org.drools.compiler.rule.builder.PatternBuilderForQuery;
 import org.drools.compiler.rule.builder.ReturnValueBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
@@ -59,6 +59,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
 import org.junit.After;
@@ -362,7 +363,7 @@ public class PackageBuilderConfigurationTest {
             return null;
         }
 
-        public QueryBuilder getQueryBuilder() {
+        public PatternBuilderForQuery getPatternBuilderForQuery(QueryImpl query) {
             return null;
         }
 
@@ -371,10 +372,6 @@ public class PackageBuilderConfigurationTest {
         }
 
         public void clearResults() {
-        }
-
-        public ReturnValueBuilder getReturnValueBuilder() {
-            return null;
         }
 
         public RuleClassBuilder getRuleClassBuilder() {

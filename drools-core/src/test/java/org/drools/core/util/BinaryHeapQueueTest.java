@@ -15,14 +15,15 @@
 
 package org.drools.core.util;
 
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
@@ -37,10 +38,6 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -246,9 +243,7 @@ public class BinaryHeapQueueTest {
         }
     }
 
-    public static class Item<T extends ModedAssertion<T>>
-            implements
-            Activation<T> {
+    public static class Item implements Activation {
 
         private static int actNo = 1;
 
@@ -287,9 +282,6 @@ public class BinaryHeapQueueTest {
             return activationNumber;
         }
 
-        public void addLogicalDependency(LogicalDependency<T> arg0) {
-        }
-
         public ActivationGroupNode getActivationGroupNode() {
             return null;
         }
@@ -303,10 +295,6 @@ public class BinaryHeapQueueTest {
         }
 
         public InternalRuleFlowGroup getRuleFlowGroup() {
-            return null;
-        }
-
-        public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
             return null;
         }
 
@@ -347,10 +335,6 @@ public class BinaryHeapQueueTest {
         public void setActivationNode(ActivationNode arg0) {
         }
 
-
-        public void setLogicalDependencies(LinkedList<LogicalDependency<T>> arg0) {
-        }
-
         public List<String> getDeclarationIds() {
             return null;
         }
@@ -373,23 +357,6 @@ public class BinaryHeapQueueTest {
 
         public boolean isAdded() {
             return false;
-        }
-
-        public void addBlocked(LogicalDependency node) {
-        }
-
-        public LinkedList<LogicalDependency<SimpleMode>> getBlocked() {
-            return null;
-        }
-
-        public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
-        }
-
-        public void addBlocked(LinkedListNode<SimpleMode> node) {
-        }
-
-        public LinkedList getBlockers() {
-            return null;
         }
 
         public boolean isMatched() {

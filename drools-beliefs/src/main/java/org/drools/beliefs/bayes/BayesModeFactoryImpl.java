@@ -15,7 +15,7 @@
 
 package org.drools.beliefs.bayes;
 
-import org.kie.api.internal.runtime.beliefs.Mode;
+import org.drools.core.beliefsystem.Mode;
 
 public class BayesModeFactoryImpl implements BayesModeFactory<BayesHardEvidence> {
     private BayesBeliefSystem beliefSystem;

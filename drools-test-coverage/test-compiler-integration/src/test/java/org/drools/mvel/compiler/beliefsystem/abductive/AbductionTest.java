@@ -26,9 +26,6 @@ import java.util.Map;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.abductive.Abducible;
-import org.drools.core.beliefsystem.defeasible.Defeasible;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.RuleBaseFactory;
@@ -37,6 +34,10 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.abductive.Abducible;
+import org.drools.tms.beliefsystem.defeasible.Defeasible;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -927,9 +928,9 @@ public class AbductionTest {
                 InternalFactHandle h = (InternalFactHandle) session.getFactHandle( o );
                 String name = (String) type.get( o, "name" );
                 if ( "Mary".equals( name ) ) {
-                    assertNull( h.getEqualityKey().getBeliefSet() );
+                    assertNull( ((TruthMaintenanceSystemEqualityKey)h.getEqualityKey()).getBeliefSet() );
                 } else if ( "John".equals( name ) ) {
-                    BeliefSet bs = h.getEqualityKey().getBeliefSet();
+                    BeliefSet bs = ((TruthMaintenanceSystemEqualityKey)h.getEqualityKey()).getBeliefSet();
                     assertTrue( bs.isPositive() );
                     assertEquals( 2, bs.size() );
                 }

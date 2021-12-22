@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
@@ -32,14 +30,12 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * Item entry in the <code>Agenda</code>.
  */
-public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem<T> {
+public class AgendaItemImpl implements AgendaItem {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -67,9 +63,6 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     private           long                                           activationNumber;
     private           int                                            index;
     private           boolean                                        queued;
-    private           LinkedList<LogicalDependency<T>>  justified;
-    private           LinkedList<LogicalDependency<SimpleMode>>      blocked;
-    private           LinkedList<SimpleMode>                         blockers;
     private transient InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
@@ -113,11 +106,6 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     @Override
     public PropagationContext getPropagationContext() {
         return this.context;
-    }
-
-    @Override
-    public void setPropagationContext(PropagationContext context) {
-        this.context = context;
     }
 
     /**
@@ -183,93 +171,6 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     @Override
     public long getActivationNumber() {
         return this.activationNumber;
-    }
-
-    @Override
-    public void addBlocked(final LogicalDependency<SimpleMode> dep) {
-        // Adds the blocked to the blockers list
-        if (this.blocked == null) {
-            this.blocked = new LinkedList<LogicalDependency<SimpleMode>>();
-        }
-
-        this.blocked.add(dep);
-
-        // now ad the blocker to the blocked's list - we need to check that references are null first
-        AgendaItemImpl blocked = (AgendaItemImpl) dep.getJustified();
-        if (blocked.blockers == null) {
-            blocked.blockers = new LinkedList<SimpleMode>();
-            blocked.blockers.add( dep.getMode());
-        } else if (dep.getMode().getNext() == null && dep.getMode().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getMode()) {
-            blocked.blockers.add(dep.getMode());
-        }
-    }
-
-    @Override
-    public void removeAllBlockersAndBlocked(ActivationsManager activationsManager) {
-        if (this.blockers != null) {
-            // Iterate and remove this node's logical dependency list from each of it's blockers
-            for (LinkedListEntry<SimpleMode, LogicalDependency<SimpleMode>> node = blockers.getFirst(); node != null; node = node.getNext()) {
-                LogicalDependency dep = node.getObject();
-                dep.getJustifier().getBlocked().remove(dep);
-            }
-        }
-        this.blockers = null;
-
-        if (this.blocked != null) {
-            // Iterate and remove this node's logical dependency list from each of it's blocked
-            for (LogicalDependency<SimpleMode> dep = blocked.getFirst(); dep != null; ) {
-                LogicalDependency<SimpleMode> tmp = dep.getNext();
-                removeBlocked(dep);
-                AgendaItem justified = (AgendaItem) dep.getJustified();
-                if (justified.getBlockers().isEmpty()) {
-                    activationsManager.stageLeftTuple(null,justified);
-                }
-                dep = tmp;
-            }
-        }
-        this.blocked = null;
-    }
-
-    @Override
-    public void removeBlocked(final LogicalDependency<SimpleMode> dep) {
-        this.blocked.remove(dep);
-
-        AgendaItemImpl blocked = (AgendaItemImpl) dep.getJustified();
-        blocked.blockers.remove(dep.getMode());
-    }
-
-    @Override
-    public LinkedList<LogicalDependency<SimpleMode>> getBlocked() {
-        return this.blocked;
-    }
-
-    @Override
-    public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
-        this.blocked = justified;
-    }
-
-    @Override
-    public LinkedList<SimpleMode> getBlockers() {
-        return this.blockers;
-    }
-
-    @Override
-    public void addLogicalDependency(final LogicalDependency<T> node) {
-        if (this.justified == null) {
-            this.justified = new LinkedList<LogicalDependency<T>>();
-        }
-
-        this.justified.add(node);
-    }
-
-    @Override
-    public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
-        return this.justified;
-    }
-
-    @Override
-    public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified) {
-        this.justified = justified;
     }
 
     @Override
@@ -410,7 +311,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     @Override
     public List<String> getDeclarationIds() {
         Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) this.tuple.getTupleSink()).getAllDeclarations();
-        List<String> declarations = new ArrayList<String>();
+        List<String> declarations = new ArrayList<>();
         for (Declaration decl : declArray) {
             declarations.add(decl.getIdentifier());
         }

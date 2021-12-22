@@ -50,7 +50,7 @@ import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.internal.runtime.beliefs.Mode;
+import org.drools.core.beliefsystem.Mode;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
@@ -335,10 +335,6 @@ public class StatefulKnowledgeSessionForRHS
 
     public void retract(FactHandle handle) {
         delegate.retract(handle);
-    }
-
-    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        return delegate.getTruthMaintenanceSystem();
     }
 
     public InternalAgenda getAgenda() {

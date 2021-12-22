@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.core.beliefsystem.abductive.Abducible;
+import org.drools.tms.beliefsystem.abductive.Abducible;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

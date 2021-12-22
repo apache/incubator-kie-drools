@@ -20,29 +20,20 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.InitialFact;
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
-public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
-
-    void setPropagationContext(PropagationContext context);
+public interface AgendaItem extends Activation {
 
     void setSalience(int salience);
 
     void setActivationFactHandle( InternalFactHandle factHandle );
 
     RuleAgendaItem getRuleAgendaItem();
-
-    void removeAllBlockersAndBlocked(ActivationsManager activationsManager);
-
-    void removeBlocked(LogicalDependency<SimpleMode> dep);
 
     TerminalNode getTerminalNode();
 
@@ -59,7 +50,7 @@ public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
 
     default List<FactHandle> getFactHandles(Tuple tuple) {
         FactHandle[] factHandles = tuple.toFactHandles();
-        List<FactHandle> list = new ArrayList<FactHandle>( factHandles.length);
+        List<FactHandle> list = new ArrayList<>( factHandles.length);
         for (FactHandle factHandle : factHandles) {
             Object o = ((InternalFactHandle) factHandle).getObject();
             if (!(o instanceof QueryElementFactHandle)) {
@@ -70,7 +61,7 @@ public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
     }
 
     default List<Object> getObjectsDeep(LeftTuple entry) {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         while ( entry != null ) {
             if ( entry.getFactHandle() != null ) {
                 Object o = entry.getFactHandle().getObject();

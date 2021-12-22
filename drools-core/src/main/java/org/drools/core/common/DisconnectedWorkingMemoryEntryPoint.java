@@ -143,11 +143,6 @@ public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPo
     }
 
     @Override
-    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
-    }
-
-    @Override
     public void reset() {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }

@@ -36,6 +36,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.ClassDefinition;
@@ -60,7 +61,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.internal.runtime.beliefs.Mode;
+import org.drools.core.beliefsystem.Mode;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -362,7 +363,7 @@ public class TraitHelperImpl implements Externalizable,
                 if ( ! ((TraitType) t)._isVirtual() ) {
                     InternalFactHandle handle = (InternalFactHandle) getFactHandle( t );
                     if ( handle.getEqualityKey() != null && handle.getEqualityKey().getLogicalFactHandle() == handle ) {
-                        entryPoint.getTruthMaintenanceSystem().delete( handle );
+                        TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(entryPoint).delete( handle );
                     } else {
                         delete( getFactHandle( t ), activation );
                     }
@@ -616,10 +617,8 @@ public class TraitHelperImpl implements Externalizable,
             return;
         }
         // iterate to find previous equal logical insertion
-        FactHandle handle = workingMemory.getTruthMaintenanceSystem().insert( object,
-                                                                              modes,
-                                                                              activation.getRule(),
-                                                                              activation );
+        TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(workingMemory)
+                .insert( object, modes, activation );
 
     }
 

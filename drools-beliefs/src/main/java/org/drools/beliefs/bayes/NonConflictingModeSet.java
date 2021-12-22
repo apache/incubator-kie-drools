@@ -15,9 +15,9 @@
 
 package org.drools.beliefs.bayes;
 
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.ModedAssertion;
+import org.drools.tms.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.BeliefSystem;
+import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.spi.PropagationContext;

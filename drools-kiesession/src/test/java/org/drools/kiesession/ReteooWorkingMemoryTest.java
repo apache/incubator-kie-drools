@@ -26,8 +26,8 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.Rete;
@@ -37,6 +37,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Ignore;
@@ -61,12 +62,12 @@ public class ReteooWorkingMemoryTest {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        final TruthMaintenanceSystem tms = ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()).getTruthMaintenanceSystem();
+        final TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ksession);
         final String string = "test";
 
         FactHandle fd = ksession.insert( string );
 
-        FactHandle fz = ksession.getTruthMaintenanceSystem().insert( string, null, null, new MockActivation() );
+        FactHandle fz = tms.insert( string, null, new MockActivation() );
 
         assertEquals( 1,
                       tms.getEqualityKeyMap().size() );

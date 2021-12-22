@@ -14,7 +14,7 @@
 
 package org.drools.serialization.protobuf.actions;
 
-import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
+import org.drools.tms.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.spi.Activation;

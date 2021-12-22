@@ -19,7 +19,6 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.common.BeliefSystemFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPointFactory;
 import org.drools.core.common.PropagationContextFactory;
@@ -53,8 +52,6 @@ public interface RuntimeComponentFactory {
 
     PropagationContextFactory getPropagationContextFactory();
 
-    BeliefSystemFactory getBeliefSystemFactory();
-
     NamedEntryPointFactory getNamedEntryPointFactory();
 
     FactHandleFactory getFactHandleFactoryService();
@@ -78,11 +75,20 @@ public interface RuntimeComponentFactory {
     GenericKieSessionMonitoringImpl createStatelessSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
 
     class Holder {
-        private static final RuntimeComponentFactory INSTANCE = ServiceRegistry.getService( RuntimeComponentFactory.class );
+        private static final RuntimeComponentFactory INSTANCE = createInstance();
+
+        static RuntimeComponentFactory createInstance() {
+            RuntimeComponentFactory factory = ServiceRegistry.getService( RuntimeComponentFactory.class );
+            if (factory == null) {
+                throwExceptionForMissingRuntime();
+                return null;
+            }
+            return factory;
+        }
     }
 
     static RuntimeComponentFactory get() {
-        return RuntimeComponentFactory.Holder.INSTANCE != null ? RuntimeComponentFactory.Holder.INSTANCE : throwExceptionForMissingRuntime();
+        return RuntimeComponentFactory.Holder.INSTANCE;
     }
 
     static <T> T throwExceptionForMissingRuntime() {
