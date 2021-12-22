@@ -29,10 +29,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
@@ -261,7 +263,7 @@ public class ServiceDiscoveryImpl {
     }
 
     private static Collection<URL> findKieConfUrls(ClassLoader cl) throws IOException {
-        List<URL> kieConfsUrls = new ArrayList<>();
+        Set<URL> kieConfsUrls = new HashSet<>();
 
         Enumeration<URL> metaInfs = cl.getResources(CONF_FILE_FOLDER);
         while (metaInfs.hasMoreElements()) {
@@ -282,7 +284,7 @@ public class ServiceDiscoveryImpl {
 
         if (kieConfsUrls.isEmpty()) {
             // no kie-conf found so fallback to the hardcoded lookup
-            kieConfsUrls = getKieConfsFromKnownModules(cl).collect(Collectors.toList());
+            kieConfsUrls = getKieConfsFromKnownModules(cl).collect(Collectors.toSet());
         } else {
             // check if all discovered kie.conf file are in known modules
             List<String> notRegisteredModules = kieConfsUrls.stream().map(ServiceDiscoveryImpl::getModuleName)
@@ -313,7 +315,7 @@ public class ServiceDiscoveryImpl {
                 .filter(Objects::nonNull);
     }
 
-    private static void collectKieConfsInJar(List<URL> kieConfsUrls, URL metaInf, JarURLConnection con) throws IOException {
+    private static void collectKieConfsInJar(Set<URL> kieConfsUrls, URL metaInf, JarURLConnection con) throws IOException {
         JarURLConnection jarCon = con;
         JarFile jarFile = jarCon.getJarFile();
         Enumeration<JarEntry> entries = jarFile.entries();
@@ -328,7 +330,7 @@ public class ServiceDiscoveryImpl {
         }
     }
 
-    private static void collectKieConfsInFile(List<URL> kieConfsUrls, File file) throws IOException {
+    private static void collectKieConfsInFile(Set<URL> kieConfsUrls, File file) throws IOException {
         if (file.isDirectory()) {
             for (File child : file.listFiles()) {
                 collectKieConfsInFile(kieConfsUrls, child);
