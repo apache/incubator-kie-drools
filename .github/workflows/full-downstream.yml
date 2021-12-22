@@ -1,0 +1,50 @@
+name: Build Chain
+
+on:
+  pull_request:
+    types: [labeled]
+    branches:
+      - main
+    paths-ignore:
+      - 'LICENSE*'
+      - '.gitignore'
+      - '*.md'
+      - '*.txt'
+
+jobs:
+  build-chain:
+    if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
+    concurrency:
+      group: fdb-${{ github.head_ref }}
+      cancel-in-progress: true
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java-version: [11]
+        maven-version: ['3.8.1']
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: Full downstream build
+    steps:
+      - name: Clean Disk Space
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/ubuntu-disk-space@main
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Support long paths
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/long-paths@main
+      - name: Java and Maven Setup
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/maven@main
+        with:
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Build Chain
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/build-chain@main
+        with:
+          definition-file: https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/main/.ci/full-downstream-config.yaml
+          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          flow-type: full-downstream
+      - name: Surefire Report
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/surefire-report@main
+        if: ${{ always() }}

@@ -25,10 +25,12 @@ Build Chain tool does "simple" maven build(s), the builds are just Maven command
 How to retest this PR or trigger a specific build:
 </summary>
 
-* <b>a pull request</b> please add comment: <b>Jenkins retest this</b>
+* <b>a pull request</b> please add comment: <b>Jenkins retest</b> (using <i>this</i> e.g. <b>Jenkins retest this</b> optional but no longer required)
  
-* <b>a full downstream build</b> please add comment: <b>Jenkins run fdb</b>
-  
+* for a <b>full downstream build</b> 
+  * for <b>jenkins</b> job: please add comment: <b>Jenkins run fdb</b>
+  * for <b>github actions</b> job: add the label `run_fdb`
+    
 * <b>a compile downstream build</b> please  add comment: <b>Jenkins run cdb</b>
 
 * <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
