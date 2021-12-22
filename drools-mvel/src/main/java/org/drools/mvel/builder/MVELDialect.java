@@ -54,7 +54,7 @@ import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
-import org.drools.compiler.rule.builder.AbductiveQueryBuilder;
+import org.drools.compiler.rule.builder.PatternBuilderForAbductiveQuery;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.CollectBuilder;
 import org.drools.compiler.rule.builder.ConditionalBranchBuilder;
@@ -69,7 +69,7 @@ import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.PredicateBuilder;
-import org.drools.compiler.rule.builder.QueryBuilder;
+import org.drools.compiler.rule.builder.PatternBuilderForQuery;
 import org.drools.compiler.rule.builder.ReturnValueBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
@@ -109,13 +109,12 @@ public class MVELDialect
     private final static String EXPRESSION_DIALECT_NAME = "MVEL";
 
     protected static final PatternBuilder PATTERN_BUILDER = new PatternBuilder();
-    protected static final QueryBuilder QUERY_BUILDER = new QueryBuilder();
-    protected static final QueryBuilder ABDUCTIVE_QUERY_BUILDER = new AbductiveQueryBuilder();
+    protected static final PatternBuilderForQuery QUERY_BUILDER = new PatternBuilderForQuery();
+    protected static final PatternBuilderForQuery ABDUCTIVE_QUERY_BUILDER = new PatternBuilderForAbductiveQuery();
     protected static final MVELAccumulateBuilder ACCUMULATE_BUILDER = new MVELAccumulateBuilder();
     protected static final SalienceBuilder SALIENCE_BUILDER = new MVELSalienceBuilder();
     protected static final EnabledBuilder ENABLED_BUILDER = new MVELEnabledBuilder();
     protected static final MVELEvalBuilder EVAL_BUILDER = new MVELEvalBuilder();
-    protected static final MVELReturnValueBuilder RETURN_VALUE_BUILDER = new MVELReturnValueBuilder();
     protected static final MVELConsequenceBuilder CONSEQUENCE_BUILDER = new MVELConsequenceBuilder();
 
     protected static final MVELFromBuilder FROM_BUILDER = new MVELFromBuilder();
@@ -684,7 +683,7 @@ public class MVELDialect
         return PATTERN_BUILDER;
     }
 
-    public QueryBuilder getQueryBuilder(QueryImpl query) {
+    public PatternBuilderForQuery getPatternBuilderForQuery(QueryImpl query) {
         return query.isAbductive() ? ABDUCTIVE_QUERY_BUILDER : QUERY_BUILDER;
     }
 
@@ -726,10 +725,6 @@ public class MVELDialect
 
     public void clearResults() {
         this.results.clear();
-    }
-
-    public ReturnValueBuilder getReturnValueBuilder() {
-        return RETURN_VALUE_BUILDER;
     }
 
     public RuleClassBuilder getRuleClassBuilder() {

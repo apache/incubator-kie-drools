@@ -91,6 +91,9 @@ public class QueryImpl extends RuleImpl implements Query {
         return false;
     }
 
+    // The following methods are necessary only to build an abductive query. That's because the query builder
+    // is in drools-compiler and we don't want to make drools-tms to depend on it.
+
     public void setReturnType(ObjectType objectType, String[] params, String[] args, Declaration[] declarations ) throws NoSuchMethodException {
         throw new UnsupportedOperationException("Available only for abductive query");
     }

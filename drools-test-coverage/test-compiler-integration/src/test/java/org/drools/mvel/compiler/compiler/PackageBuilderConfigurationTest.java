@@ -48,7 +48,7 @@ import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.PredicateBuilder;
-import org.drools.compiler.rule.builder.QueryBuilder;
+import org.drools.compiler.rule.builder.PatternBuilderForQuery;
 import org.drools.compiler.rule.builder.ReturnValueBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
@@ -363,7 +363,7 @@ public class PackageBuilderConfigurationTest {
             return null;
         }
 
-        public QueryBuilder getQueryBuilder(QueryImpl query) {
+        public PatternBuilderForQuery getPatternBuilderForQuery(QueryImpl query) {
             return null;
         }
 
@@ -372,10 +372,6 @@ public class PackageBuilderConfigurationTest {
         }
 
         public void clearResults() {
-        }
-
-        public ReturnValueBuilder getReturnValueBuilder() {
-            return null;
         }
 
         public RuleClassBuilder getRuleClassBuilder() {

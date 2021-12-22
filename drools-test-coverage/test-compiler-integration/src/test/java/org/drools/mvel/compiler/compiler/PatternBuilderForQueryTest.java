@@ -38,7 +38,7 @@ import org.kie.api.runtime.rule.QueryResults;
 
 import static org.junit.Assert.assertEquals;
 
-public class QueryBuilderTest extends DroolsTestCase {
+public class PatternBuilderForQueryTest extends DroolsTestCase {
 
     @Test
     public void testRuleWithQuery() throws Exception {

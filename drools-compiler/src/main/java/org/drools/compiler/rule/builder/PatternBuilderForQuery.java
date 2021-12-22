@@ -27,8 +27,8 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 
 
-public class QueryBuilder implements EngineElementBuilder {
-    public Pattern build(RuleBuildContext context, QueryDescr queryDescr) {
+public class PatternBuilderForQuery implements EngineElementBuilder {
+    public void build(RuleBuildContext context, QueryDescr queryDescr) {
         ObjectType queryObjectType = ClassObjectType.DroolsQuery_ObjectType;
         final Pattern pattern = new Pattern( context.getNextPatternId(),
                                              0, // tupleIndex is 0 by default
@@ -82,8 +82,6 @@ public class QueryBuilder implements EngineElementBuilder {
         context.setPrefixPattern( pattern );
 
         postBuild(context, queryDescr, query, params, types, declarations);
-
-        return pattern;
     }
 
     protected void postBuild(RuleBuildContext context, QueryDescr queryDescr, QueryImpl query, String[] params, String[] types, Declaration[] declarations) {

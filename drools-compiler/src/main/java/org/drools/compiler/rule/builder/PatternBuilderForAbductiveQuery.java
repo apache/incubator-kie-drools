@@ -26,7 +26,7 @@ import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.ObjectType;
 
-public class AbductiveQueryBuilder extends QueryBuilder {
+public class PatternBuilderForAbductiveQuery extends PatternBuilderForQuery {
 
     @Override
     protected void postBuild(RuleBuildContext context, QueryDescr queryDescr, QueryImpl query, String[] params, String[] types, Declaration[] declarations) {

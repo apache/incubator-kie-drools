@@ -88,7 +88,7 @@ public class RuleBuilder {
         buildMetaAttributes( context );
 
         if ( context.getRuleDescr() instanceof QueryDescr ) {
-            context.getDialect().getQueryBuilder(((QueryImpl) context.getRule())).build( context, (QueryDescr) context.getRuleDescr() );
+            context.getDialect().getPatternBuilderForQuery(((QueryImpl) context.getRule())).build( context, (QueryDescr) context.getRuleDescr() );
         }
 
         context.initRule();
