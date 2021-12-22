@@ -5,6 +5,7 @@ on:
     types: [labeled]
     branches:
       - main
+      - 7.x
     paths-ignore:
       - 'LICENSE*'
       - '.gitignore'
