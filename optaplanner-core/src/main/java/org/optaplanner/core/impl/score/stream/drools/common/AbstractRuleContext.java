@@ -67,7 +67,7 @@ abstract class AbstractRuleContext {
     }
 
     private static void addUndo(Drools drools, UndoScoreImpacter undoImpact) {
-        AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
+        AgendaItem agendaItem = (AgendaItem) ((RuleContext) drools).getMatch();
         agendaItem.setCallback(undoImpact);
     }
 

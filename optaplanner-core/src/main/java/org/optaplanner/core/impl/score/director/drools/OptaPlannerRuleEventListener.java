@@ -33,7 +33,7 @@ public final class OptaPlannerRuleEventListener implements RuleEventListener {
     }
 
     public void undoPreviousMatch(Match match) {
-        AgendaItem<?> agendaItem = (AgendaItem) match;
+        AgendaItem agendaItem = (AgendaItem) match;
         Runnable callback = agendaItem.getCallback();
         /*
          * In DRL, it is possible that RHS would not call addConstraintMatch() and do some insertLogical() instead,

@@ -107,7 +107,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      */
     protected void registerConstraintMatch(RuleContext kcontext, Runnable constraintUndoListener,
             Supplier<Score_> scoreSupplier) {
-        AgendaItem<?> agendaItem = (AgendaItem<?>) kcontext.getMatch();
+        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         ConstraintActivationUnMatchListener constraintActivationUnMatchListener = new ConstraintActivationUnMatchListener(
                 constraintUndoListener);
         agendaItem.setCallback(constraintActivationUnMatchListener);

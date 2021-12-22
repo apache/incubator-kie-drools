@@ -27,9 +27,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
+import org.drools.tms.beliefsystem.ModedAssertion;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
@@ -58,7 +58,7 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
         }
         List<Object> justificationList = Arrays.asList(justifications);
         RuleContext kcontext = mock(RuleContext.class);
-        AgendaItemImpl<TestModedAssertion> agendaItem = new AgendaItemImpl<TestModedAssertion>() {
+        AgendaItemImpl agendaItem = new AgendaItemImpl() {
 
             @Override
             public List<Object> getObjects() {
@@ -84,12 +84,12 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
     }
 
     protected void callOnUpdate(RuleContext ruleContext) {
-        AgendaItem<?> agendaItem = (AgendaItem) ruleContext.getMatch();
+        AgendaItem agendaItem = (AgendaItem) ruleContext.getMatch();
         agendaItem.getCallback().run();
     }
 
     protected void callOnDelete(RuleContext ruleContext) {
-        AgendaItem<?> agendaItem = (AgendaItem) ruleContext.getMatch();
+        AgendaItem agendaItem = (AgendaItem) ruleContext.getMatch();
         agendaItem.getCallback().run();
     }
 
