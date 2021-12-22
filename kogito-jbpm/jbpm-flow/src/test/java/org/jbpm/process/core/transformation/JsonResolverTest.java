@@ -15,7 +15,9 @@
  */
 package org.jbpm.process.core.transformation;
 
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -199,5 +201,12 @@ public class JsonResolverTest {
         assertThat(output.get("child")).isInstanceOf(Map.class);
         assertThat(output.get("child2")).isInstanceOf(Map.class);
         assertThat(output.get("string")).isEqualTo("value");
+    }
+
+    @Test
+    void testDate() {
+        LocalDate localDate = LocalDate.of(2021, 12, 21);
+        Map<String, Object> r = resolver.resolveAll(Map.of("date", localDate));
+        assertThat(r.get("date")).isEqualTo(List.of(2021, 12, 21));
     }
 }
