@@ -16,6 +16,10 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-codegen-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-events-api</artifactId>
+        </dependency>
 
         <!-- required because of CollectedResourceProducer -->
         <dependency>

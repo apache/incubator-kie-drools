@@ -15,21 +15,17 @@
  */
 package org.kie.kogito.codegen.process.events;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
 
-import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.core.CodegenUtils;
 import org.kie.kogito.codegen.core.events.AbstractCloudEventMetaFactoryGenerator;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 import org.kie.kogito.event.EventKind;
-import org.kie.kogito.services.event.DataEventAttrBuilder;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -45,15 +41,16 @@ public class ProcessCloudEventMetaFactoryGenerator extends AbstractCloudEventMet
 
     static final String CLASS_NAME = "ProcessCloudEventMetaFactory";
 
-    private final Map<String, List<TriggerMetaData>> triggers;
+    private final List<ProcessExecutableModelGenerator> generators;
 
     public ProcessCloudEventMetaFactoryGenerator(KogitoBuildContext context, List<ProcessExecutableModelGenerator> generators) {
         super(buildTemplatedGenerator(context, CLASS_NAME), context);
-        this.triggers = this.filterTriggers(generators);
+        this.generators = generators;
     }
 
-    Map<String, List<TriggerMetaData>> getTriggers() {
-        return triggers;
+    @Override
+    protected ProcessCloudEventMetaBuilder getCloudEventMetaBuilder() {
+        return new ProcessCloudEventMetaBuilder();
     }
 
     public String generate() {
@@ -66,22 +63,19 @@ public class ProcessCloudEventMetaFactoryGenerator extends AbstractCloudEventMet
                 .findFirst(MethodDeclaration.class, x -> x.getName().toString().startsWith("buildCloudEventMeta_"))
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Impossible to find expected buildCloudEventMeta_ method"));
 
-        List<MethodData> methodDataList = triggers.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream().map(trigger -> new MethodData(entry.getKey(), trigger)))
-                .distinct()
-                .collect(Collectors.toList());
+        Set<ProcessCloudEventMeta> processCloudEventMetaList = this.getCloudEventMetaBuilder().build(this.generators);
 
-        methodDataList.forEach(methodData -> {
+        processCloudEventMetaList.forEach(processCloudEventMeta -> {
             MethodDeclaration builderMethod = templatedBuildMethod.clone();
 
-            String methodNameValue = String.format("%s_%s", methodData.eventKind.name(), toValidJavaIdentifier(methodData.triggerName));
+            String methodNameValue = String.format("%s_%s", processCloudEventMeta.getKind().name(), toValidJavaIdentifier(processCloudEventMeta.triggerName));
             String builderMethodName = getBuilderMethodName(classDefinition, templatedBuildMethod.getNameAsString(), methodNameValue);
             builderMethod.setName(builderMethodName);
 
             Map<String, Expression> expressions = new HashMap<>();
-            expressions.put("$type$", new StringLiteralExpr(methodData.eventType));
-            expressions.put("$source$", new StringLiteralExpr(methodData.eventSource));
-            expressions.put("$kind$", new FieldAccessExpr(new NameExpr(new SimpleName(EventKind.class.getName())), methodData.eventKind.name()));
+            expressions.put("$type$", new StringLiteralExpr(processCloudEventMeta.getType()));
+            expressions.put("$source$", new StringLiteralExpr(processCloudEventMeta.getSource()));
+            expressions.put("$kind$", new FieldAccessExpr(new NameExpr(new SimpleName(EventKind.class.getName())), processCloudEventMeta.getKind().name()));
 
             ObjectCreationExpr objectCreationExpr = builderMethod.findAll(ObjectCreationExpr.class).get(0);
             CodegenUtils.interpolateArguments(objectCreationExpr, expressions);
@@ -100,63 +94,5 @@ public class ProcessCloudEventMetaFactoryGenerator extends AbstractCloudEventMet
         }
 
         return compilationUnit.toString();
-    }
-
-    private Map<String, List<TriggerMetaData>> filterTriggers(final List<ProcessExecutableModelGenerator> generators) {
-        if (generators != null) {
-            final Map<String, List<TriggerMetaData>> filteredTriggers = new HashMap<>();
-            generators
-                    .stream()
-                    .filter(m -> m.generate().getTriggers() != null && !m.generate().getTriggers().isEmpty())
-                    .forEach(m -> filteredTriggers.put(m.getProcessId(),
-                            m.generate().getTriggers().stream()
-                                    .filter(t -> !TriggerMetaData.TriggerType.Signal.equals(t.getType()))
-                                    .collect(Collectors.toList())));
-            return filteredTriggers;
-        }
-        return Collections.emptyMap();
-    }
-
-    private static class MethodData {
-
-        final String processId;
-        final String triggerName;
-        final EventKind eventKind;
-        final String eventType;
-        final String eventSource;
-
-        public MethodData(String processId, TriggerMetaData trigger) {
-            this.processId = processId;
-            this.triggerName = trigger.getName();
-
-            this.eventKind = TriggerMetaData.TriggerType.ProduceMessage.equals(trigger.getType())
-                    ? EventKind.PRODUCED
-                    : EventKind.CONSUMED;
-
-            this.eventType = eventKind == EventKind.PRODUCED
-                    ? DataEventAttrBuilder.toType(triggerName, processId)
-                    : triggerName;
-
-            this.eventSource = eventKind == EventKind.PRODUCED
-                    ? DataEventAttrBuilder.toSource(processId)
-                    : "";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            MethodData that = (MethodData) o;
-            return processId.equals(that.processId) && triggerName.equals(that.triggerName) && eventKind == that.eventKind && eventType.equals(that.eventType) && eventSource.equals(that.eventSource);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(processId, triggerName, eventKind, eventType, eventSource);
-        }
     }
 }

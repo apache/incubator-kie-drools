@@ -28,6 +28,7 @@
   </dependencyManagement>
 
   <modules>
+    <module>kogito-quarkus-extension-spi</module>
     <module>kogito-quarkus-extension-common</module>
     <module>kogito-quarkus-extension</module>
     <module>kogito-quarkus-rules-extension</module>

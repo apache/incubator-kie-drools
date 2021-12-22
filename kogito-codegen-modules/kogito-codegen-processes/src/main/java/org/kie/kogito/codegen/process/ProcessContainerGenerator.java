@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.process;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,10 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
     public void addProcess(ProcessGenerator p) {
         processes.add(p);
         addProcessToApplication(p);
+    }
+
+    public List<ProcessGenerator> getProcesses() {
+        return Collections.unmodifiableList(this.processes);
     }
 
     public void addProcessToApplication(ProcessGenerator r) {

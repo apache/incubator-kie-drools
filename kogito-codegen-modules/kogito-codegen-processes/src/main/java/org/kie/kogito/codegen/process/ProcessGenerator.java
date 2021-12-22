@@ -121,6 +121,10 @@ public class ProcessGenerator {
 
     }
 
+    public ProcessExecutableModelGenerator getProcessExecutable() {
+        return this.processExecutable;
+    }
+
     public String targetCanonicalName() {
         return targetCanonicalName;
     }

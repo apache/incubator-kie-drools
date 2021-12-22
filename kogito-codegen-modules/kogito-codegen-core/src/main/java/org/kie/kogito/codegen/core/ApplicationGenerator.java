@@ -124,6 +124,7 @@ public class ApplicationGenerator {
                 .map(Generator::section)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .peek(section -> this.context.addApplicationSection(section))
                 .map(section -> new GeneratedFile(APPLICATION_SECTION_TYPE,
                         getFilePath(section.sectionClassName()),
                         section.compilationUnit().toString()))

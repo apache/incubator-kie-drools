@@ -15,17 +15,17 @@
  */
 package org.kie.kogito.codegen.process.events;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 import org.kie.kogito.codegen.process.ProcessGenerationUtils;
 import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
@@ -187,20 +187,19 @@ class ProcessCloudEventMetaFactoryGeneratorTest {
 
     private ClassOrInterfaceDeclaration generateAndParseClass(String bpmnFile, int expectedTriggers, boolean withInjection) {
         KogitoBuildContext context = getContext(withInjection);
+        List<ProcessExecutableModelGenerator> execModelGenerators = ProcessGenerationUtils.execModelFromProcessFile(bpmnFile);
 
         final ProcessCloudEventMetaFactoryGenerator generator =
                 new ProcessCloudEventMetaFactoryGenerator(
                         context,
-                        ProcessGenerationUtils.execModelFromProcessFile(bpmnFile));
+                        execModelGenerators);
+
+        Collection<ProcessCloudEventMeta> ces = generator.getCloudEventMetaBuilder().build(execModelGenerators);
         if (expectedTriggers > 0) {
-            assertThat(generator.getTriggers()).isNotEmpty();
-            int triggersCount = 0;
-            for (Map.Entry<String, List<TriggerMetaData>> entry : generator.getTriggers().entrySet()) {
-                triggersCount += entry.getValue().size();
-            }
-            assertThat(triggersCount).isEqualTo(expectedTriggers);
+            assertThat(ces).isNotEmpty();
+            assertThat(ces.size()).isEqualTo(expectedTriggers);
         } else {
-            assertThat(generator.getTriggers()).isEmpty();
+            assertThat(ces).isEmpty();
         }
         final String source = generator.generate();
         assertThat(source).isNotNull();

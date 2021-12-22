@@ -70,4 +70,6 @@ public abstract class AbstractCloudEventMetaFactoryGenerator extends AbstractEve
         }
         return sb.toString();
     }
+
+    protected abstract CloudEventMetaBuilder<?, ?> getCloudEventMetaBuilder();
 }

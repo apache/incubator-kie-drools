@@ -35,4 +35,5 @@ public abstract class AbstractEventResourceGenerator {
     }
 
     public abstract String generate();
+
 }

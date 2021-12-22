@@ -62,7 +62,7 @@ public class KnativeEventingConfigSource implements ConfigSource {
     public String getValue(String propertyName) {
         if (URL_CONFIG.equals(propertyName)) {
             final Optional<String> sinkUrl = ConfigProvider.getConfig().getOptionalValue(K_SINK, String.class);
-            if (!sinkUrl.isPresent() || "".equals(sinkUrl.get())) {
+            if (sinkUrl.isEmpty() || "".equals(sinkUrl.get())) {
                 LOGGER.warn("{} variable is empty or don't exist. Please make sure that this service is a Knative Source or has a SinkBinding bound to it.", K_SINK);
             }
         }

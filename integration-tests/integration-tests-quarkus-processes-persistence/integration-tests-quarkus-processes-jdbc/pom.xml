@@ -28,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-jdbc</artifactId>
+      <artifactId>kogito-addons-quarkus-persistence-jdbc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

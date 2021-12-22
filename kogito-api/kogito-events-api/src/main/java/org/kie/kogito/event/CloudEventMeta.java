@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Represents the metadata definition for an event emitted or listened in the engine.
  * It's based on the CloudEvents specification to help consumers and producers to be aware of the required events being
- * consumed by the the runtime engine.
+ * consumed by the runtime engine.
  */
 public class CloudEventMeta implements EventMeta {
 

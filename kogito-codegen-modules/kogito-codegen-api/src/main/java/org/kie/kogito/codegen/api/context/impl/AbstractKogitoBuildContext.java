@@ -22,16 +22,19 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.lang.model.SourceVersion;
 
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.AddonsConfig;
+import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.context.KogitoApplicationPropertyProvider;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
@@ -55,6 +58,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected final String contextName;
     protected final Map<String, Object> contextAttributes;
     protected final KogitoGAV gav;
+    protected Set<ApplicationSection> applicationSections;
 
     protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
     protected RestAnnotator restAnnotator;
@@ -74,6 +78,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         this.gav = builder.gav;
         this.contextName = contextName;
         this.contextAttributes = new HashMap<>();
+        this.applicationSections = new HashSet<>();
     }
 
     protected static Properties load(File... resourcePaths) {
@@ -183,6 +188,21 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     }
 
     @Override
+    public Set<ApplicationSection> getApplicationSections() {
+        return Collections.unmodifiableSet(applicationSections);
+    }
+
+    @Override
+    public void addAllApplicationSections(Set<ApplicationSection> applicationSections) {
+        this.applicationSections.addAll(applicationSections);
+    }
+
+    @Override
+    public void addApplicationSection(ApplicationSection applicationSection) {
+        this.applicationSections.add(applicationSection);
+    }
+
+    @Override
     public String toString() {
         return "KogitoBuildContext{" +
                 "contextName='" + contextName + '\'' +
@@ -286,6 +306,5 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
                 return false;
             }
         }
-
     }
 }
