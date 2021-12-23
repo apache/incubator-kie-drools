@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import io.quarkus.runtime.Startup;
+import io.vertx.core.impl.logging.LoggerFactory;
 
 import net.thisptr.jackson.jq.Scope;
 
@@ -29,6 +30,7 @@ public class JqQuarkusExtension {
 
     @PostConstruct
     void init() {
+        LoggerFactory.getLogger(JqQuarkusExtension.class).info("Using jq scope");
         JqExpressionHandler.setScopeSupplier(() -> scope);
     }
 }

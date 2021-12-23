@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
+import org.slf4j.LoggerFactory;
 
 import net.thisptr.jackson.jq.BuiltinFunctionLoader;
 import net.thisptr.jackson.jq.Scope;
@@ -36,6 +37,7 @@ public class JqExpressionHandler implements ExpressionHandler {
         private static class DefaultScope {
             private static Scope scope;
             static {
+                LoggerFactory.getLogger(JqExpressionHandler.class).info("Using default scope");
                 scope = Scope.newEmptyScope();
                 BuiltinFunctionLoader.getInstance().loadFunctions(Versions.JQ_1_6, scope);
             }
