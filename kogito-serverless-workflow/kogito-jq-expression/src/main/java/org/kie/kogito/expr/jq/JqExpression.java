@@ -26,7 +26,6 @@ import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.Output;
@@ -157,7 +156,7 @@ public class JqExpression implements Expression {
 
     @Override
     public void assign(Object context, Object value) {
-        ExpressionHandlerUtils.assign((ObjectNode) context, eval(context, JsonNode.class), (JsonNode) value, expr);
+        ExpressionHandlerUtils.assign((JsonNode) context, eval(context, JsonNode.class), (JsonNode) value, expr);
     }
 
     private void compile() throws JsonQueryException {

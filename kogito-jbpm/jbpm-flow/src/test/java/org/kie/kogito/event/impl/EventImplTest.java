@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -152,9 +153,13 @@ public class EventImplTest {
         executor.shutdown();
     }
 
+    private Optional<Function<DummyEvent, DummyModel>> getConvertedMethod() {
+        return Optional.of(DummyModel::new);
+    }
+
     @Test
     void testSigCloudEvent() {
-        EventConsumer<DummyModel> consumer = factory.get(processService, executor, DummyModel::new, true);
+        EventConsumer<DummyModel> consumer = factory.get(processService, executor, getConvertedMethod(), true);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe"), "1"), trigger);
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -167,7 +172,7 @@ public class EventImplTest {
     @Test
     void testCloudEvent() {
         EventConsumer<DummyModel> consumer =
-                factory.get(processService, executor, DummyModel::new, true);
+                factory.get(processService, executor, getConvertedMethod(), true);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe")), trigger);
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -181,7 +186,7 @@ public class EventImplTest {
     @Test
     void testDataEvent() {
         EventConsumer<DummyModel> consumer =
-                factory.get(processService, executor, DummyModel::new, false);
+                factory.get(processService, executor, getConvertedMethod(), false);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyEvent("pepe"), trigger);
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -207,7 +212,7 @@ public class EventImplTest {
 
     @Test
     void testEventPayloadException() {
-        EventConsumer<DummyModel> consumer = factory.get(processService, executor, DummyModel::new, true);
+        EventConsumer<DummyModel> consumer = factory.get(processService, executor, getConvertedMethod(), true);
         final String trigger = "dummyTopic";
         final String payload = "{ a = b }";
         assertThrows(ClassCastException.class, () -> consumer.consume(application, process, payload, trigger));

@@ -54,9 +54,4 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
               eventConverter);
     }
 
-    protected $Type$ eventToModel($DataType$ event) {
-        $Type$ model = new $Type$();
-        model.set$DataType$(event);
-        return model;
-    }
 }

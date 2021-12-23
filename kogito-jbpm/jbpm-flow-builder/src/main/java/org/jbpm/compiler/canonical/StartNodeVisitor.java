@@ -72,11 +72,7 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
     }
 
     private TriggerMetaData buildTriggerMetadata(StartNode node) {
-        return new TriggerMetaData((String) node.getMetaData(TRIGGER_REF),
-                (String) node.getMetaData(TRIGGER_TYPE),
-                (String) node.getMetaData(MESSAGE_TYPE),
-                (String) node.getMetaData(TRIGGER_MAPPING),
-                String.valueOf(node.getId())).validate();
+        return TriggerMetaData.of(node, (String) node.getMetaData(TRIGGER_MAPPING));
     }
 
     protected void handleSignal(StartNode startNode, Map<String, Object> nodeMetaData, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {

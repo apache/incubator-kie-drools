@@ -16,10 +16,15 @@
 package org.kie.kogito.addons.quarkus.knative.eventing.deployment;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.jbpm.ruleflow.core.Metadata;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.Node;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMeta;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMetaBuilder;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
@@ -35,6 +40,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class KogitoProcessKnativeEventingProcessorTest {
+
+    private static TriggerMetaData triggerMetadata;
+
+    @BeforeAll
+    static void setupClass() {
+        Node node = mock(Node.class);
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put(Metadata.TRIGGER_REF, "myType");
+        metadata.put(Metadata.MAPPING_VARIABLE, "myVar");
+        metadata.put(Metadata.TRIGGER_TYPE, "ProduceMessage");
+        metadata.put(Metadata.MESSAGE_TYPE, "myDataType");
+        when(node.getMetaData()).thenReturn(metadata);
+        triggerMetadata = TriggerMetaData.of(node);
+    }
 
     @Test
     void checkNotBuiltMetadataIfNoCEs() {
@@ -60,7 +79,7 @@ public class KogitoProcessKnativeEventingProcessorTest {
         when(processor.selectDeploymentTarget(null, kubernetesMetaBuildItems)).thenCallRealMethod();
         when(processor.getCloudEventMetaBuilder()).thenReturn(mockedCEBuilder);
         when(mockedCEBuilder.build(containerGeneratorBuildItem.getProcessContainerGenerators()))
-                .thenReturn(Collections.singleton(new ProcessCloudEventMeta("123", new TriggerMetaData("mtyTrigger", "ProduceMessage", "myType", "", ""))));
+                .thenReturn(Collections.singleton(new ProcessCloudEventMeta("123", triggerMetadata)));
 
         processor.buildMetadata(containerGeneratorBuildItem, null, kubernetesMetaBuildItems, metadata);
 
@@ -81,7 +100,7 @@ public class KogitoProcessKnativeEventingProcessorTest {
         when(processor.selectDeploymentTarget(deploymentTargets, kubernetesMetaBuildItems)).thenCallRealMethod();
         when(processor.getCloudEventMetaBuilder()).thenReturn(mockedCEBuilder);
         when(mockedCEBuilder.build(containerGeneratorBuildItem.getProcessContainerGenerators()))
-                .thenReturn(Collections.singleton(new ProcessCloudEventMeta("123", new TriggerMetaData("mtyTrigger", "ProduceMessage", "myType", "", ""))));
+                .thenReturn(Collections.singleton(new ProcessCloudEventMeta("123", triggerMetadata)));
 
         processor.buildMetadata(containerGeneratorBuildItem, deploymentTargets, kubernetesMetaBuildItems, metadata);
 

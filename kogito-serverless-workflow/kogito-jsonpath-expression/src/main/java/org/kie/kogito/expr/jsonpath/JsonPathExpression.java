@@ -22,11 +22,12 @@ import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ParseContext;
+import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
@@ -55,7 +56,8 @@ public class JsonPathExpression implements Expression {
         if (String.class.isAssignableFrom(returnClass)) {
             StringBuilder sb = new StringBuilder();
             for (String part : expr.split("((?=\\$))")) {
-                sb.append(parsedContext.read(part, String.class));
+                JsonNode partResult = parsedContext.read(part, JsonNode.class);
+                sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
             }
             return (T) sb.toString();
         } else {
@@ -67,7 +69,13 @@ public class JsonPathExpression implements Expression {
 
     @Override
     public void assign(Object context, Object value) {
-        ExpressionHandlerUtils.assign((ObjectNode) context, eval(context, JsonNode.class), (JsonNode) value, expr);
+        JsonNode target;
+        try {
+            target = eval(context, JsonNode.class);
+        } catch (PathNotFoundException ex) {
+            target = NullNode.instance;
+        }
+        ExpressionHandlerUtils.assign((JsonNode) context, target, (JsonNode) value, expr);
     }
 
     @Override

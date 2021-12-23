@@ -16,9 +16,12 @@
 package org.kie.kogito.codegen.process;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.jbpm.workflow.core.node.StartNode;
+import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
@@ -27,12 +30,26 @@ import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.AssignExpr.Operator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
@@ -102,6 +119,8 @@ public class MessageConsumerGenerator {
                 .orElseThrow(() -> new InvalidTemplateException(
                         generator,
                         "Cannot find class declaration"));
+
+        generateModelMethods(template);
         template.setName(resourceClazzName);
         template.findAll(ConstructorDeclaration.class).forEach(cd -> cd.setName(resourceClazzName));
 
@@ -126,6 +145,30 @@ public class MessageConsumerGenerator {
         }
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
+    }
+
+    private void generateModelMethods(ClassOrInterfaceDeclaration template) {
+        Node node = trigger.getNode();
+        if (node instanceof StartNode) {
+            ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, dataClazzName);
+            ClassOrInterfaceType eventType = new ClassOrInterfaceType(null, trigger.getDataType());
+            ClassOrInterfaceType optionalType = new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(
+                    new ClassOrInterfaceType(null, new SimpleName(Function.class.getCanonicalName()), NodeList.nodeList(eventType, modelType))));
+
+            VariableDeclarator modelVar = new VariableDeclarator(modelType, "model");
+            MethodDeclaration eventMethod = template.addMethod("eventToModel", Keyword.PRIVATE).setType(modelType);
+            Parameter parameter = eventMethod.addAndGetParameter(eventType, "event");
+            eventMethod.setBody(new BlockStmt()
+                    .addStatement(new AssignExpr(new VariableDeclarationExpr(modelVar), new ObjectCreationExpr().setType(modelType), Operator.ASSIGN))
+                    .addStatement(new MethodCallExpr(modelVar.getNameAsExpression(), "set" + StringUtils.ucFirst(trigger.getModelRef())).addArgument(
+                            parameter.getNameAsExpression()))
+                    .addStatement(new ReturnStmt(modelVar.getNameAsExpression())));
+
+            template.addMethod("getModelConverter", Keyword.PROTECTED).addAnnotation(Override.class)
+                    .setType(optionalType).setBody(new BlockStmt().addStatement(new ReturnStmt(new MethodCallExpr(
+                            new NameExpr(Optional.class.getName()), "of").addArgument(new MethodReferenceExpr(new ThisExpr(), null, eventMethod.getNameAsString())))));
+        }
+
     }
 
     private void initializeProcessField(FieldDeclaration fd) {

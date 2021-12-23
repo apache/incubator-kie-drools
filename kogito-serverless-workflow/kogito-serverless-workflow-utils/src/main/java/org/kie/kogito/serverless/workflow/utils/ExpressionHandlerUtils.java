@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.MergeUtils;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,13 +28,10 @@ public class ExpressionHandlerUtils {
     private ExpressionHandlerUtils() {
     }
 
-    public static void assign(ObjectNode context, JsonNode target, JsonNode value, String expr) {
-        if (target == null || target.isNull()) {
-            target = value.isArray() ? ObjectMapperFactory.get().createArrayNode() : ObjectMapperFactory.get().createObjectNode();
-        }
+    public static void assign(JsonNode context, JsonNode target, JsonNode value, String expr) {
         Optional<String> varName = fallbackVarToName(expr);
-        if (varName.isPresent()) {
-            JsonObjectUtils.addToNode(varName.get(), MergeUtils.merge(value, target), context);
+        if (varName.isPresent() && context.isObject()) {
+            JsonObjectUtils.addToNode(varName.get(), MergeUtils.merge(value, target), (ObjectNode) context);
         }
     }
 

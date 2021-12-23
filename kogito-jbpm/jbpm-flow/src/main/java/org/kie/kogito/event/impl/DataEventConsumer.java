@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.event.impl;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
@@ -25,20 +26,16 @@ import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.EventConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DataEventConsumer<D, M extends Model> implements EventConsumer<M> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataEventConsumer.class);
-
-    private Function<D, M> function;
+    private Optional<Function<D, M>> function;
 
     private ProcessService processService;
 
     private ExecutorService executorService;
 
-    public DataEventConsumer(ProcessService processService, ExecutorService executorService, Function<D, M> function) {
+    public DataEventConsumer(ProcessService processService, ExecutorService executorService, Optional<Function<D, M>> function) {
         this.processService = processService;
         this.executorService = executorService;
         this.function = function;
@@ -46,7 +43,8 @@ public class DataEventConsumer<D, M extends Model> implements EventConsumer<M> {
 
     @Override
     public CompletionStage<Void> consume(Application application, Process<M> process, Object eventData, String trigger) {
-        return CompletableFuture.runAsync(() -> processService.createProcessInstance(process, function.apply((D) eventData), null, trigger, null), executorService);
+        //TODO right now it is only possible to start a new process instance when not using cloudevent
+        return CompletableFuture.runAsync(() -> processService.createProcessInstance(process, function.get().apply((D) eventData), null, trigger, null), executorService);
     }
 
 }

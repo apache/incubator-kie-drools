@@ -25,9 +25,10 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.impl.ProcessServiceImpl;
 import org.kie.kogito.services.event.EventConsumerFactory;
+import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
 import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 
-public class $Type$MessageConsumer {
+public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$, $DataEventType$> {
 
     Process<$Type$> process;
 
@@ -44,15 +45,5 @@ public class $Type$MessageConsumer {
     public void configure() {
         eventConsumerFactory = new DefaultEventConsumerFactory();
         service = new ProcessServiceImpl(application);
-    }
-
-    public void consume($DataType$ payload) {
-        eventConsumerFactory
-            .<$Type$,$DataType$>get(service, executor, event -> {
-                $Type$ model = new $Type$();
-                model.set$DataType$(event);
-                return model;
-            }, useCloudEvents)
-            .consume(application, process, payload, "$Trigger$");
     }
 }

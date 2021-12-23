@@ -18,6 +18,7 @@ package org.kie.kogito.services.event.impl;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Function;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -78,7 +79,7 @@ public abstract class AbstractMessageConsumer<M extends Model, D, T extends Abst
         this.application = application;
         this.trigger = trigger;
         this.eventConverter = eventConverter;
-        this.eventConsumer = eventConsumerFactory.get(processService, executorService, this::eventToModel, useCloudEvents);
+        this.eventConsumer = eventConsumerFactory.get(processService, executorService, getModelConverter(), useCloudEvents);
         if (useCloudEvents) {
             this.outputClass = cloudEventClass;
             eventReceiver.subscribe(this::consumeCloud, new SubscriptionInfo<>(eventConverter, cloudEventClass, Optional.of(trigger)));
@@ -107,5 +108,7 @@ public abstract class AbstractMessageConsumer<M extends Model, D, T extends Abst
         return result;
     }
 
-    protected abstract M eventToModel(D event);
+    protected Optional<Function<D, M>> getModelConverter() {
+        return Optional.empty();
+    }
 }

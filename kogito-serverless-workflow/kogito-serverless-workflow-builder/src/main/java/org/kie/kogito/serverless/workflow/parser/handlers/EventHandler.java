@@ -30,8 +30,6 @@ import io.serverlessworkflow.api.events.OnEvents;
 import io.serverlessworkflow.api.filters.EventDataFilter;
 import io.serverlessworkflow.api.states.EventState;
 
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
-
 public class EventHandler extends CompositeContextNodeHandler<EventState> {
 
     protected EventHandler(EventState state, Workflow workflow, ParserContext parserContext) {
@@ -61,13 +59,11 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
         }
 
         if (onEventRefs.size() == 1) {
-            startFactory = messageStartNode(factory, onEventRefs.get(0), DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR);
-            // TODO filterAndMergeNode(factory, state.getName(), dataExpr, toExpr, (f, inputVar, outputVar) -> messageStartNode(f, onEventRefs.get(0), inputVar, outputVar)).getOutgoingNode();
+            startFactory = filterAndMergeNode(factory, state.getName(), dataExpr, toExpr, (f, inputVar, outputVar) -> messageStartNode(f, onEventRefs.get(0), inputVar, outputVar)).getOutgoingNode();
         } else {
             startFactory = factory.joinNode(parserContext.newId()).name(state.getName() + "Split").type(Join.TYPE_XOR);
             for (String onEventRef : onEventRefs) {
-                connect(messageStartNode(factory, onEventRef, DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR),
-                        // TODO support merge for events filterAndMergeNode(factory, state.getName(), dataExpr, toExpr, (f, inputVar, outputVar) -> messageStartNode(f, onEventRef, inputVar, outputVar)).getOutgoingNode(),
+                connect(filterAndMergeNode(factory, state.getName(), dataExpr, toExpr, (f, inputVar, outputVar) -> messageStartNode(f, onEventRef, inputVar, outputVar)).getOutgoingNode(),
                         startFactory);
             }
         }

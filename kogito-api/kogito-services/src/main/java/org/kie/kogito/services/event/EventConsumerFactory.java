@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.services.event;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
@@ -23,5 +24,5 @@ import org.kie.kogito.process.ProcessService;
 
 public interface EventConsumerFactory {
 
-    <M extends Model, D> EventConsumer get(ProcessService service, ExecutorService executor, Function<D, M> function, boolean cloudEvents);
+    <M extends Model, D> EventConsumer get(ProcessService service, ExecutorService executor, Optional<Function<D, M>> function, boolean cloudEvents);
 }

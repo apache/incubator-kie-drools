@@ -15,9 +15,19 @@
  */
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
 import java.util.Objects;
 
 import org.drools.core.util.StringUtils;
+import org.jbpm.workflow.core.node.CompositeNode;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
+
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 
 public class TriggerMetaData {
 
@@ -28,20 +38,37 @@ public class TriggerMetaData {
     }
 
     // name of the trigger derived from message or signal
-    private String name;
+    private final String name;
     // type of the trigger e.g. message, signal, timer...
-    private TriggerType type;
+    private final TriggerType type;
     // data type of the event associated with this trigger
-    private String dataType;
+    private final String dataType;
     // reference in the model of the process the event should be mapped to
-    private String modelRef;
+    private final String modelRef;
     // reference to owner of the trigger usually node
-    private String ownerId;
+    private final String ownerId;
+    // the owner node
+    private final Node node;
 
-    public TriggerMetaData(String name, String type, String dataType, String modelRef, String ownerId) {
-        super();
+    public static TriggerMetaData of(Node node) {
+        return of(node, (String) node.getMetaData().get(MAPPING_VARIABLE));
+    }
+
+    public static TriggerMetaData of(Node node, String mappingVariable) {
+        Map<String, Object> nodeMetaData = node.getMetaData();
+        return new TriggerMetaData(
+                node,
+                (String) nodeMetaData.get(TRIGGER_REF),
+                TriggerType.valueOf((String) nodeMetaData.get(TRIGGER_TYPE)),
+                (String) nodeMetaData.get(MESSAGE_TYPE),
+                mappingVariable,
+                getOwnerId(node)).validate();
+    }
+
+    private TriggerMetaData(Node node, String name, TriggerType type, String dataType, String modelRef, String ownerId) {
+        this.node = node;
         this.name = name;
-        this.type = TriggerType.valueOf(type);
+        this.type = type;
         this.dataType = dataType;
         this.modelRef = modelRef;
         this.ownerId = ownerId;
@@ -49,10 +76,6 @@ public class TriggerMetaData {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public TriggerType getType() {
@@ -63,10 +86,6 @@ public class TriggerMetaData {
         return dataType;
     }
 
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
-
     public String getModelRef() {
         return modelRef;
     }
@@ -75,7 +94,11 @@ public class TriggerMetaData {
         return ownerId;
     }
 
-    public TriggerMetaData validate() {
+    public Node getNode() {
+        return node;
+    }
+
+    private TriggerMetaData validate() {
         if (TriggerType.ConsumeMessage.equals(type) || TriggerType.ProduceMessage.equals(type)) {
 
             if (StringUtils.isEmpty(name) ||
@@ -111,4 +134,18 @@ public class TriggerMetaData {
         return "TriggerMetaData [name=" + name + ", type=" + type + ", dataType=" + dataType + ", modelRef=" +
                 modelRef + ", ownerId=" + ownerId + "]";
     }
+
+    private static String getOwnerId(Node node) {
+        StringBuilder prefix = new StringBuilder();
+        if (node instanceof KogitoNode) {
+            NodeContainer container = ((KogitoNode) node).getParentContainer();
+            while (container instanceof CompositeNode) {
+                CompositeNode compositeNode = (CompositeNode) container;
+                prefix.append(compositeNode.getId()).append('_');
+                container = compositeNode.getParentContainer();
+            }
+        }
+        return prefix.append(node.getId()).toString();
+    }
+
 }

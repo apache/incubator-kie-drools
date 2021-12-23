@@ -60,7 +60,7 @@ public class MergeUtils {
                 JsonNode found = target.get(entry.getKey());
                 target.set(entry.getKey(), found != null ? merge(entry.getValue(), found, skipDuplicates) : entry.getValue());
             }
-        } else {
+        } else if (!src.isNull()) {
             target.set("response", src);
         }
         return target;

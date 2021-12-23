@@ -24,8 +24,6 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.filters.EventDataFilter;
 import io.serverlessworkflow.api.states.CallbackState;
 
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
-
 public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> {
 
     protected CallbackHandler(CallbackState state, Workflow workflow, ParserContext parserContext) {
@@ -51,8 +49,8 @@ public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> 
             dataExpr = eventFilter.getData();
             toExpr = eventFilter.getToStateData();
         }
-        currentNode = connect(currentNode, consumeEventNode(embeddedSubProcess, state.getEventRef(), DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR));
-        //      filterAndMergeNode(embeddedSubProcess, state.getEventRef(), dataExpr, toExpr, (f, inputVar, outputVar) -> consumeEventNode(f, state.getEventRef(), inputVar, outputVar)));
+        currentNode = connect(currentNode,
+                filterAndMergeNode(embeddedSubProcess, state.getEventRef(), dataExpr, toExpr, (f, inputVar, outputVar) -> consumeEventNode(f, state.getEventRef(), inputVar, outputVar)));
         connect(currentNode, embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
         return new MakeNodeResult(embeddedSubProcess);
     }

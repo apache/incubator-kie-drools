@@ -213,7 +213,7 @@ public class ServerlessWorkflowParsingTest {
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
-        assertEquals(3, process.getNodes().length);
+        assertEquals(4, process.getNodes().length);
 
         Node node = process.getNodes()[2];
         assertTrue(node instanceof StartNode);
@@ -249,7 +249,7 @@ public class ServerlessWorkflowParsingTest {
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
-        assertEquals(5, process.getNodes().length);
+        assertEquals(7, process.getNodes().length);
 
         Node node = process.getNodes()[0];
         assertTrue(node instanceof EndNode);
@@ -259,7 +259,7 @@ public class ServerlessWorkflowParsingTest {
         assertTrue(node instanceof Join);
         node = process.getNodes()[3];
         assertTrue(node instanceof StartNode);
-        node = process.getNodes()[4];
+        node = process.getNodes()[5];
         assertTrue(node instanceof StartNode);
 
         // now check the composite one to see what nodes it has
@@ -547,7 +547,7 @@ public class ServerlessWorkflowParsingTest {
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
-        assertEquals(10, process.getNodes().length);
+        assertEquals(12, process.getNodes().length);
 
         Node node = process.getNodes()[0];
         assertTrue(node instanceof StartNode);
@@ -567,7 +567,7 @@ public class ServerlessWorkflowParsingTest {
         assertTrue(node instanceof ActionNode);
         node = process.getNodes()[8];
         assertTrue(node instanceof EventNode);
-        node = process.getNodes()[9];
+        node = process.getNodes()[10];
         assertTrue(node instanceof EventNode);
 
         Split split = (Split) process.getNodes()[4];
@@ -576,11 +576,9 @@ public class ServerlessWorkflowParsingTest {
 
         EventNode firstEventNode = (EventNode) process.getNodes()[8];
         assertEquals("visaApprovedEvent", firstEventNode.getName());
-        assertEquals("workflowdata", firstEventNode.getVariableName());
 
-        EventNode secondEventNode = (EventNode) process.getNodes()[9];
+        EventNode secondEventNode = (EventNode) process.getNodes()[10];
         assertEquals("visaDeniedEvent", secondEventNode.getName());
-        assertEquals("workflowdata", secondEventNode.getVariableName());
     }
 
     @ParameterizedTest
@@ -593,7 +591,7 @@ public class ServerlessWorkflowParsingTest {
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
-        assertEquals(9, process.getNodes().length);
+        assertEquals(11, process.getNodes().length);
 
         Node node = process.getNodes()[0];
         assertTrue(node instanceof CompositeContextNode);
@@ -601,25 +599,25 @@ public class ServerlessWorkflowParsingTest {
         assertTrue(node instanceof Join);
         node = process.getNodes()[2];
         assertTrue(node instanceof StartNode);
-        node = process.getNodes()[3];
-        assertTrue(node instanceof StartNode);
         node = process.getNodes()[4];
-        assertTrue(node instanceof Split);
-        node = process.getNodes()[5];
-        assertTrue(node instanceof Split);
+        assertTrue(node instanceof StartNode);
         node = process.getNodes()[6];
-        assertTrue(node instanceof ActionNode);
+        assertTrue(node instanceof Split);
         node = process.getNodes()[7];
-        assertTrue(node instanceof EndNode);
+        assertTrue(node instanceof Split);
         node = process.getNodes()[8];
+        assertTrue(node instanceof ActionNode);
+        node = process.getNodes()[9];
+        assertTrue(node instanceof EndNode);
+        node = process.getNodes()[10];
         assertTrue(node instanceof EndNode);
 
-        Split split = (Split) process.getNodes()[4];
+        Split split = (Split) process.getNodes()[6];
         assertEquals("CheckBackend", split.getName());
         assertEquals(2, split.getType());
         assertEquals(2, split.getConstraints().size());
 
-        Split split2 = (Split) process.getNodes()[5];
+        Split split2 = (Split) process.getNodes()[7];
         assertEquals("CheckFrontend", split2.getName());
         assertEquals(2, split2.getType());
         assertEquals(2, split2.getConstraints().size());

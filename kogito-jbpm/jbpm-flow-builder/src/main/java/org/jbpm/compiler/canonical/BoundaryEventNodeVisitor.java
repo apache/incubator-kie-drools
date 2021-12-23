@@ -15,8 +15,6 @@
  */
 package org.jbpm.compiler.canonical;
 
-import java.util.Map;
-
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
@@ -30,9 +28,6 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_COMPENSATION;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
-import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
-import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
-import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 import static org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory.METHOD_ADD_COMPENSATION_HANDLER;
 import static org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory.METHOD_ATTACHED_TO;
 import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_EVENT_TYPE;
@@ -63,12 +58,7 @@ public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventN
         if (EVENT_TYPE_SIGNAL.equals(eventType)) {
             metadata.addSignal(node.getType(), variable != null ? variable.getType().getStringType() : null);
         } else if (EVENT_TYPE_MESSAGE.equals(eventType)) {
-            Map<String, Object> nodeMetaData = node.getMetaData();
-            metadata.addTrigger(new TriggerMetaData((String) nodeMetaData.get(TRIGGER_REF),
-                    (String) nodeMetaData.get(TRIGGER_TYPE),
-                    (String) nodeMetaData.get(MESSAGE_TYPE),
-                    node.getVariableName(),
-                    String.valueOf(node.getId())).validate());
+            metadata.addTrigger(TriggerMetaData.of(node, node.getVariableName()));
         } else if (EVENT_TYPE_COMPENSATION.equalsIgnoreCase(eventType) && node.getAttachedToNodeId() != null) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ADD_COMPENSATION_HANDLER, new StringLiteralExpr(node.getAttachedToNodeId())));
         }

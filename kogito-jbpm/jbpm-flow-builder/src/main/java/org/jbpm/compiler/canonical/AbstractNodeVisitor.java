@@ -17,7 +17,6 @@ package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -62,10 +61,6 @@ import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
-import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
-import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
-import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
-import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_IN_MAPPING;
 import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_OUT_MAPPING;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_DONE;
@@ -242,17 +237,9 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
     }
 
     public static LambdaExpr buildLambdaExpr(Node node, ProcessMetaData metadata) {
-        Map<String, Object> nodeMetaData = node.getMetaData();
-        String messageName = (String) nodeMetaData.get(TRIGGER_REF);
-        TriggerMetaData triggerMetaData = new TriggerMetaData(
-                messageName,
-                (String) nodeMetaData.get(TRIGGER_TYPE),
-                (String) nodeMetaData.get(MESSAGE_TYPE),
-                (String) nodeMetaData.get(MAPPING_VARIABLE),
-                String.valueOf(node.getId())).validate();
+        TriggerMetaData triggerMetaData = TriggerMetaData.of(node);
         metadata.addTrigger(triggerMetaData);
         NameExpr kExpr = new NameExpr(KCONTEXT_VAR);
-
         BlockStmt actionBody = new BlockStmt();
         final String objectName = "object";
         final String runtimeName = "runtime";
@@ -288,7 +275,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
                         .addArgument(pi)
                         .addArgument(new MethodCallExpr(kExpr, "getNodeInstance"))
                         .addArgument(runtime)
-                        .addArgument(new StringLiteralExpr(messageName)).addArgument(object);
+                        .addArgument(new StringLiteralExpr(triggerMetaData.getName())).addArgument(object);
         // add producer call
         MethodCallExpr producerMethodCall = new MethodCallExpr(new NameExpr("producer_" + node.getId()), "produce")
                 .addArgument(pi).addArgument(object);
