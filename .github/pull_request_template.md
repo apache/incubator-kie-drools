@@ -35,7 +35,9 @@ How to retest this PR or trigger a specific build:
 
 * <b>a pull request</b> please add comment: <b>Jenkins retest this</b>
 
-* <b>a full downstream build</b> please add comment: <b>Jenkins run fdb</b>
+* for a <b>full downstream build</b> 
+  * for <b>jenkins</b> job: please add comment: <b>Jenkins run fdb</b>
+  * for <b>github actions</b> job: add the label `run_fdb`
 
 * <b>a compile downstream build</b> please  add comment: <b>Jenkins run cdb</b>
 
