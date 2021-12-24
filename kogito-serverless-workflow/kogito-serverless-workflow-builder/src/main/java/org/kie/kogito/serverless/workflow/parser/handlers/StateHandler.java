@@ -46,6 +46,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.error.Error;
 import io.serverlessworkflow.api.events.EventDefinition;
+import io.serverlessworkflow.api.filters.EventDataFilter;
 import io.serverlessworkflow.api.filters.StateDataFilter;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.produce.ProduceEvent;
@@ -65,6 +66,8 @@ public abstract class StateHandler<S extends State> {
     private NodeFactory<?, ?> node;
     private NodeFactory<?, ?> outgoingNode;
 
+    protected final boolean isStartState;
+
     private JoinFactory<?> join;
     private List<Long> incomingConnections = new ArrayList<>();
 
@@ -72,6 +75,7 @@ public abstract class StateHandler<S extends State> {
         this.workflow = workflow;
         this.state = state;
         this.parserContext = parserContext;
+        this.isStartState = state.getName().equals(workflow.getStart().getStateName());
     }
 
     public boolean usedForCompensation() {
@@ -79,7 +83,7 @@ public abstract class StateHandler<S extends State> {
     }
 
     public void handleStart() {
-        if (state.getName().equals(workflow.getStart().getStateName())) {
+        if (isStartState) {
             startNodeFactory = parserContext.factory().startNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_START_NAME);
             startNodeFactory.done();
         }
@@ -155,6 +159,7 @@ public abstract class StateHandler<S extends State> {
             handleCompensation(factory);
         }
         node.done();
+        outgoingNode.done();
         StateDataFilter stateFilter = state.getStateDataFilter();
         if (stateFilter != null) {
             String input = stateFilter.getInput();
@@ -228,7 +233,7 @@ public abstract class StateHandler<S extends State> {
         handleTransition(factory, transition, sourceId, Optional.empty());
     }
 
-    protected void connectStart(RuleFlowNodeContainerFactory<?, ?> factory) {
+    private void connectStart(RuleFlowNodeContainerFactory<?, ?> factory) {
         if (startNodeFactory != null) {
             factory.connection(startNodeFactory.getNode().getId(), node.getNode().getId());
         }
@@ -312,14 +317,32 @@ public abstract class StateHandler<S extends State> {
         NodeFactory<?, ?> apply(RuleFlowNodeContainerFactory<?, ?> factory, String inputVar, String outputVar);
     }
 
-    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String name, String resultExpr, String toStateExpr,
-            FilterableNodeSupplier nodeSupplier) {
-        return filterAndMergeNode(embeddedSubProcess, name, null, resultExpr, toStateExpr, nodeSupplier);
+    protected final String getVarName() {
+        return state.getName() + "_" + parserContext.newId();
     }
 
-    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String name, String fromStateExpr, String resultExpr, String toStateExpr,
+    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, EventDataFilter eventFilter, FilterableNodeSupplier nodeSupplier) {
+        return filterAndMergeNode(embeddedSubProcess, eventFilter, getVarName(), nodeSupplier);
+    }
+
+    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, EventDataFilter eventFilter, String varName,
             FilterableNodeSupplier nodeSupplier) {
-        String actionVarName = "var_" + name;
+        String dataExpr = null;
+        String toExpr = null;
+        if (eventFilter != null) {
+            dataExpr = eventFilter.getData();
+            toExpr = eventFilter.getToStateData();
+        }
+        return filterAndMergeNode(embeddedSubProcess, varName, null, dataExpr, toExpr, nodeSupplier);
+    }
+
+    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String fromStateExpr, String resultExpr, String toStateExpr,
+            FilterableNodeSupplier nodeSupplier) {
+        return filterAndMergeNode(embeddedSubProcess, getVarName(), fromStateExpr, resultExpr, toStateExpr, nodeSupplier);
+    }
+
+    private final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionVarName, String fromStateExpr, String resultExpr, String toStateExpr,
+            FilterableNodeSupplier nodeSupplier) {
         embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()));
 
         NodeFactory<?, ?> startNode, currentNode;

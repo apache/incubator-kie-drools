@@ -71,14 +71,16 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
                         trigger);
                 return startNewInstance(process, function.get().apply(cloudEvent.getData()), cloudEvent, trigger);
             } else {
-                return CompletableFuture.failedStage(new IllegalArgumentException("Process instance with id " + cloudEvent.getKogitoReferenceId() + " not found for triggering signal " + trigger));
+                logger.info("Process instance with id {} not found for triggering signal {}", cloudEvent.getKogitoReferenceId(), trigger);
+                return CompletableFuture.completedFuture(null);
             }
 
         } else if (function.isPresent()) {
             logger.debug("Received message without reference id, starting new process instance with trigger '{}'", trigger);
             return startNewInstance(process, function.get().apply(cloudEvent.getData()), cloudEvent, trigger);
         } else {
-            return CompletableFuture.failedStage(new IllegalArgumentException("Received not start event without kogito referecence id for trigger " + trigger));
+            logger.warn("Received not start event without kogito referecence id for trigger {}", trigger);
+            return CompletableFuture.completedFuture(null);
         }
     }
 

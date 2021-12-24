@@ -1,0 +1,72 @@
+{
+  "id": "nonStartMultipleEvent",
+  "version": "1.0",
+  "expressionLang": "jsonpath",
+  "name": "Workflow event test",
+  "description": "An test of multiple non starting event",
+  "start": "printWaitMessage",
+  "events": [
+    {
+      "name": "moveEvent",
+      "source": "",
+      "type": "move"
+    },
+    {
+      "name": "quietEvent",
+      "source": "",
+      "type": "quiet"
+    }
+  ],
+  "functions": [
+    {
+      "name": "printMessage",
+      "metadata": {
+        "type": "sysout"
+      }
+    }
+  ],
+  "states": [
+    {
+      "name": "printWaitMessage",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "printBeforeEvent",
+          "functionRef": {
+            "refName": "printMessage",
+            "arguments": {
+              "message": "$[*]"
+            }
+          }
+        }
+      ],
+      "transition": "waitForEvent"
+    },
+    {
+      "name": "waitForEvent",
+      "type": "event",
+       "onEvents": [
+        {
+          "eventRefs": [
+            "moveEvent",
+            "quietEvent"
+          ],
+          "actions": [ 
+          {
+            "name": "printAfterEvent",
+            "functionRef": {
+              "refName": "printMessage",
+              "arguments": {
+                 "message": "$[*]"
+              }
+            }
+          }
+          ]
+        }
+       ], 
+      "end": {
+        "terminate": "true"
+      }
+    }
+  ]
+}

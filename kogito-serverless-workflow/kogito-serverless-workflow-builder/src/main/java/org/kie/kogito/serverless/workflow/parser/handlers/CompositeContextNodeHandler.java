@@ -116,7 +116,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
             resultExpr = actionFilter.getResults();
             toExpr = actionFilter.getToStateData();
         }
-        return filterAndMergeNode(embeddedSubProcess, action.getName(), fromExpr, resultExpr, toExpr,
+        return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
                 (factory, inputVar, outputVar) -> getActionNode(factory, action, inputVar, outputVar, collectVar, extraVariables));
     }
 

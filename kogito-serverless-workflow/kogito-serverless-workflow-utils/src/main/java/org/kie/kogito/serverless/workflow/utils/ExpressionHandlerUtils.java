@@ -29,9 +29,11 @@ public class ExpressionHandlerUtils {
     }
 
     public static void assign(JsonNode context, JsonNode target, JsonNode value, String expr) {
-        Optional<String> varName = fallbackVarToName(expr);
-        if (varName.isPresent() && context.isObject()) {
-            JsonObjectUtils.addToNode(varName.get(), MergeUtils.merge(value, target), (ObjectNode) context);
+        if (context.isObject()) {
+            Optional<String> varName = fallbackVarToName(expr);
+            if (varName.isPresent()) {
+                JsonObjectUtils.addToNode(varName.get(), MergeUtils.merge(value, target), (ObjectNode) context);
+            }
         }
     }
 

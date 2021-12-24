@@ -215,17 +215,17 @@ public class ServerlessWorkflowParsingTest {
 
         assertEquals(4, process.getNodes().length);
 
-        Node node = process.getNodes()[2];
+        Node node = process.getNodes()[1];
         assertTrue(node instanceof StartNode);
         assertEquals(((StartNode) node).getTriggers().size(), 1);
         assertEquals(((StartNode) node).getMetaData(Metadata.TRIGGER_REF), "kafka");
         node = process.getNodes()[0];
         assertTrue(node instanceof EndNode);
-        node = process.getNodes()[1];
+        node = process.getNodes()[3];
         assertTrue(node instanceof CompositeContextNode);
 
         // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[1];
+        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[3];
 
         assertEquals(4, compositeNode.getNodes().length);
 
@@ -253,17 +253,17 @@ public class ServerlessWorkflowParsingTest {
 
         Node node = process.getNodes()[0];
         assertTrue(node instanceof EndNode);
-        node = process.getNodes()[1];
+        node = process.getNodes()[6];
         assertTrue(node instanceof CompositeContextNode);
-        node = process.getNodes()[2];
-        assertTrue(node instanceof Join);
-        node = process.getNodes()[3];
-        assertTrue(node instanceof StartNode);
         node = process.getNodes()[5];
+        assertTrue(node instanceof Join);
+        node = process.getNodes()[1];
+        assertTrue(node instanceof StartNode);
+        node = process.getNodes()[3];
         assertTrue(node instanceof StartNode);
 
         // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[1];
+        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[6];
 
         assertEquals(4, compositeNode.getNodes().length);
 
@@ -593,13 +593,13 @@ public class ServerlessWorkflowParsingTest {
 
         assertEquals(11, process.getNodes().length);
 
-        Node node = process.getNodes()[0];
+        Node node = process.getNodes()[5];
         assertTrue(node instanceof CompositeContextNode);
-        node = process.getNodes()[1];
-        assertTrue(node instanceof Join);
-        node = process.getNodes()[2];
-        assertTrue(node instanceof StartNode);
         node = process.getNodes()[4];
+        assertTrue(node instanceof Join);
+        node = process.getNodes()[0];
+        assertTrue(node instanceof StartNode);
+        node = process.getNodes()[2];
         assertTrue(node instanceof StartNode);
         node = process.getNodes()[6];
         assertTrue(node instanceof Split);

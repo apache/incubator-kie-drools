@@ -21,7 +21,6 @@ import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 
 import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.filters.EventDataFilter;
 import io.serverlessworkflow.api.states.CallbackState;
 
 public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> {
@@ -42,15 +41,8 @@ public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> 
         if (state.getAction() != null) {
             currentNode = connect(currentNode, getActionNode(embeddedSubProcess, state.getAction()));
         }
-        String dataExpr = null;
-        String toExpr = null;
-        EventDataFilter eventFilter = state.getEventDataFilter();
-        if (eventFilter != null) {
-            dataExpr = eventFilter.getData();
-            toExpr = eventFilter.getToStateData();
-        }
         currentNode = connect(currentNode,
-                filterAndMergeNode(embeddedSubProcess, state.getEventRef(), dataExpr, toExpr, (f, inputVar, outputVar) -> consumeEventNode(f, state.getEventRef(), inputVar, outputVar)));
+                filterAndMergeNode(embeddedSubProcess, state.getEventDataFilter(), (f, inputVar, outputVar) -> consumeEventNode(f, state.getEventRef(), inputVar, outputVar)));
         connect(currentNode, embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
         return new MakeNodeResult(embeddedSubProcess);
     }

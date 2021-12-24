@@ -30,7 +30,6 @@ import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.filters.EventDataFilter;
 import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.states.SwitchState;
 import io.serverlessworkflow.api.switchconditions.DataCondition;
@@ -83,17 +82,8 @@ public class SwitchHandler extends StateHandler<SwitchState> {
         List<EventCondition> conditions = state.getEventConditions();
         for (EventCondition eventCondition : conditions) {
             StateHandler<?> targetState = parserContext.getStateHandler(eventCondition.getTransition());
-
-            EventDataFilter eventFilter = eventCondition.getEventDataFilter();
-            String dataExpr = null;
-            String toExpr = null;
-            if (eventFilter != null) {
-                dataExpr = eventFilter.getData();
-                toExpr = eventFilter.getToStateData();
-
-            }
             MakeNodeResult eventNode =
-                    filterAndMergeNode(factory, eventCondition.getName(), dataExpr, toExpr, (f, inputVar, outputVar) -> consumeEventNode(f, eventCondition.getEventRef(), inputVar, outputVar));
+                    filterAndMergeNode(factory, eventCondition.getEventDataFilter(), (f, inputVar, outputVar) -> consumeEventNode(f, eventCondition.getEventRef(), inputVar, outputVar));
             factory.connection(startNode.getNode().getId(), eventNode.getIncomingNode().getNode().getId());
             targetState.connect(factory, eventNode.getOutgoingNode().getNode().getId());
         }
