@@ -182,10 +182,11 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
 
     @Override
     public RuleFlowProcessFactory variable(String name, DataType type, Object value, String metaDataName, Object metaDataValue) {
+
         Variable variable = new Variable();
         variable.setName(name);
         variable.setType(type);
-        variable.setValue(value);
+        variable.setValue(type.verifyDataType(value) ? value : type.readValue((String) value));
         if (metaDataName != null && metaDataValue != null) {
             variable.setMetaData(metaDataName, metaDataValue);
         }

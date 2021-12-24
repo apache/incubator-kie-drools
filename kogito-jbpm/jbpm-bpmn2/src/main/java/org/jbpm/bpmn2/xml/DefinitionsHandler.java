@@ -166,6 +166,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
         // retrieve type from item definition
 
         String itemSubjectRef = (String) variable.getMetaData("ItemSubjectRef");
+        Object defaultValue = variable.getMetaData("defaultValue");
         if (UndefinedDataType.getInstance().equals(variable.getType()) && itemDefinitions != null && itemSubjectRef != null) {
             DataType dataType = DataTypeResolver.defaultDataType;
             ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
@@ -173,6 +174,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
                 dataType = DataTypeResolver.fromType(itemDefinition.getStructureRef(), cl);
             }
             variable.setType(dataType);
+            variable.setValue(dataType.verifyDataType(defaultValue) ? defaultValue : dataType.readValue((String) defaultValue));
         }
     }
 

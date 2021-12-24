@@ -18,6 +18,7 @@ package org.jbpm.compiler.canonical;
 import java.util.stream.Stream;
 
 import org.jbpm.process.builder.dialect.feel.FeelCompilationException;
+import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
@@ -291,4 +292,40 @@ public class ProcessToExecModelGeneratorTest {
                 .withStackTraceContaining("Unknown variable 'unexisting'");
     }
 
+    @Test
+    public void testScriptVariablewithDefaultValue() {
+
+        RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("demo.orders");
+        factory
+                .variable("order", new ObjectDataType("com.myspace.demo.Order"))
+                .variable("approver", new StringDataType(), "john", "customTags", null)
+                .variable("age", new IntegerDataType(), "1", "customTags", null)
+                .name("orders")
+                .packageName("com.myspace.demo")
+                .dynamic(false)
+                .version("1.0")
+                .workItemNode(1)
+                .name("Log")
+                .workName("Log")
+                .done()
+                .actionNode(2)
+                .name("Dump order")
+                .action("java", "System.out.println(\"Order has been created \" + order);")
+                .done()
+                .endNode(3)
+                .name("end")
+                .terminate(false)
+                .done()
+                .startNode(4)
+                .name("start")
+                .done()
+                .connection(2, 1)
+                .connection(4, 2)
+                .connection(1, 3);
+
+        WorkflowProcess process = factory.validate().getProcess();
+
+        ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate(process);
+        assertNotNull(processMetadata, "Dumper should return non null class for process");
+    }
 }

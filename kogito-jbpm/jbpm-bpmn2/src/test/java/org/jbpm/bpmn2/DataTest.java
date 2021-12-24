@@ -36,6 +36,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -478,6 +479,21 @@ public class DataTest extends JbpmBpmn2TestCase {
                 });
         KogitoProcessInstance processInstance = kruntime
                 .startProcess("process");
+
+    }
+
+    @Test
+    public void testDefaultProcessVariableValue() throws Exception {
+
+        kruntime = createKogitoProcessRuntime("BPMN2-CorrelationKey.bpmn2");
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+
+        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("org.jbpm.test.functional.CorrelationKey",
+                parameters);
+
+        assertEquals("defaultProc", processInstance.getVariable("procVar"));
+        assertEquals(1, processInstance.getVariable("intVar"));
 
     }
 

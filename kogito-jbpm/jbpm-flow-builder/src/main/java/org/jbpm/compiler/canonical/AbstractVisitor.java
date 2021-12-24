@@ -92,13 +92,15 @@ public abstract class AbstractVisitor {
                     continue;
                 }
                 String tags = (String) variable.getMetaData(Variable.VARIABLE_TAGS);
+                Object defaultValue = variable.getValue();
                 ObjectCreationExpr variableType = new ObjectCreationExpr();
                 body.tryAddImportToParentCompilationUnit(variable.getType().getClass());
                 variableType.setType(variable.getType().getClass());
                 if (variable.getType().getClass().equals(ObjectDataType.class)) {
                     variableType.addArgument(new ClassExpr(new ClassOrInterfaceType(null, variable.getType().getStringType())));
                 }
-                body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()), variableType, new StringLiteralExpr(Variable.VARIABLE_TAGS),
+                body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()), variableType,
+                        defaultValue != null ? new StringLiteralExpr(defaultValue.toString()) : new NullLiteralExpr(), new StringLiteralExpr(Variable.VARIABLE_TAGS),
                         tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
             }
         }
