@@ -16,8 +16,10 @@
 package org.kie.kogito.codegen.process.events;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.AddonsConfig;
@@ -134,11 +136,11 @@ class ProcessCloudEventMetaFactoryGeneratorTest {
     @Test
     void verifyProcessWithStartAndEndMessageEvent() {
         final ClassOrInterfaceDeclaration clazz = generateAndParseClass("/messagestartevent/MessageStartAndEndEvent.bpmn2", 2, true);
-
         assertThat(clazz).isNotNull();
         assertEquals(2, clazz.getMethods().size());
-        assertReturnExpressionContains(clazz.getMethods().get(0), "customers", EventKind.CONSUMED);
-        assertReturnExpressionContains(clazz.getMethods().get(1), "process.messagestartevent.processedcustomers", EventKind.PRODUCED);
+        List<MethodDeclaration> methods = clazz.getMethods().stream().sorted(Comparator.comparing(MethodDeclaration::getNameAsString)).collect(Collectors.toList());
+        assertReturnExpressionContains(methods.get(0), "customers", EventKind.CONSUMED);
+        assertReturnExpressionContains(methods.get(1), "process.messagestartevent.processedcustomers", EventKind.PRODUCED);
     }
 
     @Test
