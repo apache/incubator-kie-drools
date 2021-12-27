@@ -24,7 +24,7 @@ import java.util.Set;
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.EvaluatorWrapper;

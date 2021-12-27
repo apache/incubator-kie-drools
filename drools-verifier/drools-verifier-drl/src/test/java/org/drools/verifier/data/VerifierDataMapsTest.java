@@ -21,8 +21,8 @@ import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.EnumField;
 import org.drools.verifier.components.EnumRestriction;

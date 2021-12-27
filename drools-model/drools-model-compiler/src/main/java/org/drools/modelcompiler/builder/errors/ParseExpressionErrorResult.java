@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.expr.Expression;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.kie.internal.builder.ResultSeverity;
 

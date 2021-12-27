@@ -17,7 +17,7 @@ package org.drools.compiler.builder.impl.errors;
 
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.FunctionError;
-import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
 
 public class FunctionErrorHandler extends ErrorHandler {
 

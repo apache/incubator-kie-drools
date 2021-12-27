@@ -17,6 +17,7 @@
 package org.drools.compiler.lang.descr;
 
 import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.junit.Before;
 import org.junit.Test;
 

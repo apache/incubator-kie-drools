@@ -15,8 +15,8 @@
 
 package org.drools.compiler.rule.builder;
 
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.NamedConsequenceDescr;
 import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.Pattern;
 

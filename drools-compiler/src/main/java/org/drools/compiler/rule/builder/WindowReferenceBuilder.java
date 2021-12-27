@@ -16,8 +16,8 @@
 package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.WindowReferenceDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.WindowReferenceDescr;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.WindowReference;

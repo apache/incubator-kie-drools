@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.drl.ast.dsl.DescrFactory;
+import org.drools.drl.ast.dsl.PackageDescrBuilder;
+import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;

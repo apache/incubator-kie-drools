@@ -72,7 +72,7 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
 
     @Override
     public Dialect newDialect(ClassLoader rootClassLoader, KnowledgeBuilderConfigurationImpl pkgConf, PackageRegistry pkgRegistry, InternalKnowledgePackage pkg) {
-        return new Dialect.DummyDialect(rootClassLoader, pkgConf, pkgRegistry, pkg);
+        return new Dialect.DummyDialect(rootClassLoader, pkgRegistry, pkg);
     }
 
     public boolean hasEclipseCompiler() {

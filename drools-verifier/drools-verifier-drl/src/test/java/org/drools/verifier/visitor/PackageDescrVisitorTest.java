@@ -18,7 +18,7 @@ package org.drools.verifier.visitor;
 
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;

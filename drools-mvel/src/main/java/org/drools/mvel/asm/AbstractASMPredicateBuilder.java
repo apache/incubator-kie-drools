@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.lang.descr.PredicateDescr;
+import org.drools.drl.ast.descr.PredicateDescr;
 import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.mvel.java.JavaRuleBuilderHelper;

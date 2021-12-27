@@ -19,7 +19,7 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.Optional;
 
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.OOPathExprGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;

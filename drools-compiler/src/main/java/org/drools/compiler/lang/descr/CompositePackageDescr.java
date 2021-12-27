@@ -21,6 +21,18 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.drl.ast.descr.AccumulateImportDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
+import org.drools.drl.ast.descr.FunctionImportDescr;
+import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.ast.descr.TypeDeclarationDescr;
+import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
 

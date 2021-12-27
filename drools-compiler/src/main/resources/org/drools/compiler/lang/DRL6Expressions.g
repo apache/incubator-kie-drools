@@ -18,13 +18,13 @@ options {
     import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
     import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 
-    import org.drools.compiler.lang.descr.AtomicExprDescr;
-    import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
-    import org.drools.compiler.lang.descr.AnnotationDescr;
-    import org.drools.compiler.lang.descr.BaseDescr;
-    import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-    import org.drools.compiler.lang.descr.RelationalExprDescr;
-    import org.drools.compiler.lang.descr.BindingDescr;
+    import org.drools.drl.ast.descr.AtomicExprDescr;
+    import org.drools.drl.ast.descr.AnnotatedBaseDescr;
+    import org.drools.drl.ast.descr.AnnotationDescr;
+    import org.drools.drl.ast.descr.BaseDescr;
+    import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+    import org.drools.drl.ast.descr.RelationalExprDescr;
+    import org.drools.drl.ast.descr.BindingDescr;
 }
 
 @members {

@@ -24,12 +24,12 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.dsl.DescrFactory;
+import org.drools.drl.ast.dsl.PackageDescrBuilder;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
 

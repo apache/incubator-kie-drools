@@ -34,7 +34,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.model.Query;
 import org.drools.model.QueryDef;
 import org.drools.modelcompiler.builder.PackageModel;

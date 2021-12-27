@@ -50,7 +50,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.MissingDependencyError;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.util.StringUtils;

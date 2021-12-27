@@ -16,7 +16,7 @@
 package org.drools.verifier.visitor;
 
 
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.TestBase;
 import org.junit.Test;
 

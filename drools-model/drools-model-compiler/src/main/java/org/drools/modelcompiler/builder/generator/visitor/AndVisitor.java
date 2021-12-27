@@ -17,8 +17,8 @@
 
 package org.drools.modelcompiler.builder.generator.visitor;
 
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 

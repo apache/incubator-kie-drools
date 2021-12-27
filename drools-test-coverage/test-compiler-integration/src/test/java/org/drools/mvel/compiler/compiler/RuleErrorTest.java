@@ -16,8 +16,8 @@
 package org.drools.mvel.compiler.compiler;
 
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.junit.Test;
 import org.kie.internal.jci.CompilationProblem;
 

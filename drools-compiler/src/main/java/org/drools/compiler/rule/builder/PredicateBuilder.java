@@ -17,7 +17,7 @@ package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.lang.descr.PredicateDescr;
+import org.drools.drl.ast.descr.PredicateDescr;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.PredicateConstraint;
 

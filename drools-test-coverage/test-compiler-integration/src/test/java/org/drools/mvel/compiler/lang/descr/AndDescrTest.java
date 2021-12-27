@@ -15,9 +15,9 @@
 
 package org.drools.mvel.compiler.lang.descr;
 
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.NotDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

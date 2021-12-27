@@ -1,8 +1,8 @@
 package org.drools.compiler.rule.builder.util;
 
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.OperatorDescr;
-import org.drools.compiler.lang.descr.RelationalExprDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.OperatorDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Pattern;
 import org.drools.core.util.ClassUtils;
@@ -57,8 +57,7 @@ public class ConstraintUtil {
 
             operatorDescr.setOperator(inversedOperator);
 
-            StringBuilder sb = new StringBuilder();
-            String inversedExpression = sb.append(rightValue).append(" ").append(inversedOperator).append(" ").append(leftValue).toString();
+            String inversedExpression = rightValue + " " + inversedOperator + " " + leftValue;
             if (negate) {
                 inversedExpression = "!( " + inversedExpression + " )";
             }

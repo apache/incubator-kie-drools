@@ -26,8 +26,8 @@ import org.antlr.runtime.RecognizerSharedState;
 import org.drools.compiler.lang.DRLExpressions;
 import org.drools.compiler.lang.DRLLexer;
 import org.drools.compiler.lang.ParserHelper;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**

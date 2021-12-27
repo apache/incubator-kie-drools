@@ -46,6 +46,8 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
+import static org.drools.core.factmodel.BuildUtils.getDescriptor;
+import static org.drools.core.factmodel.BuildUtils.getSignature;
 import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
 /**
@@ -898,8 +900,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                                FieldDefinition fieldDef) {
         FieldVisitor fv = cw.visitField( Opcodes.ACC_PROTECTED,
                                          fieldDef.getName(),
-                                         fieldDef.getGenericType().getDescriptor(),
-                                         fieldDef.getGenericType().getSignature(),
+                                         getDescriptor(fieldDef.getGenericType()),
+                                         getSignature(fieldDef.getGenericType()),
                                          null );
 
 
@@ -1246,8 +1248,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  fieldDef.getWriteMethod(),
-                                 "(" + fieldDef.getGenericType().getDescriptor() + ")V",
-                                 fieldDef.getGenericType().hasGenerics() ? "(" + fieldDef.getGenericType().getSignature() + ")V" : null,
+                                 "(" + getDescriptor(fieldDef.getGenericType()) + ")V",
+                                 fieldDef.getGenericType().hasGenerics() ? "(" + getSignature(fieldDef.getGenericType()) + ")V" : null,
                                  null );
             mv.visitCode();
             Label l0 = null;
@@ -1314,8 +1316,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  fieldDef.getReadMethod(),
-                                 "()" + Type.getType( fieldDef.getGenericType().getDescriptor() ),
-                                 fieldDef.getGenericType().hasGenerics() ? "()" + fieldDef.getGenericType().getSignature() : null,
+                                 "()" + Type.getType( getDescriptor(fieldDef.getGenericType()) ),
+                                 fieldDef.getGenericType().hasGenerics() ? "()" + getSignature(fieldDef.getGenericType()) : null,
                                  null );
             mv.visitCode();
             Label l0 = null;

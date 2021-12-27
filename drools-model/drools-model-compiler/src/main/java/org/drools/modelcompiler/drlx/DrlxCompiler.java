@@ -11,7 +11,7 @@ import com.github.javaparser.Range;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
 import org.drools.compiler.compiler.ParserError;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.mvel.parser.MvelParser;
 import org.drools.mvel.parser.ParseStart;
 import org.kie.api.io.Resource;

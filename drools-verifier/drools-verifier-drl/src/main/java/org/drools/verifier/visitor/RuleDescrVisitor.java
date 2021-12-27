@@ -16,8 +16,28 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.compiler.lang.descr.*;
-import org.drools.verifier.components.*;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ConditionalBranchDescr;
+import org.drools.drl.ast.descr.EvalDescr;
+import org.drools.drl.ast.descr.ExistsDescr;
+import org.drools.drl.ast.descr.ForallDescr;
+import org.drools.drl.ast.descr.NamedConsequenceDescr;
+import org.drools.drl.ast.descr.NotDescr;
+import org.drools.drl.ast.descr.OrDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.verifier.components.Consequence;
+import org.drools.verifier.components.NamedConsequence;
+import org.drools.verifier.components.OperatorDescrType;
+import org.drools.verifier.components.RuleEval;
+import org.drools.verifier.components.RuleOperatorDescr;
+import org.drools.verifier.components.RulePackage;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.components.TextConsequence;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.solver.Solvers;

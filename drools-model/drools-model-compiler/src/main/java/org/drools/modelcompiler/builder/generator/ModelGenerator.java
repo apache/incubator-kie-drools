@@ -41,13 +41,13 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.BehaviorDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.QueryDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -380,7 +380,7 @@ public class ModelGenerator {
                 }
             } else {
                 if ( ad.hasValue() ) {
-                    if ( ad.getValues().size() == 1 ) {
+                    if ( ad.getValueMap().size() == 1 ) {
                         metaAttributeCall.addArgument(annotationSingleValueExpression(ad));
                     } else {
                         metaAttributeCall.addArgument(objectAsJPExpression(ad.getValueMap()));

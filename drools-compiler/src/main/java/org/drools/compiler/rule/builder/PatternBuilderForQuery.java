@@ -16,7 +16,7 @@
 package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.rule.Declaration;

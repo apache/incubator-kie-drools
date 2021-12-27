@@ -32,8 +32,8 @@ import java.util.Map;
 
 import org.drools.compiler.lang.ExpressionRewriter;
 import org.drools.compiler.lang.DescrDumper;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;

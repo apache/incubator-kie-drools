@@ -18,8 +18,8 @@ package org.drools.compiler.compiler.xml.rules;
 
 import java.math.BigDecimal;
 
-import org.drools.compiler.lang.descr.ConnectiveDescr;
-import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
+import org.drools.drl.ast.descr.ConnectiveDescr;
+import org.drools.drl.ast.descr.LiteralRestrictionDescr;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;

@@ -15,7 +15,7 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
 
 public class AnnotationDeclarationError extends DroolsError {
 

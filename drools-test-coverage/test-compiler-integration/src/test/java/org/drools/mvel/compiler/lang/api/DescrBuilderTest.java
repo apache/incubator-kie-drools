@@ -26,10 +26,10 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.dsl.DescrFactory;
+import org.drools.drl.ast.dsl.PackageDescrBuilder;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;

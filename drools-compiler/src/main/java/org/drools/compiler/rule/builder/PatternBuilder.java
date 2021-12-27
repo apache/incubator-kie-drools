@@ -42,23 +42,24 @@ import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.lang.DescrDumper;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.AtomicExprDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.BindingDescr;
-import org.drools.compiler.lang.descr.ConnectiveType;
-import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.lang.descr.ExpressionDescr;
-import org.drools.compiler.lang.descr.FromDescr;
-import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
-import org.drools.compiler.lang.descr.MVELExprDescr;
-import org.drools.compiler.lang.descr.OperatorDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PredicateDescr;
-import org.drools.compiler.lang.descr.RelationalExprDescr;
-import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AtomicExprDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.BehaviorDescr;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.ConnectiveType;
+import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
+import org.drools.drl.ast.descr.ExpressionDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.LiteralRestrictionDescr;
+import org.drools.drl.ast.descr.MVELExprDescr;
+import org.drools.drl.ast.descr.OperatorDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.PredicateDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
+import org.drools.drl.ast.descr.ReturnValueRestrictionDescr;
 import org.drools.compiler.rule.builder.XpathAnalysis.XpathPart;
 import org.drools.compiler.rule.builder.util.ConstraintUtil;
 import org.drools.core.addon.TypeResolver;
@@ -101,11 +102,13 @@ import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 
+import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
@@ -114,9 +117,7 @@ import static org.drools.core.util.StringUtils.isIdentifier;
 /**
  * A builder for patterns
  */
-public class PatternBuilder
-        implements
-        RuleConditionBuilder<PatternDescr> {
+public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile("^eval\\s*\\(",
                                                                                               java.util.regex.Pattern.MULTILINE);
@@ -147,8 +148,9 @@ public class PatternBuilder
     public RuleConditionElement build(RuleBuildContext context,
                                       PatternDescr patternDescr,
                                       Pattern prefixPattern) {
+        Declaration xpathStartDeclaration = null;
         if (patternDescr.getObjectType() == null) {
-            lookupObjectType(context, patternDescr);
+            xpathStartDeclaration = lookupObjectType(context, patternDescr);
         }
 
         if (patternDescr.getObjectType() == null || patternDescr.getObjectType().equals("")) {
@@ -161,11 +163,11 @@ public class PatternBuilder
             return buildQuery(context, patternDescr, patternDescr);
         }
 
-        Pattern pattern = buildPattern(context, patternDescr, objectType);
+        Pattern pattern = buildPattern(context, patternDescr, xpathStartDeclaration, objectType);
         processClassObjectType(context, objectType, pattern);
         processAnnotations(context, patternDescr, pattern);
         processSource(context, patternDescr, pattern);
-        processConstraintsAndBinds(context, patternDescr, pattern);
+        processConstraintsAndBinds(context, patternDescr, xpathStartDeclaration, pattern);
         processBehaviors(context, patternDescr, pattern);
 
         if (!pattern.hasNegativeConstraint() && "on".equals(System.getProperty("drools.negatable"))) {
@@ -179,23 +181,23 @@ public class PatternBuilder
         return pattern;
     }
 
-    private void lookupObjectType(RuleBuildContext context, PatternDescr patternDescr) {
+    private Declaration lookupObjectType(RuleBuildContext context, PatternDescr patternDescr) {
         List<? extends BaseDescr> descrs = patternDescr.getConstraint().getDescrs();
         if (descrs.size() != 1 || !(descrs.get(0) instanceof ExprConstraintDescr)) {
-            return;
+            return null;
         }
 
         ExprConstraintDescr descr = (ExprConstraintDescr) descrs.get(0);
         String expr = descr.getExpression();
         if (expr.charAt(0) != '/') {
-            return;
+            return null;
         }
 
         XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(expr);
         if (xpathAnalysis.hasError()) {
             registerDescrBuildError(context, patternDescr,
                                     "Invalid xpath expression '" + expr + "': " + xpathAnalysis.getError());
-            return;
+            return null;
         }
 
         XpathPart firstXpathChunk = xpathAnalysis.getPart(0);
@@ -221,14 +223,15 @@ public class PatternBuilder
             if (declr == null) {
                 registerDescrBuildError(context, patternDescr,
                                         "The identifier '" + identifier + "' is not in scope");
-                return;
+                return null;
             }
-            patternDescr.setXpathStartDeclaration(declr);
             patternDescr.setObjectType(declr.getExtractor().getExtractToClassName());
             expr = (patternDescr.getIdentifier() != null ? patternDescr.getIdentifier() + (patternDescr.isUnification() ? " := " : " : ") : "")
                     + expr.substring(identifier.length() + 1);
             descr.setExpression(expr);
+            return declr;
         }
+        return null;
     }
 
     private String findObjectType(RuleBuildContext context, XpathPart firstXpathChunk, String identifier) {
@@ -242,7 +245,7 @@ public class PatternBuilder
                 .orElse(null);
     }
 
-    private Pattern buildPattern(RuleBuildContext context, PatternDescr patternDescr, ObjectType objectType) {
+    private Pattern buildPattern(RuleBuildContext context, PatternDescr patternDescr, Declaration xpathStartDeclaration, ObjectType objectType) {
         String patternIdentifier = patternDescr.getIdentifier();
         boolean duplicateBindings = patternIdentifier != null && objectType instanceof ClassObjectType &&
                 context.getDeclarationResolver().isDuplicated(context.getRule(),
@@ -257,7 +260,7 @@ public class PatternBuilder
                                   0,  // offset is 0 by default
                                   objectType,
                                   patternIdentifier,
-                                  patternDescr.isInternalFact(context));
+                                  isInternalFact(patternDescr, context));
             if (objectType instanceof ClassObjectType) {
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
                 context.getPkg().getClassFieldAccessorStore().wireObjectType(objectType, (AcceptsClassObjectType) pattern.getDeclaration().getExtractor());
@@ -269,15 +272,25 @@ public class PatternBuilder
                                   objectType,
                                   null);
         }
-        pattern.setPassive(patternDescr.isPassive(context));
+        pattern.setPassive(isPassivePattern(patternDescr, context));
 
         // adding the newly created pattern to the build stack this is necessary in case of local declaration usage
         context.getDeclarationResolver().pushOnBuildStack(pattern);
 
         if (duplicateBindings) {
-            processDuplicateBindings(patternDescr.isUnification(), patternDescr, pattern, patternDescr, "this", patternDescr.getIdentifier(), context);
+            processDuplicateBindings(patternDescr.isUnification(), patternDescr, xpathStartDeclaration, pattern, patternDescr, "this", patternDescr.getIdentifier(), context);
         }
         return pattern;
+    }
+
+    public boolean isInternalFact(PatternDescr patternDescr, RuleBuildContext context) {
+        return !(patternDescr.getSource() == null || patternDescr.getSource() instanceof EntryPointDescr ||
+                (patternDescr.getSource() instanceof FromDescr) && context.getEntryPointId(((FromDescr) patternDescr.getSource()).getExpression()).isPresent());
+    }
+
+    private boolean isPassivePattern(PatternDescr patternDescr, RuleBuildContext context) {
+        // when the source is a FromDesc also check that it isn't the datasource of a ruleunit
+        return patternDescr.isQuery() || ( patternDescr.getSource() instanceof FromDescr && !context.getEntryPointId( ( (FromDescr) patternDescr.getSource() ).getDataSource().getText() ).isPresent() );
     }
 
     private void processClassObjectType(RuleBuildContext context, ObjectType objectType, Pattern pattern) {
@@ -436,21 +449,19 @@ public class PatternBuilder
         return QueryElementBuilder.getInstance().build(context, descr, rule);
     }
 
-    protected void processDuplicateBindings(boolean isUnification,
-                                            PatternDescr patternDescr,
-                                            Pattern pattern,
-                                            BaseDescr original,
-                                            String leftExpression,
-                                            String rightIdentifier,
-                                            RuleBuildContext context) {
+    private void processDuplicateBindings( boolean isUnification,
+                                           PatternDescr patternDescr,
+                                           Declaration xpathStartDeclaration,
+                                           Pattern pattern,
+                                           BaseDescr original,
+                                           String leftExpression,
+                                           String rightIdentifier,
+                                           RuleBuildContext context) {
 
         if (isUnification) {
             // rewrite existing bindings into == constraints, so it unifies
-            build(context,
-                  patternDescr,
-                  pattern,
-                  original,
-                  leftExpression + " == " + rightIdentifier);
+            build(context, patternDescr, xpathStartDeclaration,
+                  pattern, original, leftExpression + " == " + rightIdentifier);
         } else {
             // This declaration already exists, so throw an Exception
             registerDescrBuildError(context, patternDescr,
@@ -483,7 +494,7 @@ public class PatternBuilder
         } catch (Exception e) {
             e.printStackTrace();
             AnnotationDefinition annotationDefinition = new AnnotationDefinition(annotationDescr.getFullyQualifiedName());
-            for (String propKey : annotationDescr.getValues().keySet()) {
+            for (String propKey : annotationDescr.getValueMap().keySet()) {
                 Object value = annotationDescr.getValue(propKey);
                 if (value instanceof AnnotationDescr) {
                     value = buildAnnotationDef((AnnotationDescr) value, resolver);
@@ -497,7 +508,7 @@ public class PatternBuilder
     protected void processListenedPropertiesAnnotation(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
         String watchedValues = null;
         try {
-            Watch watch = patternDescr.getTypedAnnotation(Watch.class);
+            Watch watch = getTypedAnnotation(patternDescr, Watch.class);
             watchedValues = watch == null ? null : watch.value();
         } catch (Exception e) {
             registerDescrBuildError(context, patternDescr, e.getMessage());
@@ -555,9 +566,10 @@ public class PatternBuilder
     /**
      * Process all constraints and bindings on this pattern
      */
-    protected void processConstraintsAndBinds(final RuleBuildContext context,
-                                              final PatternDescr patternDescr,
-                                              final Pattern pattern) {
+    private void processConstraintsAndBinds( RuleBuildContext context,
+                                             PatternDescr patternDescr,
+                                             Declaration xpathStartDeclaration,
+                                             Pattern pattern) {
 
         DumperContext mvelCtx = new DumperContext().setRuleContext(context);
         for (BaseDescr b : patternDescr.getDescrs()) {
@@ -586,29 +598,55 @@ public class PatternBuilder
             isPositional &= !(result.getDescrs().size() == 1 && result.getDescrs().get(0) instanceof BindingDescr);
 
             if (isPositional) {
-                processPositional(context,
-                                  patternDescr,
-                                  pattern,
-                                  (ExprConstraintDescr) b);
+                processPositional(context, patternDescr, xpathStartDeclaration, pattern, (ExprConstraintDescr) b);
             } else {
                 // need to build the actual constraint
-                List<Constraint> constraints = build(context, patternDescr, pattern, result, mvelCtx);
+                List<Constraint> constraints = build(context, patternDescr, xpathStartDeclaration, pattern, result, mvelCtx);
                 pattern.addConstraints(constraints);
             }
         }
 
         TypeDeclaration typeDeclaration = getTypeDeclaration(pattern, context);
         if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
-            for (String field : context.getRuleDescr().lookAheadFieldsOfIdentifier(patternDescr)) {
+            for (String field : lookAheadFieldsOfIdentifier(context.getRuleDescr(), patternDescr)) {
                 addFieldToPatternWatchlist(pattern, typeDeclaration, field);
             }
         }
     }
 
-    protected void processPositional(final RuleBuildContext context,
-                                     final PatternDescr patternDescr,
-                                     final Pattern pattern,
-                                     final ExprConstraintDescr descr) {
+    public static Collection<String> lookAheadFieldsOfIdentifier( RuleDescr ruleDescr, PatternDescr patternDescr ) {
+        String identifier = patternDescr.getIdentifier();
+        if (identifier == null) {
+            return Collections.emptyList();
+        }
+
+        Collection<String> props = new HashSet<>();
+        for (PatternDescr pattern : ruleDescr.getLhs().getAllPatternDescr()) {
+            if (pattern == patternDescr) {
+                continue;
+            }
+            if (pattern != null) {
+                for (BaseDescr expr : pattern.getDescrs()) {
+                    if (expr instanceof ExprConstraintDescr) {
+                        String text = expr.getText();
+                        int pos = text.indexOf( identifier + "." );
+                        if ( pos == 0 || ( pos > 0 && !Character.isJavaIdentifierPart(text.charAt( pos-1 ))) ) {
+                            String prop = StringUtils.extractFirstIdentifier(text, pos + identifier.length() + 1);
+                            String propFromGetter = ClassUtils.getter2property(prop);
+                            props.add(propFromGetter != null ? propFromGetter : StringUtils.lcFirst(prop));
+                        }
+                    }
+                }
+            }
+        }
+        return props;
+    }
+
+    private void processPositional( RuleBuildContext context,
+                                    PatternDescr patternDescr,
+                                    Declaration xpathStartDeclaration,
+                                    Pattern pattern,
+                                    ExprConstraintDescr descr) {
         if (descr.getType() == ExprConstraintDescr.Type.POSITIONAL && pattern.getObjectType() instanceof ClassObjectType) {
             Class<?> klazz = pattern.getObjectType().getClassType();
             TypeDeclaration tDecl = context.getKnowledgeBuilder().getTypeDeclaration(klazz);
@@ -642,19 +680,20 @@ public class PatternBuilder
                 binder.setUnification(true);
                 binder.setExpression(field.getName());
                 binder.setVariable(descr.getExpression());
-                buildRuleBindings(context, patternDescr, pattern, binder);
+                buildRuleBindings(context, patternDescr, xpathStartDeclaration, pattern, binder);
             } else {
                 // create a constraint
-                build(context, patternDescr, pattern, descr, field.getName() + " == " + descr.getExpression());
+                build(context, patternDescr, xpathStartDeclaration, pattern, descr, field.getName() + " == " + descr.getExpression());
             }
         }
     }
 
-    protected void build(final RuleBuildContext context,
-                         final PatternDescr patternDescr,
-                         final Pattern pattern,
-                         final BaseDescr original,
-                         final String expr) {
+    private void build( RuleBuildContext context,
+                        PatternDescr patternDescr,
+                        Declaration xpathStartDeclaration,
+                        Pattern pattern,
+                        BaseDescr original,
+                        String expr) {
 
         ConstraintConnectiveDescr result = parseExpression(context, patternDescr, original, expr);
         if (result == null) {
@@ -663,15 +702,16 @@ public class PatternBuilder
 
         result.copyLocation(original);
         DumperContext mvelCtx = new DumperContext().setRuleContext(context);
-        List<Constraint> constraints = build(context, patternDescr, pattern, result, mvelCtx);
+        List<Constraint> constraints = build(context, patternDescr, xpathStartDeclaration, pattern, result, mvelCtx);
         pattern.addConstraints(constraints);
     }
 
-    protected List<Constraint> build(RuleBuildContext context,
-                                     PatternDescr patternDescr,
-                                     Pattern pattern,
-                                     ConstraintConnectiveDescr descr,
-                                     DumperContext mvelCtx) {
+    private List<Constraint> build( RuleBuildContext context,
+                                    PatternDescr patternDescr,
+                                    Declaration xpathStartDeclaration,
+                                    Pattern pattern,
+                                    ConstraintConnectiveDescr descr,
+                                    DumperContext mvelCtx) {
 
         List<Constraint> constraints = new ArrayList<>();
 
@@ -684,11 +724,11 @@ public class PatternBuilder
                 return constraints;
             }
 
-            context.setXpathOffsetadjustment(patternDescr.getXpathStartDeclaration() == null ? 0 : -1);
+            context.setXpathOffsetadjustment(xpathStartDeclaration == null ? 0 : -1);
 
             Constraint constraint = isXPath ?
-                    buildXPathDescr(context, patternDescr, pattern, (ExpressionDescr)  d, mvelCtx) :
-                    buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
+                    buildXPathDescr(context, patternDescr, xpathStartDeclaration, pattern, (ExpressionDescr)  d, mvelCtx) :
+                    buildCcdDescr(context, patternDescr, xpathStartDeclaration, pattern, d, descr, mvelCtx);
             if (constraint != null) {
                 Declaration declCorrXpath = getDeclarationCorrespondingToXpath(pattern, isXPath, constraint);
                 if (declCorrXpath == null) {
@@ -698,7 +738,7 @@ public class PatternBuilder
                     // Move the constraint inside the last chunk of the xpath defining this declaration, rewriting it as 'this'
                     Pattern modifiedPattern = pattern.clone();
                     modifiedPattern.setObjectType( new ClassObjectType( declCorrXpath.getDeclarationClass() ) );
-                    constraint = buildCcdDescr(context, patternDescr, modifiedPattern,
+                    constraint = buildCcdDescr(context, patternDescr, xpathStartDeclaration, modifiedPattern,
                                                d.replaceVariable(declCorrXpath.getBindingName(), "this"), descr, mvelCtx);
                     if (constraint != null) {
                         pattern.getXpathConstraint().getChunks().getLast().addConstraint(constraint);
@@ -717,7 +757,7 @@ public class PatternBuilder
             if (!additionalDescrs.isEmpty()) {
                 List<Constraint> additionalConstraints = new ArrayList<>();
                 for (BaseDescr d : additionalDescrs) {
-                    Constraint constraint = buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
+                    Constraint constraint = buildCcdDescr(context, patternDescr, xpathStartDeclaration, pattern, d, descr, mvelCtx);
                     if (constraint != null) {
                         additionalConstraints.add(constraint);
                     }
@@ -751,6 +791,7 @@ public class PatternBuilder
 
     private Constraint buildXPathDescr(RuleBuildContext context,
                                        PatternDescr patternDescr,
+                                       Declaration xpathStartDeclaration,
                                        Pattern pattern,
                                        ExpressionDescr descr,
                                        DumperContext mvelCtx) {
@@ -822,14 +863,14 @@ public class PatternBuilder
 
                     // preserving this, as the recursive build() resets it
                     int chunkNbr = context.getXpathChuckNr();
-                    for (Constraint c : build(context, patternDescr, pattern, result, mvelCtx)) {
+                    for (Constraint c : build(context, patternDescr, xpathStartDeclaration, pattern, result, mvelCtx)) {
                         xpathChunk.addConstraint(c);
                     }
                     context.setXpathChuckNr(chunkNbr);
                 }
             }
 
-            xpathConstraint.setXpathStartDeclaration(patternDescr.getXpathStartDeclaration());
+            xpathConstraint.setXpathStartDeclaration(xpathStartDeclaration);
             if (descr instanceof BindingDescr) {
                 Declaration pathDeclr = pattern.addDeclaration(((BindingDescr) descr).getVariable());
                 pathDeclr.setxPathOffset(context.getXpathChuckNr());
@@ -846,12 +887,13 @@ public class PatternBuilder
         return xpathConstraint;
     }
 
-    protected Constraint buildCcdDescr(RuleBuildContext context,
-                                       PatternDescr patternDescr,
-                                       Pattern pattern,
-                                       BaseDescr d,
-                                       ConstraintConnectiveDescr ccd,
-                                       DumperContext mvelCtx) {
+    private Constraint buildCcdDescr( RuleBuildContext context,
+                                      PatternDescr patternDescr,
+                                      Declaration xpathStartDeclaration,
+                                      Pattern pattern,
+                                      BaseDescr d,
+                                      ConstraintConnectiveDescr ccd,
+                                      DumperContext mvelCtx) {
         d.copyLocation(patternDescr);
 
         mvelCtx.clear();
@@ -861,7 +903,7 @@ public class PatternBuilder
         // create bindings
         TypeDeclaration typeDeclaration = getTypeDeclaration(pattern, context);
         for (BindingDescr bind : mvelCtx.getBindings()) {
-            buildRuleBindings(context, patternDescr, pattern, bind, typeDeclaration);
+            buildRuleBindings(context, patternDescr, xpathStartDeclaration, pattern, bind, typeDeclaration);
         }
 
         if (expr.length() == 0) {
@@ -1037,7 +1079,7 @@ public class PatternBuilder
         ExprBindings valueExpr = new ExprBindings();
         ConstraintBuilder.get().setExprInputs( context, valueExpr,
                                                (pattern.getObjectType() instanceof ClassObjectType) ?
-                                                       ((ClassObjectType) pattern.getObjectType()).getClassType() :
+                                                       pattern.getObjectType().getClassType() :
                                                        FactTemplate.class,
                                                value);
         if (!isIdentifierLiteral(value)) {
@@ -1353,13 +1395,15 @@ public class PatternBuilder
 
     protected void buildRuleBindings(RuleBuildContext context,
                                      PatternDescr patternDescr,
+                                     Declaration xpathStartDeclaration,
                                      Pattern pattern,
                                      BindingDescr fieldBindingDescr) {
-        buildRuleBindings(context, patternDescr, pattern, fieldBindingDescr, getTypeDeclaration(pattern, context));
+        buildRuleBindings(context, patternDescr, xpathStartDeclaration, pattern, fieldBindingDescr, getTypeDeclaration(pattern, context));
     }
 
     protected void buildRuleBindings(RuleBuildContext context,
                                      PatternDescr patternDescr,
+                                     Declaration xpathStartDeclaration,
                                      Pattern pattern,
                                      BindingDescr fieldBindingDescr,
                                      TypeDeclaration typeDeclaration) {
@@ -1369,6 +1413,7 @@ public class PatternBuilder
                                                           null)) {
             processDuplicateBindings(fieldBindingDescr.isUnification(),
                                      patternDescr,
+                                     xpathStartDeclaration,
                                      pattern,
                                      fieldBindingDescr,
                                      fieldBindingDescr.getBindingField(),

@@ -16,8 +16,8 @@
 
 package org.drools.verifier;
 
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.VerifierRule;

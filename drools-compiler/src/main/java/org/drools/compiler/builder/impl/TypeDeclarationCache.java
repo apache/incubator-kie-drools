@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Thing;
@@ -45,8 +45,8 @@ import static org.drools.core.util.Drools.hasMvel;
 
 public class TypeDeclarationCache {
 
-    private KnowledgeBuilderImpl kbuilder;
-    private Map<String, TypeDeclaration> cacheTypes = new HashMap<String, TypeDeclaration>();
+    private final KnowledgeBuilderImpl kbuilder;
+    private final Map<String, TypeDeclaration> cacheTypes = new HashMap<>();
 
     TypeDeclarationCache( KnowledgeBuilderImpl kbuilder ) {
         this.kbuilder = kbuilder;
@@ -157,7 +157,7 @@ public class TypeDeclarationCache {
 
 
         // build up a set of all the super classes and interfaces
-        Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();
+        Set<TypeDeclaration> tdecls = new LinkedHashSet<>();
 
         tdecls.add(typeDeclaration);
         buildTypeDeclarations(cls,
@@ -199,7 +199,7 @@ public class TypeDeclarationCache {
                                         ClassDefinition clsDef,
                                         TypeDeclaration typeDeclaration ) {
         // it's a new type declaration, so generate the @Position for it
-        Collection<Field> fields = new ArrayList<Field>();
+        Collection<Field> fields = new ArrayList<>();
         Class<?> tempKlass = cls;
         while (tempKlass != null && tempKlass != Object.class) {
             Collections.addAll( fields, tempKlass.getDeclaredFields() );
@@ -310,18 +310,15 @@ public class TypeDeclarationCache {
 
 
     Collection<String> removeTypesGeneratedFromResource(Resource resource) {
-        if (cacheTypes != null) {
-            List<String> typesToBeRemoved = new ArrayList<String>();
-            for (Map.Entry<String, TypeDeclaration> type : cacheTypes.entrySet()) {
-                if (resource.equals(type.getValue().getResource())) {
-                    typesToBeRemoved.add(type.getKey());
-                }
+        List<String> typesToBeRemoved = new ArrayList<>();
+        for (Map.Entry<String, TypeDeclaration> type : cacheTypes.entrySet()) {
+            if (resource.equals(type.getValue().getResource())) {
+                typesToBeRemoved.add(type.getKey());
             }
-            for (String type : typesToBeRemoved) {
-                cacheTypes.remove(type);
-            }
-            return typesToBeRemoved;
         }
-        return Collections.emptyList();
+        for (String type : typesToBeRemoved) {
+            cacheTypes.remove(type);
+        }
+        return typesToBeRemoved;
     }
 }

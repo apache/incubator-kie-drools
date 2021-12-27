@@ -29,16 +29,16 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.compiler.lang.descr.FunctionImportDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.EvalDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
+import org.drools.drl.ast.descr.FunctionImportDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.ProcessDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.EnabledBuilder;
@@ -49,7 +49,6 @@ import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.PatternBuilderForQuery;
-import org.drools.compiler.rule.builder.ReturnValueBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
@@ -345,10 +344,6 @@ public class PackageBuilderConfigurationTest {
 
         public RuleConditionBuilder getEvalBuilder() {
             return new MockEvalBuilder();
-        }
-
-        public String getExpressionDialectName() {
-            return null;
         }
 
         public FromBuilder getFromBuilder() {

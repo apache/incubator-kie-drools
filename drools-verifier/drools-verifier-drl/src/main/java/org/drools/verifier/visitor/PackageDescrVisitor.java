@@ -16,9 +16,9 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;

@@ -80,27 +80,7 @@ import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.ExpanderException;
-import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.AccumulateImportDescr;
-import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
-import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.compiler.lang.descr.FunctionImportDescr;
-import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PatternDestinationDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
-import org.drools.compiler.lang.descr.TypeFieldDescr;
-import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
@@ -132,6 +112,26 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
+import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.drl.ast.descr.AccumulateImportDescr;
+import org.drools.drl.ast.descr.AnnotatedBaseDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ConditionalElementDescr;
+import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
+import org.drools.drl.ast.descr.FunctionImportDescr;
+import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.PatternDestinationDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.ast.descr.TypeDeclarationDescr;
+import org.drools.drl.ast.descr.TypeFieldDescr;
+import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.wiring.api.ComponentsFactory;
@@ -165,6 +165,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import static org.drools.compiler.rule.builder.RuleBuildContext.descrToRule;
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
 import static org.drools.core.util.StringUtils.isEmpty;
 import static org.drools.core.util.StringUtils.ucFirst;
@@ -820,7 +821,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         is.close();
         if (object instanceof Collection) {
             // KnowledgeBuilder API
-            @SuppressWarnings("unchecked")
             Collection<KiePackage> pkgs = (Collection<KiePackage>) object;
             for (KiePackage kpkg : pkgs) {
                 overrideReSource((KnowledgePackageImpl) kpkg, resource);
@@ -1401,7 +1401,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 if (parents.get(ruleDescr.getParentName()) != null
                         && (sorted.containsKey(ruleDescr.getName()) || parents.containsKey(ruleDescr.getName()))) {
                     circularDep = true;
-                    results.add(new RuleBuildError(ruleDescr.toRule(), ruleDescr, null,
+                    results.add(new RuleBuildError(descrToRule(ruleDescr), ruleDescr, null,
                                                    "Circular dependency in rules hierarchy"));
                     break;
                 }
@@ -1425,7 +1425,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         if (!candidateRules.isEmpty()) {
             msg += " >> did you mean any of :" + candidateRules;
         }
-        results.add(new RuleBuildError(ruleDescr.toRule(), ruleDescr, msg,
+        results.add(new RuleBuildError(descrToRule(ruleDescr), ruleDescr, msg,
                                        "Unable to resolve parent rule, please check that both rules are in the same package"));
     }
 
@@ -2160,10 +2160,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
 
         Action accept(ResourceChange.Type type, String pkgName, String assetName);
-    }
-
-    AssetFilter getAssetFilter() {
-        return assetFilter;
     }
 
     public void setAssetFilter(AssetFilter assetFilter) {

@@ -20,19 +20,20 @@ import java.util.List;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.QualifiedName;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
-import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.core.addon.TypeResolver;
+import org.kie.internal.definition.GenericTypeDefinition;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.addon.TypeResolver;
+import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.QualifiedName;
+import org.drools.drl.ast.descr.TypeDeclarationDescr;
+import org.drools.drl.ast.descr.TypeFieldDescr;
 
 public class TypeDeclarationNameResolver {
 
-    private KnowledgeBuilderImpl kbuilder;
+    private final KnowledgeBuilderImpl kbuilder;
 
     public TypeDeclarationNameResolver(KnowledgeBuilderImpl kbuilder) {
         this.kbuilder = kbuilder;
@@ -170,11 +171,13 @@ public class TypeDeclarationNameResolver {
                                          List<TypeDefinition> unresolvedTypes) {
 
         for (TypeFieldDescr field : typeDescr.getFields().values()) {
-            boolean resolved = field.getPattern().resolveObjectType( type -> resolveName(type, typeDescr, packageDescr, typeResolver, unresolvedTypes, true) );
-            if (!resolved) {
+            GenericTypeDefinition typeDef = GenericTypeDefinition.parseType(field.getPattern().getObjectType(), type -> resolveName(type, typeDescr, packageDescr, typeResolver, unresolvedTypes, true) );
+            if (typeDef == null) {
                 kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Cannot resolve type '" + field.getPattern().getObjectType() + " for field " + field.getFieldName() +
                                                                            " in declared type " + typeDescr.getTypeName()));
+            } else {
+                field.getPattern().setGenericType(typeDef);
             }
         }
     }

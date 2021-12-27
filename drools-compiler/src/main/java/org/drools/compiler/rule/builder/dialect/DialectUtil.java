@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.kie.memorycompiler.resources.ResourceReader;
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaCatchBlockDescr;

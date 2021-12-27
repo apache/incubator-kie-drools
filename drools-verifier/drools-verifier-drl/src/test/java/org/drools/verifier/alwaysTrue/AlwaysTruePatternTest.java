@@ -17,7 +17,7 @@
 package org.drools.verifier.alwaysTrue;
 
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.*;

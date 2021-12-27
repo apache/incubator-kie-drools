@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
@@ -321,17 +321,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
         ResourceBuilder PKG_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromInputStream(resourceDescr.resource );
 
-        ResourceBuilder BPMN2_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> {
-            kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.BPMN2, resourceDescr.configuration );
-        };
+        ResourceBuilder BPMN2_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.BPMN2, resourceDescr.configuration );
 
-        ResourceBuilder CMMN_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> {
-            kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.CMMN, resourceDescr.configuration );
-        };
+        ResourceBuilder CMMN_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.CMMN, resourceDescr.configuration );
 
-        ResourceBuilder DRF_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> {
-            kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.DRF, resourceDescr.configuration );
-        };
+        ResourceBuilder DRF_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.DRF, resourceDescr.configuration );
     }
 
     @FunctionalInterface

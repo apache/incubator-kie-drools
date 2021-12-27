@@ -16,7 +16,7 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 
 public class ActionError extends DroolsError {
     private BaseDescr descr;

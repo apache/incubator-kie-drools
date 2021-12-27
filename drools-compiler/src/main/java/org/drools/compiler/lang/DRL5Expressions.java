@@ -4,28 +4,21 @@
 
     import java.util.LinkedList;
     import org.drools.compiler.compiler.DroolsParserException;
-    import org.drools.compiler.lang.ParserHelper;
-    import org.drools.compiler.lang.DroolsParserExceptionFactory;
-    import org.drools.compiler.lang.Location;
 
-    import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
+    import org.drools.drl.ast.dsl.AnnotatedDescrBuilder;
 
-    import org.drools.compiler.lang.descr.AtomicExprDescr;
-    import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
-    import org.drools.compiler.lang.descr.AnnotationDescr;
-    import org.drools.compiler.lang.descr.BaseDescr;
-    import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-    import org.drools.compiler.lang.descr.RelationalExprDescr;
-    import org.drools.compiler.lang.descr.BindingDescr;
+    import org.drools.drl.ast.descr.AtomicExprDescr;
+    import org.drools.drl.ast.descr.AnnotationDescr;
+    import org.drools.drl.ast.descr.BaseDescr;
+    import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+    import org.drools.drl.ast.descr.RelationalExprDescr;
+    import org.drools.drl.ast.descr.BindingDescr;
 
 
 
 import org.antlr.runtime.*;
 import java.util.Stack;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 @SuppressWarnings("all")
 public class DRL5Expressions extends DRLExpressions {

@@ -20,7 +20,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 
 import java.util.LinkedList;
 import java.util.List;

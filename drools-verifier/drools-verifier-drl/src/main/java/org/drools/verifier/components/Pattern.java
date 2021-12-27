@@ -16,7 +16,7 @@
 
 package org.drools.verifier.components;
 
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.verifier.report.components.Cause;
 
 public class Pattern extends RuleComponent<PatternDescr>
