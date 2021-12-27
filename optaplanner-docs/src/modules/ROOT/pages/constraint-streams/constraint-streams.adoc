@@ -161,6 +161,7 @@ The latter can also decrease stream cardinality:
 
 The following constraint stream cardinalities are currently supported:
 
+[cols="1,1,2"]
 |===
 |Cardinality|Prefix|Defining interface
 |1          |   Uni|`UniConstraintStream<A>`
@@ -328,6 +329,7 @@ constraint matches and only then filters some of them out.
 
 The following functions are required for filtering constraint streams of different cardinality:
 
+[cols="1,3"]
 |===
 |Cardinality|Filtering Predicate
 |1          |`java.util.function.Predicate<A>`

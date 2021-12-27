@@ -99,7 +99,7 @@ image::optimization-algorithms/scalabilityOfOptimizationAlgorithms.png[align="ce
 Each of these algorithm families have multiple optimization algorithms:
 
 .Optimization Algorithms Overview
-[cols="1,1,1,1,1,1", options="header"]
+[cols="15,^7,^7,^7,^7,^8", options="header"]
 |===
 |Algorithm |Scalable? |Optimal? |Easy to use? |Tweakable? |Requires CH?
 

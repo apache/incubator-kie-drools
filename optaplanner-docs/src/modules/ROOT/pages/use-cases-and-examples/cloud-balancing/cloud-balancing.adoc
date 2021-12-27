@@ -44,13 +44,13 @@ image::use-cases-and-examples/cloud-balancing/cloudOptimizationValueProposition.
 === Problem size
 
 .Cloud Balancing Problem Size
-[cols="1,1,1,1", options="header"]
+[cols="2,1,1,1", options="header"]
 |===
 |Problem Size |Computers |Processes |Search Space
 
 |2computers-6processes |2 |6 |64
 |3computers-9processes |3 |9 |10^4
-|4computers-012processes |4 |12 |10^7
+|4computers-12processes |4 |12 |10^7
 |100computers-300processes |100 |300 |10^600
 |200computers-600processes |200 |600 |10^1380
 |400computers-1200processes |400 |1200 |10^3122
