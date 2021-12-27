@@ -15,12 +15,11 @@
  */
 package org.kie.kogito.process.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.jbpm.process.core.ProcessSupplier;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -29,16 +28,14 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.LightProcessRuntime;
 import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.jbpm.process.instance.ProcessRuntimeServiceProvider;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.runtime.*;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
@@ -124,6 +121,12 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     public abstract ProcessInstance<T> createInstance(WorkflowProcessInstance wpi);
 
     public abstract ProcessInstance<T> createReadOnlyInstance(WorkflowProcessInstance wpi);
+
+    @Override
+    public Collection<KogitoNode> findNodes(Predicate<KogitoNode> filter) {
+        RuleFlowProcess p = (RuleFlowProcess) this.process;
+        return p.getNodesRecursively().stream().map(n -> (KogitoNode) n).filter(filter).collect(Collectors.toList());
+    }
 
     @Override
     public ProcessInstances<T> instances() {

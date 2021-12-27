@@ -15,23 +15,21 @@
  */
 package org.kie.kogito.process.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
 import org.jbpm.util.JsonSchemaUtil;
+import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
@@ -138,18 +136,23 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public <T extends Model> Optional<WorkItem> signalTask(Process<T> process, String id, String taskNodeName, String taskName) {
+    public <T extends Model> Optional<WorkItem> signalTask(Process<T> process, String id, String taskName) {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process
                 .instances()
                 .findById(id)
                 .map(pi -> {
+                    KogitoNode node = pi.process().findNodes(n -> n instanceof HumanTaskNode &&
+                            ((HumanTaskNode) n).getWork().getParameter("TaskName")
+                                    .equals(taskName))
+                            .iterator().next();
+
+                    String taskNodeName = node.getName();
                     pi.send(Sig.of(taskNodeName, Collections.emptyMap()));
-                    return pi;
-                })
-                .map(pi -> getTaskByName(pi, taskName).orElse(null)));
+
+                    return getTaskByName(pi, taskName).orElse(null);
+                }));
     }
 
-    @Override
     public <T extends Model> Optional<WorkItem> getTaskByName(ProcessInstance<T> pi, String taskName) {
         return pi
                 .workItems()

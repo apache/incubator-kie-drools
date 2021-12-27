@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.incubation.common;
+package org.kie.kogito.incubation.processes;
 
-public interface MetaDataContext extends DataContext {
+public class AttachmentIds {
+    private final TaskInstanceId taskInstanceId;
+
+    public AttachmentIds(TaskInstanceId taskInstanceId) {
+        this.taskInstanceId = taskInstanceId;
+    }
+
+    public AttachmentId get(String attachmentId) {
+        return new AttachmentId(taskInstanceId, attachmentId);
+    }
 }

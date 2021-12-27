@@ -46,7 +46,9 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.ProcessContainerGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
+import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusHumanTaskService;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusProcessIdFactory;
+import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStatefulProcessService;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStraightThroughProcessService;
 import org.kie.kogito.quarkus.common.deployment.InMemoryClassLoader;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
@@ -146,7 +148,13 @@ public class ProcessesAssetsProcessor {
 
     @BuildStep
     public AdditionalBeanBuildItem additionalBeans() {
-        return AdditionalBeanBuildItem.builder().addBeanClasses(QuarkusStraightThroughProcessService.class, QuarkusProcessIdFactory.class).build();
+        return AdditionalBeanBuildItem.builder()
+                .addBeanClasses(
+                        QuarkusStraightThroughProcessService.class,
+                        QuarkusStatefulProcessService.class,
+                        QuarkusHumanTaskService.class,
+                        QuarkusProcessIdFactory.class)
+                .build();
     }
 
     /**

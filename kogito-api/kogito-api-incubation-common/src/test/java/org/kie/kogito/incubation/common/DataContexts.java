@@ -51,7 +51,7 @@ class User implements DataContext, DefaultCastable {
     }
 }
 
-class CustomMeta implements MetaDataContext {
+class CustomMeta implements MetaDataContext, DefaultCastable {
     String value;
 
     @Override

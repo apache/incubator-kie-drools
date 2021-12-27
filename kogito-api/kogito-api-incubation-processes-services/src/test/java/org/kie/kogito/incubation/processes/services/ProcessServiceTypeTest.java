@@ -19,10 +19,12 @@ package org.kie.kogito.incubation.processes.services;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.incubation.common.*;
 import org.kie.kogito.incubation.processes.LocalProcessId;
+import org.kie.kogito.incubation.processes.ProcessInstanceId;
+import org.kie.kogito.incubation.processes.TaskId;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestTypes {
+public class ProcessServiceTypeTest {
     public static class MyDataContext implements DataContext, DefaultCastable {
         int someParam;
     }
@@ -58,6 +60,59 @@ public class TestTypes {
 
         assertEquals("/processes/some.process",
                 someProcessId.toLocalId().asLocalUri().path());
+
+    }
+
+    @Test
+    public void statefulProcesses() {
+        StatefulProcessService svc = new StatefulProcessService() {
+
+            @Override
+            public ExtendedDataContext signal(LocalId processId, DataContext dataContext) {
+                return ExtendedDataContext.ofData(EmptyDataContext.Instance);
+            }
+
+            @Override
+            public ExtendedDataContext create(LocalId processId, DataContext dataContext) {
+                return ExtendedDataContext.ofData(EmptyDataContext.Instance);
+            }
+
+            @Override
+            public ExtendedDataContext update(LocalId processId, DataContext dataContext) {
+                return ExtendedDataContext.ofData(EmptyDataContext.Instance);
+            }
+
+            @Override
+            public ExtendedDataContext abort(LocalId processId) {
+                return ExtendedDataContext.ofData(EmptyDataContext.Instance);
+            }
+
+            @Override
+            public ExtendedDataContext get(LocalId processId) {
+                return ExtendedDataContext.ofData(EmptyDataContext.Instance);
+            }
+        };
+
+        MapDataContext ctx = MapDataContext.create(); // suppose there is a Map-like structure
+        // (it could be even just Map)
+        LocalProcessId someProcessId = new LocalProcessId("some.process");
+
+        // set a context using a Map-like interface
+        ctx.set("someParam", 1);
+
+        // evaluate the process
+        DataContext result =
+                svc.create(someProcessId, ctx);
+
+        ProcessInstanceId processInstanceId = someProcessId.instances().get("some.instance.id");
+
+        assertEquals("/processes/some.process/instances/some.instance.id",
+                processInstanceId.toLocalId().asLocalUri().path());
+
+        TaskId taskId = processInstanceId.tasks().get("some.task.id");
+
+        assertEquals("/processes/some.process/instances/some.instance.id/tasks/some.task.id",
+                taskId.toLocalId().asLocalUri().path());
 
     }
 }

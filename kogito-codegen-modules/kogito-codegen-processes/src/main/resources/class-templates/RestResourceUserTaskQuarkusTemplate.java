@@ -38,7 +38,7 @@ public class $Type$Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response signal(@PathParam("id") final String id, @Context UriInfo uriInfo) {
-        return processService.signalTask(process, id, "$taskNodeName$", "$taskName$")
+        return processService.signalTask(process, id, "$taskName$")
                 .map(task -> Response
                         .created(uriInfo.getAbsolutePathBuilder().path(task.getId()).build())
                         .entity(task.getResults())

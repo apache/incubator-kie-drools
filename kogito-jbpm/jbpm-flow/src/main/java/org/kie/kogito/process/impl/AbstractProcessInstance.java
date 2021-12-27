@@ -16,19 +16,11 @@
 package org.kie.kogito.process.impl;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -444,19 +436,22 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public List<WorkItem> workItems(Predicate<KogitoNodeInstance> p, Policy<?>... policies) {
-        return processInstance().getNodeInstances(true)
-                .stream()
-                .filter(ni -> p.test(ni) && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies))
-                .map(ni -> new BaseWorkItem(ni.getStringId(),
+        List<WorkItem> list = new ArrayList<>();
+        for (NodeInstance ni : processInstance().getNodeInstances(true)) {
+            if (p.test(ni) && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies)) {
+                BaseWorkItem taskName = new BaseWorkItem(ni.getStringId(),
                         ((WorkItemNodeInstance) ni).getWorkItemId(),
-                        Long.toString(((WorkItemNodeInstance) ni).getNode().getId()),
+                        Long.toString(ni.getNode().getId()),
                         (String) ((WorkItemNodeInstance) ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()),
                         ((WorkItemNodeInstance) ni).getWorkItem().getState(),
                         ((WorkItemNodeInstance) ni).getWorkItem().getPhaseId(),
                         ((WorkItemNodeInstance) ni).getWorkItem().getPhaseStatus(),
                         ((WorkItemNodeInstance) ni).getWorkItem().getParameters(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getResults()))
-                .collect(Collectors.toList());
+                        ((WorkItemNodeInstance) ni).getWorkItem().getResults());
+                list.add(taskName);
+            }
+        }
+        return list;
     }
 
     @Override

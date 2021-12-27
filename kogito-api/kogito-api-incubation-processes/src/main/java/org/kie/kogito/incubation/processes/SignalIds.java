@@ -13,8 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.incubation.processes;
 
-package org.kie.kogito.incubation.common;
+public class SignalIds {
+    private final ProcessInstanceId processInstanceId;
 
-public interface MetaDataContext extends DataContext {
+    public SignalIds(ProcessInstanceId processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public SignalId get(String signalId) {
+        return new SignalId(this.processInstanceId, signalId);
+    }
+
 }

@@ -15,7 +15,11 @@
  */
 package org.kie.kogito.process;
 
+import java.util.Collection;
+import java.util.function.Predicate;
+
 import org.kie.kogito.Model;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 
 public interface Process<T> {
 
@@ -24,6 +28,8 @@ public interface Process<T> {
     ProcessInstance<T> createInstance(String businessKey, T workingMemory);
 
     ProcessInstances<T> instances();
+
+    Collection<KogitoNode> findNodes(Predicate<KogitoNode> filter);
 
     <S> void send(Signal<S> sig);
 

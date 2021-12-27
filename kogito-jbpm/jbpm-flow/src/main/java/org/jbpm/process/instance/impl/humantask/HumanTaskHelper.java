@@ -89,8 +89,12 @@ public class HumanTaskHelper {
     }
 
     public static Map<String, Object> updateContent(KogitoWorkItem item, MapOutput model) {
+        return updateContent(item, model.toMap());
+    }
+
+    public static Map<String, Object> updateContent(KogitoWorkItem item, Map<String, Object> map) {
         HumanTaskWorkItemImpl humanTask = asHumanTask(item);
-        humanTask.setResults(model.toMap());
+        humanTask.setResults(map);
         return humanTask.getResults();
     }
 

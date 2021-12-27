@@ -50,9 +50,7 @@ public interface ProcessService {
 
     <T extends Model> Optional<List<WorkItem>> getTasks(Process<T> process, String id, SecurityPolicy policy);
 
-    <T extends Model> Optional<WorkItem> signalTask(Process<T> process, String id, String taskNodeName, String taskName);
-
-    <T extends Model> Optional<WorkItem> getTaskByName(ProcessInstance<T> pi, String taskName);
+    <T extends Model> Optional<WorkItem> signalTask(Process<T> process, String id, String taskNodeName);
 
     <T extends Model, R extends MapOutput> Optional<R> saveTask(Process<T> process,
             String id,

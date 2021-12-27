@@ -47,7 +47,7 @@ public class $Type$Resource {
     public ResponseEntity signal(@PathVariable("id") final String id,
                                                final UriComponentsBuilder uriComponentsBuilder) {
 
-        return processService.signalTask(process, id, "$taskNodeName$", "$taskName$")
+        return processService.signalTask(process, id, "$taskName$")
                 .map(task -> ResponseEntity
                         .created(uriComponentsBuilder
                                          .path("/$name$/{id}/$taskName$/{taskId}")

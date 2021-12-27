@@ -13,8 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example;
 
-package org.kie.kogito.incubation.common;
+public class Payload {
+    String value;
 
-public interface MetaDataContext extends DataContext {
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

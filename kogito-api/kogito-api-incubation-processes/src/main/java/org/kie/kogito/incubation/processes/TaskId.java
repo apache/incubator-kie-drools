@@ -18,22 +18,22 @@ package org.kie.kogito.incubation.processes;
 import org.kie.kogito.incubation.common.LocalId;
 import org.kie.kogito.incubation.common.LocalUriId;
 
-public class ProcessInstanceId extends LocalUriId implements LocalId {
+public class TaskId extends LocalUriId implements LocalId {
 
-    public static final String PREFIX = "instances";
+    public static final String PREFIX = "tasks";
 
-    private final LocalProcessId processId;
-    private final String processInstanceId;
+    private final ProcessInstanceId processInstanceId;
+    private final String taskId;
 
-    public ProcessInstanceId(LocalProcessId processId, String processInstanceId) {
-        super(processId.asLocalUri().append(PREFIX).append(processInstanceId));
-        LocalId localDecisionId = processId.toLocalId();
+    public TaskId(ProcessInstanceId processInstanceId, String taskId) {
+        super(processInstanceId.asLocalUri().append(PREFIX).append(taskId));
+        LocalId localDecisionId = processInstanceId.toLocalId();
         if (!localDecisionId.asLocalUri().startsWith(LocalProcessId.PREFIX)) {
             throw new IllegalArgumentException("Not a valid process path"); // fixme use typed exception
         }
 
-        this.processId = processId;
         this.processInstanceId = processInstanceId;
+        this.taskId = taskId;
     }
 
     @Override
@@ -41,20 +41,16 @@ public class ProcessInstanceId extends LocalUriId implements LocalId {
         return this;
     }
 
-    public LocalProcessId processId() {
-        return processId;
-    }
-
-    public String processInstanceId() {
+    public ProcessInstanceId processInstanceId() {
         return processInstanceId;
     }
 
-    public TaskIds tasks() {
-        return new TaskIds(this);
+    public TaskInstanceIds instances() {
+        return new TaskInstanceIds(this);
     }
 
-    public SignalIds signals() {
-        return new SignalIds(this);
+    public String taskId() {
+        return taskId;
     }
 
 }
