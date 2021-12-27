@@ -1,4 +1,4 @@
-name: Drools Build
+name: Drools
 
 on:
   pull_request:
