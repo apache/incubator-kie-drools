@@ -1,6 +1,6 @@
 # Runs optaplanner-persistence-jpa module tests in a PostgreSQL container
 
-name: OptaPlanner Persistence JPA CI
+name: Persistence JPA
 
 on:
   push:
@@ -31,7 +31,13 @@ defaults:
 
 jobs:
   jpa-postgresql-container:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java-version: [11]
+        maven-version: ['3.8.1']
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     services:
       postgres:
         image: postgres
@@ -46,24 +52,16 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
-
+    name: Maven - ${{ matrix.os }} - ${{ matrix.java-version }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Java and Maven Setup
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
         with:
-          java-version: 11
-
-      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       # Builds the JPA module and runs tests in a PostgreSQL container
       - name: Build with Maven
         run: mvn -B clean install -pl :optaplanner-persistence-jpa -am -Ppostgresql

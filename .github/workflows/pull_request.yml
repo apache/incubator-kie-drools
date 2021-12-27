@@ -42,7 +42,7 @@ jobs:
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Maven Build
+    name: Maven - ${{ matrix.os }} - ${{ matrix.java-version }}
     timeout-minutes: 120
     steps:
       - name: Clean Disk Space

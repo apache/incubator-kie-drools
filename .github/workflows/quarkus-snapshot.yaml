@@ -1,4 +1,4 @@
-name: "Quarkus ecosystem CI"
+name: "Quarkus ecosystem"
 on:
   watch:
     types: [started]
@@ -9,7 +9,6 @@ on:
 env:
   ECOSYSTEM_CI_REPO: quarkusio/quarkus-ecosystem-ci
   ECOSYSTEM_CI_REPO_FILE: context.yaml
-  JAVA_VERSION: 11
 
   #########################
   # Repo specific setting #
@@ -19,18 +18,25 @@ env:
 
 jobs:
   build:
-    name: "Build against latest Quarkus snapshot"
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        java-version: [ 11 ]
+        maven-version: [ '3.8.1' ]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     if: github.actor == 'quarkusbot'
-
+    name: Maven - ${{ matrix.os }} - ${{ matrix.java-version }}
     steps:
       - name: Install yq
         run: sudo add-apt-repository ppa:rmescandon/yq && sudo apt update && sudo apt install yq -y
 
-      - name: Set up Java
-        uses: actions/setup-java@v1
+      - name: Java and Maven Setup
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
         with:
-          java-version: ${{ env.JAVA_VERSION }}
+         java-version: ${{ matrix.java-version }}
+         maven-version: ${{ matrix.maven-version }}
+         cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
 
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -44,14 +50,6 @@ jobs:
           repository: ${{ env.ECOSYSTEM_CI_REPO }}
           ref: main
           path: ecosystem-ci
-
-      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
 
       - name: Setup and Run Tests
         run: ./ecosystem-ci/setup-and-test

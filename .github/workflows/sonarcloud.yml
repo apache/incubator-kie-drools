@@ -1,5 +1,5 @@
 # Runs the SonarCloud analysis of the optaplanner main branch after a PR is merged.
-name: OptaPlanner SonarCloud Analysis
+name: SonarCloud Analysis
 
 on:
   push:
@@ -19,7 +19,13 @@ defaults:
 
 jobs:
   sonarcloud-analysis:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        java-version: [ 11 ]
+        maven-version: [ '3.8.1' ]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Check out repository code
@@ -27,18 +33,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Java and Maven Setup
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
         with:
-          java-version: 11
-
-      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
 
       - name: Build with Maven to measure code coverage
         run: mvn -B --fail-at-end clean install -Prun-code-coverage
