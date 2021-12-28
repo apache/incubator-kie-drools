@@ -428,6 +428,8 @@ TOKEN :
 | < HASHMARK: "#" >
 | < EXCL_DOT: "!." >
 | < PASSIVE_OOPATH: "?/" >
+| < RULE_OR : "or" >
+| < RULE_AND : "and" >
 }
 
 /* LITERALS */
@@ -1045,6 +1047,8 @@ TOKEN :
 {
   < ASSIGN: "=" >
 // GT - see below
+//| < OR: "or" >
+
 | < LT: "<" >
 | < BANG: "!" >
 | < TILDE: "~" >
@@ -6154,7 +6158,8 @@ NodeList<RuleItem> RuleItems():
 
     "{"
     (
-        item = RulePattern() { items.add(item); }
+      (<RULE_OR>|<RULE_AND>) "(" item=OrPatterns() ")" "," { items.add(item); }
+      |  item = RulePattern() { items.add(item); }
       | <DO> item = RuleConsequence() { items.add(item); }
     )*
     "}"
@@ -6177,6 +6182,27 @@ RulePattern RulePattern():
   ","
 
     { return new RulePattern(range(begin, token()), type, bind, expr); }
+}
+
+//List<RulePattern>
+RuleItem
+OrPatterns():
+{
+    List patterns = new ArrayList();
+    RulePattern pat;
+}
+{
+    pat = OrItem() { patterns.add(pat); }
+    ( OrItem() { patterns.add(pat); } )+
+    { return null;  } /*patterns;*/
+}
+
+RulePattern OrItem():
+{
+}
+{
+    RulePattern()     { return null; }
+    | (<RULE_OR>|<RULE_AND>)  "("  OrPatterns() ")" ","    { return null; }
 }
 
 RuleConsequence RuleConsequence():
