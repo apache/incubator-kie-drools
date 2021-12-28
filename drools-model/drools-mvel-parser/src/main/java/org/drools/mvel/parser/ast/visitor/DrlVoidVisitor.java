@@ -119,32 +119,7 @@ import com.github.javaparser.ast.type.VarType;
 import com.github.javaparser.ast.type.VoidType;
 import com.github.javaparser.ast.type.WildcardType;
 import com.github.javaparser.ast.visitor.VoidVisitor;
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
-import org.drools.mvel.parser.ast.expr.DrlxExpression;
-import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
-import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
-import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
-import org.drools.mvel.parser.ast.expr.InlineCastExpr;
-import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
-import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
-import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
-import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
-import org.drools.mvel.parser.ast.expr.ModifyStatement;
-import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
-import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
-import org.drools.mvel.parser.ast.expr.OOPathChunk;
-import org.drools.mvel.parser.ast.expr.OOPathExpr;
-import org.drools.mvel.parser.ast.expr.PointFreeExpr;
-import org.drools.mvel.parser.ast.expr.RuleBody;
-import org.drools.mvel.parser.ast.expr.RuleConsequence;
-import org.drools.mvel.parser.ast.expr.RuleDeclaration;
-import org.drools.mvel.parser.ast.expr.RulePattern;
-import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
-import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
-import org.drools.mvel.parser.ast.expr.WithStatement;
+import org.drools.mvel.parser.ast.expr.*;
 
 public interface DrlVoidVisitor<A> extends VoidVisitor<A> {
 
@@ -153,6 +128,9 @@ public interface DrlVoidVisitor<A> extends VoidVisitor<A> {
     default void visit(RuleBody ruleBody, A arg) { }
 
     default void visit(RulePattern rulePattern, A arg) { }
+
+    default void visit(RuleJoinedPatterns joinedPatterns, A arg) { }
+
 
     default void visit(DrlxExpression expr, A arg) { }
 

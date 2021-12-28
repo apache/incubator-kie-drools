@@ -6153,12 +6153,14 @@ NodeList<RuleItem> RuleItems():
     NodeList<RuleItem> items = emptyNodeList();
     RuleItem item;
     RuleConsequence consequnce;
+    RuleJoinedPatterns.Type tpe;
 }
 {
 
     "{"
     (
-      (<RULE_OR>|<RULE_AND>) "(" item=OrPatterns() ")" "," { items.add(item); }
+       (<RULE_OR> {tpe=RuleJoinedPatterns.Type.OR;} |<RULE_AND> {tpe=RuleJoinedPatterns.Type.AND;})
+                        "(" item=JoinedPatterns(tpe) ")" "," { items.add(item); }
       |  item = RulePattern() { items.add(item); }
       | <DO> item = RuleConsequence() { items.add(item); }
     )*
@@ -6184,25 +6186,26 @@ RulePattern RulePattern():
     { return new RulePattern(range(begin, token()), type, bind, expr); }
 }
 
-//List<RulePattern>
-RuleItem
-OrPatterns():
+RuleJoinedPatterns JoinedPatterns(RuleJoinedPatterns.Type tpe):
 {
-    List patterns = new ArrayList();
-    RulePattern pat;
+    NodeList<RuleItem> items = emptyNodeList();
+    RuleItem item;
 }
 {
-    pat = OrItem() { patterns.add(pat); }
-    ( OrItem() { patterns.add(pat); } )+
-    { return null;  } /*patterns;*/
+    item=JoinedItem() { items.add(item); }
+    ( JoinedItem() { items.add(item); } )+
+    { return new RuleJoinedPatterns(null, tpe, items);  }
 }
 
-RulePattern OrItem():
+RuleItem JoinedItem():
 {
+    RuleItem item;
+    RuleJoinedPatterns.Type tpe;
 }
 {
-    RulePattern()     { return null; }
-    | (<RULE_OR>|<RULE_AND>)  "("  OrPatterns() ")" ","    { return null; }
+    item=RulePattern()     { return item; }
+    | (<RULE_OR> {tpe=RuleJoinedPatterns.Type.OR;} |<RULE_AND> {tpe=RuleJoinedPatterns.Type.AND;})
+     "("  item=JoinedPatterns(tpe) ")" ","  { return item; }
 }
 
 RuleConsequence RuleConsequence():
