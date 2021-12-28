@@ -16,9 +16,9 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.FromDescr;
-import org.drools.compiler.lang.descr.MVELExprDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;

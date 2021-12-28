@@ -21,7 +21,7 @@ import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.Location;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.junit.Before;
 import org.junit.Ignore;

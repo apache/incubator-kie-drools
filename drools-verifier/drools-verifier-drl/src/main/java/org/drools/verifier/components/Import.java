@@ -16,7 +16,7 @@
 
 package org.drools.verifier.components;
 
-import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.drl.ast.descr.ImportDescr;
 
 public class Import extends PackageComponent<ImportDescr> {
 

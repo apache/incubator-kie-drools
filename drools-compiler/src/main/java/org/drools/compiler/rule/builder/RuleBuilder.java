@@ -31,13 +31,13 @@ import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.RuleBuildWarning;
 import org.drools.compiler.lang.DroolsSoftKeywords;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.EntryPointDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.QueryDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
@@ -63,6 +63,7 @@ import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.rule.Unit;
 
+import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
 import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
 /**
@@ -159,7 +160,7 @@ public class RuleBuilder {
                 if ( annotationDefinition.getValues().size() == 1 && annotationDefinition.getValues().containsKey( AnnotationDescr.VALUE ) ) {
                     rule.addMetaAttribute( metaAttr, annotationDefinition.getPropertyValue( AnnotationDescr.VALUE ) );
                 } else {
-                    Map<String, Object> map = new HashMap<String, Object>( annotationDefinition.getValues().size() );
+                    Map<String, Object> map = new HashMap<>( annotationDefinition.getValues().size() );
                     for ( String key : annotationDefinition.getValues().keySet() ) {
                         map.put( key, annotationDefinition.getPropertyValue( key ) );
                     }
@@ -167,7 +168,7 @@ public class RuleBuilder {
                 }
             } else {
                 if ( ad.hasValue() ) {
-                    if ( ad.getValues().size() == 1 ) {
+                    if ( ad.getValueMap().size() == 1 ) {
                         rule.addMetaAttribute( metaAttr,
                                                resolveValue( ad.getSingleValueAsString() ) );
                     } else {
@@ -288,7 +289,7 @@ public class RuleBuilder {
 
     private static void parseAnnotation(RuleBuildContext context, RuleImpl rule, RuleDescr ruleDescr, boolean enforceEager) {
         try {
-            ActivationListener activationListener = ruleDescr.getTypedAnnotation(ActivationListener.class);
+            ActivationListener activationListener = getTypedAnnotation(ruleDescr, ActivationListener.class);
             if (activationListener != null) {
                 rule.setActivationListener(CoreComponentsBuilder.get().getMVELExecutor().evalToString(activationListener.value()));
             }
@@ -296,7 +297,7 @@ public class RuleBuilder {
             if (enforceEager) {
                 rule.setEager(true);
             } else {
-                Propagation propagation = ruleDescr.getTypedAnnotation(Propagation.class);
+                Propagation propagation = getTypedAnnotation(ruleDescr, Propagation.class);
                 if (propagation != null) {
                     if (propagation.value() == Propagation.Type.IMMEDIATE) {
                         rule.setDataDriven(true);
@@ -306,7 +307,7 @@ public class RuleBuilder {
                 }
             }
 
-            Direct direct = ruleDescr.getTypedAnnotation(Direct.class);
+            Direct direct = getTypedAnnotation(ruleDescr, Direct.class);
             if (direct != null && direct.value()) {
                 rule.setActivationListener("direct");
             }
@@ -322,7 +323,7 @@ public class RuleBuilder {
 
     private static void parseUnitAnnotations( RuleBuildContext context, RuleImpl rule, RuleDescr ruleDescr ) {
         try {
-            Unit unit = ruleDescr.getTypedAnnotation( Unit.class );
+            Unit unit = getTypedAnnotation( ruleDescr, Unit.class );
             if (unit != null) {
                 rule.setRuleUnitClass( unit.value() );
             }
@@ -333,8 +334,7 @@ public class RuleBuilder {
         }
     }
 
-    private static boolean getBooleanValue(final AttributeDescr attributeDescr,
-                                    final boolean defaultValue) {
+    private static boolean getBooleanValue(AttributeDescr attributeDescr, boolean defaultValue) {
         return (attributeDescr.getValue() == null || "".equals( attributeDescr.getValue().trim() )) ? defaultValue : Boolean.valueOf(attributeDescr.getValue());
     }
 
@@ -392,10 +392,10 @@ public class RuleBuilder {
     }
     
     public static Timer buildTimer(RuleImpl rule, String timerString, RuleBuildContext context) {
-        return buildTimer( rule, timerString, context, expr -> createMVELExpr(expr, context), error -> registerError(error, rule, context) );
+        return buildTimer( timerString, context, expr -> createMVELExpr(expr, context), error -> registerError(error, rule, context) );
     }
 
-    public static Timer buildTimer( RuleImpl rule, String timerString, RuleBuildContext context,
+    public static Timer buildTimer( String timerString, RuleBuildContext context,
                                     Function<String, TimerExpression> exprCreator, Consumer<String> errorManager ) {
         if( timerString.indexOf( '(' ) >=0 ) {
             timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) ).trim();

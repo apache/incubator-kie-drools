@@ -18,8 +18,8 @@ package org.drools.verifier.visitor;
 
 import java.util.List;
 
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.OrDescr;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;

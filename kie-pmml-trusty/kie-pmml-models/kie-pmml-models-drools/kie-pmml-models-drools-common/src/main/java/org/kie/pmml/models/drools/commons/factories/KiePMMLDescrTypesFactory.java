@@ -17,7 +17,7 @@ package org.kie.pmml.models.drools.commons.factories;
 
 import java.util.List;
 
-import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.drl.ast.dsl.PackageDescrBuilder;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -16,10 +16,10 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;

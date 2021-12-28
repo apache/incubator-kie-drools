@@ -29,7 +29,7 @@ import org.drools.compiler.lang.DroolsSentence;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.Location;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;

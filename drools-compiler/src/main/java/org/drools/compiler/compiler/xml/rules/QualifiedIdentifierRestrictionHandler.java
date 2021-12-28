@@ -16,8 +16,8 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import org.drools.compiler.lang.descr.ConnectiveDescr;
-import org.drools.compiler.lang.descr.QualifiedIdentifierRestrictionDescr;
+import org.drools.drl.ast.descr.ConnectiveDescr;
+import org.drools.drl.ast.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;

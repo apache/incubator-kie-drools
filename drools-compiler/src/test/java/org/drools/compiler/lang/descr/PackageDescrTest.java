@@ -22,8 +22,9 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.api.impl.PackageDescrBuilderImpl;
+import org.drools.drl.ast.dsl.PackageDescrBuilder;
+import org.drools.drl.ast.dsl.impl.PackageDescrBuilderImpl;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;

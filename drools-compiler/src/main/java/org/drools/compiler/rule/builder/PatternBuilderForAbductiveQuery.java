@@ -18,13 +18,15 @@ package org.drools.compiler.rule.builder;
 import java.util.Arrays;
 
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.ObjectType;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.QueryDescr;
+
+import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
 
 public class PatternBuilderForAbductiveQuery extends PatternBuilderForQuery {
 
@@ -38,7 +40,7 @@ public class PatternBuilderForAbductiveQuery extends PatternBuilderForQuery {
             String[] args = argsVal != null ? Arrays.copyOf( argsVal, argsVal.length, String[].class ) : null;
 
             returnName = types[ numParams ];
-            Class<?> abductionReturnKlass = query.getAbductionClass(queryDescr::getTypedAnnotation);
+            Class<?> abductionReturnKlass = query.getAbductionClass(annotationClass -> getTypedAnnotation(queryDescr, annotationClass ));
             ObjectType objectType = context.getPkg().getClassFieldAccessorStore().wireObjectType( new ClassObjectType( abductionReturnKlass, false ), (AcceptsClassObjectType) query);
 
             query.setReturnType( objectType, params, args, declarations);
@@ -64,7 +66,7 @@ public class PatternBuilderForAbductiveQuery extends PatternBuilderForQuery {
     @Override
     protected String[] getQueryTypes(QueryDescr queryDescr, QueryImpl query) {
         String[] types = Arrays.copyOf( queryDescr.getParameterTypes(), queryDescr.getParameterTypes().length + 1 );
-        Class<?> abductionReturnKlass = query.getAbductionClass(queryDescr::getTypedAnnotation);
+        Class<?> abductionReturnKlass = query.getAbductionClass(annotationClass -> getTypedAnnotation(queryDescr, annotationClass ));
         types[types.length-1 ] = abductionReturnKlass.getName();
         return types;
     }

@@ -27,7 +27,7 @@ import java.util.UUID;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

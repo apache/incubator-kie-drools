@@ -25,8 +25,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.BindingDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassObjectType;
@@ -46,6 +46,7 @@ import org.drools.mvel.java.JavaExprAnalyzer;
 import org.junit.Test;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
+import static org.drools.compiler.rule.builder.RuleBuildContext.descrToRule;
 import static org.drools.mvel.asm.AsmUtil.fixBlockDescr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -74,7 +75,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
             ruleDescr.addNamedConsequences( entry.getKey(), entry.getValue() );
         }
 
-        RuleImpl rule = ruleDescr.toRule();
+        RuleImpl rule = descrToRule(ruleDescr);
         
         PackageRegistry pkgRegistry = kBuilder.getPackageRegistry( pkg.getName() );
         DialectCompiletimeRegistry reg = kBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();

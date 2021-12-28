@@ -16,9 +16,9 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.drl.ast.descr.ConditionalElementDescr;
+import org.drools.drl.ast.descr.NotDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;

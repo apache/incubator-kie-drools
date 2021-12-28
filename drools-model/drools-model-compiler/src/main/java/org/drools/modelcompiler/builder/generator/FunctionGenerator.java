@@ -26,7 +26,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
-import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;

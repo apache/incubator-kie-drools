@@ -154,6 +154,7 @@
     <module>drools-core</module>
     <module>drools-kiesession</module>
     <module>drools-ecj</module>
+    <module>drools-drl-ast</module>
     <module>drools-compiler</module>
     <module>drools-mvel</module>
     <module>drools-xml-support</module>

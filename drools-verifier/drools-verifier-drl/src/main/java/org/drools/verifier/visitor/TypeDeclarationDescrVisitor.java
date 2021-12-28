@@ -16,8 +16,8 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;

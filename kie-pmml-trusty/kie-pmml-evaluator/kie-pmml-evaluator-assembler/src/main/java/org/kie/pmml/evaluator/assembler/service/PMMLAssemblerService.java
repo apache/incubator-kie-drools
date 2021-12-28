@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.kie.api.internal.assembler.KieAssemblerService;

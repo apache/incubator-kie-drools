@@ -24,7 +24,7 @@ import java.util.function.Function;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;

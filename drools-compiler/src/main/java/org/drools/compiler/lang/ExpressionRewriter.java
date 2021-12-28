@@ -16,9 +16,9 @@
 package org.drools.compiler.lang;
 
 
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-import org.drools.compiler.lang.descr.OperatorDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.OperatorDescr;
 
 public interface ExpressionRewriter {
 

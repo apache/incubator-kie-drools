@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.VerifierComponentType;

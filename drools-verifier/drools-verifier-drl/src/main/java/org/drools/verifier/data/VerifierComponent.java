@@ -19,7 +19,7 @@ package org.drools.verifier.data;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.report.components.Cause;
 

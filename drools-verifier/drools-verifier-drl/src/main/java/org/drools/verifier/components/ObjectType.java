@@ -23,7 +23,7 @@ import java.util.Set;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 
 public class ObjectType extends VerifierComponent<BaseDescr>

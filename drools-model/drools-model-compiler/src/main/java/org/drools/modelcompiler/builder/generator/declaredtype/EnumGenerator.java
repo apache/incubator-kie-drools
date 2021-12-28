@@ -34,9 +34,9 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.Type;
-import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.descr.EnumLiteralDescr;
-import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.EnumLiteralDescr;
+import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedConstructor;
 

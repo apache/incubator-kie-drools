@@ -20,7 +20,7 @@ package org.drools.modelcompiler.builder.generator.visitor;
 import java.util.Optional;
 
 import com.github.javaparser.ast.expr.Expression;
-import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;

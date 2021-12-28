@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.dsl.DescrFactory;
+import org.drools.drl.ast.dsl.PackageDescrBuilder;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;

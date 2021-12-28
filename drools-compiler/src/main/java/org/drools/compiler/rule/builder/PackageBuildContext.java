@@ -29,7 +29,7 @@ import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Dialectable;
 
@@ -125,7 +125,7 @@ public class PackageBuildContext {
     }
 
     public Dialect getDialect(String dialectName) {
-        return (Dialect) this.dialectRegistry.getDialect( dialectName );
+        return this.dialectRegistry.getDialect( dialectName );
     }
 
     public DialectCompiletimeRegistry getDialectRegistry() {

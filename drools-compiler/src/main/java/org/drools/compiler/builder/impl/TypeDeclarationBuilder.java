@@ -24,13 +24,13 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.QualifiedName;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.QualifiedName;
+import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
@@ -43,7 +43,7 @@ public class TypeDeclarationBuilder {
 
     protected final KnowledgeBuilderImpl kbuilder;
 
-    protected final Set<String> generatedTypes                = new HashSet<String>();
+    protected final Set<String> generatedTypes = new HashSet<>();
 
     protected TypeDeclarationCache classDeclarationExtractor;
     protected TypeDeclarationNameResolver typeDeclarationNameResolver;
@@ -165,7 +165,7 @@ public class TypeDeclarationBuilder {
     }
 
     private Collection<AbstractClassTypeDeclarationDescr> compactDefinitionsAndDeclarations( Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, Map<String, AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
-        Map<String,AbstractClassTypeDeclarationDescr> compactedUnsorted = new HashMap<String,AbstractClassTypeDeclarationDescr>( unsortedDescrs.size() );
+        Map<String,AbstractClassTypeDeclarationDescr> compactedUnsorted = new HashMap<>( unsortedDescrs.size() );
         for ( AbstractClassTypeDeclarationDescr descr : unsortedDescrs ) {
             if ( compactedUnsorted.containsKey( descr.getType().getFullName() ) ) {
                 AbstractClassTypeDeclarationDescr prev = compactedUnsorted.get( descr.getType().getFullName() );
@@ -235,11 +235,10 @@ public class TypeDeclarationBuilder {
 
         //descriptor needs fields inherited from superclass
         if ( typeDescr instanceof TypeDeclarationDescr ) {
-            hierarchyManager.inheritFields( pkgRegistry, typeDescr, hierarchyManager.getSortedDescriptors(), unresolvedTypes, unprocesseableDescrs );
+            hierarchyManager.inheritFields( pkgRegistry, typeDescr, unprocesseableDescrs );
         }
 
-        TypeDeclaration type = typeDeclarationFactory.processTypeDeclaration( pkgRegistry,
-                                                                              typeDescr );
+        TypeDeclaration type = typeDeclarationFactory.processTypeDeclaration( pkgRegistry, typeDescr );
         boolean success = ! kbuilder.hasErrors();
 
         try {
@@ -317,7 +316,7 @@ public class TypeDeclarationBuilder {
                     PackageDescr altDescr;
 
                     if ( foreignPackages == null ) {
-                        foreignPackages = new HashMap<String, PackageDescr>(  );
+                        foreignPackages = new HashMap<>(  );
                     }
 
                     if ( foreignPackages.containsKey( typeDescr.getNamespace() ) ) {

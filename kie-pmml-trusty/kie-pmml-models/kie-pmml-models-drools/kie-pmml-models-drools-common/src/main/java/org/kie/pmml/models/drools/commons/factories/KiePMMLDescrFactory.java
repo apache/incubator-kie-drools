@@ -18,9 +18,9 @@ package org.kie.pmml.models.drools.commons.factories;
 import java.util.Map;
 
 import org.dmg.pmml.SimplePredicate;
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.dsl.DescrFactory;
+import org.drools.drl.ast.dsl.PackageDescrBuilder;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;

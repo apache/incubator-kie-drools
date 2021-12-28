@@ -18,11 +18,11 @@ package org.drools.mvel.compiler.lang;
 
 import junit.framework.TestCase;
 import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.compiler.lang.descr.AtomicExprDescr;
-import org.drools.compiler.lang.descr.BindingDescr;
-import org.drools.compiler.lang.descr.ConnectiveType;
-import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-import org.drools.compiler.lang.descr.RelationalExprDescr;
+import org.drools.drl.ast.descr.AtomicExprDescr;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.ConnectiveType;
+import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;

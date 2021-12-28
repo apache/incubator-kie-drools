@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 

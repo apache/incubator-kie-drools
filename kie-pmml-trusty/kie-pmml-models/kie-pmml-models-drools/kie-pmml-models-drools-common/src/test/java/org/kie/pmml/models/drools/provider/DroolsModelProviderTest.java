@@ -32,7 +32,7 @@ import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.BeforeClass;
 import org.junit.Test;

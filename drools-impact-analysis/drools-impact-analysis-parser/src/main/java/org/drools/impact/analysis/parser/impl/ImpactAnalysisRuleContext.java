@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;

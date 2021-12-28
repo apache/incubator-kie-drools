@@ -24,10 +24,10 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
-import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.TypeDeclarationDescr;
+import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.core.base.ClassFieldInspector;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.factmodel.FieldDefinition;
@@ -37,6 +37,8 @@ import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.PropertyChangeSupport;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
+
+import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
 
 public class TypeDeclarationFactory {
 
@@ -76,12 +78,12 @@ public class TypeDeclarationFactory {
     }
 
     public static void processAnnotations( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
-        Role role = typeDescr.getTypedAnnotation(Role.class);
+        Role role = getTypedAnnotation(typeDescr, Role.class);
         if (role != null) {
             type.setRole(role.value());
         }
 
-        TypeSafe typeSafe = typeDescr.getTypedAnnotation(TypeSafe.class);
+        TypeSafe typeSafe = getTypedAnnotation(typeDescr, TypeSafe.class);
         if (typeSafe != null) {
             type.setTypesafe(typeSafe.value());
         }
@@ -218,15 +220,13 @@ public class TypeDeclarationFactory {
 
         //different superclasses -> Incompatible (TODO: check for hierarchy)
         if (!oldDeclaration.getTypeClassDef().getSuperClass().equals(newDeclaration.getTypeClassDef().getSuperClass())) {
-            if (oldDeclaration.getNature() == TypeDeclaration.Nature.DEFINITION
-                && newDeclaration.getNature() == TypeDeclaration.Nature.DECLARATION
-                && Object.class.getName().equals(newDeclaration.getTypeClassDef().getSuperClass())) {
-                // actually do nothing. The new declaration just recalls the previous definition, probably to extend it.
-            } else {
-                throw new IncompatibleClassChangeError("Type Declaration " + newDeclaration.getTypeName() + " has a different"
-                                                       + " superclass that its previous definition: " + newDeclaration.getTypeClassDef().getSuperClass()
-                                                       + " != " + oldDeclaration.getTypeClassDef().getSuperClass());
-            }
+            if (oldDeclaration.getNature() != TypeDeclaration.Nature.DEFINITION
+                    || newDeclaration.getNature() != TypeDeclaration.Nature.DECLARATION
+                    || !Object.class.getName().equals(newDeclaration.getTypeClassDef().getSuperClass())) {
+                        throw new IncompatibleClassChangeError("Type Declaration " + newDeclaration.getTypeName() + " has a different"
+                                                               + " superclass that its previous definition: " + newDeclaration.getTypeClassDef().getSuperClass()
+                                                               + " != " + oldDeclaration.getTypeClassDef().getSuperClass());
+                }
         }
 
         //different duration -> Incompatible
@@ -249,7 +249,7 @@ public class TypeDeclarationFactory {
 
         //Field comparison
         List<FactField> oldFields = oldDeclaration.getTypeClassDef().getFields();
-        Map<String, FactField> newFieldsMap = new HashMap<String, FactField>();
+        Map<String, FactField> newFieldsMap = new HashMap<>();
         for (FactField factField : newDeclaration.getTypeClassDef().getFields()) {
             newFieldsMap.put(factField.getName(), factField);
         }
@@ -310,16 +310,16 @@ public class TypeDeclarationFactory {
 
 
     private TypeDeclarationError reportDeclarationDiff( ClassFieldInspector cfi, AbstractClassTypeDeclarationDescr typeDescr) {
-        List<String> existing = new ArrayList<String>();
+        List<String> existing = new ArrayList<>();
         for ( String existingFieldName : cfi.getFieldTypesField().keySet() ) {
             if ( ! cfi.isNonGetter( existingFieldName ) && ! "class".equals( existingFieldName ) && cfi.getSetterMethods().containsKey( existingFieldName ) ) {
                 existing.add( existingFieldName );
             }
         }
         Collections.sort( existing );
-        List<String> declared = new ArrayList<String>( typeDescr.getFields().keySet() );
+        List<String> declared = new ArrayList<>( typeDescr.getFields().keySet() );
         Collections.sort( declared );
-        List<String> deltas = new ArrayList<String>();
+        List<String> deltas = new ArrayList<>();
         for ( String s : existing ) {
             if ( ! declared.contains( s ) ) {
                 deltas.add( "--" + s );

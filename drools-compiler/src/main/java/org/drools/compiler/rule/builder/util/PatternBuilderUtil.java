@@ -17,7 +17,7 @@ package org.drools.compiler.rule.builder.util;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
+import org.drools.drl.ast.descr.LiteralRestrictionDescr;
 import org.drools.core.base.ValueType;
 import org.drools.core.spi.FieldValue;
 

@@ -16,8 +16,8 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 public class DuplicateRule extends ConfigurableSeverityResult {

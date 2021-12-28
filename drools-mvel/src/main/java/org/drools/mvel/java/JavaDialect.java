@@ -39,26 +39,26 @@ import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCacheEntry;
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.CollectDescr;
-import org.drools.compiler.lang.descr.ConditionalBranchDescr;
-import org.drools.compiler.lang.descr.EntryPointDescr;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.ExistsDescr;
-import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.FromDescr;
-import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.lang.descr.WindowReferenceDescr;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.CollectDescr;
+import org.drools.drl.ast.descr.ConditionalBranchDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.EvalDescr;
+import org.drools.drl.ast.descr.ExistsDescr;
+import org.drools.drl.ast.descr.ForallDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.NamedConsequenceDescr;
+import org.drools.drl.ast.descr.NotDescr;
+import org.drools.drl.ast.descr.OrDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.ProcessDescr;
+import org.drools.drl.ast.descr.QueryDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.ast.descr.WindowReferenceDescr;
 import org.drools.compiler.rule.builder.PatternBuilderForAbductiveQuery;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.CollectBuilder;
@@ -77,7 +77,6 @@ import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.PatternBuilderForQuery;
-import org.drools.compiler.rule.builder.ReturnValueBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
@@ -109,13 +108,9 @@ import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 
-public class JavaDialect
-        implements
-        Dialect {
+public class JavaDialect implements Dialect {
 
     public static final String ID = "java";
-
-    private final static String EXPRESSION_DIALECT_NAME = "mvel";
 
     // builders
     protected static final PatternBuilder PATTERN_BUILDER = new PatternBuilder();
@@ -280,10 +275,6 @@ public class JavaDialect
                                                                             "Process",
                                                                             this.src);
         processDescr.setClassName(StringUtils.ucFirst(processDescrClassName));
-    }
-
-    public String getExpressionDialectName() {
-        return EXPRESSION_DIALECT_NAME;
     }
 
     public AnalysisResult analyzeExpression(final PackageBuildContext context,

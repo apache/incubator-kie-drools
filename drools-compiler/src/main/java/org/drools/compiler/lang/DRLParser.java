@@ -17,7 +17,7 @@ package org.drools.compiler.lang;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.io.Resource;
 
 import java.util.LinkedList;

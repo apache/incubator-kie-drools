@@ -13,7 +13,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;

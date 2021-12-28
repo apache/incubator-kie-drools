@@ -14,7 +14,7 @@
 
 package org.drools.compiler.rule.builder;
 
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.util.StringUtils;
 

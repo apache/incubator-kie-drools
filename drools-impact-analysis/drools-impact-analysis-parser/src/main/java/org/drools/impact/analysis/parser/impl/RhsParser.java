@@ -29,7 +29,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.model.right.ConsequenceAction;

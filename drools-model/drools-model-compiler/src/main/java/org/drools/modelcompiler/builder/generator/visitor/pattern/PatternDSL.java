@@ -31,11 +31,11 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -57,6 +57,7 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
 import org.kie.api.definition.rule.Watch;
 
+import static org.drools.compiler.rule.builder.PatternBuilder.lookAheadFieldsOfIdentifier;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
@@ -326,7 +327,7 @@ public abstract class PatternDSL implements DSLNode {
         propertiesInWatch.stream().forEach(prop -> populateSettableWatchedProps(prop, settableProps, settableWatchedProps, true));
 
         if (context.isPropertyReactive(patternType)) {
-            Collection<String> lookAheadProps = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
+            Collection<String> lookAheadProps = lookAheadFieldsOfIdentifier(context.getRuleDescr(), pattern);
             lookAheadProps.stream().forEach(prop -> populateSettableWatchedProps(prop, settableProps, settableWatchedProps, false)); // okay to have non-settable prop in lookAhead
         }
         

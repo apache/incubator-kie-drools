@@ -16,6 +16,10 @@
 
 package org.drools.core.factmodel;
 
+import org.kie.internal.definition.GenericTypeDefinition;
+
+import static java.util.stream.Collectors.joining;
+
 public final class BuildUtils {
 
     public static String[] getInternalTypes( String[] superClasses ) {
@@ -496,5 +500,18 @@ public final class BuildUtils {
 
     private BuildUtils() {
         // It is not allowed to create instances of util classes.
+    }
+
+    public static String getDescriptor(GenericTypeDefinition typeDef) {
+        return BuildUtils.getTypeDescriptor( typeDef.getRawType() );
+    }
+
+    public static String getSignature(GenericTypeDefinition typeDef) {
+        String descriptor = getDescriptor( typeDef );
+        if (typeDef.getGenericTypes() == null) {
+            return descriptor;
+        }
+        return descriptor.substring( 0, descriptor.length()-1 ) +
+                "<" + typeDef.getGenericTypes().stream().map( BuildUtils::getSignature ).collect( joining() ) + ">;";
     }
 }

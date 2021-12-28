@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.io.impl.InputStreamResource;
 import org.drools.mvel.DrlDumper;
 import org.drools.mvel.compiler.Cheese;

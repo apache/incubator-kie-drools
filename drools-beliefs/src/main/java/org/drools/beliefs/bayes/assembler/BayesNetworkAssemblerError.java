@@ -16,7 +16,7 @@
 package org.drools.beliefs.bayes.assembler;
 
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.kie.api.io.Resource;
 
 public class BayesNetworkAssemblerError extends DroolsError {

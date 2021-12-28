@@ -15,8 +15,6 @@
 
 package org.drools.compiler.builder.impl;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.drools.compiler.compiler.AnalysisResult;
@@ -24,8 +22,6 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
@@ -36,15 +32,18 @@ import org.drools.core.rule.Annotated;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
+import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
+import static org.drools.compiler.rule.builder.util.AnnotationFactory.toAnnotated;
 import static org.drools.core.rule.TypeDeclaration.processTypeAnnotations;
 
 public class TypeDeclarationConfigurator {
 
-    protected KnowledgeBuilderImpl kbuilder;
+    protected final KnowledgeBuilderImpl kbuilder;
 
     public TypeDeclarationConfigurator( KnowledgeBuilderImpl kbuilder ) {
         this.kbuilder = kbuilder;
@@ -100,8 +99,9 @@ public class TypeDeclarationConfigurator {
             }
         }
 
-        processMvelBasedAccessors( kbuilder, pkgRegistry, typeDescr, type );
-        processTypeAnnotations( type, typeDescr, kbuilder.getBuilderConfiguration().getPropertySpecificOption());
+        Annotated annotatedType = toAnnotated(typeDescr);
+        processMvelBasedAccessors( kbuilder, pkgRegistry, annotatedType, type );
+        processTypeAnnotations( type, annotatedType, kbuilder.getBuilderConfiguration().getPropertySpecificOption());
         return true;
     }
 
@@ -110,16 +110,8 @@ public class TypeDeclarationConfigurator {
         wireDurationAccessor( kbuilder, annotated, type, pkgRegistry );
     }
 
-    protected void buildFieldAccessors(final TypeDeclaration type,
-                                       final PackageRegistry pkgRegistry) throws SecurityException,
-            IllegalArgumentException,
-            InstantiationException,
-            IllegalAccessException,
-            IOException,
-            ClassNotFoundException,
-            NoSuchMethodException,
-            InvocationTargetException,
-            NoSuchFieldException {
+    protected void buildFieldAccessors(TypeDeclaration type, PackageRegistry pkgRegistry)
+            throws SecurityException, IllegalArgumentException {
         ClassDefinition cd = type.getTypeClassDef();
         ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
         for ( FieldDefinition attrDef : cd.getFieldsDefinitions() ) {

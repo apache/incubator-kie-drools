@@ -20,12 +20,12 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 import java.util.List;
 import java.util.Optional;
 
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.lang.descr.FromDescr;
-import org.drools.compiler.lang.descr.MVELExprDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.MVELExprDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.compiler.rule.builder.XpathAnalysis;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;

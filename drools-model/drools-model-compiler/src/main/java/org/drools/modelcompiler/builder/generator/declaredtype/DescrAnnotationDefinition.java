@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 import org.kie.api.definition.type.Duration;

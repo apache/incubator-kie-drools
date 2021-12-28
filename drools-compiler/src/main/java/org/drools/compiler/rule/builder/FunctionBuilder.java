@@ -19,7 +19,7 @@ package org.drools.compiler.rule.builder;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.LineMappings;
 import org.kie.internal.builder.KnowledgeBuilderResult;

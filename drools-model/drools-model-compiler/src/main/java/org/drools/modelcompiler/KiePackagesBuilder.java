@@ -246,7 +246,7 @@ public class KiePackagesBuilder {
             pkg.getRuleUnitDescriptionLoader().getDescription(ruleImpl );
         }
         RuleContext ctx = new RuleContext( this, pkg, ruleImpl );
-        populateLHS( ctx, pkg, rule.getView() );
+        populateLHS( ctx, rule.getView() );
         processConsequences( ctx, rule.getConsequences() );
         if (ctx.needsStreamMode()) {
             pkg.setNeedStreamMode();
@@ -337,7 +337,7 @@ public class KiePackagesBuilder {
     }
 
     private org.drools.core.time.impl.Timer parseTimer( RuleImpl ruleImpl, String timerExpr, RuleContext ctx ) {
-        return buildTimer(ruleImpl, timerExpr, null, expr -> buildTimerExpression( expr, ctx.getDeclarations() ), e -> {
+        return buildTimer(timerExpr, null, expr -> buildTimerExpression( expr, ctx.getDeclarations() ), e -> {
             throw new IllegalArgumentException("Invalid timer expression: '" + e + "' in rule " + ruleImpl.getName());
         });
     }
@@ -347,7 +347,7 @@ public class KiePackagesBuilder {
         queryImpl.setPackage( query.getPackage() );
         RuleContext ctx = new RuleContext( this, pkg, queryImpl );
         addQueryPattern( query, queryImpl, ctx );
-        populateLHS( ctx, pkg, query.getView() );
+        populateLHS( ctx, query.getView() );
         return queryImpl;
     }
 
@@ -436,7 +436,7 @@ public class KiePackagesBuilder {
         return false;
     }
 
-    private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
+    private void populateLHS( RuleContext ctx, View view ) {
         GroupElement lhs = ctx.getRule().getLhs();
         addSubConditions( ctx, lhs, view.getSubConditions());
         if (requiresLeftActivation(lhs)) {
@@ -686,7 +686,7 @@ public class KiePackagesBuilder {
 
         // The main issue with all of this, is it doesn't allow access to other previous variables. And it should work with
         // with pattern bindings and field bindings. What if getVariables() returns an array.length > 1?
-        EvalCondition evalCondition = null;
+        EvalCondition evalCondition;
         if (consequence.getExpr() != null) {
             Pattern pattern = ctx.getPattern(consequence.getExpr().getVariables()[0]);
 

@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.BindingDescr;
-import org.drools.compiler.lang.descr.OperatorDescr;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.OperatorDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 
 public class DumperContext {

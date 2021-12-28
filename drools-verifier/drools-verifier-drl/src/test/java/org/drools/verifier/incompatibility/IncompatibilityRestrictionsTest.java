@@ -18,7 +18,7 @@ package org.drools.verifier.incompatibility;
 
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.core.base.evaluators.Operator;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.*;

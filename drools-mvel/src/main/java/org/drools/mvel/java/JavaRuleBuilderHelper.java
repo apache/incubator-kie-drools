@@ -24,8 +24,8 @@ import java.util.Map.Entry;
 
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;

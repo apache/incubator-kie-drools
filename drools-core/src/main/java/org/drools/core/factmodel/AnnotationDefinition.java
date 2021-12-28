@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.drools.core.addon.TypeResolver;
 import org.kie.api.definition.type.Annotation;
@@ -43,7 +44,7 @@ public class AnnotationDefinition implements Externalizable,
 
     public AnnotationDefinition(String name) {
         this.name = name;
-        this.values = new HashMap<String, AnnotationPropertyVal>();
+        this.values = new HashMap<>();
     }
 
     public Map<String, AnnotationPropertyVal> getValues() {
@@ -67,9 +68,7 @@ public class AnnotationDefinition implements Externalizable,
         AnnotationDefinition that = (AnnotationDefinition) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (values != null ? !values.equals(that.values) : that.values != null) return false;
-
-        return true;
+        return values != null ? values.equals(that.values) : that.values == null;
     }
 
     public int hashCode() {
@@ -109,7 +108,7 @@ public class AnnotationDefinition implements Externalizable,
 
     public static AnnotationDefinition build(Class annotationClass, Map<String, Object> valueMap, TypeResolver resolver) throws NoSuchMethodException {
         AnnotationDefinition annotationDefinition = new AnnotationDefinition(annotationClass.getName());
-        HashMap<String, AnnotationPropertyVal> values = new HashMap<String, AnnotationPropertyVal>();
+        HashMap<String, AnnotationPropertyVal> values = new HashMap<>();
         for (Map.Entry<String, Object> valueMapEntry : valueMap.entrySet()) {
             AnnotationPropertyVal value = rebuild(valueMapEntry.getKey(), annotationClass, valueMapEntry.getValue(), resolver);
             if (value != null) {
@@ -176,12 +175,8 @@ public class AnnotationDefinition implements Externalizable,
                     value = valueStr.substring(valueStr.lastIndexOf(".") + 1);
                 }
                 return returnType.getMethod("valueOf", String.class).invoke(null, value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         } else if (String.class.equals(returnType)) {
             return unquote(value.toString().trim());
@@ -212,7 +207,7 @@ public class AnnotationDefinition implements Externalizable,
             }
         } else if (returnType.isAnnotation()) {
             try {
-                return build(returnType, ((PropertyMap) value).getValues(), resolver);
+                return build(returnType, ((Supplier<Map<String, Object>>) value).get(), resolver);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
                 return null;
@@ -238,7 +233,7 @@ public class AnnotationDefinition implements Externalizable,
 
         private ValType valType;
 
-        public static enum ValType {
+        public enum ValType {
             PRIMITIVE,
             KLASS,
             STRING,

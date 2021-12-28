@@ -17,21 +17,21 @@
 
 package org.drools.modelcompiler.builder.generator.visitor;
 
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.CollectDescr;
-import org.drools.compiler.lang.descr.ConditionalBranchDescr;
-import org.drools.compiler.lang.descr.DescrVisitor;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.ExistsDescr;
-import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.FromDescr;
-import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.CollectDescr;
+import org.drools.drl.ast.descr.ConditionalBranchDescr;
+import org.drools.drl.ast.descr.DescrVisitor;
+import org.drools.drl.ast.descr.EvalDescr;
+import org.drools.drl.ast.descr.ExistsDescr;
+import org.drools.drl.ast.descr.ForallDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.NamedConsequenceDescr;
+import org.drools.drl.ast.descr.NotDescr;
+import org.drools.drl.ast.descr.OrDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor;
@@ -41,7 +41,6 @@ import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXISTS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FORALL_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.OR_CALL;
 
 public class ModelGeneratorVisitor implements DescrVisitor {
 

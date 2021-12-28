@@ -33,6 +33,10 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-drl-ast</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-kiesession</artifactId>
     </dependency>
     <dependency>

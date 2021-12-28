@@ -16,7 +16,7 @@
 package org.drools.compiler.compiler;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.DialectRuntimeRegistry;

@@ -17,7 +17,7 @@
 
 package org.drools.modelcompiler.builder;
 
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 
 public class RuleDescrImpl {

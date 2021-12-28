@@ -1,7 +1,7 @@
 package org.drools.modelcompiler.drlx;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;

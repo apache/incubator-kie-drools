@@ -24,9 +24,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;

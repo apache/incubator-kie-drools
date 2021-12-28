@@ -17,10 +17,10 @@
 
 package org.drools.modelcompiler.builder.generator.visitor;
 
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.CollectDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.CollectDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 
 public class FromCollectVisitor {
 

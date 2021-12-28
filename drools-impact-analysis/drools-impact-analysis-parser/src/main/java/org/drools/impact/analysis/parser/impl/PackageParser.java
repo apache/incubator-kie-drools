@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.impact.analysis.model.Package;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.parser.internal.ImpactModelBuilderImpl;

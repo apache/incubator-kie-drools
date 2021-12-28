@@ -1,17 +1,17 @@
 @code{
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.ExistsDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.FromDescr;
-import org.drools.compiler.lang.descr.EntryPointDescr;
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.CollectDescr;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.OrDescr;
+import org.drools.drl.ast.descr.NotDescr;
+import org.drools.drl.ast.descr.ExistsDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.CollectDescr;
+import org.drools.drl.ast.descr.EvalDescr;
+import org.drools.drl.ast.descr.ForallDescr;
+import org.drools.drl.ast.descr.NamedConsequenceDescr;
+import org.drools.drl.ast.descr.ConditionalBranchDescr;
 }
 
 @comment{
@@ -65,7 +65,7 @@ end
 @comment{***************************************************************
                        ANNOTATIONS TEMPLATE
 ************************************************************************ }
-@declare{"annotation"}@@@{ann.name}@code{count=ann.values.size()}@if{count>0}( @foreach{entry:ann.values.entrySet()}@if{count>1 || !entry.key.equals("value")}@{entry.key}=@end{}@{entry.value}@end{", "} )@end{}@end{}
+@declare{"annotation"}@@@{ann.name}@code{count=ann.valueMap.size()}@if{count>0}( @foreach{entry:ann.valueMap.entrySet()}@if{count>1 || !entry.key.equals("value")}@{entry.key}=@end{}@{entry.value}@end{", "} )@end{}@end{}
 
 @comment{***************************************************************
                        CONDITIONAL ELEMENT TEMPLATE

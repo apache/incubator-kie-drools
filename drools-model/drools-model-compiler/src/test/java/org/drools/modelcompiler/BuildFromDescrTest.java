@@ -14,8 +14,8 @@
 
 package org.drools.modelcompiler;
 
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.dsl.DescrFactory;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;

@@ -43,7 +43,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.BoxedParameters;

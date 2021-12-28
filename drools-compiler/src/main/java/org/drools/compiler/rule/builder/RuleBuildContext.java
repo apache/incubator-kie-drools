@@ -22,8 +22,8 @@ import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.QueryDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -72,7 +72,7 @@ public class RuleBuildContext extends PackageBuildContext {
                             final Dialect defaultDialect) {
         this.ruleDescr = ruleDescr;
 
-        this.rule = ruleDescr instanceof QueryDescr ? TruthMaintenanceSystemFactory.createQuery(ruleDescr.getName(), ruleDescr::hasAnnotation) : ruleDescr.toRule();
+        this.rule = ruleDescr instanceof QueryDescr ? TruthMaintenanceSystemFactory.createQuery(ruleDescr.getName(), ruleDescr::hasAnnotation) : descrToRule(ruleDescr);
         this.rule.setPackage(pkg.getName());
         this.rule.setDialect(ruleDescr.getDialect());
         this.rule.setLoadOrder(ruleDescr.getLoadOrder());
@@ -245,5 +245,11 @@ public class RuleBuildContext extends PackageBuildContext {
 
     public int getXpathOffsetadjustment() {
         return xpathOffsetadjustment;
+    }
+
+    public static RuleImpl descrToRule(RuleDescr ruleDescr) {
+        RuleImpl rule = new RuleImpl( ruleDescr.getName() );
+        rule.setResource( rule.getResource() );
+        return rule;
     }
 }

@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldInspector;
 import org.drools.core.base.CoreComponentsBuilder;
@@ -132,7 +132,7 @@ public class TypeDeclarationUtils {
             }
         }
 
-        if ((klass != null) && (!klass.contains(".")) && (packageDescr.getNamespace() != null && !packageDescr.getNamespace().isEmpty())) {
+        if (!klass.contains(".") && packageDescr.getNamespace() != null && !packageDescr.getNamespace().isEmpty()) {
             for (AbstractClassTypeDeclarationDescr td : packageDescr.getClassAndEnumDeclarationDescrs()) {
                 if (klass.equals(td.getTypeName())) {
                     if (td.getType().getFullName().contains(".")) {

@@ -16,7 +16,7 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;

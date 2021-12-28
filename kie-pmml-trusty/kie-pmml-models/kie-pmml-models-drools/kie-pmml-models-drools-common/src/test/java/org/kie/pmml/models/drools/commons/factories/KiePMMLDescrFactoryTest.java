@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.dmg.pmml.SimplePredicate;
-import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;

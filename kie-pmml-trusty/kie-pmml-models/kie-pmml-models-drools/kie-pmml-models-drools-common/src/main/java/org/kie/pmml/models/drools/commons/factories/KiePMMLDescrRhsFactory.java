@@ -20,7 +20,7 @@ import java.util.StringJoiner;
 
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeature;
-import org.drools.compiler.lang.api.RuleDescrBuilder;
+import org.drools.drl.ast.dsl.RuleDescrBuilder;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
