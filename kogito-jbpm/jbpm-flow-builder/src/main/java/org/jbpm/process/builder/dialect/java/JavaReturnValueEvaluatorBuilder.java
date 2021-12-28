@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.drl.ast.descr.ReturnValueDescr;
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;

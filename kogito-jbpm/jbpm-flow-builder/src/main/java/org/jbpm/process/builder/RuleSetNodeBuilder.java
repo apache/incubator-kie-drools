@@ -18,7 +18,7 @@ package org.jbpm.process.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.ProcessDescr;
+import org.drools.drl.ast.descr.ProcessDescr;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.DataAssociation;

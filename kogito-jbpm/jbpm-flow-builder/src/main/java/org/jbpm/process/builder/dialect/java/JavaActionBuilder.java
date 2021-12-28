@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.builder.ProcessBuildContext;

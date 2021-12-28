@@ -18,8 +18,8 @@ package org.jbpm.process.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.ActionDescr;
-import org.drools.compiler.lang.descr.ProcessDescr;
+import org.drools.drl.ast.descr.ActionDescr;
+import org.drools.drl.ast.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.core.impl.DataTransformerRegistry;

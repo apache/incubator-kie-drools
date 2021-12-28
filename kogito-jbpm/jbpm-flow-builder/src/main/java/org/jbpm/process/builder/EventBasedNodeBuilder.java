@@ -17,7 +17,7 @@ package org.jbpm.process.builder;
 
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.ProcessDescr;
+import org.drools.drl.ast.descr.ProcessDescr;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;

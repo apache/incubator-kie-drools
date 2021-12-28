@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.drl.ast.descr.ActionDescr;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.workflow.core.DroolsAction;

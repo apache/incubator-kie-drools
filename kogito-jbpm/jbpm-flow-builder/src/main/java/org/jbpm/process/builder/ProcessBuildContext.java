@@ -18,10 +18,10 @@ package org.jbpm.process.builder;
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ProcessDescr;
 import org.kie.api.definition.process.Process;
 
 public class ProcessBuildContext extends PackageBuildContext {

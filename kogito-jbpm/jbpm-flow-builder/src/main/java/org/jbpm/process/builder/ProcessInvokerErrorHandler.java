@@ -15,7 +15,7 @@
  */
 package org.jbpm.process.builder;
 
-import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.kie.api.definition.process.Process;
 
 public class ProcessInvokerErrorHandler extends ProcessErrorHandler {

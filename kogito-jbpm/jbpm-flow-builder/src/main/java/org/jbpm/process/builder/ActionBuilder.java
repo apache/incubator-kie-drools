@@ -15,8 +15,8 @@
  */
 package org.jbpm.process.builder;
 
-import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.drl.ast.descr.ActionDescr;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.workflow.core.DroolsAction;
 

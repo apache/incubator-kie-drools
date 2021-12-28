@@ -20,10 +20,10 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.jbpm.process.core.Context;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;

@@ -15,7 +15,7 @@
  */
 package org.jbpm.process.builder;
 
-import org.drools.compiler.lang.descr.ProcessDescr;
+import org.drools.drl.ast.descr.ProcessDescr;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 

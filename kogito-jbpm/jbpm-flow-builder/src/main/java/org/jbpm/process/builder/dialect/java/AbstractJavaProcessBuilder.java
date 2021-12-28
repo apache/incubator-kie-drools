@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.core.util.StringUtils;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.mvel.java.JavaAnalysisResult;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.core.ContextResolver;
