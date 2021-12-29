@@ -8,9 +8,22 @@ import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
 public class RuleJoinedPatterns extends RuleItem {
+    private final Type type;
+    private final NodeList<RuleItem> items;
+
     public enum Type { AND, OR }
     public RuleJoinedPatterns(TokenRange range, Type type, NodeList<RuleItem> items) {
         super(range);
+        this.type = type;
+        this.items = items;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public NodeList<RuleItem> items() {
+        return items;
     }
 
     @Override

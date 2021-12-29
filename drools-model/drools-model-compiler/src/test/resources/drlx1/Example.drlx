@@ -31,3 +31,11 @@ rule join {
         System.out.println("Happy new year 🎉 " + b);
     }
 }
+
+rule alternatives {
+    or (
+        LocalDate a : /dates[ year == 2021 ],
+        LocalDate b : /dates[ year == a.year, dayOfMonth == 1, month == Month.JANUARY ],
+    ),
+
+}

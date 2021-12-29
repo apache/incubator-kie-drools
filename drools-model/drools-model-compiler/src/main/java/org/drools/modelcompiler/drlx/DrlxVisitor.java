@@ -9,10 +9,7 @@ import org.drools.compiler.lang.ParseException;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.dsl.*;
-import org.drools.mvel.parser.ast.expr.RuleConsequence;
-import org.drools.mvel.parser.ast.expr.RuleDeclaration;
-import org.drools.mvel.parser.ast.expr.RuleItem;
-import org.drools.mvel.parser.ast.expr.RulePattern;
+import org.drools.mvel.parser.ast.expr.*;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 import org.drools.mvel.parser.printer.PrintUtil;
 
@@ -65,8 +62,20 @@ public class DrlxVisitor implements DrlVoidVisitor<Void> {
             } else if (item instanceof RuleConsequence) {
                 RuleConsequence c = (RuleConsequence) item;
                 ruleDescrBuilder.rhs(PrintUtil.printNode(c.getStatement()));
-            } else {
-                throw new IllegalArgumentException(item.getClass().getCanonicalName());
+            } else if (item instanceof RuleJoinedPatterns) {
+                RuleJoinedPatterns j = (RuleJoinedPatterns) item;
+                PatternDescrBuilder<? extends CEDescrBuilder<?, AndDescr>> pat = lhs.pattern();
+                if (j.getType() == RuleJoinedPatterns.Type.AND) {
+                    for (RuleItem ruleItem : j.items()) {
+
+                    }
+                    //todo
+                    return;
+                }
+                if (j.getType() == RuleJoinedPatterns.Type.OR) {
+                    //todo
+                    return;
+                }
             }
         }
     }
