@@ -22,7 +22,7 @@ public class RuleJoinedPatterns extends RuleItem {
         return type;
     }
 
-    public NodeList<RuleItem> items() {
+    public NodeList<RuleItem> getItems() {
         return items;
     }
 

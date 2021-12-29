@@ -6,12 +6,13 @@ import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.modules.ModuleDeclaration;
 import org.drools.compiler.lang.ParseException;
-import org.drools.drl.ast.descr.AndDescr;
-import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.*;
 import org.drools.drl.ast.dsl.*;
 import org.drools.mvel.parser.ast.expr.*;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 import org.drools.mvel.parser.printer.PrintUtil;
+
+import java.util.Stack;
 
 public class DrlxVisitor implements DrlVoidVisitor<Void> {
 
@@ -46,37 +47,57 @@ public class DrlxVisitor implements DrlVoidVisitor<Void> {
         importDescrBuilder.target(decl.getNameAsString());
     }
 
-    public void visit(RuleDeclaration decl, Void v) {
-        RuleDescrBuilder ruleDescrBuilder = builder.newRule();
-        ruleDescrBuilder.name(decl.getNameAsString());
-        CEDescrBuilder<?, AndDescr> lhs = ruleDescrBuilder.lhs().and();
-        for (RuleItem item : decl.getRuleBody().getItems()) {
-            if (item instanceof RulePattern) {
-                PatternDescrBuilder<? extends CEDescrBuilder<?, AndDescr>> pat = lhs.pattern();
-                RulePattern p = (RulePattern) item;
-                if (p.getBind() == null) {
-                    pat.constraint(PrintUtil.printNode(p.getExpr()));
-                } else {
-                    pat.id(PrintUtil.printNode(p.getBind()), false).constraint(PrintUtil.printNode(p.getExpr()));
-                }
-            } else if (item instanceof RuleConsequence) {
-                RuleConsequence c = (RuleConsequence) item;
-                ruleDescrBuilder.rhs(PrintUtil.printNode(c.getStatement()));
-            } else if (item instanceof RuleJoinedPatterns) {
-                RuleJoinedPatterns j = (RuleJoinedPatterns) item;
-                PatternDescrBuilder<? extends CEDescrBuilder<?, AndDescr>> pat = lhs.pattern();
-                if (j.getType() == RuleJoinedPatterns.Type.AND) {
-                    for (RuleItem ruleItem : j.items()) {
+    RuleDescrBuilder ruleDescrBuilder;
+    Stack<CEDescrBuilder<?, ?>> lhsStack = new Stack<>();
 
-                    }
-                    //todo
-                    return;
-                }
-                if (j.getType() == RuleJoinedPatterns.Type.OR) {
-                    //todo
-                    return;
-                }
+    public void visit(RuleDeclaration decl, Void v) {
+        this.ruleDescrBuilder = builder.newRule();
+        ruleDescrBuilder.name(decl.getNameAsString());
+
+        CEDescrBuilder<?, ?> lhs = ruleDescrBuilder.lhs();
+        lhsStack.push(lhs);
+        for (RuleItem item : decl.getRuleBody().getItems()) {
+            item.accept(this, v);
+        }
+        lhsStack.pop();
+        ruleDescrBuilder = null;
+    }
+
+    public void visit(RulePattern p, Void v) {
+        CEDescrBuilder<?,?> lhs = lhsStack.peek();
+        PatternDescrBuilder<? extends CEDescrBuilder<?, ?>> pat = lhs.pattern();
+        if (p.getBind() == null) {
+            pat.constraint(PrintUtil.printNode(p.getExpr()));
+        } else {
+            pat.id(PrintUtil.printNode(p.getBind()), false).constraint(PrintUtil.printNode(p.getExpr()));
+        }
+
+    }
+
+    public void visit(RuleConsequence c, Void v) {
+        ruleDescrBuilder.rhs(PrintUtil.printNode(c.getStatement()));
+    }
+
+    public void visit(RuleJoinedPatterns jp, Void v) {
+        if (jp.getType() == RuleJoinedPatterns.Type.AND) {
+            CEDescrBuilder<?, ?> lhs = lhsStack.peek().and();
+            lhsStack.push(lhs);
+            for (RuleItem item : jp.getItems()) {
+                item.accept(this, v);
             }
+            lhsStack.pop();
+            return;
+        }
+        if (jp.getType() == RuleJoinedPatterns.Type.OR) {
+            CEDescrBuilder<?, ?> lhs = lhsStack.peek().or();
+            lhsStack.push(lhs);
+            for (RuleItem ruleItem : jp.getItems()) {
+                ruleItem.accept(this, v);
+            }
+            lhsStack.pop();
+            return;
         }
     }
+
 }
+

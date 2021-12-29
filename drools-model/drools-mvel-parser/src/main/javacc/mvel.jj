@@ -6193,7 +6193,7 @@ RuleJoinedPatterns JoinedPatterns(RuleJoinedPatterns.Type tpe):
 }
 {
     item=JoinedItem() { items.add(item); }
-    ( JoinedItem() { items.add(item); } )+
+    ( item=JoinedItem() { items.add(item); } )+
     { return new RuleJoinedPatterns(null, tpe, items);  }
 }
 

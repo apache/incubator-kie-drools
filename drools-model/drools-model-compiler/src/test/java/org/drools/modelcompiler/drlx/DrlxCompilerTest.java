@@ -34,6 +34,7 @@ import org.drools.modelcompiler.KJARUtils;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
+import org.drools.mvel.DrlDumper;
 import org.drools.mvel.parser.MvelParser;
 import org.drools.mvel.parser.ParseStart;
 import org.junit.Ignore;
@@ -69,13 +70,16 @@ public class DrlxCompilerTest {
         InputStreamResource r = new InputStreamResource(p);
 
         DrlxCompiler drlxCompiler = new DrlxCompiler();
-        drlxCompiler.toPackageDescr(r);
 
         assertTrue("Should not have compiler errors\n" +
                            drlxCompiler.getResults().stream()
                                    .map(KnowledgeBuilderResult::toString)
                                    .collect(Collectors.joining("\n")),
                    drlxCompiler.getResults().isEmpty());
+
+        PackageDescr packageDescr = drlxCompiler.toPackageDescr(r);
+        System.out.println(new DrlDumper().dump(packageDescr));
+
     }
 
     @Test
