@@ -21,6 +21,8 @@ rule alternatives {
         ),
     ),
 
+    do System.out.println("hello");
+
 }
 
 rule year2020 {
