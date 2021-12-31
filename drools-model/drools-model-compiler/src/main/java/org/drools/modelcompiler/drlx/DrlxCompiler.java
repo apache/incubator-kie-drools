@@ -1,6 +1,10 @@
 package org.drools.modelcompiler.drlx;
 
-import com.github.javaparser.*;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.Problem;
+import com.github.javaparser.Range;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.drl.ast.descr.PackageDescr;
