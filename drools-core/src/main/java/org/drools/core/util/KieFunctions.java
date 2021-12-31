@@ -52,6 +52,12 @@ public class KieFunctions {
         return string.equals(value);
     }
 
+    public static boolean equalsToIgnoreCase(String string, String value) {
+        if (string == null) return value == null;
+
+        return string.equalsIgnoreCase(value);
+    }
+
     public static boolean isEmpty(String string) {
         return string == null || string.length() == 0;
     }
