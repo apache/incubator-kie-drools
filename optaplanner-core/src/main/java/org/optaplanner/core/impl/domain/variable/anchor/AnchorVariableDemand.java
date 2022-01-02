@@ -32,10 +32,6 @@ public class AnchorVariableDemand<Solution_> implements Demand<Solution_, Anchor
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
-    public VariableDescriptor<Solution_> getSourceVariableDescriptor() {
-        return sourceVariableDescriptor;
-    }
-
     // ************************************************************************
     // Creation method
     // ************************************************************************

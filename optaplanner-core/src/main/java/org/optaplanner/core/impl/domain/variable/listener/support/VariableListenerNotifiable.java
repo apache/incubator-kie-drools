@@ -42,10 +42,6 @@ final class VariableListenerNotifiable<Solution_> implements Comparable<Variable
         return (VariableListener<Solution_, Entity_>) variableListener;
     }
 
-    public int getGlobalOrder() {
-        return globalOrder;
-    }
-
     public Collection<VariableListenerNotification> getNotificationQueue() {
         return notificationQueue;
     }

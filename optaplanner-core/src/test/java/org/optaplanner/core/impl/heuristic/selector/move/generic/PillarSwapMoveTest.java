@@ -22,7 +22,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCod
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -291,14 +290,14 @@ public class PillarSwapMoveTest {
         PillarSwapMove<TestdataMultiVarSolution> move = new PillarSwapMove<>(Arrays.asList(primaryDescriptor),
                 Arrays.asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
                 Arrays.asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")));
-        assertThat((Collection<String>) move.getVariableNameList()).containsExactly("primaryValue");
+        assertThat(move.getVariableNameList()).containsExactly("primaryValue");
         assertAllCodesOfCollection(move.getLeftPillar(), "a", "b");
         assertAllCodesOfCollection(move.getRightPillar(), "c", "d");
 
         move = new PillarSwapMove<>(Arrays.asList(primaryDescriptor, secondaryDescriptor),
                 Arrays.asList(new TestdataMultiVarEntity("e"), new TestdataMultiVarEntity("f")),
                 Arrays.asList(new TestdataMultiVarEntity("g"), new TestdataMultiVarEntity("h")));
-        assertThat((Collection<String>) move.getVariableNameList()).containsExactly("primaryValue", "secondaryValue");
+        assertThat(move.getVariableNameList()).containsExactly("primaryValue", "secondaryValue");
         assertAllCodesOfCollection(move.getLeftPillar(), "e", "f");
         assertAllCodesOfCollection(move.getRightPillar(), "g", "h");
     }

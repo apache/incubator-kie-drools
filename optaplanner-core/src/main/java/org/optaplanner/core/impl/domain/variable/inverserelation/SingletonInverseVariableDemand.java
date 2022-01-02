@@ -30,10 +30,6 @@ public class SingletonInverseVariableDemand<Solution_> implements Demand<Solutio
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
-    public VariableDescriptor<Solution_> getSourceVariableDescriptor() {
-        return sourceVariableDescriptor;
-    }
-
     // ************************************************************************
     // Creation method
     // ************************************************************************

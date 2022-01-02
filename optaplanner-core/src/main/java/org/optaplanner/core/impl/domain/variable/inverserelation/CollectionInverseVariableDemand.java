@@ -33,10 +33,6 @@ public class CollectionInverseVariableDemand<Solution_> implements Demand<Soluti
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
-    public VariableDescriptor<Solution_> getSourceVariableDescriptor() {
-        return sourceVariableDescriptor;
-    }
-
     // ************************************************************************
     // Creation method
     // ************************************************************************
