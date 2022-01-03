@@ -16,7 +16,7 @@
 package org.optaplanner.persistence.jpa.impl.score.buildin.hardmediumsoftbigdecimal;
 
 import org.hibernate.type.StandardBasicTypes;
-import org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardMediumSoftBigDecimalScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
 /**

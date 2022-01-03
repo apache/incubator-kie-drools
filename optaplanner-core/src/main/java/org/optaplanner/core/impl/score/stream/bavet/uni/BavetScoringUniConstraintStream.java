@@ -25,12 +25,12 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
+import org.optaplanner.core.impl.score.stream.common.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.stream.common.inliner.WeightedScoreImpacter;
 
 public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
@@ -104,7 +104,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
     @Override
     protected BavetScoringUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
-        ScoreInliner<?> scoreInliner = buildPolicy.getSession().getScoreInliner();
+        AbstractScoreInliner<?> scoreInliner = buildPolicy.getSession().getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         Function<A, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {

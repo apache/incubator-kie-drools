@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.ParameterizedType;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
 /**

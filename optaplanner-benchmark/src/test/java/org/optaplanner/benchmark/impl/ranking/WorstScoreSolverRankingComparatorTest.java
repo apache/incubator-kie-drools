@@ -29,7 +29,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 
 public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRankingComparatorTest {
 

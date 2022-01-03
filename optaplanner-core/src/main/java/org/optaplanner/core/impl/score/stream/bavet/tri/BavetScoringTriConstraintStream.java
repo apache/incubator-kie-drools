@@ -25,13 +25,13 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
+import org.optaplanner.core.impl.score.stream.common.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.stream.common.inliner.WeightedScoreImpacter;
 
 public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
@@ -107,7 +107,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     @Override
     protected BavetScoringTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
-        ScoreInliner<?> scoreInliner = buildPolicy.getSession().getScoreInliner();
+        AbstractScoreInliner<?> scoreInliner = buildPolicy.getSession().getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {

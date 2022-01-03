@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 
 import org.drools.model.Global;
 import org.drools.model.Rule;
-import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.score.stream.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 @FunctionalInterface

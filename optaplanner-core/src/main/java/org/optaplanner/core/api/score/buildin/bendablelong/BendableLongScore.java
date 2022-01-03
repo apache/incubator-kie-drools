@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.BendableLongScoreDefinition;
 
 /**
  * This {@link Score} is based on n levels of long constraints.

@@ -55,8 +55,8 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
+import org.optaplanner.core.impl.score.stream.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
@@ -146,8 +146,8 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
         // Build and set the impacters for each constraint; this locks in the constraint weights.
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
-        ScoreInliner<Score_> scoreInliner =
-                scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
+        AbstractScoreInliner<Score_> scoreInliner = AbstractScoreInliner.buildScoreInliner(scoreDefinition,
+                (Map) constraintToWeightMap, constraintMatchEnabled);
         Set<String> disabledConstraints = new HashSet<>();
         for (Map.Entry<DroolsConstraint<Solution_>, Score_> entry : constraintToWeightMap.entrySet()) {
             DroolsConstraint<Solution_> constraint = entry.getKey();

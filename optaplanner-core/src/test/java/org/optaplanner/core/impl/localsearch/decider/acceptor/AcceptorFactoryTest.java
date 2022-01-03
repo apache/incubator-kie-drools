@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillcl
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.EntityTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.ValueTabuAcceptor;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 class AcceptorFactoryTest {

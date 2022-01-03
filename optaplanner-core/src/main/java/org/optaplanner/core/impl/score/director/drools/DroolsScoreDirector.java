@@ -85,7 +85,7 @@ public class DroolsScoreDirector<Solution_, Score_ extends Score<Score_>>
     }
 
     private void resetScoreHolder() {
-        scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
+        scoreHolder = AbstractScoreHolder.buildScoreHolder(getScoreDefinition(), constraintMatchEnabledPreference);
         scoreDirectorFactory.getRuleToConstraintWeightExtractorMap().forEach(
                 (Rule rule, Function<Solution_, Score_> extractor) -> {
                     Score_ constraintWeight = extractor.apply(workingSolution);

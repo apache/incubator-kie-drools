@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.util.List;
 
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringTuple;
+import org.optaplanner.core.impl.score.stream.common.inliner.UndoScoreImpacter;
 
 public final class BavetScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, B> implements BavetScoringTuple {
 

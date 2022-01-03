@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.stream.common.inliner.UndoScoreImpacter;
 
 public interface BavetScoringTuple {
 

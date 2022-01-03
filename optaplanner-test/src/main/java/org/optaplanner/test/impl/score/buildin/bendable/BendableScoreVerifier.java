@@ -20,7 +20,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 import org.optaplanner.test.impl.score.AbstractScoreVerifier;
 

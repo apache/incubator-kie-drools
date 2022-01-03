@@ -35,6 +35,7 @@ import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGe
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedScoreReproducer;
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedVariableListenerReproducer;
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenDroolsExceptionReproducer;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 
 public class TestGenDroolsScoreDirector<Solution_, Score_ extends Score<Score_>>
         extends DroolsScoreDirector<Solution_, Score_> {
@@ -64,7 +65,7 @@ public class TestGenDroolsScoreDirector<Solution_, Score_ extends Score<Score_>>
         // set a fresh score holder
         ScoreDefinition<Score_> scoreDefinition = getScoreDefinition();
         if (scoreDefinition != null) {
-            ScoreHolder<Score_> sh = scoreDefinition.buildScoreHolder(constraintMatchEnabledPreference);
+            ScoreHolder<Score_> sh = AbstractScoreHolder.buildScoreHolder(scoreDefinition, constraintMatchEnabledPreference);
             newKieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, sh);
         }
 

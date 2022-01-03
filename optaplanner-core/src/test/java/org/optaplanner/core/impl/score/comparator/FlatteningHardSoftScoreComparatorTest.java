@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 
 public class FlatteningHardSoftScoreComparatorTest {
 

@@ -29,7 +29,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -37,10 +36,11 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
 
 public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_>> {
 
-    private final ScoreInliner<Score_> scoreInliner;
+    private final AbstractScoreInliner<Score_> scoreInliner;
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
     private final List<BavetNode> nodeIndexedNodeMap;
     private final List<BavetScoringNode> scoringNodeList;
@@ -50,7 +50,8 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
             Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap) {
-        scoreInliner = scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
+        scoreInliner = AbstractScoreInliner.buildScoreInliner(scoreDefinition, (Map) constraintToWeightMap,
+                constraintMatchEnabled);
         declaredClassToNodeMap = new HashMap<>(50);
         BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this);
         constraintToWeightMap.forEach((constraint, constraintWeight) -> constraint.createNodes(buildPolicy,
@@ -179,7 +180,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     // Getters/setters
     // ************************************************************************
 
-    public ScoreInliner<Score_> getScoreInliner() {
+    public AbstractScoreInliner<Score_> getScoreInliner() {
         return scoreInliner;
     }
 

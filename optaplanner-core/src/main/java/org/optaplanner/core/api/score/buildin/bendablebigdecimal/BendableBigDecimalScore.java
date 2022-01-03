@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 
 /**
  * This {@link Score} is based on n levels of {@link BigDecimal} constraints.

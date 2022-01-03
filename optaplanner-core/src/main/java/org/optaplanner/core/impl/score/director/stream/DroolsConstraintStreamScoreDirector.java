@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 
 /**
@@ -50,7 +50,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
 
     private KieSession session;
     private AgendaFilter agendaFilter;
-    private ScoreInliner<Score_> scoreInliner;
+    private AbstractScoreInliner<Score_> scoreInliner;
 
     public DroolsConstraintStreamScoreDirector(
             DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,

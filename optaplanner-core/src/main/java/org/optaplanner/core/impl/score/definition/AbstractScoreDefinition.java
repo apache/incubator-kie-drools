@@ -21,7 +21,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 
 /**
  * Abstract superclass for {@link ScoreDefinition}.

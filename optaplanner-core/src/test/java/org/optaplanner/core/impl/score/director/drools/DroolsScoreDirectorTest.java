@@ -26,7 +26,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 
 public class DroolsScoreDirectorTest {
 

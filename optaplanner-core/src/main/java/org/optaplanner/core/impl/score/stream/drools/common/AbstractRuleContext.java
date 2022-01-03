@@ -29,9 +29,9 @@ import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.view.ViewItem;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.score.stream.common.inliner.JustificationsSupplier;
+import org.optaplanner.core.impl.score.stream.common.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.stream.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 /**

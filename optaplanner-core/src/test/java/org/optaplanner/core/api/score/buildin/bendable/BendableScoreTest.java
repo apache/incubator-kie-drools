@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
 public class BendableScoreTest extends AbstractScoreTest {

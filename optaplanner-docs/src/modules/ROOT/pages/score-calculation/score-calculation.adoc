@@ -182,7 +182,7 @@ Scores are considered equal far more often.
 It is left up to a human to choose the better out of a set of best solutions (with equal scores) found by OptaPlanner.
 In the example above, the user must choose between solution A (three apples and one orange) and solution B (one apple and six oranges). It is guaranteed that OptaPlanner has not found another solution which has more apples or more oranges or even a better combination of both (such as two apples and three oranges).
 
-To implement pareto scoring in OptaPlanner, <<customScore,implement a custom `ScoreDefinition` and `Score`>> (and replace the ``BestSolutionRecaller``). Future versions will provide out-of-the-box support.
+Pareto scoring is currently not supported in OptaPlanner.
 
 [NOTE]
 ====
@@ -377,28 +377,6 @@ Variants of this `Score` type:
 
 * `BendableLongScore` uses `long` values instead of `int` values.
 * `BendableBigDecimalScore` uses `BigDecimal` values instead of `int` values.
-
-
-[[customScore]]
-=== Implementing a custom score
-
-Internally, each `Score` implementation also has a `ScoreDefinition` implementation.
-For example: `SimpleScore` is defined by ``SimpleScoreDefinition``.
-The `ScoreDefinition` interface defines the score representation.
-
-To implement a custom ``Score``, also implement such a custom ``ScoreDefinition``.
-Extend `AbstractScoreDefinition` (preferably by copy pasting ``HardSoftScoreDefinition``) and start from there.
-Then hook your custom `ScoreDefinition` in the domain:
-
-[source,java,options="nowrap"]
-----
-    @PlanningScore(scoreDefinitionClass = MyCustomScoreDefinition.class)
-    private MyCustomScore score;
-----
-
-To have it integrate seamlessly with xref:integration/integration.adoc#jpaAndHibernatePersistingAScore[JPA/Hibernate],
-xref:integration/integration.adoc#integrationWithXStream[XStream], xref:integration/integration.adoc#integrationWithJackson[Jackson], ...,
-you'll need to write custom glue code too.
 
 
 [[calculateTheScore]]

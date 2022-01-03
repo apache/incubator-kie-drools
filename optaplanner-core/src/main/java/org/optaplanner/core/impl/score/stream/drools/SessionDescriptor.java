@@ -5,15 +5,15 @@ import java.util.Objects;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
 
 public final class SessionDescriptor<Score_ extends Score<Score_>> {
 
     private final KieSession session;
     private final AgendaFilter agendaFilter;
-    private final ScoreInliner<Score_> scoreInliner;
+    private final AbstractScoreInliner<Score_> scoreInliner;
 
-    public SessionDescriptor(KieSession session, ScoreInliner<Score_> scoreInliner, AgendaFilter agendaFilter) {
+    public SessionDescriptor(KieSession session, AbstractScoreInliner<Score_> scoreInliner, AgendaFilter agendaFilter) {
         this.session = Objects.requireNonNull(session);
         this.scoreInliner = Objects.requireNonNull(scoreInliner);
         this.agendaFilter = agendaFilter;
@@ -31,7 +31,7 @@ public final class SessionDescriptor<Score_ extends Score<Score_>> {
      *
      * @return never null
      */
-    public ScoreInliner<Score_> getScoreInliner() {
+    public AbstractScoreInliner<Score_> getScoreInliner() {
         return scoreInliner;
     }
 

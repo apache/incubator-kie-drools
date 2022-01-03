@@ -19,10 +19,10 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
+import org.optaplanner.core.impl.score.stream.common.inliner.UndoScoreImpacter;
 
 public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> implements BavetScoringNode {
 

@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.solver.termination.TerminationCompositionStyle;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class TerminationFactoryTest {

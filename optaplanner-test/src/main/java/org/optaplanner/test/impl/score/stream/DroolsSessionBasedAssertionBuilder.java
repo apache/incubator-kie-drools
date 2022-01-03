@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 
 final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<Score_>>
@@ -50,7 +50,7 @@ final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<S
     @Override
     public DefaultMultiConstraintAssertion<Solution_, Score_> multiConstraintGiven(
             ConstraintProvider constraintProvider, Object... facts) {
-        ScoreInliner<Score_> scoreInliner = runSession(facts);
+        AbstractScoreInliner<Score_> scoreInliner = runSession(facts);
         return new DefaultMultiConstraintAssertion<>(constraintProvider, scoreInliner.extractScore(0),
                 scoreInliner.getConstraintMatchTotalMap(), scoreInliner.getIndictmentMap());
     }
@@ -58,12 +58,12 @@ final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<S
     @Override
     public DefaultSingleConstraintAssertion<Solution_, Score_> singleConstraintGiven(Object... facts) {
         assertDistinctPlanningIds(constraintStreamScoreDirectorFactory.getSolutionDescriptor(), facts);
-        ScoreInliner<Score_> scoreInliner = runSession(facts);
+        AbstractScoreInliner<Score_> scoreInliner = runSession(facts);
         return new DefaultSingleConstraintAssertion<>(constraintStreamScoreDirectorFactory, scoreInliner.extractScore(0),
                 scoreInliner.getConstraintMatchTotalMap(), scoreInliner.getIndictmentMap());
     }
 
-    private ScoreInliner<Score_> runSession(Object... facts) {
+    private AbstractScoreInliner<Score_> runSession(Object... facts) {
         SessionDescriptor<Score_> sessionDescriptor =
                 constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null);
         KieSession session = sessionDescriptor.getSession();
