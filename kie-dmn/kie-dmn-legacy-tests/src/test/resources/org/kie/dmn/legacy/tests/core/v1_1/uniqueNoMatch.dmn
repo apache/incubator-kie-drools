@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:activiti="http://activiti.org/schema/1.0/dmn"
+             xmlns:feel="http://www.omg.org/spec/FEEL/20140401" exporter="dmn-js (https://demo.bpmn.io/dmn)"
+             exporterVersion="6.2.1" id="decision-a2c4d313-1b0c-420e-a6b1-7956f9787ab8" name="decisionmulti"
+             namespace="http://activiti.org/schema/1.0/dmn">
+    <decision id="Decision_decisionboolean" name="Decision_decisionboolean">
+        <variable name="Decision_decisionboolean" typeRef="feel:boolean"/>
+        <decisionTable hitPolicy="UNIQUE" id="DecisionTable_decisionboolean">
+            <input activiti:inputVariable="inputInteger" id="InputClause_03tizrt" label="inputInteger">
+                <inputExpression id="LiteralExpression_01f6vtb" typeRef="feel:number">
+                    <text>inputInteger</text>
+                </inputExpression>
+            </input>
+            <output id="OutputClause_decisionboolean" label="outBoolean" >
+                <defaultOutputEntry>
+                    <text/>
+                </defaultOutputEntry>
+            </output>
+            <rule id="DecisionRule_18mgcmb">
+                <inputEntry id="UnaryTests_0ndg3ai">
+                    <text>11</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_0504r8b">
+                    <text>true</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+        <informationRequirement>
+            <requiredInput href="#_inputInteger"/>
+        </informationRequirement>
+    </decision>
+    <inputData id="_inputInteger" name="inputInteger">
+        <variable name="inputInteger" typeRef="feel:number"/>
+    </inputData>
+</definitions>

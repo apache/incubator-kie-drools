@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_a9bfa4de-cf5c-4b2f-9011-ab576e00b162" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.4.201808011735" id="_a9bfa4de-cf5c-4b2f-9011-ab576e00b162" name="Only Import base model" namespace="http://www.trisotech.com/dmn/definitions/_a9bfa4de-cf5c-4b2f-9011-ab576e00b162" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Base model" drools:name="Base model" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" triso:fileId="eyJmIjp7InNrdSI6ImEwY2Q5OGEwLWNkOWYtNGFhNy05MTliLTI4ZmZlMTM1OTNhNSIsIm5hbWUiOiJCYXNlIG1vZGVsIn19" triso:fileName="20180802-DS/Base model"/>
+  <dmn11:decision id="_e90b0806-cb8f-473b-907f-5a87648bf76b" name="only Import Hardcoded Decision">
+    <dmn11:variable id="_d91dc0d9-05a5-44c3-a8cf-6801a73e2a29" name="only Import Hardcoded Decision" typeRef="feel:string"/>
+    <dmn11:literalExpression id="_e154440f-f14a-4ede-bb7e-f39d7478c98a" typeRef="feel:string">
+      <dmn11:text>"hello"</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

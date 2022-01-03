@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.1" id="_56fd6445-ff6a-4c28-8206-71fce7f80436" name="just today" namespace="http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436" triso:logoChoice="Default">
+  <semantic:decision displayName="a decision just now" id="_cf6124bd-9907-4ac0-b4fd-59a962dbc502" name="a decision just today">
+    <semantic:variable id="_edaf978e-3634-4e52-8244-5fd4e16fd257" name="a decision just today" typeRef="feel:date"/>
+    <semantic:literalExpression id="_c990c3b2-e322-4ef9-931d-79bcdac99686">
+      <semantic:text>today()</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

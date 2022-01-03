@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_10435dcd-8774-4575-a338-49dd554a0928" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c" xmlns:include2="http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3" id="_10435dcd-8774-4575-a338-49dd554a0928" name="Model C" namespace="http://www.trisotech.com/dmn/definitions/_10435dcd-8774-4575-a338-49dd554a0928" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Model B" drools:name="Model B" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c" triso:fileId="eyJmIjp7InNrdSI6IjAwZGUzMDA5LTU3NjEtNDY5YS04MzkyLTE0YjViODRkNDgwMSIsIm5hbWUiOiJNb2RlbCBCIn19" triso:fileName="Matteo Mortari/Model B"/>
+  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Model B2" drools:name="Model B2" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768" triso:fileId="eyJmIjp7InNrdSI6ImU0MDQ5ODNmLThkNTUtNGY5My04N2M2LWJmNzY5YzEzNTkzZiIsIm5hbWUiOiJNb2RlbCBCMiJ9fQ==" triso:fileName="Matteo Mortari/Model B2"/>
+  <dmn11:decision id="_fc1bff6c-b1ca-4a10-ba9a-23b8f5e86e6a" name="Model C Decision based on Bs">
+    <dmn11:variable id="_2e323310-3d83-4c51-a256-3082e0ccacea" name="Model C Decision based on Bs"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c#_96df766e-23e1-4aa6-9d5d-545fbe2f1e23"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768#_96df766e-23e1-4aa6-9d5d-545fbe2f1e23"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_05fab753-c3c4-41a9-8984-e078f4aabe32">
+      <dmn11:text>"B: " + Model B.Evaluating Say Hello + "; B2:" + Model B2.Evaluating B2 Say Hello</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

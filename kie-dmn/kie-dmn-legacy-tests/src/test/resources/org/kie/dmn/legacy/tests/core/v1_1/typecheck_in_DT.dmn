@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_99ccd4df-41ac-43c3-a563-d58f43149829" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14" id="_99ccd4df-41ac-43c3-a563-d58f43149829" name="typecheck in DT" namespace="http://www.trisotech.com/definitions/_99ccd4df-41ac-43c3-a563-d58f43149829" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_0b330b2e-3cc7-4dcb-9f62-31905a3313d1" name="an odd decision">
+    <semantic:variable id="_89730a9b-89a9-4a25-811c-60dbcbadcb4b" name="an odd decision" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_24d28d47-7c17-4449-89b8-e69580027673"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_aea72505-bff2-4c8b-8597-2469c1595759" outputLabel="an odd decision">
+      <semantic:input id="_4cb927da-2883-4f96-b745-0f5b0292d068">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>a number</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_75d94c38-11c8-43a4-b9b5-a045c0a707a0"/>
+      <semantic:rule id="_5e5ff511-d6a7-4116-aa50-6e8002c24978">
+        <semantic:inputEntry id="_cacba1e0-e5cb-4ce0-8744-056f3c93b667">
+          <semantic:text>&gt;0</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6184a944-64b7-4cf7-86c1-f867c8faab9e">
+          <semantic:text>"positive"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_61bb7aaa-7c88-4a06-a0e2-b9dcf66e0392">
+        <semantic:inputEntry id="_c4ce431e-3992-43ff-9a87-31613ebb25e5">
+          <semantic:text>&lt;=0</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e74bedbb-0a4f-4b82-849b-120899616643">
+          <semantic:text>47</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_24d28d47-7c17-4449-89b8-e69580027673" name="a number">
+    <semantic:variable id="_75bd5896-6c80-40ad-bb46-73b9689ffcde" name="a number" typeRef="feel:number"/>
+  </semantic:inputData>
+</semantic:definitions>
