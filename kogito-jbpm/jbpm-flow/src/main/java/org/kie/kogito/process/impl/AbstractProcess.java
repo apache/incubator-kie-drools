@@ -22,6 +22,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.core.ProcessSupplier;
+import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -36,6 +37,7 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.runtime.*;
+import org.kie.kogito.jackson.utils.JsonNodeConverter;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
@@ -49,8 +51,14 @@ import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Signal;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 @SuppressWarnings("unchecked")
 public abstract class AbstractProcess<T extends Model> implements Process<T>, ProcessSupplier {
+
+    static {
+        TypeConverterRegistry.get().register(JsonNode.class.getName(), new JsonNodeConverter());
+    }
 
     protected final ProcessRuntimeServiceProvider services;
     protected ProcessInstancesFactory processInstancesFactory;

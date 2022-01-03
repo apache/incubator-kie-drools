@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstanceContainer;
@@ -41,6 +42,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
     private transient String variableIdPrefix = null;
     private transient String variableInstanceIdPrefix = null;
 
+    @Override
     public String getContextType() {
         return VariableScope.VARIABLE_SCOPE;
     }
@@ -95,21 +97,29 @@ public class VariableScopeInstance extends AbstractContextInstance {
         if (oldValue != null && getVariableScope().isReadOnly(name)) {
             throw new VariableViolationException(getProcessInstance().getStringId(), name, "Variable '" + name + "' is already set and is marked as read only");
         }
-        KogitoProcessEventSupport processEventSupport = (KogitoProcessEventSupport) ((InternalProcessRuntime) getProcessInstance()
-                .getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport();
-        processEventSupport.fireBeforeVariableChanged(
-                (variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
-                (variableInstanceIdPrefix == null ? "" : variableInstanceIdPrefix + ":") + name,
-                oldValue, value, getVariableScope().tags(name), getProcessInstance(),
-                nodeInstance,
-                getProcessInstance().getKnowledgeRuntime());
+
+        InternalKnowledgeRuntime runtime = getProcessInstance().getKnowledgeRuntime();
+        if (runtime != null) {
+            getProcessEventSupport(runtime).fireBeforeVariableChanged(
+                    (variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
+                    (variableInstanceIdPrefix == null ? "" : variableInstanceIdPrefix + ":") + name,
+                    oldValue, value, getVariableScope().tags(name), getProcessInstance(),
+                    nodeInstance,
+                    getProcessInstance().getKnowledgeRuntime());
+        }
         internalSetVariable(name, value);
-        processEventSupport.fireAfterVariableChanged(
-                (variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
-                (variableInstanceIdPrefix == null ? "" : variableInstanceIdPrefix + ":") + name,
-                oldValue, value, getVariableScope().tags(name), getProcessInstance(),
-                nodeInstance,
-                getProcessInstance().getKnowledgeRuntime());
+        if (runtime != null) {
+            getProcessEventSupport(runtime).fireAfterVariableChanged(
+                    (variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
+                    (variableInstanceIdPrefix == null ? "" : variableInstanceIdPrefix + ":") + name,
+                    oldValue, value, getVariableScope().tags(name), getProcessInstance(),
+                    nodeInstance,
+                    getProcessInstance().getKnowledgeRuntime());
+        }
+    }
+
+    private KogitoProcessEventSupport getProcessEventSupport(InternalKnowledgeRuntime runtime) {
+        return ((InternalProcessRuntime) runtime.getProcessRuntime()).getProcessEventSupport();
     }
 
     public void internalSetVariable(String name, Object value) {
@@ -121,6 +131,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
         return (VariableScope) getContext();
     }
 
+    @Override
     public void setContextInstanceContainer(ContextInstanceContainer contextInstanceContainer) {
         super.setContextInstanceContainer(contextInstanceContainer);
         for (Variable variable : getVariableScope().getVariables()) {

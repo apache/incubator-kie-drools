@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
@@ -31,6 +32,7 @@ import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
@@ -86,7 +88,7 @@ public class ServerlessWorkflowParser {
                 .packageName(workflow.getMetadata() != null ? workflow.getMetadata().getOrDefault("package",
                         DEFAULT_PACKAGE) : DEFAULT_PACKAGE)
                 .visibility("Public")
-                .variable(DEFAULT_WORKFLOW_VAR, JsonNode.class);
+                .variable(DEFAULT_WORKFLOW_VAR, new ObjectDataType(JsonNode.class), ObjectMapperFactory.get().createObjectNode());
         ParserContext parserContext = new ParserContext(idGenerator, factory, context);
         Collection<StateHandler<?>> handlers =
                 workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, parserContext))

@@ -95,9 +95,10 @@ public class LightProcessRuntimeContext implements ProcessRuntimeContext {
         if (parameters != null) {
             if (variableScope != null) {
                 for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-
-                    variableScope.validateVariable(process.getName(), entry.getKey(), entry.getValue());
-                    variableScopeInstance.setVariable(entry.getKey(), entry.getValue());
+                    if (entry.getValue() != null) {
+                        variableScope.validateVariable(process.getName(), entry.getKey(), entry.getValue());
+                        variableScopeInstance.setVariable(entry.getKey(), entry.getValue());
+                    }
                 }
             } else {
                 throw new IllegalArgumentException("This process does not support parameters!");
