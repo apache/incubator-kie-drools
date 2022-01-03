@@ -11,7 +11,7 @@ every module of this project resides. It's used mostly internally by specific de
 
 > **Maintainers:** Any new module should be added here.
 
-> **Note:** End uses should check their specific runtime support for this BOM. Consider checking the section ["Creating a Maven project for a Kogito service"](https://docs.jboss.org/kogito/release/latest/html_single/#proc-kogito-creating-project_kogito-creating-running)
+> **Note:** End uses should check their specific runtime support for this BOM. Consider checking the section ["Creating a Maven project for a Kogito service"](https://docs.kogito.kie.org/latest/html_single/#proc-kogito-creating-project_kogito-creating-running)
 in our documentation for more information.
 
 ### Usage
@@ -88,7 +88,7 @@ Add this section to your `pom.xml` file:
 _**I'm building my Kogito application, which BOM should I use?**_
 
 It depends on the runtime you chose. Kogito BOM should be your choice with the target platform descriptor. See the
-section ["Creating a Maven project for a Kogito service"](https://docs.jboss.org/kogito/release/latest/html_single/#proc-kogito-creating-project_kogito-creating-running)
+section ["Creating a Maven project for a Kogito service"](https://docs.kogito.kie.org/latest/html_single/#proc-kogito-creating-project_kogito-creating-running)
 of our docs to find out more.
 
 _**I'm a contributor, which BOM should I use?**_
