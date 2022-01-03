@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
@@ -90,7 +91,7 @@ public class MemoryUseSubSingleStatistic<Solution_>
 
     @Override
     protected String getCsvHeader() {
-        return MemoryUseStatisticPoint.buildCsvLine("timeMillisSpent", "usedMemory", "maxMemory");
+        return StatisticPoint.buildCsvLine("timeMillisSpent", "usedMemory", "maxMemory");
     }
 
     @Override

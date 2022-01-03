@@ -17,20 +17,15 @@
 package org.optaplanner.benchmark.impl.statistic;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,6 +47,8 @@ import io.micrometer.core.instrument.Tags;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends StatisticPoint> {
+
+    private static final String FAILED = "Failed";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -124,13 +121,16 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
 
     private void writeCsvStatisticFile() {
         File csvFile = getCsvFile();
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(csvFile), StandardCharsets.UTF_8)) {
-            writer.append(getCsvHeader()).append("\n");
+        try (BufferedWriter writer = Files.newBufferedWriter(csvFile.toPath(), StandardCharsets.UTF_8)) {
+            writer.append(getCsvHeader());
+            writer.newLine();
             for (StatisticPoint point : getPointList()) {
-                writer.append(point.toCsvLine()).append("\n");
+                writer.append(point.toCsvLine());
+                writer.newLine();
             }
             if (subSingleBenchmarkResult.hasAnyFailure()) {
-                writer.append("Failed\n");
+                writer.append(FAILED);
+                writer.newLine();
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed writing csvFile (" + csvFile + ").", e);
@@ -152,40 +152,30 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                 throw new IllegalStateException("The csvFile (" + csvFile + ") does not exist.");
             }
         }
-        try (BufferedReader reader =
-                new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8))) {
+
+        try (BufferedReader reader = Files.newBufferedReader(csvFile.toPath(), StandardCharsets.UTF_8)) {
             String line = reader.readLine();
             if (!getCsvHeader().equals(line)) {
                 throw new IllegalStateException("The read line (" + line
                         + ") is expected to be the header line (" + getCsvHeader()
                         + ") for statisticType (" + getStatisticType() + ").");
             }
-            Map<String, String> stringDuplicationRemovalMap = new HashMap<>(1024);
             for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
-                if (line.equals("Failed")) {
+                if (line.equals(FAILED)) {
                     if (subSingleBenchmarkResult.hasAnyFailure()) {
                         continue;
                     }
                     throw new IllegalStateException("SubSingleStatistic (" + this + ") failed even though the "
                             + "corresponding subSingleBenchmarkResult (" + subSingleBenchmarkResult + ") is a success.");
                 }
-                List<String> csvLine = StatisticPoint.parseCsvLine(line);
                 // HACK
                 // Some statistics (such as CONSTRAINT_MATCH_TOTAL_STEP_SCORE) contain the same String many times
                 // During generation those are all the same instance to save memory.
                 // During aggregation this code assures they are the same instance too
-                for (ListIterator<String> it = csvLine.listIterator(); it.hasNext();) {
-                    String token = it.next();
-                    if (token == null) {
-                        continue;
-                    }
-                    String originalToken = stringDuplicationRemovalMap.get(token);
-                    if (originalToken == null) {
-                        stringDuplicationRemovalMap.put(token, token);
-                    } else {
-                        it.set(originalToken);
-                    }
-                }
+                List<String> csvLine = StatisticPoint.parseCsvLine(line)
+                        .stream()
+                        .map(String::intern)
+                        .collect(Collectors.toList());
                 pointList.add(createPointFromCsvLine(scoreDefinition, csvLine));
             }
         } catch (IOException e) {

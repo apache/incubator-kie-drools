@@ -21,6 +21,7 @@ import java.util.List;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
@@ -54,7 +55,7 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
 
     @Override
     protected String getCsvHeader() {
-        return MoveCountPerStepStatisticPoint.buildCsvLine("timeMillisSpent", "acceptedMoveCount", "selectedMoveCount");
+        return StatisticPoint.buildCsvLine("timeMillisSpent", "acceptedMoveCount", "selectedMoveCount");
     }
 
     @Override
