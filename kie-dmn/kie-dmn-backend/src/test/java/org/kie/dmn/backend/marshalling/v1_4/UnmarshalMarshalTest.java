@@ -84,6 +84,11 @@ public class UnmarshalMarshalTest {
     public void testV14_recommended_loan_product() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "Recommended Loan Products.dmn");
     }
+    
+    @Test
+    public void testV14_for() throws Exception {
+        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "for.dmn");
+    }
 
     public void testRoundTripV14(String subdir, String xmlfile) throws Exception {
         testRoundTrip(subdir, xmlfile, MARSHALLER, DMN14_SCHEMA_SOURCE);

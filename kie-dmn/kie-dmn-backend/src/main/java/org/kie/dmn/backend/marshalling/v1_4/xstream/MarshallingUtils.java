@@ -16,27 +16,32 @@
 
 package org.kie.dmn.backend.marshalling.v1_4.xstream;
 
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
 import org.kie.dmn.backend.marshalling.v1x.ConverterDefinesExpressionNodeName;
+import org.kie.dmn.model.api.Conditional;
 import org.kie.dmn.model.api.Context;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.Every;
 import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.Filter;
+import org.kie.dmn.model.api.For;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.Invocation;
 import org.kie.dmn.model.api.List;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.Relation;
+import org.kie.dmn.model.api.Some;
 import org.kie.dmn.model.api.dmndi.DMNEdge;
 import org.kie.dmn.model.api.dmndi.DMNShape;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
 
 public final class MarshallingUtils {
 
@@ -100,6 +105,16 @@ public final class MarshallingUtils {
             nodeName = "relation";
         } else if (e instanceof List) {
             nodeName = "list";
+        } else if (e instanceof For) {
+        	nodeName = "for";
+        } else if (e instanceof Every) {
+        	nodeName = "every";
+        } else if (e instanceof Some) {
+        	nodeName = "some";
+        } else if (e instanceof Conditional) {
+        	nodeName = "conditional";
+        } else if (e instanceof Filter) {
+        	nodeName = "filter";
         }
         return nodeName;
     }

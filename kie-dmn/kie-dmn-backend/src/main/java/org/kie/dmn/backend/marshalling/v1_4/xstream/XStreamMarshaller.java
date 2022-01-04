@@ -67,6 +67,7 @@ import org.kie.dmn.model.v1_4.TAuthorityRequirement;
 import org.kie.dmn.model.v1_4.TBinding;
 import org.kie.dmn.model.v1_4.TBusinessContextElement;
 import org.kie.dmn.model.v1_4.TBusinessKnowledgeModel;
+import org.kie.dmn.model.v1_4.TChildExpression;
 import org.kie.dmn.model.v1_4.TContext;
 import org.kie.dmn.model.v1_4.TContextEntry;
 import org.kie.dmn.model.v1_4.TDMNElement;
@@ -78,6 +79,7 @@ import org.kie.dmn.model.v1_4.TDecisionTable;
 import org.kie.dmn.model.v1_4.TDefinitions;
 import org.kie.dmn.model.v1_4.TElementCollection;
 import org.kie.dmn.model.v1_4.TExpression;
+import org.kie.dmn.model.v1_4.TFor;
 import org.kie.dmn.model.v1_4.TFunctionDefinition;
 import org.kie.dmn.model.v1_4.TFunctionItem;
 import org.kie.dmn.model.v1_4.TGroup;
@@ -100,6 +102,7 @@ import org.kie.dmn.model.v1_4.TRelation;
 import org.kie.dmn.model.v1_4.TRuleAnnotation;
 import org.kie.dmn.model.v1_4.TRuleAnnotationClause;
 import org.kie.dmn.model.v1_4.TTextAnnotation;
+import org.kie.dmn.model.v1_4.TTypedChildExpression;
 import org.kie.dmn.model.v1_4.TUnaryTests;
 import org.kie.utll.xml.XStreamUtils;
 import org.slf4j.Logger;
@@ -342,6 +345,10 @@ public class XStreamMarshaller
         xStream.registerConverter(new PointConverter(xStream));
         xStream.alias("extension", DiagramElement.Extension.class);
         xStream.alias(DMNLabelConverter.TEXT, String.class);
+        
+        xStream.alias("for", TFor.class);
+        xStream.alias("in", TTypedChildExpression.class);
+        xStream.alias("return", TChildExpression.class);
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
@@ -375,6 +382,10 @@ public class XStreamMarshaller
         xStream.registerConverter(new TextAnnotationConverter( xStream ) );
         xStream.registerConverter(new UnaryTestsConverter( xStream ) );
         xStream.registerConverter(new FunctionItemConverter( xStream ) );
+   
+        xStream.registerConverter(new ChildExpressionConverter( xStream ) );
+        xStream.registerConverter(new TypedChildExpressionConverter( xStream ) );
+        xStream.registerConverter(new ForConverter( xStream ) );
         
         xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );
