@@ -257,4 +257,68 @@ public class DMN14specificTest extends BaseVariantTest {
                                                                                    entry("Recommendation", "Best")))));
     }
 
+    @Test
+    public void test_sampleFor() {
+        final DMNRuntime runtime = createRuntime("sampleFor.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5d7731f1-525d-4e75-a24a-39066f52ccdf", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("sampleFor"), is(Arrays.asList(new BigDecimal(2), new BigDecimal(3), new BigDecimal(4))));
+    }
+    
+    @Test
+    public void test_sampleQuantified() {
+        final DMNRuntime runtime = createRuntime("sampleQuantified.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_480411d5-e8b4-422f-9a76-1e8929930ead", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("sampleEvery"), is(Boolean.TRUE));
+        assertThat(result.get("sampleSome"), is(Boolean.TRUE));
+    }
+    
+    @Test
+    public void test_sampleConditional() {
+        final DMNRuntime runtime = createRuntime("sampleConditional.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_da2ac43a-133b-483d-9c08-958d10024584", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("sampleConditional"), is("Hello World"));
+    }
+    
+    @Test
+    public void test_sampleFilter() {
+        final DMNRuntime runtime = createRuntime("sampleFilter.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_e1291f4e-e828-4a47-86e8-474899d50185", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("sampleFilter"),  is(Arrays.asList(new BigDecimal(3), new BigDecimal(4))));
+    }
 }
