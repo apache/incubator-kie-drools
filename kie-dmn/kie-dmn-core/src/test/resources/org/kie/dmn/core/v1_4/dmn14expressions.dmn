@@ -47,18 +47,18 @@
         </semantic:informationRequirement>
         <semantic:conditional id="_16d029fe-a302-422a-9924-061fc186c751" triso:descriptionVisible="false" typeRef="string" triso:expressionId="_dc9be5e0-7b90-4328-8ffd-29774ce43205">
             <semantic:if id="_e90f6412-a47e-453b-8f63-bf096cc84c57">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" typeRef="boolean" id="_0e9e0e8d-0271-4b7a-9eae-7ea392a5e9ec" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">Boolean Input</semantic:text>
+                <semantic:literalExpression typeRef="boolean" id="_0e9e0e8d-0271-4b7a-9eae-7ea392a5e9ec" triso:descriptionVisible="false">
+                    <semantic:text>Boolean Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:if>
             <semantic:then id="_265b7102-06a3-42aa-bbf0-f29081717a53">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" typeRef="string" id="_25e06e59-c88b-43a8-b9a0-269cab650d97" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">"Conditional evaluated to TRUE"</semantic:text>
+                <semantic:literalExpression typeRef="string" id="_25e06e59-c88b-43a8-b9a0-269cab650d97" triso:descriptionVisible="false">
+                    <semantic:text>"Conditional evaluated to TRUE"</semantic:text>
                 </semantic:literalExpression>
             </semantic:then>
             <semantic:else id="_66c7733e-702a-4e78-a707-f651e786a865">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" typeRef="string" id="_b8b53e0b-5e48-484c-9ef5-bb50df9607af" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">"Conditional evaluated to FALSE"</semantic:text>
+                <semantic:literalExpression typeRef="string" id="_b8b53e0b-5e48-484c-9ef5-bb50df9607af" triso:descriptionVisible="false">
+                    <semantic:text>"Conditional evaluated to FALSE"</semantic:text>
                 </semantic:literalExpression>
             </semantic:else>
         </semantic:conditional>
@@ -67,18 +67,18 @@
         <semantic:variable name="Non boolean" id="_0ca97e9b-c005-4d14-8777-e6fa1b0d4881" typeRef="string"/>
         <semantic:conditional id="_e49dbc42-7b55-48bc-bb77-7fbab6a87710" triso:descriptionVisible="false" typeRef="string" triso:expressionId="_51575219-a112-4176-8ec9-601cc3cc5f05">
             <semantic:if id="_1e52786a-986f-4707-aa1c-dbdaa8c1706b">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" typeRef="boolean" id="_7231e195-8f2d-4ed1-8001-e1d587f8eae5" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">"hello"</semantic:text>
+                <semantic:literalExpression typeRef="boolean" id="_7231e195-8f2d-4ed1-8001-e1d587f8eae5" triso:descriptionVisible="false">
+                    <semantic:text>"hello"</semantic:text>
                 </semantic:literalExpression>
             </semantic:if>
             <semantic:then id="_bfb3afc9-4d82-4f4f-a3ce-aa001ef457a3">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" typeRef="string" id="_45db4a65-1db9-46e0-85cc-490ac050e577" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">"will not work"</semantic:text>
+                <semantic:literalExpression typeRef="string" id="_45db4a65-1db9-46e0-85cc-490ac050e577" triso:descriptionVisible="false">
+                    <semantic:text>"will not work"</semantic:text>
                 </semantic:literalExpression>
             </semantic:then>
             <semantic:else id="_ee2deab2-152a-4583-bb81-c697d7a8abc3">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" typeRef="string" id="_89af88bd-bc41-4543-a7ab-a0ea160f64b0" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">"will not work"</semantic:text>
+                <semantic:literalExpression typeRef="string" id="_89af88bd-bc41-4543-a7ab-a0ea160f64b0" triso:descriptionVisible="false">
+                    <semantic:text>"will not work"</semantic:text>
                 </semantic:literalExpression>
             </semantic:else>
         </semantic:conditional>
@@ -106,8 +106,8 @@
                 </semantic:list>
             </semantic:in>
             <semantic:return id="_54711aab-3267-4011-a5d6-b0a68b7a265e">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_bb9d263b-e1b3-4c43-af59-6b9c9cb7b41c" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">it + Number Input</semantic:text>
+                <semantic:literalExpression id="_bb9d263b-e1b3-4c43-af59-6b9c9cb7b41c" triso:descriptionVisible="false">
+                    <semantic:text>it + Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:return>
         </semantic:for>
@@ -135,8 +135,8 @@
                 </semantic:list>
             </semantic:in>
             <semantic:return id="_eb634337-6a27-4c0c-bfd8-4fe4330d748a">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_a7e4fd39-6adb-44a1-938e-456d0ff38774" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">if it = 1 then it else it + partial[-1] + Number Input</semantic:text>
+                <semantic:literalExpression id="_a7e4fd39-6adb-44a1-938e-456d0ff38774" triso:descriptionVisible="false">
+                    <semantic:text>if it = 1 then it else it + partial[-1] + Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:return>
         </semantic:for>
@@ -148,13 +148,13 @@
         </semantic:informationRequirement>
         <semantic:for id="_edd70e50-7e04-4df2-a82d-b55ef3fcc4bb" triso:descriptionVisible="false" iteratorVariable="it" typeRef="Any" triso:expressionId="_b1ddbee0-0a05-422d-a8f2-e40050cc3ad1">
             <semantic:in id="_c9be1093-df45-41d9-8a9b-94bda0a27617">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_4d4a99b2-eb9c-44e0-8758-ece558a7edc9" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">(1..4)</semantic:text>
+                <semantic:literalExpression id="_4d4a99b2-eb9c-44e0-8758-ece558a7edc9" triso:descriptionVisible="false">
+                    <semantic:text>(1..4)</semantic:text>
                 </semantic:literalExpression>
             </semantic:in>
             <semantic:return id="_909ffe79-0e9b-418d-81fd-da8ed0b449b5">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_4861c975-1e02-4ac8-9c20-0c9ba30417cf" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">it + Number Input</semantic:text>
+                <semantic:literalExpression id="_4861c975-1e02-4ac8-9c20-0c9ba30417cf" triso:descriptionVisible="false">
+                    <semantic:text>it + Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:return>
         </semantic:for>
@@ -166,13 +166,13 @@
         </semantic:informationRequirement>
         <semantic:for id="_31b9f732-fe1d-436b-9d78-9b6942b59a05" triso:descriptionVisible="false" iteratorVariable="it" typeRef="Any" triso:expressionId="_b5a258ab-74fc-479b-bbff-76d971eb142a">
             <semantic:in id="_ddd96597-0789-49c4-857d-30df2b46cfd4">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_ee98ba56-a8bf-40e1-82fe-27df623529cb" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">(0..5)</semantic:text>
+                <semantic:literalExpression id="_ee98ba56-a8bf-40e1-82fe-27df623529cb" triso:descriptionVisible="false">
+                    <semantic:text>(0..5)</semantic:text>
                 </semantic:literalExpression>
             </semantic:in>
             <semantic:return id="_54699667-cf13-4be0-9cad-f98cf4df3226">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_83178b5d-3a8c-4695-8693-c4fb38590a1e" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">it + Number Input</semantic:text>
+                <semantic:literalExpression id="_83178b5d-3a8c-4695-8693-c4fb38590a1e" triso:descriptionVisible="false">
+                    <semantic:text>it + Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:return>
         </semantic:for>
@@ -184,13 +184,13 @@
         </semantic:informationRequirement>
         <semantic:some id="_564c1400-4039-4d17-b4b9-d31ecdb1bc06" triso:descriptionVisible="false" iteratorVariable="v" typeRef="Any" triso:expressionId="_ca8ac231-e564-43aa-b6cc-3b342b4f97ec">
             <semantic:in id="_ad9c15cb-7057-48b8-a99e-92a1f3e5f405">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_c97e5c4d-d272-4e90-bf59-d6fb73ce964d" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">[1,2,3,4,5,6,7,8,9,10]</semantic:text>
+                <semantic:literalExpression id="_c97e5c4d-d272-4e90-bf59-d6fb73ce964d" triso:descriptionVisible="false">
+                    <semantic:text>[1,2,3,4,5,6,7,8,9,10]</semantic:text>
                 </semantic:literalExpression>
             </semantic:in>
             <semantic:satisfies id="_da02017a-a595-4f09-9e5d-6bf41540f336">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_2c46908d-0eeb-4184-be78-56ba18f97710" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">v &gt; Number Input</semantic:text>
+                <semantic:literalExpression id="_2c46908d-0eeb-4184-be78-56ba18f97710" triso:descriptionVisible="false">
+                    <semantic:text>v &gt; Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:satisfies>
         </semantic:some>
@@ -202,13 +202,13 @@
         </semantic:informationRequirement>
         <semantic:every id="_164564e5-dcd8-44f6-ac33-29a94af6dc4c" triso:descriptionVisible="false" iteratorVariable="v" typeRef="Any" triso:expressionId="_89189473-459c-43ec-873a-0f6b0a14ce20">
             <semantic:in id="_3fd1749c-ca63-47fc-85c3-1c59472a4f49">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_1c0b12d2-2348-4704-a4f5-2e66daed5252" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">[1,2,3,4,5,6,7,8,9,10]</semantic:text>
+                <semantic:literalExpression id="_1c0b12d2-2348-4704-a4f5-2e66daed5252" triso:descriptionVisible="false">
+                    <semantic:text>[1,2,3,4,5,6,7,8,9,10]</semantic:text>
                 </semantic:literalExpression>
             </semantic:in>
             <semantic:satisfies id="_3f9e41dc-f7a8-403a-92d5-be56f35d48fe">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_63f62bee-2428-43cc-8590-13df231b9bbf" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">v &gt; Number Input</semantic:text>
+                <semantic:literalExpression id="_63f62bee-2428-43cc-8590-13df231b9bbf" triso:descriptionVisible="false">
+                    <semantic:text>v &gt; Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:satisfies>
         </semantic:every>
@@ -220,13 +220,13 @@
         </semantic:informationRequirement>
         <semantic:filter id="_091c7ec5-a19c-49c2-9384-f468b1f99c1b" triso:descriptionVisible="false" typeRef="Any" triso:expressionId="_04f88d21-287b-4b1d-b392-abc142ddcf6f">
             <semantic:in id="_9560cdb2-583f-4165-a71b-b420a6107de9">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_886247bf-ac89-49de-a51c-93dd464eea38" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">[1,2,3,4,5,6,7,8,9,10]</semantic:text>
+                <semantic:literalExpression id="_886247bf-ac89-49de-a51c-93dd464eea38" triso:descriptionVisible="false">
+                    <semantic:text>[1,2,3,4,5,6,7,8,9,10]</semantic:text>
                 </semantic:literalExpression>
             </semantic:in>
             <semantic:match id="_362153c8-76bd-4139-aee8-8ef75ebfe42a">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_2c32d1c1-d954-4422-80a4-36bc2ec63443" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">Number Input</semantic:text>
+                <semantic:literalExpression id="_2c32d1c1-d954-4422-80a4-36bc2ec63443" triso:descriptionVisible="false">
+                    <semantic:text>Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:match>
         </semantic:filter>
@@ -238,13 +238,13 @@
         </semantic:informationRequirement>
         <semantic:filter id="_c4fc7fd8-5309-4847-8517-23215988c78a" triso:descriptionVisible="false" typeRef="Any" triso:expressionId="_5a88a584-cd78-4c6e-b605-e86c9c610858">
             <semantic:in id="_dc567e2e-4897-4c79-9e9a-56aa94375aa0">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_a684d130-156b-4262-9e82-6038ee58e092" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">[1,2,3,4,5,6,7,8,9,10]</semantic:text>
+                <semantic:literalExpression id="_a684d130-156b-4262-9e82-6038ee58e092" triso:descriptionVisible="false">
+                    <semantic:text>[1,2,3,4,5,6,7,8,9,10]</semantic:text>
                 </semantic:literalExpression>
             </semantic:in>
             <semantic:match id="_62fcfc5c-7da4-41bf-ba3b-6a7312549240">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_88150798-c9b9-4608-be65-04fcd4a08cbe" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">item &gt; Number Input</semantic:text>
+                <semantic:literalExpression id="_88150798-c9b9-4608-be65-04fcd4a08cbe" triso:descriptionVisible="false">
+                    <semantic:text>item &gt; Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:match>
         </semantic:filter>

@@ -32,13 +32,13 @@
         </semantic:informationRequirement>
         <semantic:filter id="_f2f50282-9c50-400c-a955-fa0cfb381a5f" triso:descriptionVisible="false" typeRef="Collection_of_Complex" triso:expressionId="_a7843f4c-9802-49c8-9d32-9f1f4860cdcb">
             <semantic:in id="_ec9ca7ef-1e1b-4e37-9b74-e69a50b2cdad">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_019c56cb-da23-43e4-be79-53c8d0bb3867" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">Input</semantic:text>
+                <semantic:literalExpression id="_019c56cb-da23-43e4-be79-53c8d0bb3867" triso:descriptionVisible="false">
+                    <semantic:text>Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:in>
             <semantic:match id="_7311cddc-7b48-4883-9388-2a55434be309">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_a6ea52d1-9cb6-4fda-905f-27cfd7065310" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">item.Value in String = "x"</semantic:text>
+                <semantic:literalExpression id="_a6ea52d1-9cb6-4fda-905f-27cfd7065310" triso:descriptionVisible="false">
+                    <semantic:text>item.Value in String = "x"</semantic:text>
                 </semantic:literalExpression>
             </semantic:match>
         </semantic:filter>

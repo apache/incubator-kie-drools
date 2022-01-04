@@ -32,13 +32,13 @@
         </semantic:informationRequirement>
         <semantic:for id="_a3a0e4af-fb3a-461f-aaf3-19e2cfa92312" triso:descriptionVisible="false" iteratorVariable="i" typeRef="Any" triso:expressionId="_a7843f4c-9802-49c8-9d32-9f1f4860cdcb">
             <semantic:in id="_872ff1a2-622e-4bac-827c-557309907851" typeRef="Collection_of_Complex">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_1512c80f-41a6-438e-936b-49869cafe097" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">Input</semantic:text>
+                <semantic:literalExpression id="_1512c80f-41a6-438e-936b-49869cafe097" triso:descriptionVisible="false">
+                    <semantic:text>Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:in>
             <semantic:return id="_2b3f04f4-310f-44e5-9fbf-fdea874da72f">
-                <semantic:literalExpression xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_c4f92f7b-f6a5-4a97-adae-8e8c1b5dbc28" triso:descriptionVisible="false">
-                    <semantic:text xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/">i.Value in String</semantic:text>
+                <semantic:literalExpression id="_c4f92f7b-f6a5-4a97-adae-8e8c1b5dbc28" triso:descriptionVisible="false">
+                    <semantic:text>i.Value in String</semantic:text>
                 </semantic:literalExpression>
             </semantic:return>
         </semantic:for>
