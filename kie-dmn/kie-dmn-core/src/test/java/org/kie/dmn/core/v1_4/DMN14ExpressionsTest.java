@@ -52,7 +52,7 @@ public class DMN14ExpressionsTest extends BaseVariantTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{KIE_API_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK}; // only variants needed
+        return new Object[]{KIE_API_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK}; // only variants needed until DMNv1.4 is actually published
     }
 
 
