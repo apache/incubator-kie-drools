@@ -87,7 +87,12 @@ public class UnmarshalMarshalTest {
     
     @Test
     public void testV14_for() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "for.dmn");
+        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "sampleFor.dmn");
+    }
+    
+    @Test
+    public void testV14_quantified() throws Exception {
+        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "sampleQuantified.dmn");
     }
 
     public void testRoundTripV14(String subdir, String xmlfile) throws Exception {

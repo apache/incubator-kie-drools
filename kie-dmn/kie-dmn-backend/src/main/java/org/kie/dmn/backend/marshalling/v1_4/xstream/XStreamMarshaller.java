@@ -78,6 +78,7 @@ import org.kie.dmn.model.v1_4.TDecisionService;
 import org.kie.dmn.model.v1_4.TDecisionTable;
 import org.kie.dmn.model.v1_4.TDefinitions;
 import org.kie.dmn.model.v1_4.TElementCollection;
+import org.kie.dmn.model.v1_4.TEvery;
 import org.kie.dmn.model.v1_4.TExpression;
 import org.kie.dmn.model.v1_4.TFor;
 import org.kie.dmn.model.v1_4.TFunctionDefinition;
@@ -101,6 +102,7 @@ import org.kie.dmn.model.v1_4.TPerformanceIndicator;
 import org.kie.dmn.model.v1_4.TRelation;
 import org.kie.dmn.model.v1_4.TRuleAnnotation;
 import org.kie.dmn.model.v1_4.TRuleAnnotationClause;
+import org.kie.dmn.model.v1_4.TSome;
 import org.kie.dmn.model.v1_4.TTextAnnotation;
 import org.kie.dmn.model.v1_4.TTypedChildExpression;
 import org.kie.dmn.model.v1_4.TUnaryTests;
@@ -349,6 +351,9 @@ public class XStreamMarshaller
         xStream.alias("for", TFor.class);
         xStream.alias("in", TTypedChildExpression.class);
         xStream.alias("return", TChildExpression.class);
+        xStream.alias("every", TEvery.class);
+        xStream.alias("some", TSome.class);
+        xStream.alias("satisfies", TChildExpression.class);
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
@@ -386,6 +391,8 @@ public class XStreamMarshaller
         xStream.registerConverter(new ChildExpressionConverter( xStream ) );
         xStream.registerConverter(new TypedChildExpressionConverter( xStream ) );
         xStream.registerConverter(new ForConverter( xStream ) );
+        xStream.registerConverter(new EveryConverter( xStream ) );
+        xStream.registerConverter(new SomeConverter( xStream ) );
         
         xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );
