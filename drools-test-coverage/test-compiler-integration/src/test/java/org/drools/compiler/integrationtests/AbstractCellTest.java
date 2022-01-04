@@ -19,8 +19,8 @@ package org.drools.compiler.integrationtests;
 import java.io.IOException;
 
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
+import org.drools.core.marshalling.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.serialization.protobuf.marshalling.IdentityPlaceholderResolverStrategy;
 import org.drools.testcoverage.common.model.Cell;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;

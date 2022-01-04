@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.serialization.protobuf.marshalling;
 
-import org.kie.api.runtime.KieSession;
+import org.kie.api.marshalling.Marshaller;
 
-public interface KieSessionInitializer {
-    void init(KieSession kSession);
+public interface InternalMarshaller extends Marshaller {
+
+    KieSessionInitializer getInitializer();
+
+    void setInitializer( KieSessionInitializer initializer );
 }

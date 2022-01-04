@@ -25,7 +25,7 @@ import java.util.List;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
@@ -54,8 +54,6 @@ public class PhreakPropagationContext
 
     private EntryPointId                    entryPoint;
 
-    private int                             originOffset;
-
     private BitMask                         modificationMask = allSetBitMask();
 
     private BitMask                         originalMask = allSetBitMask();
@@ -65,8 +63,6 @@ public class PhreakPropagationContext
     // this field is only set for propagations happening during
     // the deserialization of a session
     private transient MarshallerReaderContext readerContext;
-
-    private transient boolean marshalling;
 
     public PhreakPropagationContext() {
 
@@ -86,7 +82,6 @@ public class PhreakPropagationContext
               allSetBitMask(),
               Object.class,
               null );
-        this.originOffset = -1;
     }
 
     public PhreakPropagationContext(final long number,
@@ -139,7 +134,6 @@ public class PhreakPropagationContext
         this.factHandle = factHandle;
         this.propagationNumber = number;
         this.entryPoint = entryPoint;
-        this.originOffset = -1;
         this.modificationMask = modificationMask;
         this.originalMask = modificationMask;
         this.modifiedClass = modifiedClass;
@@ -152,7 +146,6 @@ public class PhreakPropagationContext
         this.propagationNumber = in.readLong();
         this.rule = (RuleImpl) in.readObject();
         this.entryPoint = (EntryPointId) in.readObject();
-        this.originOffset = in.readInt();
         this.modificationMask = (BitMask) in.readObject();
     }
 
@@ -161,7 +154,6 @@ public class PhreakPropagationContext
         out.writeLong( this.propagationNumber );
         out.writeObject( this.rule );
         out.writeObject( this.entryPoint );
-        out.writeInt( this.originOffset );
         out.writeObject(this.modificationMask);
     }
 
@@ -210,14 +202,6 @@ public class PhreakPropagationContext
      */
     public void setEntryPoint(EntryPointId entryPoint) {
         this.entryPoint = entryPoint;
-    }
-
-    public int getOriginOffset() {
-        return originOffset;
-    }
-
-    public void setOriginOffset(int originOffset) {
-        this.originOffset = originOffset;
     }
 
     public BitMask getModificationMask() {
@@ -294,16 +278,7 @@ public class PhreakPropagationContext
         return this.readerContext;
     }
 
-    public boolean isMarshalling() {
-        return marshalling;
-    }
-
-    public void setMarshalling( boolean marshalling ) {
-        this.marshalling = marshalling;
-    }
-
     public static String intEnumToString( PropagationContext pctx ) {
-        String pctxType = null;
         switch( pctx.getType() ) {
             case INSERTION:
                 return "INSERTION";
@@ -323,7 +298,7 @@ public class PhreakPropagationContext
 
     @Override
     public String toString() {
-        return "PhreakPropagationContext [entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", originOffset="
-               + originOffset + ", propagationNumber=" + propagationNumber + ", rule=" + rule + ", type=" + type + "]";
+        return "PhreakPropagationContext [entryPoint=" + entryPoint + ", factHandle=" + factHandle +
+                ", propagationNumber=" + propagationNumber + ", rule=" + rule + ", type=" + type + "]";
     }
 }

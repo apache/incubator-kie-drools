@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
 import org.kie.internal.command.RegistryContext;

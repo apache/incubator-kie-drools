@@ -15,7 +15,7 @@
 
 package org.drools.serialization.protobuf;
 
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.MarshallerReaderContext;
 
 public interface TimersInputMarshaller {
 

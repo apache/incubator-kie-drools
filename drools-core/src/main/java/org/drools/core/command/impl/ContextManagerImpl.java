@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.core.world.impl;
+package org.drools.core.command.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.command.impl.ContextImpl;
 import org.kie.api.command.Command;
-import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
@@ -33,30 +31,21 @@ public class ContextManagerImpl implements ContextManager, CommandExecutor {
 
     public static String ROOT = "ROOT";
 
-    private CommandExecutionHandler executionHandler = new DefaultCommandExecutionHandler();
-
     public ContextManagerImpl() {
         this( new HashMap<>() );
     }
 
     public ContextManagerImpl( Map<String, Context> contexts ) {
-        this.root = new ContextImpl( ROOT,
-                                     this );
+        this.root = new ContextImpl( ROOT, this );
 
-        this.root.set( "world",
-                       this );
+        this.root.set( "world", this );
 
         this.contexts = contexts;
-        this.contexts.put( ROOT,
-                           this.root );
+        this.contexts.put( ROOT, this.root );
     }
 
     public <T> T execute( Command<T> command ) {
         return null;
-    }
-
-    public void setCommandExecutionHandler( CommandExecutionHandler executionHandler ) {
-        this.executionHandler = executionHandler;
     }
 
     public Context createContext( String identifier ) {
@@ -65,7 +54,6 @@ public class ContextManagerImpl implements ContextManager, CommandExecutor {
             ctx = new ContextImpl( identifier, this, root );
             this.contexts.put( identifier, ctx );
         }
-
         return ctx;
     }
 
@@ -75,20 +63,6 @@ public class ContextManagerImpl implements ContextManager, CommandExecutor {
 
     public Context getRootContext() {
         return this.root;
-    }
-
-    public interface CommandExecutionHandler {
-        Object execute( ExecutableCommand command,
-                               Context context );
-    }
-
-    public static class DefaultCommandExecutionHandler
-            implements
-            CommandExecutionHandler {
-        public Object execute( ExecutableCommand command,
-                               Context context ) {
-            return command.execute( context );
-        }
     }
 
     public Object get( String identifier ) {

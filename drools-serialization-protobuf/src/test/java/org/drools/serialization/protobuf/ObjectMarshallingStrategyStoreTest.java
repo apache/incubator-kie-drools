@@ -24,7 +24,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
+import org.drools.serialization.protobuf.marshalling.IdentityPlaceholderResolverStrategy;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Assert;

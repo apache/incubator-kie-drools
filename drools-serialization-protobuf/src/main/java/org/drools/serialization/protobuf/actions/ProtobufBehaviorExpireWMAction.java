@@ -14,8 +14,8 @@
 
 package org.drools.serialization.protobuf.actions;
 
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.MarshallerReaderContext;
+import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.SlidingTimeWindow;

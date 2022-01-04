@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.serialization.protobuf.marshalling;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,7 +24,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 public class IdentityPlaceholderResolverStrategy

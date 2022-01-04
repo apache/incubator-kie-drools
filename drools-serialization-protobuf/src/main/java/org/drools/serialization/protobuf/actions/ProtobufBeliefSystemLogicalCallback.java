@@ -14,9 +14,10 @@
 
 package org.drools.serialization.protobuf.actions;
 
+import org.drools.serialization.protobuf.ProtobufInputMarshaller;
 import org.drools.tms.beliefsystem.simple.BeliefSystemLogicalCallback;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.MarshallerReaderContext;
+import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.spi.Activation;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.drools.serialization.protobuf.ProtobufMessages;
@@ -28,7 +29,7 @@ public class ProtobufBeliefSystemLogicalCallback extends BeliefSystemLogicalCall
         ProtobufMessages.ActionQueue.LogicalRetract _retract = _action.getLogicalRetract();
 
         this.handle = context.getHandles().get( _retract.getHandleId() );
-        this.activation = ( Activation ) context.getFilter()
+        this.activation = ( Activation ) ((ProtobufInputMarshaller.PBActivationsFilter)context.getFilter())
                 .getTuplesCache().get( PersisterHelper.createActivationKey(_retract.getActivation().getPackageName(),
                         _retract.getActivation().getRuleName(),
                         _retract.getActivation().getTuple()) ).getContextObject();

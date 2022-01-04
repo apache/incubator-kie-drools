@@ -12,9 +12,13 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.core.marshalling;
 
 import java.util.Arrays;
+
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleNode;
+import org.drools.core.spi.Tuple;
 
 public class TupleKey {
     private final long[] tuple;
@@ -40,5 +44,24 @@ public class TupleKey {
         TupleKey other = (TupleKey) obj;
         if ( !Arrays.equals( tuple, other.tuple ) ) return false;
         return true;
+    }
+
+    public static TupleKey createTupleKey(final Tuple leftTuple) {
+        return new TupleKey( createTupleArray( leftTuple ) );
+    }
+
+    public static long[] createTupleArray(final Tuple tuple) {
+        if( tuple != null ) {
+            LeftTuple leftTuple = (LeftTuple) tuple;
+            long[] tupleArray = new long[((LeftTupleNode)leftTuple.getTupleSink()).getLeftTupleSource().getObjectCount()];
+            // tuple iterations happens backwards
+            int i = tupleArray.length-1;
+            for( Tuple entry = leftTuple.skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
+                tupleArray[i--] = entry.getFactHandle().getId();
+            }
+            return tupleArray;
+        } else {
+            return new long[0];
+        }
     }
 }

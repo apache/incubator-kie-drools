@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.serialization.protobuf.marshalling;
 
 import org.kie.api.marshalling.MarshallingConfiguration;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;

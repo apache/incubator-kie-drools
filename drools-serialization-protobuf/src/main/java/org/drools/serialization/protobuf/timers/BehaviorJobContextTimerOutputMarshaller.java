@@ -17,8 +17,8 @@ package org.drools.serialization.protobuf.timers;
 import java.io.IOException;
 
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterEnums;
+import org.drools.core.marshalling.MarshallerWriteContext;
+import org.drools.serialization.protobuf.marshalling.PersisterEnums;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContext;
 import org.drools.core.rule.SlidingTimeWindow.SlidingTimeWindowContext;
 import org.drools.core.time.JobContext;

@@ -74,7 +74,7 @@ import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.impl.EntryPointsManager;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.management.DroolsManagementAgent;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AsyncReceiveNode;

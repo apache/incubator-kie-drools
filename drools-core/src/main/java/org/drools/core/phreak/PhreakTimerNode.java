@@ -23,8 +23,7 @@ import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.marshalling.impl.MarshallingHelper;
-import org.drools.core.marshalling.impl.TupleKey;
+import org.drools.core.marshalling.TupleKey;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -235,7 +234,7 @@ public class PhreakTimerNode {
                     return createTrigger( timerNode, reteEvaluator, timer, timestamp, calendarNames, calendars, leftTuple );
                 }
             };
-            TupleKey key = MarshallingHelper.createTupleKey( leftTuple );
+            TupleKey key = TupleKey.createTupleKey( leftTuple );
             leftTuple.getPropagationContext().getReaderContext().addTimerNodeScheduler( timerNode.getId(), key, scheduler );
             leftTuple.setContextObject( key );
         }

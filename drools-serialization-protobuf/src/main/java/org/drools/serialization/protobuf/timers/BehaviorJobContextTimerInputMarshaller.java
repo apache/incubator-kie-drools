@@ -16,7 +16,7 @@ package org.drools.serialization.protobuf.timers;
 
 import java.io.IOException;
 
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.serialization.protobuf.ProtobufMarshallerReaderContext;

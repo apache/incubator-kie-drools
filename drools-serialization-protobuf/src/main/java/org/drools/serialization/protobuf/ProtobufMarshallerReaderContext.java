@@ -29,12 +29,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallingHelper;
-import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
-import org.drools.core.marshalling.impl.RightTupleKey;
-import org.drools.core.marshalling.impl.TupleKey;
+import org.drools.core.marshalling.MarshallerReaderContext;
+import org.drools.core.marshalling.TupleKey;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -42,7 +38,10 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.serialization.protobuf.ProtobufInputMarshaller.PBActivationsFilter;
+import org.drools.serialization.protobuf.marshalling.ObjectMarshallingStrategyStoreImpl;
+import org.drools.serialization.protobuf.marshalling.RightTupleKey;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
@@ -281,7 +280,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
         ProtobufMessages.FactHandle _handle = null;
         Map<TupleKey, ProtobufMessages.FactHandle> map = (Map<TupleKey, ProtobufMessages.FactHandle>) getNodeMemories().get( nodeId );
         if( map != null ) {
-            _handle = map.get( MarshallingHelper.createTupleKey(leftTuple) );
+            _handle = map.get( TupleKey.createTupleKey(leftTuple) );
         }
 
         if( _handle != null ) {
@@ -303,7 +302,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
         ProtobufMessages.FactHandle _handle = null;
         Map<TupleKey, List<ProtobufMessages.FactHandle>> map = (Map<TupleKey, List<ProtobufMessages.FactHandle>>) getNodeMemories().get( nodeId );
         if( map != null ) {
-            TupleKey key = MarshallingHelper.createTupleKey( leftTuple );
+            TupleKey key = TupleKey.createTupleKey( leftTuple );
             List<ProtobufMessages.FactHandle> list = map.get( key );
             if( list != null && ! list.isEmpty() ) {
                 // it is a linked list, so the operation is fairly efficient
@@ -332,7 +331,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
         ProtobufMessages.FactHandle handle = null;
         Map<TupleKey, ProtobufInputMarshaller.QueryElementContext> map = (Map<TupleKey, ProtobufInputMarshaller.QueryElementContext>) getNodeMemories().get( nodeId );
         if( map != null ) {
-            ProtobufInputMarshaller.QueryElementContext queryElementContext = map.get( PersisterHelper.createTupleKey( leftTuple ) );
+            ProtobufInputMarshaller.QueryElementContext queryElementContext = map.get( TupleKey.createTupleKey( leftTuple ) );
             if( queryElementContext != null ) {
                 handle = queryElementContext.results.removeFirst();
             }
@@ -350,7 +349,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
         ProtobufMessages.FactHandle handle = null;
         Map<TupleKey, ProtobufInputMarshaller.QueryElementContext> map = (Map<TupleKey, ProtobufInputMarshaller.QueryElementContext>) getNodeMemories().get( nodeId );
         if( map != null ) {
-            handle = map.get( PersisterHelper.createTupleKey( leftTuple ) ).handle;
+            handle = map.get( TupleKey.createTupleKey( leftTuple ) ).handle;
         }
 
         return handle != null ?

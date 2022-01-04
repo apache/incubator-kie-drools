@@ -22,9 +22,9 @@ import java.util.UUID;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.core.marshalling.impl.JavaSerializableResolverStrategy;
-import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.core.marshalling.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.serialization.protobuf.marshalling.JavaSerializableResolverStrategy;
+import org.drools.core.marshalling.SerializablePlaceholderResolverStrategy;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;

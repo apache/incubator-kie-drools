@@ -13,11 +13,13 @@
  * limitations under the License.
 */
 
-package org.drools.core.marshalling.impl;
+package org.drools.serialization.protobuf.marshalling;
 
 import java.io.IOException;
 import java.util.List;
 
+import org.drools.core.marshalling.MarshallerReaderContext;
+import org.drools.core.marshalling.MarshallerWriteContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.drools.core.process.instance.WorkItem;
 

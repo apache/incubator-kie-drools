@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.core.marshalling;
 
 import java.io.ObjectInput;
 import java.util.Map;

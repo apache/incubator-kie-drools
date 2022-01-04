@@ -21,7 +21,7 @@ import java.io.Externalizable;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.bitmask.BitMask;
@@ -46,23 +46,6 @@ public interface PropagationContext extends Externalizable {
     InternalFactHandle getFactHandle();
     void setFactHandle(InternalFactHandle factHandle);
 
-    /**
-     * Returns the offset of the fact that initiated this propagation
-     * in the current propagation context. This attribute is mutable
-     * as the same fact might have different offsets in different rules
-     * or logical branches.
-     * 
-     * @return -1 for not set, and from 0 to the tuple length-1.
-     */
-    int getOriginOffset();
-    
-    /**
-     * Sets the origin offset to the given offset.
-     * 
-     * @param offset -1 to unset or from 0 to tuple length-1
-     */
-    void setOriginOffset( int offset );
-
     EntryPointId getEntryPoint();
     
     BitMask getModificationMask();
@@ -74,7 +57,4 @@ public interface PropagationContext extends Externalizable {
     void cleanReaderContext();
 
     void setEntryPoint(EntryPointId entryPoint);
-
-    boolean isMarshalling();
-    void setMarshalling( boolean marshalling );
 }

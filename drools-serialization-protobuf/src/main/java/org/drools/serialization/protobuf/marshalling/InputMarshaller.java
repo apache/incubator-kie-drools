@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.serialization.protobuf.marshalling;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,6 +26,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.drools.core.reteoo.ObjectTypeConf;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.serialization.protobuf.marshalling;
 
 public class PersisterEnums {
     public static final short REPEAT                    = 0;

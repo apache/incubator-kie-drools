@@ -13,10 +13,14 @@
  * limitations under the License.
 */
 
-package org.drools.persistence.api;
+package org.drools.persistence;
 
-import org.drools.core.marshalling.impl.InternalMarshaller;
-import org.drools.core.marshalling.impl.KieSessionInitializer;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.drools.serialization.protobuf.marshalling.InternalMarshaller;
+import org.drools.serialization.protobuf.marshalling.KieSessionInitializer;
 import org.kie.api.KieBase;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -25,10 +29,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.marshalling.MarshallerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class SessionMarshallingHelper {
 

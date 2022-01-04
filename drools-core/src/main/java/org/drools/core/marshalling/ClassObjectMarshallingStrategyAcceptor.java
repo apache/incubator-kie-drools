@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.core.marshalling;
 
 import java.util.HashMap;
 import java.util.Map;

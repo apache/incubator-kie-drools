@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.drools.core.marshalling;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -66,7 +66,7 @@ public class SerializablePlaceholderResolverStrategy
         SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
         int index = ctx.data.size();
         ctx.data.add( object );
-        return MarshallingHelper.intToByteArray( index );
+        return intToByteArray( index );
     }
 
     public Object unmarshal(Context context,
@@ -74,7 +74,7 @@ public class SerializablePlaceholderResolverStrategy
                             byte[] object, 
                             ClassLoader classloader) throws IOException, ClassNotFoundException {
         SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
-        return ctx.data.get( MarshallingHelper.byteArrayToInt( object ) );
+        return ctx.data.get( byteArrayToInt( object ) );
     }
     
     public Context createContext() {
@@ -103,5 +103,20 @@ public class SerializablePlaceholderResolverStrategy
         return "SerializablePlaceholderResolverStrategy{" +
                 "acceptor=" + acceptor +
                 '}';
+    }
+
+    public static byte[] intToByteArray(int value) {
+        return new byte[] {
+                (byte) ((value >>> 24) & 0xFF),
+                (byte) ((value >>> 16) & 0xFF),
+                (byte) ((value >>> 8) & 0xFF),
+                (byte) (value  & 0xFF) };
+    }
+
+    public static int byteArrayToInt(byte [] b) {
+        return (b[0] << 24)
+                + ((b[1] & 0xFF) << 16)
+                + ((b[2] & 0xFF) << 8)
+                + (b[3] & 0xFF);
     }
 }
