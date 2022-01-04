@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_4.TChildExpression;
 
 public abstract class DMNBaseConverter
         extends AbstractCollectionConverter {
@@ -81,11 +82,24 @@ public abstract class DMNBaseConverter
             assignChildElement( parent, nodeName, object );
         }
     }
-
+    
     protected abstract DMNModelInstrumentedBase createModelObject();
 
     protected abstract void assignChildElement(Object parent, String nodeName, Object child);
 
     protected abstract void assignAttributes(HierarchicalStreamReader reader, Object parent);
+
+	protected void mvDownConvertAnotherMvUpAssignChildElement(HierarchicalStreamReader reader, UnmarshallingContext context, Object parent, String expectedNodeName, Class<? extends DMNModelInstrumentedBase> type) {
+	    reader.moveDown();
+	    String nodeName = reader.getNodeName();
+	    if (!expectedNodeName.equals(nodeName)) throw new IllegalStateException();
+	    Object object = context.convertAnother(null, type);
+	    if( object instanceof DMNModelInstrumentedBase ) {
+	        ((DMNModelInstrumentedBase) object).setParent((DMNModelInstrumentedBase) parent);
+	        ((DMNModelInstrumentedBase) parent).addChildren((DMNModelInstrumentedBase) object);
+	    }
+	    reader.moveUp();
+	    assignChildElement( parent, nodeName, object );
+	}
 
 }

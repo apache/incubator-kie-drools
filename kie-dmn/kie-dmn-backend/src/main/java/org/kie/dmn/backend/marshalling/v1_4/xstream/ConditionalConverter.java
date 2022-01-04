@@ -19,10 +19,13 @@ package org.kie.dmn.backend.marshalling.v1_4.xstream;
 import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.Conditional;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_4.TChildExpression;
 import org.kie.dmn.model.v1_4.TConditional;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class ConditionalConverter extends ExpressionConverter {
@@ -68,6 +71,12 @@ public class ConditionalConverter extends ExpressionConverter {
     @Override
     public boolean canConvert(Class clazz) {
         return clazz.equals(TConditional.class);
+    }
+    
+    protected void parseElements(HierarchicalStreamReader reader, UnmarshallingContext context, Object parent) {
+        mvDownConvertAnotherMvUpAssignChildElement(reader, context, parent, IF, TChildExpression.class);
+        mvDownConvertAnotherMvUpAssignChildElement(reader, context, parent, THEN, TChildExpression.class);
+        mvDownConvertAnotherMvUpAssignChildElement(reader, context, parent, ELSE, TChildExpression.class);
     }
 
 }

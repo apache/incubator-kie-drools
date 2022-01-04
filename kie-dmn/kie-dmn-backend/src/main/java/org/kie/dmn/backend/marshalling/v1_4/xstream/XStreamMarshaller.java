@@ -351,18 +351,10 @@ public class XStreamMarshaller
         xStream.alias(DMNLabelConverter.TEXT, String.class);
         
         xStream.alias("for", TFor.class);
-        xStream.alias("in", TTypedChildExpression.class);
-        xStream.alias("return", TChildExpression.class);
         xStream.alias("every", TEvery.class);
         xStream.alias("some", TSome.class);
-        xStream.alias("satisfies", TChildExpression.class);
         xStream.alias("conditional", TConditional.class);
-        xStream.alias("if", TChildExpression.class);
-        xStream.alias("then", TChildExpression.class);
-        xStream.alias("else", TChildExpression.class);
         xStream.alias("filter", TFilter.class);
-        xStream.alias("in", TChildExpression.class);
-        xStream.alias("match", TChildExpression.class);
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );

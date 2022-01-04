@@ -19,10 +19,14 @@ package org.kie.dmn.backend.marshalling.v1_4.xstream;
 import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.For;
+import org.kie.dmn.model.v1_4.TChildExpression;
 import org.kie.dmn.model.v1_4.TFor;
+import org.kie.dmn.model.v1_4.TTypedChildExpression;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class ForConverter extends IteratorConverter {
@@ -61,5 +65,10 @@ public class ForConverter extends IteratorConverter {
 	public boolean canConvert(Class type) {
 		return type.equals(TFor.class);
 	}
+	
+    protected void parseElements(HierarchicalStreamReader reader, UnmarshallingContext context, Object parent) {
+        mvDownConvertAnotherMvUpAssignChildElement(reader, context, parent, IN, TTypedChildExpression.class);
+        mvDownConvertAnotherMvUpAssignChildElement(reader, context, parent, RETURN, TChildExpression.class);
+    }
 
 }
