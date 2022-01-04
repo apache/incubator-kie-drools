@@ -21,9 +21,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.marshalling.impl.MarshallingHelper;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.kogito.internal.process.marshalling.KogitoObjectMarshallingStrategy;
+
+import static org.drools.core.marshalling.SerializablePlaceholderResolverStrategy.byteArrayToInt;
+import static org.drools.core.marshalling.SerializablePlaceholderResolverStrategy.intToByteArray;
 
 public class KogitoSerializablePlaceholderResolverStrategy implements KogitoObjectMarshallingStrategy {
 
@@ -64,7 +66,7 @@ public class KogitoSerializablePlaceholderResolverStrategy implements KogitoObje
         SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext) context;
         int index = ctx.data.size();
         ctx.data.add(object);
-        return MarshallingHelper.intToByteArray(index);
+        return intToByteArray(index);
     }
 
     public Object unmarshal(String dataType,
@@ -73,7 +75,7 @@ public class KogitoSerializablePlaceholderResolverStrategy implements KogitoObje
             byte[] object,
             ClassLoader classloader) throws IOException, ClassNotFoundException {
         SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext) context;
-        return ctx.data.get(MarshallingHelper.byteArrayToInt(object));
+        return ctx.data.get(byteArrayToInt(object));
     }
 
     public Context createContext() {
