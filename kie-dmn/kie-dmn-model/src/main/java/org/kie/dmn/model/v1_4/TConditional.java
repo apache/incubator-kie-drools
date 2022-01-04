@@ -18,7 +18,6 @@ package org.kie.dmn.model.v1_4;
 
 import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.Conditional;
-import org.kie.dmn.model.v1_3.TExpression;
 
 public class TConditional extends TExpression implements Conditional {
 

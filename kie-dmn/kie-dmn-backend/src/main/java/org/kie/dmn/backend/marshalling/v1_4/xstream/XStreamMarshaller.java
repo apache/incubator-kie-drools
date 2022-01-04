@@ -68,6 +68,7 @@ import org.kie.dmn.model.v1_4.TBinding;
 import org.kie.dmn.model.v1_4.TBusinessContextElement;
 import org.kie.dmn.model.v1_4.TBusinessKnowledgeModel;
 import org.kie.dmn.model.v1_4.TChildExpression;
+import org.kie.dmn.model.v1_4.TConditional;
 import org.kie.dmn.model.v1_4.TContext;
 import org.kie.dmn.model.v1_4.TContextEntry;
 import org.kie.dmn.model.v1_4.TDMNElement;
@@ -354,6 +355,10 @@ public class XStreamMarshaller
         xStream.alias("every", TEvery.class);
         xStream.alias("some", TSome.class);
         xStream.alias("satisfies", TChildExpression.class);
+        xStream.alias("conditional", TConditional.class);
+        xStream.alias("if", TChildExpression.class);
+        xStream.alias("then", TChildExpression.class);
+        xStream.alias("else", TChildExpression.class);
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
@@ -393,6 +398,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new ForConverter( xStream ) );
         xStream.registerConverter(new EveryConverter( xStream ) );
         xStream.registerConverter(new SomeConverter( xStream ) );
+        xStream.registerConverter(new ConditionalConverter( xStream ) );
         
         xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );
