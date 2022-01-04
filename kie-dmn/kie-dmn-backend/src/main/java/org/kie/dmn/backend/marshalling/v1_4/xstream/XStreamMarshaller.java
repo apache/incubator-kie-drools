@@ -81,6 +81,7 @@ import org.kie.dmn.model.v1_4.TDefinitions;
 import org.kie.dmn.model.v1_4.TElementCollection;
 import org.kie.dmn.model.v1_4.TEvery;
 import org.kie.dmn.model.v1_4.TExpression;
+import org.kie.dmn.model.v1_4.TFilter;
 import org.kie.dmn.model.v1_4.TFor;
 import org.kie.dmn.model.v1_4.TFunctionDefinition;
 import org.kie.dmn.model.v1_4.TFunctionItem;
@@ -359,6 +360,9 @@ public class XStreamMarshaller
         xStream.alias("if", TChildExpression.class);
         xStream.alias("then", TChildExpression.class);
         xStream.alias("else", TChildExpression.class);
+        xStream.alias("filter", TFilter.class);
+        xStream.alias("in", TChildExpression.class);
+        xStream.alias("match", TChildExpression.class);
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
@@ -399,6 +403,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new EveryConverter( xStream ) );
         xStream.registerConverter(new SomeConverter( xStream ) );
         xStream.registerConverter(new ConditionalConverter( xStream ) );
+        xStream.registerConverter(new FilterConverter( xStream ) );
         
         xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );

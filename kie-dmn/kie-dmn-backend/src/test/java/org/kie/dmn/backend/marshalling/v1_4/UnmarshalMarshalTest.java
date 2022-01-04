@@ -99,6 +99,11 @@ public class UnmarshalMarshalTest {
     public void testV14_conditional() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "sampleConditional.dmn");
     }
+    
+    @Test
+    public void testV14_filter() throws Exception {
+        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "sampleFilter.dmn");
+    }
 
     public void testRoundTripV14(String subdir, String xmlfile) throws Exception {
         testRoundTrip(subdir, xmlfile, MARSHALLER, DMN14_SCHEMA_SOURCE);
