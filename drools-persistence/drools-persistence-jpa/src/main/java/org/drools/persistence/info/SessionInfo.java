@@ -28,8 +28,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.drools.persistence.api.PersistentSession;
-import org.drools.persistence.api.SessionMarshallingHelper;
-import org.drools.persistence.api.Transformable;
+import org.drools.persistence.SessionMarshallingHelper;
 
 @Entity
 @SequenceGenerator(name="sessionInfoIdSeq", sequenceName="SESSIONINFO_ID_SEQ")

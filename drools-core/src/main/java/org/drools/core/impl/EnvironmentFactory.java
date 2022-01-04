@@ -16,7 +16,7 @@
 
 package org.drools.core.impl;
 
-import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;

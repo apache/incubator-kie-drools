@@ -15,7 +15,7 @@
 
 package org.drools.serialization.protobuf;
 
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.time.JobContext;
 
 public interface TimersOutputMarshaller {

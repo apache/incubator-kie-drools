@@ -52,12 +52,12 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.marshalling.impl.ActivationKey;
-import org.drools.core.marshalling.impl.KieSessionInitializer;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.ProcessMarshaller;
-import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
-import org.drools.core.marshalling.impl.TupleKey;
+import org.drools.serialization.protobuf.marshalling.ActivationKey;
+import org.drools.serialization.protobuf.marshalling.KieSessionInitializer;
+import org.drools.core.marshalling.MarshallerReaderContext;
+import org.drools.serialization.protobuf.marshalling.ProcessMarshaller;
+import org.drools.serialization.protobuf.marshalling.ProcessMarshallerFactory;
+import org.drools.core.marshalling.TupleKey;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
@@ -650,7 +650,7 @@ public class ProtobufInputMarshaller {
                 for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
                     ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
                     ActivationKey activationKey = getActivationKey( context, _activation );
-                    Activation activation = (Activation) context.getFilter().getTuplesCache().get(activationKey);
+                    Activation activation = (Activation) ((PBActivationsFilter)context.getFilter()).getTuplesCache().get(activationKey);
 
                     Object object = null;
                     ObjectMarshallingStrategy strategy = null;
@@ -835,7 +835,6 @@ public class ProtobufInputMarshaller {
             }
         }
 
-        @Override
         public Map<ActivationKey, Tuple> getTuplesCache() {
             return tuplesCache;
         }

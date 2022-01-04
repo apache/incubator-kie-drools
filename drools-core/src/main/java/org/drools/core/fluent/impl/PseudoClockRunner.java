@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import org.drools.core.command.ConversationContextManager;
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.runtime.InternalLocalRunner;
-import org.drools.core.world.impl.ContextManagerImpl;
+import org.drools.core.command.impl.ContextManagerImpl;
 import org.kie.api.command.Command;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;

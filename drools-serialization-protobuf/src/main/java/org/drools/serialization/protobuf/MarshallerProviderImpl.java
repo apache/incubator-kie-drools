@@ -16,10 +16,10 @@
 
 package org.drools.serialization.protobuf;
 
-import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
-import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
-import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.core.marshalling.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.serialization.protobuf.marshalling.IdentityPlaceholderResolverStrategy;
+import org.drools.serialization.protobuf.marshalling.MarshallingConfigurationImpl;
+import org.drools.core.marshalling.SerializablePlaceholderResolverStrategy;
 import org.kie.api.KieBase;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.marshalling.Marshaller;

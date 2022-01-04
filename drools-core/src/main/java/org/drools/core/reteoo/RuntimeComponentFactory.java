@@ -29,7 +29,7 @@ import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.GenericKieSessionMonitoringImpl;
-import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.core.marshalling.SerializablePlaceholderResolverStrategy;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.internal.utils.ServiceRegistry;

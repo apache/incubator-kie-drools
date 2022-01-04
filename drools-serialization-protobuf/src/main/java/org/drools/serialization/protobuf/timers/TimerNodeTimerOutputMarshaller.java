@@ -14,7 +14,7 @@
 
 package org.drools.serialization.protobuf.timers;
 
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeJobContext;
 import org.drools.core.time.JobContext;
 import org.drools.serialization.protobuf.PersisterHelper;
