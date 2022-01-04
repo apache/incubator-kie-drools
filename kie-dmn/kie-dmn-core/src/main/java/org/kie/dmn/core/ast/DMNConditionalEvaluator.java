@@ -71,7 +71,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
                                       null,
                                       Msg.CONDITION_RESULT_NOT_BOOLEAN,
                                       name,
-                                      ifResult != null ? ifResult.toString() : "null");
+                                      ifResult);
             }
         }
 
