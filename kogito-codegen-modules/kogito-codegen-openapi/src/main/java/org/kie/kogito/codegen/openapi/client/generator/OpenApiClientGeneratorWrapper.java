@@ -69,6 +69,7 @@ public class OpenApiClientGeneratorWrapper {
         this.configurator = new CodegenConfigurator();
         this.configurator.setInputSpec(specFilePath);
         this.configurator.setGeneratorName(GENERATOR_NAME);
+        this.configurator.setValidateSpec(false);
         this.generator = new DefaultGenerator();
         this.kogitoCodegen = new KogitoJavaClientCodegen(this.generator, customApiTemplate);
         this.kogitoCodegen.setOutputDir(outputDir);
