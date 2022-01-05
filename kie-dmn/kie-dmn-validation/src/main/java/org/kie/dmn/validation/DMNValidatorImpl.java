@@ -120,6 +120,19 @@ public class DMNValidatorImpl implements DMNValidator {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
+    static final Schema schemav1_4;
+    static {
+        try {
+            schemav1_4 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                                      .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DC.xsd")),
+                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DI.xsd")),
+                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DMNDI13.xsd")),
+                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DMN14.xsd"))
+                                      });
+        } catch (SAXException e) {
+            throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
+        }
+    }
 
     private Schema overrideSchema = null;
 
@@ -481,9 +494,11 @@ public class DMNValidatorImpl implements DMNValidator {
                 case DMN_v1_2:
                     return validateSchema(s, schemav1_2);
                 case DMN_v1_3:
+                    return validateSchema(s, schemav1_3);
+                case DMN_v1_4:
                 case UNKNOWN:
                 default:
-                    return validateSchema(s, schemav1_3);
+                    return validateSchema(s, schemav1_4);
             }
         } catch (Exception e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
@@ -503,9 +518,11 @@ public class DMNValidatorImpl implements DMNValidator {
                 case DMN_v1_2:
                     return validateSchema(s, schemav1_2);
                 case DMN_v1_3:
+                    return validateSchema(s, schemav1_3);
+                case DMN_v1_4:
                 case UNKNOWN:
                 default:
-                    return validateSchema(s, schemav1_3);
+                    return validateSchema(s, schemav1_4);
             }
         } catch (Exception e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));

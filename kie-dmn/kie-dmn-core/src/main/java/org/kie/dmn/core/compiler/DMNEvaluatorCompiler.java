@@ -16,12 +16,15 @@
 
 package org.kie.dmn.core.compiler;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -35,16 +38,20 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.DMNBaseNode;
+import org.kie.dmn.core.ast.DMNConditionalEvaluator;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
+import org.kie.dmn.core.ast.DMNFilterEvaluator;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DMNInvocationEvaluator;
+import org.kie.dmn.core.ast.DMNIteratorEvaluator;
 import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.compiler.alphanetbased.DMNAlphaNetworkEvaluatorCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator.PMMLInvocationEvaluatorFactory;
@@ -65,6 +72,7 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.model.api.Binding;
 import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.Conditional;
 import org.kie.dmn.model.api.Context;
 import org.kie.dmn.model.api.ContextEntry;
 import org.kie.dmn.model.api.DMNElement;
@@ -72,6 +80,8 @@ import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.Filter;
+import org.kie.dmn.model.api.For;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.HitPolicy;
@@ -79,15 +89,14 @@ import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.Invocation;
+import org.kie.dmn.model.api.Iterator;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.Quantified;
 import org.kie.dmn.model.api.Relation;
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.dmn.model.v1_1.TLiteralExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.stream.Collectors.toList;
 
 public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
 
@@ -155,6 +164,12 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             return compileRelation( ctx, model, node, exprName, (Relation) expression );
         } else if ( expression instanceof Invocation ) {
             return compileInvocation( ctx, model, node, (Invocation) expression );
+        } else if (expression instanceof Conditional) {
+            return compileConditional(ctx, model, node, exprName, (Conditional) expression);
+        } else if (expression instanceof Iterator) {
+            return compileIterator(ctx, model, node, exprName, (Iterator) expression);
+        } else if (expression instanceof Filter) {
+            return compileFilter(ctx, model, node, exprName, (Filter) expression);     
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -264,7 +279,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                     // DROOLS-2439
                     LiteralExpression literalExpression = (LiteralExpression) expr;
                     if (literalExpression.getText() == null || literalExpression.getText().isEmpty()) {
-                        LiteralExpression nullProxy = (literalExpression instanceof TLiteralExpression) ? new TLiteralExpression() : new org.kie.dmn.model.v1_2.TLiteralExpression();
+                        LiteralExpression nullProxy = (literalExpression instanceof org.kie.dmn.model.v1_1.TLiteralExpression) ? new org.kie.dmn.model.v1_1.TLiteralExpression() : new org.kie.dmn.model.v1_2.TLiteralExpression();
                         nullProxy.setText("null");
                         nullProxy.setImportedValues(literalExpression.getImportedValues());
                         nullProxy.setExpressionLanguage(literalExpression.getExpressionLanguage());
@@ -922,6 +937,131 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             return Collections.emptyList();
         }
         return ctx.getFeelHelper().evaluateUnaryTests(ctx, text, model, element, errorMsg, msgParams);
+    }
+    
+
+    private DMNExpressionEvaluator compileConditional(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Conditional expression) {
+        DMNExpressionEvaluator ifEvaluator = compileExpression(ctx, model, node, exprName + " [if]", expression.getIf().getExpression());
+        DMNExpressionEvaluator thenEvaluator = compileExpression(ctx, model, node, exprName + " [then]", expression.getThen().getExpression());
+        DMNExpressionEvaluator elseEvaluator = compileExpression(ctx, model, node, exprName + " [else]", expression.getElse().getExpression());
+
+        if (ifEvaluator == null) {
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_CONDITION, "if",
+                    node.getIdentifierString());
+            return null;
+        }
+
+        if (thenEvaluator == null) {
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_CONDITION, "then",
+                    node.getIdentifierString());
+            return null;
+        }
+
+        if (elseEvaluator == null) {
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_CONDITION, "else",
+                    node.getIdentifierString());
+            return null;
+        }
+
+        return new DMNConditionalEvaluator(exprName, node.getSource(), ifEvaluator, thenEvaluator, elseEvaluator);
+    }
+
+    private DMNExpressionEvaluator compileIterator(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Iterator expression) {
+        if (expression.getIteratorVariable() == null || expression.getIteratorVariable().isEmpty()) {
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_ITERATOR,
+                    expression.getTypeRef().toString().toLowerCase(), node.getIdentifierString());
+            return null;
+        }
+
+        DMNExpressionEvaluator inEvaluator = null;
+        DMNExpressionEvaluator returnEvaluator = null;
+
+        inEvaluator = compileExpression(ctx, model, node, exprName + " [in]", expression.getIn().getExpression());
+
+        try {
+            ctx.enterFrame();
+            DMNType outputType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getTypeRef());
+            DMNType elementType = compiler.resolveTypeRefUsingString(model, null, node.getSource(), expression.getIn().getTypeRef());
+            if (elementType != null && elementType.isCollection() && elementType instanceof BaseDMNTypeImpl) {
+                elementType = extractOrSynthesizeGeneric(model, (BaseDMNTypeImpl) elementType);
+            }
+
+            ctx.setVariable(expression.getIteratorVariable(), elementType != null ? elementType : model.getTypeRegistry().unknown());
+            ctx.setVariable("partial", outputType != null ? outputType : model.getTypeRegistry().unknown());
+            returnEvaluator = compileExpression(ctx, model, node, exprName + " [return]", expression instanceof For ? ((For) expression).getReturn().getExpression() : ((Quantified) expression).getSatisfies().getExpression() );
+        } finally {
+            ctx.exitFrame();
+        }
+
+        if (inEvaluator == null) {
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_ITERATOR, "in",
+                    node.getIdentifierString());
+            return null;
+        }
+
+        if (returnEvaluator == null) {
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_ITERATOR,
+                    expression instanceof For ? "return" : "satisfies", node.getIdentifierString());
+            return null;
+        }
+
+        return new DMNIteratorEvaluator(exprName, node.getSource(), expression, expression.getIteratorVariable(), inEvaluator, returnEvaluator);
+    }
+
+    /**
+     * extract the generic T from the DMN representation of FEEL:list<T>
+     */
+    private DMNType extractOrSynthesizeGeneric(DMNModelImpl model, BaseDMNTypeImpl elementType) {
+        if (elementType.getBaseType() != null) {
+            return elementType.getBaseType();
+        } else if (elementType instanceof CompositeTypeImpl) {
+            CompositeTypeImpl orig = (CompositeTypeImpl) elementType;
+            return new CompositeTypeImpl(orig.getNamespace(),
+                                         UUID.randomUUID().toString() + orig.getName(),
+                                         UUID.randomUUID().toString() + orig.getId(),
+                                         false, // synth T.
+                                         orig.getFields(),
+                                         null,
+                                         null);
+        }
+        return model.getTypeRegistry().unknown();
+    }
+
+    private DMNExpressionEvaluator compileFilter(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Filter expression) {
+        DMNExpressionEvaluator inEvaluator = compileExpression(ctx, model, node, exprName + " [in]", expression.getIn().getExpression());
+        DMNExpressionEvaluator filterEvaluator;
+
+        try {
+            ctx.enterFrame();
+
+            DMNType outputType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getTypeRef());
+            DMNType elementType = outputType;
+            if (elementType != null && elementType.isCollection() && elementType instanceof BaseDMNTypeImpl) {
+                elementType = extractOrSynthesizeGeneric(model, (BaseDMNTypeImpl) elementType);
+            }
+
+            ctx.setVariable("item", elementType != null ? elementType : model.getTypeRegistry().unknown());
+            if (elementType != null && elementType.isComposite()) {
+                elementType.getFields().forEach((k, v) -> ctx.setVariable(k, v != null ? v : model.getTypeRegistry().unknown()));
+            }
+            filterEvaluator = compileExpression(ctx, model, node, exprName + " [filter]", expression.getMatch().getExpression());
+        } finally {
+            ctx.exitFrame();
+        }
+
+        if (inEvaluator == null) {
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_FILTER, "in",
+                    node.getIdentifierString());
+            return null;
+        }
+
+        if (filterEvaluator == null) {
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_FILTER, "filter",
+                    node.getIdentifierString());
+            return null;
+        }
+
+        return new DMNFilterEvaluator(exprName, node.getSource(), inEvaluator, filterEvaluator);
     }
 
 }
