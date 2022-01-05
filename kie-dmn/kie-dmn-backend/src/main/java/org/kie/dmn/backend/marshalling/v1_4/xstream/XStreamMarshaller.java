@@ -108,7 +108,7 @@ import org.kie.dmn.model.v1_4.TSome;
 import org.kie.dmn.model.v1_4.TTextAnnotation;
 import org.kie.dmn.model.v1_4.TTypedChildExpression;
 import org.kie.dmn.model.v1_4.TUnaryTests;
-import org.kie.utll.xml.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
