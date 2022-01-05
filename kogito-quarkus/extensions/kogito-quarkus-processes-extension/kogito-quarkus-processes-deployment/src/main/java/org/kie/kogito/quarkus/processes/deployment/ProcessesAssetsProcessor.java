@@ -80,6 +80,7 @@ import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
@@ -182,6 +183,7 @@ public class ProcessesAssetsProcessor {
     public void postGenerationProcessing(
             List<KogitoGeneratedClassesBuildItem> generatedKogitoClasses,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
+            BuildProducer<AdditionalStaticResourceBuildItem> staticResProducer,
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<NativeImageResourcePatternsBuildItem> resourcePatterns,
             BuildProducer<GeneratedResourceBuildItem> genResBI,
@@ -220,7 +222,7 @@ public class ProcessesAssetsProcessor {
         dumpFilesToDisk(context.getAppPaths(), generatedFiles);
 
         // register resources to the Quarkus environment
-        registerResources(generatedFiles, resource, genResBI);
+        registerResources(generatedFiles, staticResProducer, resource, genResBI);
 
         registerProcessSVG(context, resource);
     }
@@ -235,7 +237,7 @@ public class ProcessesAssetsProcessor {
 
         Collection<GeneratedFile> persistenceGeneratedFiles = getGeneratedPersistenceFiles(index, context, runTimeConfiguration, resourcePatterns);
 
-        validateGeneratedFileTypes(persistenceGeneratedFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.RESOURCE));
+        validateGeneratedFileTypes(persistenceGeneratedFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.INTERNAL_RESOURCE, GeneratedFileType.Category.STATIC_HTTP_RESOURCE));
 
         Collection<ResolvedDependency> dependencies = curateOutcomeBuildItem.getApplicationModel().getRuntimeDependencies();
         compileGeneratedSources(context, dependencies, persistenceGeneratedFiles, useDebugSymbols)

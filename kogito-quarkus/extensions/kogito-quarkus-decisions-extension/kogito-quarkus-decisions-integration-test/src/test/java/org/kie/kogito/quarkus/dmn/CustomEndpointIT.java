@@ -19,12 +19,12 @@ package org.kie.kogito.quarkus.dmn;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 public class CustomEndpointIT {
 
     @Test

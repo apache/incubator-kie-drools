@@ -20,13 +20,14 @@ import java.util.Objects;
 /**
  * Interface to represent a type of GeneratedFile and specify how the type should be handled. It allows the definition of custom
  * types using one of the factory method {@link GeneratedFileType#of(String, Category, boolean)}.
- * It also provides default reusable instances for generic types {@link GeneratedFileType.Category#SOURCE}, {@link GeneratedFileType.Category#RESOURCE}
- * and {@link GeneratedFileType.Category#COMPILED_CLASS}
+ * It also provides default reusable instances for generic types {@link GeneratedFileType.Category#SOURCE}, {@link GeneratedFileType.Category#INTERNAL_RESOURCE}
+ * , {@link GeneratedFileType.Category#STATIC_HTTP_RESOURCE} and {@link GeneratedFileType.Category#COMPILED_CLASS}
  */
 public interface GeneratedFileType {
 
     GeneratedFileType SOURCE = of(Category.SOURCE);
-    GeneratedFileType RESOURCE = of(Category.RESOURCE);
+    GeneratedFileType INTERNAL_RESOURCE = of(Category.INTERNAL_RESOURCE);
+    GeneratedFileType STATIC_HTTP_RESOURCE = of(Category.STATIC_HTTP_RESOURCE);
     GeneratedFileType COMPILED_CLASS = of(Category.COMPILED_CLASS);
 
     String name();
@@ -49,7 +50,14 @@ public interface GeneratedFileType {
          * information see {@link org.kie.kogito.codegen.utils.GeneratedFileWriter#write(GeneratedFile)}
          * For Quarkus it will be subject of GeneratedResourceBuildItem and NativeImageResourceBuildItem too
          */
-        RESOURCE,
+        INTERNAL_RESOURCE,
+        /**
+         * a resource file to be published as a static file to a web server. It will be automatically placed under META-INF/resources/
+         * so you don't need to prefix its path with "META-INF/resources/"
+         * For Quarkus it will be subject of GeneratedResourceBuildItem, NativeImageResourceBuildItem and AdditionalStaticResourceBuildItem
+         * so it could be served without Servlet dependency
+         */
+        STATIC_HTTP_RESOURCE,
         /**
          * Represent a class file (Java compiled file)
          */

@@ -28,8 +28,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DashboardGeneratedFileUtils {
-    public static final GeneratedFileType DASHBOARD_TYPE = GeneratedFileType.of("DASHBOARD", GeneratedFileType.Category.RESOURCE);
-    private static final String STATIC_RESOURCE_PATH = "META-INF/resources/monitoring/dashboards/";
+    public static final GeneratedFileType DASHBOARD_TYPE = GeneratedFileType.of("DASHBOARD", GeneratedFileType.Category.STATIC_HTTP_RESOURCE);
+    private static final String STATIC_RESOURCE_PATH = "monitoring/dashboards/";
     public static final String OPERATIONAL_DASHBOARD_PREFIX = "operational-dashboard-";
     public static final String DOMAIN_DASHBOARD_PREFIX = "domain-dashboard-";
     private static final String LIST_FILENAME = "list.json";

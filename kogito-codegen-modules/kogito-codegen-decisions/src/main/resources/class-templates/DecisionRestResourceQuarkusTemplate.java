@@ -24,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
@@ -47,9 +48,6 @@ public class DMNRestResourceTemplate {
             .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
 
-    @javax.ws.rs.core.Context
-    private org.jboss.resteasy.spi.HttpResponse httpResponse;
-
     @POST
     @Path("/$dmnMethodUrl$")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -62,9 +60,8 @@ public class DMNRestResourceTemplate {
         org.kie.kogito.decision.DecisionModel decision = application.get(org.kie.kogito.decision.DecisionModels.class).getDecisionModel("$modelNamespace$", "$modelName$");
         OutputSet outputSet = (OutputSet) StronglyTypedUtils.convertToOutputSet(variables, OutputSet.class);
         org.kie.dmn.api.core.DMNResult decisionResult = decision.evaluateAll(DMNJSONUtils.ctx(decision, $inputData$));
-        enrichResponseHeaders(decisionResult);
         KogitoDMNResult result = new KogitoDMNResult("$modelNamespace$", "$modelName$", decisionResult);
-        return $extractContextMethod$(result);
+        return enrichResponseHeaders(decisionResult, $extractContextMethod$(result));
     }
 
     @GET
@@ -76,29 +73,29 @@ public class DMNRestResourceTemplate {
                                                                         ".dmn_nologic")));
     }
 
-    private Response extractContextIfSucceded(KogitoDMNResult result){
+    private ResponseBuilder extractContextIfSucceded(KogitoDMNResult result){
         if (!result.hasErrors()) {
-            return Response.ok(buildResponse(result.getDmnContext())).build();
+            return Response.ok(buildResponse(result.getDmnContext()));
         } else {
             return buildFailedEvaluationResponse(result);
         }
     }
 
-    private Response buildFailedEvaluationResponse(KogitoDMNResult result){
-        return Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+    private ResponseBuilder buildFailedEvaluationResponse(KogitoDMNResult result){
+        return Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(result);
     }
 
-    private Response extractStronglyTypedContextIfSucceded(KogitoDMNResult result) {
+    private ResponseBuilder extractStronglyTypedContextIfSucceded(KogitoDMNResult result) {
         if (!result.hasErrors()) {
-            return Response.ok(buildResponse((OutputSet)StronglyTypedUtils.extractOutputSet(result, OutputSet.class))).build();
+            return Response.ok(buildResponse((OutputSet)StronglyTypedUtils.extractOutputSet(result, OutputSet.class)));
         } else {
             return buildFailedEvaluationResponse(result);
         }
     }
 
-    private Response extractSingletonDSIfSucceded(KogitoDMNResult result) {
+    private ResponseBuilder extractSingletonDSIfSucceded(KogitoDMNResult result) {
         if (!result.hasErrors()) {
-            return Response.ok(buildResponse(result.getDecisionResults().get(0).getResult())).build();
+            return Response.ok(buildResponse(result.getDecisionResults().get(0).getResult()));
         } else {
             return buildFailedEvaluationResponse(result);
         }
@@ -108,7 +105,7 @@ public class DMNRestResourceTemplate {
         if (!result.hasErrors()) {
             return Response.ok(buildResponse(result)).build();
         } else {
-            return buildFailedEvaluationResponse(result);
+            return buildFailedEvaluationResponse(result).build();
         }
     }
 
@@ -121,15 +118,16 @@ public class DMNRestResourceTemplate {
         }
     }
 
-    private void enrichResponseHeaders(org.kie.dmn.api.core.DMNResult result) {
+    private Response enrichResponseHeaders(org.kie.dmn.api.core.DMNResult result, ResponseBuilder responseBuilder) {
         if (!result.hasErrors() && !result.getMessages().isEmpty()) {
             String infoWarns = result.getMessages().stream().map(m -> m.getLevel() + " " + m.getMessage()).collect(java.util.stream.Collectors.joining(", "));
-            httpResponse.getOutputHeaders().add(KOGITO_DECISION_INFOWARN_HEADER, infoWarns);
+            responseBuilder.header(KOGITO_DECISION_INFOWARN_HEADER, infoWarns);
         }
 
         org.kie.kogito.decision.DecisionExecutionIdUtils.getOptional(result.getContext())
                 .ifPresent(executionId ->
-                        httpResponse.getOutputHeaders().add(KOGITO_EXECUTION_ID_HEADER, executionId)
+                        responseBuilder.header(KOGITO_EXECUTION_ID_HEADER, executionId)
                 );
+        return responseBuilder.build();
     }
 }

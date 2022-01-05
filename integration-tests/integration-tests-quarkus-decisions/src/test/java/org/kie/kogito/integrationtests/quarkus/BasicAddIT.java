@@ -17,14 +17,14 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 class BasicAddIT {
 
     static {

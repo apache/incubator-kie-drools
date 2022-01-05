@@ -26,10 +26,6 @@
       <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-undertow</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

@@ -100,7 +100,7 @@ class CustomDashboardGeneratedUtilsTest {
 
     private void validateGeneratedFile(GeneratedFile toValidate, String dashboardType, String originalFileName) {
         assertEquals("DASHBOARD", toValidate.type().name());
-        assertEquals("RESOURCE", toValidate.category().name());
+        assertEquals("STATIC_HTTP_RESOURCE", toValidate.category().name());
         String fileName =
                 toValidate.relativePath().substring(toValidate.relativePath().lastIndexOf(File.separator) + 1);
         assertTrue(fileName.startsWith(dashboardType));

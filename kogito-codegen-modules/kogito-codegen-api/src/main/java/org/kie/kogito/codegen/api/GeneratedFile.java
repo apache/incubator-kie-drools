@@ -19,7 +19,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GeneratedFile {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedFile.class);
+
+    public static final String META_INF_RESOURCES = "META-INF/resources/";
+    public static final Path META_INF_RESOURCES_PATH = Path.of(META_INF_RESOURCES);
 
     private final Path path;
     private final String pathAsString;
@@ -44,6 +52,16 @@ public class GeneratedFile {
 
     private GeneratedFile(GeneratedFileType type, Path path, String pathAsString, byte[] contents) {
         this.type = type;
+
+        if (type.category().equals(GeneratedFileType.Category.STATIC_HTTP_RESOURCE)) {
+            if (path.startsWith(META_INF_RESOURCES)) {
+                LOGGER.warn("STATIC_HTTP_RESOURCE is automatically placed under " + META_INF_RESOURCES + ". You don't need to specify the directory : {}", path);
+            } else {
+                path = META_INF_RESOURCES_PATH.resolve(path);
+                pathAsString = path.toString();
+            }
+        }
+
         this.path = path;
         this.pathAsString = pathAsString;
         this.contents = contents;

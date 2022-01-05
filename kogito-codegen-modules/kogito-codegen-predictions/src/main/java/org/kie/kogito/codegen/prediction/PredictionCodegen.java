@@ -164,7 +164,7 @@ public class PredictionCodegen extends AbstractGenerator {
             if (!pojoClasses.isEmpty()) {
                 org.drools.modelcompiler.builder.GeneratedFile reflectConfigFile =
                         getReflectConfigFile(model.getKModulePackageName(), pojoClasses);
-                files.add(new GeneratedFile(GeneratedFileType.RESOURCE, reflectConfigFile.getPath(), new String(reflectConfigFile.getData())));
+                files.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, reflectConfigFile.getPath(), new String(reflectConfigFile.getData())));
             }
         }
 
@@ -187,8 +187,7 @@ public class PredictionCodegen extends AbstractGenerator {
         try {
             String jsonContent = new ObjectMapper().writeValueAsString(oasResult.jsonSchemaNode());
             String jsonFile = String.format("%s.json", getSanitizedClassName(model.getName()));
-            String jsonFilePath = String.format("META-INF/resources/%s", jsonFile);
-            files.add(new GeneratedFile(GeneratedFileType.RESOURCE, jsonFilePath, jsonContent));
+            files.add(new GeneratedFile(GeneratedFileType.STATIC_HTTP_RESOURCE, jsonFile, jsonContent));
         } catch (Exception e) {
             LOGGER.warn("Failed to write OAS schema");
         }

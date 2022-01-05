@@ -131,7 +131,7 @@ public class DecisionCodegen extends AbstractGenerator {
         try {
             oasResult = DMNOASGeneratorFactory.generator(models).build();
             String jsonContent = new ObjectMapper().writeValueAsString(oasResult.getJsonSchemaNode());
-            storeFile(GeneratedFileType.RESOURCE, "META-INF/resources/dmnDefinitions.json", jsonContent);
+            storeFile(GeneratedFileType.STATIC_HTTP_RESOURCE, "dmnDefinitions.json", jsonContent);
         } catch (Exception e) {
             LOGGER.error("Error while trying to generate OpenAPI specification for the DMN models", e);
         }
@@ -179,7 +179,7 @@ public class DecisionCodegen extends AbstractGenerator {
                 }
             }
             String relativePath = CodegenStringUtil.escapeIdentifier(model.getNamespace()).replace(".", "/") + "/" + CodegenStringUtil.escapeIdentifier(model.getName()) + ".dmn_nologic";
-            storeFile(GeneratedFileType.RESOURCE, relativePath, marshaller.marshal(definitions));
+            storeFile(GeneratedFileType.INTERNAL_RESOURCE, relativePath, marshaller.marshal(definitions));
         }
 
         if (context().getAddonsConfig().useCloudEvents()) {

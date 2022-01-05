@@ -77,7 +77,15 @@ class KogitoAssetsProcessorTest {
         assertThatThrownBy(() -> processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY_JSON_JACKSON)))
                 .isInstanceOf(MissingRestCapabilityException.class);
 
+        assertThatThrownBy(() -> processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY_REACTIVE)))
+                .isInstanceOf(MissingRestCapabilityException.class);
+
+        assertThatThrownBy(() -> processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY_REACTIVE_JSON_JACKSON)))
+                .isInstanceOf(MissingRestCapabilityException.class);
+
         processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY, Capability.RESTEASY_JSON_JACKSON));
+        processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY_REACTIVE, Capability.RESTEASY_REACTIVE_JSON_JACKSON));
+
         assertThat(context.getApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST)).isEmpty();
     }
 
@@ -91,6 +99,9 @@ class KogitoAssetsProcessorTest {
         processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY));
         processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY_JSON_JACKSON));
         processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY, Capability.RESTEASY_JSON_JACKSON));
+        processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY_REACTIVE));
+        processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY_REACTIVE_JSON_JACKSON));
+        processor.validateAvailableCapabilities(context, capabilities(Capability.RESTEASY_REACTIVE, Capability.RESTEASY_REACTIVE_JSON_JACKSON));
 
         assertThat(context.getApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST)).contains("false");
     }

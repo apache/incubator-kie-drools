@@ -109,7 +109,7 @@ class GeneratedFileTypeTest {
 
         @Override
         public Category category() {
-            return Category.RESOURCE;
+            return Category.INTERNAL_RESOURCE;
         }
 
         @Override

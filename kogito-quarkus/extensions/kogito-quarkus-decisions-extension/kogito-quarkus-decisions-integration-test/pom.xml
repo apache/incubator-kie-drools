@@ -13,7 +13,8 @@
     <name>Kogito :: Quarkus Decisions Extension :: Integration Tests</name>
 
     <properties>
-        <quarkus.test.list.include>true</quarkus.test.list.include>
+        <!-- excluded because of https://issues.redhat.com/browse/KOGITO-6392 -->
+        <quarkus.test.list.include>false</quarkus.test.list.include>
     </properties>
     
     <dependencyManagement>

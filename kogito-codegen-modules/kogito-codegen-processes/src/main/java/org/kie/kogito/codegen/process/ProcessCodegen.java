@@ -537,7 +537,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         if ((context().getAddonsConfig().useProcessSVG())) {
             Map<String, String> svgs = context().getContextAttribute(ContextAttributesConstants.PROCESS_AUTO_SVG_MAPPING, Map.class);
-            svgs.keySet().stream().forEach(key -> storeFile(GeneratedFileType.RESOURCE, "META-INF/processSVG/" + key + ".svg", svgs.get(key)));
+            svgs.keySet().stream().forEach(key -> storeFile(GeneratedFileType.INTERNAL_RESOURCE, "META-INF/processSVG/" + key + ".svg", svgs.get(key)));
         }
 
         if (context().hasRESTForGenerator(this)) {

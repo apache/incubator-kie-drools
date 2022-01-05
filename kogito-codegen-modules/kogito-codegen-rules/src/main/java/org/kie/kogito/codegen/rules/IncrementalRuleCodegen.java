@@ -237,7 +237,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
             org.drools.modelcompiler.builder.GeneratedFile reflectConfigSource = pkgSources.getReflectConfigSource();
             if (reflectConfigSource != null) {
-                modelFiles.add(new GeneratedFile(GeneratedFileType.RESOURCE,
+                modelFiles.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE,
                         reflectConfigSource.getPath(),
                         reflectConfigSource.getData()));
             }

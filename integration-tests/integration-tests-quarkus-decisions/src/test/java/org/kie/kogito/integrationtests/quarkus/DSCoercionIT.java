@@ -23,7 +23,7 @@ import java.time.Period;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -31,7 +31,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 class DSCoercionIT {
 
     static {

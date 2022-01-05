@@ -55,7 +55,7 @@ public class JsonSchemaGenerator {
 
     public static final Logger logger = LoggerFactory.getLogger(JsonSchemaGenerator.class);
     public static final SchemaVersion DEFAULT_SCHEMA_VERSION = SchemaVersion.DRAFT_2019_09;
-    private static final GeneratedFileType JSON_SCHEMA_TYPE = GeneratedFileType.of("JSON_SCHEMA", GeneratedFileType.Category.RESOURCE, true, true);
+    private static final GeneratedFileType JSON_SCHEMA_TYPE = GeneratedFileType.of("JSON_SCHEMA", GeneratedFileType.Category.INTERNAL_RESOURCE, true, true);
 
     private final Map<String, List<Class<?>>> map;
     private final SchemaVersion schemaVersion;

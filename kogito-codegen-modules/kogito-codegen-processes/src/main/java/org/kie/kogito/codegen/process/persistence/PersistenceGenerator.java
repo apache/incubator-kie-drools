@@ -293,7 +293,7 @@ public class PersistenceGenerator extends AbstractGenerator {
         Collection<GeneratedFile> protoFiles = new ArrayList<>();
         try {
             String typesURI = "META-INF/kogito-types.proto";
-            protoFiles.add(new GeneratedFile(GeneratedFileType.RESOURCE,
+            protoFiles.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE,
                     typesURI,
                     IOUtils.toString(context().getClassLoader().getResourceAsStream(typesURI))));
         } catch (IOException e) {
@@ -301,7 +301,7 @@ public class PersistenceGenerator extends AbstractGenerator {
         }
         // generate proto files leads to problems as it has a reverse dependency of kogito-index
         String typesURI = "META-INF/application-types.proto";
-        protoFiles.add(new GeneratedFile(GeneratedFileType.RESOURCE,
+        protoFiles.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE,
                 typesURI,
                 protoContent));
 
@@ -391,7 +391,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             }
             objectMarshallerStrategyServiceDescriptor += "\n" + fqnProtoStreamMarshaller + "\n";
 
-            generatedFiles.add(new GeneratedFile(GeneratedFileType.RESOURCE,
+            generatedFiles.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE,
                     "META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy",
                     objectMarshallerStrategyServiceDescriptor));
         }

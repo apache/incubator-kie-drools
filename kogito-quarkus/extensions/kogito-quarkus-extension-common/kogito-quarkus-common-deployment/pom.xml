@@ -45,12 +45,21 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-reactive-spi-deployment</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-core-deployment</artifactId>
             <version>${version.io.quarkus}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc-deployment</artifactId>
+            <version>${version.io.quarkus}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-vertx-http-deployment-spi</artifactId>
             <version>${version.io.quarkus}</version>
         </dependency>
         <dependency>
@@ -64,13 +73,6 @@
             <artifactId>quarkus-resteasy-jackson-deployment</artifactId>
             <version>${version.io.quarkus}</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- Undertow is needed so that the static resource serving can correctly locate CP resources from `META-INF/resources` of the application, as it would be normally expected.
-             See https://issues.redhat.com/browse/KOGITO-3477 -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-undertow-deployment</artifactId>
-            <version>${version.io.quarkus}</version>
         </dependency>
 
         <!-- codegen dependencies -->

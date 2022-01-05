@@ -47,6 +47,7 @@ import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 import static java.util.stream.Collectors.toList;
 
@@ -135,12 +136,17 @@ public class KogitoQuarkusResourceUtils {
     }
 
     public static void registerResources(Collection<GeneratedFile> generatedFiles,
+            BuildProducer<AdditionalStaticResourceBuildItem> staticResProducer,
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<GeneratedResourceBuildItem> genResBI) {
         for (GeneratedFile f : generatedFiles) {
-            if (f.category() == GeneratedFileType.Category.RESOURCE) {
+            if (f.category() == GeneratedFileType.Category.INTERNAL_RESOURCE || f.category() == GeneratedFileType.Category.STATIC_HTTP_RESOURCE) {
                 genResBI.produce(new GeneratedResourceBuildItem(f.relativePath(), f.contents()));
                 resource.produce(new NativeImageResourceBuildItem(f.relativePath()));
+            }
+            if (f.category() == GeneratedFileType.Category.STATIC_HTTP_RESOURCE) {
+                String resoucePath = f.relativePath().substring(GeneratedFile.META_INF_RESOURCES.length() - 1); // keep '/' at the beginning
+                staticResProducer.produce(new AdditionalStaticResourceBuildItem(resoucePath, false));
             }
         }
     }

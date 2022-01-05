@@ -20,7 +20,7 @@ import java.net.URL;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.common.http.TestHTTPResource;
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.greaterThan;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 class OASIT {
 
     static {

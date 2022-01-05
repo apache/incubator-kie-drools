@@ -33,6 +33,7 @@ import org.jboss.jandex.Indexer;
 import org.jboss.logging.Logger;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
 
@@ -50,6 +51,8 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.index.IndexingUtil;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.resteasy.reactive.spi.GeneratedJaxRsResourceBuildItem;
+import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.compileGeneratedSources;
@@ -57,6 +60,7 @@ import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtil
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.getHotReloadSupportSource;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.kogitoBuildContext;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.registerResources;
+import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.toClassName;
 
 /**
  * Main class of the Kogito extension
@@ -89,6 +93,8 @@ public class KogitoAssetsProcessor {
             Capabilities capabilities,
             KogitoBuildContextBuildItem contextBuildItem,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
+            BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer,
+            BuildProducer<AdditionalStaticResourceBuildItem> staticResProducer,
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
             BuildProducer<GeneratedResourceBuildItem> genResBI) throws IOException {
@@ -113,11 +119,12 @@ public class KogitoAssetsProcessor {
                 context,
                 generatedFiles,
                 generatedBeans,
+                jaxrsProducer,
                 liveReload.isLiveReload());
 
         registerDataEventsForReflection(optionalIndex.map(KogitoGeneratedClassesBuildItem::getIndexedClasses), context, reflectiveClass);
 
-        registerResources(generatedFiles, resource, genResBI);
+        registerResources(generatedFiles, staticResProducer, resource, genResBI);
 
         return optionalIndex
                 .map(Collections::singletonList)
@@ -126,7 +133,8 @@ public class KogitoAssetsProcessor {
 
     void validateAvailableCapabilities(KogitoBuildContext context, Capabilities capabilities) {
         boolean hasOptaPlannerCapability = capabilities.isCapabilityWithPrefixPresent("org.optaplanner");
-        boolean hasRestCapabilities = capabilities.isPresent(Capability.RESTEASY) && capabilities.isPresent(Capability.RESTEASY_JSON_JACKSON);
+        boolean hasRestCapabilities = capabilities.isPresent(Capability.RESTEASY) && capabilities.isPresent(Capability.RESTEASY_JSON_JACKSON)
+                || capabilities.isPresent(Capability.RESTEASY_REACTIVE) && capabilities.isPresent(Capability.RESTEASY_REACTIVE_JSON_JACKSON);
 
         // disable REST if OptaPlanner capability is available but REST is not (user can override via property)
         if (hasOptaPlannerCapability && !hasRestCapabilities &&
@@ -155,6 +163,7 @@ public class KogitoAssetsProcessor {
             KogitoBuildContext context,
             Collection<GeneratedFile> generatedFiles,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
+            BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer,
             boolean useDebugSymbols) throws IOException {
 
         Collection<ResolvedDependency> dependencies = curateOutcomeBuildItem.getApplicationModel().getRuntimeDependencies();
@@ -162,6 +171,13 @@ public class KogitoAssetsProcessor {
         Collection<GeneratedBeanBuildItem> generatedBeanBuildItems =
                 compileGeneratedSources(context, dependencies, generatedFiles, useDebugSymbols);
         generatedBeanBuildItems.forEach(generatedBeans::produce);
+        Set<String> restResourceClassNameSet = generatedFiles.stream()
+                .filter(file -> file.type().equals(Generator.REST_TYPE))
+                .map(file -> toClassName(file.path().toString()))
+                .collect(Collectors.toSet());
+        generatedBeanBuildItems.stream()
+                .filter(b -> restResourceClassNameSet.contains(b.getName()))
+                .forEach(b -> jaxrsProducer.produce(new GeneratedJaxRsResourceBuildItem(b.getName(), b.getData())));
         return Optional.of(indexBuildItems(context, generatedBeanBuildItems));
     }
 

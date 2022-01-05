@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
 
-    private static final String GENERATED_PROTO_RES_PATH = "META-INF/resources/persistence/protobuf/";
+    private static final String GENERATED_PROTO_RES_PATH = "persistence/protobuf/";
     private static final String LISTING_FILE = "list.json";
 
     protected final ObjectMapper mapper;
