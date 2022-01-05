@@ -47,6 +47,23 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+        <version>${version.io.quarkus}</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>extension-descriptor</goal>
+            </goals>
+            <configuration>
+              <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}
+              </deployment>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <annotationProcessorPaths>
             <path>
@@ -56,18 +73,6 @@
             </path>
           </annotationProcessorPaths>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>extension-descriptor</goal>
-            </goals>
-            <phase>compile</phase>
-            <configuration>
-              <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}
-              </deployment>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

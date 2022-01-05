@@ -29,14 +29,14 @@ public final class KogitoCapability {
     public static final KogitoCapability PROCESSES = new KogitoCapability("org.kie.kogito.processes", "kogito-quarkus-processes");
     public static final KogitoCapability PREDICTIONS = new KogitoCapability("org.kie.kogito.predictions", "kogito-quarkus-predictions");
     public static final KogitoCapability RULES = new KogitoCapability("org.kie.kogito.rules", "kogito-quarkus-rules");
-    public static final KogitoCapability SERVERLESS_WORKFLOW = new KogitoCapability("org.kie.kogito.serverless.workflow", "kogito-quarkus-serverless-workflow");
+    public static final KogitoCapability SERVERLESS_WORKFLOW = new KogitoCapability("org.kie.kogito.serverless-workflow", "kogito-quarkus-serverless-workflow");
 
-    public final static List<KogitoCapability> ENGINES =
-            asList(KogitoCapability.DECISIONS,
-                    KogitoCapability.PROCESSES,
-                    KogitoCapability.PREDICTIONS,
-                    KogitoCapability.RULES,
-                    KogitoCapability.SERVERLESS_WORKFLOW);
+    public final static List<KogitoCapability> ENGINES = asList(
+            KogitoCapability.DECISIONS,
+            KogitoCapability.PROCESSES,
+            KogitoCapability.PREDICTIONS,
+            KogitoCapability.RULES,
+            KogitoCapability.SERVERLESS_WORKFLOW);
 
     private final String capability;
     private final String offeredBy;
