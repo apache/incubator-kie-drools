@@ -80,7 +80,7 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
                             DummySolutionPartitioner.class,
                             DummyValueFilter.class))
             .addBuildChainCustomizer(buildChainBuilder -> buildChainBuilder.addBuildStep(context -> {
-                context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("kogito-rules"));
+                context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("org.kie.kogito.rules"));
             }).produces(CapabilityBuildItem.class).build());
 
     @Inject
