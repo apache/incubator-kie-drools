@@ -17,7 +17,7 @@ jobs:
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Maven - ${{ matrix.os }} - ${{ matrix.java-version }}
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
     - name: Checkout 
       uses: actions/checkout@v2
