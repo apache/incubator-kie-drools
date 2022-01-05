@@ -309,4 +309,29 @@ public class JittingTest {
             this.value = value;
         }
     }
+
+    @Test
+    public void testBigDecimalConstructorCoercion() {
+        // DROOLS-6729
+        final String drl =
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           " rule R1 when\n" +
+                           "     Person($bd : new BigDecimal(30), bigDecimal.compareTo(new BigDecimal($bd)) < 0)\n" +
+                           " then end\n";
+
+        if (!kieBaseTestConfiguration.isExecutableModel()) {
+            // It's valid to fail with exec-model because newBigDecimal(BigDecimal bd) doesn't exist.
+            // This test is just to confirm the fix of mvel getBestConstructorCandidate()
+            // Also note that the issue depends on JDK native Class#getConstructors() and occurs randomly
+            final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+            final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+            final KieSession kieSession = kieBase.newKieSession();
+
+            Person person = new Person("John");
+            person.setBigDecimal(new BigDecimal(20));
+            kieSession.insert(person);
+            assertEquals(1, kieSession.fireAllRules());
+        }
+    }
 }
