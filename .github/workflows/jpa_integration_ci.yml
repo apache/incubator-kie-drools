@@ -52,7 +52,7 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
-    name: Maven - ${{ matrix.os }} - ${{ matrix.java-version }}
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2

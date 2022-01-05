@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     if: github.actor == 'quarkusbot'
-    name: Maven - ${{ matrix.os }} - ${{ matrix.java-version }}
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - name: Install yq
         run: sudo add-apt-repository ppa:rmescandon/yq && sudo apt update && sudo apt install yq -y

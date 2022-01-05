@@ -27,7 +27,7 @@ jobs:
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Maven - ${{ matrix.os }} - ${{ matrix.java-version }}
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
