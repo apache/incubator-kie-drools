@@ -16,18 +16,16 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.AcceptsWriteAccessor;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.AcceptsWriteAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 
 /**
  * This is a wrapper for a ClassFieldExtractor that provides
@@ -123,46 +121,6 @@ public class ClassFieldAccessor
         return true;
     }
 
-    public boolean getBooleanValue(final Object object) {
-        return this.reader.getBooleanValue( null,
-                                            object );
-    }
-
-    public byte getByteValue(final Object object) {
-        return this.reader.getByteValue( null,
-                                         object );
-    }
-
-    public char getCharValue(final Object object) {
-        return this.reader.getCharValue( null,
-                                         object );
-    }
-
-    public double getDoubleValue(final Object object) {
-        return this.reader.getDoubleValue( null,
-                                           object );
-    }
-
-    public float getFloatValue(final Object object) {
-        return this.reader.getFloatValue( null,
-                                          object );
-    }
-
-    public int getIntValue(final Object object) {
-        return this.reader.getIntValue( null,
-                                        object );
-    }
-
-    public long getLongValue(final Object object) {
-        return this.reader.getLongValue( null,
-                                         object );
-    }
-
-    public short getShortValue(final Object object) {
-        return this.reader.getShortValue( null,
-                                          object );
-    }
-
     public boolean isNullValue(final Object object) {
         return this.reader.isNullValue( null,
                                         object );
@@ -246,25 +204,4 @@ public class ClassFieldAccessor
         writer.setValue( bean,
                          value );
     }
-
-    public BigDecimal getBigDecimalValue(Object object) {
-        return reader.getBigDecimalValue( object );
-    }
-
-    public BigInteger getBigIntegerValue(Object object) {
-        return reader.getBigIntegerValue( object );
-    }
-
-    public void setBigDecimalValue(Object bean,
-                                   BigDecimal value) {
-        writer.setBigDecimalValue( bean,
-                                   value );
-    }
-
-    public void setBigIntegerValue(Object bean,
-                                   BigInteger value) {
-        writer.setBigIntegerValue( bean,
-                                   value );
-    }
-
 }

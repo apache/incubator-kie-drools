@@ -554,7 +554,7 @@ public class KnowledgeBuilderConfigurationImpl
 
     private void buildEvaluatorRegistry() {
         this.evaluatorRegistry = new EvaluatorRegistry( getFunctionFactoryClassLoader() );
-        Map<String, String> temp = new HashMap<String, String>();
+        Map<String, String> temp = new HashMap<>();
         this.chainedProperties.mapStartsWith(temp,
                 EvaluatorOption.PROPERTY_NAME,
                 true);

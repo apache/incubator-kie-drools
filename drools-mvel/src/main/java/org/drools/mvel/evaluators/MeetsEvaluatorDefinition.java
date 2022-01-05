@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,13 +23,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.LeftStartRightEndContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.LeftStartRightEndContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -69,29 +71,18 @@ import org.drools.core.time.Interval;
  */
 public class MeetsEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    protected static final String       meetsOp = "meets";
+    protected static final String meetsOp = Operator.Op.MEETS.getOperatorId();
 
-    public static Operator              MEETS;
+    public static final Operator MEETS = Operator.determineOperator( meetsOp, false );
 
-    public static Operator              MEETS_NOT;
+    public static final Operator MEETS_NOT = Operator.determineOperator( meetsOp, true );
 
-    private static String[]             SUPPORTED_IDS;
+    private static final String[] SUPPORTED_IDS = new String[] { meetsOp };
 
     private Map<String, MeetsEvaluator> cache         = Collections.emptyMap();
 
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( meetsOp, false ) == null ) {
-            MEETS = Operator.addOperatorToRegistry( meetsOp, false );
-            MEETS_NOT = Operator.addOperatorToRegistry( meetsOp, true );
-            SUPPORTED_IDS = new String[] { meetsOp };
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         cache = (Map<String, MeetsEvaluator>) in.readObject();
@@ -204,10 +195,6 @@ public class MeetsEvaluatorDefinition
 
         private long              finalRange;
         private String            paramText;
-
-        {
-            MeetsEvaluatorDefinition.init();
-        }
 
         public MeetsEvaluator() {
         }

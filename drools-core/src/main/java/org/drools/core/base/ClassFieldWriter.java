@@ -164,17 +164,4 @@ public class ClassFieldWriter
         writer.setValue( bean,
                          value );
     }
-
-    public void setBigDecimalValue(Object bean,
-                              BigDecimal value) {
-        writer.setBigDecimalValue( bean,
-                              value );
-    }
-
-    public void setBigIntegerValue(Object bean,
-                              BigInteger value) {
-        writer.setBigIntegerValue( bean,
-                              value );
-    }
-
 }

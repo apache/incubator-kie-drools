@@ -19,8 +19,6 @@ package org.drools.core.base;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import org.drools.core.spi.WriteAccessor;
 
@@ -91,18 +89,6 @@ abstract public class BaseClassFieldWriter
 
     public ValueType getValueType() {
         return this.valueType;
-    }
-
-    public void setBigDecimalValue(Object bean,
-                                   BigDecimal value) {
-        setValue( bean,
-                  value );
-    }
-
-    public void setBigIntegerValue(Object bean,
-                                   BigInteger value) {
-        setValue( bean,
-                  value );
     }
 
     public int hashCode() {

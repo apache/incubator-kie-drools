@@ -20,17 +20,16 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.ObjectVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.mvel.evaluators.BaseEvaluator;
+import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -178,14 +177,14 @@ public class CustomOperatorOnlyDrlTest {
             return evaluateAll((String) left.getObject(), (String) right.getObject());
         }
 
-        public boolean evaluateCachedLeft(final ReteEvaluator reteEvaluator, final VariableContextEntry context, final InternalFactHandle right) {
+        public boolean evaluateCachedLeft(final ReteEvaluator reteEvaluator, final VariableRestriction.VariableContextEntry context, final InternalFactHandle right) {
             final Object valRight = context.extractor.getValue(reteEvaluator, right);
-            return evaluateAll((String) ((ObjectVariableContextEntry) context).left, (String) valRight);
+            return evaluateAll((String) ((VariableRestriction.ObjectVariableContextEntry) context).left, (String) valRight);
         }
 
-        public boolean evaluateCachedRight(final ReteEvaluator reteEvaluator, final VariableContextEntry context, final InternalFactHandle left) {
+        public boolean evaluateCachedRight(final ReteEvaluator reteEvaluator, final VariableRestriction.VariableContextEntry context, final InternalFactHandle left) {
             final Object varLeft = context.declaration.getExtractor().getValue(reteEvaluator, left);
-            return evaluateAll((String) varLeft, (String) ((ObjectVariableContextEntry) context).right);
+            return evaluateAll((String) varLeft, (String) ((VariableRestriction.ObjectVariableContextEntry) context).right);
         }
 
         public boolean evaluateAll(final String leftString, final String rightString) {

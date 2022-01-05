@@ -25,54 +25,70 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Operator
-    implements
-    Externalizable, org.kie.api.runtime.rule.Operator {
-
-    private static final long                  serialVersionUID = 510l;
+public class Operator implements Externalizable, org.kie.api.runtime.rule.Operator {
 
     // a static private cache so that pluggable operator can register their implementations
     // it is automatically initialized with common operator implementations
-    private static final Map<String, Operator> CACHE            = Collections.synchronizedMap( new HashMap<String, Operator>() );
+    private static final Map<String, Operator> CACHE = Collections.synchronizedMap( new HashMap<String, Operator>() );
+
+    static {
+        // forces the initialization of the enum and then the registration of all operators
+        Op op = Op.CONTAINS;
+    }
+
+    public enum Op {
+        CONTAINS("contains"),
+        EXCLUDES("excludes"),
+        MATCHES("matches"),
+        MEMBEROF("memberOf"),
+        SOUNDSLIKE("soundslike"),
+        AFTER("after"),
+        BEFORE("before"),
+        COINCIDES("coincides"),
+        DURING("during"),
+        FINISHED_BY("finishedby"),
+        FINISHES("finishes"),
+        INCLUDES("includes"),
+        MEETS("meets"),
+        MET_BY("metby"),
+        OVERLAPPED_BY("overlappedby"),
+        OVERLAPS("overlaps"),
+        STARTED_BY("startedby"),
+        STARTS("starts"),
+        STR("str");
+
+        private final String operatorId;
+        private final boolean supportNegation;
+
+        Op(String operatorId) {
+            this(operatorId, true);
+        }
+
+        Op(String operatorId, boolean supportNegation) {
+            this.operatorId = operatorId;
+            this.supportNegation = supportNegation;
+            Operator.addOperatorToRegistry( operatorId, false );
+            if (supportNegation) {
+                Operator.addOperatorToRegistry( operatorId, true );
+            }
+        }
+
+        public String getOperatorId() {
+            return operatorId;
+        }
+    }
+
+    private static final long                  serialVersionUID = 510l;
 
     // these static operator constants are kept here just to make it easier for the engine
     // to reference common used operators. The addition of new constants here is not
     // advisable though.
-    public static final Operator               EQUAL            = addOperatorToRegistry( "==",
-                                                                                         false );
-    public static final Operator               NOT_EQUAL        = addOperatorToRegistry( "!=",
-                                                                                         false );
-    public static final Operator               LESS             = addOperatorToRegistry( "<",
-                                                                                         false );
-    public static final Operator               LESS_OR_EQUAL    = addOperatorToRegistry( "<=",
-                                                                                         false );
-    public static final Operator               GREATER          = addOperatorToRegistry( ">",
-                                                                                         false );
-    public static final Operator               GREATER_OR_EQUAL = addOperatorToRegistry( ">=",
-                                                                                         false );
-
-    // Some operators are supported by the runtime and no longer require Drools specific implementations,
-    // so we are adding them directly to the cache:
-    public static final Operator  CONTAINS      = Operator.addOperatorToRegistry( "contains",
-                                                                                  false );
-    public static final Operator  NOT_CONTAINS  = Operator.addOperatorToRegistry( "contains",
-                                                                                  true );
-    public static final Operator  EXCLUDES      = Operator.addOperatorToRegistry( "excludes",
-                                                                                  false );
-    public static final Operator  NOT_EXCLUDES  = Operator.addOperatorToRegistry( "excludes",
-                                                                                  true );
-    public static final Operator  MEMBEROF      = Operator.addOperatorToRegistry( "memberOf",
-                                                                                  false );
-    public static final Operator  NOT_MEMBEROF  = Operator.addOperatorToRegistry( "memberOf",
-                                                                                  true );
-    public static final Operator  MATCHES       = Operator.addOperatorToRegistry( "matches",
-                                                                                  false );
-    public static final Operator  NOT_MATCHES   = Operator.addOperatorToRegistry( "matches",
-                                                                                  true );
-    public static final Operator  SOUNDSLIKE       = Operator.addOperatorToRegistry( "soundslike",
-                                                                                     false );
-    public static final Operator  NOT_SOUNDSLIKE   = Operator.addOperatorToRegistry( "soundslike",
-                                                                                     true );
+    public static final Operator               EQUAL            = addOperatorToRegistry( "==", false );
+    public static final Operator               NOT_EQUAL        = addOperatorToRegistry( "!=", false );
+    public static final Operator               LESS             = addOperatorToRegistry( "<", false );
+    public static final Operator               LESS_OR_EQUAL    = addOperatorToRegistry( "<=", false );
+    public static final Operator               GREATER          = addOperatorToRegistry( ">", false );
+    public static final Operator               GREATER_OR_EQUAL = addOperatorToRegistry( ">=", false );
 
     /**
      * Creates a new Operator instance for the given parameters,

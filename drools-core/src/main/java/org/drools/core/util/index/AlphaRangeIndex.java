@@ -141,7 +141,7 @@ public class AlphaRangeIndex implements Externalizable {
             default:
                 break;
         }
-        throw new RuntimeException("Non relational oparator must not be added to range index : constraint = " + constraint + ", constraintType = " + constraintType);
+        throw new RuntimeException("Non relational operator must not be added to range index : constraint = " + constraint + ", constraintType = " + constraintType);
     }
 
     public int size() {
@@ -149,7 +149,7 @@ public class AlphaRangeIndex implements Externalizable {
     }
 
     public Collection<AlphaNode> getMatchingAlphaNodes(Object object) {
-        Object value = fieldIndex.getFieldExtactor().getValue(object);
+        Object value = fieldIndex.getFieldExtractor().getValue(object);
         if (value == null) {
             return Collections.emptyList();
         }

@@ -14,36 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.core.base;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
-import org.drools.core.base.evaluators.AfterEvaluatorDefinition;
-import org.drools.core.base.evaluators.BeforeEvaluatorDefinition;
-import org.drools.core.base.evaluators.CoincidesEvaluatorDefinition;
-import org.drools.core.base.evaluators.DuringEvaluatorDefinition;
+import org.drools.core.base.FieldFactory;
+import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.drools.core.base.evaluators.MeetsEvaluatorDefinition;
-import org.drools.core.base.evaluators.MetByEvaluatorDefinition;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.VariableRestriction.BooleanVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.CharVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.DoubleVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.LeftEndRightStartContextEntry;
-import org.drools.core.rule.VariableRestriction.LeftStartRightEndContextEntry;
-import org.drools.core.rule.VariableRestriction.LongVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.ObjectVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -931,11 +916,7 @@ public class TemporalEvaluatorFactoryTest {
             }
             EvaluatorDefinition evalDef = registry.getEvaluatorDefinition( evaluatorStr );
             assertNotNull( evalDef );
-            final Evaluator evaluator = evalDef.getEvaluator( valueType,
-                                                              evaluatorStr,
-                                                              isNegated,
-                                                              parameters );
-            // System.out.println(evaluator);
+            final MvelEvaluator evaluator = (MvelEvaluator) evalDef.getEvaluator( valueType, evaluatorStr, isNegated, parameters );
 
             checkEvaluatorMethodWith2Extractors( valueType,
                                                  extractor,
@@ -963,7 +944,7 @@ public class TemporalEvaluatorFactoryTest {
     private void checkEvaluatorMethodWith2Extractors(final ValueType valueType,
                                                      final InternalReadAccessor extractor,
                                                      final Object[] row,
-                                                     final Evaluator evaluator) {
+                                                     final MvelEvaluator evaluator) {
         final boolean result = evaluator.evaluate( null,
                                                    extractor,
                                                    ( EventFactHandle ) row[0],
@@ -983,8 +964,8 @@ public class TemporalEvaluatorFactoryTest {
     private void checkEvaluatorMethodCachedRight(final ValueType valueType,
                                                  final InternalReadAccessor extractor,
                                                  final Object[] row,
-                                                 final Evaluator evaluator) {
-        final VariableContextEntry context = this.getContextEntry( evaluator,
+                                                 final MvelEvaluator evaluator) {
+        final VariableRestriction.VariableContextEntry context = this.getContextEntry( evaluator,
                                                                    extractor,
                                                                    valueType,
                                                                    row,
@@ -1006,8 +987,8 @@ public class TemporalEvaluatorFactoryTest {
     private void checkEvaluatorMethodCachedLeft(final ValueType valueType,
                                                 final InternalReadAccessor extractor,
                                                 final Object[] row,
-                                                final Evaluator evaluator) {
-        final VariableContextEntry context = this.getContextEntry( evaluator,
+                                                final MvelEvaluator evaluator) {
+        final VariableRestriction.VariableContextEntry context = this.getContextEntry( evaluator,
                                                                    extractor,
                                                                    valueType,
                                                                    row,
@@ -1043,11 +1024,11 @@ public class TemporalEvaluatorFactoryTest {
         assertNotNull( exc );
     }
 
-    private VariableContextEntry getContextEntry(final Evaluator evaluator,
-                                                 final InternalReadAccessor extractor,
-                                                 final ValueType valueType,
-                                                 final Object[] row,
-                                                 final boolean left) {
+    private VariableRestriction.VariableContextEntry getContextEntry(final Evaluator evaluator,
+                                                                     final InternalReadAccessor extractor,
+                                                                     final ValueType valueType,
+                                                                     final Object[] row,
+                                                                     final boolean left) {
         final Declaration declaration = new Declaration( "test",
                                                          extractor,
                                                          null );
@@ -1055,7 +1036,7 @@ public class TemporalEvaluatorFactoryTest {
 
         if ( evaluator.isTemporal() ) {
             if ( evaluator instanceof BeforeEvaluatorDefinition.BeforeEvaluator || evaluator instanceof MeetsEvaluatorDefinition.MeetsEvaluator) {
-                LeftStartRightEndContextEntry context = new LeftStartRightEndContextEntry( extractor,
+                VariableRestriction.LeftStartRightEndContextEntry context = new VariableRestriction.LeftStartRightEndContextEntry( extractor,
                                                                                            declaration,
                                                                                            evaluator );
                 if (left) {
@@ -1067,7 +1048,7 @@ public class TemporalEvaluatorFactoryTest {
             }
 
             if ( evaluator instanceof AfterEvaluatorDefinition.AfterEvaluator || evaluator instanceof MetByEvaluatorDefinition.MetByEvaluator) {
-                LeftEndRightStartContextEntry context = new LeftEndRightStartContextEntry( extractor,
+                VariableRestriction.LeftEndRightStartContextEntry context = new VariableRestriction.LeftEndRightStartContextEntry( extractor,
                                                                                            declaration,
                                                                                            evaluator );
                 if (left) {
@@ -1079,7 +1060,7 @@ public class TemporalEvaluatorFactoryTest {
             }
 
             // else
-            TemporalVariableContextEntry context = new TemporalVariableContextEntry( extractor,
+            VariableRestriction.TemporalVariableContextEntry context = new VariableRestriction.TemporalVariableContextEntry( extractor,
                                                                                      declaration,
                                                                                      evaluator );
             if (left) {
@@ -1093,7 +1074,7 @@ public class TemporalEvaluatorFactoryTest {
         }
 
         if ( coerced.isIntegerNumber() ) {
-            final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
+            final VariableRestriction.LongVariableContextEntry context = new VariableRestriction.LongVariableContextEntry( extractor,
                                                                                    declaration,
                                                                                    evaluator );
 
@@ -1110,7 +1091,7 @@ public class TemporalEvaluatorFactoryTest {
             }
             return context;
         } else if ( coerced.isChar() ) {
-            final CharVariableContextEntry context = new CharVariableContextEntry( extractor,
+            final VariableRestriction.CharVariableContextEntry context = new VariableRestriction.CharVariableContextEntry( extractor,
                                                                                    declaration,
                                                                                    evaluator );
 
@@ -1127,7 +1108,7 @@ public class TemporalEvaluatorFactoryTest {
             }
             return context;
         } else if ( coerced.isBoolean() ) {
-            final BooleanVariableContextEntry context = new BooleanVariableContextEntry( extractor,
+            final VariableRestriction.BooleanVariableContextEntry context = new VariableRestriction.BooleanVariableContextEntry( extractor,
                                                                                          declaration,
                                                                                          evaluator );
 
@@ -1144,7 +1125,7 @@ public class TemporalEvaluatorFactoryTest {
             }
             return context;
         } else if ( coerced.isDecimalNumber() ) {
-            final DoubleVariableContextEntry context = new DoubleVariableContextEntry( extractor,
+            final VariableRestriction.DoubleVariableContextEntry context = new VariableRestriction.DoubleVariableContextEntry( extractor,
                                                                                        declaration,
                                                                                        evaluator );
             if ( row[2] == null ) {
@@ -1160,7 +1141,7 @@ public class TemporalEvaluatorFactoryTest {
             }
             return context;
         } else {
-            final ObjectVariableContextEntry context = new ObjectVariableContextEntry( extractor,
+            final VariableRestriction.ObjectVariableContextEntry context = new VariableRestriction.ObjectVariableContextEntry( extractor,
                                                                                        declaration,
                                                                                        evaluator );
             if ( row[2] == null ) {
@@ -1279,47 +1260,7 @@ public class TemporalEvaluatorFactoryTest {
             return false;
         }
 
-        public boolean getBooleanValue(Object object) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public byte getByteValue(Object object) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public char getCharValue(Object object) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public double getDoubleValue(Object object) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public float getFloatValue(Object object) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
         public int getHashCode(Object object) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public int getIntValue(Object object) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public long getLongValue(Object object) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public short getShortValue(Object object) {
             // TODO Auto-generated method stub
             return 0;
         }
@@ -1333,29 +1274,6 @@ public class TemporalEvaluatorFactoryTest {
             // TODO Auto-generated method stub
             return false;
         }
-
-        public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator,
-                                             Object object) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator,
-                                             Object object) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public BigDecimal getBigDecimalValue(Object object) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public BigInteger getBigIntegerValue(Object object) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
     }
 
 }

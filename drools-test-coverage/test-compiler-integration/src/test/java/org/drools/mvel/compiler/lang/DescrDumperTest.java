@@ -16,13 +16,13 @@
 package org.drools.mvel.compiler.lang;
 
 import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.lang.DescrDumper;
+import org.drools.compiler.lang.DumperContext;
 import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
-import org.drools.core.base.evaluators.MatchesEvaluatorsDefinition;
-import org.drools.core.base.evaluators.SetEvaluatorsDefinition;
+import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
+import org.drools.mvel.evaluators.SetEvaluatorsDefinition;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,13 +23,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -92,29 +94,18 @@ import org.drools.core.time.Interval;
  */
 public class DuringEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    public static final String          duringOp = "during";
+    public static final String duringOp = Operator.Op.DURING.getOperatorId();
 
-    public static Operator              DURING;
+    public static final Operator DURING = Operator.determineOperator( duringOp, false );
 
-    public static Operator              NOT_DURING;
+    public static final Operator NOT_DURING = Operator.determineOperator( duringOp, true );
 
-    private static String[]             SUPPORTED_IDS;
+    private static final String[] SUPPORTED_IDS = new String[] { duringOp };
 
     private Map<String, DuringEvaluator> cache         = Collections.emptyMap();
 
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( duringOp, false ) == null ) {
-            DURING = Operator.addOperatorToRegistry( duringOp, false );
-            NOT_DURING = Operator.addOperatorToRegistry( duringOp, true );
-            SUPPORTED_IDS = new String[] { duringOp };
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         cache = (Map<String, DuringEvaluator>) in.readObject();
@@ -152,7 +143,7 @@ public class DuringEvaluatorDefinition
      */
     public Evaluator getEvaluator(final ValueType type,
                                   final String operatorId,
-                                  final boolean isNegated,
+                                 final boolean isNegated,
                                   final String parameterText) {
         return this.getEvaluator( type,
                                   operatorId,
@@ -228,10 +219,6 @@ public class DuringEvaluatorDefinition
         private long              startMinDev, startMaxDev;
         private long              endMinDev, endMaxDev;
         private String            paramText;
-
-        {
-            DuringEvaluatorDefinition.init();
-        }
 
         public DuringEvaluator() {
         }

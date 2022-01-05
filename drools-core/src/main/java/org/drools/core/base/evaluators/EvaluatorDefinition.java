@@ -36,7 +36,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      *
      * @return
      */
-    public String[] getEvaluatorIds();
+    String[] getEvaluatorIds();
 
     /**
      * My apologies to English speakers if the word "negatable" does not
@@ -48,7 +48,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      *
      * @return
      */
-    public boolean isNegatable();
+    boolean isNegatable();
 
     /**
      * Returns the evaluator instance for the given type and the
@@ -68,52 +68,44 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      * @param parameterText some evaluators support parameters and these
      *                      parameters are defined as a String that is
      *                      parsed by the evaluator itself.
-     *                      
+     *
+     * @return an Evaluator instance capable of evaluating expressions
+     *         between values of the given type, or null in case the type
+     *         is not supported.
+     */
+    Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText );
+
+    /**
+     * Returns the evaluator instance for the given type and the
+     * defined parameterText
+     *
+     * @param type the type of the attributes this evaluator will
+     *             operate on. This is important because the evaluator
+     *             may do optimisations and type coercion based on the
+     *             types it is evaluating. It is also possible that
+     *             this evaluator does not support a given type.
+     *
+     * @param operatorId the string identifier of the evaluator
+     *
+     * @param isNegated true if the evaluator instance to be returned is
+     *                  the negated version of the evaluator.
+     *
+     * @param parameterText some evaluators support parameters and these
+     *                      parameters are defined as a String that is
+     *                      parsed by the evaluator itself.
+     *
      * @param leftTarget the target of the evaluator on the Left side,
      *                   i.e., on Rete terms, the previous binding or
      *                   the actual value on the right side of the operator.
-     *                   
+     *
      * @param rightTarget the target of the evaluator on the Right side,
-     *                    i.e., on Rete terms, the current pattern field. 
+     *                    i.e., on Rete terms, the current pattern field.
      *
      * @return an Evaluator instance capable of evaluating expressions
      *         between values of the given type, or null in case the type
      *         is not supported.
      */
-    public Evaluator getEvaluator(final ValueType type,
-                                  final String operatorId,
-                                  final boolean isNegated,
-                                  final String parameterText,
-                                  final Target leftTarget,
-                                  final Target rightTarget );
-
-    /**
-     * Returns the evaluator instance for the given type and the
-     * defined parameterText
-     *
-     * @param type the type of the attributes this evaluator will
-     *             operate on. This is important because the evaluator
-     *             may do optimisations and type coercion based on the
-     *             types it is evaluating. It is also possible that
-     *             this evaluator does not support a given type.
-     *
-     * @param operatorId the string identifier of the evaluator
-     *
-     * @param isNegated true if the evaluator instance to be returned is
-     *                  the negated version of the evaluator.
-     *
-     * @param parameterText some evaluators support parameters and these
-     *                      parameters are defined as a String that is
-     *                      parsed by the evaluator itself.
-     *                      
-     * @return an Evaluator instance capable of evaluating expressions
-     *         between values of the given type, or null in case the type
-     *         is not supported.
-     */
-    public Evaluator getEvaluator(final ValueType type,
-                                  final String operatorId,
-                                  final boolean isNegated,
-                                  final String parameterText );
+    Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText, Target leftTarget, Target rightTarget );
 
     /**
      * Returns the evaluator instance for the given type and the
@@ -135,9 +127,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      *         between values of the given type, or null in case the type
      *         is not supported.
      */
-    public Evaluator getEvaluator(ValueType type,
-                                  Operator operator,
-                                  String parameterText);
+    Evaluator getEvaluator(ValueType type, Operator operator, String parameterText);
 
     /**
      * Returns the evaluator instance for the given type and the
@@ -155,8 +145,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      *         between values of the given type, or null in case the type
      *         is not supported.
      */
-    public Evaluator getEvaluator(ValueType type,
-                                  Operator operator);
+    Evaluator getEvaluator(ValueType type, Operator operator);
 
     /**
      * Returns true in case this evaluator supports operations over values
@@ -165,7 +154,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      * @param type
      * @return
      */
-    public boolean supportsType(ValueType type);
+    boolean supportsType(ValueType type);
 
     /**
      * There are evaluators that operate on *fact* attributes,
@@ -176,12 +165,12 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      * @return true if this evaluator operates on fact handle attributes
      *         and false if it operates on fact attributes
      */
-    public Target getTarget();
+    Target getTarget();
     
     /**
      * An enum for the target of the evaluator
      */
-    public static enum Target {
+    enum Target {
         FACT, HANDLE, BOTH;
     }
 

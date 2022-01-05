@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,79 +23,93 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
 /**
- * <p>The implementation of the <code>finishedby</code> evaluator definition.</p>
+ * <p>The implementation of the <code>includes</code> evaluator definition.</p>
  * 
- * <p>The <b><code>finishedby</code></b> evaluator correlates two events and matches when the current event 
- * start timestamp happens before the correlated event start timestamp, but both end timestamps occur at
- * the same time. This is the symmetrical opposite of <code>finishes</code> evaluator.</p> 
+ * <p>The <b><code>includes</code></b> evaluator correlates two events and matches when the event 
+ * being correlated happens during the current event. It is the symmetrical opposite of <code>during</code>
+ * evaluator.</p> 
  * 
  * <p>Lets look at an example:</p>
  * 
- * <pre>$eventA : EventA( this finishedby $eventB )</pre>
+ * <pre>$eventA : EventA( this includes $eventB )</pre>
  *
- * <p>The previous pattern will match if and only if the $eventA starts before $eventB starts and finishes
- * at the same time $eventB finishes. In other words:</p>
+ * <p>The previous pattern will match if and only if the $eventB starts after $eventA starts and finishes
+ * before $eventA finishes. In other words:</p>
  * 
- * <pre> 
- * $eventA.startTimestamp < $eventB.startTimestamp &&
- * $eventA.endTimestamp == $eventB.endTimestamp 
- * </pre>
+ * <pre> $eventA.startTimestamp < $eventB.startTimestamp <= $eventB.endTimestamp < $eventA.endTimestamp </pre>
  * 
- * <p>The <b><code>finishedby</code></b> evaluator accepts one optional parameter. If it is defined, it determines
- * the maximum distance between the end timestamp of both events in order for the operator to match. Example:</p>
+ * <p>The <b><code>includes</code></b> operator accepts 1, 2 or 4 optional parameters as follow:</p>
  * 
- * <pre>$eventA : EventA( this finishedby[ 5s ] $eventB )</pre>
+ * <ul><li>If one value is defined, this will be the maximum distance between the start timestamp of both
+ * event and the maximum distance between the end timestamp of both events in order to operator match. Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this includes[ 5s ] $eventB )</pre>
  * 
  * Will match if and only if:
  * 
  * <pre> 
- * $eventA.startTimestamp < $eventB.startTimestamp &&
- * abs( $eventA.endTimestamp - $eventB.endTimestamp ) <= 5s
+ * 0 < $eventB.startTimestamp - $eventA.startTimestamp <= 5s &&
+ * 0 < $eventA.endTimestamp - $eventB.endTimestamp <= 5s
  * </pre>
  * 
- * <p><b>NOTE:</b> it makes no sense to use a negative interval value for the parameter and the 
- * engine will raise an exception if that happens.</p>
+ * <ul><li>If two values are defined, the first value will be the minimum distance between the timestamps
+ * of both events, while the second value will be the maximum distance between the timestamps of both events. 
+ * Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this includes[ 5s, 10s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * 5s <= $eventB.startTimestamp - $eventA.startTimestamp <= 10s &&
+ * 5s <= $eventA.endTimestamp - $eventB.endTimestamp <= 10s
+ * </pre>
+ * 
+ * <ul><li>If four values are defined, the first two values will be the minimum and maximum distances between the 
+ * start timestamp of both events, while the last two values will be the minimum and maximum distances between the 
+ * end timestamp of both events. Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this includes[ 2s, 6s, 4s, 10s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * 2s <= $eventB.startTimestamp - $eventA.startTimestamp <= 6s &&
+ * 4s <= $eventA.endTimestamp - $eventB.endTimestamp <= 10s
+ * </pre>
  */
-public class FinishedByEvaluatorDefinition
+public class IncludesEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    protected static final String   finishedByOp = "finishedby";
+    public static final String includesOp = Operator.Op.INCLUDES.getOperatorId();
 
-    public static Operator          FINISHED_BY;
-    public static Operator          NOT_FINISHED_BY;
+    public static final Operator INCLUDES = Operator.determineOperator( includesOp, false );
 
-    private static String[]         SUPPORTED_IDS;
+    public static final Operator INCLUDES_NOT = Operator.determineOperator( includesOp, true );
 
-    { init(); }
+    private static final String[] SUPPORTED_IDS = new String[] { includesOp };
 
-    static void init() {
-        if ( Operator.determineOperator( finishedByOp, false ) == null ) {
-            FINISHED_BY = Operator.addOperatorToRegistry( finishedByOp, false );
-            NOT_FINISHED_BY = Operator.addOperatorToRegistry( finishedByOp, true );
-            SUPPORTED_IDS = new String[] { finishedByOp };
-        }
-    }
+    private Map<String, IncludesEvaluator> cache       = Collections.emptyMap();
 
-    private Map<String, FinishedByEvaluator> cache           = Collections.emptyMap();
-
-    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        cache = (Map<String, FinishedByEvaluator>) in.readObject();
+        cache = (Map<String, IncludesEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -151,16 +165,16 @@ public class FinishedByEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, FinishedByEvaluator>();
+            this.cache = new HashMap<String, IncludesEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        FinishedByEvaluator eval = this.cache.get( key );
+        IncludesEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             long[] params = TimeIntervalParser.parse( parameterText );
-            eval = new FinishedByEvaluator( type,
-                                            isNegated,
-                                            params,
-                                            parameterText );
+            eval = new IncludesEvaluator( type,
+                                          isNegated,
+                                          params,
+                                          parameterText );
             this.cache.put( key,
                             eval );
         }
@@ -198,27 +212,24 @@ public class FinishedByEvaluatorDefinition
     }
 
     /**
-     * Implements the 'finishedby' evaluator itself
+     * Implements the 'includes' evaluator itself
      */
-    public static class FinishedByEvaluator extends BaseEvaluator {
+    public static class IncludesEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
 
-        private long              endDev;
+        private long              startMinDev, startMaxDev;
+        private long              endMinDev, endMaxDev;
         private String            paramText;
 
-        {
-            FinishedByEvaluatorDefinition.init();
+        public IncludesEvaluator() {
         }
 
-        public FinishedByEvaluator() {
-        }
-
-        public FinishedByEvaluator(final ValueType type,
-                                   final boolean isNegated,
-                                   final long[] parameters,
-                                   final String paramText) {
+        public IncludesEvaluator(final ValueType type,
+                                 final boolean isNegated,
+                                 final long[] parameters,
+                                 final String paramText) {
             super( type,
-                   isNegated ? NOT_FINISHED_BY : FINISHED_BY );
+                   isNegated ? INCLUDES_NOT : INCLUDES );
             this.paramText = paramText;
             this.setParameters( parameters );
         }
@@ -226,14 +237,18 @@ public class FinishedByEvaluatorDefinition
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             super.readExternal( in );
-            endDev = in.readLong();
-            paramText = (String) in.readObject();
+            startMinDev = in.readLong();
+            startMaxDev = in.readLong();
+            endMinDev = in.readLong();
+            endMaxDev = in.readLong();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal( out );
-            out.writeLong( endDev );
-            out.writeObject( paramText );
+            out.writeLong( startMinDev );
+            out.writeLong( startMaxDev );
+            out.writeLong( endMinDev );
+            out.writeLong( endMaxDev );
         }
 
         @Override
@@ -255,7 +270,7 @@ public class FinishedByEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeException( "The 'finishedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'includes' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
@@ -267,8 +282,8 @@ public class FinishedByEvaluatorDefinition
             }
             
             long distStart = ((EventFactHandle) left).getStartTimestamp() - ((TemporalVariableContextEntry) context).startTS;
-            long distEnd = Math.abs( ((EventFactHandle) left).getEndTimestamp() - ((TemporalVariableContextEntry) context).endTS );
-            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
+            long distEnd = ((TemporalVariableContextEntry) context).endTS - ((EventFactHandle) left).getEndTimestamp();
+            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
         }
 
         public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
@@ -279,9 +294,9 @@ public class FinishedByEvaluatorDefinition
                 return false;
             }
             
-            long distStart = ((TemporalVariableContextEntry) context).startTS - ((EventFactHandle) right).getStartTimestamp();
-            long distEnd = Math.abs( ((TemporalVariableContextEntry) context).endTS - ((EventFactHandle) right).getEndTimestamp() );
-            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
+            long distStart = ((TemporalVariableContextEntry) context).startTS- ((EventFactHandle) right).getStartTimestamp();
+            long distEnd = ((EventFactHandle) right).getEndTimestamp() - ((TemporalVariableContextEntry) context).endTS;
+            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
@@ -295,12 +310,12 @@ public class FinishedByEvaluatorDefinition
             }
             
             long distStart = ((EventFactHandle) handle2).getStartTimestamp() - ((EventFactHandle) handle1).getStartTimestamp();
-            long distEnd = Math.abs( ((EventFactHandle) handle2).getEndTimestamp() - ((EventFactHandle) handle1).getEndTimestamp() );
-            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
+            long distEnd = ((EventFactHandle) handle1).getEndTimestamp() - ((EventFactHandle) handle2).getEndTimestamp();
+            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
         }
 
         public String toString() {
-            return "finishedby[" + ((paramText != null) ? paramText : "") + "]";
+            return "includes[" + startMinDev + ", " + startMaxDev + ", " + endMinDev + ", " + endMaxDev + "]";
         }
 
         /* (non-Javadoc)
@@ -310,7 +325,10 @@ public class FinishedByEvaluatorDefinition
         public int hashCode() {
             final int PRIME = 31;
             int result = super.hashCode();
-            result = PRIME * result + (int) (endDev ^ (endDev >>> 32));
+            result = PRIME * result + (int) (endMaxDev ^ (endMaxDev >>> 32));
+            result = PRIME * result + (int) (endMinDev ^ (endMinDev >>> 32));
+            result = PRIME * result + (int) (startMaxDev ^ (startMaxDev >>> 32));
+            result = PRIME * result + (int) (startMinDev ^ (startMinDev >>> 32));
             return result;
         }
 
@@ -322,8 +340,8 @@ public class FinishedByEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final FinishedByEvaluator other = (FinishedByEvaluator) obj;
-            return endDev == other.endDev;
+            final IncludesEvaluator other = (IncludesEvaluator) obj;
+            return endMaxDev == other.endMaxDev && endMinDev == other.endMinDev && startMaxDev == other.startMaxDev && startMinDev == other.startMinDev;
         }
 
         /**
@@ -333,16 +351,31 @@ public class FinishedByEvaluatorDefinition
          */
         private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
-                this.endDev = 0;
+                // open bounded range
+                this.startMinDev = 1;
+                this.startMaxDev = Long.MAX_VALUE;
+                this.endMinDev = 1;
+                this.endMaxDev = Long.MAX_VALUE;
             } else if ( parameters.length == 1 ) {
-                if( parameters[0] >= 0 ) {
-                    // defined deviation for end timestamp
-                    this.endDev = parameters[0];
-                } else {
-                    throw new RuntimeException("[FinishedBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'");
-                }
+                // open bounded ranges
+                this.startMinDev = 1;
+                this.startMaxDev = parameters[0];
+                this.endMinDev = 1;
+                this.endMaxDev = parameters[0];
+            } else if ( parameters.length == 2 ) {
+                // open bounded ranges
+                this.startMinDev = parameters[0];
+                this.startMaxDev = parameters[1];
+                this.endMinDev = parameters[0];
+                this.endMaxDev = parameters[1];
+            } else if ( parameters.length == 4 ) {
+                // open bounded ranges
+                this.startMinDev = parameters[0];
+                this.startMaxDev = parameters[1];
+                this.endMinDev = parameters[2];
+                this.endMaxDev = parameters[3];
             } else {
-                throw new RuntimeException( "[FinishedBy Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
+                throw new RuntimeException( "[During Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
 

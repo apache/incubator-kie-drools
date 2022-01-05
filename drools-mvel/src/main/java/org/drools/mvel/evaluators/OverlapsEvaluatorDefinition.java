@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,102 +23,79 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
 /**
- * <p>The implementation of the <code>includes</code> evaluator definition.</p>
+ * <p>The implementation of the <code>overlaps</code> evaluator definition.</p>
  * 
- * <p>The <b><code>includes</code></b> evaluator correlates two events and matches when the event 
- * being correlated happens during the current event. It is the symmetrical opposite of <code>during</code>
- * evaluator.</p> 
+ * <p>The <b><code>overlaps</code></b> evaluator correlates two events and matches when the current event 
+ * starts before the correlated event starts and finishes after the correlated event starts, but before
+ * the correlated event finishes. In other words, both events have an overlapping period.</p> 
  * 
  * <p>Lets look at an example:</p>
  * 
- * <pre>$eventA : EventA( this includes $eventB )</pre>
+ * <pre>$eventA : EventA( this overlaps $eventB )</pre>
  *
- * <p>The previous pattern will match if and only if the $eventB starts after $eventA starts and finishes
- * before $eventA finishes. In other words:</p>
+ * <p>The previous pattern will match if and only if:</p>
  * 
- * <pre> $eventA.startTimestamp < $eventB.startTimestamp <= $eventB.endTimestamp < $eventA.endTimestamp </pre>
+ * <pre> $eventA.startTimestamp < $eventB.startTimestamp < $eventA.endTimestamp < $eventB.endTimestamp </pre>
  * 
- * <p>The <b><code>includes</code></b> operator accepts 1, 2 or 4 optional parameters as follow:</p>
+ * <p>The <b><code>overlaps</code></b> operator accepts 1 or 2 optional parameters as follow:</p>
  * 
- * <ul><li>If one value is defined, this will be the maximum distance between the start timestamp of both
- * event and the maximum distance between the end timestamp of both events in order to operator match. Example:</li></lu>
+ * <ul><li>If one parameter is defined, this will be the maximum distance between the start timestamp of the
+ * correlated event and the end timestamp of the current event. Example:</li></lu>
  * 
- * <pre>$eventA : EventA( this includes[ 5s ] $eventB )</pre>
+ * <pre>$eventA : EventA( this overlaps[ 5s ] $eventB )</pre>
  * 
  * Will match if and only if:
  * 
  * <pre> 
- * 0 < $eventB.startTimestamp - $eventA.startTimestamp <= 5s &&
- * 0 < $eventA.endTimestamp - $eventB.endTimestamp <= 5s
+ * $eventA.startTimestamp < $eventB.startTimestamp < $eventA.endTimestamp < $eventB.endTimestamp &&
+ * 0 <= $eventA.endTimestamp - $eventB.startTimestamp <= 5s 
  * </pre>
  * 
- * <ul><li>If two values are defined, the first value will be the minimum distance between the timestamps
- * of both events, while the second value will be the maximum distance between the timestamps of both events. 
- * Example:</li></lu>
+ * <ul><li>If two values are defined, the first value will be the minimum distance and the second value will be 
+ * the maximum distance between the start timestamp of the correlated event and the end timestamp of the current 
+ * event. Example:</li></lu>
  * 
- * <pre>$eventA : EventA( this includes[ 5s, 10s ] $eventB )</pre>
- * 
- * Will match if and only if:
- * 
- * <pre> 
- * 5s <= $eventB.startTimestamp - $eventA.startTimestamp <= 10s &&
- * 5s <= $eventA.endTimestamp - $eventB.endTimestamp <= 10s
- * </pre>
- * 
- * <ul><li>If four values are defined, the first two values will be the minimum and maximum distances between the 
- * start timestamp of both events, while the last two values will be the minimum and maximum distances between the 
- * end timestamp of both events. Example:</li></lu>
- * 
- * <pre>$eventA : EventA( this includes[ 2s, 6s, 4s, 10s ] $eventB )</pre>
+ * <pre>$eventA : EventA( this overlaps[ 5s, 10s ] $eventB )</pre>
  * 
  * Will match if and only if:
  * 
  * <pre> 
- * 2s <= $eventB.startTimestamp - $eventA.startTimestamp <= 6s &&
- * 4s <= $eventA.endTimestamp - $eventB.endTimestamp <= 10s
+ * $eventA.startTimestamp < $eventB.startTimestamp < $eventA.endTimestamp < $eventB.endTimestamp &&
+ * 5s <= $eventA.endTimestamp - $eventB.startTimestamp <= 10s 
  * </pre>
  */
-public class IncludesEvaluatorDefinition
+public class OverlapsEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    public static final String          includesOp = "includes";
+    public static final String overlapsOp = Operator.Op.OVERLAPS.getOperatorId();
 
-    public static Operator              INCLUDES;
+    public static final Operator OVERLAPS = Operator.determineOperator( overlapsOp, false );
 
-    public static Operator              INCLUDES_NOT;
+    public static final Operator OVERLAPS_NOT = Operator.determineOperator( overlapsOp, true );
 
-    private static String[]             SUPPORTED_IDS;
+    private static final String[] SUPPORTED_IDS = new String[] { overlapsOp };
 
-    private Map<String, IncludesEvaluator> cache       = Collections.emptyMap();
+    private Map<String, OverlapsEvaluator> cache         = Collections.emptyMap();
 
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( includesOp, false ) == null ) {
-            INCLUDES = Operator.addOperatorToRegistry( includesOp, false );
-            INCLUDES_NOT = Operator.addOperatorToRegistry( includesOp, true );
-            SUPPORTED_IDS = new String[] { includesOp };
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        cache = (Map<String, IncludesEvaluator>) in.readObject();
+        cache = (Map<String, OverlapsEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -174,13 +151,13 @@ public class IncludesEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, IncludesEvaluator>();
+            this.cache = new HashMap<String, OverlapsEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        IncludesEvaluator eval = this.cache.get( key );
+        OverlapsEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             long[] params = TimeIntervalParser.parse( parameterText );
-            eval = new IncludesEvaluator( type,
+            eval = new OverlapsEvaluator( type,
                                           isNegated,
                                           params,
                                           parameterText );
@@ -221,28 +198,23 @@ public class IncludesEvaluatorDefinition
     }
 
     /**
-     * Implements the 'includes' evaluator itself
+     * Implements the 'overlaps' evaluator itself
      */
-    public static class IncludesEvaluator extends BaseEvaluator {
+    public static class OverlapsEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
 
-        private long              startMinDev, startMaxDev;
-        private long              endMinDev, endMaxDev;
+        private long              minDev, maxDev;
         private String            paramText;
 
-        {
-            IncludesEvaluatorDefinition.init();
+        public OverlapsEvaluator() {
         }
 
-        public IncludesEvaluator() {
-        }
-
-        public IncludesEvaluator(final ValueType type,
+        public OverlapsEvaluator(final ValueType type,
                                  final boolean isNegated,
                                  final long[] parameters,
                                  final String paramText) {
             super( type,
-                   isNegated ? INCLUDES_NOT : INCLUDES );
+                   isNegated ? OVERLAPS_NOT : OVERLAPS );
             this.paramText = paramText;
             this.setParameters( parameters );
         }
@@ -250,18 +222,16 @@ public class IncludesEvaluatorDefinition
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             super.readExternal( in );
-            startMinDev = in.readLong();
-            startMaxDev = in.readLong();
-            endMinDev = in.readLong();
-            endMaxDev = in.readLong();
+            minDev = in.readLong();
+            maxDev = in.readLong();
+            paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal( out );
-            out.writeLong( startMinDev );
-            out.writeLong( startMaxDev );
-            out.writeLong( endMinDev );
-            out.writeLong( endMaxDev );
+            out.writeLong( minDev );
+            out.writeLong( maxDev );
+            out.writeObject( paramText );
         }
 
         @Override
@@ -283,7 +253,7 @@ public class IncludesEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeException( "The 'includes' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'overlaps' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
@@ -293,10 +263,12 @@ public class IncludesEvaluatorDefinition
                     context.declaration.getExtractor().isNullValue( reteEvaluator, left.getObject() )) {
                 return false;
             }
-            
-            long distStart = ((EventFactHandle) left).getStartTimestamp() - ((TemporalVariableContextEntry) context).startTS;
-            long distEnd = ((TemporalVariableContextEntry) context).endTS - ((EventFactHandle) left).getEndTimestamp();
-            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
+            long leftStartTS = ((EventFactHandle) left).getStartTimestamp();
+            long rightEndTS = ((TemporalVariableContextEntry) context).endTS;
+            long dist = rightEndTS - leftStartTS;
+            return this.getOperator().isNegated() ^ ( ((TemporalVariableContextEntry) context).startTS < leftStartTS &&
+                                                      rightEndTS < ((EventFactHandle) left).getEndTimestamp() &&
+                                                      dist >= this.minDev && dist <= this.maxDev );
         }
 
         public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
@@ -307,9 +279,12 @@ public class IncludesEvaluatorDefinition
                 return false;
             }
             
-            long distStart = ((TemporalVariableContextEntry) context).startTS- ((EventFactHandle) right).getStartTimestamp();
-            long distEnd = ((EventFactHandle) right).getEndTimestamp() - ((TemporalVariableContextEntry) context).endTS;
-            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
+            long leftStartTS = ((TemporalVariableContextEntry) context).startTS;
+            long rightEndTS = ((EventFactHandle) right).getEndTimestamp();
+            long dist = rightEndTS - leftStartTS;
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) right).getStartTimestamp() < leftStartTS &&
+                    rightEndTS < ((TemporalVariableContextEntry) context).endTS &&
+                    dist >= this.minDev && dist <= this.maxDev );
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
@@ -322,13 +297,16 @@ public class IncludesEvaluatorDefinition
                 return false;
             }
             
-            long distStart = ((EventFactHandle) handle2).getStartTimestamp() - ((EventFactHandle) handle1).getStartTimestamp();
-            long distEnd = ((EventFactHandle) handle1).getEndTimestamp() - ((EventFactHandle) handle2).getEndTimestamp();
-            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
+            long startTS = ((EventFactHandle) handle2).getStartTimestamp();
+            long endTS = ((EventFactHandle) handle1).getEndTimestamp();
+            long dist = endTS - startTS;
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) handle1).getStartTimestamp() < startTS &&
+                    endTS < ((EventFactHandle) handle2).getEndTimestamp() &&
+                    dist >= this.minDev && dist <= this.maxDev );
         }
 
         public String toString() {
-            return "includes[" + startMinDev + ", " + startMaxDev + ", " + endMinDev + ", " + endMaxDev + "]";
+            return "overlaps[" + ( ( paramText != null ) ? paramText : "" ) + "]";
         }
 
         /* (non-Javadoc)
@@ -338,10 +316,8 @@ public class IncludesEvaluatorDefinition
         public int hashCode() {
             final int PRIME = 31;
             int result = super.hashCode();
-            result = PRIME * result + (int) (endMaxDev ^ (endMaxDev >>> 32));
-            result = PRIME * result + (int) (endMinDev ^ (endMinDev >>> 32));
-            result = PRIME * result + (int) (startMaxDev ^ (startMaxDev >>> 32));
-            result = PRIME * result + (int) (startMinDev ^ (startMinDev >>> 32));
+            result = PRIME * result + (int) (maxDev ^ (maxDev >>> 32));
+            result = PRIME * result + (int) (minDev ^ (minDev >>> 32));
             return result;
         }
 
@@ -353,8 +329,8 @@ public class IncludesEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final IncludesEvaluator other = (IncludesEvaluator) obj;
-            return endMaxDev == other.endMaxDev && endMinDev == other.endMinDev && startMaxDev == other.startMaxDev && startMinDev == other.startMinDev;
+            final OverlapsEvaluator other = (OverlapsEvaluator) obj;
+            return maxDev == other.maxDev && minDev == other.minDev ;
         }
 
         /**
@@ -365,32 +341,21 @@ public class IncludesEvaluatorDefinition
         private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
                 // open bounded range
-                this.startMinDev = 1;
-                this.startMaxDev = Long.MAX_VALUE;
-                this.endMinDev = 1;
-                this.endMaxDev = Long.MAX_VALUE;
+                this.minDev = 1;
+                this.maxDev = Long.MAX_VALUE;
             } else if ( parameters.length == 1 ) {
                 // open bounded ranges
-                this.startMinDev = 1;
-                this.startMaxDev = parameters[0];
-                this.endMinDev = 1;
-                this.endMaxDev = parameters[0];
+                this.minDev = 1;
+                this.maxDev = parameters[0];
             } else if ( parameters.length == 2 ) {
                 // open bounded ranges
-                this.startMinDev = parameters[0];
-                this.startMaxDev = parameters[1];
-                this.endMinDev = parameters[0];
-                this.endMaxDev = parameters[1];
-            } else if ( parameters.length == 4 ) {
-                // open bounded ranges
-                this.startMinDev = parameters[0];
-                this.startMaxDev = parameters[1];
-                this.endMinDev = parameters[2];
-                this.endMaxDev = parameters[3];
+                this.minDev = parameters[0];
+                this.maxDev = parameters[1];
             } else {
-                throw new RuntimeException( "[During Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
+                throw new RuntimeException( "[Overlaps Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
+
 
     }
 

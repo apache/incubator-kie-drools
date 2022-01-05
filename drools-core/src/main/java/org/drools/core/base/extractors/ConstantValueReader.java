@@ -16,14 +16,12 @@
 package org.drools.core.base.extractors;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 
-import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
+import static org.drools.core.base.evaluators.TimeIntervalParser.getTimestampFromDate;
 
 public class ConstantValueReader implements InternalReadAccessor {
 
@@ -35,14 +33,6 @@ public class ConstantValueReader implements InternalReadAccessor {
 
     public Object getValue(ReteEvaluator reteEvaluator, Object object) {
         return value;
-    }
-
-    public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator, Object object) {
-        return (BigDecimal)value;
-    }
-
-    public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator, Object object) {
-        return (BigInteger)value;
     }
 
     public char getCharValue(ReteEvaluator reteEvaluator, Object object) {
@@ -95,46 +85,6 @@ public class ConstantValueReader implements InternalReadAccessor {
 
     public Object getValue(Object object) {
         return value;
-    }
-
-    public BigDecimal getBigDecimalValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getBigDecimalValue -> TODO");
-    }
-
-    public BigInteger getBigIntegerValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getBigIntegerValue -> TODO");
-    }
-
-    public char getCharValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getCharValue -> TODO");
-    }
-
-    public int getIntValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getIntValue -> TODO");
-    }
-
-    public byte getByteValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getByteValue -> TODO");
-    }
-
-    public short getShortValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getShortValue -> TODO");
-    }
-
-    public long getLongValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getLongValue -> TODO");
-    }
-
-    public float getFloatValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getFloatValue -> TODO");
-    }
-
-    public double getDoubleValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getDoubleValue -> TODO");
-    }
-
-    public boolean getBooleanValue(Object object) {
-        throw new UnsupportedOperationException("org.drools.core.base.extractors.ConstantValueReader.getBooleanValue -> TODO");
     }
 
     public boolean isNullValue(Object object) {

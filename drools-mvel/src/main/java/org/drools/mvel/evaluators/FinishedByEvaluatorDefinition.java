@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,78 +23,71 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.LeftEndRightStartContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
 /**
- * <p>The implementation of the <code>metby</code> evaluator definition.</p>
+ * <p>The implementation of the <code>finishedby</code> evaluator definition.</p>
  * 
- * <p>The <b><code>metby</code></b> evaluator correlates two events and matches when the current event's 
- * start timestamp happens at the same time as the correlated event's end timestamp.</p> 
+ * <p>The <b><code>finishedby</code></b> evaluator correlates two events and matches when the current event 
+ * start timestamp happens before the correlated event start timestamp, but both end timestamps occur at
+ * the same time. This is the symmetrical opposite of <code>finishes</code> evaluator.</p> 
  * 
  * <p>Lets look at an example:</p>
  * 
- * <pre>$eventA : EventA( this metby $eventB )</pre>
+ * <pre>$eventA : EventA( this finishedby $eventB )</pre>
  *
- * <p>The previous pattern will match if and only if the $eventA starts at the same time $eventB finishes. 
- * In other words:</p>
+ * <p>The previous pattern will match if and only if the $eventA starts before $eventB starts and finishes
+ * at the same time $eventB finishes. In other words:</p>
  * 
  * <pre> 
- * abs( $eventA.startTimestamp - $eventB.endTimestamp ) == 0
+ * $eventA.startTimestamp < $eventB.startTimestamp &&
+ * $eventA.endTimestamp == $eventB.endTimestamp 
  * </pre>
  * 
- * <p>The <b><code>metby</code></b> evaluator accepts one optional parameter. If it is defined, it determines
- * the maximum distance between the end timestamp of the correlated event and the start timestamp of the current
- * event in order for the operator to match. Example:</p>
+ * <p>The <b><code>finishedby</code></b> evaluator accepts one optional parameter. If it is defined, it determines
+ * the maximum distance between the end timestamp of both events in order for the operator to match. Example:</p>
  * 
- * <pre>$eventA : EventA( this metby[ 5s ] $eventB )</pre>
+ * <pre>$eventA : EventA( this finishedby[ 5s ] $eventB )</pre>
  * 
  * Will match if and only if:
  * 
  * <pre> 
- * abs( $eventA.startTimestamp - $eventB.endTimestamp) <= 5s 
+ * $eventA.startTimestamp < $eventB.startTimestamp &&
+ * abs( $eventA.endTimestamp - $eventB.endTimestamp ) <= 5s
  * </pre>
  * 
  * <p><b>NOTE:</b> it makes no sense to use a negative interval value for the parameter and the 
  * engine will raise an exception if that happens.</p>
  */
-public class MetByEvaluatorDefinition
+public class FinishedByEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    protected static final String       metByOp = "metby";
+    protected static final String finishedByOp = Operator.Op.FINISHED_BY.getOperatorId();
 
-    public static Operator              MET_BY;
+    public static final Operator FINISHED_BY = Operator.determineOperator( finishedByOp, false );
+    public static final Operator NOT_FINISHED_BY = Operator.determineOperator( finishedByOp, true );
 
-    public static Operator              NOT_MET_BY;
+    private static final String[] SUPPORTED_IDS = new String[] { finishedByOp };
 
-    private static String[]             SUPPORTED_IDS;
-
-    private Map<String, MetByEvaluator> cache         = Collections.emptyMap();
-
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( metByOp, false ) == null ) {
-            MET_BY = Operator.addOperatorToRegistry( metByOp, false );
-            NOT_MET_BY = Operator.addOperatorToRegistry( metByOp, true );
-            SUPPORTED_IDS = new String[] { metByOp };
-        }
-    }
+    private Map<String, FinishedByEvaluator> cache           = Collections.emptyMap();
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        cache = (Map<String, MetByEvaluator>) in.readObject();
+        cache = (Map<String, FinishedByEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -150,16 +143,16 @@ public class MetByEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, MetByEvaluator>();
+            this.cache = new HashMap<String, FinishedByEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        MetByEvaluator eval = this.cache.get( key );
+        FinishedByEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             long[] params = TimeIntervalParser.parse( parameterText );
-            eval = new MetByEvaluator( type,
-                                       isNegated,
-                                       params,
-                                       parameterText );
+            eval = new FinishedByEvaluator( type,
+                                            isNegated,
+                                            params,
+                                            parameterText );
             this.cache.put( key,
                             eval );
         }
@@ -197,27 +190,23 @@ public class MetByEvaluatorDefinition
     }
 
     /**
-     * Implements the 'metby' evaluator itself
+     * Implements the 'finishedby' evaluator itself
      */
-    public static class MetByEvaluator extends BaseEvaluator {
+    public static class FinishedByEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
 
-        private long              finalRange;
+        private long              endDev;
         private String            paramText;
 
-        {
-            MetByEvaluatorDefinition.init();
+        public FinishedByEvaluator() {
         }
 
-        public MetByEvaluator() {
-        }
-
-        public MetByEvaluator(final ValueType type,
-                              final boolean isNegated,
-                              final long[] parameters,
-                              final String paramText) {
+        public FinishedByEvaluator(final ValueType type,
+                                   final boolean isNegated,
+                                   final long[] parameters,
+                                   final String paramText) {
             super( type,
-                   isNegated ? NOT_MET_BY : MET_BY );
+                   isNegated ? NOT_FINISHED_BY : FINISHED_BY );
             this.paramText = paramText;
             this.setParameters( parameters );
         }
@@ -225,13 +214,13 @@ public class MetByEvaluatorDefinition
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             super.readExternal( in );
-            finalRange = in.readLong();
+            endDev = in.readLong();
             paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal( out );
-            out.writeLong( finalRange );
+            out.writeLong( endDev );
             out.writeObject( paramText );
         }
 
@@ -254,7 +243,7 @@ public class MetByEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeException( "The 'metby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'finishedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
@@ -265,9 +254,9 @@ public class MetByEvaluatorDefinition
                 return false;
             }
             
-            long rightStartTS = ((LeftEndRightStartContextEntry)context).timestamp;
-            long dist = Math.abs( rightStartTS - ((EventFactHandle) left).getEndTimestamp() );
-            return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
+            long distStart = ((EventFactHandle) left).getStartTimestamp() - ((TemporalVariableContextEntry) context).startTS;
+            long distEnd = Math.abs( ((EventFactHandle) left).getEndTimestamp() - ((TemporalVariableContextEntry) context).endTS );
+            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
         }
 
         public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
@@ -278,10 +267,9 @@ public class MetByEvaluatorDefinition
                 return false;
             }
             
-            long rightStartTS = ((EventFactHandle) right).getStartTimestamp();
-            long dist = Math.abs( rightStartTS - ((LeftEndRightStartContextEntry)context).timestamp );
-
-            return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
+            long distStart = ((TemporalVariableContextEntry) context).startTS - ((EventFactHandle) right).getStartTimestamp();
+            long distEnd = Math.abs( ((TemporalVariableContextEntry) context).endTS - ((EventFactHandle) right).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
@@ -294,13 +282,13 @@ public class MetByEvaluatorDefinition
                 return false;
             }
             
-            long obj1StartTS = ((EventFactHandle) handle1).getStartTimestamp();
-            long dist = Math.abs( obj1StartTS - ((EventFactHandle) handle2).getEndTimestamp() );
-            return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
+            long distStart = ((EventFactHandle) handle2).getStartTimestamp() - ((EventFactHandle) handle1).getStartTimestamp();
+            long distEnd = Math.abs( ((EventFactHandle) handle2).getEndTimestamp() - ((EventFactHandle) handle1).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
         }
 
         public String toString() {
-            return "metby[" + ((paramText != null) ? paramText : "") + "]";
+            return "finishedby[" + ((paramText != null) ? paramText : "") + "]";
         }
 
         /* (non-Javadoc)
@@ -310,7 +298,7 @@ public class MetByEvaluatorDefinition
         public int hashCode() {
             final int PRIME = 31;
             int result = super.hashCode();
-            result = PRIME * result + (int) (finalRange ^ (finalRange >>> 32));
+            result = PRIME * result + (int) (endDev ^ (endDev >>> 32));
             return result;
         }
 
@@ -322,8 +310,8 @@ public class MetByEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final MetByEvaluator other = (MetByEvaluator) obj;
-            return finalRange == other.finalRange;
+            final FinishedByEvaluator other = (FinishedByEvaluator) obj;
+            return endDev == other.endDev;
         }
 
         /**
@@ -333,16 +321,16 @@ public class MetByEvaluatorDefinition
          */
         private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
-                this.finalRange = 0;
+                this.endDev = 0;
             } else if ( parameters.length == 1 ) {
-                if ( parameters[0] >= 0 ) {
-                    // defined max distance
-                    this.finalRange = parameters[0];
+                if( parameters[0] >= 0 ) {
+                    // defined deviation for end timestamp
+                    this.endDev = parameters[0];
                 } else {
-                    throw new RuntimeException( "[MetBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'" );
+                    throw new RuntimeException("[FinishedBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'");
                 }
             } else {
-                throw new RuntimeException( "[MetBy Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
+                throw new RuntimeException( "[FinishedBy Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
 

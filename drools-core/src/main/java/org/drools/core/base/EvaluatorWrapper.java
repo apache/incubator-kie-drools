@@ -23,7 +23,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -38,9 +37,7 @@ import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;
  * operator.evaluate( leftArg, rightArg )
  * 
  */
-public class EvaluatorWrapper
-    implements
-    Evaluator {
+public class EvaluatorWrapper implements Evaluator {
 
     private static final long                          serialVersionUID = 520L;
 
@@ -146,22 +143,6 @@ public class EvaluatorWrapper
                                    left,
                                    rightExtractor,
                                    right );
-    }
-
-    public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
-                                      VariableContextEntry context,
-                                      InternalFactHandle right) {
-        return evaluator.evaluateCachedLeft( reteEvaluator,
-                                             context,
-                                             right );
-    }
-
-    public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
-                                       VariableContextEntry context,
-                                       InternalFactHandle left) {
-        return evaluator.evaluateCachedRight( reteEvaluator,
-                                              context,
-                                              left );
     }
 
     /**

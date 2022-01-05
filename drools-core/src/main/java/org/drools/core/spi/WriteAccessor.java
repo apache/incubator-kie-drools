@@ -18,8 +18,6 @@ package org.drools.core.spi;
 
 import java.io.Externalizable;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import org.drools.core.base.ValueType;
 
@@ -27,37 +25,31 @@ import org.drools.core.base.ValueType;
  * An interface for a class that is able to write values into a class
  * field
  */
-public interface WriteAccessor
-    extends
-    Externalizable {
+public interface WriteAccessor extends Externalizable {
 
-    public int getIndex();
+    int getIndex();
 
-    public void setValue( Object bean, Object value );
+    void setValue( Object bean, Object value );
 
-    public void setBigDecimalValue( Object bean, BigDecimal value );
+    void setCharValue( Object bean, char value );
 
-    public void setBigIntegerValue( Object bean, BigInteger value );
+    void setIntValue( Object bean, int value );
 
-    public void setCharValue( Object bean, char value );
+    void setByteValue( Object bean, byte value );
 
-    public void setIntValue( Object bean, int value );
+    void setShortValue( Object bean, short value );
 
-    public void setByteValue( Object bean, byte value );
+    void setLongValue( Object bean, long value );
 
-    public void setShortValue( Object bean, short value );
+    void setFloatValue( Object bean, float value );
 
-    public void setLongValue( Object bean, long value );
+    void setDoubleValue( Object bean, double value );
 
-    public void setFloatValue( Object bean, float value );
+    void setBooleanValue( Object bean, boolean value );
 
-    public void setDoubleValue( Object bean, double value );
+    ValueType getValueType();
 
-    public void setBooleanValue( Object bean, boolean value );
+    Class< ? > getFieldType();
 
-    public ValueType getValueType();
-
-    public Class< ? > getFieldType();
-
-    public Method getNativeWriteMethod();
+    Method getNativeWriteMethod();
 }

@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
@@ -30,7 +28,6 @@ import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MathUtils;
 import org.drools.core.util.StringUtils;
 
 public class ArrayElementReader
@@ -164,20 +161,6 @@ public class ArrayElementReader
         return array[this.index];
     }
 
-    public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator,
-                                         Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
-                                                                     object );
-        return MathUtils.getBigDecimal( array[this.index] );
-    }
-
-    public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator,
-                                         Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( reteEvaluator,
-                                                                     object );
-        return MathUtils.getBigInteger( array[this.index] );
-    }
-
     public ValueType getValueType() {
         return ValueType.OBJECT_TYPE;
     }
@@ -226,31 +209,6 @@ public class ArrayElementReader
         return false;
     }
 
-    public boolean getBooleanValue(Object object) {
-        return getBooleanValue( null,
-                                object );
-    }
-
-    public byte getByteValue(Object object) {
-        return getByteValue( null,
-                             object );
-    }
-
-    public char getCharValue(Object object) {
-        return getCharValue( null,
-                             object );
-    }
-
-    public double getDoubleValue(Object object) {
-        return getDoubleValue( null,
-                               object );
-    }
-
-    public float getFloatValue(Object object) {
-        return getFloatValue( null,
-                              object );
-    }
-
     public int getHashCode(Object object) {
         return getHashCode( null,
                             object );
@@ -258,21 +216,6 @@ public class ArrayElementReader
 
     public int getIndex() {
         return this.index;
-    }
-
-    public int getIntValue(Object object) {
-        return getIntValue( null,
-                            object );
-    }
-
-    public long getLongValue(Object object) {
-        return getLongValue( null,
-                             object );
-    }
-
-    public short getShortValue(Object object) {
-        return getShortValue( null,
-                              object );
     }
 
     public Object getValue(Object object) {
@@ -283,14 +226,6 @@ public class ArrayElementReader
     public boolean isNullValue(Object object) {
         return isNullValue( null,
                             object );
-    }
-
-    public BigDecimal getBigDecimalValue(Object object) {
-        return null;
-    }
-
-    public BigInteger getBigIntegerValue(Object object) {
-        return null;
     }
 
     public void wire( Class<?> klass ) {

@@ -107,7 +107,7 @@ public class StudentProxyImpl3 extends TraitProxyImpl implements IStudent {
     }
 
     public double getD() {
-        return bit_reader.getDoubleValue( object );
+        return (double) bit_reader.getValue( object );
     }
 
     public void setD(double d) {

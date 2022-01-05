@@ -17,8 +17,6 @@
 package org.drools.core.spi;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import org.drools.core.base.ValueType;
 
@@ -28,26 +26,6 @@ import org.drools.core.base.ValueType;
 public interface ReadAccessor {
 
     Object getValue(Object object);
-
-    BigDecimal getBigDecimalValue(Object object);
-
-    BigInteger getBigIntegerValue(Object object);
-
-    char getCharValue(Object object);
-
-    int getIntValue(Object object);
-
-    byte getByteValue(Object object);
-
-    short getShortValue(Object object);
-
-    long getLongValue(Object object);
-
-    float getFloatValue(Object object);
-
-    double getDoubleValue(Object object);
-
-    boolean getBooleanValue(Object object);
 
     boolean isNullValue(Object object);
 

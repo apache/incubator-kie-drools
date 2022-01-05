@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,78 +23,78 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
 /**
- * <p>The implementation of the <code>startedby</code> evaluator definition.</p>
+ * <p>The implementation of the <code>overlappedby</code> evaluator definition.</p>
  * 
- * <p>The <b><code>startedby</code></b> evaluator correlates two events and matches when the correlating event's 
- * end timestamp happens before the current event's end timestamp, but both start timestamps occur at
- * the same time.</p> 
+ * <p>The <b><code>overlappedby</code></b> evaluator correlates two events and matches when the correlated event 
+ * starts before the current event starts and finishes after the current event starts, but before
+ * the current event finishes. In other words, both events have an overlapping period.</p> 
  * 
  * <p>Lets look at an example:</p>
  * 
- * <pre>$eventA : EventA( this startedby $eventB )</pre>
+ * <pre>$eventA : EventA( this overlappedby $eventB )</pre>
  *
- * <p>The previous pattern will match if and only if the $eventB finishes before $eventA finishes and starts
- * at the same time $eventB starts. In other words:</p>
+ * <p>The previous pattern will match if and only if:</p>
  * 
- * <pre> 
- * $eventA.startTimestamp == $eventB.startTimestamp &&
- * $eventA.endTimestamp > $eventB.endTimestamp 
- * </pre>
+ * <pre> $eventB.startTimestamp < $eventA.startTimestamp < $eventB.endTimestamp < $eventA.endTimestamp </pre>
  * 
- * <p>The <b><code>startedby</code></b> evaluator accepts one optional parameter. If it is defined, it determines
- * the maximum distance between the start timestamp of both events in order for the operator to match. Example:</p>
+ * <p>The <b><code>overlappedby</code></b> operator accepts 1 or 2 optional parameters as follow:</p>
  * 
- * <pre>$eventA : EventA( this startedby[ 5s ] $eventB )</pre>
+ * <ul><li>If one parameter is defined, this will be the maximum distance between the start timestamp of the
+ * current event and the end timestamp of the correlated event. Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this overlappedby[ 5s ] $eventB )</pre>
  * 
  * Will match if and only if:
  * 
  * <pre> 
- * abs( $eventA.startTimestamp - $eventB.startTimestamp ) <= 5s &&
- * $eventA.endTimestamp > $eventB.endTimestamp 
+ * $eventB.startTimestamp < $eventA.startTimestamp < $eventB.endTimestamp < $eventA.endTimestamp &&
+ * 0 <= $eventB.endTimestamp - $eventA.startTimestamp <= 5s 
  * </pre>
  * 
- * <p><b>NOTE:</b> it makes no sense to use a negative interval value for the parameter and the 
- * engine will raise an exception if that happens.</p>
+ * <ul><li>If two values are defined, the first value will be the minimum distance and the second value will be 
+ * the maximum distance between the start timestamp of the current event and the end timestamp of the correlated 
+ * event. Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this overlappedby[ 5s, 10s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * $eventB.startTimestamp < $eventA.startTimestamp < $eventB.endTimestamp < $eventA.endTimestamp &&
+ * 5s <= $eventB.endTimestamp - $eventA.startTimestamp <= 10s 
+ * </pre>
  */
-public class StartedByEvaluatorDefinition
+public class OverlappedByEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    protected static final String   startedByOp = "startedby";
+    public static final String overlappedbyOp = Operator.Op.OVERLAPPED_BY.getOperatorId();
 
-    public static Operator          STARTED_BY;
-    public static Operator          NOT_STARTED_BY;
+    public static final Operator OVERLAPPED_BY = Operator.determineOperator( overlappedbyOp, false );
 
-    private static String[]         SUPPORTED_IDS;
+    public static final Operator NOT_OVERLAPPED_BY = Operator.determineOperator( overlappedbyOp, true );
 
-    private Map<String, StartedByEvaluator> cache     = Collections.emptyMap();
+    private static final String[] SUPPORTED_IDS = new String[] { overlappedbyOp };
 
-    { init(); }
+    private Map<String, OverlappedByEvaluator> cache   = Collections.emptyMap();
 
-    static void init() {
-        if ( Operator.determineOperator( startedByOp, false ) == null ) {
-            STARTED_BY = Operator.addOperatorToRegistry( startedByOp, false );
-            NOT_STARTED_BY = Operator.addOperatorToRegistry( startedByOp, true );
-            SUPPORTED_IDS = new String[] { startedByOp };
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        cache  = (Map<String, StartedByEvaluator>)in.readObject();
+        cache  = (Map<String, OverlappedByEvaluator>)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -150,13 +150,13 @@ public class StartedByEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, StartedByEvaluator>();
+            this.cache = new HashMap<String, OverlappedByEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        StartedByEvaluator eval = this.cache.get( key );
+        OverlappedByEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             long[] params = TimeIntervalParser.parse( parameterText );
-            eval = new StartedByEvaluator( type,
+            eval = new OverlappedByEvaluator( type,
                                        isNegated,
                                        params,
                                        parameterText );
@@ -197,44 +197,41 @@ public class StartedByEvaluatorDefinition
     }
 
     /**
-     * Implements the 'startedby' evaluator itself
+     * Implements the 'overlappedby' evaluator itself
      */
-    public static class StartedByEvaluator extends BaseEvaluator {
+    public static class OverlappedByEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
 
-        private long                startDev;
-        private String              paramText;
+        private long                  minDev, maxDev;
+        private String                paramText;
 
-        {
-            StartedByEvaluatorDefinition.init();
+        public OverlappedByEvaluator() {
         }
 
-        public StartedByEvaluator() {
-        }
-
-        public StartedByEvaluator(final ValueType type,
+        public OverlappedByEvaluator(final ValueType type,
                               final boolean isNegated,
-                              final long[] params,
+                              final long[] parameters,
                               final String paramText) {
             super( type,
-                   isNegated ? NOT_STARTED_BY : STARTED_BY );
+                   isNegated ? NOT_OVERLAPPED_BY : OVERLAPPED_BY );
             this.paramText = paramText;
-            this.setParameters( params );
+            this.setParameters( parameters );
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             super.readExternal(in);
-            startDev = in.readLong();
+            minDev = in.readLong();
+            maxDev = in.readLong();
             paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal(out);
-            out.writeLong(startDev);
+            out.writeLong(minDev);
+            out.writeLong(maxDev);
             out.writeObject( paramText );
         }
-
-
+        
         @Override
         public boolean isTemporal() {
             return true;
@@ -245,59 +242,70 @@ public class StartedByEvaluatorDefinition
             if( this.getOperator().isNegated() ) {
                 return new Interval( Interval.MIN, Interval.MAX );
             }
-            return new Interval( 0, 0 );
+            return new Interval( 0, Interval.MAX );
         }
         
         public boolean evaluate(ReteEvaluator reteEvaluator,
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeException( "The 'startedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'overlappedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
-                final VariableContextEntry context,
-                final InternalFactHandle left) {
+                                           final VariableContextEntry context,
+                                           final InternalFactHandle left) {
             if ( context.rightNull || 
                     context.declaration.getExtractor().isNullValue( reteEvaluator, left.getObject() )) {
                 return false;
             }
             
-            long distStart = Math.abs(((TemporalVariableContextEntry) context).startTS - ((EventFactHandle) left ).getStartTimestamp());
-            long distEnd = ((TemporalVariableContextEntry) context).endTS - ((EventFactHandle) left ).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd > 0 );
+            long rightStartTS = ((TemporalVariableContextEntry) context).startTS;
+            long leftEndTS = ((EventFactHandle) left ).getEndTimestamp();
+            long dist = leftEndTS - rightStartTS;
+            return this.getOperator().isNegated() ^ ( 
+                    ((EventFactHandle) left ).getStartTimestamp() < rightStartTS &&
+                    leftEndTS < ((TemporalVariableContextEntry) context).endTS &&
+                    dist >= this.minDev && dist <= maxDev );
         }
 
         public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
-                           final VariableContextEntry context,
-                           final InternalFactHandle right) {
+                                          final VariableContextEntry context,
+                                          final InternalFactHandle right) {
             if ( context.leftNull ||
                     context.extractor.isNullValue( reteEvaluator, right.getObject() ) ) {
                 return false;
             }
             
-            long distStart = Math.abs(((EventFactHandle) right ).getStartTimestamp() - ((TemporalVariableContextEntry) context).startTS);
-            long distEnd = ((EventFactHandle) right ).getEndTimestamp() - ((TemporalVariableContextEntry) context).endTS;
-            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd > 0 );
+            long leftEndTS = ((TemporalVariableContextEntry) context).endTS;
+            long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
+            long dist = leftEndTS - rightStartTS;
+            return this.getOperator().isNegated() ^ ( 
+                    ((TemporalVariableContextEntry) context).startTS < rightStartTS &&
+                    leftEndTS < ((EventFactHandle) right).getEndTimestamp() &&
+                    dist >= this.minDev && dist <= maxDev );
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                 final InternalReadAccessor extractor1,
-                 final InternalFactHandle handle1,
-                 final InternalReadAccessor extractor2,
-                 final InternalFactHandle handle2) {
+                                final InternalReadAccessor extractor1,
+                                final InternalFactHandle handle1,
+                                final InternalReadAccessor extractor2,
+                                final InternalFactHandle handle2) {
             if ( extractor1.isNullValue( reteEvaluator, handle1.getObject() ) ||
                     extractor2.isNullValue( reteEvaluator, handle2.getObject() ) ) {
                 return false;
             }
             
-            long distStart = Math.abs(((EventFactHandle) handle1 ).getStartTimestamp() - ((EventFactHandle) handle2 ).getStartTimestamp());
-            long distEnd = ((EventFactHandle) handle1 ).getEndTimestamp() - ((EventFactHandle) handle2 ).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd > 0 );
+            long startTS = ((EventFactHandle) handle1).getStartTimestamp();
+            long endTS = ((EventFactHandle) handle2).getEndTimestamp();
+            long dist = endTS - startTS;
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) handle2).getStartTimestamp() < startTS &&
+                    endTS < ((EventFactHandle) handle1).getEndTimestamp() &&
+                    dist >= this.minDev && dist <= this.maxDev );
         }
 
         public String toString() {
-            return "startedby[" + ((paramText != null) ? paramText : "") + "]";
+            return "overlappedby[" + ( ( paramText != null ) ? paramText : "" ) + "]";
         }
 
         /* (non-Javadoc)
@@ -307,7 +315,8 @@ public class StartedByEvaluatorDefinition
         public int hashCode() {
             final int PRIME = 31;
             int result = super.hashCode();
-            result = PRIME * result + (int) (startDev ^ (startDev >>> 32));
+            result = PRIME * result + (int) (maxDev ^ (maxDev >>> 32));
+            result = PRIME * result + (int) (minDev ^ (minDev >>> 32));
             return result;
         }
 
@@ -319,8 +328,8 @@ public class StartedByEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final StartedByEvaluator other = (StartedByEvaluator) obj;
-            return startDev == other.startDev;
+            final OverlappedByEvaluator other = (OverlappedByEvaluator) obj;
+            return maxDev == other.maxDev && minDev == other.minDev;
         }
 
         /**
@@ -330,16 +339,19 @@ public class StartedByEvaluatorDefinition
          */
         private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
-                this.startDev = 0;
+                // open bounded range
+                this.minDev = 1;
+                this.maxDev = Long.MAX_VALUE;
             } else if ( parameters.length == 1 ) {
-                if( parameters[0] >= 0 ) {
-                    // defined deviation for end timestamp
-                    this.startDev = parameters[0];
-                } else {
-                    throw new RuntimeException("[StartedBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'");
-                }
+                // open bounded ranges
+                this.minDev = 1;
+                this.maxDev = parameters[0];
+            } else if ( parameters.length == 2 ) {
+                // open bounded ranges
+                this.minDev = parameters[0];
+                this.maxDev = parameters[1];
             } else {
-                throw new RuntimeException( "[StartedBy Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
+                throw new RuntimeException( "[Overlaps Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
 

@@ -26,11 +26,12 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IntervalProviderConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.VariableRestriction;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.mvel.evaluators.MvelEvaluator;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
 
@@ -80,7 +81,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
                                        field );
         }
 
-        return evaluator.evaluateCachedLeft( ((VariableContextEntry) context).reteEvaluator,
+        return ((MvelEvaluator) evaluator).evaluateCachedLeft( ((VariableContextEntry) context).reteEvaluator,
                                              (VariableContextEntry) context,
                                              handle );
     }
@@ -93,7 +94,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
                                        field );
         }
 
-        return evaluator.evaluateCachedRight( ((VariableContextEntry) context).reteEvaluator,
+        return ((MvelEvaluator) evaluator).evaluateCachedRight( ((VariableContextEntry) context).reteEvaluator,
                                               (VariableContextEntry) context,
                                               tuple.get(declarations[0]));
     }
