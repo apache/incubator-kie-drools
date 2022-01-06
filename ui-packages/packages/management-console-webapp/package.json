@@ -36,7 +36,7 @@
     "@kogito-apps/consoles-common": "^1.0.0",
     "@kogito-apps/jobs-management": "^1.0.0",
     "@kogito-apps/management-console-shared": "^1.0.0",
-    "@kogito-apps/process-list": "^1.00"
+    "@kogito-apps/process-list": "^1.0.0"
   },
   "devDependencies": {
     "@kogito-apps/cypress-ouia": "^1.0.0",
