@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.drools.core.command.IdentifiableResult;
@@ -32,11 +33,13 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectCommand
     implements
     ExecutableCommand<Object>, IdentifiableResult {
 
+    @XmlElement(name="fact-handle", required=true)
     private DisconnectedFactHandle disconnectedFactHandle;
 
     private transient FactHandle factHandle;
@@ -64,7 +67,6 @@ public class GetObjectCommand
         this.outIdentifier = outIdentifier;
     }
 
-    @XmlElement(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
         FactHandle factHandle = DefaultFactHandle.createFromExternalFormat(factHandleId);
         setFactHandle(factHandle);
@@ -81,6 +83,10 @@ public class GetObjectCommand
     public void setFactHandle(FactHandle factHandle) {
         this.factHandle = factHandle;
         this.disconnectedFactHandle = DisconnectedFactHandle.newFrom(factHandle);
+    }
+
+    public DisconnectedFactHandle getDisconnectedFactHandle() {
+        return disconnectedFactHandle;
     }
 
     public Object execute(Context context) {
