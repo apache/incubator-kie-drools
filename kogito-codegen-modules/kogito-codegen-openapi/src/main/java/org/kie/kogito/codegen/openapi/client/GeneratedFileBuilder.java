@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.drools.core.util.StringUtils;
 import org.kie.kogito.codegen.api.GeneratedFile;
@@ -65,7 +66,8 @@ public class GeneratedFileBuilder {
         final Path path = openAPIGeneratorFile.toPath();
         for (int i = 0; i < path.getNameCount(); i++) {
             if ("src".equals(path.getName(i).toString())) {
-                return path.subpath(i, path.getNameCount()).toString().replace("src/main/java/", "");
+                return path.subpath(i, path.getNameCount()).toString()
+                        .replace(Paths.get("src", "main", "java").toString().concat(File.separator), "");
             }
         }
         return "";

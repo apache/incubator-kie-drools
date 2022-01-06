@@ -34,7 +34,7 @@ import org.kie.kogito.codegen.openapi.client.OpenApiUtils;
  */
 public abstract class AbstractPathResolver implements PathResolver {
 
-    private static final String BASE_PATH = "/openapi-spec-cache";
+    private static final String BASE_PATH = "openapi-spec-cache";
 
     protected final KogitoBuildContext context;
 
@@ -43,7 +43,7 @@ public abstract class AbstractPathResolver implements PathResolver {
     }
 
     private String getOutputPath() {
-        final Path outputPath = Paths.get(OpenApiUtils.getEndUserTargetDir(this.context) + BASE_PATH);
+        final Path outputPath = Paths.get(OpenApiUtils.getEndUserTargetDir(this.context), BASE_PATH);
         if (Files.notExists(outputPath)) {
             try {
                 Files.createDirectories(outputPath);

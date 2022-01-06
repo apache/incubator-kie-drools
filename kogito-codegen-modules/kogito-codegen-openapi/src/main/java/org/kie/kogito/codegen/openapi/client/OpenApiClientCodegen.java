@@ -166,9 +166,6 @@ public class OpenApiClientCodegen extends AbstractGenerator {
      * @return the final path where to generate the OpenAPI Client project
      */
     private String getOutputDirForOpenAPIGen(final OpenApiSpecDescriptor resource) {
-        return String.join("/",
-                OpenApiUtils.getEndUserTargetDir(this.context()),
-                GEN_BASE_PATH,
-                resource.getId());
+        return Paths.get(OpenApiUtils.getEndUserTargetDir(this.context()), GEN_BASE_PATH, resource.getId()).toString();
     }
 }
