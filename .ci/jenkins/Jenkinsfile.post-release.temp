@@ -477,10 +477,6 @@ def forcePushProtectedBranch(String repo, String protectedBranch) {
     disableForcePushes(repo, protectedBranch)
 }
 
-void gradleVersionsUpdate(String newVersion) {
-    sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
-}
-
 void assertGithubCLI(String ghPath) {
     if (fileExists(ghPath)) {
         echo "[INFO] gh found at $ghPath"

@@ -482,3 +482,7 @@ void updateQuickstartsVersions(String newVersion) {
             "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle} | " +
              'cat', returnStdout: true)
 }
+
+void gradleVersionsUpdate(String newVersion) {
+    sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
+}
