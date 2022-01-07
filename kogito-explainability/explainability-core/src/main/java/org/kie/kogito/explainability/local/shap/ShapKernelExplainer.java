@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.model.FeatureImportance;
@@ -675,10 +676,14 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
     // run the WLRR for a single output
     private double[][] runWLRR(double[][] maskDiff, double[] adjY, double[] ws, double outputChange,
             int dropIdx, ShapDataCarrier sdc) {
-        WeightedLinearRegressionResults wlrr = WeightedLinearRegression.fit(maskDiff, adjY,
-                ws, false, this.config.getPC().getRandom());
-        double[] coeffs = wlrr.getCoefficients();
-        double[] bounds = wlrr.getConf(1 - this.config.getConfidence());
+
+        // temporary conversion to and from MAtrixUtils data structures; these will be used throughout after FAI-661
+        WeightedLinearRegressionResults wlrr = WeightedLinearRegression.fit(
+                MatrixUtils.createRealMatrix(maskDiff),
+                MatrixUtils.createRealVector(adjY),
+                MatrixUtils.createRealVector(ws), false);
+        double[] coeffs = wlrr.getCoefficients().toArray();
+        double[] bounds = wlrr.getConf(1 - this.config.getConfidence()).toArray();
 
         int usedCoefs = 0;
         double[] shapSlice = new double[sdc.getCols()];

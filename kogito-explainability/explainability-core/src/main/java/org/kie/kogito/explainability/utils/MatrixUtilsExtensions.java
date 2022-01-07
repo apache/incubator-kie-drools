@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.kie.kogito.explainability.utils;
 
-import java.security.SecureRandom;
 import java.util.*;
 
 import org.apache.commons.math3.linear.*;
@@ -357,146 +356,47 @@ public class MatrixUtilsExtensions {
         return transposed;
     }
 
-    /**
-     * Find the diagonal element at row i with the largest absolute value, where {@code pivotsUsed[i] == 0}
-     * This is the pivot value for the Gauss-Jordan algorithm
-     *
-     * @param x a square double[][]; the matrix to find the diagonal element within
-     * @param pivotsUsed a boolean[], marking whether a specific index has been used as a pivot yet or not
-     * @return the index of the found pivot
-     */
-    private static int findPivot(double[][] x, boolean[] pivotsUsed) {
-        double maxAbs = 0;
-        int pivot = 0;
-        int size = MatrixUtilsExtensions.getShape(x)[0];
-        for (int diagIdx = 0; diagIdx < size; diagIdx++) {
-            double abs = Math.abs(x[diagIdx][diagIdx]);
-            if (abs > maxAbs && !pivotsUsed[diagIdx]) {
-                pivot = diagIdx;
-                maxAbs = abs;
-            }
-        }
-        return pivot;
-    }
-
-    /**
-     * Inverts the square, non-singular matrix X
-     *
-     * @param x a square, non-singular double[][] X
-     * @return the inverted matrix
-     *         <p>
-     *         Dr. Debabrata DasGupta's description of the algorithm is here:
-     *         https://www.researchgate.net/publication/271296470_In-Place_Matrix_Inversion_by_Modified_Gauss-Jordan_Algorithm
-     */
-    private static double[][] invertSquareMatrix(double[][] x, double zeroThreshold) {
-        int size = MatrixUtilsExtensions.getShape(x)[0];
-        double[][] copy = new double[size][size];
-        for (int i = 0; i < size; i++) {
-            copy[i] = Arrays.copyOf(x[i], size);
-        }
-
-        // initialize array to track which pivots have been used
-        boolean[] pivotsUsed = new boolean[size];
-        Arrays.fill(pivotsUsed, false);
-
-        // perform both operations until each row has been used as pivot
-        // once we've done all iterations, X will be inverted in place
-        for (int iterations = 0; iterations < size; iterations++) {
-            // OPERATION 1
-            // find the pivot
-            // the pivot idx is the idx of the diagonal element with largest absolute value
-            // that hasn't already been used as a pivot
-            int pivot = MatrixUtilsExtensions.findPivot(copy, pivotsUsed);
-            double pivotVal = copy[pivot][pivot];
-
-            // check if pivotVal is 0, allowing for some floating point error
-            if (Math.abs(pivotVal) < zeroThreshold) {
-                throw new ArithmeticException("Matrix is singular and cannot be inverted");
-            }
-
-            //virtualize the pivot
-            copy[pivot][pivot] = 1.;
-
-            //mark the pivot used
-            pivotsUsed[pivot] = true;
-
-            // normalize the pivot row
-            for (int i = 0; i < size; i++) {
-                copy[pivot][i] /= pivotVal;
-            }
-
-            // OPERATION 2
-            // reduce each non-pivot column by X[p][i] * X[i][pivot]
-            for (int i = 0; i < size; i++) {
-                if (i != pivot) {
-                    double rowValueAtPivot = copy[i][pivot];
-                    copy[i][pivot] = 0.;
-                    for (int j = 0; j < size; j++) {
-                        copy[i][j] -= copy[pivot][j] * rowValueAtPivot;
-                    }
-                }
-            }
-        }
-        return copy;
-    }
-
-    /**
-     * Attempt to invert the given matrix.
-     * If the matrix is singular, jitter the values slightly to break singularity
-     *
-     * @param x a square double[][]; the matrix to be inverted
-     * @param numRetries the number of times to attempt jittering before giving up
-     * @param zeroThreshold: the threshold to set such that x==0 if abs(x)<zeroThreshold. Use this avoid fp errors
-     * @param random: random number generator
-     * @return double[][], the inverted matrix
-     *
-     */
-    public static double[][] jitterInvert(double[][] x, int numRetries, double zeroThreshold, Random random) {
-        double[][] xInv;
-        for (int jitterTries = 0; jitterTries < numRetries; jitterTries++) {
-            try {
-                xInv = MatrixUtilsExtensions.invertSquareMatrix(x, zeroThreshold);
-                return xInv;
-            } catch (ArithmeticException e) {
-                // if the inversion is unsuccessful, we can try slightly jittering the matrix.
-                // this will reduce the accuracy of the inversion marginally, but ensures that we get results
-                MatrixUtilsExtensions.jitterMatrix(x, 1e-8, random);
-            }
-        }
-
-        // if jittering didn't work, throw an error
-        throw new ArithmeticException("Matrix is singular and could not be inverted via jittering");
-    }
-
-    /**
-     * Jitter invert, but with a SecureRandom generator
-     *
-     * @param x a square double[][]; the matrix to be inverted
-     * @param numRetries the number of times to attempt jittering before giving up
-     * @return double[][], the inverted matrix
-     * @param zeroThreshold: the threshold to set such that x==0 if abs(x)<zeroThreshold. Use this avoid fp errors
-     *
-     */
-    public static double[][] jitterInvert(double[][] x, int numRetries, double zeroThreshold) {
-        return jitterInvert(x, numRetries, zeroThreshold, new SecureRandom());
-    }
-
-    /**
-     * Jitters the values of a matrix IN-PLACE by a random number in range (0, delta)
-     *
-     * @param x the matrix to be jittered
-     * @param delta the scale of the jittering
-     *
-     */
-    private static void jitterMatrix(double[][] x, double delta, Random random) {
-        for (int i = 0; i < x.length; i++) {
-            for (int j = 0; j < x[0].length; j++) {
-                x[i][j] += delta * random.nextDouble();
-            }
-        }
-    }
-
     // === Extensions to the Apache MatrixUtils =========================================================================
+    /**
+     * Compute the Moore-Pensor Psuedoinverse of a matrix via SVD
+     *
+     * @param a A RealMatrix to be psuedoinverted
+     * @return The psuedoinversion of a
+     *
+     */
+    public static RealMatrix getPsuedoInverse(RealMatrix a) {
+        SingularValueDecomposition svd = new SingularValueDecomposition(a);
+        RealMatrix u = svd.getU();
+        RealMatrix v = svd.getV();
+        RealMatrix sigma = svd.getS();
+
+        for (int i = 0; i < sigma.getRowDimension(); i++) {
+            double entry = sigma.getEntry(i, i);
+            if (entry > 1e-6) {
+                sigma.setEntry(i, i, 1 / entry);
+            } else {
+                sigma.setEntry(i, i, 0);
+            }
+        }
+        sigma = sigma.transpose();
+        return v.multiply((sigma.multiply(u.transpose())));
+    }
+
+    /**
+     * Attempt to invert the matrix. If it's numerically non-invertible, use Moore-Penrose Psuedoinverse via
+     * SVD instead
+     *
+     * @param a A RealMatrix to be inverted
+     * @return The inversion or psuedoinversion of a
+     *
+     */
+    public static RealMatrix safeInvert(RealMatrix a) {
+        try {
+            return MatrixUtils.inverse(a, 1e-6);
+        } catch (SingularMatrixException e) {
+            return getPsuedoInverse(a);
+        }
+    }
 
     /**
      * Sums the rows of a RealMatrix together

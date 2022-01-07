@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@
 package org.kie.kogito.explainability.utils;
 
 import java.util.Arrays;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 /**
  * Performs a weighted linear regression over the provided features, observations, and weights
@@ -39,104 +41,94 @@ public class WeightedLinearRegression {
     /**
      * Fit the WLR model to the features.
      *
-     * @param features An {@code nsamples features nfeatures} array of doubles;
+     * @param features An {@code nsamples features nfeatures} RealMatrix;
      *        each row contains one datapoint of size [nfeatures]
-     * @param observations An {@code nsamples} array, where y[n] is the observation for features point n.
-     * @param sampleWeights An {@code nsamples} array, where sampleWeights[n] is the weighting of features point n.
-     * @param random Random generator used inside jitterInvert
+     * @param observations An {@code nsamples} RealVector, where y[n] is the observation for features point n.
+     * @param sampleWeights An {@code nsamples} RealVector, where sampleWeights[n] is the weighting of features point n.
      *
-     * @return C, an {@code nfeatures} array of coefficients as computed by the regression.
+     * @return C, an {@code nfeatures} RealVector of coefficients as computed by the regression.
      *         In the case where {@code intercept} is true, the last value of {@code C} is the intercept.
      *
      */
     public static WeightedLinearRegressionResults fit(
-            double[][] features, double[] observations, double[] sampleWeights, boolean intercept, Random random)
+            RealMatrix features, RealVector observations, RealVector sampleWeights, boolean intercept)
             throws IllegalArgumentException, ArithmeticException {
         // if we want to compute an intercept, add a dummy feature at last column.
-        int nfeatures = intercept ? features[0].length + 1 : features[0].length;
-        int nsamples = observations.length;
+        int nfeatures = intercept ? features.getColumnDimension() + 1 : features.getColumnDimension();
+        int nsamples = observations.getDimension();
+        int dof = nsamples - nfeatures;
 
-        if (features.length != nsamples) {
+        if (features.getRowDimension() != nsamples) {
             throw new IllegalArgumentException(
-                    String.format("Num sample mismatch: Number of rows in the features (%d)", features.length) +
+                    String.format("Num sample mismatch: Number of rows in the features (%d)", features.getRowDimension()) +
                             String.format(" must match number of observations (%d)", nsamples));
         }
 
+        double weightSum = Arrays.stream(sampleWeights.toArray()).sum();
+        if (weightSum == 0) {
+            throw new ArithmeticException("Weights cannot sum to zero!");
+        }
+
         // add dummy intercept feature if intercept is true
-        double[][] adjustedFeatures = WeightedLinearRegression.adjustFeatureMatrix(features, intercept);
-
-        // matrices for solver
-        double[][] x = new double[nfeatures][nfeatures];
-        double[][] b = new double[nfeatures][1];
-
-        // build X and B matrices
-        for (int i = 0; i < nfeatures; i++) {
-            b[i][0] = 0;
-            for (int ii = 0; ii < nfeatures; ii++) {
-                x[i][ii] = 0;
-                for (int j = 0; j < nsamples; j++) {
-                    x[i][ii] += (sampleWeights[j] * adjustedFeatures[j][i] * adjustedFeatures[j][ii]);
-
-                    // hijack this loop to build B matrix, but we only need to loop over i and j
-                    // therefore only do anything on the first step of the ii loop
-                    if (ii == 0) {
-                        b[i][0] += (sampleWeights[j] * adjustedFeatures[j][i] * observations[j]);
-                    }
-                }
-            }
+        if (intercept) {
+            features = WeightedLinearRegression.adjustFeatureMatrix(features);
         }
 
-        //invert the coefficient matrix
-        try {
-            x = MatrixUtilsExtensions.jitterInvert(x, 10, 1e-9, random);
-        } catch (ArithmeticException e) {
-            throw new ArithmeticException(
-                    "Weighted Linear Regression: Matrix cannot be inverted! " +
-                            "This can be caused by a very under-specified model, where " +
-                            "the ratio of samples to features is roughly less than 0.10. This model has a ratio of " +
-                            (double) nsamples / nfeatures +
-                            ".");
-        }
+        RealMatrix wDiag = MatrixUtils.createRealDiagonalMatrix(sampleWeights.toArray());
+        RealMatrix xtWXInv = MatrixUtilsExtensions.safeInvert(features.transpose().multiply(wDiag).multiply(features));
+        RealVector xtWY = features.transpose().multiply(wDiag).operate(observations);
+        RealVector coefficients = xtWXInv.operate(xtWY);
 
-        // recover the coefficients by multiplying the inverse coefficient matrix by B
-        double[][] coefficients = MatrixUtilsExtensions.matrixMultiply(x, b);
-        double mse = WeightedLinearRegression
-                .getMSE(adjustedFeatures, observations, sampleWeights, coefficients);
-
-        double[] stdErrors = WeightedLinearRegression.getVarianceMatrix(adjustedFeatures,
-                observations, sampleWeights, coefficients, x);
-        double[] pvalues = WeightedLinearRegression.getPValues(nfeatures, nsamples, stdErrors, coefficients);
+        ModelSquareSums mss = WeightedLinearRegression.getRSSandTSS(features, observations,
+                sampleWeights, weightSum, coefficients, true);
+        double mse = mss.residualSquareSum / weightSum;
+        RealVector stdErrors = WeightedLinearRegression.getVarianceMatrix(dof, nfeatures, xtWXInv, mss);
+        RealVector pvalues = WeightedLinearRegression.getPValues(dof, nfeatures, stdErrors, coefficients);
 
         // mark the model as being fit and return coefficients
         return new WeightedLinearRegressionResults(coefficients, intercept, nsamples - nfeatures, mse, stdErrors, pvalues);
     }
 
     /**
-     * Add a dummy column of all 1s to the feature matrix if intercept is true
-     * This acts as a constant term, therefore the coefficient of this dummy feature is the intercept
-     * If we don't want an intercept, return the feature matrix as is
+     * From a set of coefficients that determine a linear model, given some inputs X, observations Y, and sampleWeights, find the
+     * MSE of the model's predictions
+     * 
+     * @param features An {@code nsamples features nfeatures} RealMatrix;
+     *        each row contains one datapoint of size [nfeatures]
+     * @param observations An {@code nsamples} RealVector, where y[n] is the actual observation for f(x[n]).
+     * @param sampleWeights An {@code nsamples} RealVector, where sampleWeights[n] is the weighting of the nth sample.
+     * @param coefficients: n {@code nsamples} RealVector giving the coefficients of the model.
      *
-     * @param features An {@code nsamples features nfeatures} array of doubles; each row contains one
-     *        datapoint of size [nfeatures]
-     * @param intercept A bool value, whether or not we should add the dummy intercept column
-     *
-     * @return adjustedFeatures: A nsamples x nfeatures if intercept is false or nsamples x (nfeatures+1) matrix
-     *         if intercept is true
+     * @return the mean square error of these predictions
      *
      */
-    private static double[][] adjustFeatureMatrix(double[][] features, boolean intercept) {
-        int nsamples = features.length;
-        int nfeatures = intercept ? features[0].length + 1 : features[0].length;
-        double[][] adjustedFeatures = new double[nsamples][nfeatures];
-
-        for (int i = 0; i < nsamples; i++) {
-            if (intercept) {
-                System.arraycopy(features[i], 0, adjustedFeatures[i], 0, nfeatures - 1);
-                adjustedFeatures[i][nfeatures - 1] = 1;
-            } else {
-                System.arraycopy(features[i], 0, adjustedFeatures[i], 0, nfeatures);
-            }
+    public static double getMSE(RealMatrix features, RealVector observations, RealVector sampleWeights,
+            RealVector coefficients) {
+        double weightSum = Arrays.stream(sampleWeights.toArray()).sum();
+        if (weightSum == 0) {
+            throw new ArithmeticException("Weights cannot sum to zero!");
         }
+        ModelSquareSums mss = WeightedLinearRegression.getRSSandTSS(features, observations,
+                sampleWeights, weightSum, coefficients, false);
+        return mss.residualSquareSum / weightSum;
+    }
+
+    /**
+     * Add a dummy column of all 1s to the feature matrix if intercept is true
+     * This acts as a constant term, therefore the coefficient of this dummy feature is the intercept
+     *
+     * @param features A RealMatrix of size nsamples features nfeatures} array of doubles; each row contains one
+     *        datapoint of size [nfeatures]
+     *
+     * @return adjustedFeatures: A RealMatrix of size nsamples x (nfeatures+1)
+     *
+     */
+    private static RealMatrix adjustFeatureMatrix(RealMatrix features) {
+        int nsamples = features.getRowDimension();
+        int nfeatures = features.getColumnDimension() + 1;
+        RealMatrix adjustedFeatures = MatrixUtils.createRealMatrix(nsamples, nfeatures);
+        adjustedFeatures.setSubMatrix(features.getData(), 0, 0);
+        adjustedFeatures.setColumnVector(nfeatures - 1, MatrixUtils.createRealVector(new double[nsamples]).mapAdd(1));
         return adjustedFeatures;
     }
 
@@ -151,104 +143,54 @@ public class WeightedLinearRegression {
         }
     }
 
-    private static ModelSquareSums getRSSandTSS(double[][] features,
-            double[] observations,
-            double[] sampleWeights,
-            double[][] coefficients) {
-        int nfeatures = features[0].length;
-        int nsamples = observations.length;
-        double yBar = 0;
-        double weightSum = 0;
-        for (int i = 0; i < nsamples; i++) {
-            yBar += sampleWeights[i] * observations[i];
-            weightSum += sampleWeights[i];
-        }
-        if (weightSum == 0) {
-            throw new ArithmeticException("Weights cannot sum to zero!");
-        }
-        yBar /= weightSum;
-        double totalSquareSum = 0;
-        double residualSquareSum = 0;
-        for (int i = 0; i < nsamples; i++) {
-            double fI = 0;
-            for (int j = 0; j < nfeatures; j++) {
-                fI += features[i][j] * coefficients[j][0];
-            }
-            double residual = (observations[i] - fI);
-            double variance = (observations[i] - yBar);
-            totalSquareSum += sampleWeights[i] * (variance * variance);
-            residualSquareSum += sampleWeights[i] * (residual * residual);
-        }
-        if (totalSquareSum == 0) {
+    /**
+     * Compute the residualSquareSum and totalSquareSum of the model over the input data
+     *
+     * @param features A RealMatrix of size nsamples features nfeatures} array of doubles; each row contains one
+     *        datapoint of size [nfeatures]
+     * @param observations An {@code nsamples} RealVector, where y[n] is the actual observation for f(x[n]).
+     * @param sampleWeights An {@code nsamples} RealVector, where sampleWeights[n] is the weighting of the nth sample.
+     * @param weightSum: the sum of all sample weight
+     * @param coefficients: n {@code nsamples} RealVector giving the coefficients of the model.
+     * @param needObservationVariance boolean, whether the observations need a non-zero variance. A zero variance can be
+     *        problematic in certain cases, so this flag if an error needs to be thrown in
+     *        those circumstances
+     *
+     * @return adjustedFeatures: A RealMatrix of size nsamples x (nfeatures+1)
+     *
+     */
+    private static ModelSquareSums getRSSandTSS(RealMatrix features, RealVector observations, RealVector sampleWeights,
+            double weightSum,
+            RealVector coefficients, boolean needObservationVariance) {
+
+        double yBar = sampleWeights.dotProduct(observations) / weightSum;
+        RealVector residual = observations.subtract(features.operate(coefficients));
+        RealVector variance = observations.mapSubtract(yBar);
+        double residualSquareSum = sampleWeights.dotProduct(residual.ebeMultiply(residual));
+        double totalSquareSum = sampleWeights.dotProduct(variance.ebeMultiply(variance));
+
+        if (needObservationVariance && totalSquareSum == 0) {
             throw new ArithmeticException("Total variance of observations is zero." +
                     " Use more samples to correct this error");
         }
         return new ModelSquareSums(residualSquareSum, totalSquareSum);
     }
 
-    private static double[] getVarianceMatrix(double[][] features,
-            double[] observations,
-            double[] sampleWeights,
-            double[][] coefficients,
-            double[][] invertedLSMatrix) {
-
-        int nfeatures = features[0].length;
-        int nsamples = observations.length;
-        int dof = nsamples - nfeatures;
-        ModelSquareSums mss = WeightedLinearRegression.getRSSandTSS(features, observations, sampleWeights, coefficients);
+    private static RealVector getVarianceMatrix(int dof, int nfeatures, RealMatrix invertedLSMatrix, ModelSquareSums mss) {
         double residualMeanSquare = mss.residualSquareSum / dof;
-        double[] coefficientError = new double[nfeatures];
-        for (int i = 0; i < nfeatures; i++) {
-            for (int j = 0; j < nfeatures; j++) {
-                invertedLSMatrix[i][j] *= residualMeanSquare;
-            }
-            coefficientError[i] = Math.sqrt(invertedLSMatrix[i][i]);
-        }
 
-        return coefficientError;
+        return MatrixUtils.createRealVector(
+                IntStream.range(0, nfeatures)
+                        .mapToDouble(i -> Math.sqrt(invertedLSMatrix.getEntry(i, i) * residualMeanSquare))
+                        .toArray());
     }
 
-    private static double[] getPValues(int nfeatures, int nsamples, double[] coefficientError,
-            double[][] coefficients) {
-
-        int dof = nsamples - nfeatures;
+    private static RealVector getPValues(int dof, int nfeatures, RealVector coefficientError, RealVector coefficients) {
         if (dof <= 0) {
-            return IntStream.range(0, nfeatures).mapToDouble(x -> Double.POSITIVE_INFINITY).toArray();
+            return MatrixUtils.createRealVector(new double[nfeatures]).mapAdd(Double.POSITIVE_INFINITY);
         }
-        double[] coefs = MatrixUtilsExtensions.getCol(coefficients, 0);
-        double[] tvalues = IntStream.range(0, coefficientError.length)
-                .mapToDouble(i -> coefs[i] / coefficientError[i]).toArray();
+        RealVector tvalues = coefficients.ebeDivide(coefficientError);
         TDistribution tdist = new TDistribution(dof);
-        return Arrays.stream(tvalues).map(x -> 2 * (1 - tdist.cumulativeProbability(x))).toArray();
-    }
-
-    /**
-     * Recover the mean square error of the WLR model.
-     * 
-     * @return the mean squared error of the model
-     */
-    public static double getMSE(double[][] features,
-            double[] observations,
-            double[] sampleWeights,
-            double[][] coefficients) {
-
-        int nfeatures = features[0].length;
-        int nsamples = observations.length;
-
-        double totalResidual = 0;
-        double weightSum = 0;
-        for (int i = 0; i < nsamples; i++) {
-            double fI = 0;
-            for (int j = 0; j < nfeatures; j++) {
-                fI += features[i][j] * coefficients[j][0];
-            }
-            double residual = (observations[i] - fI);
-            totalResidual += sampleWeights[i] * (residual * residual);
-            weightSum += sampleWeights[i];
-        }
-        if (weightSum == 0) {
-            throw new ArithmeticException("Weights cannot sum to zero!");
-        }
-        return totalResidual / weightSum;
+        return tvalues.map(x -> 2 * (1 - tdist.cumulativeProbability(x)));
     }
 }

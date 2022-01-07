@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.explainability.utils;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -126,14 +125,17 @@ class LarsPathTest {
             { 45., 46., 47., 48., 49. },
     });
     RealVector yDGR = MatrixUtils.createRealVector(new double[] { 0., 50., 100., 150., 200., 250., 300., 350., 400., 450. });
-    double[] dummyWeights = Arrays.stream(yDGR.toArray()).map(x -> 1.).toArray();
+    RealVector dummyWeights = yDGR.map(x -> 1.);
 
     @Test
     void testLarsDGR() {
         LarsPathResults lpr = LarsPath.fit(XDGR, yDGR, 500, false);
-        RealMatrix coefRowVect = MatrixUtils.createRealMatrix(lpr.getCoefs().getRowDimension(), 1);
-        coefRowVect.setColumnVector(0, lpr.getCoefs().getColumnVector(lpr.getCoefs().getColumnDimension() - 1));
-        double mse = WeightedLinearRegression.getMSE(XDGR.getData(), yDGR.toArray(), dummyWeights, coefRowVect.getData());
+        RealMatrix coefs = lpr.getCoefs();
+        double mse = WeightedLinearRegression.getMSE(
+                XDGR,
+                yDGR,
+                dummyWeights,
+                coefs.getColumnVector(coefs.getColumnDimension() - 1));
         assertTrue(mse < 1e-16);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,13 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.model.*;
+import org.kie.kogito.explainability.model.Feature;
+import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.Output;
+import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionOutput;
+import org.kie.kogito.explainability.model.Type;
+import org.kie.kogito.explainability.model.Value;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -431,46 +437,21 @@ class MatrixUtilsExtensionsTest {
     // test inverting a non singular square matrix
     @Test
     void testInvertNormal() {
-        double[][] inv = MatrixUtilsExtensions.jitterInvert(matSquareNonSingular, 1, 1e-9, rn);
-        for (int i = 0; i < inv.length; i++) {
-            assertArrayEquals(matSNSInv[i], inv[i], 1e-4);
+        RealMatrix inv = MatrixUtilsExtensions.safeInvert(MatrixUtils.createRealMatrix(matSquareNonSingular));
+        for (int i = 0; i < inv.getRowDimension(); i++) {
+            assertArrayEquals(matSNSInv[i], inv.getRow(i), 1e-4);
         }
     }
 
     @Test
     // test inverting a singular square matrix
+    // this should return a psuedoinverse, which should have the property A = A(A+)A
     void testInvertSingular() {
-        assertThrows(ArithmeticException.class, () -> MatrixUtilsExtensions.jitterInvert(matSquareSingular, 1, 1e-9, rn));
-    }
-
-    // === Jitter Invert Tests ===
-    @Test
-    void testJitterInvert() {
-        // since there's some randomness in jitter invert, let's make sure it's stable
-        for (int run = 0; run < 100; run++) {
-            double[][] inv = MatrixUtilsExtensions.jitterInvert(matSquareSingular, 10, 1e-9, rn);
-
-            // since the output of jitterInvert is non-deterministic for singular matrices, check to make sure
-            // key properties of the inverse matrix hold true; namely M*M_inv = Identity
-            double[][] prod = MatrixUtilsExtensions.matrixMultiply(matSquareSingular, inv);
-            for (int i = 0; i < prod.length; i++) {
-                assertArrayEquals(prod[i], identity[i], 1e-4);
-            }
-        }
-    }
-
-    @Test
-    void testSecureJitterInvert() {
-        // since there's some randomness in jitter invert, let's make sure it's stable
-        for (int run = 0; run < 100; run++) {
-            double[][] inv = MatrixUtilsExtensions.jitterInvert(matSquareSingular, 10, 1e-9);
-
-            // since the output of jitterInvert is non-deterministic for singular matrices, check to make sure
-            // key properties of the inverse matrix hold true; namely M*M_inv = Identity
-            double[][] prod = MatrixUtilsExtensions.matrixMultiply(matSquareSingular, inv);
-            for (int i = 0; i < prod.length; i++) {
-                assertArrayEquals(prod[i], identity[i], 1e-4);
-            }
+        RealMatrix orig = MatrixUtils.createRealMatrix(matSquareSingular);
+        RealMatrix inv = MatrixUtilsExtensions.safeInvert(orig);
+        RealMatrix invProperty = orig.multiply(inv).multiply(orig);
+        for (int i = 0; i < inv.getRowDimension(); i++) {
+            assertArrayEquals(orig.getRow(i), invProperty.getRow(i), 1e-4);
         }
     }
 

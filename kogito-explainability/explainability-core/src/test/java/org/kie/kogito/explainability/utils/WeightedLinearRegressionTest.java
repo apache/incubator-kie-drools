@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
 package org.kie.kogito.explainability.utils;
 
 import java.util.Random;
-import java.util.stream.IntStream;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -51,8 +53,12 @@ class WeightedLinearRegressionTest {
         double[] actualCoefs = { 4., 10., 8., 6. };
 
         WeightedLinearRegressionResults wlrr =
-                WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
-        assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
+                WeightedLinearRegression.fit(
+                        MatrixUtils.createRealMatrix(x),
+                        MatrixUtils.createRealVector(y),
+                        MatrixUtils.createRealVector(sampleWeights),
+                        false);
+        assertArrayEquals(actualCoefs, wlrr.getCoefficients().toArray(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
 
     }
@@ -73,8 +79,11 @@ class WeightedLinearRegressionTest {
         double[] actualCoefs = { 4., 10., 8., 6. };
 
         WeightedLinearRegressionResults wlrr =
-                WeightedLinearRegression.fit(x, y, sampleWeights, true, random);
-        assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
+                WeightedLinearRegression.fit(
+                        MatrixUtils.createRealMatrix(x),
+                        MatrixUtils.createRealVector(y),
+                        MatrixUtils.createRealVector(sampleWeights), true);
+        assertArrayEquals(actualCoefs, wlrr.getCoefficients().toArray(), 1e-6);
         assertEquals(5., wlrr.getIntercept(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
     }
@@ -95,10 +104,13 @@ class WeightedLinearRegressionTest {
         double[] actualCoefs = { 4., 10., 8. };
 
         WeightedLinearRegressionResults wlrr =
-                WeightedLinearRegression.fit(x, y, sampleWeights, true, random);
+                WeightedLinearRegression.fit(
+                        MatrixUtils.createRealMatrix(x),
+                        MatrixUtils.createRealVector(y),
+                        MatrixUtils.createRealVector(sampleWeights), true);
 
         // there is a random error in the given observations, so make sure we get close to the actual coefficients
-        assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1.0);
+        assertArrayEquals(actualCoefs, wlrr.getCoefficients().toArray(), 1.0);
 
         // the random error in the observations is between 0 and 10, so the MSE should be less than or equal to 10.
         assertTrue(wlrr.getMSE() <= 10.);
@@ -120,7 +132,10 @@ class WeightedLinearRegressionTest {
         // since there's some randomness in the jitter invert, let's make sure it's stable
         for (int run = 0; run < 100; run++) {
             WeightedLinearRegressionResults wlrr =
-                    WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
+                    WeightedLinearRegression.fit(
+                            MatrixUtils.createRealMatrix(x),
+                            MatrixUtils.createRealVector(y),
+                            MatrixUtils.createRealVector(sampleWeights), false);
             assertEquals(0.0, wlrr.getMSE(), 1e-6);
         }
     }
@@ -140,7 +155,10 @@ class WeightedLinearRegressionTest {
         // since there's some randomness in the jitter invert, let's make sure it's stable
         for (int run = 0; run < 100; run++) {
             WeightedLinearRegressionResults wlrr =
-                    WeightedLinearRegression.fit(x, y, sampleWeights, true, random);
+                    WeightedLinearRegression.fit(
+                            MatrixUtils.createRealMatrix(x),
+                            MatrixUtils.createRealVector(y),
+                            MatrixUtils.createRealVector(sampleWeights), true);
             assertEquals(0.0, wlrr.getMSE(), 1e-6);
         }
     }
@@ -164,16 +182,20 @@ class WeightedLinearRegressionTest {
                     { 2.42, 8.5, 9.33, 3.96, 9.9 },
                     { 5.1, 9.88, 8.6, 7.58, 3.0 },
             };
-            double[] y = { 33.26402211568451, 107.47389791796185, 72.15586479806592, 96.52857945629758, 29.289064802655997, 78.73842411657569, 68.1835699678292, 122.79428874425378, 119.66821422153396,
+            double[] y = { 33.26402211568451, 107.47389791796185, 72.15586479806592, 96.52857945629758,
+                    29.289064802655997, 78.73842411657569, 68.1835699678292, 122.79428874425378, 119.66821422153396,
                     96.08485899842191 };
             double[] sampleWeights = { .1, .1, .1, .1, .1, .1, .1, .1, .1, .1 };
-            WeightedLinearRegressionResults wlrr = WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
-            double[] coefs = wlrr.getCoefficients();
-            double[] conf = wlrr.getConf(.01);
-            double[] ub = IntStream.range(0, coefs.length).mapToDouble(i -> coefs[i] + conf[i]).toArray();
-            double[] lb = IntStream.range(0, coefs.length).mapToDouble(i -> coefs[i] - conf[i]).toArray();
-            assertArrayEquals(expectedErr, wlrr.getStdErrors(), .01);
-            assertArrayEquals(expectedP, wlrr.getPValues(), .01);
+            WeightedLinearRegressionResults wlrr = WeightedLinearRegression.fit(
+                    MatrixUtils.createRealMatrix(x),
+                    MatrixUtils.createRealVector(y),
+                    MatrixUtils.createRealVector(sampleWeights), false);
+            RealVector coefs = wlrr.getCoefficients();
+            RealVector conf = wlrr.getConf(.01);
+            RealVector ub = coefs.add(conf);
+            RealVector lb = coefs.subtract(conf);
+            assertArrayEquals(expectedErr, wlrr.getStdErrors().toArray(), .01);
+            assertArrayEquals(expectedP, wlrr.getPValues().toArray(), .01);
 
         }
     }
@@ -189,7 +211,10 @@ class WeightedLinearRegressionTest {
         double[] sampleWeights = { 1. };
 
         assertThrows(ArithmeticException.class,
-                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true, random));
+                () -> WeightedLinearRegression.fit(
+                        MatrixUtils.createRealMatrix(x),
+                        MatrixUtils.createRealVector(y),
+                        MatrixUtils.createRealVector(sampleWeights), true));
     }
 
     // if we have only one feature, should be an easy calculation
@@ -206,8 +231,12 @@ class WeightedLinearRegressionTest {
         double[] actualCoefs = { 5. };
 
         WeightedLinearRegressionResults wlrr =
-                WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
-        assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
+                WeightedLinearRegression.fit(
+                        MatrixUtils.createRealMatrix(x),
+                        MatrixUtils.createRealVector(y),
+                        MatrixUtils.createRealVector(sampleWeights),
+                        false);
+        assertArrayEquals(actualCoefs, wlrr.getCoefficients().toArray(), 1e-6);
         assertEquals(0.0, wlrr.getIntercept(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
     }
@@ -224,9 +253,11 @@ class WeightedLinearRegressionTest {
         double[] sampleWeights = { .8, .1, .1 };
 
         // since there's some randomness in the jitter invert, let's make sure it's stable
-
         assertThrows(IllegalArgumentException.class,
-                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true, random));
+                () -> WeightedLinearRegression.fit(
+                        MatrixUtils.createRealMatrix(x),
+                        MatrixUtils.createRealVector(y),
+                        MatrixUtils.createRealVector(sampleWeights), true));
     }
 
     @Test
@@ -240,8 +271,21 @@ class WeightedLinearRegressionTest {
         double[] sampleWeights = { 0., 0., 0. };
 
         // since there's some randomness in the jitter invert, let's make sure it's stable
-
         assertThrows(IllegalArgumentException.class,
-                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true, random));
+                () -> WeightedLinearRegression.fit(
+                        MatrixUtils.createRealMatrix(x),
+                        MatrixUtils.createRealVector(y),
+                        MatrixUtils.createRealVector(sampleWeights), true));
+    }
+
+    // Test mse calculation
+    @Test
+    void testMSE() {
+        RealMatrix X = MatrixUtils.createRealMatrix(5, 5).scalarAdd(1);
+        RealVector coefs = MatrixUtils.createRealVector(new double[5]).mapAddToSelf(1.);
+        RealVector weights = MatrixUtils.createRealVector(new double[5]).mapAddToSelf(1.);
+        RealVector y = MatrixUtils.createRealVector(new double[5]).mapAddToSelf(6);
+        double mse = WeightedLinearRegression.getMSE(X, y, weights, coefs);
+        assertEquals(1.0, mse);
     }
 }
