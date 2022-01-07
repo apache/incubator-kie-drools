@@ -38,7 +38,6 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.ReadAccessor;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 
@@ -993,7 +992,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     public static class FieldIndex implements Externalizable {
         private static final long    serialVersionUID = 510l;
         private int                  index;
-        private InternalReadAccessor fieldExtactor;
+        private InternalReadAccessor fieldExtractor;
 
         private int                  count;
 
@@ -1006,13 +1005,13 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         public FieldIndex(final int index,
                           final InternalReadAccessor fieldExtractor) {
             this.index = index;
-            this.fieldExtactor = fieldExtractor;
+            this.fieldExtractor = fieldExtractor;
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             index = in.readInt();
-            fieldExtactor = (InternalReadAccessor) in.readObject();
+            fieldExtractor = (InternalReadAccessor) in.readObject();
             count = in.readInt();
             hashed = in.readBoolean();
             rangeIndexed = in.readBoolean();
@@ -1020,14 +1019,10 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeInt( index );
-            out.writeObject( fieldExtactor );
+            out.writeObject(fieldExtractor);
             out.writeInt( count );
             out.writeBoolean( hashed );
             out.writeBoolean( rangeIndexed );
-        }
-
-        public InternalReadAccessor getFieldExtractor() {
-            return this.fieldExtactor;
         }
 
         public int getIndex() {
@@ -1038,8 +1033,8 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             return this.count;
         }
 
-        public ReadAccessor getFieldExtactor() {
-            return this.fieldExtactor;
+        public InternalReadAccessor getFieldExtractor() {
+            return this.fieldExtractor;
         }
 
         public boolean isHashed() {

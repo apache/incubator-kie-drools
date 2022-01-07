@@ -101,13 +101,13 @@ public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
             Object value = accessor.invoke(fact);
             Object declObj = tuple.getObject(declaration);
             Object declValue = declaration.getValue(((FakeContextEntry) context).getReteEvaluator(), declObj);
-            if (operator == Operator.EQUAL) {
+            if (operator == Operator.BuiltInOperator.EQUAL.getOperator()) {
                 return value.equals(declValue);
-            } else if (operator == Operator.NOT_EQUAL) {
+            } else if (operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()) {
                 return !value.equals(declValue);
-            } else if (operator == Operator.LESS) {
+            } else if (operator == Operator.BuiltInOperator.LESS.getOperator()) {
                 return ((Comparable)value).compareTo((Comparable)declValue) < 0;
-            } else if (operator == Operator.GREATER) {
+            } else if (operator == Operator.BuiltInOperator.GREATER.getOperator()) {
                 return ((Comparable)value).compareTo((Comparable)declValue) > 0;
             } else {
                 throw new UnsupportedOperationException("This operator " + evaluatorString + " is not supported. Feel free to enhance this method");

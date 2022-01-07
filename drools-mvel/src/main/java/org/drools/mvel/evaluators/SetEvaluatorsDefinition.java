@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,12 +23,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorCache;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.ObjectVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -39,42 +41,22 @@ import org.drools.core.spi.InternalReadAccessor;
  */
 public class SetEvaluatorsDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    protected static final String   containsOp = "contains";
-    protected static final String   excludesOp = "excludes";
-    protected static final String   memberOfOp = "memberOf";
+    protected static final String containsOp = Operator.BuiltInOperator.CONTAINS.getSymbol();
+    protected static final String excludesOp = Operator.BuiltInOperator.EXCLUDES.getSymbol();
+    protected static final String memberOfOp = Operator.BuiltInOperator.MEMBEROF.getSymbol();
 
-    public static Operator          CONTAINS;
-    public static Operator          NOT_CONTAINS;
-    public static Operator          EXCLUDES;
-    public static Operator          NOT_EXCLUDES;
-    public static Operator          MEMBEROF;
-    public static Operator          NOT_MEMBEROF;
+    public static final Operator CONTAINS = Operator.determineOperator( containsOp, false );
+    public static final Operator NOT_CONTAINS = Operator.determineOperator( containsOp, true );
+    public static final Operator EXCLUDES = Operator.determineOperator( excludesOp, false );
+    public static final Operator NOT_EXCLUDES = Operator.determineOperator( excludesOp, true );
+    public static final Operator MEMBEROF = Operator.determineOperator( memberOfOp, false );
+    public static final Operator NOT_MEMBEROF = Operator.determineOperator( memberOfOp, true );
 
-    private static String[]         SUPPORTED_IDS;
+    private static String[] SUPPORTED_IDS = new String[] { memberOfOp, containsOp, excludesOp };
 
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( containsOp, false ) == null ) {
-            CONTAINS = Operator.addOperatorToRegistry( containsOp, false );
-            NOT_CONTAINS = Operator.addOperatorToRegistry( containsOp, true );
-        }
-        if ( Operator.determineOperator( excludesOp, false ) == null ) {
-            EXCLUDES = Operator.addOperatorToRegistry( excludesOp, false );
-            NOT_EXCLUDES = Operator.addOperatorToRegistry( excludesOp, true );
-        }
-        if ( Operator.determineOperator( memberOfOp, false ) == null ) {
-            MEMBEROF = Operator.addOperatorToRegistry( memberOfOp, false );
-            NOT_MEMBEROF = Operator.addOperatorToRegistry( memberOfOp, true );
-        }
-        if ( SUPPORTED_IDS == null ) {
-            SUPPORTED_IDS = new String[] { memberOfOp, containsOp, excludesOp };
-        }
-    }
-
-    private EvaluatorCache        evaluators    = new EvaluatorCache() {
+    private EvaluatorCache evaluators    = new EvaluatorCache() {
                                                     private static final long serialVersionUID = 510l;
                                                     {
                                                         addEvaluator( ValueType.ARRAY_TYPE,
@@ -340,10 +322,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ArrayContainsEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public ArrayContainsEvaluator() {
             super( ValueType.ARRAY_TYPE,
                    CONTAINS );
@@ -414,10 +392,6 @@ public class SetEvaluatorsDefinition
     public static class ArrayExcludesEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ArrayExcludesEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public ArrayExcludesEvaluator() {
             super( ValueType.ARRAY_TYPE,
@@ -723,10 +697,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigDecimalMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public BigDecimalMemberOfEvaluator() {
             super( ValueType.BIG_DECIMAL_TYPE,
                    MEMBEROF );
@@ -741,10 +711,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigDecimalNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public BigDecimalNotMemberOfEvaluator() {
             super( ValueType.BIG_DECIMAL_TYPE,
@@ -761,10 +727,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigIntegerMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public BigIntegerMemberOfEvaluator() {
             super( ValueType.BIG_INTEGER_TYPE,
                    MEMBEROF );
@@ -778,10 +740,6 @@ public class SetEvaluatorsDefinition
     public static class BigIntegerNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigIntegerNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public BigIntegerNotMemberOfEvaluator() {
             super( ValueType.BIG_INTEGER_TYPE,
@@ -798,10 +756,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BooleanMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public BooleanMemberOfEvaluator() {
             super( ValueType.PBOOLEAN_TYPE,
                    MEMBEROF );
@@ -816,10 +770,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BooleanNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public BooleanNotMemberOfEvaluator() {
             super( ValueType.PBOOLEAN_TYPE,
@@ -836,10 +786,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ByteMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public ByteMemberOfEvaluator() {
             super( ValueType.PBYTE_TYPE,
                    MEMBEROF );
@@ -854,10 +800,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ByteNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public ByteNotMemberOfEvaluator() {
             super( ValueType.PBYTE_TYPE,
@@ -874,10 +816,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new CharacterMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public CharacterMemberOfEvaluator() {
             super( ValueType.PCHAR_TYPE,
                    MEMBEROF );
@@ -892,10 +830,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new CharacterNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public CharacterNotMemberOfEvaluator() {
             super( ValueType.PCHAR_TYPE,
@@ -912,10 +846,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new DateMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public DateMemberOfEvaluator() {
             super( ValueType.DATE_TYPE,
                    MEMBEROF );
@@ -930,10 +860,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new DateNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public DateNotMemberOfEvaluator() {
             super( ValueType.DATE_TYPE,
@@ -950,10 +876,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new DoubleMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public DoubleMemberOfEvaluator() {
             super( ValueType.PDOUBLE_TYPE,
                    MEMBEROF );
@@ -968,10 +890,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new DoubleNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public DoubleNotMemberOfEvaluator() {
             super( ValueType.PDOUBLE_TYPE,
@@ -988,10 +906,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new FloatMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public FloatMemberOfEvaluator() {
             super( ValueType.PFLOAT_TYPE,
                    MEMBEROF );
@@ -1006,10 +920,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new FloatNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public FloatNotMemberOfEvaluator() {
             super( ValueType.PFLOAT_TYPE,
@@ -1026,10 +936,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new IntegerMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public IntegerMemberOfEvaluator() {
             super( ValueType.PINTEGER_TYPE,
                    MEMBEROF );
@@ -1044,10 +950,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new IntegerNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public IntegerNotMemberOfEvaluator() {
             super( ValueType.PINTEGER_TYPE,
@@ -1064,10 +966,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new LongMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public LongMemberOfEvaluator() {
             super( ValueType.PLONG_TYPE,
                    MEMBEROF );
@@ -1083,10 +981,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new LongNotMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public LongNotMemberOfEvaluator() {
             super( ValueType.PLONG_TYPE,
                    NOT_MEMBEROF );
@@ -1100,10 +994,6 @@ public class SetEvaluatorsDefinition
     public static class ObjectContainsEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectContainsEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public ObjectContainsEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -1158,10 +1048,6 @@ public class SetEvaluatorsDefinition
     public static class ObjectExcludesEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectExcludesEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public ObjectExcludesEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -1218,10 +1104,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public ObjectMemberOfEvaluator() {
             super( ValueType.OBJECT_TYPE,
                    MEMBEROF );
@@ -1236,10 +1118,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public ObjectNotMemberOfEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -1256,10 +1134,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ShortMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public ShortMemberOfEvaluator() {
             super( ValueType.PSHORT_TYPE,
                    MEMBEROF );
@@ -1274,10 +1148,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ShortNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public ShortNotMemberOfEvaluator() {
             super( ValueType.PSHORT_TYPE,
@@ -1294,10 +1164,6 @@ public class SetEvaluatorsDefinition
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringMemberOfEvaluator();
 
-        {
-            SetEvaluatorsDefinition.init();
-        }
-
         public StringMemberOfEvaluator() {
             super( ValueType.STRING_TYPE,
                    MEMBEROF );
@@ -1312,10 +1178,6 @@ public class SetEvaluatorsDefinition
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringNotMemberOfEvaluator();
-
-        {
-            SetEvaluatorsDefinition.init();
-        }
 
         public StringNotMemberOfEvaluator() {
             super( ValueType.STRING_TYPE,

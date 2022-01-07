@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.spi.Evaluator;
@@ -59,7 +60,7 @@ public class EvaluatorRegistry
      *                    that loaded this class.
      */
     public EvaluatorRegistry(ClassLoader classloader) {
-        this.evaluators = new HashMap<String, EvaluatorDefinition>();
+        this.evaluators = new HashMap<>();
         if ( classloader != null ) {
             this.classloader = classloader;
         } else {
@@ -67,7 +68,7 @@ public class EvaluatorRegistry
         }
 
         // loading default built in evaluators
-        for (EvaluatorDefinition evaluatorDefinition : BuiltInEvaluatorDefinitions.getEvaluatorDefinitions()) {
+        for (EvaluatorDefinition evaluatorDefinition : CoreComponentsBuilder.loadEvaluatorDefinitions()) {
             this.addEvaluatorDefinition( evaluatorDefinition );
         }
     }
@@ -80,7 +81,6 @@ public class EvaluatorRegistry
         return evaluators.keySet();
     }
 
-    @SuppressWarnings("unchecked")
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
         evaluators = (Map<String, EvaluatorDefinition>) in.readObject();
@@ -109,11 +109,7 @@ public class EvaluatorRegistry
      *
      * @param className the name of the class for the implementation definition.
      *                  The class must implement the EvaluatorDefinition interface.
-     *
-     * @return true if the new class implementation is replacing an old
-     *         implementation for the same evaluator ID. False otherwise.
      */
-    @SuppressWarnings("unchecked")
     public void addEvaluatorDefinition( String className ) {
         try {
             Class<EvaluatorDefinition> defClass = (Class<EvaluatorDefinition>) this.classloader.loadClass( className );
@@ -140,8 +136,7 @@ public class EvaluatorRegistry
      */
     public void addEvaluatorDefinition( EvaluatorDefinition def ) {
         for ( String id : def.getEvaluatorIds() ) {
-            this.evaluators.put( id,
-                                 def );
+            this.evaluators.put( id, def );
         }
     }
 

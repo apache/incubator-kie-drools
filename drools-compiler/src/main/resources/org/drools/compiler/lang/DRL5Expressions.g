@@ -377,7 +377,7 @@ scope { BaseDescr lsd; }
               $result = $left.result;
           }
           $relationalExpression::lsd = $result;
-      } 
+      }
     }
   ( ( operator | LEFT_PAREN )=> right=orRestriction
          { if( buildDescr  ) {

@@ -13,18 +13,19 @@
  * limitations under the License.
 */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.ObjectVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -42,22 +43,12 @@ import org.drools.core.spi.InternalReadAccessor;
  */
 public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
-    protected static final String   strOp = "str";
+    protected static final String strOp = Operator.BuiltInOperator.STR.getSymbol();
 
-    public static Operator          STR_COMPARE;
-    public static Operator          NOT_STR_COMPARE;
+    public static final Operator STR_COMPARE = Operator.determineOperator( strOp, false );
+    public static final Operator NOT_STR_COMPARE = Operator.determineOperator( strOp, true );
 
-    private static String[]         SUPPORTED_IDS;
-
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( strOp, false ) == null ) {
-            STR_COMPARE = Operator.addOperatorToRegistry( strOp, false );
-            NOT_STR_COMPARE = Operator.addOperatorToRegistry( strOp, true );
-            SUPPORTED_IDS = new String[] { strOp };
-        }
-    }
+    private static final String[] SUPPORTED_IDS = new String[] { strOp };
 
     public enum Operations {
         startsWith, endsWith, length;
@@ -147,10 +138,6 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
     public static class StrEvaluator extends BaseEvaluator {
         private Operations parameter;
-
-        {
-            StrEvaluatorDefinition.init();
-        }
 
         public void setParameterText(String parameterText) {
             this.parameter = Operations.valueOf(parameterText);

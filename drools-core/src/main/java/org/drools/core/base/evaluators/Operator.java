@@ -21,58 +21,72 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class Operator
-    implements
-    Externalizable, org.kie.api.runtime.rule.Operator {
-
-    private static final long                  serialVersionUID = 510l;
+public class Operator implements Externalizable, org.kie.api.runtime.rule.Operator {
 
     // a static private cache so that pluggable operator can register their implementations
     // it is automatically initialized with common operator implementations
-    private static final Map<String, Operator> CACHE            = Collections.synchronizedMap( new HashMap<String, Operator>() );
+    private static final Map<String, Operator> CACHE = new ConcurrentHashMap<>();
 
-    // these static operator constants are kept here just to make it easier for the engine
-    // to reference common used operators. The addition of new constants here is not
-    // advisable though.
-    public static final Operator               EQUAL            = addOperatorToRegistry( "==",
-                                                                                         false );
-    public static final Operator               NOT_EQUAL        = addOperatorToRegistry( "!=",
-                                                                                         false );
-    public static final Operator               LESS             = addOperatorToRegistry( "<",
-                                                                                         false );
-    public static final Operator               LESS_OR_EQUAL    = addOperatorToRegistry( "<=",
-                                                                                         false );
-    public static final Operator               GREATER          = addOperatorToRegistry( ">",
-                                                                                         false );
-    public static final Operator               GREATER_OR_EQUAL = addOperatorToRegistry( ">=",
-                                                                                         false );
+    static {
+        // forces the initialization of the enum and then the registration of all operators
+        BuiltInOperator builtInOperator = BuiltInOperator.EQUAL;
+    }
 
-    // Some operators are supported by the runtime and no longer require Drools specific implementations,
-    // so we are adding them directly to the cache:
-    public static final Operator  CONTAINS      = Operator.addOperatorToRegistry( "contains",
-                                                                                  false );
-    public static final Operator  NOT_CONTAINS  = Operator.addOperatorToRegistry( "contains",
-                                                                                  true );
-    public static final Operator  EXCLUDES      = Operator.addOperatorToRegistry( "excludes",
-                                                                                  false );
-    public static final Operator  NOT_EXCLUDES  = Operator.addOperatorToRegistry( "excludes",
-                                                                                  true );
-    public static final Operator  MEMBEROF      = Operator.addOperatorToRegistry( "memberOf",
-                                                                                  false );
-    public static final Operator  NOT_MEMBEROF  = Operator.addOperatorToRegistry( "memberOf",
-                                                                                  true );
-    public static final Operator  MATCHES       = Operator.addOperatorToRegistry( "matches",
-                                                                                  false );
-    public static final Operator  NOT_MATCHES   = Operator.addOperatorToRegistry( "matches",
-                                                                                  true );
-    public static final Operator  SOUNDSLIKE       = Operator.addOperatorToRegistry( "soundslike",
-                                                                                     false );
-    public static final Operator  NOT_SOUNDSLIKE   = Operator.addOperatorToRegistry( "soundslike",
-                                                                                     true );
+    public enum BuiltInOperator {
+        EQUAL("==", false),
+        NOT_EQUAL("!=", false),
+        LESS("<", false),
+        LESS_OR_EQUAL("<=", false),
+        GREATER(">", false),
+        GREATER_OR_EQUAL(">=", false),
+        CONTAINS("contains"),
+        EXCLUDES("excludes"),
+        MATCHES("matches"),
+        MEMBEROF("memberOf"),
+        SOUNDSLIKE("soundslike"),
+        AFTER("after"),
+        BEFORE("before"),
+        COINCIDES("coincides"),
+        DURING("during"),
+        FINISHED_BY("finishedby"),
+        FINISHES("finishes"),
+        INCLUDES("includes"),
+        MEETS("meets"),
+        MET_BY("metby"),
+        OVERLAPPED_BY("overlappedby"),
+        OVERLAPS("overlaps"),
+        STARTED_BY("startedby"),
+        STARTS("starts"),
+        STR("str");
+
+        private final String symbol;
+        private final Operator operator;
+
+        BuiltInOperator(String symbol) {
+            this(symbol, true);
+        }
+
+        BuiltInOperator(String symbol, boolean supportNegation) {
+            this.symbol = symbol;
+            this.operator = Operator.addOperatorToRegistry(symbol, false);
+            if (supportNegation) {
+                Operator.addOperatorToRegistry(symbol, true);
+            }
+        }
+
+        public String getSymbol() {
+            return symbol;
+        }
+
+        public Operator getOperator() {
+            return operator;
+        }
+    }
+
+    private static final long                  serialVersionUID = 510l;
 
     /**
      * Creates a new Operator instance for the given parameters,
@@ -83,13 +97,9 @@ public class Operator
      *
      * @return the newly created operator
      */
-    public static Operator addOperatorToRegistry(final String operatorId,
-                                                 final boolean isNegated) {
-        Operator op = new Operator( operatorId,
-                                    isNegated );
-        CACHE.put( getKey( operatorId,
-                           isNegated ),
-                   op );
+    public static Operator addOperatorToRegistry(final String operatorId, final boolean isNegated) {
+        Operator op = new Operator( operatorId, isNegated );
+        CACHE.put( getKey( operatorId, isNegated ), op );
         return op;
     }
 
@@ -105,15 +115,11 @@ public class Operator
      *
      * @return the operator in case it exists
      */
-    public static Operator determineOperator(final String operatorId,
-                                             final boolean isNegated) {
-        Operator op = CACHE.get( getKey( operatorId,
-                                         isNegated ) );
-        return op;
+    public static Operator determineOperator(final String operatorId, final boolean isNegated) {
+        return CACHE.get( getKey( operatorId, isNegated ) );
     }
 
-    private static String getKey(final String string,
-                                 final boolean isNegated) {
+    private static String getKey(final String string, final boolean isNegated) {
         return isNegated + ":" + string;
     }
 
@@ -132,18 +138,16 @@ public class Operator
     }
 
     public Operator() {
-        
+
     }
 
-    private Operator(final String operator,
-                     final boolean isNegated) {
+    private Operator(final String operator, final boolean isNegated) {
         this.operator = operator;
         this.isNegated = isNegated;
     }
 
     private Object readResolve() throws java.io.ObjectStreamException {
-        Operator op = determineOperator( this.operator,
-                                         this.isNegated );
+        Operator op = determineOperator( this.operator, this.isNegated );
         return op != null ? op : this;
     }
 
@@ -183,8 +187,8 @@ public class Operator
         if ( isNegated != other.isNegated ) return false;
         if ( operator == null ) {
             if ( other.operator != null ) return false;
-        } else if ( !operator.equals( other.operator ) ) return false;
-        return true;
+        }
+        return operator.equals(other.operator);
     }
 
 }

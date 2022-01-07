@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorCache;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.ObjectVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -35,22 +37,12 @@ import org.drools.core.spi.InternalReadAccessor;
  */
 public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
-    protected static final String   matchesOp = "matches";
+    protected static final String matchesOp = Operator.BuiltInOperator.MATCHES.getSymbol();
 
-    public static Operator          MATCHES;
-    public static Operator          NOT_MATCHES;
+    public static final Operator MATCHES = Operator.determineOperator( matchesOp, false );
+    public static final Operator NOT_MATCHES = Operator.determineOperator( matchesOp, true );
 
-    private static String[]         SUPPORTED_IDS;
-
-    { init(); }
-
-    static void init() {
-        if ( SUPPORTED_IDS == null ) {
-            MATCHES = Operator.addOperatorToRegistry( matchesOp, false );
-            NOT_MATCHES = Operator.addOperatorToRegistry( matchesOp, true );
-            SUPPORTED_IDS = new String[] { matchesOp };
-        }
-    }
+    private static final String[] SUPPORTED_IDS = new String[] { matchesOp };
 
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 510l;
@@ -139,10 +131,6 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
 
-        {
-            MatchesEvaluatorsDefinition.init();
-        }
-
         public StringMatchesEvaluator() {
             super( ValueType.STRING_TYPE,
                    MATCHES );
@@ -197,10 +185,6 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
     public static class StringNotMatchesEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotMatchesEvaluator();
-
-        {
-            MatchesEvaluatorsDefinition.init();
-        }
 
         public StringNotMatchesEvaluator() {
             super( ValueType.STRING_TYPE,

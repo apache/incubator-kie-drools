@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,101 +23,69 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.LeftStartRightEndContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
 /**
- * <p>The implementation of the <code>during</code> evaluator definition.</p>
+ * <p>The implementation of the <code>meets</code> evaluator definition.</p>
  * 
- * <p>The <b><code>during</code></b> evaluator correlates two events and matches when the current event 
- * happens during the occurrence of the event being correlated.</p> 
+ * <p>The <b><code>meets</code></b> evaluator correlates two events and matches when the current event's 
+ * end timestamp happens at the same time as the correlated event's start timestamp.</p> 
  * 
  * <p>Lets look at an example:</p>
  * 
- * <pre>$eventA : EventA( this during $eventB )</pre>
+ * <pre>$eventA : EventA( this meets $eventB )</pre>
  *
- * <p>The previous pattern will match if and only if the $eventA starts after $eventB starts and finishes
- * before $eventB finishes. In other words:</p>
+ * <p>The previous pattern will match if and only if the $eventA finishes at the same time $eventB starts. 
+ * In other words:</p>
  * 
- * <pre> $eventB.startTimestamp < $eventA.startTimestamp <= $eventA.endTimestamp < $eventB.endTimestamp </pre>
+ * <pre> 
+ * abs( $eventB.startTimestamp - $eventA.endTimestamp ) == 0
+ * </pre>
  * 
- * <p>The <b><code>during</code></b> operator accepts 1, 2 or 4 optional parameters as follow:</p>
+ * <p>The <b><code>meets</code></b> evaluator accepts one optional parameter. If it is defined, it determines
+ * the maximum distance between the end timestamp of current event and the start timestamp of the correlated
+ * event in order for the operator to match. Example:</p>
  * 
- * <ul><li>If one value is defined, this will be the maximum distance between the start timestamp of both
- * event and the maximum distance between the end timestamp of both events in order to operator match. Example:</li></lu>
- * 
- * <pre>$eventA : EventA( this during[ 5s ] $eventB )</pre>
+ * <pre>$eventA : EventA( this meets[ 5s ] $eventB )</pre>
  * 
  * Will match if and only if:
  * 
  * <pre> 
- * 0 < $eventA.startTimestamp - $eventB.startTimestamp <= 5s &&
- * 0 < $eventB.endTimestamp - $eventA.endTimestamp <= 5s
+ * abs( $eventB.startTimestamp - $eventA.endTimestamp) <= 5s 
  * </pre>
  * 
- * <ul><li>If two values are defined, the first value will be the minimum distance between the timestamps
- * of both events, while the second value will be the maximum distance between the timestamps of both events. 
- * Example:</li></lu>
- * 
- * <pre>$eventA : EventA( this during[ 5s, 10s ] $eventB )</pre>
- * 
- * Will match if and only if:
- * 
- * <pre> 
- * 5s <= $eventA.startTimestamp - $eventB.startTimestamp <= 10s &&
- * 5s <= $eventB.endTimestamp - $eventA.endTimestamp <= 10s
- * </pre>
- * 
- * <ul><li>If four values are defined, the first two values will be the minimum and maximum distances between the 
- * start timestamp of both events, while the last two values will be the minimum and maximum distances between the 
- * end timestamp of both events. Example:</li></lu>
- * 
- * <pre>$eventA : EventA( this during[ 2s, 6s, 4s, 10s ] $eventB )</pre>
- * 
- * Will match if and only if:
- * 
- * <pre> 
- * 2s <= $eventA.startTimestamp - $eventB.startTimestamp <= 6s &&
- * 4s <= $eventB.endTimestamp - $eventA.endTimestamp <= 10s
- * </pre>
+ * <p><b>NOTE:</b> it makes no sense to use a negative interval value for the parameter and the 
+ * engine will raise an exception if that happens.</p>
  */
-public class DuringEvaluatorDefinition
+public class MeetsEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    public static final String          duringOp = "during";
+    protected static final String meetsOp = Operator.BuiltInOperator.MEETS.getSymbol();
 
-    public static Operator              DURING;
+    public static final Operator MEETS = Operator.determineOperator( meetsOp, false );
 
-    public static Operator              NOT_DURING;
+    public static final Operator MEETS_NOT = Operator.determineOperator( meetsOp, true );
 
-    private static String[]             SUPPORTED_IDS;
+    private static final String[] SUPPORTED_IDS = new String[] { meetsOp };
 
-    private Map<String, DuringEvaluator> cache         = Collections.emptyMap();
+    private Map<String, MeetsEvaluator> cache         = Collections.emptyMap();
 
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( duringOp, false ) == null ) {
-            DURING = Operator.addOperatorToRegistry( duringOp, false );
-            NOT_DURING = Operator.addOperatorToRegistry( duringOp, true );
-            SUPPORTED_IDS = new String[] { duringOp };
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        cache = (Map<String, DuringEvaluator>) in.readObject();
+        cache = (Map<String, MeetsEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -173,16 +141,16 @@ public class DuringEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, DuringEvaluator>();
+            this.cache = new HashMap<String, MeetsEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        DuringEvaluator eval = this.cache.get( key );
+        MeetsEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             long[] params = TimeIntervalParser.parse( parameterText );
-            eval = new DuringEvaluator( type,
-                                        isNegated,
-                                        params,
-                                        parameterText );
+            eval = new MeetsEvaluator( type,
+                                       isNegated,
+                                       params,
+                                       parameterText );
             this.cache.put( key,
                             eval );
         }
@@ -220,28 +188,23 @@ public class DuringEvaluatorDefinition
     }
 
     /**
-     * Implements the 'during' evaluator itself
+     * Implements the 'meets' evaluator itself
      */
-    public static class DuringEvaluator extends BaseEvaluator {
+    public static class MeetsEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
 
-        private long              startMinDev, startMaxDev;
-        private long              endMinDev, endMaxDev;
+        private long              finalRange;
         private String            paramText;
 
-        {
-            DuringEvaluatorDefinition.init();
+        public MeetsEvaluator() {
         }
 
-        public DuringEvaluator() {
-        }
-
-        public DuringEvaluator(final ValueType type,
-                               final boolean isNegated,
-                               final long[] parameters,
-                               final String paramText) {
+        public MeetsEvaluator(final ValueType type,
+                              final boolean isNegated,
+                              final long[] parameters,
+                              final String paramText) {
             super( type,
-                   isNegated ? NOT_DURING : DURING );
+                   isNegated ? MEETS_NOT : MEETS );
             this.paramText = paramText;
             this.setParameters( parameters );
         }
@@ -249,22 +212,16 @@ public class DuringEvaluatorDefinition
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             super.readExternal( in );
-            startMinDev = in.readLong();
-            startMaxDev = in.readLong();
-            endMinDev = in.readLong();
-            endMaxDev = in.readLong();
+            finalRange = in.readLong();
             paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal( out );
-            out.writeLong( startMinDev );
-            out.writeLong( startMaxDev );
-            out.writeLong( endMinDev );
-            out.writeLong( endMaxDev );
+            out.writeLong( finalRange );
             out.writeObject( paramText );
         }
-
+        
         @Override
         public boolean isTemporal() {
             return true;
@@ -276,7 +233,7 @@ public class DuringEvaluatorDefinition
                 return new Interval( Interval.MIN,
                                      Interval.MAX );
             }
-            return new Interval( 1,
+            return new Interval( 0,
                                  Interval.MAX );
         }
 
@@ -284,7 +241,7 @@ public class DuringEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeException( "The 'during' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'meets' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
@@ -295,9 +252,9 @@ public class DuringEvaluatorDefinition
                 return false;
             }
             
-            long distStart = ((TemporalVariableContextEntry) context).startTS - ((EventFactHandle) left).getStartTimestamp();
-            long distEnd = ((EventFactHandle) left).getEndTimestamp() - ((TemporalVariableContextEntry) context).endTS;
-            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
+            long leftStartTS = ((EventFactHandle) left).getStartTimestamp();
+            long dist = Math.abs( leftStartTS - ((LeftStartRightEndContextEntry) context).timestamp );
+            return this.getOperator().isNegated() ^ (dist <= this.finalRange);
         }
 
         public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
@@ -308,9 +265,9 @@ public class DuringEvaluatorDefinition
                 return false;
             }
             
-            long distStart = ((EventFactHandle) right).getStartTimestamp() - ((TemporalVariableContextEntry) context).startTS;
-            long distEnd = ((TemporalVariableContextEntry) context).endTS - ((EventFactHandle) right).getEndTimestamp();
-            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
+            long leftStartTS =  ((LeftStartRightEndContextEntry) context).timestamp;
+            long dist = Math.abs( leftStartTS - ((EventFactHandle) right).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (dist <= this.finalRange);
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
@@ -323,13 +280,13 @@ public class DuringEvaluatorDefinition
                 return false;
             }
             
-            long distStart = ((EventFactHandle) handle1).getStartTimestamp() - ((EventFactHandle) handle2).getStartTimestamp();
-            long distEnd = ((EventFactHandle) handle2).getEndTimestamp() - ((EventFactHandle) handle1).getEndTimestamp();
-            return this.getOperator().isNegated() ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
+            long obj2StartTS = ((EventFactHandle) handle2).getStartTimestamp();
+            long dist = Math.abs( obj2StartTS - ((EventFactHandle) handle1).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (dist <= this.finalRange);
         }
 
         public String toString() {
-            return "during[" + ( ( paramText != null ) ? paramText : "" ) + "]";
+            return "meets[" + ((paramText != null) ? paramText : "") + "]";
         }
 
         /* (non-Javadoc)
@@ -339,10 +296,7 @@ public class DuringEvaluatorDefinition
         public int hashCode() {
             final int PRIME = 31;
             int result = super.hashCode();
-            result = PRIME * result + (int) (endMaxDev ^ (endMaxDev >>> 32));
-            result = PRIME * result + (int) (endMinDev ^ (endMinDev >>> 32));
-            result = PRIME * result + (int) (startMaxDev ^ (startMaxDev >>> 32));
-            result = PRIME * result + (int) (startMinDev ^ (startMinDev >>> 32));
+            result = PRIME * result + (int) (finalRange ^ (finalRange >>> 32));
             return result;
         }
 
@@ -354,8 +308,8 @@ public class DuringEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final DuringEvaluator other = (DuringEvaluator) obj;
-            return endMaxDev == other.endMaxDev && endMinDev == other.endMinDev && startMaxDev == other.startMaxDev && startMinDev == other.startMinDev;
+            final MeetsEvaluator other = (MeetsEvaluator) obj;
+            return finalRange == other.finalRange;
         }
 
         /**
@@ -365,34 +319,17 @@ public class DuringEvaluatorDefinition
          */
         private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
-                // open bounded range
-                this.startMinDev = 1;
-                this.startMaxDev = Long.MAX_VALUE;
-                this.endMinDev = 1;
-                this.endMaxDev = Long.MAX_VALUE;
+                this.finalRange = 0;
             } else if ( parameters.length == 1 ) {
-                // open bounded ranges
-                this.startMinDev = 1;
-                this.startMaxDev = parameters[0];
-                this.endMinDev = 1;
-                this.endMaxDev = parameters[0];
-            } else if ( parameters.length == 2 ) {
-                // open bounded ranges
-                this.startMinDev = parameters[0];
-                this.startMaxDev = parameters[1];
-                this.endMinDev = parameters[0];
-                this.endMaxDev = parameters[1];
-            } else if ( parameters.length == 4 ) {
-                // open bounded ranges
-                this.startMinDev = parameters[0];
-                this.startMaxDev = parameters[1];
-                this.endMinDev = parameters[2];
-                this.endMaxDev = parameters[3];
+                if ( parameters[0] >= 0 ) {
+                    // defined max distance
+                    this.finalRange = parameters[0];
+                } else {
+                    throw new RuntimeException( "[Meets Evaluator]: Not possible to use negative parameter: '" + paramText + "'" );
+                }
             } else {
-                throw new RuntimeException( "[During Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
+                throw new RuntimeException( "[Meets Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
-
     }
-
 }

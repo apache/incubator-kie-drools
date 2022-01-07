@@ -16,21 +16,27 @@
 
 package org.drools.verifier.incompatibility;
 
-import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.core.base.evaluators.Operator;
-import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.verifier.TestBaseOld;
-import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.components.*;
-import org.drools.verifier.report.components.Cause;
-import org.junit.Test;
-import org.kie.api.runtime.KieSession;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.base.RuleNameMatchesAgendaFilter;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.verifier.TestBaseOld;
+import org.drools.verifier.VerifierComponentMockFactory;
+import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternVariable;
+import org.drools.verifier.components.VariableRestriction;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.report.components.Cause;
+import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -51,13 +57,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
                                                                      "10");
-        r1.setOperator(Operator.EQUAL);
+        r1.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
                                                                      "1");
-        r2.setOperator(Operator.LESS);
+        r2.setOperator(Operator.BuiltInOperator.LESS.getOperator());
         r2.setFieldPath("0");
         r2.setOrderNumber(2);
 
@@ -66,13 +72,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
                                                                      "1");
-        r3.setOperator(Operator.GREATER_OR_EQUAL);
+        r3.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
                                                                      "10");
-        r4.setOperator(Operator.EQUAL);
+        r4.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
 
@@ -114,13 +120,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
                                                                      "10");
-        r1.setOperator(Operator.GREATER);
+        r1.setOperator(Operator.BuiltInOperator.GREATER.getOperator());
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
                                                                      "1");
-        r2.setOperator(Operator.EQUAL);
+        r2.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r2.setFieldPath("0");
         r2.setOrderNumber(1);
 
@@ -129,13 +135,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
                                                                      "1");
-        r3.setOperator(Operator.GREATER_OR_EQUAL);
+        r3.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
                                                                      "10");
-        r4.setOperator(Operator.EQUAL);
+        r4.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
 
@@ -177,13 +183,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
                                                                      "10");
-        r1.setOperator(Operator.GREATER);
+        r1.setOperator(Operator.BuiltInOperator.GREATER.getOperator());
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
                                                                      "10");
-        r2.setOperator(Operator.LESS);
+        r2.setOperator(Operator.BuiltInOperator.LESS.getOperator());
         r2.setFieldPath("0");
         r2.setOrderNumber(1);
 
@@ -192,13 +198,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
                                                                      "1");
-        r3.setOperator(Operator.GREATER_OR_EQUAL);
+        r3.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
                                                                      "");
-        r4.setOperator(Operator.EQUAL);
+        r4.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
 
@@ -249,13 +255,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         variable1.setOrderNumber(11);
 
         VariableRestriction r1 = new VariableRestriction(pattern1);
-        r1.setOperator(Operator.GREATER);
+        r1.setOperator(Operator.BuiltInOperator.GREATER.getOperator());
         r1.setFieldPath("0");
         r1.setVariable(variable1);
         r1.setOrderNumber(0);
 
         VariableRestriction r2 = new VariableRestriction(pattern1);
-        r2.setOperator(Operator.LESS);
+        r2.setOperator(Operator.BuiltInOperator.LESS.getOperator());
         r2.setFieldPath("0");
         r2.setVariable(variable1);
         r2.setOrderNumber(1);
@@ -269,13 +275,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         variable2.setOrderNumber(10);
 
         VariableRestriction r3 = new VariableRestriction(pattern2);
-        r3.setOperator(Operator.GREATER_OR_EQUAL);
+        r3.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r3.setFieldPath("1");
         r3.setVariable(variable2);
         r3.setOrderNumber(0);
 
         VariableRestriction r4 = new VariableRestriction(pattern2);
-        r4.setOperator(Operator.EQUAL);
+        r4.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r4.setFieldPath("1");
         r4.setVariable(variable2);
         r4.setOrderNumber(1);

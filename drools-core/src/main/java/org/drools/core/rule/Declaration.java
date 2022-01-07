@@ -25,7 +25,6 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.InternalReadAccessor;
@@ -259,7 +258,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
     }
 
     public char getCharValue(ReteEvaluator reteEvaluator,
-                             final Object object) {
+                           final Object object) {
         return this.readAccessor.getCharValue(reteEvaluator, object);
     }
 

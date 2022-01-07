@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
-
-import org.drools.core.base.ValueType;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.time.Interval;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -29,110 +23,107 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.time.Interval;
+
 /**
- * <p>The implementation of the 'after' evaluator definition.</p>
+ * <p>The implementation of the 'before' evaluator definition.</p>
  * 
- * <p>The <b><code>after</code></b> evaluator correlates two events and matches when the temporal
- * distance from the current event to the event being correlated belongs to the distance range declared 
+ * <p>The <b><code>before</code></b> evaluator correlates two events and matches when the temporal 
+ * distance from the event being correlated to the current correlated belongs to the distance range declared 
  * for the operator.</p> 
  * 
  * <p>Lets look at an example:</p>
  * 
- * <pre>$eventA : EventA( this after[ 3m30s, 4m ] $eventB )</pre>
+ * <pre>$eventA : EventA( this before[ 3m30s, 4m ] $eventB )</pre>
  *
  * <p>The previous pattern will match if and only if the temporal distance between the 
- * time when $eventB finished and the time when $eventA started is between ( 3 minutes 
+ * time when $eventA finished and the time when $eventB started is between ( 3 minutes 
  * and 30 seconds ) and ( 4 minutes ). In other words:</p>
  * 
- * <pre> 3m30s <= $eventA.startTimestamp - $eventB.endTimeStamp <= 4m </pre>
+ * <pre> 3m30s <= $eventB.startTimestamp - $eventA.endTimeStamp <= 4m </pre>
  * 
- * <p>The temporal distance interval for the <b><code>after</code></b> operator is optional:</p>
+ * <p>The temporal distance interval for the <b><code>before</code></b> operator is optional:</p>
  * 
  * <ul><li>If two values are defined (like in the example below), the interval starts on the
  * first value and finishes on the second.</li>
- * <li>If only one value is defined, the interval starts on the value and finishes on the positive 
- * infinity.</li>
+ * <li>If only one value is defined, then the interval starts on the value and finishes on 
+ * the positive infinity.</li>
  * <li>If no value is defined, it is assumed that the initial value is 1ms and the final value
  * is the positive infinity.</li></ul>
  * 
  * <p><b>NOTE:</b> it is allowed to define negative distances for this operator. Example:</p>
  * 
- * <pre>$eventA : EventA( this after[ -3m30s, -2m ] $eventB )</pre>
+ * <pre>$eventA : EventA( this before[ -3m30s, -2m ] $eventB )</pre>
  *
  * <p><b>NOTE:</b> if the initial value is greater than the finish value, the engine automatically
  * reverse them, as there is no reason to have the initial value greater than the finish value. Example: 
  * the following two patterns are considered to have the same semantics:</p>
  * 
  * <pre>
- * $eventA : EventA( this after[ -3m30s, -2m ] $eventB )
- * $eventA : EventA( this after[ -2m, -3m30s ] $eventB )
+ * $eventA : EventA( this before[ -3m30s, -2m ] $eventB )
+ * $eventA : EventA( this before[ -2m, -3m30s ] $eventB )
  * </pre>
  */
-public class AfterEvaluatorDefinition
+public class BeforeEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    protected static final String afterOp = "after";
+    public static final String beforeOp = Operator.BuiltInOperator.BEFORE.getSymbol();
 
-    public static Operator AFTER;
-    public static Operator NOT_AFTER;
+    public static final Operator BEFORE = Operator.determineOperator( beforeOp, false );
 
-    private static String[] SUPPORTED_IDS;
+    public static final Operator NOT_BEFORE = Operator.determineOperator( beforeOp, true );
 
-    private Map<String, AfterEvaluator> cache = Collections.emptyMap();
+    private static final String[] SUPPORTED_IDS = new String[] { beforeOp };
 
-    static {
-        if ( Operator.determineOperator( afterOp, false ) == null ) {
-            AFTER = Operator.addOperatorToRegistry( afterOp, false );
-            NOT_AFTER = Operator.addOperatorToRegistry( afterOp, true );
-            SUPPORTED_IDS = new String[]{afterOp};
-        }
+    private Map<String, BeforeEvaluator> cache         = Collections.emptyMap();
+
+    public void readExternal(ObjectInput in) throws IOException,
+            ClassNotFoundException {
+        cache = (Map<String, BeforeEvaluator>) in.readObject();
     }
 
-    @SuppressWarnings("unchecked")
-    public void readExternal( ObjectInput in ) throws IOException,
-                                                      ClassNotFoundException {
-        cache = (Map<String, AfterEvaluator>) in.readObject();
-    }
-
-    public void writeExternal( ObjectOutput out ) throws IOException {
+    public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( cache );
     }
 
     /**
      * @inheridDoc
      */
-    public Evaluator getEvaluator( ValueType type,
-                                   Operator operator ) {
+    public Evaluator getEvaluator(ValueType type,
+                                  Operator operator) {
         return this.getEvaluator( type,
                                   operator.getOperatorString(),
                                   operator.isNegated(),
-                                  null,
-                                  Target.HANDLE,
-                                  Target.HANDLE );
+                                  null );
     }
 
     /**
      * @inheridDoc
      */
-    public Evaluator getEvaluator( ValueType type,
-                                   Operator operator,
-                                   String parameterText ) {
+    public Evaluator getEvaluator(ValueType type,
+                                  Operator operator,
+                                  String parameterText) {
         return this.getEvaluator( type,
                                   operator.getOperatorString(),
                                   operator.isNegated(),
-                                  parameterText,
-                                  Target.HANDLE,
-                                  Target.HANDLE );
+                                  parameterText );
     }
 
     /**
      * @inheritDoc
      */
-    public Evaluator getEvaluator( final ValueType type,
-                                   final String operatorId,
-                                   final boolean isNegated,
-                                   final String parameterText ) {
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText) {
         return this.getEvaluator( type,
                                   operatorId,
                                   isNegated,
@@ -145,25 +136,25 @@ public class AfterEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public Evaluator getEvaluator( final ValueType type,
-                                   final String operatorId,
-                                   final boolean isNegated,
-                                   final String parameterText,
-                                   final Target left,
-                                   final Target right ) {
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText,
+                                  final Target left,
+                                  final Target right) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, AfterEvaluator>();
+            this.cache = new HashMap<>();
         }
-        String key = left + ":" + right + ":" + isNegated + ":" + parameterText;
-        AfterEvaluator eval = this.cache.get( key );
+        String key = left+":"+right+":"+isNegated + ":" + parameterText;
+        BeforeEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             long[] params = TimeIntervalParser.parse( parameterText );
-            eval = new AfterEvaluator( type,
-                                       isNegated,
-                                       params,
-                                       parameterText,
-                                       left == Target.FACT,
-                                       right == Target.FACT );
+            eval = new BeforeEvaluator( type,
+                                        isNegated,
+                                        params,
+                                        parameterText,
+                                        left == Target.FACT,
+                                        right == Target.FACT );
             this.cache.put( key,
                             eval );
         }
@@ -194,29 +185,29 @@ public class AfterEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public boolean supportsType( ValueType type ) {
+    public boolean supportsType(ValueType type) {
         // supports all types, since it operates over fact handles
         // Note: should we change this interface to allow checking of event classes only?
         return true;
     }
 
     /**
-     * Implements the 'after' evaluator itself
+     * Implements the 'before' evaluator itself
      */
-    public static class AfterEvaluator extends PointInTimeEvaluator {
+    public static class BeforeEvaluator extends PointInTimeEvaluator {
         private static final long serialVersionUID = 510l;
 
-        public AfterEvaluator() {
+        public BeforeEvaluator() {
         }
 
-        public AfterEvaluator( final ValueType type,
+        public BeforeEvaluator(final ValueType type,
                                final boolean isNegated,
                                final long[] parameters,
                                final String paramText,
                                final boolean unwrapLeft,
-                               final boolean unwrapRight ) {
+                               final boolean unwrapRight) {
             super( type,
-                   isNegated ? NOT_AFTER : AFTER,
+                   isNegated ? NOT_BEFORE : BEFORE,
                    parameters,
                    paramText,
                    unwrapLeft,
@@ -225,8 +216,8 @@ public class AfterEvaluatorDefinition
 
         @Override
         public Interval getInterval() {
-            long init = this.initRange;
-            long end = this.finalRange;
+            long init = (this.finalRange == Interval.MAX) ? Interval.MIN : -this.finalRange;
+            long end = (this.initRange == Interval.MIN) ? Interval.MAX : -this.initRange;
             if ( this.getOperator().isNegated() ) {
                 if ( init == Interval.MIN && end != Interval.MAX ) {
                     init = finalRange + 1;
@@ -246,19 +237,19 @@ public class AfterEvaluatorDefinition
         }
 
         @Override
-        protected boolean evaluate( long rightTS, long leftTS ) {
-            long dist = rightTS - leftTS;
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+        protected boolean evaluate(long rightTS, long leftTS) {
+            long dist = leftTS - rightTS;
+            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
         @Override
         protected long getLeftTimestamp( InternalFactHandle handle ) {
-            return ( (EventFactHandle) handle ).getEndTimestamp();
+            return ( (EventFactHandle) handle ).getStartTimestamp();
         }
 
         @Override
         protected long getRightTimestamp( InternalFactHandle handle ) {
-            return ( (EventFactHandle) handle ).getStartTimestamp();
+            return ( (EventFactHandle) handle ).getEndTimestamp();
         }
     }
 }

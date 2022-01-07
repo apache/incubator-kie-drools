@@ -16,6 +16,12 @@
 
 package org.drools.core.base.evaluators;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 import org.drools.core.time.TimeUtils;
 
 /**
@@ -43,5 +49,31 @@ public class TimeIntervalParser {
             return TimeUtils.parseTimeString( param );
         }
         throw new RuntimeException( "Empty parameters not allowed in: [" + param + "]" );
+    }
+
+    public static long getTimestampFromDate( Object obj ) {
+        if (obj instanceof Long ) {
+            return ( Long ) obj;
+        }
+        if (obj instanceof Date) {
+            return ( (Date) obj ).getTime();
+        }
+        try {
+            if (obj instanceof LocalDate) {
+                return ((LocalDate) obj).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+            }
+            if (obj instanceof LocalDateTime) {
+                return ((LocalDateTime) obj).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+            }
+            if (obj instanceof ZonedDateTime) {
+                return ((ZonedDateTime) obj).toInstant().toEpochMilli();
+            }
+            if (obj instanceof Instant) {
+                return ((Instant) obj).toEpochMilli();
+            }
+        } catch (ArithmeticException ae) {
+            throw new RuntimeException("Cannot convert " + obj.getClass().getSimpleName() + " '" + obj + "' into a long value");
+        }
+        throw new RuntimeException("Cannot extract timestamp from " + obj);
     }
 }

@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorCache;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.ObjectVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -36,22 +38,12 @@ import org.drools.core.spi.InternalReadAccessor;
  */
 public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
-    protected static final String   soundsLikeOp = "soundslike";
+    protected static final String soundsLikeOp = Operator.BuiltInOperator.SOUNDSLIKE.getSymbol();
 
-    public static Operator          SOUNDSLIKE;
-    public static Operator          NOT_SOUNDSLIKE;
+    public static final Operator SOUNDSLIKE = Operator.determineOperator( soundsLikeOp, false );
+    public static final Operator NOT_SOUNDSLIKE = Operator.determineOperator( soundsLikeOp, true );
 
-    private static String[]         SUPPORTED_IDS;
-
-    { init(); }
-
-    static void init() {
-        if ( SUPPORTED_IDS == null ) {
-            SOUNDSLIKE = Operator.addOperatorToRegistry( soundsLikeOp, false );
-            NOT_SOUNDSLIKE = Operator.addOperatorToRegistry( soundsLikeOp, true );
-            SUPPORTED_IDS = new String[] { soundsLikeOp };
-        }
-    }
+    private static final String[] SUPPORTED_IDS = new String[] { soundsLikeOp };
 
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 510l;
@@ -161,10 +153,6 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringSoundsLikeEvaluator();
 
-        {
-            SoundslikeEvaluatorsDefinition.init();
-        }
-
         public StringSoundsLikeEvaluator() {
             super( ValueType.STRING_TYPE,
                    SOUNDSLIKE );
@@ -212,10 +200,6 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringNotSoundsLikeEvaluator();
-
-        {
-            SoundslikeEvaluatorsDefinition.init();
-        }
 
         public StringNotSoundsLikeEvaluator() {
             super( ValueType.STRING_TYPE,

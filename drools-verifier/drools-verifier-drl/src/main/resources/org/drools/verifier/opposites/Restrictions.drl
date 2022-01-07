@@ -48,7 +48,7 @@ rule "Opposite LiteralRestrictions"
         $left :LiteralRestriction(
             // Not >= and <=, because ( a <=, a >= ) works.
             // And not < or > because they are handled in a separate rule.
-            ( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
+            ( operator != Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || != Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || != Operator.BuiltInOperator.LESS.getOperator() || != Operator.BuiltInOperator.GREATER.getOperator() )
         )
 
         $right :LiteralRestriction(
@@ -83,14 +83,14 @@ end
 rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
     when
         $left :LiteralRestriction(
-            operator == Operator.GREATER_OR_EQUAL
+            operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator()
         )
 
         $right :LiteralRestriction(
             restrictionType == $left.restrictionType,
             fieldPath == $left.fieldPath,
             valueType == $left.valueType,
-            operator == Operator.LESS,
+            operator == Operator.BuiltInOperator.LESS.getOperator(),
             path != $left.path,
             valueAsString == $left.valueAsString
         )
@@ -117,14 +117,14 @@ end
 rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
     when
         $left :LiteralRestriction(
-            operator == Operator.GREATER
+            operator == Operator.BuiltInOperator.GREATER.getOperator()
         )
 
         $right :LiteralRestriction(
             restrictionType == $left.restrictionType,
             fieldPath == $left.fieldPath,
             valueType == $left.valueType,
-            operator == Operator.LESS_OR_EQUAL,
+            operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator(),
             path != $left.path,
             valueAsString == $left.valueAsString
         )
@@ -152,7 +152,7 @@ end
 rule "Opposite LiteralRestrictions with ranges, less - greater for numbers"
     when
         $left :NumberRestriction(
-            operator == Operator.LESS,
+            operator == Operator.BuiltInOperator.LESS.getOperator(),
             ( valueType == Field.INT || == Field.DATE )
         )
 
@@ -160,7 +160,7 @@ rule "Opposite LiteralRestrictions with ranges, less - greater for numbers"
             restrictionType == $left.restrictionType,
             fieldPath == $left.fieldPath,
             valueType == $left.valueType,
-            operator == Operator.GREATER,
+            operator == Operator.BuiltInOperator.GREATER.getOperator(),
             path != $left.path,
             value > $left.value
         )
@@ -187,7 +187,7 @@ end
 rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
     when
         $left :NumberRestriction(
-            operator == Operator.GREATER_OR_EQUAL,
+            operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator(),
             ( valueType == Field.INT || == Field.DATE )
         )
 
@@ -195,7 +195,7 @@ rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal
             restrictionType == $left.restrictionType,
             fieldPath == $left.fieldPath,
             valueType == $left.valueType,
-            operator == Operator.LESS_OR_EQUAL,
+            operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator(),
             path != $left.path,
             value < $left.value
         )

@@ -233,40 +233,8 @@ public class ClassFieldReader
         return "this".equals( this.fieldName );
     }
 
-    public boolean getBooleanValue(Object object) {
-        return reader.getBooleanValue( object );
-    }
-
-    public byte getByteValue(Object object) {
-        return reader.getByteValue( object );
-    }
-
-    public char getCharValue(Object object) {
-        return reader.getCharValue( object );
-    }
-
-    public double getDoubleValue(Object object) {
-        return reader.getDoubleValue( object );
-    }
-
-    public float getFloatValue(Object object) {
-        return reader.getFloatValue( object );
-    }
-
     public int getHashCode(Object object) {
         return reader.getHashCode( object );
-    }
-
-    public int getIntValue(Object object) {
-        return reader.getIntValue( object );
-    }
-
-    public long getLongValue(Object object) {
-        return reader.getLongValue( object );
-    }
-
-    public short getShortValue(Object object) {
-        return reader.getShortValue( object );
     }
 
     public Object getValue(Object object) {
@@ -275,26 +243,6 @@ public class ClassFieldReader
 
     public boolean isNullValue(Object object) {
         return reader.isNullValue( object );
-    }
-
-    public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator,
-                                         Object object) {
-        return reader.getBigDecimalValue( reteEvaluator,
-                                          object );
-    }
-
-    public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator,
-                                         Object object) {
-        return reader.getBigIntegerValue( reteEvaluator,
-                                          object );
-    }
-
-    public BigDecimal getBigDecimalValue(Object object) {
-        return reader.getBigDecimalValue( object );
-    }
-
-    public BigInteger getBigIntegerValue(Object object) {
-        return reader.getBigIntegerValue( object );
     }
 
     public AccessorKey getAccessorKey() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,13 +23,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -71,28 +73,17 @@ import org.drools.core.time.Interval;
  */
 public class StartedByEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    protected static final String   startedByOp = "startedby";
+    protected static final String startedByOp = Operator.BuiltInOperator.STARTED_BY.getSymbol();
 
-    public static Operator          STARTED_BY;
-    public static Operator          NOT_STARTED_BY;
+    public static final Operator STARTED_BY = Operator.determineOperator( startedByOp, false );
+    public static final Operator NOT_STARTED_BY = Operator.determineOperator( startedByOp, true );
 
-    private static String[]         SUPPORTED_IDS;
+    private static final String[] SUPPORTED_IDS = new String[] { startedByOp };
 
     private Map<String, StartedByEvaluator> cache     = Collections.emptyMap();
 
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( startedByOp, false ) == null ) {
-            STARTED_BY = Operator.addOperatorToRegistry( startedByOp, false );
-            NOT_STARTED_BY = Operator.addOperatorToRegistry( startedByOp, true );
-            SUPPORTED_IDS = new String[] { startedByOp };
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         cache  = (Map<String, StartedByEvaluator>)in.readObject();
     }
@@ -204,10 +195,6 @@ public class StartedByEvaluatorDefinition
 
         private long                startDev;
         private String              paramText;
-
-        {
-            StartedByEvaluatorDefinition.init();
-        }
 
         public StartedByEvaluator() {
         }

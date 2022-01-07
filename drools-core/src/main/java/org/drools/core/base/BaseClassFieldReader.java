@@ -20,13 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import org.drools.core.common.DroolsObjectInput;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MathUtils;
 
 /**
  * This is the supertype for the ASM generated classes for accessing a field.
@@ -116,64 +112,6 @@ abstract public class BaseClassFieldReader
     public Object getValue(Object object) {
         return getValue( null,
                          object );
-    }
-
-    public char getCharValue(Object object) {
-        return getCharValue( null,
-                             object );
-    }
-
-    public int getIntValue(Object object) {
-        return getIntValue( null,
-                            object );
-    }
-
-    public byte getByteValue(Object object) {
-        return getByteValue( null,
-                             object );
-    }
-
-    public short getShortValue(Object object) {
-        return getShortValue( null,
-                              object );
-    }
-
-    public long getLongValue(Object object) {
-        return getLongValue( null,
-                             object );
-    }
-
-    public float getFloatValue(Object object) {
-        return getFloatValue( null,
-                              object );
-    }
-
-    public double getDoubleValue(Object object) {
-        return getDoubleValue( null,
-                               object );
-    }
-
-    public boolean getBooleanValue(Object object) {
-        return getBooleanValue( null,
-                                object );
-    }
-
-    public BigDecimal getBigDecimalValue(Object object) {
-        return getBigDecimalValue( null,
-                                   object );
-    }
-
-    public BigInteger getBigIntegerValue(Object object) {
-        return getBigIntegerValue( null,
-                                   object );
-    }
-
-    public BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator, Object object) {
-        return MathUtils.getBigDecimal( getValue( reteEvaluator, object ) );
-    }
-
-    public BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator, Object object) {
-        return MathUtils.getBigInteger( getValue( reteEvaluator, object ) );
     }
 
     public boolean isNullValue(Object object) {

@@ -21,30 +21,27 @@ import java.io.Serializable;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.time.Interval;
 import org.kie.api.runtime.rule.Operator;
 
 /**
  * A public interface to be implemented by all evaluators
  */
-public interface Evaluator
-    extends
-    Serializable, org.kie.api.runtime.rule.Evaluator {
+public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evaluator {
 
     /**
      * Returns the type of the values this evaluator operates upon.
      * 
      * @return
      */
-    public ValueType getValueType();
+    ValueType getValueType();
 
     /**
      * Returns the operator representation object for this evaluator
      * 
      * @return
      */
-    public Operator getOperator();
+    Operator getOperator();
     
     /**
      * Returns the value type this evaluator will coerce
@@ -55,7 +52,7 @@ public interface Evaluator
      * 
      * @return
      */
-    public ValueType getCoercedValueType();
+    ValueType getCoercedValueType();
     
     /**
      * Evaluates the expression using the provided parameters.
@@ -126,69 +123,6 @@ public interface Evaluator
                             InternalFactHandle right);
 
     /**
-     * Evaluates the expression using the provided parameters.
-     * 
-     * This method is used when evaluating left-activated 
-     * beta-constraints, i.e., a fact attribute against a variable 
-     * value, that is activated from the left.
-     *  
-     * For instance:
-     * 
-     * Person( name == $someName )
-     * 
-     * This method will be used when a new $someName variable is 
-     * bound. So it will cache the value of $someName and will 
-     * iterate over the right memory (Person instances) evaluating
-     * each occurrence.
-     *  
-     * @param workingMemory
-     *        The current working memory 
-     * @param context 
-     *        The previously cached context, including the left value 
-     *        and the extractor for the right value.
-     * @param right
-     *        The right object, from where to extract the value. In the
-     *        above example, that is the "Person" instance from where to 
-     *        extract the "name" attribute.
-     * 
-     * @return Returns true if evaluation is successful. false otherwise.
-     */
-    public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
-                                      VariableContextEntry context,
-                                      InternalFactHandle right);
-
-    /**
-     * Evaluates the expression using the provided parameters.
-     * 
-     * This method is used when evaluating right-activated 
-     * beta-constraints, i.e., a fact attribute against a variable 
-     * value, that is activated from the right.
-     *  
-     * For instance:
-     * 
-     * Person( name == $someName )
-     * 
-     * This method will be used when a new Person instance is evaluated.
-     * So it will cache the value of the "Person" instance and will 
-     * iterate over the left memory comparing it to each "$someName" bound
-     * values.
-     *  
-     * @param workingMemory
-     *        The current working memory 
-     * @param context 
-     *        The previously cached context, including the right value 
-     *        and the extractor for the left value.
-     * @param left
-     *        The left object, from where to extract the bound variable. 
-     *        In the above example, that is the "$someName" variable value.
-     * 
-     * @return Returns true if evaluation is successful. false otherwise.
-     */
-    public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
-                                       VariableContextEntry context,
-                                       InternalFactHandle left);
-    
-    /**
      * Returns true if this evaluator implements a temporal evaluation,
      * i.e., a time sensitive evaluation whose properties of matching
      * only events within an specific time interval can be used for
@@ -196,7 +130,7 @@ public interface Evaluator
      * 
      * @return true if the evaluator is a temporal evaluator. 
      */
-    public boolean isTemporal();
+    boolean isTemporal();
 
     /**
      * In case this is a temporal evaluator, returns the interval 
@@ -204,6 +138,6 @@ public interface Evaluator
      * 
      * @return
      */
-    public Interval getInterval();
+    Interval getInterval();
 
 }

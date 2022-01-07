@@ -59,12 +59,12 @@ rule "Merge gaps"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
         $g1 :Gap(
-            operator == Operator.GREATER_OR_EQUAL
+            operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator()
         )
         $g2 :Gap(
             guid != $g1.guid,
             field == $g1.field,
-            operator == Operator.LESS_OR_EQUAL,
+            operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator(),
             valueAsString == $g1.valueAsString
         )
     then
@@ -75,7 +75,7 @@ rule "Merge gaps"
 
         MissingNumberPattern mnp = new MissingNumberPattern(
                                             $g1.getField(),
-                                            Operator.EQUAL,
+                                            Operator.BuiltInOperator.EQUAL.getOperator(),
                                             $g1.getField().getFieldType(),
                                             $g1.getValueAsString() );
         result.add( mnp );
@@ -104,7 +104,7 @@ rule "Remove useless integer gaps lesser or lesser and equal"
         // Covered x > 10
         $lower :NumberRestriction(
             valueType == Field.INT,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator())
         )
 
         // Covered x < 100
@@ -112,12 +112,12 @@ rule "Remove useless integer gaps lesser or lesser and equal"
             fieldPath == $lower.fieldPath,
             value > $lower.value,
             patternIsNot == $lower.patternIsNot,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator())
         )
 
         // No "<" or "<=" restrictions between these two
         not NumberRestriction(
-            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
+            ( operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.LESS.getOperator() ),
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
             value > $lower.value,
@@ -158,7 +158,7 @@ rule "Remove useless integer gaps greater or greater and equal"
         // Covered x > 10
         $lower :NumberRestriction(
             valueType == Field.INT,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator())
         )
 
         // Covered x < 100
@@ -166,12 +166,12 @@ rule "Remove useless integer gaps greater or greater and equal"
             fieldPath == $lower.fieldPath,
             value > $lower.value,
             patternIsNot == $lower.patternIsNot,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator())
         )
 
         // No "<" or "<=" restrictions between these two
         not NumberRestriction(
-            ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
+            ( operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.GREATER.getOperator() ),
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
             value > $lower.value,
@@ -211,7 +211,7 @@ rule "Remove useless double gaps lesser or lesser and equal"
         // Covered x > 10.0
         $lower :NumberRestriction(
             valueType == Field.DOUBLE,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator())
         )
 
         // Covered x < 100.0
@@ -219,12 +219,12 @@ rule "Remove useless double gaps lesser or lesser and equal"
             fieldPath == $lower.fieldPath,
             value > $lower.value,
             patternIsNot == $lower.patternIsNot,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator())
         )
 
         // No "<" or "<=" restrictions between these two
         not NumberRestriction(
-            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
+            ( operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.LESS.getOperator() ),
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
             value > $lower.value,
@@ -264,7 +264,7 @@ rule "Remove useless double gaps greater or greater and equal"
         // Covered x > 10.0
         $lower :NumberRestriction(
             valueType == Field.DOUBLE,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator())
         )
 
         // Covered x < 100.0
@@ -272,12 +272,12 @@ rule "Remove useless double gaps greater or greater and equal"
             fieldPath == $lower.fieldPath,
             value > $lower.value,
             patternIsNot == $lower.patternIsNot,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator())
         )
 
         // No "<" or "<=" restrictions between these two
         not NumberRestriction(
-            ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
+            ( operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.GREATER.getOperator() ),
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
             value > $lower.value,
@@ -317,20 +317,20 @@ rule "Remove useless date gaps lesser or lesser and equal"
         // Covered x > "01-Oct-2007"
         $lower :DateRestriction(
             valueType == Field.DATE,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator())
         )
 
         // Covered x < "20-Oct-2007"
         $higher :DateRestriction(
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL),
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator()),
             eval( value.after( $lower.getValue() ) )
         )
 
         // No "<" or "<=" restrictions between these two
         not DateRestriction(
-            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
+            ( operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.LESS.getOperator() ),
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
             eval( value.after( $lower.getValue() ) ),
@@ -371,20 +371,20 @@ rule "Remove useless date gaps greater or greater and equal"
         // Covered x > "01-Oct-2007"
         $lower :DateRestriction(
             valueType == Field.DATE,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator())
         )
 
         // Covered x < "20-Oct-2007"
         $higher :DateRestriction(
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL),
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator()),
             eval( value.after( $lower.getValue() ) )
         )
 
         // No ">" or ">=" restrictions between these two
         not DateRestriction(
-            ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
+            ( operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.GREATER.getOperator() ),
             fieldPath == $lower.fieldPath,
             patternIsNot == $lower.patternIsNot,
             eval( value.after( $lower.getValue() ) ),

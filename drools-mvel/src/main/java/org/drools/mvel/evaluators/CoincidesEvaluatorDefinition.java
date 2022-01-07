@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base.evaluators;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,13 +23,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.VariableRestriction.TemporalVariableContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -70,28 +72,17 @@ import org.drools.core.time.Interval;
  */
 public class CoincidesEvaluatorDefinition
     implements
-    EvaluatorDefinition {
+        EvaluatorDefinition {
 
-    protected static final String   coincidesOp = "coincides";
+    protected static final String coincidesOp = Operator.BuiltInOperator.COINCIDES.getSymbol();
 
-    public static Operator          COINCIDES;
-    public static Operator          COINCIDES_NOT;
+    public static final Operator COINCIDES = Operator.determineOperator( coincidesOp, false );
+    public static final Operator COINCIDES_NOT = Operator.determineOperator( coincidesOp, true );
 
-    private static String[]         SUPPORTED_IDS;
+    private static final String[] SUPPORTED_IDS = new String[] { coincidesOp };
 
     private Map<String, CoincidesEvaluator> cache     = Collections.emptyMap();
 
-    { init(); }
-
-    static void init() {
-        if ( Operator.determineOperator( coincidesOp, false ) == null ) {
-            COINCIDES = Operator.addOperatorToRegistry( coincidesOp, false );
-            COINCIDES_NOT = Operator.addOperatorToRegistry( coincidesOp, true );
-            SUPPORTED_IDS = new String[] { coincidesOp };
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         cache = (Map<String, CoincidesEvaluator>) in.readObject();
@@ -209,10 +200,6 @@ public class CoincidesEvaluatorDefinition
         private String            paramText;
         private boolean           unwrapLeft;
         private boolean           unwrapRight;
-
-        {
-            CoincidesEvaluatorDefinition.init();
-        }
 
         public CoincidesEvaluator() {
         }

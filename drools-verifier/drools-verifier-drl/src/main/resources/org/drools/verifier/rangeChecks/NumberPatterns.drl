@@ -53,7 +53,7 @@ rule "Range check for number patterns"
                     LiteralRestriction(
                         fieldId == $f.id,
                         patternIsNot == false,
-                        operator == Operator.EQUAL
+                        operator == Operator.BuiltInOperator.EQUAL.getOperator()
                     )
                 )
         ) or (
@@ -70,7 +70,7 @@ rule "Range check for number patterns"
     then
         Number number = FindMissingNumber.testForPattern( $list );
         if( number != null ){
-            MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.EQUAL, $f.getFieldType(), number.toString() );
+            MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.BuiltInOperator.EQUAL.getOperator(), $f.getFieldType(), number.toString() );
             result.add( mnp );
         }
 end
@@ -95,7 +95,7 @@ rule "Range check for number patterns, !="
                     LiteralRestriction(
                         fieldId == $f.path,
                         patternIsNot == false,
-                        operator == Operator.NOT_EQUAL
+                        operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()
                     )
                 )
         ) or (
@@ -105,14 +105,14 @@ rule "Range check for number patterns, !="
                     LiteralRestriction(
                         fieldId == $f.path,
                         pavaluesNot == true,
-                        operator == Operator.NOT_EQUAL
+                        operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()
                     )
                 )
         )
     then
         Number number = FindMissingNumber.testForPattern( $list );
         if( number != null ){
-            MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.NOT_EQUAL, $f.getFieldType(), number.toString() );
+            MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.BuiltInOperator.NOT_EQUAL.getOperator(), $f.getFieldType(), number.toString() );
             result.add( mnp );
         }
 end

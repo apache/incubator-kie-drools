@@ -126,26 +126,6 @@ public class GlobalDateExtractor extends BaseDateClassFieldReader
         return false;
     }
     
-    public boolean getBooleanValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public byte getByteValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public char getCharValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public double getDoubleValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public float getFloatValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
     public int getHashCode(Object object) {
         throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
     }
@@ -154,27 +134,7 @@ public class GlobalDateExtractor extends BaseDateClassFieldReader
         return -1;
     }
 
-    public int getIntValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public long getLongValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public short getShortValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
     public Object getValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public BigDecimal getBigDecimalValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public BigInteger getBigIntegerValue(Object object) {
         throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
     }
 

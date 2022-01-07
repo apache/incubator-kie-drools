@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.core.rule;
+package org.drools.mvel.evaluators;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
-import org.drools.core.base.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
-import org.drools.core.base.evaluators.MeetsEvaluatorDefinition.MeetsEvaluator;
-import org.drools.core.base.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.Declaration;
+import org.drools.mvel.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
+import org.drools.mvel.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
+import org.drools.mvel.evaluators.MeetsEvaluatorDefinition.MeetsEvaluator;
+import org.drools.mvel.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -87,7 +89,7 @@ public class VariableRestriction {
 
     public static abstract class VariableContextEntry
         implements
-        ContextEntry {
+            ContextEntry {
         public InternalReadAccessor  extractor;
         public Evaluator             evaluator;
         public Object                object;

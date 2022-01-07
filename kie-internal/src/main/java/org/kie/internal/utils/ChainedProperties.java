@@ -83,6 +83,7 @@ public class ChainedProperties
 
         loadProperties( "META-INF/kie." + confFileName, classLoader, this.props );
         loadProperties( "META-INF/kie.default." + confFileName, classLoader, this.defaultProps);
+        loadProperties( "META-INF/kie.default.mvel." + confFileName, classLoader, this.defaultProps);
 
         // this happens only in OSGi: for some reason doing
         // ClassLoader.getResources() doesn't work but doing

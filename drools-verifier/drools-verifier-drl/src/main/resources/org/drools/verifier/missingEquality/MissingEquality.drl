@@ -19,7 +19,7 @@ package org.drools.verifier.missingEquality
 
 //list any import classes here.
 import org.drools.core.base.evaluators.Operator;
-import org.drools.core.base.evaluators.MatchesEvaluatorsDefinition;
+import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
 
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.LiteralRestriction;
@@ -53,23 +53,23 @@ rule "Missing restriction in LiteralRestrictions"
         //
         (
                 $r :LiteralRestriction(
-                    operator == Operator.EQUAL
+                    operator == Operator.BuiltInOperator.EQUAL.getOperator()
                 )
             and
                 not LiteralRestriction(
                     fieldPath == $r.fieldPath,
-                    operator == Operator.NOT_EQUAL,
+                    operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator(),
                     patternIsNot == $r.patternIsNot,
                     valueAsString == $r.valueAsString
                 )
         ) or (
                 $r :LiteralRestriction(
-                    operator == Operator.NOT_EQUAL
+                    operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()
                 )
             and
                 not LiteralRestriction(
                     fieldPath == $r.fieldPath,
-                    operator == Operator.EQUAL,
+                    operator == Operator.BuiltInOperator.EQUAL.getOperator(),
                     patternIsNot == $r.patternIsNot,
                     valueAsString == $r.valueAsString
                 )
@@ -118,11 +118,11 @@ rule "Missing restriction in VariableRestrictions, equal operator"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
         $r :VariableRestriction(
-            operator == Operator.EQUAL
+            operator == Operator.BuiltInOperator.EQUAL.getOperator()
         )
         not VariableRestriction(
             fieldPath == $r.fieldPath,
-            operator == Operator.NOT_EQUAL,
+            operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator(),
             patternIsNot == $r.patternIsNot,
             variable.parentPath == $r.variable.parentPath,
             variable.parentType == $r.variable.parentType
@@ -144,11 +144,11 @@ rule "Missing restriction in VariableRestrictions, unequal operator"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
         $r :VariableRestriction(
-            operator == Operator.NOT_EQUAL
+            operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()
         )
         not VariableRestriction(
             fieldPath == $r.fieldPath,
-            operator == Operator.EQUAL,
+            operator == Operator.BuiltInOperator.EQUAL.getOperator(),
             patternIsNot == $r.patternIsNot,
             variable.parentPath == $r.variable.parentPath,
             variable.parentType == $r.variable.parentType
@@ -170,12 +170,12 @@ rule "Missing restriction in VariableRestrictions, custom operator"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
         $r :VariableRestriction(
-            operator != Operator.EQUAL,
-            operator != Operator.NOT_EQUAL,
-            operator != Operator.LESS,
-            operator != Operator.LESS_OR_EQUAL,
-            operator != Operator.GREATER,
-            operator != Operator.GREATER_OR_EQUAL
+            operator != Operator.BuiltInOperator.EQUAL.getOperator(),
+            operator != Operator.BuiltInOperator.NOT_EQUAL.getOperator(),
+            operator != Operator.BuiltInOperator.LESS.getOperator(),
+            operator != Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator(),
+            operator != Operator.BuiltInOperator.GREATER.getOperator(),
+            operator != Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator()
         )
         not VariableRestriction(
             fieldPath == $r.fieldPath,

@@ -42,18 +42,18 @@ rule "Range check for integers, if smaller than or equal is missing"
         // Foo( bar > 42 )
         $r :NumberRestriction(
             fieldPath == $f.path,
-            operator == Operator.GREATER
+            operator == Operator.BuiltInOperator.GREATER.getOperator()
         )
 
         // Check if Foo( bar == 42 || <= 42 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
-            ( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
+            ( operator  == Operator.BuiltInOperator.EQUAL.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() ),
             patternIsNot == $r.patternIsNot,
             value == $r.value
         )
     then
-        Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
+        Gap gap = new Gap( $f, Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator(), $r );
 
         result.add( gap );
         insert( gap );
@@ -74,18 +74,18 @@ rule "Range check for integers, if greater than or equal is missing"
         // Foo( bar > 42 )
         $r :NumberRestriction(
             fieldPath == $f.path,
-            operator == Operator.LESS
+            operator == Operator.BuiltInOperator.LESS.getOperator()
         )
 
         // Check if Foo( bar == 42 || <= 42 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
-            ( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
+            ( operator  == Operator.BuiltInOperator.EQUAL.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() ),
             patternIsNot == $r.patternIsNot,
             value == $r.value
         )
     then
-        Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
+        Gap gap = new Gap( $f, Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator(), $r );
 
         result.add( gap );
         insert( gap );
@@ -108,13 +108,13 @@ rule "Range check for integers, equal and greater than"
         // Foo( bar == 42 )
         $r :NumberRestriction(
             fieldPath == $f.path,
-            ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
+            ( operator == Operator.BuiltInOperator.EQUAL.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() )
         )
 
         // Check if Foo( bar > 42 || >= 42 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ),
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() ),
             patternIsNot == $r.patternIsNot,
             value == $r.value
         )
@@ -122,12 +122,12 @@ rule "Range check for integers, equal and greater than"
         // Check if Foo( bar == 43 || >= 43 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
-            ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
+            ( operator == Operator.BuiltInOperator.EQUAL.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() ),
             patternIsNot == $r.patternIsNot,
             value == ( $r.value + 1 )
         )
     then
-        Gap gap =  new Gap( $f, Operator.GREATER, $r );
+        Gap gap =  new Gap( $f, Operator.BuiltInOperator.GREATER.getOperator(), $r );
 
         result.add( gap );
         insert( gap );
@@ -150,13 +150,13 @@ rule "Range check for integers, equal and smaller than"
         // Foo( bar == 42 )
         $r :NumberRestriction(
             fieldPath == $f.path,
-            ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
+            ( operator == Operator.BuiltInOperator.EQUAL.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() )
         )
 
         // Check if Foo( bar < 42 || <= 42 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ),
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() ),
             patternIsNot == $r.patternIsNot,
             value == $r.value
         )
@@ -164,12 +164,12 @@ rule "Range check for integers, equal and smaller than"
         // Check if Foo( bar == 41 || <= 41 ) is missing.
         not NumberRestriction(
             fieldPath == $f.path,
-            ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
+            ( operator == Operator.BuiltInOperator.EQUAL.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() ),
             patternIsNot == $r.patternIsNot,
             value == ( $r.value - 1 )
         )
     then
-        Gap gap =  new Gap( $f, Operator.LESS, $r );
+        Gap gap =  new Gap( $f, Operator.BuiltInOperator.LESS.getOperator(), $r );
 
         result.add( gap );
         insert( gap );

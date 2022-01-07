@@ -16,9 +16,6 @@
 
 package org.drools.core.spi;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.drools.core.common.ReteEvaluator;
 
 public interface InternalReadAccessor
@@ -26,10 +23,6 @@ public interface InternalReadAccessor
     ReadAccessor {
 
     Object getValue(ReteEvaluator reteEvaluator, Object object);
-
-    BigDecimal getBigDecimalValue(ReteEvaluator reteEvaluator, Object object);
-
-    BigInteger getBigIntegerValue(ReteEvaluator reteEvaluator, Object object);
 
     char getCharValue(ReteEvaluator reteEvaluator, Object object);
 

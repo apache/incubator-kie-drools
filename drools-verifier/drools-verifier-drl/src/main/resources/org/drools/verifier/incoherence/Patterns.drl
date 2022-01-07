@@ -195,13 +195,13 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
     when
         $r1 :NumberRestriction(
             patternIsNot == true,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() )
         )
 
         $r2 :NumberRestriction(
             rulePath == $r1.rulePath,
             patternIsNot == false,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL ),
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.EQUAL.getOperator() ),
             fieldPath == $r1.fieldPath,
             value > $r1.value
         )
@@ -263,13 +263,13 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
     when
         $r1 :NumberRestriction(
             patternIsNot == true,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL )
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() )
         )
 
         $r2 :NumberRestriction(
             rulePath == $r1.rulePath,
             patternIsNot == false,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL ),
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.EQUAL.getOperator() ),
             fieldPath == $r1.fieldPath,
             value < $r1.value
         )
@@ -331,14 +331,14 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
     when
         $r1 :LiteralRestriction(
             patternIsNot == true,
-            operator == Operator.NOT_EQUAL
+            operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()
         )
 
         $r2 :LiteralRestriction(
             rulePath == $r1.rulePath,
             patternIsNot == false,
             // It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
-            ( operator != Operator.EQUAL && != Operator.NOT_EQUAL ),
+            ( operator != Operator.BuiltInOperator.EQUAL.getOperator() && != Operator.BuiltInOperator.NOT_EQUAL.getOperator() ),
             fieldPath == $r1.fieldPath,
             valueAsString == $r1.valueAsString
         )
@@ -400,7 +400,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
     when
         $r1 :VariableRestriction(
             patternIsNot == true,
-            operator == Operator.NOT_EQUAL
+            operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()
         )
 
         $r2 :VariableRestriction(
@@ -410,7 +410,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             variable.parentPath == $r1.variable.parentPath,
             variable.parentType == $r1.variable.parentType,
             // It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
-            ( operator != Operator.EQUAL && != Operator.NOT_EQUAL )
+            ( operator != Operator.BuiltInOperator.EQUAL.getOperator() && != Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
         )
 
         $pp1 :SubPattern(
@@ -470,13 +470,13 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
     when
         $r1 :LiteralRestriction(
             patternIsNot == true,
-            ( operator == Operator.LESS_OR_EQUAL || == Operator.GREATER_OR_EQUAL )
+            ( operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() )
         )
 
         $r2 :LiteralRestriction(
             rulePath == $r1.rulePath,
             patternIsNot == false,
-            operator == Operator.EQUAL,
+            operator == Operator.BuiltInOperator.EQUAL.getOperator(),
             fieldPath == $r1.fieldPath,
             valueAsString == $r1.valueAsString
         )
@@ -539,7 +539,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
         $r1 :VariableRestriction(
             patternIsNot == true,
             // Equal is also a problem, but there is already a rule for that.
-            ( operator == Operator.LESS_OR_EQUAL || == Operator.GREATER_OR_EQUAL )
+            ( operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() )
         )
 
         $r2 :VariableRestriction(
@@ -548,7 +548,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             fieldPath == $r1.fieldPath,
             variable.parentPath == $r1.variable.parentPath,
             variable.parentType == $r1.variable.parentType,
-            operator == Operator.EQUAL
+            operator == Operator.BuiltInOperator.EQUAL.getOperator()
         )
 
         $pp1 :SubPattern(
