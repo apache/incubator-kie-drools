@@ -101,8 +101,8 @@ operator returns [boolean negated, String opr]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
 @after{ if( state.backtracking == 0 && input.LA( 1 ) != DRL5Lexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : x=TILDE?
-    ( builtInOperator=EQUALS        { $negated = false; $opr=($x != null ? $x.text : "")+$builtInOperator.text; helper.emit($builtInOperator, DroolsEditorType.SYMBOL); }
-    | builtInOperator=NOT_EQUALS    { $negated = false; $opr=($x != null ? $x.text : "")+$builtInOperator.text; helper.emit($builtInOperator, DroolsEditorType.SYMBOL); }
+    ( op=EQUALS        { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
+    | op=NOT_EQUALS    { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
     | rop=relationalOp { $negated = $rop.negated; $opr=($x != null ? $x.text : "")+$rop.opr; }
     )
     ;
@@ -112,11 +112,11 @@ operator returns [boolean negated, String opr]
 relationalOp returns [boolean negated, String opr, java.util.List<String> params]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
 @after{ if( state.backtracking == 0 && input.LA( 1 ) != DRL5Lexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
-  : ( builtInOperator=LESS_EQUALS     { $negated = false; $opr=$builtInOperator.text; $params = null; helper.emit($builtInOperator, DroolsEditorType.SYMBOL);}
-    | builtInOperator=GREATER_EQUALS  { $negated = false; $opr=$builtInOperator.text; $params = null; helper.emit($builtInOperator, DroolsEditorType.SYMBOL);}
-    | builtInOperator=LESS            { $negated = false; $opr=$builtInOperator.text; $params = null; helper.emit($builtInOperator, DroolsEditorType.SYMBOL);}
-    | builtInOperator=GREATER         { $negated = false; $opr=$builtInOperator.text; $params = null; helper.emit($builtInOperator, DroolsEditorType.SYMBOL);}
-    | xop=complexOp      { $negated = false; $opr=$builtInOperator.text; $params = null; helper.emit($builtInOperator, DroolsEditorType.SYMBOL);}
+  : ( op=LESS_EQUALS     { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=LESS            { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=GREATER         { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | xop=complexOp      { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | not_key nop=neg_operator_key { $negated = true; $opr=$nop.text;}
     | cop=operator_key  { $negated = false; $opr=$cop.text;}
     )
@@ -162,7 +162,7 @@ dummy2
 // top level entry point for arbitrary expression parsing
 expression returns [BaseDescr result]
     :	left=conditionalExpression { if( buildDescr  ) { $result = $left.result; } }
-        ((assignmentOperator) => builtInOperator=assignmentOperator right=expression)?
+        ((assignmentOperator) => op=assignmentOperator right=expression)?
     ;
 
 conditionalExpression returns [BaseDescr result]
@@ -284,12 +284,12 @@ andExpression returns [BaseDescr result]
 
 equalityExpression returns [BaseDescr result]
   : left=instanceOfExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( ( builtInOperator=EQUALS | builtInOperator=NOT_EQUALS )
+  ( ( op=EQUALS | op=NOT_EQUALS )
     {  helper.setHasOperator( true );
        if( input.LA( 1 ) != DRL5Lexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=instanceOfExpression
          { if( buildDescr  ) {
-               $result = new RelationalExprDescr( $builtInOperator.text, false, null, $left.result, $right.result );
+               $result = new RelationalExprDescr( $op.text, false, null, $left.result, $right.result );
            }
          }
   )*
@@ -297,12 +297,12 @@ equalityExpression returns [BaseDescr result]
 
 instanceOfExpression returns [BaseDescr result]
   : left=inExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( builtInOperator=instanceof_key
+  ( op=instanceof_key
     {  helper.setHasOperator( true );
        if( input.LA( 1 ) != DRL5Lexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=type
          { if( buildDescr  ) {
-               $result = new RelationalExprDescr( $builtInOperator.text, false, null, $left.result, new AtomicExprDescr($right.text) );
+               $result = new RelationalExprDescr( $op.text, false, null, $left.result, new AtomicExprDescr($right.text) );
            }
          }
   )?
@@ -377,7 +377,7 @@ scope { BaseDescr lsd; }
               $result = $left.result;
           }
           $relationalExpression::lsd = $result;
-      } 
+      }
     }
   ( ( operator | LEFT_PAREN )=> right=orRestriction
          { if( buildDescr  ) {
@@ -419,7 +419,7 @@ andRestriction returns [BaseDescr result]
   ;
 
 singleRestriction returns [BaseDescr result]
-  :  builtInOperator=operator
+  :  op=operator
          { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
      ( (squareArguments shiftExpression)=> sa=squareArguments value=shiftExpression
        | value=shiftExpression
@@ -430,7 +430,7 @@ singleRestriction returns [BaseDescr result]
                                    ($value.text.equals(((AtomicExprDescr)$value.result).getExpression())) )) ?
 		                    $value.result :
 		                    new AtomicExprDescr( $value.text ) ;
-               $result = new RelationalExprDescr( $builtInOperator.opr, $builtInOperator.negated, $sa.args, $relationalExpression::lsd, descr );
+               $result = new RelationalExprDescr( $op.opr, $op.negated, $sa.args, $relationalExpression::lsd, descr );
 	       if( $relationalExpression::lsd instanceof BindingDescr ) {
 	           $relationalExpression::lsd = new AtomicExprDescr( ((BindingDescr)$relationalExpression::lsd).getExpression() );
 	       }
