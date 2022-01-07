@@ -25,6 +25,6 @@ rule "test assert behavior on entry-points"
 when
     $a : StockTick( ) from entry-point "stocktick stream"
 then
-    // no-builtInOperator
+    // no-op
 end
 
