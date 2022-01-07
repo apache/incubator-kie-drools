@@ -33,6 +33,7 @@ public abstract class PersistenceTest {
 
     public static final String PROCESS_ID = "hello";
     public static String PROCESS_EMBEDDED_ID = "embedded";
+    public static String PROCESS_MULTIPLEINSTANCES_ID = "MultipleInstanceSubProcess";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -131,4 +132,47 @@ public abstract class PersistenceTest {
 
     }
 
+    @Test
+    void testMultipleInstance() {
+        String pId = given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_MULTIPLEINSTANCES_ID)
+                .when()
+                .post("/{processId}")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .pathParam("pId", pId)
+                .pathParam("processId", PROCESS_MULTIPLEINSTANCES_ID)
+                .when()
+                .get("/{processId}/{pId}/tasks")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("[0].id");
+
+        given().contentType(ContentType.JSON)
+                .pathParam("pId", pId)
+                .pathParam("taskId", taskId)
+                .pathParam("processId", PROCESS_MULTIPLEINSTANCES_ID)
+                .queryParam("user", "admin")
+                .body("{}")
+                .when()
+                .post("/{processId}/{pId}/Task/{taskId}/phases/complete")
+                .then()
+                .statusCode(200);
+
+        given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_MULTIPLEINSTANCES_ID)
+                .pathParam("pId", pId)
+                .when()
+                .get("/{processId}/{pId}")
+                .then()
+                .statusCode(404);
+    }
 }

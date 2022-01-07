@@ -338,7 +338,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
     public ContextInstance getContextInstance(String contextId) {
         ContextInstance contextInstance = super.getContextInstance(contextId);
         if (contextInstance == null) {
-            contextInstance = resolveContextInstance(contextId, null);
+            contextInstance = resolveContextInstance(contextId, TEMP_OUTPUT_VAR);
             setContextInstance(contextId, contextInstance);
         }
 
