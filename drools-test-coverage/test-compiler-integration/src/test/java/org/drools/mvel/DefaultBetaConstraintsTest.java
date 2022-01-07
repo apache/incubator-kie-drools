@@ -27,62 +27,62 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
 
     @Test
     public void testNoIndexConstraints() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType1", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType2", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType3", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType4", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaNodeFieldConstraint constraint5 = getCheeseTypeConstraint( "cheeseType5", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint5 = getCheeseTypeConstraint( "cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3,constraint5 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaNodeFieldConstraint constraint6 = getCheeseTypeConstraint( "cheeseType6", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint6 = getCheeseTypeConstraint( "cheeseType6", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4, constraint5, constraint6 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
     }
     
     @Test
     public void testIndexedConstraint() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator() );
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType1", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType2", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType3", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType4", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaNodeFieldConstraint constraint5 = getCheeseTypeConstraint( "cheeseType5", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint5 = getCheeseTypeConstraint( "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4, constraint5 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaNodeFieldConstraint constraint6 = getCheeseTypeConstraint( "cheeseType6", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint6 = getCheeseTypeConstraint( "cheeseType6", Operator.BuiltInOperator.EQUAL.getOperator() );
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4, constraint5, constraint6 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
     }
@@ -90,11 +90,11 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     
     @Test
     public void testSingleIndex() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.EQUAL );
-        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
@@ -102,11 +102,11 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     
     @Test
     public void testSingleIndexNotFirst() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator() );
         
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
@@ -115,11 +115,11 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     
     @Test
     public void testDoubleIndex() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.EQUAL );
-        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.EQUAL );
-        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
@@ -128,11 +128,11 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     
     @Test
     public void testDoubleIndexNotFirst() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.EQUAL );
-        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator() );
         
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
@@ -142,11 +142,11 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     
     @Test
     public void testTripleIndex() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.EQUAL );
-        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.EQUAL );
-        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator() );
         
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
@@ -155,11 +155,11 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     
     @Test
     public void testTripleIndexNotFirst() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.EQUAL );
-        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.NOT_EQUAL );
-        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.EQUAL );
-        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint1 = getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint2 = getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint3 = getCheeseTypeConstraint( "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator() );
+        BetaNodeFieldConstraint constraint4 = getCheeseTypeConstraint( "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator() );
         
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         

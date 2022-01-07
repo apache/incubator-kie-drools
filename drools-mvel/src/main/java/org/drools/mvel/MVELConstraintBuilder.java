@@ -181,7 +181,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         boolean isUnification = requiredDeclaration != null &&
                                 requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) &&
-                                Operator.EQUAL.getOperatorString().equals( operatorDescr.getOperator() );
+                                Operator.BuiltInOperator.EQUAL.getSymbol().equals( operatorDescr.getOperator() );
         if (isUnification && leftValue.equals(rightValue)) {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
         }

@@ -21,22 +21,27 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Operator implements Externalizable, org.kie.api.runtime.rule.Operator {
 
     // a static private cache so that pluggable operator can register their implementations
     // it is automatically initialized with common operator implementations
-    private static final Map<String, Operator> CACHE = Collections.synchronizedMap( new HashMap<String, Operator>() );
+    private static final Map<String, Operator> CACHE = new ConcurrentHashMap<>();
 
     static {
         // forces the initialization of the enum and then the registration of all operators
-        Op op = Op.CONTAINS;
+        BuiltInOperator builtInOperator = BuiltInOperator.EQUAL;
     }
 
-    public enum Op {
+    public enum BuiltInOperator {
+        EQUAL("==", false),
+        NOT_EQUAL("!=", false),
+        LESS("<", false),
+        LESS_OR_EQUAL("<=", false),
+        GREATER(">", false),
+        GREATER_OR_EQUAL(">=", false),
         CONTAINS("contains"),
         EXCLUDES("excludes"),
         MATCHES("matches"),
@@ -57,38 +62,31 @@ public class Operator implements Externalizable, org.kie.api.runtime.rule.Operat
         STARTS("starts"),
         STR("str");
 
-        private final String operatorId;
-        private final boolean supportNegation;
+        private final String symbol;
+        private final Operator operator;
 
-        Op(String operatorId) {
-            this(operatorId, true);
+        BuiltInOperator(String symbol) {
+            this(symbol, true);
         }
 
-        Op(String operatorId, boolean supportNegation) {
-            this.operatorId = operatorId;
-            this.supportNegation = supportNegation;
-            Operator.addOperatorToRegistry( operatorId, false );
+        BuiltInOperator(String symbol, boolean supportNegation) {
+            this.symbol = symbol;
+            this.operator = Operator.addOperatorToRegistry(symbol, false);
             if (supportNegation) {
-                Operator.addOperatorToRegistry( operatorId, true );
+                Operator.addOperatorToRegistry(symbol, true);
             }
         }
 
-        public String getOperatorId() {
-            return operatorId;
+        public String getSymbol() {
+            return symbol;
+        }
+
+        public Operator getOperator() {
+            return operator;
         }
     }
 
     private static final long                  serialVersionUID = 510l;
-
-    // these static operator constants are kept here just to make it easier for the engine
-    // to reference common used operators. The addition of new constants here is not
-    // advisable though.
-    public static final Operator               EQUAL            = addOperatorToRegistry( "==", false );
-    public static final Operator               NOT_EQUAL        = addOperatorToRegistry( "!=", false );
-    public static final Operator               LESS             = addOperatorToRegistry( "<", false );
-    public static final Operator               LESS_OR_EQUAL    = addOperatorToRegistry( "<=", false );
-    public static final Operator               GREATER          = addOperatorToRegistry( ">", false );
-    public static final Operator               GREATER_OR_EQUAL = addOperatorToRegistry( ">=", false );
 
     /**
      * Creates a new Operator instance for the given parameters,
@@ -99,13 +97,9 @@ public class Operator implements Externalizable, org.kie.api.runtime.rule.Operat
      *
      * @return the newly created operator
      */
-    public static Operator addOperatorToRegistry(final String operatorId,
-                                                 final boolean isNegated) {
-        Operator op = new Operator( operatorId,
-                                    isNegated );
-        CACHE.put( getKey( operatorId,
-                           isNegated ),
-                   op );
+    public static Operator addOperatorToRegistry(final String operatorId, final boolean isNegated) {
+        Operator op = new Operator( operatorId, isNegated );
+        CACHE.put( getKey( operatorId, isNegated ), op );
         return op;
     }
 
@@ -121,15 +115,11 @@ public class Operator implements Externalizable, org.kie.api.runtime.rule.Operat
      *
      * @return the operator in case it exists
      */
-    public static Operator determineOperator(final String operatorId,
-                                             final boolean isNegated) {
-        Operator op = CACHE.get( getKey( operatorId,
-                                         isNegated ) );
-        return op;
+    public static Operator determineOperator(final String operatorId, final boolean isNegated) {
+        return CACHE.get( getKey( operatorId, isNegated ) );
     }
 
-    private static String getKey(final String string,
-                                 final boolean isNegated) {
+    private static String getKey(final String string, final boolean isNegated) {
         return isNegated + ":" + string;
     }
 
@@ -148,18 +138,16 @@ public class Operator implements Externalizable, org.kie.api.runtime.rule.Operat
     }
 
     public Operator() {
-        
+
     }
 
-    private Operator(final String operator,
-                     final boolean isNegated) {
+    private Operator(final String operator, final boolean isNegated) {
         this.operator = operator;
         this.isNegated = isNegated;
     }
 
     private Object readResolve() throws java.io.ObjectStreamException {
-        Operator op = determineOperator( this.operator,
-                                         this.isNegated );
+        Operator op = determineOperator( this.operator, this.isNegated );
         return op != null ? op : this;
     }
 
@@ -199,8 +187,8 @@ public class Operator implements Externalizable, org.kie.api.runtime.rule.Operat
         if ( isNegated != other.isNegated ) return false;
         if ( operator == null ) {
             if ( other.operator != null ) return false;
-        } else if ( !operator.equals( other.operator ) ) return false;
-        return true;
+        }
+        return operator.equals(other.operator);
     }
 
 }

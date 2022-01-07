@@ -43,7 +43,7 @@ import org.drools.core.spi.InternalReadAccessor;
  */
 public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
-    protected static final String strOp = Operator.Op.STR.getOperatorId();
+    protected static final String strOp = Operator.BuiltInOperator.STR.getSymbol();
 
     public static final Operator STR_COMPARE = Operator.determineOperator( strOp, false );
     public static final Operator NOT_STR_COMPARE = Operator.determineOperator( strOp, true );

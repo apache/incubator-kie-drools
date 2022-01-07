@@ -38,7 +38,7 @@ import org.drools.core.spi.InternalReadAccessor;
  */
 public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
-    protected static final String soundsLikeOp = Operator.Op.SOUNDSLIKE.getOperatorId();
+    protected static final String soundsLikeOp = Operator.BuiltInOperator.SOUNDSLIKE.getSymbol();
 
     public static final Operator SOUNDSLIKE = Operator.determineOperator( soundsLikeOp, false );
     public static final Operator NOT_SOUNDSLIKE = Operator.determineOperator( soundsLikeOp, true );

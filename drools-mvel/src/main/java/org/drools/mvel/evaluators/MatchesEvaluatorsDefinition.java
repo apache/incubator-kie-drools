@@ -37,7 +37,7 @@ import org.drools.core.spi.InternalReadAccessor;
  */
 public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
-    protected static final String matchesOp = Operator.Op.MATCHES.getOperatorId();
+    protected static final String matchesOp = Operator.BuiltInOperator.MATCHES.getSymbol();
 
     public static final Operator MATCHES = Operator.determineOperator( matchesOp, false );
     public static final Operator NOT_MATCHES = Operator.determineOperator( matchesOp, true );

@@ -28,28 +28,28 @@ public class SingleBetaConstraintsTest extends BaseBetaConstraintsTest {
 
     @Test
     public void testIndexed() {
-        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.EQUAL );
+        BetaNodeFieldConstraint constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator() );
         BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
     }
 
     @Test
     public void testNotIndexed() {
-        BetaNodeFieldConstraint  constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.NOT_EQUAL );
+        BetaNodeFieldConstraint  constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
         BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
     }
 
     @Test
     public void testIndexedForComparison() {
-        BetaNodeFieldConstraint  constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.LESS );
+        BetaNodeFieldConstraint  constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.LESS.getOperator() );
         BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class, NodeTypeEnums.ExistsNode );
     }
 
     @Test
     public void testNotIndexedForComparison() {
-        BetaNodeFieldConstraint  constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.LESS );
+        BetaNodeFieldConstraint  constraint0 = getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.LESS.getOperator() );
         BetaNodeFieldConstraint [] constraints = new BetaNodeFieldConstraint [] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class, NodeTypeEnums.JoinNode );
     }

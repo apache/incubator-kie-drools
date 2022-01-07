@@ -74,7 +74,7 @@ public class CoincidesEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String coincidesOp = Operator.Op.COINCIDES.getOperatorId();
+    protected static final String coincidesOp = Operator.BuiltInOperator.COINCIDES.getSymbol();
 
     public static final Operator COINCIDES = Operator.determineOperator( coincidesOp, false );
     public static final Operator COINCIDES_NOT = Operator.determineOperator( coincidesOp, true );

@@ -75,7 +75,7 @@ public class AfterEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String afterOp = Operator.Op.AFTER.getOperatorId();
+    protected static final String afterOp = Operator.BuiltInOperator.AFTER.getSymbol();
 
     public final static Operator AFTER = Operator.determineOperator( afterOp, false );
     public final static Operator NOT_AFTER = Operator.determineOperator( afterOp, true );

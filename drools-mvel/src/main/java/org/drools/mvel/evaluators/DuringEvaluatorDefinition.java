@@ -96,7 +96,7 @@ public class DuringEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    public static final String duringOp = Operator.Op.DURING.getOperatorId();
+    public static final String duringOp = Operator.BuiltInOperator.DURING.getSymbol();
 
     public static final Operator DURING = Operator.determineOperator( duringOp, false );
 
@@ -104,7 +104,7 @@ public class DuringEvaluatorDefinition
 
     private static final String[] SUPPORTED_IDS = new String[] { duringOp };
 
-    private Map<String, DuringEvaluator> cache         = Collections.emptyMap();
+    private Map<String, DuringEvaluator> cache = Collections.emptyMap();
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
@@ -164,7 +164,7 @@ public class DuringEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, DuringEvaluator>();
+            this.cache = new HashMap<>();
         }
         String key = isNegated + ":" + parameterText;
         DuringEvaluator eval = this.cache.get( key );

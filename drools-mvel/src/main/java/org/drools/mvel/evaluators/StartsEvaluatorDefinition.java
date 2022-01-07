@@ -75,7 +75,7 @@ public class StartsEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String startsOp = Operator.Op.STARTS.getOperatorId();
+    protected static final String startsOp = Operator.BuiltInOperator.STARTS.getSymbol();
 
     public static final Operator STARTS = Operator.determineOperator( startsOp, false );
     public static final Operator STARTS_NOT = Operator.determineOperator( startsOp, true );

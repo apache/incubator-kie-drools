@@ -75,7 +75,7 @@ public class FinishedByEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String finishedByOp = Operator.Op.FINISHED_BY.getOperatorId();
+    protected static final String finishedByOp = Operator.BuiltInOperator.FINISHED_BY.getSymbol();
 
     public static final Operator FINISHED_BY = Operator.determineOperator( finishedByOp, false );
     public static final Operator NOT_FINISHED_BY = Operator.determineOperator( finishedByOp, true );

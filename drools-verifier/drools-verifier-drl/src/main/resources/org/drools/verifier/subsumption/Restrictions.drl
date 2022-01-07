@@ -41,13 +41,13 @@ rule "Find subsumptant restrictions, greater than"
         // Covered x > 10
         $lower:NumberRestriction(
             ( valueType == Field.INT || == Field.DOUBLE || == Field.DATE ),
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() )
         )
 
         // Covered x > 100
         $higher :NumberRestriction(
             fieldPath == $lower.fieldPath,
-            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL ),
+            ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.EQUAL.getOperator() ),
             value < $lower.value
         )
     then
@@ -83,13 +83,13 @@ rule "Find subsumptant restrictions, less than"
         // Covered x < 10
         $higher :NumberRestriction(
             ( valueType == Field.INT || == Field.DOUBLE || == Field.DATE ),
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL )
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() )
         )
 
         // Covered x < 100
         $lower :NumberRestriction(
             fieldPath == $higher.fieldPath,
-            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL),
+            ( operator == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.EQUAL.getOperator()),
             value < $higher.value
         )
     then

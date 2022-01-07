@@ -47,22 +47,20 @@ public abstract class MissingRange
      * @return operator
      */
     public static Operator getReversedOperator(Operator e) {
-        if ( e.equals( Operator.NOT_EQUAL ) ) {
-            return Operator.EQUAL;
-        } else if ( e.equals( Operator.EQUAL ) ) {
-            return Operator.NOT_EQUAL;
-        } else if ( e.equals( Operator.GREATER ) ) {
-            return Operator.LESS_OR_EQUAL;
-        } else if ( e.equals( Operator.LESS ) ) {
-            return Operator.GREATER_OR_EQUAL;
-        } else if ( e.equals( Operator.GREATER_OR_EQUAL ) ) {
-            return Operator.LESS;
-        } else if ( e.equals( Operator.LESS_OR_EQUAL ) ) {
-            return Operator.GREATER;
-        } else {
-            return Operator.determineOperator( e.getOperatorString(),
-                                               !e.isNegated() );
+        if ( e.equals( Operator.BuiltInOperator.NOT_EQUAL.getOperator() ) ) {
+            return Operator.BuiltInOperator.EQUAL.getOperator();
+        } else if ( e.equals( Operator.BuiltInOperator.EQUAL.getOperator() ) ) {
+            return Operator.BuiltInOperator.NOT_EQUAL.getOperator();
+        } else if ( e.equals( Operator.BuiltInOperator.GREATER.getOperator() ) ) {
+            return Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator();
+        } else if ( e.equals( Operator.BuiltInOperator.LESS.getOperator() ) ) {
+            return Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator();
+        } else if ( e.equals( Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() ) ) {
+            return Operator.BuiltInOperator.LESS.getOperator();
+        } else if ( e.equals( Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() ) ) {
+           return Operator.BuiltInOperator.GREATER.getOperator();
         }
+        return Operator.determineOperator( e.getOperatorString(), !e.isNegated() );
     }
 
     public int compareTo(MissingRange another) {

@@ -74,8 +74,8 @@ class MissingRangesReportVisitor extends ReportVisitor {
 
             if ( previous != null ) {
                 // Check if previous and current are from the same rule.
-                if ( previous.ruleId == null && current.ruleId == null && !previous.operator.equals( Operator.EQUAL ) && !previous.operator.equals( Operator.NOT_EQUAL ) && !current.operator.equals( Operator.EQUAL )
-                     && !current.operator.equals( Operator.NOT_EQUAL ) ) {
+                if ( previous.ruleId == null && current.ruleId == null && !previous.operator.equals( Operator.BuiltInOperator.EQUAL.getOperator() ) && !previous.operator.equals( Operator.BuiltInOperator.NOT_EQUAL.getOperator() ) && !current.operator.equals( Operator.BuiltInOperator.EQUAL.getOperator() )
+                     && !current.operator.equals( Operator.BuiltInOperator.NOT_EQUAL.getOperator() ) ) {
                     // Combine these two.
                     stringRows.add( "Missing : " + previous + " .. " + current );
 

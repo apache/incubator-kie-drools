@@ -97,7 +97,7 @@ public class IncludesEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    public static final String includesOp = Operator.Op.INCLUDES.getOperatorId();
+    public static final String includesOp = Operator.BuiltInOperator.INCLUDES.getSymbol();
 
     public static final Operator INCLUDES = Operator.determineOperator( includesOp, false );
 

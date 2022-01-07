@@ -75,7 +75,7 @@ public class BeforeEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    public static final String beforeOp = Operator.Op.BEFORE.getOperatorId();
+    public static final String beforeOp = Operator.BuiltInOperator.BEFORE.getSymbol();
 
     public static final Operator BEFORE = Operator.determineOperator( beforeOp, false );
 

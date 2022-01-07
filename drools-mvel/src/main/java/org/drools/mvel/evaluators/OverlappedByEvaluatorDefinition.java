@@ -83,7 +83,7 @@ public class OverlappedByEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    public static final String overlappedbyOp = Operator.Op.OVERLAPPED_BY.getOperatorId();
+    public static final String overlappedbyOp = Operator.BuiltInOperator.OVERLAPPED_BY.getSymbol();
 
     public static final Operator OVERLAPPED_BY = Operator.determineOperator( overlappedbyOp, false );
 

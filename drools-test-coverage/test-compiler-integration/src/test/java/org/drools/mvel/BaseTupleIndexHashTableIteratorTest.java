@@ -73,7 +73,7 @@ public abstract class BaseTupleIndexHashTableIteratorTest {
         store.setEagerWire(true);
         InternalReadAccessor extractor = store.getReader(Foo.class, "this");
         Declaration declaration = new Declaration("d", extractor, new Pattern(0, new ClassObjectType(Foo.class)));
-        String expression = "this " + Operator.EQUAL.getOperatorString() + " d";
+        String expression = "this " + Operator.BuiltInOperator.EQUAL.getOperator().getOperatorString() + " d";
         return new MVELConstraintTestUtil(expression, declaration, extractor);
     }
 

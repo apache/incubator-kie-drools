@@ -75,7 +75,7 @@ public class FinishesEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String finishesOp = Operator.Op.FINISHES.getOperatorId();
+    protected static final String finishesOp = Operator.BuiltInOperator.FINISHES.getSymbol();
 
     public static final Operator FINISHES = Operator.determineOperator( finishesOp, false );
     public static final Operator FINISHES_NOT = Operator.determineOperator( finishesOp, true );

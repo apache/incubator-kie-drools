@@ -16,20 +16,25 @@
 
 package org.drools.verifier.opposites;
 
-import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.core.base.evaluators.Operator;
-import org.drools.verifier.TestBaseOld;
-import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.components.*;
-import org.drools.verifier.report.components.Cause;
-import org.junit.Test;
-import org.kie.api.runtime.KieSession;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.base.RuleNameMatchesAgendaFilter;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.verifier.TestBaseOld;
+import org.drools.verifier.VerifierComponentMockFactory;
+import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternVariable;
+import org.drools.verifier.components.VariableRestriction;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.report.components.Cause;
+import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -47,25 +52,25 @@ public class OppositeRestrictionsTest extends OppositesBase {
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern,
                                                                      "1");
         r1.setFieldPath("0");
-        r1.setOperator(Operator.EQUAL);
+        r1.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern,
                                                                      "1");
         r2.setFieldPath("0");
-        r2.setOperator(Operator.NOT_EQUAL);
+        r2.setOperator(Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         r2.setOrderNumber(1);
 
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern,
                                                                      "1.0");
         r3.setFieldPath("0");
-        r3.setOperator(Operator.EQUAL);
+        r3.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r3.setOrderNumber(2);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern,
                                                                      "1.0");
         r4.setFieldPath("0");
-        r4.setOperator(Operator.NOT_EQUAL);
+        r4.setOperator(Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         r4.setOrderNumber(3);
 
         data.add(r1);
@@ -108,13 +113,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern,
                                                                      "1");
         r1.setFieldPath("0");
-        r1.setOperator(Operator.GREATER_OR_EQUAL);
+        r1.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern,
                                                                      "1");
         r2.setFieldPath("0");
-        r2.setOperator(Operator.LESS);
+        r2.setOperator(Operator.BuiltInOperator.LESS.getOperator());
         r2.setOrderNumber(1);
 
         data.add(r1);
@@ -149,13 +154,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern,
                                                                      "1");
         r1.setFieldPath("0");
-        r1.setOperator(Operator.GREATER);
+        r1.setOperator(Operator.BuiltInOperator.GREATER.getOperator());
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern,
                                                                      "1");
         r2.setFieldPath("0");
-        r2.setOperator(Operator.LESS_OR_EQUAL);
+        r2.setOperator(Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator());
         r2.setOrderNumber(1);
 
         data.add(r1);
@@ -192,13 +197,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern,
                                                                      "1");
         r1.setFieldPath("0");
-        r1.setOperator(Operator.GREATER_OR_EQUAL);
+        r1.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern,
                                                                      "0");
         r2.setFieldPath("0");
-        r2.setOperator(Operator.LESS_OR_EQUAL);
+        r2.setOperator(Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator());
         r2.setOrderNumber(1);
 
         data.add(r1);
@@ -245,13 +250,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         VariableRestriction r1 = new VariableRestriction(pattern1);
         r1.setFieldPath("0");
-        r1.setOperator(Operator.GREATER_OR_EQUAL);
+        r1.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r1.setVariable(variable1);
         r1.setOrderNumber(0);
 
         VariableRestriction r2 = new VariableRestriction(pattern1);
         r2.setFieldPath("0");
-        r2.setOperator(Operator.LESS);
+        r2.setOperator(Operator.BuiltInOperator.LESS.getOperator());
         r2.setVariable(variable1);
         r2.setOrderNumber(1);
 
@@ -286,13 +291,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         VariableRestriction r5 = new VariableRestriction(pattern3);
         r5.setFieldPath("1");
-        r5.setOperator(Operator.GREATER_OR_EQUAL);
+        r5.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r5.setVariable(variable3);
         r5.setOrderNumber(7);
 
         VariableRestriction r6 = new VariableRestriction(pattern3);
         r6.setFieldPath("1");
-        r6.setOperator(Operator.EQUAL);
+        r6.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r6.setVariable(variable3);
         r6.setOrderNumber(8);
 

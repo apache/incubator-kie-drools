@@ -71,17 +71,17 @@ public abstract class BaseBetaConstraintsTest {
             Pattern pattern = new Pattern(0, new ClassObjectType(Cheese.class));
 
             Predicate1<Cheese> predicate;
-            if (operator == Operator.EQUAL) {
+            if (operator == Operator.BuiltInOperator.EQUAL.getOperator()) {
                 predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.areNullSafeEquals(_this.getType(), identifier));
-            } else if (operator == Operator.NOT_EQUAL) {
+            } else if (operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()) {
                 predicate = new Predicate1.Impl<Cheese>(_this -> !EvaluationUtil.areNullSafeEquals(_this.getType(), identifier));
-            } else if (operator == Operator.GREATER) {
+            } else if (operator == Operator.BuiltInOperator.GREATER.getOperator()) {
                 predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.greaterThan(_this.getType(), identifier));
-            } else if (operator == Operator.GREATER_OR_EQUAL) {
+            } else if (operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator()) {
                 predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.greaterOrEqual(_this.getType(), identifier));
-            } else if (operator == Operator.LESS) {
+            } else if (operator == Operator.BuiltInOperator.LESS.getOperator()) {
                 predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.lessThan(_this.getType(), identifier));
-            } else if (operator == Operator.GREATER_OR_EQUAL) {
+            } else if (operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator()) {
                 predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.lessOrEqual(_this.getType(), identifier));
             } else {
                 throw new RuntimeException(operator + " is not supported");

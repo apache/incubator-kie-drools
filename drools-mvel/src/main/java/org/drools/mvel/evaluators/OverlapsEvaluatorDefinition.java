@@ -83,7 +83,7 @@ public class OverlapsEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    public static final String overlapsOp = Operator.Op.OVERLAPS.getOperatorId();
+    public static final String overlapsOp = Operator.BuiltInOperator.OVERLAPS.getSymbol();
 
     public static final Operator OVERLAPS = Operator.determineOperator( overlapsOp, false );
 

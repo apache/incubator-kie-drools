@@ -73,7 +73,7 @@ public class MetByEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String metByOp = Operator.Op.MET_BY.getOperatorId();
+    protected static final String metByOp = Operator.BuiltInOperator.MET_BY.getSymbol();
 
     public static Operator MET_BY = Operator.determineOperator( metByOp, false );
 

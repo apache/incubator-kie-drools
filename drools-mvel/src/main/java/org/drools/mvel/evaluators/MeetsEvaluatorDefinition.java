@@ -73,7 +73,7 @@ public class MeetsEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String meetsOp = Operator.Op.MEETS.getOperatorId();
+    protected static final String meetsOp = Operator.BuiltInOperator.MEETS.getSymbol();
 
     public static final Operator MEETS = Operator.determineOperator( meetsOp, false );
 

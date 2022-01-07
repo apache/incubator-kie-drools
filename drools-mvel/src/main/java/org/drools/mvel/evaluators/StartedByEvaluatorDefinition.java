@@ -75,7 +75,7 @@ public class StartedByEvaluatorDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String startedByOp = Operator.Op.STARTED_BY.getOperatorId();
+    protected static final String startedByOp = Operator.BuiltInOperator.STARTED_BY.getSymbol();
 
     public static final Operator STARTED_BY = Operator.determineOperator( startedByOp, false );
     public static final Operator NOT_STARTED_BY = Operator.determineOperator( startedByOp, true );

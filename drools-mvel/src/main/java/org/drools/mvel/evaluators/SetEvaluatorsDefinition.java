@@ -43,9 +43,9 @@ public class SetEvaluatorsDefinition
     implements
         EvaluatorDefinition {
 
-    protected static final String containsOp = Operator.Op.CONTAINS.getOperatorId();
-    protected static final String excludesOp = Operator.Op.EXCLUDES.getOperatorId();
-    protected static final String memberOfOp = Operator.Op.MEMBEROF.getOperatorId();
+    protected static final String containsOp = Operator.BuiltInOperator.CONTAINS.getSymbol();
+    protected static final String excludesOp = Operator.BuiltInOperator.EXCLUDES.getSymbol();
+    protected static final String memberOfOp = Operator.BuiltInOperator.MEMBEROF.getSymbol();
 
     public static final Operator CONTAINS = Operator.determineOperator( containsOp, false );
     public static final Operator NOT_CONTAINS = Operator.determineOperator( containsOp, true );
