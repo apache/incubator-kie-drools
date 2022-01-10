@@ -1,4 +1,4 @@
-name: Kogito Apps Build
+name: Kogito Apps
 
 on:
   pull_request:
@@ -25,7 +25,7 @@ jobs:
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Maven Build
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
