@@ -588,10 +588,8 @@ public class ProtobufProcessInstanceWriter {
     private Map<String, KogitoWorkItemsProtobuf.Deadline> buildDeadlines(Map<String, Map<String, Object>> deadlines) {
         Map<String, KogitoWorkItemsProtobuf.Deadline> deadlinesProtobuf = new HashMap<>();
         for (Map.Entry<String, Map<String, Object>> entry : deadlines.entrySet()) {
-            Map<String, String> data = new HashMap<>();
-            entry.getValue().forEach((k, v) -> data.put(k, v.toString()));
             KogitoWorkItemsProtobuf.Deadline.Builder builder = KogitoWorkItemsProtobuf.Deadline.newBuilder();
-            builder.getContentMap().putAll(data);
+            entry.getValue().forEach((k, v) -> builder.putContent(k, v.toString()));
             deadlinesProtobuf.put(entry.getKey(), builder.build());
         }
         return deadlinesProtobuf;
