@@ -63,6 +63,10 @@
           <groupId>org.eclipse.sisu</groupId>
           <artifactId>org.eclipse.sisu.plexus</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
