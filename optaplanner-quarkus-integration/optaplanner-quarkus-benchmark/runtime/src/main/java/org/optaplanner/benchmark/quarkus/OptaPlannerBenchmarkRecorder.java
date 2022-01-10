@@ -17,13 +17,18 @@
 package org.optaplanner.benchmark.quarkus;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.benchmark.quarkus.config.OptaPlannerBenchmarkRuntimeConfig;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
@@ -66,26 +71,59 @@ public class OptaPlannerBenchmarkRecorder {
                 .ifPresent(terminationConfig::setUnimprovedSpentLimit);
         benchmarkRuntimeConfig.termination.bestScoreLimit.ifPresent(terminationConfig::setBestScoreLimit);
 
-        if (!isTerminationConfigured(terminationConfig)) {
-            throw new IllegalStateException("At least one of the properties " +
-                    "quarkus.optaplanner.benchmark.solver.termination.spent-limit, " +
-                    "quarkus.optaplanner.benchmark.solver.termination.best-score-limit, " +
-                    "quarkus.optaplanner.benchmark.solver.termination.unimproved-spent-limit " +
-                    "is required if the inherited solver config does not have termination configured.");
+        if (terminationConfig == null || !terminationConfig.isConfigured()) {
+            List<SolverBenchmarkConfig> solverBenchmarkConfigList = plannerBenchmarkConfig.getSolverBenchmarkConfigList();
+            List<String> unconfiguredTerminationSolverBenchmarkList = new ArrayList<>();
+            if (solverBenchmarkConfigList == null) {
+                throw new IllegalStateException("At least one of the properties " +
+                        "quarkus.optaplanner.benchmark.solver.termination.spent-limit, " +
+                        "quarkus.optaplanner.benchmark.solver.termination.best-score-limit, " +
+                        "quarkus.optaplanner.benchmark.solver.termination.unimproved-spent-limit " +
+                        "is required if termination is not configured in the " +
+                        "inherited solver benchmark config and solverBenchmarkBluePrint is used.");
+            }
+            for (int i = 0; i < solverBenchmarkConfigList.size(); i++) {
+                SolverBenchmarkConfig solverBenchmarkConfig = solverBenchmarkConfigList.get(i);
+                terminationConfig = solverBenchmarkConfig.getSolverConfig().getTerminationConfig();
+                if (terminationConfig == null || !terminationConfig.isConfigured()) {
+                    boolean isTerminationConfiguredForAllNonConstructionHeuristicPhases = !solverBenchmarkConfig
+                            .getSolverConfig().getPhaseConfigList().isEmpty();
+                    for (PhaseConfig<?> phaseConfig : solverBenchmarkConfig.getSolverConfig().getPhaseConfigList()) {
+                        if (!(phaseConfig instanceof ConstructionHeuristicPhaseConfig)) {
+                            if (phaseConfig.getTerminationConfig() == null
+                                    || !phaseConfig.getTerminationConfig().isConfigured()) {
+                                isTerminationConfiguredForAllNonConstructionHeuristicPhases = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (!isTerminationConfiguredForAllNonConstructionHeuristicPhases) {
+                        String benchmarkConfigName = solverBenchmarkConfig.getName();
+                        if (benchmarkConfigName == null) {
+                            benchmarkConfigName = "SolverBenchmarkConfig " + i;
+                        }
+                        unconfiguredTerminationSolverBenchmarkList.add(benchmarkConfigName);
+                    }
+                }
+            }
+            if (!unconfiguredTerminationSolverBenchmarkList.isEmpty()) {
+                throw new IllegalStateException("The following " + SolverBenchmarkConfig.class.getSimpleName() + " do not " +
+                        "have termination configured: " +
+                        unconfiguredTerminationSolverBenchmarkList.stream()
+                                .collect(Collectors.joining(", ", "[", "]"))
+                        + ". " +
+                        "At least one of the properties " +
+                        "quarkus.optaplanner.benchmark.solver.termination.spent-limit, " +
+                        "quarkus.optaplanner.benchmark.solver.termination.best-score-limit, " +
+                        "quarkus.optaplanner.benchmark.solver.termination.unimproved-spent-limit " +
+                        "is required if termination is not configured in a solver benchmark and the " +
+                        "inherited solver benchmark config.");
+            }
         }
 
         if (plannerBenchmarkConfig.getSolverBenchmarkConfigList() == null
                 && plannerBenchmarkConfig.getSolverBenchmarkBluePrintConfigList() == null) {
             plannerBenchmarkConfig.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
         }
-    }
-
-    private boolean isTerminationConfigured(TerminationConfig terminationConfig) {
-        return terminationConfig.getTerminationClass() != null ||
-                terminationConfig.getSpentLimit() != null ||
-                terminationConfig.getBestScoreLimit() != null ||
-                terminationConfig.getUnimprovedSpentLimit() != null ||
-                terminationConfig.getStepCountLimit() != null ||
-                terminationConfig.getTerminationConfigList() != null;
     }
 }

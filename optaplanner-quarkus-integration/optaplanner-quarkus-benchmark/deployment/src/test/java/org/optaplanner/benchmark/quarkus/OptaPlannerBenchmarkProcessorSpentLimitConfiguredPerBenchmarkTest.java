@@ -17,36 +17,47 @@
 package org.optaplanner.benchmark.quarkus;
 
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
 import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerBenchmarkProcessorMissingSpentLimitTest {
+public class OptaPlannerBenchmarkProcessorSpentLimitConfiguredPerBenchmarkTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .overrideConfigKey("quarkus.test.flat-class-path", "true")
+            .overrideConfigKey("quarkus.optaplanner.benchmark.solver-benchmark-config-xml",
+                    "solverBenchmarkConfigSpentLimitPerBenchmark.xml")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataQuarkusEntity.class,
-                            TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));
+                            TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class)
+                    .addAsResource("solverBenchmarkConfigSpentLimitPerBenchmark.xml"));
+
+    @Inject
+    PlannerBenchmarkFactory plannerBenchmarkFactory;
 
     @Test
     public void benchmark() throws ExecutionException, InterruptedException {
-        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
-            new OptaPlannerBenchmarkRecorder().benchmarkConfigSupplier(new PlannerBenchmarkConfig()).get();
-        });
-        Assertions.assertEquals(
-                "At least one of the properties quarkus.optaplanner.benchmark.solver.termination.spent-limit, quarkus.optaplanner.benchmark.solver.termination.best-score-limit, quarkus.optaplanner.benchmark.solver.termination.unimproved-spent-limit is required if termination is not configured in the inherited solver benchmark config and solverBenchmarkBluePrint is used.",
-                exception.getMessage());
+        TestdataQuarkusSolution problem = new TestdataQuarkusSolution();
+        problem.setValueList(IntStream.range(1, 3)
+                .mapToObj(i -> "v" + i)
+                .collect(Collectors.toList()));
+        problem.setEntityList(IntStream.range(1, 3)
+                .mapToObj(i -> new TestdataQuarkusEntity())
+                .collect(Collectors.toList()));
+        plannerBenchmarkFactory.buildPlannerBenchmark(problem).benchmark();
     }
 
 }
