@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
@@ -53,6 +52,8 @@ public abstract class AbstractProcessDataIndexIT {
     }
 
     RequestSpecification spec;
+
+    ObjectMapper mapper = new ObjectMapper();
 
     public abstract String getDataIndexURL();
 
@@ -590,18 +591,14 @@ public abstract class AbstractProcessDataIndexIT {
     }
 
     private void checkExpectedCreatedItemData(String creationData, Map<String, String> resultMap) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
         JsonNode creationJsonNode = mapper.readTree(creationData);
         assertEquals(resultMap.get("updatedBy"), creationJsonNode.at("/updatedBy").asText());
-        assertEquals(resultMap.get("updatedAt"),
-                ZonedDateTime.parse(creationJsonNode.at("/updatedAt").asText())
-                        .withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS)
-                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        assertEquals(ZonedDateTime.parse(resultMap.get("updatedAt")).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS),
+                ZonedDateTime.parse(creationJsonNode.at("/updatedAt").asText()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS));
         assertEquals(resultMap.get("content"), creationJsonNode.at("/content").asText());
     }
 
     private void checkExpectedTaskSchema(String taskSchema) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
         JsonNode schemaJsonNode = mapper.readTree(taskSchema);
         assertEquals("object", schemaJsonNode.at("/type").asText());
 
