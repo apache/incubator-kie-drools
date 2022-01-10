@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_3d586cb1-3ed0-4bc4-a1a7-070b70ece398" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.6.201808231514" id="_3d586cb1-3ed0-4bc4-a1a7-070b70ece398" name="Importing Person DT with Person" namespace="http://www.trisotech.com/dmn/definitions/_3d586cb1-3ed0-4bc4-a1a7-070b70ece398" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Imported Model" drools:name="myImport" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" triso:fileId="eyJmIjp7InNrdSI6IjBmMzNjZmVhLTZkYTQtNDJjNS04MDM3LTRiYjJmNWJkYzc0YiIsIm5hbWUiOiJJbXBvcnRlZCBNb2RlbCJ9fQ==" triso:fileName="Matteo Mortari/Imported Model"/>
+  <dmn11:inputData id="_8a92e0de-d6e1-4ad1-9321-2e44b451cbe2" name="A Person here">
+    <dmn11:variable id="_fda0f106-4c31-49e9-b6d1-d484b7a23f45" name="A Person here" typeRef="myImport.tPerson"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_266dcfcb-a416-4e5d-82a0-986ea8b95712" name="A Decision Table">
+    <dmn11:variable id="_7cdff452-53a8-4fa1-934b-5ce7167b34e5" name="A Decision Table" typeRef="feel:string"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_8a92e0de-d6e1-4ad1-9321-2e44b451cbe2"/>
+    </dmn11:informationRequirement>
+    <dmn11:decisionTable hitPolicy="UNIQUE" id="_be32ca19-ee64-4db2-9479-73b1240ddf31" outputLabel="A Decision Table" typeRef="feel:string">
+      <dmn11:input id="_130b5b6b-2e90-48d5-a52a-6a9791f754c8">
+        <dmn11:inputExpression typeRef="myImport.tPerson">
+          <dmn11:text>A Person here</dmn11:text>
+        </dmn11:inputExpression>
+      </dmn11:input>
+      <dmn11:output id="_12775184-2e50-4348-bbf8-d57a60d74aa2"/>
+      <dmn11:rule id="_0385c66f-b79b-4c2c-b765-1e4c837a3cdd">
+        <dmn11:inputEntry id="_1e5aa917-1dee-40d5-a893-3a4980acd91e">
+          <dmn11:text>?.age &gt;= 18</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_e0950fb6-4136-4fa4-ba48-d3a0086cacbd">
+          <dmn11:text>"Is Allowed"</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="_2a96bc75-ce32-43a9-90be-1dd6befb7c3d">
+        <dmn11:inputEntry id="_f17ce9da-d4e1-4f02-b5f7-019879ae7103">
+          <dmn11:text>?.age &lt; 18</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_fbf9db6e-9705-4c68-8315-5f3256f3cc28">
+          <dmn11:text>"NOT Allowed"</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+    </dmn11:decisionTable>
+  </dmn11:decision>
+</dmn11:definitions>

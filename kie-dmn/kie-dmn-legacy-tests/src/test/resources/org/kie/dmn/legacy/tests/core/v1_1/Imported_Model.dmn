@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.3.201802231629" id="_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" name="Imported Model" namespace="http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1"/>
+  </semantic:extensionElements>
+  <semantic:itemDefinition label="tPerson" name="tPerson">
+    <semantic:itemComponent id="_9bb0759c-b3c1-482f-87f5-c047dc65cef0" name="name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_929acc15-101c-4e49-9b11-494fff411e50" name="age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:businessKnowledgeModel id="_32543811-b499-4608-b784-6c6f294b1c58" name="Say Hello">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_acbb96c9-34a3-4628-8179-dfc5f583e695">
+      <semantic:formalParameter id="_4a626f74-2ecc-4759-b76a-04baec6b795d" name="Person" typeRef="tPerson"/>
+      <semantic:literalExpression id="_c173a894-3719-4d2f-a365-25850e217310">
+        <semantic:text>"Hello " + Person.name + "!"</semantic:text>
+      </semantic:literalExpression>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_a8eb10e1-30e6-40d8-a564-a868f4e0af34" name="Say Hello" typeRef="feel:string"/>
+  </semantic:businessKnowledgeModel>
+</semantic:definitions>

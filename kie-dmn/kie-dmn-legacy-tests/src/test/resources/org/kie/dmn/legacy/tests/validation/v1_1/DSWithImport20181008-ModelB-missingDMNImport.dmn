@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_2f117de7-0568-4d13-baf7-fcfe2b15b779" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.10" id="_2f117de7-0568-4d13-baf7-fcfe2b15b779" name="Model B" namespace="http://www.trisotech.com/dmn/definitions/_2f117de7-0568-4d13-baf7-fcfe2b15b779" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
+      <dmn11:decisionService id="_92a3979a-3f26-40d0-b159-8e9fa9de73ca" name="Model B DS">
+        <dmn11:outputDecision href="#_f6e02fd1-e8a5-4523-ab11-a71fce6929a5"/>
+        <dmn11:inputData href="http://www.trisotech.com/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f#_0b30a69e-76c9-433b-8e20-07bd6bef68a7"/>
+      </dmn11:decisionService>
+    </drools:decisionServices>
+  </dmn11:extensionElements>
+  <!-- TEST CASE, omit DMN Import
+    <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Model A" drools:name="Model A" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f" triso:fileId="eyJmIjp7InNrdSI6IjJkYjAwZjdlLTQ0MmEtNDg3OC1hZTM1LTJiNzEzZTFjZmJhOCIsIm5hbWUiOiJNb2RlbCBBIn19" triso:fileName="20181008/Model A"/>
+   -->
+  <dmn11:decision id="_f6e02fd1-e8a5-4523-ab11-a71fce6929a5" name="Model B Decision">
+    <dmn11:variable id="_838f2112-3d35-4cb0-a05c-c2965bd4bcdb" name="Model B Decision" typeRef="feel:string"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="http://www.trisotech.com/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f#_0b30a69e-76c9-433b-8e20-07bd6bef68a7"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_5048121f-8121-46a0-8f12-179162383aa3" typeRef="feel:string">
+      <dmn11:text>Model A.Input 1</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

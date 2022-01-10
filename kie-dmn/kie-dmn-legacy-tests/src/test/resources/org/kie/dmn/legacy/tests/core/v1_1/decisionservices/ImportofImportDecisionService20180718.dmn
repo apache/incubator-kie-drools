@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_6698dc07-cc43-47ec-8187-8faa7d8c35ba" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_0ff3708a-c861-4a96-b85c-7b882f18b7a1" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.2" id="_6698dc07-cc43-47ec-8187-8faa7d8c35ba" name="Import of Import Decision Service 20180718" namespace="http://www.trisotech.com/dmn/definitions/_6698dc07-cc43-47ec-8187-8faa7d8c35ba" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
+      <dmn11:decisionService id="_e8834bd3-c27a-4a8a-a901-d21a6c8fc9fd" name="L2 DS">
+        <dmn11:outputDecision href="#_ddc6f461-452c-48c4-87d3-74a2c8e91186"/>
+        <dmn11:encapsulatedDecision href="#_a4cc47aa-bf73-471d-a099-1bc439171da3"/>
+        <dmn11:inputData href="#_54531c01-8d52-4311-89cc-56d3d7d969f7"/>
+      </dmn11:decisionService>
+    </drools:decisionServices>
+  </dmn11:extensionElements>
+  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Import Decision Service 20180718" drools:name="L2 import" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_0ff3708a-c861-4a96-b85c-7b882f18b7a1" triso:fileId="eyJmIjp7InNrdSI6ImZkYjc0Y2UyLTk2ZmMtNDk3ZC1iOTk1LTI0YmNhZDAxOWVlYiIsIm5hbWUiOiJJbXBvcnQgRGVjaXNpb24gU2VydmljZSAyMDE4MDcxOCJ9fQ==" triso:fileName="Matteo Mortari/Import Decision Service 20180718"/>
+  <dmn11:decision id="_a4cc47aa-bf73-471d-a099-1bc439171da3" name="L2 Invoking the L1 import">
+    <dmn11:variable id="_e16d35c9-8729-4809-b283-2a40fa47aaf9" name="L2 Invoking the L1 import"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_54531c01-8d52-4311-89cc-56d3d7d969f7"/>
+    </dmn11:informationRequirement>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_0ff3708a-c861-4a96-b85c-7b882f18b7a1#_41e62189-d469-456c-ab1b-a23180e1b05a"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:invocation id="_a2b23d10-87cd-4c42-b515-7c0b3cb7c07e">
+      <dmn11:literalExpression id="literal__a2b23d10-87cd-4c42-b515-7c0b3cb7c07e">
+        <dmn11:text>L2 import.Import L1 DS</dmn11:text>
+      </dmn11:literalExpression>
+      <dmn11:binding>
+        <dmn11:parameter id="_9191c998-907d-4943-a8e8-e0eb749e0cfc" name="L1 person name"/>
+        <dmn11:literalExpression id="_705822a0-e8df-4f25-b88c-54643ef71170">
+          <dmn11:text>L2 Person name</dmn11:text>
+        </dmn11:literalExpression>
+      </dmn11:binding>
+    </dmn11:invocation>
+  </dmn11:decision>
+  <dmn11:inputData id="_54531c01-8d52-4311-89cc-56d3d7d969f7" name="L2 Person name">
+    <dmn11:variable id="_13b49ed9-fbda-430a-8524-7376f76d3b3b" name="L2 Person name" typeRef="feel:string"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_ddc6f461-452c-48c4-87d3-74a2c8e91186" name="Final L2 Decision">
+    <dmn11:variable id="_e399905d-334d-4e89-8ce2-4ff525077a0d" name="Final L2 Decision"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#_a4cc47aa-bf73-471d-a099-1bc439171da3"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_d4a8e484-3a1d-4d8a-9a90-ed30f2e1e190">
+      <dmn11:text>"The result of invoking the L1 DS was: "+L2 Invoking the L1 import</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

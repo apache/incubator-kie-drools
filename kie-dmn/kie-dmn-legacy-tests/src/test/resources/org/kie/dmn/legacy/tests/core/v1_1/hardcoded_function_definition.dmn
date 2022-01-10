@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_99854980-65c8-4e9b-b365-bd30ded69f40" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14" id="_99854980-65c8-4e9b-b365-bd30ded69f40" name="hardcoded_function_definition" namespace="http://www.trisotech.com/definitions/_99854980-65c8-4e9b-b365-bd30ded69f40" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:businessKnowledgeModel id="_b535940d-70b2-4ffd-9b37-26ab390a374e" name="hardcoded max">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="_e5d96fe4-ec39-4a80-8318-907926736737">
+      <semantic:formalParameter id="_ad98e04c-f029-4f5d-ab28-ca8db09187b3" name="p1" typeRef="feel:number"/>
+      <semantic:formalParameter id="_f8eb308c-b1d1-4e49-b145-c8f6fec8b7f4" name="p2" typeRef="feel:number"/>
+      <semantic:context>
+        <semantic:contextEntry>
+          <semantic:variable id="_167bc946-3e66-48e3-8460-802efcc8d090" name="class" typeRef="feel:string"/>
+          <semantic:literalExpression id="_ad2b566a-ad26-4363-b758-1da3c4952194">
+            <semantic:text>"java.lang.Math"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_8f022a17-3906-4cf0-b4e1-2f9dfa544529" name="method signature" typeRef="feel:string"/>
+          <semantic:literalExpression id="_9ee96167-c46f-4c66-a711-69e2ab37fc25">
+            <semantic:text>"max(double, double)"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_5e7bf277-471c-4fa7-9aa5-fb073df62609" name="hardcoded max" typeRef="feel:number"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:decision id="_e196565f-81fd-4319-ae4b-114aeca4762e" name="hardcoded decision">
+    <semantic:variable id="_ae2559b2-d1bf-422a-811e-a81870324801" name="hardcoded decision" typeRef="feel:number"/>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_b535940d-70b2-4ffd-9b37-26ab390a374e"/>
+    </semantic:knowledgeRequirement>
+    <semantic:invocation id="_d2734e6d-5cdd-404b-a8e5-b1d4399adb6d">
+      <semantic:literalExpression id="literal__d2734e6d-5cdd-404b-a8e5-b1d4399adb6d">
+        <semantic:text>hardcoded max</semantic:text>
+      </semantic:literalExpression>
+      <semantic:binding>
+        <semantic:parameter id="_d8b33169-e40d-447f-8956-c9871a077f03" name="p1"/>
+        <semantic:literalExpression id="_8b3b00df-d45f-4804-bfe4-7b2dcd9a7fe8">
+          <semantic:text>1</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+      <semantic:binding>
+        <semantic:parameter id="_20f2ce93-fd3b-4bae-9e3c-f39965093f75" name="p2"/>
+        <semantic:literalExpression id="_e087a3d1-44d5-4b9a-987c-855507c84ef0">
+          <semantic:text>47</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+    </semantic:invocation>
+  </semantic:decision>
+</semantic:definitions>

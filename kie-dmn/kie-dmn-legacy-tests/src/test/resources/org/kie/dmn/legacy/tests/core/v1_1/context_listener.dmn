@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_73481d02-76fb-4927-ac11-5d936882e16c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.4.1" id="_73481d02-76fb-4927-ac11-5d936882e16c" name="context listener" namespace="http://www.trisotech.com/dmn/definitions/_73481d02-76fb-4927-ac11-5d936882e16c" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:decision id="_cff4e78a-78a9-412a-8da5-ee7aa17f13f9" name="d1">
+    <dmn11:variable id="_52b645ac-ed03-4317-aa2a-08d442c7c378" name="d1"/>
+    <dmn11:context id="_9b967cc4-5926-4299-a051-f0675a8fa2f8">
+      <dmn11:contextEntry>
+        <dmn11:variable id="_b199c7b1-cb87-4a92-b045-a2954ccc9d01" name="a1"/>
+        <dmn11:literalExpression id="_898c24f8-93da-4fe2-827c-924c30956833">
+          <dmn11:text>10</dmn11:text>
+        </dmn11:literalExpression>
+      </dmn11:contextEntry>
+      <dmn11:contextEntry>
+        <dmn11:variable id="_f4a6c2ba-e6e9-4dbd-b776-edef2c1a1343" name="b1"/>
+        <dmn11:context id="_c450d947-1874-41fe-9c0a-da5f1cca7fde">
+          <dmn11:contextEntry>
+            <dmn11:variable id="_38a88aef-8b3c-424d-b60c-a139ffb610e1" name="c1"/>
+            <dmn11:literalExpression id="_879c4ac6-8b25-4cd1-9b8e-c18d0b0b281c">
+              <dmn11:text>"a"</dmn11:text>
+            </dmn11:literalExpression>
+          </dmn11:contextEntry>
+          <dmn11:contextEntry>
+            <dmn11:variable id="_3aad82f0-74b9-4921-8b2f-d6c277c840db" name="c2"/>
+            <dmn11:literalExpression id="_9acf4baf-6c49-4d47-88ab-2e511e598e04">
+              <dmn11:text>"b"</dmn11:text>
+            </dmn11:literalExpression>
+          </dmn11:contextEntry>
+        </dmn11:context>
+      </dmn11:contextEntry>
+      <dmn11:contextEntry>
+        <dmn11:literalExpression id="_4264b25c-d676-4516-ab8a-a4ff34e7a95c">
+          <dmn11:text>b1.c1</dmn11:text>
+        </dmn11:literalExpression>
+      </dmn11:contextEntry>
+    </dmn11:context>
+  </dmn11:decision>
+</dmn11:definitions>
