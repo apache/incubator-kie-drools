@@ -29,7 +29,6 @@ import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.ExcelNumberFormat;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -70,7 +69,7 @@ public class ExcelParser
     }
 
     public static final String DEFAULT_RULESHEET_NAME = "Decision Tables";
-    private Map<String, List<DataListener>> _listeners = new HashMap<String, List<DataListener>>();
+    private Map<String, List<DataListener>> _listeners = new HashMap<>();
     private boolean _useFirstSheet;
 
     /**
@@ -90,7 +89,7 @@ public class ExcelParser
     }
 
     public ExcelParser( final DataListener listener ) {
-        List<DataListener> listeners = new ArrayList<DataListener>();
+        List<DataListener> listeners = new ArrayList<>();
         listeners.add( listener );
         this._listeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                              listeners );
@@ -179,7 +178,7 @@ public class ExcelParser
                     mergedColStart = cell.getColumnIndex();
                 }
 
-                switch ( cell.getCellTypeEnum() ) {
+                switch ( cell.getCellType() ) {
                     case BOOLEAN:
                         newCell(listeners,
                                 i,
@@ -248,7 +247,7 @@ public class ExcelParser
     }
 
     private String getFormulaValue( DataFormatter formatter, FormulaEvaluator formulaEvaluator, Cell cell ) {
-        if ( formulaEvaluator.evaluate( cell ).getCellTypeEnum() == CellType.BOOLEAN ) {
+        if ( formulaEvaluator.evaluate( cell ).getCellType() == CellType.BOOLEAN ) {
             return cell.getBooleanCellValue() ? "true" : "false";
         }
         return formatter.formatCellValue(cell, formulaEvaluator);
@@ -257,7 +256,7 @@ public class ExcelParser
     private String tryToReadCachedValue( Cell cell ) {
         DataFormatter formatter = new DataFormatter( Locale.ENGLISH );
         String cachedValue;
-        switch ( cell.getCachedFormulaResultTypeEnum() ) {
+        switch ( cell.getCachedFormulaResultType() ) {
             case NUMERIC:
                 double num = cell.getNumericCellValue();
                 if ( num - Math.round( num ) != 0 ) {
@@ -284,16 +283,6 @@ public class ExcelParser
                                                                cell.getRowIndex(), cell.getColumnIndex(), cell ) );
         }
         return cachedValue;
-    }
-
-    private String getCellValue( final CellValue cv ) {
-        switch ( cv.getCellTypeEnum() ) {
-            case BOOLEAN:
-                return Boolean.toString( cv.getBooleanValue() );
-            case NUMERIC:
-                return String.valueOf( cv.getNumberValue() );
-        }
-        return cv.getStringValue();
     }
 
     CellRangeAddress getRangeIfMerged( Cell cell,
