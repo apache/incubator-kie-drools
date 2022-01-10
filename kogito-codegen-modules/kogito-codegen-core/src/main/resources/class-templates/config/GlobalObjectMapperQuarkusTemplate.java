@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.quarkus.jackson.ObjectMapperCustomizer;
 
@@ -38,5 +39,6 @@ public class GlobalObjectMapper implements ObjectMapperCustomizer {
             mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         }
         mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
+        mapper.registerModule(new JavaTimeModule());
     }
 }

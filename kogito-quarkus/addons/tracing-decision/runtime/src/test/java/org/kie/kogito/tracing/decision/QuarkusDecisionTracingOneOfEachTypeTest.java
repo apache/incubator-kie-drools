@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,30 +15,32 @@
  */
 package org.kie.kogito.tracing.decision;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
 import java.util.Map;
 
-public class QuarkusDecisionTracingTest extends BaseQuarkusDecisionTracingTest {
-
-    public static final String TEST_MODEL_NAME = "Traffic Violation";
-    public static final String TEST_MODEL_NAMESPACE = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
+public class QuarkusDecisionTracingOneOfEachTypeTest extends BaseQuarkusDecisionTracingTest {
 
     private static final Map<String, Object> TEST_CONTEXT_VARIABLES = Map.of(
-            "Driver", Map.of(
-                    "Age", 25,
-                    "Points", 10),
-            "Violation", Map.of(
-                    "Type", "speed",
-                    "Actual Speed", 105,
-                    "Speed Limit", 100));
+            "InputBoolean", true,
+            "InputDate", LocalDate.of(2020, 1, 4),
+            "InputDTDuration", Period.ofDays(1),
+            "InputDateAndTime", LocalDateTime.of(2020, 1, 4, 16, 30),
+            "InputNumber", 1,
+            "InputString", "John Doe",
+            "InputTime", LocalTime.of(16, 30),
+            "InputYMDuration", Period.ofMonths(1));
 
     @Override
     protected String getTestModelName() {
-        return TEST_MODEL_NAME;
+        return "OneOfEachType";
     }
 
     @Override
     protected String getTestModelNameSpace() {
-        return TEST_MODEL_NAMESPACE;
+        return "http://www.trisotech.com/definitions/_4f5608e9-4d74-4c22-a47e-ab657257fc9c";
     }
 
     @Override
@@ -48,6 +50,6 @@ public class QuarkusDecisionTracingTest extends BaseQuarkusDecisionTracingTest {
 
     @Override
     protected int getEvaluationEventCount() {
-        return 14;
+        return 18;
     }
 }

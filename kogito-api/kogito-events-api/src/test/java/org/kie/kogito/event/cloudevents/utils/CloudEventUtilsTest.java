@@ -18,6 +18,7 @@ package org.kie.kogito.event.cloudevents.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -189,6 +190,14 @@ class CloudEventUtilsTest {
             mockedStaticURLEncoder.when(() -> URI.create(any(String.class))).thenThrow(new IllegalArgumentException());
             assertFalse(CloudEventUtils.urlEncodedURIFrom(TEST_URI_STRING).isPresent());
         }
+    }
+
+    @Test
+    void testLocalDate() throws JsonProcessingException {
+        LocalDate localDate = LocalDate.of(2021, 12, 21);
+        String marshalled = CloudEventUtils.Mapper.mapper().writeValueAsString(localDate);
+        LocalDate unmarshalled = CloudEventUtils.Mapper.mapper().readValue(marshalled, LocalDate.class);
+        assertEquals(localDate, unmarshalled);
     }
 
     private static ObjectMapper getFailingMockedObjectMapper() throws Exception {

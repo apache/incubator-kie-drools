@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventExtension;
@@ -202,7 +203,9 @@ public final class CloudEventUtils {
     // This trick allows to inject a mocked ObjectMapper in the unit tests via Mockito#mockStatic
     public static final class Mapper {
 
-        private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
+        private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+                .registerModule(JsonFormat.getCloudEventJacksonModule())
+                .registerModule(new JavaTimeModule());
 
         private Mapper() {
 
