@@ -158,10 +158,11 @@ public class EventImplTest {
     }
 
     @Test
-    void testSigCloudEvent() {
+    void testSigCloudEvent() throws Exception {
         EventConsumer<DummyModel> consumer = factory.get(processService, executor, getConvertedMethod(), true);
         final String trigger = "dummyTopic";
-        consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe"), "1"), trigger);
+        consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe"), "1"), trigger).toCompletableFuture().get();
+
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
         verify(processService, times(1)).signalProcessInstance(Mockito.any(Process.class), processInstanceId.capture(), Mockito.any(DummyEvent.class), signal.capture());
@@ -170,11 +171,11 @@ public class EventImplTest {
     }
 
     @Test
-    void testCloudEvent() {
+    void testCloudEvent() throws Exception {
         EventConsumer<DummyModel> consumer =
                 factory.get(processService, executor, getConvertedMethod(), true);
         final String trigger = "dummyTopic";
-        consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe")), trigger);
+        consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe")), trigger).toCompletableFuture().get();
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
         verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(),
@@ -184,11 +185,11 @@ public class EventImplTest {
     }
 
     @Test
-    void testDataEvent() {
+    void testDataEvent() throws Exception {
         EventConsumer<DummyModel> consumer =
                 factory.get(processService, executor, getConvertedMethod(), false);
         final String trigger = "dummyTopic";
-        consumer.consume(application, process, new DummyEvent("pepe"), trigger);
+        consumer.consume(application, process, new DummyEvent("pepe"), trigger).toCompletableFuture().get();
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
         verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(), Mockito.isNull());
@@ -215,6 +216,6 @@ public class EventImplTest {
         EventConsumer<DummyModel> consumer = factory.get(processService, executor, getConvertedMethod(), true);
         final String trigger = "dummyTopic";
         final String payload = "{ a = b }";
-        assertThrows(ClassCastException.class, () -> consumer.consume(application, process, payload, trigger));
+        assertThrows(ClassCastException.class, () -> consumer.consume(application, process, payload, trigger).toCompletableFuture().get());
     }
 }
