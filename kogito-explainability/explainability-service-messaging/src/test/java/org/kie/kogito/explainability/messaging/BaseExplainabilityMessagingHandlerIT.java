@@ -28,7 +28,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.cloudevents.CloudEventUtils;
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.explainability.ExplanationService;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
 import org.kie.kogito.explainability.api.BaseExplainabilityResult;

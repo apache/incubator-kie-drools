@@ -27,7 +27,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-cloudevents-utils</artifactId>
+      <artifactId>kogito-events-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

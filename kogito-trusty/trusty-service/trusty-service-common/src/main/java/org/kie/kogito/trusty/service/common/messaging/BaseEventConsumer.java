@@ -22,7 +22,7 @@ import java.util.concurrent.CompletionStage;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.cloudevents.CloudEventUtils;
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.slf4j.Logger;

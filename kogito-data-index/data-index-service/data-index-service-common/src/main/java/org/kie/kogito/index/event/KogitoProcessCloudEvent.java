@@ -19,7 +19,7 @@ import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 
-import org.kie.kogito.event.CloudEventExtensionConstants;
+import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 import org.kie.kogito.index.model.ProcessInstance;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

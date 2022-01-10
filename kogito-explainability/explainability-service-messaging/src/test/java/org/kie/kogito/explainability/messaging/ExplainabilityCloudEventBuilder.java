@@ -18,7 +18,7 @@ package org.kie.kogito.explainability.messaging;
 
 import java.net.URI;
 
-import org.kie.kogito.cloudevents.CloudEventUtils;
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
 
 import io.cloudevents.CloudEvent;
