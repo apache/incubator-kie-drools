@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.local.lime.optim.RecordingLimeExplainer;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +37,16 @@ public class LimeExplainerProducer {
 
     private final Integer numberOfSamples;
     private final Integer numberOfPerturbations;
+    private final Integer recordedPredictions;
 
     @Inject
     public LimeExplainerProducer(
             @ConfigProperty(name = "trusty.explainability.numberOfSamples", defaultValue = "100") Integer numberOfSamples,
-            @ConfigProperty(name = "trusty.explainability.numberOfPerturbations", defaultValue = "1") Integer numberOfPerturbations) {
+            @ConfigProperty(name = "trusty.explainability.numberOfPerturbations", defaultValue = "1") Integer numberOfPerturbations,
+            @ConfigProperty(name = "trusty.explainability.recordedPredictions", defaultValue = "10") Integer recordedPredictions) {
         this.numberOfSamples = numberOfSamples;
         this.numberOfPerturbations = numberOfPerturbations;
+        this.recordedPredictions = recordedPredictions;
     }
 
     @Produces
@@ -51,6 +55,6 @@ public class LimeExplainerProducer {
         LimeConfig limeConfig = new LimeConfig()
                 .withSamples(numberOfSamples)
                 .withPerturbationContext(new PerturbationContext(new SecureRandom(), numberOfPerturbations));
-        return new LimeExplainer(limeConfig);
+        return new RecordingLimeExplainer(limeConfig, recordedPredictions);
     }
 }

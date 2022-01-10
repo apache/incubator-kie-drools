@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class BasePrediction implements Prediction {
@@ -45,5 +46,23 @@ public abstract class BasePrediction implements Prediction {
     @Override
     public UUID getExecutionId() {
         return executionId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasePrediction that = (BasePrediction) o;
+        return Objects.equals(input, that.input) && Objects.equals(executionId, that.executionId)
+                && Objects.equals(output, that.output);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(input, executionId, output);
     }
 }

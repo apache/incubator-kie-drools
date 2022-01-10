@@ -15,8 +15,14 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.util.UUID;
+
 public class SimplePrediction extends BasePrediction {
     public SimplePrediction(PredictionInput input, PredictionOutput output) {
         super(input, output);
+    }
+
+    public SimplePrediction(PredictionInput input, PredictionOutput output, UUID uuid) {
+        super(input, output, uuid);
     }
 }

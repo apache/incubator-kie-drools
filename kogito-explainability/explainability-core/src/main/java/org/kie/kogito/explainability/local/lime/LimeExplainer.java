@@ -81,7 +81,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
             PredictionProvider model,
             Consumer<Map<String, Saliency>> intermediateResultsConsumer) {
         PredictionInput originalInput = prediction.getInput();
-        if (originalInput.getFeatures().isEmpty()) {
+        if (originalInput.getFeatures() == null || originalInput.getFeatures().isEmpty()) {
             throw new LocalExplanationException("cannot explain a prediction whose input is empty");
         }
         List<PredictionInput> linearizedInputs = DataUtils.linearizeInputs(List.of(originalInput));

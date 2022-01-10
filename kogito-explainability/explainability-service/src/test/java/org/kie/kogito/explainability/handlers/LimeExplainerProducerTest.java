@@ -26,7 +26,7 @@ class LimeExplainerProducerTest {
 
     @Test
     void produce() {
-        LimeExplainerProducer producer = new LimeExplainerProducer(1, 2);
+        LimeExplainerProducer producer = new LimeExplainerProducer(1, 2, 10);
         LimeExplainer limeExplainer = producer.produce();
 
         assertNotNull(limeExplainer);
