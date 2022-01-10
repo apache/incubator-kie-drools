@@ -5,7 +5,6 @@ on:
     types: [labeled]
     branches:
       - main
-      - 8.*
     paths-ignore:
       - 'LICENSE*'
       - '.gitignore'
@@ -44,12 +43,9 @@ jobs:
       - name: Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         with:
-          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/%{process.env.GITHUB_BASE_REF.replace(/(\d*)\.(.*)\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          starting-project: kiegroup/optaplanner-quickstarts
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-        env:
-          OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: "-Dfull"
+          flow-type: full-downstream
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
