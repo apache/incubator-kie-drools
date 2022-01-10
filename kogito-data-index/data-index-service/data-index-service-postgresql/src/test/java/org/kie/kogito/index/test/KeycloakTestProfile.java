@@ -17,6 +17,7 @@
 package org.kie.kogito.index.test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,9 +50,9 @@ public class KeycloakTestProfile implements QuarkusTestProfile {
     public List<TestResourceEntry> testResources() {
         Map<String, String> args = singletonMap(KOGITO_OIDC_TENANTS, "web-app-tenant");
         return Arrays.asList(
-                new TestResourceEntry(PostgreSqlQuarkusTestResource.class),
-                new TestResourceEntry(InMemoryMessagingTestResource.class),
-                new TestResourceEntry(KeycloakQuarkusTestResource.class, args));
+                new TestResourceEntry(PostgreSqlQuarkusTestResource.class, Collections.emptyMap(), true),
+                new TestResourceEntry(InMemoryMessagingTestResource.class, Collections.emptyMap(), true),
+                new TestResourceEntry(KeycloakQuarkusTestResource.class, args, true));
     }
 
 }

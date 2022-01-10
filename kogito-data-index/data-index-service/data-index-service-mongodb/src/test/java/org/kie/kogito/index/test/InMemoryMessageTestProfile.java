@@ -17,6 +17,7 @@
 package org.kie.kogito.index.test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
@@ -28,8 +29,8 @@ public class InMemoryMessageTestProfile implements QuarkusTestProfile {
     @Override
     public List<TestResourceEntry> testResources() {
         return Arrays.asList(
-                new TestResourceEntry(InMemoryMessagingTestResource.class),
-                new TestResourceEntry(MongoDBQuarkusTestResource.class));
+                new TestResourceEntry(InMemoryMessagingTestResource.class, Collections.emptyMap(), true),
+                new TestResourceEntry(MongoDBQuarkusTestResource.class, Collections.emptyMap(), true));
     }
 
 }
