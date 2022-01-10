@@ -75,7 +75,7 @@
         <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
         <version.org.apache.maven>3.3.9</version.org.apache.maven>
         <version.org.apache.maven.wagon>3.0.0</version.org.apache.maven.wagon>
-        <version.org.apache.poi>4.1.2</version.org.apache.poi>
+        <version.org.apache.poi>5.1.0</version.org.apache.poi>
         <!-- DROOLS-6678: only used by kie-test-util -->
         <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
         <version.org.assertj>3.20.2</version.org.assertj>
