@@ -19,8 +19,8 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.core.provider.ExtensionProvider;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.app.KogitoSpringbootApplication;
-import org.kie.kogito.cloudevents.CloudEventUtils;
-import org.kie.kogito.cloudevents.extension.KogitoExtension;
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
+import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

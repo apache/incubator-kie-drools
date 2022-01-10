@@ -18,7 +18,7 @@ package org.kie.kogito.addons.knative.eventing;
 import java.io.IOException;
 
 import org.kie.kogito.addon.cloudevents.message.MessagePayloadDecorator;
-import org.kie.kogito.cloudevents.CloudEventUtils;
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

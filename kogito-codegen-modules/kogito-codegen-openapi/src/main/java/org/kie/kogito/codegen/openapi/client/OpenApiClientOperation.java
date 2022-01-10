@@ -62,10 +62,7 @@ public class OpenApiClientOperation {
     }
 
     public void setParameters(List<Parameter> parameters) {
-        if (parameters == null) {
-            this.parameters = Collections.emptyList();
-        }
-        this.parameters = parameters;
+        this.parameters = Objects.requireNonNullElse(parameters, Collections.emptyList());
     }
 
     public void addParameter(final Parameter parameter) {

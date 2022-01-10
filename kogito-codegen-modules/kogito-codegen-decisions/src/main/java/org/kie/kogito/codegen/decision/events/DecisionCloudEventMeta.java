@@ -17,8 +17,8 @@ package org.kie.kogito.codegen.decision.events;
 
 import java.util.Objects;
 
-import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 
 /**
  * Decisions representation of {@link CloudEventMeta} with inner information about the generated DMN model.

@@ -57,7 +57,7 @@ class OpenApiTaskDescriptorTest {
         final OpenApiTaskDescriptor taskDescriptor = new OpenApiTaskDescriptor(workItemNode);
         taskDescriptor.handleParametersForServiceCall(execWorkItem, serviceCallMethod);
         assertNotNull(serviceCallMethod);
-        assertEquals(1, serviceCallMethod.getArguments().size());
+        assertEquals(2, serviceCallMethod.getArguments().size());
     }
 
     @Test

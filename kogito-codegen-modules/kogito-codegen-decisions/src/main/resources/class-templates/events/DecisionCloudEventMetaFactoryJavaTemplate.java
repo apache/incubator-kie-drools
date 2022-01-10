@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.event.CloudEventMeta;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
 
 public class DecisionCloudEventMetaFactory {

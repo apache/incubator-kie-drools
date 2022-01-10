@@ -29,7 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventReceiver;
-import org.kie.kogito.cloudevents.Printer;
+import org.kie.kogito.event.cloudevents.utils.Printer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

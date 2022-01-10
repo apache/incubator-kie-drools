@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
+
 /**
  * Responsible to hold information about a topic being consumed or produced by a Kogito service
  */

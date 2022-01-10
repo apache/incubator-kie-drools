@@ -16,7 +16,7 @@
 package org.kie.kogito.services.event;
 
 import org.kie.kogito.event.AbstractDataEvent;
-import org.kie.kogito.event.CloudEventExtensionConstants;
+import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

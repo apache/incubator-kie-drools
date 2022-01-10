@@ -26,8 +26,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.kie.kogito.addon.cloudevents.AbstractTopicsInformationResource;
-import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.TopicDiscovery;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 
 @Path("/messaging/topics")
 @ApplicationScoped()

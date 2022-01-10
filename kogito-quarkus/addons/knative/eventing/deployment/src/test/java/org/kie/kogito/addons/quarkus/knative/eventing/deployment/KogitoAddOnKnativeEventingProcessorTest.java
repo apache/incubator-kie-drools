@@ -21,8 +21,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.GeneratedFileSystemResourceBuildItem;

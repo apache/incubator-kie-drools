@@ -12,12 +12,12 @@
   <artifactId>cloudevents-utils</artifactId>
   <packaging>jar</packaging>
   <name>Kogito :: Add-Ons :: Deprecated :: CloudEvents</name>
-  <description>This library is deprecated, please use kogito-addons-cloudevents-utils instead</description>
+  <description>This library is deprecated, it was incorporated to Kogito Core. All the classes are already included in your project.</description>
 
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-cloudevents-utils</artifactId>
+      <artifactId>kogito-events-api</artifactId>
     </dependency>
   </dependencies>
 </project>

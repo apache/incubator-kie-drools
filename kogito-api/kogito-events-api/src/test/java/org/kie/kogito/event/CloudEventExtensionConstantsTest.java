@@ -18,6 +18,7 @@ package org.kie.kogito.event;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

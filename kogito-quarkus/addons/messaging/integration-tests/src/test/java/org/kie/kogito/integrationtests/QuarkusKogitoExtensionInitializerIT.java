@@ -16,9 +16,9 @@
 package org.kie.kogito.integrationtests;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.cloudevents.CloudEventUtils;
-import org.kie.kogito.cloudevents.extension.KogitoExtension;
 import org.kie.kogito.dmn.DecisionTestUtils;
+import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.provider.ExtensionProvider;

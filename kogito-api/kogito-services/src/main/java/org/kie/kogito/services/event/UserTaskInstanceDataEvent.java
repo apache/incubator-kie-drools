@@ -18,7 +18,7 @@ package org.kie.kogito.services.event;
 import java.util.Map;
 
 import org.kie.kogito.event.AbstractDataEvent;
-import org.kie.kogito.event.CloudEventExtensionConstants;
+import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
 

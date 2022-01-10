@@ -18,7 +18,7 @@ package org.kie.kogito.jobs.api.event;
 
 import java.util.Objects;
 
-import org.kie.kogito.event.CloudEventExtensionConstants;
+import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
 import io.cloudevents.CloudEvent;
 

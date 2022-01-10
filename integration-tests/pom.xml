@@ -22,6 +22,7 @@
     <module>integration-tests-quarkus-norest</module>
     <module>integration-tests-quarkus-resteasy-classic</module>
     <module>integration-tests-quarkus-resteasy-reactive</module>
+    <module>integration-tests-quarkus-openapi-client</module>
     <module>integration-tests-springboot</module>
     <module>integration-tests-kogito-plugin</module>
   </modules>

@@ -29,8 +29,8 @@ import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 import org.kie.kogito.codegen.process.ProcessGenerationUtils;
-import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;

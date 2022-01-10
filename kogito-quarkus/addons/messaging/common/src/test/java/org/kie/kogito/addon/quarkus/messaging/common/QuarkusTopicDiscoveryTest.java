@@ -24,10 +24,10 @@ import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
 import org.kie.kogito.addon.cloudevents.AbstractTopicDiscovery;
 import org.kie.kogito.event.ChannelType;
-import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.Topic;
 import org.kie.kogito.event.TopicDiscovery;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

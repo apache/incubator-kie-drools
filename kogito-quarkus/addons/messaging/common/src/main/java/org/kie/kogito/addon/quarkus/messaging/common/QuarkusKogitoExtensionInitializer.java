@@ -18,10 +18,10 @@ package org.kie.kogito.addon.quarkus.messaging.common;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.kie.kogito.cloudevents.extension.KogitoExtension;
-import org.kie.kogito.cloudevents.extension.KogitoPredictionsExtension;
-import org.kie.kogito.cloudevents.extension.KogitoProcessExtension;
-import org.kie.kogito.cloudevents.extension.KogitoRulesExtension;
+import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
+import org.kie.kogito.event.cloudevents.extension.KogitoPredictionsExtension;
+import org.kie.kogito.event.cloudevents.extension.KogitoProcessExtension;
+import org.kie.kogito.event.cloudevents.extension.KogitoRulesExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

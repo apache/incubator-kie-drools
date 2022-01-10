@@ -24,15 +24,44 @@
     <artifactId>kogito-addons-common-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-messaging-parent</artifactId>
-  <packaging>pom</packaging>
+
+  <artifactId>kogito-addons-messaging</artifactId>
   <name>Kogito :: Add-Ons :: Messaging</name>
+  <description>Messaging Add-On Common Interfaces</description>
 
-  <description>Kogito Messaging parent</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-events-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
-  <modules>
-    <module>common</module>
-    <module>utils</module>
-  </modules>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-json-jackson</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>

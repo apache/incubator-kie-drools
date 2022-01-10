@@ -143,7 +143,7 @@ public class ProcessesAssetsProcessor {
                 "org.kogito.workitem.rest.bodybuilders.ParamsRestWorkItemHandlerBodyBuilder",
                 "org.kie.kogito.process.impl.BaseWorkItem",
                 "org.kie.kogito.event.Topic",
-                "org.kie.kogito.event.CloudEventMeta",
+                "org.kie.kogito.event.cloudevents.CloudEventMeta",
                 "org.kie.kogito.jobs.api.Job");
     }
 

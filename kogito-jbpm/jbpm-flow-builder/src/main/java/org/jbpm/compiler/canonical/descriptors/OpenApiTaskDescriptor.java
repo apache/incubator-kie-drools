@@ -34,14 +34,17 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
+import org.kie.kogito.process.meta.ProcessMeta;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
@@ -103,6 +106,7 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
         CompilationUnit compilationUnit = new CompilationUnit("org.kie.kogito.handlers");
         compilationUnit.getTypes().add(classDeclaration());
         compilationUnit.addImport(WorkItemExecutionException.class);
+        compilationUnit.addImport(ProcessMeta.class);
         return compilationUnit;
     }
 
@@ -115,9 +119,20 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
         return workItemNode.getWork().getParameterDefinitions().stream().map(ParameterDefinition::getName).collect(Collectors.toList());
     }
 
+    /**
+     * Adds the parameter to the actual openapi generated method execution
+     *
+     * @param executeWorkItemBody body of the method to execute the workItem
+     * @param callServiceMethod method to the actual service call
+     */
     @Override
     protected void handleParametersForServiceCall(final BlockStmt executeWorkItemBody, final MethodCallExpr callServiceMethod) {
+        VariableDeclarationExpr processMeta = new VariableDeclarationExpr()
+                .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, ProcessMeta.class.getName()), "processMeta")
+                        .setInitializer(new MethodCallExpr(new NameExpr(ProcessMeta.class.getCanonicalName()), "fromKogitoWorkItem").addArgument(workItemNameExpr)));
+        executeWorkItemBody.addStatement(processMeta);
         ClassOrInterfaceType type = new ClassOrInterfaceType(null, (String) workItemNode.getMetaData(PARAM_META_PARAM_RESOLVER_TYPE));
+        callServiceMethod.addArgument(new MethodCallExpr(new NameExpr("processMeta"), "asMap"));
         getParameters(workItemNode)
                 .forEach(p -> callServiceMethod.addArgument(new CastExpr(type, new MethodCallExpr(workItemNameExpr, METHOD_GET_PARAM).addArgument(new StringLiteralExpr(p)))));
     }
@@ -150,7 +165,7 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
 
         /**
          * Set expression language
-         * 
+         *
          * @param exprLang
          * @return
          */
@@ -160,7 +175,6 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
         }
 
         /**
-         * 
          * @param modelParameter
          * @return
          */

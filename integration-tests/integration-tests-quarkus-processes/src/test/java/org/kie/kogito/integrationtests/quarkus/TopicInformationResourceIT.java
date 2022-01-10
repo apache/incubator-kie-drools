@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.ChannelType;
-import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.Topic;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

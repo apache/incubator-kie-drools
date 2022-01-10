@@ -19,9 +19,9 @@ package org.kie.kogito.addon.cloudevents.spring;
 import java.util.List;
 
 import org.kie.kogito.addon.cloudevents.AbstractTopicsInformationResource;
-import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.Topic;
 import org.kie.kogito.event.TopicDiscovery;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

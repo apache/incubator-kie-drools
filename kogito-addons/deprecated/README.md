@@ -61,7 +61,7 @@ them in your project.
 
 | Add-On Description  | Deprecated Artifact ID | New Artifact ID | Since | 
 |---------------------|------------------------|-----------------|-------|
-| Cloud Events Utils [1]  | cloudevents-utils | kogito-addons-cloudevents-utils | 1.8.0 |
+| Cloud Events Utils [1]  | cloudevents-utils | kogito-events-api (incorporated to core) | 1.8.0 |
 | Cloud Events [1]       | kogito-cloudevents-common-addon | kogito-addons-cloudevents | 1.8.0 |
 | Events Decisions [1]    | kogito-event-driven-decisions-common | kogito-addons-events-decisions | 1.8.0 |
 | Explainability [1]      | explainability-addon-common | kogito-addons-explainability | 1.8.0 |

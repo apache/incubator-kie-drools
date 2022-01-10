@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.knative.eventing.deployment;
 import java.util.Collections;
 import java.util.Set;
 
-import org.kie.kogito.event.CloudEventMeta;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 
 import io.quarkus.builder.item.SimpleBuildItem;
 

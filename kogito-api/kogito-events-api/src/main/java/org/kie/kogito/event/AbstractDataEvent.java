@@ -19,6 +19,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @param <T> the payload
  */
+// TODO: to be migrated to actual CE https://issues.redhat.com/browse/KOGITO-6476
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractDataEvent<T> implements DataEvent<T> {
 
@@ -46,7 +49,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
      * See more about the source format: https://github.com/cloudevents/spec/blob/v1.0/spec.md#source-1
      */
     public static final String SOURCE_FORMAT = "/process/%s";
-    static final String SPEC_VERSION = "1.0";
+    public static final String SPEC_VERSION = "1.0";
 
     @JsonProperty("specversion")
     private String specVersion;

@@ -17,7 +17,7 @@ package org.kie.kogito.codegen.core.events;
 
 import java.util.Set;
 
-import org.kie.kogito.event.CloudEventMeta;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
 
 /**
  * {@link CloudEventMeta} builder
