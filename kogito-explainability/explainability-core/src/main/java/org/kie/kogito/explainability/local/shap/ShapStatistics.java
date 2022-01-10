@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.kie.kogito.explainability.local.shap;
 
+import org.apache.commons.math3.linear.RealVector;
+
 public class ShapStatistics {
 
     // subset stats =================================
@@ -25,9 +27,9 @@ public class ShapStatistics {
     private final int largestPairedSubsetSize;
 
     // sample stats
-    private double[] remainingWeights;
-    private double[] weightOfSubsetSize;
-    private double[] finalRemainingWeights;
+    private RealVector remainingWeights;
+    private RealVector weightOfSubsetSize;
+    private RealVector finalRemainingWeights;
     private int numSamplesRemaining;
 
     /**
@@ -76,28 +78,28 @@ public class ShapStatistics {
     }
 
     // sample stats getters and setters ======================
-    public double[] getWeightOfSubsetSize() {
+    public RealVector getWeightOfSubsetSize() {
         return weightOfSubsetSize;
     }
 
-    public void setWeightOfSubsetSize(double[] weightOfSubsetSize) {
+    public void setWeightOfSubsetSize(RealVector weightOfSubsetSize) {
         this.weightOfSubsetSize = weightOfSubsetSize;
     }
 
     // remaining weight operations =============
-    public double[] getRemainingWeights() {
+    public RealVector getRemainingWeights() {
         return remainingWeights;
     }
 
-    public void setRemainingWeights(double[] remainingWeights) {
+    public void setRemainingWeights(RealVector remainingWeights) {
         this.remainingWeights = remainingWeights;
     }
 
-    public double[] getFinalRemainingWeights() {
+    public RealVector getFinalRemainingWeights() {
         return finalRemainingWeights;
     }
 
-    public void setFinalRemainingWeights(double[] finalRemainingWeights) {
+    public void setFinalRemainingWeights(RealVector finalRemainingWeights) {
         this.finalRemainingWeights = finalRemainingWeights;
     }
 

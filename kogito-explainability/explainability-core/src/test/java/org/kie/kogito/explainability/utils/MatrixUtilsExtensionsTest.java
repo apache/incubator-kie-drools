@@ -17,7 +17,6 @@ package org.kie.kogito.explainability.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -31,42 +30,12 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MatrixUtilsExtensionsTest {
     // === Make some matrices to use in tests ===
-    double[][] matOneElem = {
-            { 5. },
-    };
-    double[] vector = { 5., 6., 7 };
-    double[][] matRowVector = {
-            { 5., 6., 7, },
-    };
-    double[][] matColVector = {
-            { 5. },
-            { 6. },
-            { 7, },
-    };
-
-    double[][] vectorProdRowCol = { { 110. } };
-    double[][] vectorProdColRow = {
-            { 25., 30., 35. },
-            { 30., 36., 42. },
-            { 35., 42., 49. }
-    };
-
-    double[][] mat4X3 = {
-            { 1., 2., 3. },
-            { 10., 5., -3. },
-            { 14., -6.6, 7. },
-            { 0., 5., -3. }
-    };
-    double[][] mat3X4 = {
-            { 1., 10., 14., 0. },
-            { 2, 5., -6.6, 5. },
-            { 3., -3, 7., -3 }
-    };
-
     double[][] mat3X5 = {
             { 1., 10., 3., -4., 0. },
             { 10., 5., -3., 3.7, 1. },
@@ -82,13 +51,6 @@ class MatrixUtilsExtensionsTest {
             { 1., -4, 10., -4., 1 },
             { 10., 3.7, 5., 3.7, 10 },
             { 14., 14., -6.6, 14., 14. },
-    };
-
-    double[][] mat43X35Product = {
-            { 63., .2, 18., 45.4, 11. },
-            { 18., 144.8, -6., -63.5, -4. },
-            { 46., 60.8, 110.8, 17.58, 14.4 },
-            { 8., 44.8, -36., -23.5, -4. }
     };
 
     double[][] matSquareNonSingular = {
@@ -107,33 +69,23 @@ class MatrixUtilsExtensionsTest {
             { 4., 5., 6. },
             { 7., 8., 9. },
     };
-    double[][] identity = {
-            { 1., 0., 0. },
-            { 0., 1., 0. },
-            { 0., 0., 1. },
-    };
-
-    double[][] matIdentityPlusVector = {
-            { 6., 6., 7. },
-            { 5., 7., 7. },
-            { 5., 6., 8. },
-    };
-
-    double[][] mssPlusIdentity = {
-            { 2., 2., 3. },
-            { 4., 6., 6. },
-            { 7., 8., 10. },
-    };
-    double[][] mssMinusIdentity = {
-            { 0., 2., 3. },
-            { 4., 4., 6. },
-            { 7., 8., 8. },
-    };
     double[] mssSumRow = { 12., 15., 18. };
-    double[] mssSumCol = { 6., 15., 24. };
-    Random rn = new Random();
 
-    // === Matrix creation tests ===
+    RealVector v = MatrixUtils.createRealVector(new double[] { 1, 2, 3 });
+    RealMatrix mssMatrix = MatrixUtils.createRealMatrix(matSquareSingular);
+    RealMatrix rowDiffResult = MatrixUtils.createRealMatrix(new double[][] { { 0, 0, 0 }, { 3, 3, 3 }, { 6, 6, 6 } });
+    RealMatrix colDiffResult = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 2, 3, 4 }, { 4, 5, 6 } });
+    RealMatrix swapResult = MatrixUtils.createRealMatrix(new double[][] { { 7, 8, 9 }, { 4, 5, 6 }, { 1, 2, 3 } });
+    RealVector swapResultV = MatrixUtils.createRealVector(new double[] { 3, 2, 1 });
+
+    RealMatrix dotInput1 = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 3, 4, 5 } });
+    RealMatrix dotInput2 = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } });
+    RealMatrix dotResult = MatrixUtils.createRealMatrix(new double[][] { { 15, 18, 21 }, { 42, 54, 66 } });
+    RealVector vMix = MatrixUtils.createRealVector(new double[] { -3, -2, -1, 1, 2, 3 });
+    RealVector allNeg = MatrixUtils.createRealVector(new double[] { -3, -2, -1 });
+    RealVector varInput = MatrixUtils.createRealVector(new double[] { 0, 4, 16, 2, -128, -4 });
+
+    // === Matrix creation tests =======================================================================================
     // test creation of matrix from single PredictionInput
     @Test
     void testPICreation() {
@@ -143,8 +95,8 @@ class MatrixUtilsExtensionsTest {
             fs.add(FeatureFactory.newNumericalFeature("f", mat3X5[0][j]));
         }
         PredictionInput pi = new PredictionInput(fs);
-        double[][] converted = MatrixUtilsExtensions.matrixFromPredictionInput(pi);
-        assertArrayEquals(mat3X5[0], converted[0]);
+        RealVector converted = MatrixUtilsExtensions.vectorFromPredictionInput(pi);
+        assertArrayEquals(mat3X5[0], converted.toArray());
     }
 
     // test creation of matrix from list of PredictionInputs
@@ -160,8 +112,8 @@ class MatrixUtilsExtensionsTest {
             ps.add(new PredictionInput(fs));
         }
 
-        double[][] converted = MatrixUtilsExtensions.matrixFromPredictionInput(ps);
-        assertArrayEquals(mat3X5, converted);
+        RealMatrix converted = MatrixUtilsExtensions.matrixFromPredictionInput(ps);
+        assertArrayEquals(mat3X5, converted.getData());
     }
 
     // test creation of matrix from single PredictionOutput
@@ -172,11 +124,10 @@ class MatrixUtilsExtensionsTest {
         for (int j = 0; j < 5; j++) {
             Value v = new Value(mat3X5[0][j]);
             os.add(new Output("o", Type.NUMBER, v, 0.0));
-            ;
         }
         PredictionOutput po = new PredictionOutput(os);
-        double[][] converted = MatrixUtilsExtensions.matrixFromPredictionOutput(po);
-        assertArrayEquals(mat3X5[0], converted[0]);
+        RealVector converted = MatrixUtilsExtensions.vectorFromPredictionOutput(po);
+        assertArrayEquals(mat3X5[0], converted.toArray());
     }
 
     // test creation of matrix from list of PredictionOutputs
@@ -193,71 +144,26 @@ class MatrixUtilsExtensionsTest {
             ps.add(new PredictionOutput(os));
         }
 
-        double[][] converted = MatrixUtilsExtensions.matrixFromPredictionOutput(ps);
-        assertArrayEquals(mat3X5, converted);
+        RealMatrix converted = MatrixUtilsExtensions.matrixFromPredictionOutput(ps);
+        assertArrayEquals(mat3X5, converted.getData());
     }
 
-    // test creation of row matrix from 1-D array
-    @Test
-    void testRowVectorCreation() {
-        double[][] converted = MatrixUtilsExtensions.rowVector(vector);
-        for (int i = 0; i < converted.length; i++) {
-            assertEquals(converted[0][i], vector[i]);
-        }
-    }
-
-    // test creation of column matrix from 1-D array
-    @Test
-    void testColVectorCreation() {
-        double[][] converted = MatrixUtilsExtensions.columnVector(vector);
-        for (int i = 0; i < converted.length; i++) {
-            assertEquals(converted[i][0], vector[i]);
-        }
-    }
-
-    // === Shape Tests ===
-    @Test
-    void testShape() {
-        int[] shape = MatrixUtilsExtensions.getShape(mat3X5);
-        assertArrayEquals(new int[] { 3, 5 }, shape);
-    }
-
-    // === getColumn Tests ===
-
-    // test if indexing by too big of column throws an error
-    @Test
-    void testGetColTooBig() {
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCol(mat3X4, 10));
-    }
-
-    // test if indexing a negative column throws an error
-    @Test
-    void testGetNegCol() {
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCol(mat3X4, -10));
-    }
-
-    // test single column indexing
-    @Test
-    void testGetCol() {
-        double[] col = MatrixUtilsExtensions.getCol(mat3X4, 1);
-        assertArrayEquals(col, new double[] { 10., 5., -3. });
-    }
-
+    // === getCols Tests ===============================================================================================
     // test multi column indexing
     @Test
     void testGetCols() {
-        double[][] output = MatrixUtilsExtensions.getCols(mat3X5, List.of(0, 1, 3));
+        RealMatrix output = MatrixUtilsExtensions.getCols(MatrixUtils.createRealMatrix(mat3X5), List.of(0, 1, 3));
         for (int i = 0; i < mat3X5get013.length; i++) {
-            assertArrayEquals(mat3X5get013[i], output[i]);
+            assertArrayEquals(mat3X5get013[i], output.getRow(i));
         }
     }
 
     // test extracting multiple dup columns by indexing
     @Test
     void testGetDupCols() {
-        double[][] output = MatrixUtilsExtensions.getCols(mat3X5, List.of(0, 3, 1, 3, 0));
+        RealMatrix output = MatrixUtilsExtensions.getCols(MatrixUtils.createRealMatrix(mat3X5), List.of(0, 3, 1, 3, 0));
         for (int i = 0; i < mat3X5get03130.length; i++) {
-            assertArrayEquals(mat3X5get03130[i], output[i]);
+            assertArrayEquals(mat3X5get03130[i], output.getRow(i));
         }
     }
 
@@ -265,175 +171,63 @@ class MatrixUtilsExtensionsTest {
     @Test
     void testGetColsTooBig() {
         List<Integer> testIdxs = List.of(0, 6);
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(mat3X5, testIdxs));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(
+                MatrixUtils.createRealMatrix(mat3X5), testIdxs));
     }
 
     // test that extracting negative columns throws error
     @Test
     void testGetNegCols() {
         List<Integer> testIdxs = List.of(0, -6);
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(mat3X5, testIdxs));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(
+                MatrixUtils.createRealMatrix(mat3X5), testIdxs));
     }
 
     // test that extracting no columns throws error
     @Test
     void testGetNoCols() {
         List<Integer> testIdxs = List.of();
-        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(mat3X5, testIdxs));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtilsExtensions.getCols(
+                MatrixUtils.createRealMatrix(mat3X5), testIdxs));
     }
 
-    // === Transpose Tests ===
-    // test transpose a 1x1 mat
-    @Test
-    void testOneElemTranspose() {
-        double[][] matOneElemTranspose = MatrixUtilsExtensions.transpose(matOneElem);
-        for (int i = 0; i < matOneElemTranspose.length; i++) {
-            assertArrayEquals(matOneElemTranspose[i], matOneElem[i]);
-        }
-    }
-
-    // test transpose a row vector into column
-    @Test
-    void testVectorTranspose() {
-        double[][] matRowVectorTranspose = MatrixUtilsExtensions.transpose(matRowVector);
-        for (int i = 0; i < matRowVectorTranspose.length; i++) {
-            assertArrayEquals(matRowVectorTranspose[i], matColVector[i]);
-        }
-    }
-
-    // test transpose a 3x4 matrix
-    @Test
-    void testMatrixTranspose() {
-        double[][] mat3X4Transpose = MatrixUtilsExtensions.transpose(mat3X4);
-        for (int i = 0; i < mat3X4Transpose.length; i++) {
-            assertArrayEquals(mat3X4Transpose[i], mat4X3[i]);
-        }
-    }
-
-    // === Matrix Sum Tests ===
+    // === Matrix Sum Tests ============================================================================================
     // test that summing all the rows of matrix returns expected result
     @Test
     void testIntraSumRow() {
-        double[] sum = MatrixUtilsExtensions.sum(matSquareSingular, MatrixUtilsExtensions.Axis.ROW);
-        assertArrayEquals(mssSumRow, sum, 1e-6);
+        RealVector sum = MatrixUtilsExtensions.rowSum(mssMatrix);
+        assertArrayEquals(mssSumRow, sum.toArray(), 1e-6);
     }
 
-    // test that summing all the cols of matrix returns expected result
     @Test
-    void testIntraSumCol() {
-        double[] sum = MatrixUtilsExtensions.sum(matSquareSingular, MatrixUtilsExtensions.Axis.COLUMN);
-        assertArrayEquals(mssSumCol, sum, 1e-6);
+    void rowSum() {
+        assertArrayEquals(new double[] { 12, 15, 18 }, MatrixUtilsExtensions.rowSum(mssMatrix).toArray());
     }
 
-    // test that summing two matrices returns expected result
     @Test
-    void testMatSum() {
-        double[][] sum = MatrixUtilsExtensions.matrixSum(matSquareSingular, identity);
-        for (int i = 0; i < sum.length; i++) {
-            assertArrayEquals(mssPlusIdentity[i], sum[i], 1e-6);
-        }
+    void rowSquareSum() {
+        assertArrayEquals(new double[] { 66, 93, 126 }, MatrixUtilsExtensions.rowSquareSum(mssMatrix).toArray());
     }
 
-    // test that summing two matrices of incompatible sizes throws error
     @Test
-    void testMatSumWrongSizes() {
-        assertThrows(IllegalArgumentException.class,
-                () -> MatrixUtilsExtensions.matrixSum(matSquareSingular, mat4X3));
+    void rowDifference() {
+        assertEquals(rowDiffResult, MatrixUtilsExtensions.vectorDifference(mssMatrix, v,
+                MatrixUtilsExtensions.Axis.ROW));
     }
 
-    // test that difference of two matrices returns expected result
     @Test
-    void testMatDiff() {
-        double[][] diff = MatrixUtilsExtensions.matrixDifference(matSquareSingular, identity);
-        for (int i = 0; i < diff.length; i++) {
-            assertArrayEquals(mssMinusIdentity[i], diff[i], 1e-6);
-        }
+    void colDifference() {
+        assertEquals(colDiffResult, MatrixUtilsExtensions.vectorDifference(mssMatrix, v,
+                MatrixUtilsExtensions.Axis.COLUMN));
     }
 
-    // test adding a vector to each row of a matrix
+    // Matrix Product tests ============================================================================================
     @Test
-    void testMatRowSum() {
-        double[][] sum = MatrixUtilsExtensions.matrixRowSum(identity, vector);
-        for (int i = 0; i < sum.length; i++) {
-            assertArrayEquals(matIdentityPlusVector[i], sum[i], 1e-6);
-        }
+    void matrixDot() {
+        assertEquals(dotResult, MatrixUtilsExtensions.matrixDot(dotInput1, dotInput2));
     }
 
-    // test subtracting a vector to each row of a matrix
-    @Test
-    void testMatRowDiff() {
-        double[][] diff = MatrixUtilsExtensions.matrixRowDifference(matIdentityPlusVector, vector);
-        for (int i = 0; i < diff.length; i++) {
-            assertArrayEquals(identity[i], diff[i], 1e-6);
-        }
-    }
-
-    // === Matrix Multiplication Tests ===
-    // test multiplying a matrix by a scalar
-    @Test
-    void testMatMulScalar() {
-        double[][] prod = MatrixUtilsExtensions.matrixMultiply(mat4X3, 3.0);
-        for (int i = 0; i < prod.length; i++) {
-            for (int j = 0; j < prod[0].length; j++) {
-                assertEquals(mat4X3[i][j] * 3.0, prod[i][j], 1e-6);
-            }
-        }
-    }
-
-    // test multiplying a matrix by zero
-    @Test
-    void testMatMulByZero() {
-        double[][] prod = MatrixUtilsExtensions.matrixMultiply(mat4X3, 0.0);
-        for (int i = 0; i < prod.length; i++) {
-            for (int j = 0; j < prod[0].length; j++) {
-                assertEquals(mat4X3[i][j] * 0.0, prod[i][j], 1e-6);
-            }
-        }
-    }
-
-    // test multiplying a matrix by another vector
-    @Test
-    void testMatDotProduct() {
-        double[] prod = MatrixUtilsExtensions.matrixMultiply(matSquareSingular, mssSumRow);
-        assertArrayEquals(new double[] { 96., 231., 366. }, prod, 1e-6);
-    }
-
-    // test multiplying a matrix by another matrix
-    @Test
-    void testMatMulNormal() {
-        double[][] prod = MatrixUtilsExtensions.matrixMultiply(mat4X3, mat3X5);
-        for (int i = 0; i < prod.length; i++) {
-            assertArrayEquals(mat43X35Product[i], prod[i], 1e-6);
-        }
-    }
-
-    // test multiplying a matrix by another matrix
-    @Test
-    void testMatMulWrongShape() {
-        assertThrows(IllegalArgumentException.class,
-                () -> MatrixUtilsExtensions.matrixMultiply(mat3X4, mat3X5));
-
-    }
-
-    // test multiplying a row matrix by a col matrix
-    @Test
-    void testVectorRowColMultiply() {
-        double[][] prod = MatrixUtilsExtensions.matrixMultiply(matRowVector, matColVector);
-        for (int i = 0; i < prod.length; i++) {
-            assertArrayEquals(vectorProdRowCol[i], prod[i], 1e-6);
-        }
-    }
-
-    // test multiplying a col matrix by a row matrix
-    @Test
-    void testVectorColRowMultiply() {
-        double[][] prod = MatrixUtilsExtensions.matrixMultiply(matColVector, matRowVector);
-        for (int i = 0; i < prod.length; i++) {
-            assertArrayEquals(vectorProdColRow[i], prod[i], 1e-6);
-        }
-    }
-
-    // === Matrix Inversion tests ===
+    // === Matrix Inversion tests ======================================================================================
     // test inverting a non singular square matrix
     @Test
     void testInvertNormal() {
@@ -447,7 +241,7 @@ class MatrixUtilsExtensionsTest {
     // test inverting a singular square matrix
     // this should return a psuedoinverse, which should have the property A = A(A+)A
     void testInvertSingular() {
-        RealMatrix orig = MatrixUtils.createRealMatrix(matSquareSingular);
+        RealMatrix orig = mssMatrix;
         RealMatrix inv = MatrixUtilsExtensions.safeInvert(orig);
         RealMatrix invProperty = orig.multiply(inv).multiply(orig);
         for (int i = 0; i < inv.getRowDimension(); i++) {
@@ -455,44 +249,29 @@ class MatrixUtilsExtensionsTest {
         }
     }
 
-    // === Apache MatrixUtilExtensions Tests ===================
-    RealVector v = MatrixUtils.createRealVector(new double[] { 1, 2, 3 });
-    RealMatrix m = MatrixUtils.createRealMatrix(matSquareSingular);
-
+    // RealVector statistics tests =====================================================================================
     @Test
-    void rowSum() {
-        assertArrayEquals(new double[] { 12, 15, 18 }, MatrixUtilsExtensions.rowSum(m).toArray());
+    void testMinPos() {
+        assertEquals(1, MatrixUtilsExtensions.minPos(vMix), 1e-4);
     }
 
     @Test
-    void rowSquareSum() {
-        assertArrayEquals(new double[] { 66, 93, 126 }, MatrixUtilsExtensions.rowSquareSum(m).toArray());
+    void testMinPosNoNeg() {
+        assertEquals(Double.MAX_VALUE, MatrixUtilsExtensions.minPos(allNeg), 1e-4);
     }
-
-    RealMatrix rowDiffResult = MatrixUtils.createRealMatrix(new double[][] { { 0, 0, 0 }, { 3, 3, 3 }, { 6, 6, 6 } });
 
     @Test
-    void rowDifference() {
-        assertEquals(rowDiffResult, MatrixUtilsExtensions.rowDifference(m, v));
+    void testVar() {
+        assertEquals(2443.22222222, MatrixUtilsExtensions.variance(varInput), 1e-4);
     }
 
-    RealMatrix colDiffResult = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 2, 3, 4 }, { 4, 5, 6 } });
-
-    @Test
-    void colDifference() {
-        assertEquals(colDiffResult, MatrixUtilsExtensions.colDifference(m, v));
-    }
-
-    RealMatrix swapResult = MatrixUtils.createRealMatrix(new double[][] { { 7, 8, 9 }, { 4, 5, 6 }, { 1, 2, 3 } });
-
+    // === Swap Tests ==================================================================================================
     @Test
     void testSwapRealMatrix() {
-        RealMatrix mCopy = m.copy();
+        RealMatrix mCopy = mssMatrix.copy();
         MatrixUtilsExtensions.swap(mCopy, 0, 2);
         assertEquals(swapResult, mCopy);
     }
-
-    RealVector swapResultV = MatrixUtils.createRealVector(new double[] { 3, 2, 1 });
 
     @Test
     void testSwapRealVector() {
@@ -506,43 +285,6 @@ class MatrixUtilsExtensionsTest {
         int[] arr = new int[] { 1, 2, 3 };
         MatrixUtilsExtensions.swap(arr, 0, 2);
         assertArrayEquals(new int[] { 3, 2, 1 }, arr);
-    }
-
-    RealMatrix rowMatrix = MatrixUtils.createRealMatrix(new double[][] { { 1, 2, 3 } });
-
-    @Test
-    void createRowMatrix() {
-        assertEquals(rowMatrix, MatrixUtilsExtensions.createRowMatrix(v));
-    }
-
-    RealMatrix dotInput1 = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 3, 4, 5 } });
-    RealMatrix dotInput2 = MatrixUtils.createRealMatrix(new double[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } });
-    RealMatrix dotResult = MatrixUtils.createRealMatrix(new double[][] { { 15, 18, 21 }, { 42, 54, 66 } });
-
-    @Test
-    void matrixDot() {
-        assertEquals(dotResult, MatrixUtilsExtensions.matrixDot(dotInput1, dotInput2));
-    }
-
-    // RealVector statistics tests
-    RealVector vMix = MatrixUtils.createRealVector(new double[] { -3, -2, -1, 1, 2, 3 });
-    RealVector allNeg = MatrixUtils.createRealVector(new double[] { -3, -2, -1 });
-
-    @Test
-    void testMinPos() {
-        assertEquals(1, MatrixUtilsExtensions.minPos(vMix), 1e-4);
-    }
-
-    @Test
-    void testMinPosNoNeg() {
-        assertEquals(Double.MAX_VALUE, MatrixUtilsExtensions.minPos(allNeg), 1e-4);
-    }
-
-    RealVector varInput = MatrixUtils.createRealVector(new double[] { 0, 4, 16, 2, -128, -4 });
-
-    @Test
-    void testVar() {
-        assertEquals(2443.22222222, MatrixUtilsExtensions.variance(varInput), 1e-4);
     }
 
 }

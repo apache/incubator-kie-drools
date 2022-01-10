@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.kie.kogito.explainability.local.shap;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math3.linear.RealMatrix;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.PredictionInput;
@@ -26,7 +27,7 @@ import org.kie.kogito.explainability.model.PredictionInput;
 public class ShapSyntheticDataSample {
     private final PredictionInput x;
     private final boolean[] mask;
-    private final double[][] background;
+    private final RealMatrix background;
     private double weight;
     private final boolean fixed;
     private final List<PredictionInput> syntheticData;
@@ -45,7 +46,7 @@ public class ShapSyntheticDataSample {
      *
      */
 
-    public ShapSyntheticDataSample(PredictionInput x, boolean[] mask, double[][] background, double weight, boolean fixed) {
+    public ShapSyntheticDataSample(PredictionInput x, boolean[] mask, RealMatrix background, double weight, boolean fixed) {
         this.x = x;
         this.mask = mask;
         this.background = background;
@@ -63,14 +64,14 @@ public class ShapSyntheticDataSample {
     private List<PredictionInput> createSyntheticData() {
         List<Feature> piFeatures = this.x.getFeatures();
         List<PredictionInput> synthData = new ArrayList<>();
-        for (int i = 0; i < this.background.length; i++) {
+        for (int i = 0; i < this.background.getRowDimension(); i++) {
             List<Feature> maskedFeatures = new ArrayList<>();
             for (int j = 0; j < this.mask.length; j++) {
                 Feature oldFeature = piFeatures.get(j);
                 if (this.mask[j]) {
                     maskedFeatures.add(oldFeature);
                 } else {
-                    maskedFeatures.add(FeatureFactory.newNumericalFeature(oldFeature.getName(), this.background[i][j]));
+                    maskedFeatures.add(FeatureFactory.newNumericalFeature(oldFeature.getName(), this.background.getEntry(i, j)));
                 }
             }
             synthData.add(new PredictionInput(maskedFeatures));

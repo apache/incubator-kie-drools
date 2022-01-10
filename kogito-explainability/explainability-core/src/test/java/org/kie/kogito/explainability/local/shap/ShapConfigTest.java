@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
+import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
@@ -30,6 +31,7 @@ import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -44,7 +46,7 @@ class ShapConfigTest {
     PredictionInput pi = new PredictionInput(fs);
     List<PredictionInput> pis = Arrays.asList(pi, pi);
     List<PredictionInput> piEmpty = new ArrayList<>();
-    double[][] piMatrix = MatrixUtilsExtensions.matrixFromPredictionInput(pis);
+    RealMatrix piMatrix = MatrixUtilsExtensions.matrixFromPredictionInput(pis);
 
     // Test that everything recovers as expected
     @Test
@@ -65,7 +67,7 @@ class ShapConfigTest {
         assertSame(pc, skConfig.getPC());
         assertSame(executor, skConfig.getExecutor());
         assertSame(pis, skConfig.getBackground());
-        assertTrue(Arrays.deepEquals(piMatrix, skConfig.getBackgroundMatrix()));
+        assertArrayEquals(piMatrix.getData(), skConfig.getBackgroundMatrix().getData());
     }
 
     // Test that the default arguments recover as expected
@@ -78,7 +80,7 @@ class ShapConfigTest {
         assertEquals(ShapConfig.LinkType.LOGIT, skConfig.getLink());
         assertFalse(skConfig.getNSamples().isPresent());
         assertSame(pis, skConfig.getBackground());
-        assertTrue(Arrays.deepEquals(piMatrix, skConfig.getBackgroundMatrix()));
+        assertArrayEquals(piMatrix.getData(), skConfig.getBackgroundMatrix().getData());
         assertSame(ForkJoinPool.commonPool(), skConfig.getExecutor());
         assertFalse(skConfig.getNSamples().isPresent());
     }

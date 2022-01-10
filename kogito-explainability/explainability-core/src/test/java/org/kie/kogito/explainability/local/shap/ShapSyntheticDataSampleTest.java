@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package org.kie.kogito.explainability.local.shap;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
@@ -41,10 +43,10 @@ class ShapSyntheticDataSampleTest {
         PredictionInput pi = new PredictionInput(fs);
 
         boolean[] mask = { true, true, false, false, true };
-        double[][] background = {
+        RealMatrix background = MatrixUtils.createRealMatrix(new double[][] {
                 { 0., 1., 2., 3., 4. },
                 { 5., 6., 7., 8., 9. }
-        };
+        });
         double weight = .5;
         boolean fixed = true;
 

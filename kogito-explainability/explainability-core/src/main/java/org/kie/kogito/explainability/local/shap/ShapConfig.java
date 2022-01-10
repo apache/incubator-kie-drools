@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
+import org.apache.commons.math3.linear.RealMatrix;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
@@ -38,7 +39,7 @@ public class ShapConfig {
     private final PerturbationContext pc;
     private final Executor executor;
     private final List<PredictionInput> background;
-    private final double[][] backgroundMatrix;
+    private final RealMatrix backgroundMatrix;
 
     /**
      * Create a ShapConfig instance. This sets the configuration of the SHAP explainer.
@@ -194,7 +195,7 @@ public class ShapConfig {
         return this.pc;
     }
 
-    public double[][] getBackgroundMatrix() {
+    public RealMatrix getBackgroundMatrix() {
         return this.backgroundMatrix;
     }
 

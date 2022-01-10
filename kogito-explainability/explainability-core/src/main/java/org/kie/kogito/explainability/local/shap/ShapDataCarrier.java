@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.math3.linear.RealVector;
 import org.kie.kogito.explainability.model.PredictionProvider;
 
 public class ShapDataCarrier {
-    private ShapConfig.LinkType link;
     private PredictionProvider model;
-    private CompletableFuture<double[][]> linkNull;
-    private CompletableFuture<double[]> fnull;
+    private CompletableFuture<RealVector> linkNull;
+    private CompletableFuture<RealVector> fnull;
     private int rows;
     private int cols;
     private CompletableFuture<Integer> outputSize;
@@ -73,19 +73,19 @@ public class ShapDataCarrier {
         this.model = model;
     }
 
-    public CompletableFuture<double[][]> getLinkNull() {
+    public CompletableFuture<RealVector> getLinkNull() {
         return linkNull;
     }
 
-    public void setLinkNull(CompletableFuture<double[][]> linkNull) {
+    public void setLinkNull(CompletableFuture<RealVector> linkNull) {
         this.linkNull = linkNull;
     }
 
-    public CompletableFuture<double[]> getFnull() {
+    public CompletableFuture<RealVector> getFnull() {
         return fnull;
     }
 
-    public void setFnull(CompletableFuture<double[]> fnull) {
+    public void setFnull(CompletableFuture<RealVector> fnull) {
         this.fnull = fnull;
     }
 
@@ -100,10 +100,6 @@ public class ShapDataCarrier {
 
     // runtime accumulators ==========================================================
     //sample trackers
-    public List<ShapSyntheticDataSample> getSamplesAdded() {
-        return samplesAdded;
-    }
-
     public ShapSyntheticDataSample getSamplesAdded(int i) {
         return samplesAdded.get(i);
     }

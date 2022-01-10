@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -41,7 +43,6 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
-import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -135,7 +136,7 @@ class ShapKernelExplainerTest {
     // create a list of prediction inputs from double matrix
     private List<PredictionInput> createPIFromMatrix(double[][] m) {
         List<PredictionInput> pis = new ArrayList<>();
-        int[] shape = MatrixUtilsExtensions.getShape(m);
+        int[] shape = new int[] { m.length, m[0].length };
         for (int i = 0; i < shape[0]; i++) {
             List<Feature> fs = new ArrayList<>();
             for (int j = 0; j < shape[1]; j++) {
@@ -146,13 +147,15 @@ class ShapKernelExplainerTest {
         return pis;
     }
 
-    private double[][][] saliencyToMatrix(Saliency[] saliencies) {
-        double[][][] out = new double[2][saliencies.length][saliencies[0].getPerFeatureImportance().size()];
+    private RealMatrix[] saliencyToMatrix(Saliency[] saliencies) {
+        RealMatrix emptyMatrix = MatrixUtils.createRealMatrix(
+                new double[saliencies.length][saliencies[0].getPerFeatureImportance().size()]);
+        RealMatrix[] out = new RealMatrix[] { emptyMatrix.copy(), emptyMatrix.copy() };
         for (int i = 0; i < saliencies.length; i++) {
             List<FeatureImportance> fis = saliencies[i].getPerFeatureImportance();
             for (int j = 0; j < fis.size(); j++) {
-                out[0][i][j] = fis.get(j).getScore();
-                out[1][i][j] = fis.get(j).getConfidence();
+                out[0].setEntry(i, j, fis.get(j).getScore());
+                out[1].setEntry(i, j, fis.get(j).getConfidence());
             }
         }
         return out;
@@ -183,9 +186,9 @@ class ShapKernelExplainerTest {
             //explanations shape: outputSize x nfeatures
             Saliency[] explanationSaliencies = ske.explainAsync(predictions.get(i), model)
                     .get(5, TimeUnit.SECONDS).getSaliencies();
-            double[][] explanations = saliencyToMatrix(explanationSaliencies)[0];
-            for (int j = 0; j < explanations.length; j++) {
-                assertArrayEquals(expected[i][j], explanations[j], 1e-6);
+            RealMatrix explanations = saliencyToMatrix(explanationSaliencies)[0];
+            for (int j = 0; j < explanations.getRowDimension(); j++) {
+                assertArrayEquals(expected[i][j], explanations.getRow(j), 1e-6);
             }
         }
     }
@@ -199,7 +202,6 @@ class ShapKernelExplainerTest {
             throws InterruptedException, TimeoutException, ExecutionException {
 
         // establish background data and desired data to explain
-
         List<PredictionInput> toExplain = createPIFromMatrix(toExplainRaw);
 
         //initialize explainer
@@ -212,11 +214,11 @@ class ShapKernelExplainerTest {
         // evaluate if the explanations match the expected value
         for (int i = 0; i < toExplain.size(); i++) {
             //explanations shape: outputSize x nfeatures
-            Saliency[] exlanationSaliencies = ske.explainAsync(predictions.get(i), model)
+            Saliency[] explanationSaliencies = ske.explainAsync(predictions.get(i), model)
                     .get(5, TimeUnit.SECONDS).getSaliencies();
-            double[][] explanations = saliencyToMatrix(exlanationSaliencies)[0];
-            for (int j = 0; j < explanations.length; j++) {
-                assertArrayEquals(expected[i][j], explanations[j], 1e-6);
+            RealMatrix explanations = saliencyToMatrix(explanationSaliencies)[0];
+            for (int j = 0; j < explanations.getRowDimension(); j++) {
+                assertArrayEquals(expected[i][j], explanations.getRow(j), 1e-6);
             }
         }
     }
@@ -328,11 +330,11 @@ class ShapKernelExplainerTest {
         for (int i = 0; i < toExplain.size(); i++) {
             Saliency[] explanationSaliencies = ske.explainAsync(predictions.get(i), model)
                     .get(5, TimeUnit.SECONDS).getSaliencies();
-            double[][][] explanationsAndConfs = saliencyToMatrix(explanationSaliencies);
-            double[][] explanations = explanationsAndConfs[0];
+            RealMatrix[] explanationsAndConfs = saliencyToMatrix(explanationSaliencies);
+            RealMatrix explanations = explanationsAndConfs[0];
 
-            for (int j = 0; j < explanations.length; j++) {
-                assertArrayEquals(expected[i][j], explanations[j], 1e-2);
+            for (int j = 0; j < explanations.getRowDimension(); j++) {
+                assertArrayEquals(expected[i][j], explanations.getRow(j), 1e-2);
             }
         }
     }
@@ -375,8 +377,8 @@ class ShapKernelExplainerTest {
         ExecutorService executor = ForkJoinPool.commonPool();
         executor.submit(() -> {
             Saliency[] explanationSaliencies = explanationsCF.join().getSaliencies();
-            double[][] explanations = saliencyToMatrix(explanationSaliencies)[0];
-            assertArrayEquals(expected[0][0], explanations[0], 1e-2);
+            RealMatrix explanations = saliencyToMatrix(explanationSaliencies)[0];
+            assertArrayEquals(expected[0][0], explanations.getRow(0), 1e-2);
         });
     }
 
@@ -501,16 +503,14 @@ class ShapKernelExplainerTest {
                 List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
                 Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
                 Saliency[] saliencies = ske.explainAsync(p, model).get().getSaliencies();
-                double[][][] explanationsAndConfs = saliencyToMatrix(saliencies);
-                double[][] explanations = explanationsAndConfs[0];
+                RealMatrix[] explanationsAndConfs = saliencyToMatrix(saliencies);
+                RealMatrix explanations = explanationsAndConfs[0];
+                RealMatrix confidence = explanationsAndConfs[1];
 
-                double[][] confidence = explanationsAndConfs[1];
-
-                int[] shape = MatrixUtilsExtensions.getShape(confidence);
-                for (int i = 0; i < shape[0]; i++) {
-                    for (int j = 0; j < shape[1]; j++) {
-                        double conf = confidence[i][j];
-                        double exp = explanations[i][j];
+                for (int i = 0; i < explanations.getRowDimension(); i++) {
+                    for (int j = 0; j < explanations.getColumnDimension(); j++) {
+                        double conf = confidence.getEntry(i, j);
+                        double exp = explanations.getEntry(i, j);
 
                         // see if true value falls into confidence interval
                         testResults[test * 6 + j] = (exp + conf) > 1.0 & 1.0 > (exp - conf) ? 1 : 0;
@@ -523,5 +523,4 @@ class ShapKernelExplainerTest {
             assertEquals(interval, score, .05);
         }
     }
-
 }

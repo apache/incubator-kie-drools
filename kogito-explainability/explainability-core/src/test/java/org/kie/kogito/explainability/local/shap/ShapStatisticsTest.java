@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.kie.kogito.explainability.local.shap;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealVector;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -28,9 +30,9 @@ class ShapStatisticsTest {
     int[] numSubsetsAtSize = { 1, 3, 5, 3, 1 };
     int numSamplesRemaining = 10;
 
-    double[] weightOfSubsetSize = { .1, .3, .5, .3, .1 };
-    double[] finalRemainingWeights = { .2, .4, .6, .4, .2 };
-    double[] remainingWeights = { .02, .04, .06, .04, .02 };
+    RealVector weightOfSubsetSize = MatrixUtils.createRealVector(new double[] { .1, .3, .5, .3, .1 });
+    RealVector finalRemainingWeights = MatrixUtils.createRealVector(new double[] { .2, .4, .6, .4, .2 });
+    RealVector remainingWeights = MatrixUtils.createRealVector(new double[] { .02, .04, .06, .04, .02 });
 
     // subset stats getters and setters tests ==================
     @Test
@@ -72,7 +74,7 @@ class ShapStatisticsTest {
         ShapStatistics shapStats = new ShapStatistics(numSubsetSizes, largestPairedSubsetSize,
                 numSubsetsAtSize, numSamplesRemaining);
         shapStats.setWeightOfSubsetSize(weightOfSubsetSize);
-        assertArrayEquals(weightOfSubsetSize, shapStats.getWeightOfSubsetSize());
+        assertArrayEquals(weightOfSubsetSize.toArray(), shapStats.getWeightOfSubsetSize().toArray());
     }
 
     // remaining weight operations tests =============
@@ -81,7 +83,7 @@ class ShapStatisticsTest {
         ShapStatistics shapStats = new ShapStatistics(numSubsetSizes, largestPairedSubsetSize,
                 numSubsetsAtSize, numSamplesRemaining);
         shapStats.setRemainingWeights(remainingWeights);
-        assertArrayEquals(remainingWeights, shapStats.getRemainingWeights());
+        assertArrayEquals(remainingWeights.toArray(), shapStats.getRemainingWeights().toArray());
     }
 
     @Test
@@ -89,7 +91,7 @@ class ShapStatisticsTest {
         ShapStatistics shapStats = new ShapStatistics(numSubsetSizes, largestPairedSubsetSize,
                 numSubsetsAtSize, numSamplesRemaining);
         shapStats.setFinalRemainingWeights(finalRemainingWeights);
-        assertArrayEquals(finalRemainingWeights, shapStats.getFinalRemainingWeights());
+        assertArrayEquals(finalRemainingWeights.toArray(), shapStats.getFinalRemainingWeights().toArray());
     }
 
     // remaining sample operations tests ============
