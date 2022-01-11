@@ -36,9 +36,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -129,9 +127,7 @@ public class DecisionModelResourcesProviderGenerator {
     }
 
     private ObjectCreationExpr makeDecisionModelMetadata(DMNResource resource) {
-        return newObject(DecisionModelMetadata.class,
-                makeDMNType(),
-                new StringLiteralExpr(extractModelVersion(resource)));
+        return newObject(DecisionModelMetadata.class, new StringLiteralExpr(extractModelVersion(resource)));
     }
 
     private String extractModelVersion(DMNResource resource) {
@@ -147,8 +143,4 @@ public class DecisionModelResourcesProviderGenerator {
         return definitions.iterator().next();
     }
 
-    private FieldAccessExpr makeDMNType() {
-        NameExpr clazz = new NameExpr(DecisionModelMetadata.Type.class.getCanonicalName());
-        return new FieldAccessExpr(clazz, "DMN");
-    }
 }

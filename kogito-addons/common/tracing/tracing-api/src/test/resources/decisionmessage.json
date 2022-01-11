@@ -1,0 +1,22 @@
+{
+  "level": "WARNING",
+  "category": "DMN",
+  "type": "type-1",
+  "sourceId": "sourceId-1",
+  "text": "text-1",
+  "exception": {
+    "className": "className-1",
+    "message": "message-1"
+  },
+  "feelEvent": {
+    "severity": "ERROR",
+    "message": "message-1",
+    "line": 1,
+    "column": 1,
+    "sourceException": {
+      "className": "className-1",
+      "message": "message-1"
+    }
+  },
+  "@type": "DECISION"
+}

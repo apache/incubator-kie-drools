@@ -28,10 +28,10 @@ import org.kie.kogito.dmn.DecisionTestUtils;
 import org.kie.kogito.tracing.decision.DecisionTracingTestUtils;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType;
-import org.kie.kogito.tracing.decision.event.message.InternalMessageType;
-import org.kie.kogito.tracing.decision.event.message.MessageCategory;
-import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
-import org.kie.kogito.tracing.decision.event.trace.TraceEventType;
+import org.kie.kogito.tracing.decision.message.InternalMessageType;
+import org.kie.kogito.tracing.event.message.MessageCategory;
+import org.kie.kogito.tracing.event.trace.TraceEvent;
+import org.kie.kogito.tracing.event.trace.TraceEventType;
 
 import io.cloudevents.CloudEvent;
 

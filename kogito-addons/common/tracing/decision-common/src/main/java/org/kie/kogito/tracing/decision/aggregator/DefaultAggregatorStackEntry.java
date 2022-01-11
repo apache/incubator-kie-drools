@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType;
-import org.kie.kogito.tracing.decision.event.trace.TraceExecutionStep;
+import org.kie.kogito.tracing.event.trace.TraceExecutionStep;
 
 /**
  * {@link DefaultAggregator} uses a stack to compute the list of {@link TraceExecutionStep}

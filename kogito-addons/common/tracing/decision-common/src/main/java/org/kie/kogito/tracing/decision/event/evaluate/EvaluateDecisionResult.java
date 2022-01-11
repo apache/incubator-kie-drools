@@ -20,7 +20,7 @@ import java.util.List;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.kogito.tracing.decision.event.EventUtils;
-import org.kie.kogito.tracing.decision.event.message.Message;
+import org.kie.kogito.tracing.event.message.Message;
 
 import static org.kie.kogito.tracing.decision.event.EventUtils.map;
 

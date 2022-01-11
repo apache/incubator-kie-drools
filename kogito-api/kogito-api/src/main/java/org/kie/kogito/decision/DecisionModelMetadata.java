@@ -15,33 +15,27 @@
  */
 package org.kie.kogito.decision;
 
+import org.kie.kogito.ModelDomain;
+import org.kie.kogito.event.ModelMetadata;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DecisionModelMetadata {
-
-    @JsonProperty("type")
-    private Type type;
+public final class DecisionModelMetadata extends ModelMetadata {
 
     @JsonProperty("specVersion")
     private String specVersion;
 
     public DecisionModelMetadata() {
+        super(ModelDomain.DECISION);
     }
 
-    public DecisionModelMetadata(Type type, String specVersion) {
-        this.type = type;
+    public DecisionModelMetadata(String specVersion) {
+        super(ModelDomain.DECISION);
         this.specVersion = specVersion;
-    }
-
-    public Type getType() {
-        return type;
     }
 
     public String getSpecVersion() {
         return specVersion;
     }
 
-    public enum Type {
-        DMN
-    }
 }

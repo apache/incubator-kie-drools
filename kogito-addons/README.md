@@ -117,4 +117,4 @@ If you have questions, feel free to reach out to us at the [KIE Zulip Channel](h
 
 ## Deprecated Add-ons
 
-Please refer to the [deprecated modules](deprecated/README.md) documentation for a list of deprecated add-ons.
+Please refer to the [deprecated modules](deprecated/README.md) documentation for a list of deprecated add-ons. 

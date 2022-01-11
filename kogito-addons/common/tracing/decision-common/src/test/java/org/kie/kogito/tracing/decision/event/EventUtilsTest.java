@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.kogito.tracing.decision.event.message.InternalMessageType;
+import org.kie.kogito.tracing.decision.message.InternalMessageType;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

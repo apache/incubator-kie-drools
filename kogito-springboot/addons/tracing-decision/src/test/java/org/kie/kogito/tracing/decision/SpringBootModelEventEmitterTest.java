@@ -74,9 +74,7 @@ public class SpringBootModelEventEmitterTest {
         when(model.getModelName()).thenReturn("name");
         when(model.getNamespace()).thenReturn("namespace");
         when(model.getModelMetadata()).thenReturn(
-                new DecisionModelMetadata(
-                        DecisionModelMetadata.Type.DMN,
-                        "http://www.omg.org/spec/DMN/20151101/dmn.xsd"));
+                new DecisionModelMetadata("http://www.omg.org/spec/DMN/20151101/dmn.xsd"));
         when(model.get()).thenReturn("model");
         return model;
     }

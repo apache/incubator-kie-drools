@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.tracing.decision.event.evaluate;
 
-import org.kie.kogito.tracing.decision.event.trace.TraceExecutionStepType;
+import org.kie.kogito.tracing.event.trace.TraceExecutionStepType;
 
 public enum EvaluateEventType {
     BEFORE_EVALUATE_ALL(true),

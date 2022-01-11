@@ -43,7 +43,6 @@ public class DecisionModelResourcesProviderMock implements DecisionModelResource
                 TEST_MODEL_NAMESPACE,
                 TEST_MODEL_NAME,
                 new DecisionModelMetadata(
-                        DecisionModelMetadata.Type.DMN,
                         "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
                 new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
 

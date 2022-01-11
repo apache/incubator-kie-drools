@@ -15,7 +15,7 @@
 
   <modules>
     <module>typedvalue-api</module>
-    <module>decision-api</module>
+    <module>tracing-api</module>
     <module>decision-common</module>
   </modules>
 

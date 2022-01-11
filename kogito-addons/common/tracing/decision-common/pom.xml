@@ -20,7 +20,7 @@
 
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-tracing-decision-api</artifactId>
+      <artifactId>kogito-addons-tracing-api</artifactId>
     </dependency>
 
     <dependency>

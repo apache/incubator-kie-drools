@@ -31,14 +31,15 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
-import org.kie.kogito.tracing.decision.event.message.InternalMessageType;
-import org.kie.kogito.tracing.decision.event.message.Message;
-import org.kie.kogito.tracing.decision.event.message.MessageCategory;
-import org.kie.kogito.tracing.decision.event.message.MessageExceptionField;
-import org.kie.kogito.tracing.decision.event.message.MessageFEELEvent;
-import org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity;
-import org.kie.kogito.tracing.decision.event.message.MessageLevel;
-import org.kie.kogito.tracing.decision.event.trace.TraceResourceId;
+import org.kie.kogito.tracing.decision.message.InternalMessageType;
+import org.kie.kogito.tracing.event.message.Message;
+import org.kie.kogito.tracing.event.message.MessageCategory;
+import org.kie.kogito.tracing.event.message.MessageExceptionField;
+import org.kie.kogito.tracing.event.message.MessageFEELEvent;
+import org.kie.kogito.tracing.event.message.MessageFEELEventSeverity;
+import org.kie.kogito.tracing.event.message.MessageLevel;
+import org.kie.kogito.tracing.event.message.models.DecisionMessage;
+import org.kie.kogito.tracing.event.trace.TraceResourceId;
 import org.kie.kogito.tracing.typedvalue.CollectionValue;
 import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
@@ -62,7 +63,7 @@ public class EventUtils {
         if (message == null) {
             return null;
         }
-        return new Message(
+        return new DecisionMessage(
                 messageLevelFrom(message.getLevel()),
                 MessageCategory.DMN,
                 message.getMessageType().name(),
@@ -76,7 +77,7 @@ public class EventUtils {
         if (message == null) {
             return null;
         }
-        return new Message(
+        return new DecisionMessage(
                 message.getLevel(),
                 MessageCategory.INTERNAL,
                 message.name(),
@@ -90,7 +91,7 @@ public class EventUtils {
         if (message == null) {
             return null;
         }
-        return new Message(
+        return new DecisionMessage(
                 message.getLevel(),
                 MessageCategory.INTERNAL,
                 message.name(),
