@@ -30,16 +30,16 @@ import org.kie.kogito.explainability.model.PredictionInputsDataDistribution;
 public class LimeConfig {
 
     private static final int DEFAULT_NO_OF_SAMPLES = 300;
-    private static final double DEFAULT_SEPARABLE_DATASET_RATIO = 0.99;
+    private static final double DEFAULT_SEPARABLE_DATASET_RATIO = 0.9;
     public static final int DEFAULT_NO_OF_RETRIES = 3;
-    private static final boolean DEFAULT_ADAPT_DATASET_VARIANCE = false;
+    private static final boolean DEFAULT_ADAPT_DATASET_VARIANCE = true;
     private static final boolean DEFAULT_PENALIZE_BALANCE_SPARSE = true;
     private static final boolean DEFAULT_PROXIMITY_FILTER = true;
-    private static final double DEFAULT_PROXIMITY_THRESHOLD = 0.8;
+    private static final double DEFAULT_PROXIMITY_THRESHOLD = 0.83;
     private static final Number DEFAULT_PROXIMITY_FILTERED_DATASET_MIN = 10;
-    private static final double DEFAULT_PROXIMITY_KERNEL_WIDTH = 0.675;
-    private static final double DEFAULT_ENCODING_CLUSTER_THRESHOLD = 0.1;
-    private static final double DEFAULT_ENCODING_GAUSSIAN_FILTER_WIDTH = 1;
+    private static final double DEFAULT_PROXIMITY_KERNEL_WIDTH = 0.5;
+    private static final double DEFAULT_ENCODING_CLUSTER_THRESHOLD = 0.07;
+    private static final double DEFAULT_ENCODING_GAUSSIAN_FILTER_WIDTH = 0.75;
     private static final boolean DEFAULT_NORMALIZE_WEIGHTS = true;
     private static final boolean DEFAULT_HIGH_SCORE_ZONES = true;
     private static final int DEFAULT_BOOSTRAP_INPUTS = 50;
