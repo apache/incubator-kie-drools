@@ -23,8 +23,7 @@ import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
-import org.kie.kogito.services.event.impl.JsonStringToObject;
-import org.kie.kogito.event.EventConverter;
+import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.KogitoEventExecutor;
 
@@ -40,7 +39,7 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
             EventReceiver eventReceiver,
             ProcessService processService,
             @org.springframework.beans.factory.annotation.Qualifier(KogitoEventExecutor.BEAN_NAME) ExecutorService executorService,
-            EventConverter<String> eventConverter) {
+            EventUnmarshaller<Object> eventUnmarshaller) {
         super(application,
               process,
               "$Trigger$",
@@ -51,7 +50,7 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
               configBean.useCloudEvents(),
               processService,
               executorService,
-              eventConverter);
+              eventUnmarshaller);
     }
 
 }

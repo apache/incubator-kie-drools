@@ -40,7 +40,7 @@ public abstract class AbstractQuarkusCloudEventReceiver implements EventReceiver
         return produce(message, null);
     }
 
-    public CompletionStage<?> produce(final Message<String> message) {
+    public CompletionStage<?> produce(final Message<?> message) {
         LOGGER.debug("Received message {}", message);
         return produce(message.getPayload(), (v, e) -> {
             LOGGER.debug("Acking message {}", message.getPayload());
@@ -51,13 +51,13 @@ public abstract class AbstractQuarkusCloudEventReceiver implements EventReceiver
         });
     }
 
-    private CompletionStage<?> produce(final String message, BiConsumer<Object, Throwable> callback) {
+    private CompletionStage<?> produce(final Object message, BiConsumer<Object, Throwable> callback) {
         CompletionStage<?> result = CompletableFuture.completedFuture(null);
         CompletionStage<?> future = result;
         for (Subscription<Object> subscription : consumers) {
             Object object;
             try {
-                object = subscription.getInfo().getConverter().apply(message, subscription.getInfo().getOutputClass());
+                object = subscription.getInfo().getConverter().unmarshall(message, subscription.getInfo().getOutputClass());
                 future = future.thenCompose(f -> subscription.getConsumer().apply(object));
             } catch (IOException e) {
                 LOGGER.info("Cannot convert to {} from {}, ignoring type {}, exception message is {}", subscription.getInfo().getOutputClass(), message,
@@ -72,7 +72,7 @@ public abstract class AbstractQuarkusCloudEventReceiver implements EventReceiver
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<String, T> info) {
+    public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> info) {
         consumers.add(new Subscription(consumer, info));
     }
 }

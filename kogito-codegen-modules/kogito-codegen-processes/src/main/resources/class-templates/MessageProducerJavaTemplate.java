@@ -18,7 +18,7 @@ package com.myspace.demo;
 import java.util.Optional;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
+import org.kie.kogito.services.event.impl.StringEventMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,7 +30,7 @@ public class MessageProducer {
 
     Optional<Boolean> useCloudEvents = Optional.of(true);
 
-    EventMarshaller marshaller = new DefaultEventMarshaller(new ObjectMapper());
+    EventMarshaller<String> marshaller = new StringEventMarshaller(new ObjectMapper());
 
     public void configure() {
 

@@ -31,7 +31,7 @@ public class AddonsConfigDiscovery {
     private static final String PROMETHEUS_CLASS = "org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource";
     private static final String MONITORING_CORE_CLASS = "org.kie.kogito.monitoring.core.common.MonitoringRegistry";
     private static final String TRACING_CLASS = "org.kie.kogito.tracing.decision.DecisionTracingListener";
-    private static final String QUARKUS_CLOUD_EVENTS = "org.kie.kogito.addon.quarkus.messaging.QuarkusCloudEventEmitter";
+    private static final String QUARKUS_CLOUD_EVENTS = "org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventEmitter";
     private static final String SPRING_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.spring.SpringKafkaCloudEventEmitter";
     private static final String QUARKUS_EXPLAINABILITY = "org.kie.kogito.explainability.QuarkusExplainableResource";
     private static final String SPRING_EXPLAINABILITY = "org.kie.kogito.explainability.SpringBootExplainableResource";

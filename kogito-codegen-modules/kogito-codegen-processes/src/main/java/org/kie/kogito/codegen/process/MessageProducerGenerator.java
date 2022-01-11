@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.codegen.process;
 
-import java.util.Optional;
-
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -48,7 +46,7 @@ public class MessageProducerGenerator {
 
     protected TriggerMetaData trigger;
 
-    private final Optional<String> eventEmitterName;
+    private CompilationUnit clazz;
 
     public MessageProducerGenerator(
             KogitoBuildContext context,
@@ -56,9 +54,8 @@ public class MessageProducerGenerator {
             String modelfqcn,
             String processfqcn,
             String messageDataEventClassName,
-            TriggerMetaData trigger,
-            Optional<String> eventEmitterName) {
-        this(context, process, modelfqcn, processfqcn, messageDataEventClassName, trigger, "MessageProducer", eventEmitterName);
+            TriggerMetaData trigger) {
+        this(context, process, modelfqcn, processfqcn, messageDataEventClassName, trigger, "MessageProducer");
     }
 
     public MessageProducerGenerator(
@@ -68,8 +65,7 @@ public class MessageProducerGenerator {
             String processfqcn,
             String messageDataEventClassName,
             TriggerMetaData trigger,
-            String templateName,
-            Optional<String> eventEmitterName) {
+            String templateName) {
         this.context = context;
         this.process = process;
         this.trigger = trigger;
@@ -79,16 +75,15 @@ public class MessageProducerGenerator {
         String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "MessageProducer_" + trigger.getOwnerId();
         this.messageDataEventClassName = messageDataEventClassName;
-        this.eventEmitterName = eventEmitterName;
 
         this.generator = TemplatedGenerator.builder()
                 .withTargetTypeName(resourceClazzName)
                 .withPackageName(processPackageName)
                 .build(context, templateName);
+        this.clazz = generator.compilationUnitOrThrow("Cannot generate message producer");
     }
 
     public String generate() {
-        CompilationUnit clazz = generator.compilationUnitOrThrow("Cannot generate message producer");
 
         ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new InvalidTemplateException(
@@ -100,9 +95,6 @@ public class MessageProducerGenerator {
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> CodegenUtils.interpolateTypes(cls, trigger.getDataType()));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ClassName$", resourceClazzName)));
-        if (eventEmitterName.isPresent()) {
-            template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$BeanName$", eventEmitterName.get())));
-        }
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
         template.findAll(StringLiteralExpr.class).forEach(s -> s.setString(s.getValue().replace("$channel$", trigger.getName())));
@@ -117,5 +109,9 @@ public class MessageProducerGenerator {
 
     public String generatedFilePath() {
         return generator.generatedFilePath();
+    }
+
+    public CompilationUnit compilationUnit() {
+        return clazz;
     }
 }

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.kie.kogito.Application;
 import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.event.EventConverter;
+import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.KogitoEventExecutor;
 import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
@@ -37,7 +37,7 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
     Application application;
 
     @Inject
-    EventConverter<String> eventConverter;
+    EventUnmarshaller<Object> eventUnmarshaller;
 
     @Inject
     @Named("$ProcessName$")
@@ -47,7 +47,6 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
     ConfigBean configBean;
 
     @Inject
-    @Named("$BeanName$")
     EventReceiver eventReceiver;
 
     @Inject
@@ -69,7 +68,7 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
                 configBean.useCloudEvents(),
                 processService,
                 executorService,
-                eventConverter);
+                eventUnmarshaller);
 
     }
 

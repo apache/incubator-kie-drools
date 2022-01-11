@@ -72,7 +72,7 @@ public class EventDrivenPredictionsController {
 
     protected void subscribe() {
         eventReceiver.subscribe(this::handleRequest,
-                new SubscriptionInfo<>(CloudEventUtils.Mapper.mapper()::readValue, CloudEvent.class));
+                new SubscriptionInfo<>(CloudEventUtils::readValue, CloudEvent.class));
     }
 
     private CompletionStage<Void> handleRequest(CloudEvent event) {

@@ -19,14 +19,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
-import javax.annotation.PostConstruct;
-
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.event.KogitoEventStreams;
-import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -38,26 +34,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Spring implementation delegating to kafka template
  */
 @Component
-public class SpringKafkaCloudEventEmitter implements EventEmitter {
+public class SpringKafkaCloudEventEmitter<M> implements EventEmitter {
 
     @Autowired
-    org.springframework.kafka.core.KafkaTemplate<String, String> emitter;
+    org.springframework.kafka.core.KafkaTemplate<String, M> emitter;
     @Value(value = "${kogito.addon.cloudevents.kafka." + KogitoEventStreams.OUTGOING + ":" + KogitoEventStreams.OUTGOING + "}")
     String defaultTopicName;
     @Autowired
     Environment env;
     @Autowired
-    ObjectProvider<EventMarshaller> marshallerInstance;
-    private EventMarshaller marshaller;
+    EventMarshaller<M> marshaller;
     @Autowired
     ConfigBean configBean;
     @Autowired
     ObjectMapper mapper;
-
-    @PostConstruct
-    void init() {
-        marshaller = marshallerInstance.getIfAvailable(() -> new DefaultEventMarshaller(mapper));
-    }
 
     @Override
     public <T> CompletionStage<Void> emit(T e, String type, Optional<Function<T, Object>> processDecorator) {

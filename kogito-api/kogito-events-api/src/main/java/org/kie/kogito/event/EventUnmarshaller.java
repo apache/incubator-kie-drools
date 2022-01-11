@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.process;
+package org.kie.kogito.event;
 
-import java.util.Collection;
-import java.util.Map;
+import java.io.IOException;
 
-import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+public interface EventUnmarshaller<S> {
 
-public interface ChannelMappingStrategy {
-    Map<TriggerMetaData, String> getChannelMapping(KogitoBuildContext kogitoBuildContext, Collection<TriggerMetaData> metadata);
+    /**
+     * Converts input object to output object
+     * 
+     * @param input value to be converted
+     * @param outputClass type of the value getting generated
+     * @return ouput object
+     * @throws IOException if conversion cannot be performed. IMPORTANT!!!! any other exception will be considered unexpected, so this implementation should not willingly throw any runtime exception
+     */
+    <T> T unmarshall(S input, Class<T> outputClass) throws IOException;
 }

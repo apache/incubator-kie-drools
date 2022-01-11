@@ -41,7 +41,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-development-mode-spi</artifactId>
-            <version>${version.io.quarkus}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -50,31 +49,25 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-core-deployment</artifactId>
-            <version>${version.io.quarkus}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc-deployment</artifactId>
-            <version>${version.io.quarkus}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-vertx-http-deployment-spi</artifactId>
-            <version>${version.io.quarkus}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-deployment</artifactId>
-            <version>${version.io.quarkus}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-jackson-deployment</artifactId>
-            <version>${version.io.quarkus}</version>
             <scope>provided</scope>
         </dependency>
-
         <!-- codegen dependencies -->
         <dependency>
             <groupId>org.kie.kogito</groupId>

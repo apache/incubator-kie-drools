@@ -18,6 +18,7 @@ package org.kie.kogito.quarkus.common.deployment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -85,19 +86,10 @@ public class KogitoAssetsProcessor {
         return new KogitoBuildContextBuildItem(context);
     }
 
-    /**
-     * Main entry point of the Quarkus extension
-     */
     @BuildStep
-    public List<KogitoGeneratedClassesBuildItem> generateModel(
+    public KogitoGeneratedSourcesBuildItem generateSources(
             Capabilities capabilities,
-            KogitoBuildContextBuildItem contextBuildItem,
-            BuildProducer<GeneratedBeanBuildItem> generatedBeans,
-            BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer,
-            BuildProducer<AdditionalStaticResourceBuildItem> staticResProducer,
-            BuildProducer<NativeImageResourceBuildItem> resource,
-            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            BuildProducer<GeneratedResourceBuildItem> genResBI) throws IOException {
+            KogitoBuildContextBuildItem contextBuildItem) {
 
         final KogitoBuildContext context = contextBuildItem.getKogitoBuildContext();
 
@@ -110,6 +102,24 @@ public class KogitoAssetsProcessor {
         if (!liveReload.isLiveReload()) {
             generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE, HOT_RELOAD_SUPPORT_PATH + ".java", getHotReloadSupportSource()));
         }
+        return new KogitoGeneratedSourcesBuildItem(generatedFiles);
+    }
+
+    @BuildStep
+    public List<KogitoGeneratedClassesBuildItem> generateModel(
+            KogitoGeneratedSourcesBuildItem sources,
+            List<KogitoAddonsGeneratedSourcesBuildItem> extraSources,
+            KogitoBuildContextBuildItem contextBuildItem,
+            BuildProducer<GeneratedBeanBuildItem> generatedBeans,
+            BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer,
+            BuildProducer<AdditionalStaticResourceBuildItem> staticResProducer,
+            BuildProducer<NativeImageResourceBuildItem> resource,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            BuildProducer<GeneratedResourceBuildItem> genResBI) throws IOException {
+
+        final KogitoBuildContext context = contextBuildItem.getKogitoBuildContext();
+
+        Collection<GeneratedFile> generatedFiles = collectGeneratedFiles(sources, extraSources);
 
         // dump files to disk
         dumpFilesToDisk(context.getAppPaths(), generatedFiles);
@@ -129,6 +139,21 @@ public class KogitoAssetsProcessor {
         return optionalIndex
                 .map(Collections::singletonList)
                 .orElse(Collections.emptyList());
+    }
+
+    private Collection<GeneratedFile> collectGeneratedFiles(KogitoGeneratedSourcesBuildItem sources, List<KogitoAddonsGeneratedSourcesBuildItem> extraSources) {
+        Map<String, GeneratedFile> map = new HashMap<>();
+
+        for (GeneratedFile generatedFile : sources.getGeneratedFiles()) {
+            map.put(generatedFile.relativePath(), generatedFile);
+        }
+
+        for (KogitoAddonsGeneratedSourcesBuildItem item : extraSources) {
+            for (GeneratedFile generatedFile : item.getGeneratedFiles()) {
+                map.put(generatedFile.relativePath(), generatedFile);
+            }
+        }
+        return map.values();
     }
 
     void validateAvailableCapabilities(KogitoBuildContext context, Capabilities capabilities) {

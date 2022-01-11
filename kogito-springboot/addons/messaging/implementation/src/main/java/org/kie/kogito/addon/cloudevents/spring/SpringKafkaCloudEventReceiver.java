@@ -48,7 +48,7 @@ public class SpringKafkaCloudEventReceiver implements EventReceiver {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<String, T> info) {
+    public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> info) {
         log.info("Registering consumer with info {}", info);
         consumers.add(new Subscription(consumer, info));
     }
@@ -60,7 +60,7 @@ public class SpringKafkaCloudEventReceiver implements EventReceiver {
         for (String message : messages) {
             for (Subscription<Object> consumer : consumers) {
                 try {
-                    futures.add(consumer.getConsumer().apply(consumer.getInfo().getConverter().apply(message, consumer.getInfo().getOutputClass())));
+                    futures.add(consumer.getConsumer().apply(consumer.getInfo().getConverter().unmarshall(message, consumer.getInfo().getOutputClass())));
                 } catch (IOException e) {
                     log.info("Cannot convert to {} from {}, ignoring type {}, exception message is {}", consumer.getInfo().getOutputClass(), message, consumer.getInfo().getType(),
                             e.getMessage());

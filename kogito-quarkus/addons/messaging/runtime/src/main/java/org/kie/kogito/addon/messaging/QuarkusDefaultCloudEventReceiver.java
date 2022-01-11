@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package $Package$;
 
-import javax.inject.Named;
-
-import java.util.concurrent.CompletionStage;
+package org.kie.kogito.addon.messaging;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventReceiver ;
+import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventReceiver;
 
-import io.quarkus.runtime.Startup;
+import io.quarkus.arc.DefaultBean;
 
-@Startup
+@DefaultBean
 @ApplicationScoped
-@Named("$BeanName$")
-public class $Trigger$EventReceiver extends AbstractQuarkusCloudEventReceiver {
-    
-    @Incoming("$Trigger$")
-    public CompletionStage<?> onEvent(Message<String> message) {
-        return produce(message);
-    }
+public class QuarkusDefaultCloudEventReceiver extends AbstractQuarkusCloudEventReceiver {
 }

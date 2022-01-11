@@ -194,8 +194,6 @@ public class KogitoQuarkusResourceUtils {
     private static Collection<GeneratedBeanBuildItem> makeBuildItems(AppPaths appPaths, ResourceReader resources) throws IOException {
 
         Collection<GeneratedBeanBuildItem> buildItems = new ArrayList<>();
-        Path location = generatedFileWriterBuilder.build(appPaths.getFirstProjectPath()).getClassesDir();
-
         for (KiePath path : resources.getFilePaths()) {
             byte[] data = resources.getBytes(path);
             String className = toClassName(path.asString());
@@ -214,11 +212,6 @@ public class KogitoQuarkusResourceUtils {
             }
 
             buildItems.add(new GeneratedBeanBuildItem(className, data));
-
-            String sourceFile = location.toString().replaceFirst("\\.class", ".java");
-            if (sourceFile.contains("$")) {
-                sourceFile = sourceFile.substring(0, sourceFile.indexOf("$")) + ".java";
-            }
         }
 
         return buildItems;

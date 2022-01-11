@@ -15,25 +15,32 @@
  */
 package org.kie.kogito.services.event.impl;
 
-import org.kie.kogito.event.EventConverter;
+import java.io.IOException;
+
+import org.kie.kogito.event.EventUnmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonStringToObject implements EventConverter<String> {
+public class DefaultEventUnmarshaller implements EventUnmarshaller<Object> {
 
-    private static final Logger logger = LoggerFactory.getLogger(JsonStringToObject.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultEventUnmarshaller.class);
     private final ObjectMapper objectMapper;
 
-    public JsonStringToObject(ObjectMapper objectMapper) {
+    public DefaultEventUnmarshaller(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public <T> T apply(String value, Class<T> clazz) throws JsonProcessingException {
+    public <T> T unmarshall(Object value, Class<T> clazz) throws IOException {
         logger.debug("Converting event with payload {} to class {} ", value, clazz);
-        return objectMapper.readValue(value, clazz);
+        if (clazz.isInstance(value)) {
+            return clazz.cast(value);
+        } else if (value instanceof byte[]) {
+            return objectMapper.readValue((byte[]) value, clazz);
+        } else {
+            return objectMapper.readValue(value.toString(), clazz);
+        }
     }
 }

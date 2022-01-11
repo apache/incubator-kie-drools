@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package org.kie.kogito.addon.cloudevents.quarkus.deployment;
 
-public interface EventMarshaller<R> {
+public interface ClassGenerator {
 
-    <T> R marshall(T dataEvent);
+    String getCode();
+
+    String getPath();
+
 }

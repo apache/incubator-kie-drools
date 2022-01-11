@@ -63,7 +63,6 @@ public class MessageConsumerGenerator {
     private final TemplatedGenerator generator;
 
     private KogitoBuildContext context;
-    private WorkflowProcess process;
     private final String processPackageName;
     private final String resourceClazzName;
     private final String processClazzName;
@@ -73,7 +72,7 @@ public class MessageConsumerGenerator {
     private final String appCanonicalName;
     private final String messageDataEventClassName;
     private final TriggerMetaData trigger;
-    private final Optional<String> eventListenerName;
+    private CompilationUnit clazz;
 
     public MessageConsumerGenerator(
             KogitoBuildContext context,
@@ -82,10 +81,8 @@ public class MessageConsumerGenerator {
             String processfqcn,
             String appCanonicalName,
             String messageDataEventClassName,
-            TriggerMetaData trigger,
-            Optional<String> eventListenerName) {
+            TriggerMetaData trigger) {
         this.context = context;
-        this.process = process;
         this.trigger = trigger;
         this.processPackageName = process.getPackageName();
         this.processId = process.getId();
@@ -96,16 +93,20 @@ public class MessageConsumerGenerator {
         this.processClazzName = processfqcn;
         this.appCanonicalName = appCanonicalName;
         this.messageDataEventClassName = messageDataEventClassName;
-        this.eventListenerName = eventListenerName;
 
         this.generator = TemplatedGenerator.builder()
                 .withTargetTypeName(resourceClazzName)
                 .withPackageName(processPackageName)
                 .build(context, "MessageConsumer");
+        this.clazz = generator.compilationUnitOrThrow("Cannot generate message consumer");
     }
 
     public String className() {
         return resourceClazzName;
+    }
+
+    public CompilationUnit compilationUnit() {
+        return clazz;
     }
 
     public String generatedFilePath() {
@@ -113,8 +114,6 @@ public class MessageConsumerGenerator {
     }
 
     public String generate() {
-        CompilationUnit clazz = generator.compilationUnitOrThrow("Cannot generate message consumer");
-
         ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new InvalidTemplateException(
                         generator,
@@ -127,9 +126,6 @@ public class MessageConsumerGenerator {
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ProcessName$", processName)));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
-        if (eventListenerName.isPresent()) {
-            template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$BeanName$", eventListenerName.get())));
-        }
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
         template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);

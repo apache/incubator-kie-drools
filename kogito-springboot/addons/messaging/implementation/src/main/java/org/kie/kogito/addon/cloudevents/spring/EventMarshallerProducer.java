@@ -13,14 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.process;
+package org.kie.kogito.addon.cloudevents.spring;
 
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.event.EventMarshaller;
+import org.kie.kogito.services.event.impl.StringEventMarshaller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-public class EventReceiverGenerator extends EventGenerator {
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    public EventReceiverGenerator(KogitoBuildContext context, String trigger) {
-        super(context, trigger, "EventReceiver");
+@Configuration
+public class EventMarshallerProducer {
+
+    @Autowired
+    ObjectMapper mapper;
+
+    @Bean
+    public EventMarshaller<String> stringEventMarshaller() {
+        return new StringEventMarshaller(mapper);
     }
-
 }

@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.cloudevents;
+package org.kie.kogito.quarkus.common.deployment;
 
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import java.util.Collection;
 
-import org.kie.kogito.event.SubscriptionInfo;
+import org.kie.kogito.codegen.api.GeneratedFile;
 
-public class Subscription<T> {
-    private final Function<T, CompletionStage<?>> consumer;
-    private final SubscriptionInfo<Object, T> info;
+import io.quarkus.builder.item.SimpleBuildItem;
 
-    public Subscription(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> info) {
-        this.consumer = consumer;
-        this.info = info;
+public final class KogitoGeneratedSourcesBuildItem extends SimpleBuildItem {
+
+    private final Collection<GeneratedFile> generatedFiles;
+
+    public KogitoGeneratedSourcesBuildItem(Collection<GeneratedFile> generatedFiles) {
+        this.generatedFiles = generatedFiles;
     }
 
-    public Function<T, CompletionStage<?>> getConsumer() {
-        return consumer;
+    public Collection<GeneratedFile> getGeneratedFiles() {
+        return generatedFiles;
     }
 
-    public SubscriptionInfo<Object, T> getInfo() {
-        return info;
-    }
 }

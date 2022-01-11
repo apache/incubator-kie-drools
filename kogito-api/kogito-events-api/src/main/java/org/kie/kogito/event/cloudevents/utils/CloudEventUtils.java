@@ -57,6 +57,14 @@ public final class CloudEventUtils {
         return build(id, source, dataType.getName(), null, data);
     }
 
+    public static <T> T readValue(Object value, Class<T> clazz) {
+        try {
+            return Mapper.mapper().readValue(value.toString(), clazz);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+    }
+
     public static Optional<CloudEvent> build(String id, URI source, String type, String subject, Object data, CloudEventExtension... extensions) {
         try {
             byte[] bytes = Mapper.mapper().writeValueAsBytes(data);

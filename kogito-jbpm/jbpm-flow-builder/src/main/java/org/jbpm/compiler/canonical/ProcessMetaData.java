@@ -47,6 +47,9 @@ public class ProcessMetaData {
 
     private List<TriggerMetaData> triggers = new ArrayList<>();
 
+    private Map<String, CompilationUnit> consumers = new HashMap<>();
+    private Map<String, CompilationUnit> producers = new HashMap<>();
+
     private boolean startable;
     private boolean dynamic;
 
@@ -152,6 +155,14 @@ public class ProcessMetaData {
 
     public void setGeneratedListeners(Set<CompilationUnit> generatedListeners) {
         this.generatedListeners = generatedListeners;
+    }
+
+    public Map<String, CompilationUnit> getConsumers() {
+        return consumers;
+    }
+
+    public Map<String, CompilationUnit> getProducers() {
+        return producers;
     }
 
     public Map<String, String> getSignals() {

@@ -20,7 +20,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
@@ -28,13 +27,12 @@ import org.kie.kogito.addon.quarkus.messaging.common.message.MessageFactory;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
-import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class AbstractQuarkusCloudEventEmitter implements EventEmitter {
+public abstract class AbstractQuarkusCloudEventEmitter<M> implements EventEmitter {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractQuarkusCloudEventEmitter.class);
 
@@ -42,8 +40,7 @@ public abstract class AbstractQuarkusCloudEventEmitter implements EventEmitter {
     ConfigBean configBean;
 
     @Inject
-    Instance<EventMarshaller> marshallers;
-    private EventMarshaller marshaller;
+    EventMarshaller<M> marshaller;
 
     @Inject
     ObjectMapper mapper;
@@ -53,17 +50,16 @@ public abstract class AbstractQuarkusCloudEventEmitter implements EventEmitter {
     @PostConstruct
     void init() {
         messageFactory = new MessageFactory(configBean.useCloudEvents());
-        marshaller = marshallers.isUnsatisfied() ? new DefaultEventMarshaller(mapper) : marshallers.get();
     }
 
     @Override
     public <T> CompletionStage<Void> emit(T e, String type, Optional<Function<T, Object>> processDecorator) {
         logger.debug("publishing event {} for type {}", e, type);
-        final Message<String> message = this.messageFactory.getMessageDecorator().decorate(marshaller.marshall(
+        final Message<M> message = this.messageFactory.getMessageDecorator().decorate(marshaller.marshall(
                 configBean.useCloudEvents() ? processDecorator.map(d -> d.apply(e)).orElse(e) : e));
         emit(message);
         return message.getAck().get();
     }
 
-    protected abstract void emit(Message<String> message);
+    protected abstract void emit(Message<M> message);
 }

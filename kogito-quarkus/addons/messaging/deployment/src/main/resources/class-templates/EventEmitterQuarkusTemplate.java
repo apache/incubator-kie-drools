@@ -18,7 +18,6 @@ package $Package$;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -30,14 +29,13 @@ import io.quarkus.runtime.Startup;
 
 @Startup
 @ApplicationScoped
-@Named("$BeanName$")
-public class $Trigger$EventEmitter extends AbstractQuarkusCloudEventEmitter {
+public class $Trigger$EventEmitter extends AbstractQuarkusCloudEventEmitter<$Type$> {
     @Inject
     @Channel("$Trigger$")
-    Emitter<String> emitter;
+    Emitter<$Type$> emitter;
 
     @Override
-    protected void emit (Message<String> message) {
+    protected void emit (Message<$Type$> message) {
         emitter.send(message);
     }
 }

@@ -450,7 +450,7 @@ class EventDrivenDecisionControllerTest {
 
         public void accept(String message) {
             try {
-                subscription.getConsumer().apply(subscription.getInfo().getConverter().apply(message, subscription.getInfo().getOutputClass()));
+                subscription.getConsumer().apply(subscription.getInfo().getConverter().unmarshall(message, subscription.getInfo().getOutputClass()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -458,7 +458,7 @@ class EventDrivenDecisionControllerTest {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<String, T> info) {
+        public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> info) {
             subscription = new Subscription(consumer, info);
         }
     }

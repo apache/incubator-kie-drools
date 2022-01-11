@@ -15,23 +15,120 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus.deployment;
 
-import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
-import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
+import javax.inject.Inject;
+
+import org.jboss.jandex.DotName;
+import org.jbpm.compiler.canonical.ProcessMetaData;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.process.ProcessGenerator;
+import org.kie.kogito.event.KogitoEventStreams;
+import org.kie.kogito.quarkus.addons.common.deployment.AnyEngineKogitoAddOnProcessor;
+import org.kie.kogito.quarkus.common.deployment.KogitoAddonsGeneratedSourcesBuildItem;
+import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
+import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
+
+import com.github.javaparser.ast.CompilationUnit;
+
+import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 
-class KogitoAddOnMessagingProcessor extends RequireCapabilityKogitoAddOnProcessor {
+public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor {
 
     private static final String FEATURE = "kogito-addon-messaging-extension";
 
-    KogitoAddOnMessagingProcessor() {
-        super(KogitoCapability.PROCESSES);
-    }
+    @Inject
+    CurateOutcomeBuildItem curateOutcomeBuildItem;
 
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
     }
 
+    @BuildStep
+    KogitoAddonsGeneratedSourcesBuildItem generate(Optional<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<KogitoMessagingMetadataBuildItem> metadataProducer,
+            KogitoBuildContextBuildItem kogitoContext) {
+
+        Collection<ChannelInfo> channelsInfo = ChannelMappingStrategy.getChannelMapping();
+        Map<DotName, EventGenerator> generators = new HashMap<>();
+
+        if (processBuildItem.isPresent()) {
+            processBuildItem.get().getProcessContainerGenerators()
+                    .forEach(containerGenerator -> containerGenerator.getProcesses().forEach(process -> collect(process, channelsInfo, generators, kogitoContext.getKogitoBuildContext())));
+        }
+
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
+        metadataProducer.produce(new KogitoMessagingMetadataBuildItem(generators));
+
+        for (EventGenerator generator : getGenerators(generators, channelsInfo, kogitoContext.getKogitoBuildContext())) {
+            generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE, generator.getPath(), generator.getCode()));
+            Optional<String> annotationName = generator.getAnnotationName();
+            if (annotationName.isPresent()) {
+                AnnotationGenerator annotationGen = new AnnotationGenerator(kogitoContext.getKogitoBuildContext(), annotationName.get());
+                generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE, annotationGen.getPath(), annotationGen.getCode()));
+            }
+        }
+
+        return new KogitoAddonsGeneratedSourcesBuildItem(generatedFiles);
+    }
+
+    private Set<EventGenerator> getGenerators(Map<DotName, EventGenerator> generators,
+            Collection<ChannelInfo> channelsInfo, KogitoBuildContext context) {
+
+        Set<EventGenerator> result = new HashSet<>();
+        boolean inputDefault = false;
+        boolean outputDefault = false;
+        for (EventGenerator generator : generators.values()) {
+            result.add(generator);
+            if (generator.getAnnotationName().isEmpty()) {
+                if (generator.getChannelInfo().isInput()) {
+                    inputDefault = true;
+                } else {
+                    outputDefault = true;
+                }
+            }
+        }
+
+        if (!inputDefault) {
+            channelsInfo.stream().filter(channel -> channel.getChannelName().equals(KogitoEventStreams.INCOMING)).findFirst().ifPresent(c -> result.add(buildEventGenerator(context, c)));
+        }
+        if (!outputDefault) {
+            channelsInfo.stream().filter(channel -> channel.getChannelName().equals(KogitoEventStreams.OUTGOING)).findFirst().ifPresent(c -> result.add(buildEventGenerator(context, c)));
+        }
+        return result;
+
+    }
+
+    private void collect(ProcessGenerator process, Collection<ChannelInfo> channelsInfo, Map<DotName, EventGenerator> eventGenerators, KogitoBuildContext context) {
+        ProcessMetaData processMetadata = process.getProcessExecutable().generate();
+        for (ChannelInfo channelInfo : channelsInfo) {
+            if (channelInfo.isInput()) {
+                collect(processMetadata.getConsumers(), channelInfo, eventGenerators, context);
+            } else if (channelInfo.isOutput()) {
+                collect(processMetadata.getProducers(), channelInfo, eventGenerators, context);
+            }
+        }
+    }
+
+    private void collect(Map<String, CompilationUnit> map, ChannelInfo channelInfo, Map<DotName, EventGenerator> eventGenerators, KogitoBuildContext context) {
+        CompilationUnit cu = map.get(channelInfo.getChannelName());
+        if (cu != null) {
+            eventGenerators.computeIfAbsent(DotNamesHelper.createDotName(cu), k -> buildEventGenerator(context, channelInfo));
+        }
+    }
+
+    private EventGenerator buildEventGenerator(KogitoBuildContext context, ChannelInfo channelInfo) {
+        return channelInfo.isInput() ? new EventGenerator(context, channelInfo, "EventReceiver") : new EventGenerator(context, channelInfo, "EventEmitter");
+    }
 }

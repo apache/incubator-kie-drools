@@ -36,7 +36,7 @@ import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
-import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
+import org.kie.kogito.services.event.impl.StringEventMarshaller;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.ArgumentCaptor;
@@ -113,12 +113,12 @@ public class EventImplTest {
     }
 
     private static EventConsumerFactory factory;
-    private static EventMarshaller marshaller;
+    private static EventMarshaller<String> marshaller;
 
     @BeforeAll
     static void init() {
         factory = new DefaultEventConsumerFactory();
-        marshaller = new DefaultEventMarshaller(new ObjectMapper());
+        marshaller = new StringEventMarshaller(new ObjectMapper());
     }
 
     private Process<DummyModel> process;

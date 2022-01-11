@@ -23,15 +23,15 @@ import java.util.Optional;
  */
 public class SubscriptionInfo<S, T> {
 
-    private EventConverter<S> converter;
+    private EventUnmarshaller<S> converter;
     private Class<T> outputClass;
     private Optional<String> type;
 
-    public SubscriptionInfo(EventConverter<S> converter, Class<T> outputClass) {
+    public SubscriptionInfo(EventUnmarshaller<S> converter, Class<T> outputClass) {
         this(converter, outputClass, Optional.empty());
     }
 
-    public SubscriptionInfo(EventConverter<S> converter, Class<T> outputClass, Optional<String> type) {
+    public SubscriptionInfo(EventUnmarshaller<S> converter, Class<T> outputClass, Optional<String> type) {
         this.converter = converter;
         this.outputClass = outputClass;
         this.type = type;
@@ -41,7 +41,7 @@ public class SubscriptionInfo<S, T> {
         return type;
     }
 
-    public EventConverter<S> getConverter() {
+    public EventUnmarshaller<S> getConverter() {
         return converter;
     }
 

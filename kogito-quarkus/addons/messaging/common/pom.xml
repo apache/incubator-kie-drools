@@ -71,7 +71,6 @@
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
-      <version>${version.org.junit.pioneer}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

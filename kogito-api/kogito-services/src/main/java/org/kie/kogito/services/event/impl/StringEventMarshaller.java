@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DefaultEventMarshaller implements EventMarshaller {
+public class StringEventMarshaller implements EventMarshaller<String> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultEventMarshaller.class);
+    private static final Logger logger = LoggerFactory.getLogger(StringEventMarshaller.class);
 
     private final ObjectMapper mapper;
 
-    public DefaultEventMarshaller(ObjectMapper mapper) {
+    public StringEventMarshaller(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -41,9 +41,5 @@ public class DefaultEventMarshaller implements EventMarshaller {
             logger.error("Error marshalling event {}", event);
             throw new IllegalStateException(e);
         }
-    }
-
-    public ObjectMapper getMapper() {
-        return mapper;
     }
 }

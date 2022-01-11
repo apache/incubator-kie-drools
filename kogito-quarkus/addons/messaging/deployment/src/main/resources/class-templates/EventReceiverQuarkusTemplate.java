@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package $Package$;
+
 
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
 
-/**
- * Generic receiver for cloud events.
- *
- * Implementations provide their specific (usually injectable) behavior.
- *
- */
-public interface EventReceiver {
+import javax.enterprise.context.ApplicationScoped;
 
-    /**
-     * Helper method to subscribe to the events.
-     * 
-     * @param consumer the consumer that will receive the events.
-     * @param clazz the type of object the event contains
-     */
-    <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> converter);
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Message;
+import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventReceiver ;
+
+import io.quarkus.runtime.Startup;
+
+@Startup
+@ApplicationScoped
+public class $Trigger$EventReceiver extends AbstractQuarkusCloudEventReceiver {
+    
+    @Incoming("$Trigger$")
+    public CompletionStage<?> onEvent(Message<Object> message) {
+        return produce(message);
+    }
 }
