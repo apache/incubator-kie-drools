@@ -16,6 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
@@ -41,7 +46,12 @@ import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.phreak.AddRemoveRule.createLeftTupleTupleSets;
+import static org.drools.core.phreak.AddRemoveRule.findPathToFlush;
+import static org.drools.core.phreak.AddRemoveRule.findPathsToFlushFromRia;
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
+import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
+import static org.drools.core.phreak.AddRemoveRule.forceFlushPath;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
@@ -188,7 +198,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         leftTuple.setPropagationContext( context );
 
         if ( sm.getRootNode() == liaNode ) {
-            doInsertSegmentMemory( reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
+            doInsertSegmentMemoryWithFlush(reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode());
         } else {
             // sm points to lia child sm, so iterate for all remaining children
             // all peer tuples must be created before propagation, or eager evaluation subnetworks have problem
@@ -200,25 +210,37 @@ public class LeftInputAdapterNode extends LeftTupleSource
             }
 
             sm = originaSm;
-            doInsertSegmentMemory( reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
+            Set<PathMemory> pathsToFlush = new HashSet<>();
+            pathsToFlush.addAll( doInsertSegmentMemory( reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() ) );
             if ( sm.getRootNode() != liaNode ) {
                 // sm points to lia child sm, so iterate for all remaining children
                 peer = leftTuple;
                 for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                     peer = peer.getPeer();
-                    doInsertSegmentMemory( reteEvaluator, notifySegment, lm, sm, peer, liaNode.isStreamMode() );
+                    pathsToFlush.addAll( doInsertSegmentMemory( reteEvaluator, notifySegment, lm, sm, peer, liaNode.isStreamMode() ) );
                 }
+            }
+
+            for (PathMemory outPmem : pathsToFlush) {
+                forceFlushPath(reteEvaluator, outPmem);
             }
         }
     }
 
-    public static void doInsertSegmentMemory(ReteEvaluator reteEvaluator, boolean linkOrNotify, final LiaNodeMemory lm,
-                                             SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
-        if ( flushLeftTupleIfNecessary( reteEvaluator, sm, leftTuple, streamMode, Tuple.INSERT ) ) {
+    public static void doInsertSegmentMemoryWithFlush(ReteEvaluator reteEvaluator, boolean notifySegment, LiaNodeMemory lm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
+        for (PathMemory outPmem : doInsertSegmentMemory(reteEvaluator, notifySegment, lm, sm, leftTuple, streamMode )) {
+            forceFlushPath(reteEvaluator, outPmem);
+        }
+    }
+
+    public static List<PathMemory> doInsertSegmentMemory(ReteEvaluator reteEvaluator, boolean linkOrNotify, LiaNodeMemory lm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
+        PathMemory pmem = findPathToFlush(sm, leftTuple, streamMode);
+        if ( pmem != null ) {
+            forceFlushLeftTuple( pmem, sm, reteEvaluator, createLeftTupleTupleSets(leftTuple, Tuple.INSERT) );
             if ( linkOrNotify ) {
                 lm.setNodeDirty( reteEvaluator );
             }
-            return;
+            return findPathsToFlushFromRia(reteEvaluator, pmem);
         }
 
         // mask check is necessary if insert is a result of a modify
@@ -228,6 +250,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // staged is empty, so notify rule, to force re-evaluation.
             lm.setNodeDirty(reteEvaluator);
         }
+        return Collections.emptyList();
     }
 
     public static void doDeleteObject(LeftTuple leftTuple,

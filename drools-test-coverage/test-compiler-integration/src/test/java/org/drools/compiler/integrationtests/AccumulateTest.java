@@ -57,11 +57,13 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -3886,6 +3888,46 @@ public class AccumulateTest {
         try {
             kieSession.insert("test");
             kieSession.insert(4);
+            assertEquals(1, kieSession.fireAllRules());
+        } finally {
+            kieSession.dispose();
+        }
+    }
+
+    public static final class PersonsContainer {
+        public List<Person> getPersons() {
+            List<Person> persons = new ArrayList<>();
+            persons.add(null);
+            persons.add(new Person("test"));
+            return persons;
+        }
+    }
+
+    @Test
+    public void testPeerCollectWithEager() {
+        // DROOLS-6768
+        final String drl =
+                "import " + PersonsContainer.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $pc : PersonsContainer()\n" +
+                "    List(size == 0) from collect( Person( name.startsWith(\"t\") ) from $pc.persons )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $pc : PersonsContainer()\n" +
+                "    List(size == 0) from collect( Person( name.endsWith(\"x\") ) from $pc.persons )\n" +
+                "then\n" +
+                "end";
+
+        KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration(null);
+        config.setOption( ForceEagerActivationOption.YES );
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("collect-test", kieBaseTestConfiguration, drl);
+        final KieSession kieSession = kieBase.newKieSession(config, null);
+        try {
+            kieSession.insert(new PersonsContainer());
             assertEquals(1, kieSession.fireAllRules());
         } finally {
             kieSession.dispose();
