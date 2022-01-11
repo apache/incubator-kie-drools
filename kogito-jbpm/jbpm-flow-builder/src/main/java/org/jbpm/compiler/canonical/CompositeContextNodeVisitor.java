@@ -71,6 +71,9 @@ public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends
         if (node.getDefaultContext(VariableScope.VARIABLE_SCOPE) != null && !((VariableScope) node.getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables().isEmpty()) {
             scope = (VariableScope) node.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         }
+
+        visitCompensationScope(node, body);
+
         body.addStatement(getFactoryMethod(getNodeId(node), CompositeContextNodeFactory.METHOD_AUTO_COMPLETE, new BooleanLiteralExpr(node.isAutoComplete())));
         addNodeMappings(node, body, getNodeId(node));
         visitNodes(getNodeId(node), node.getNodes(), body, scope, metadata);

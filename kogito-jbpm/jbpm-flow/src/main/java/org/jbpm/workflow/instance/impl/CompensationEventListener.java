@@ -108,7 +108,7 @@ class CompensationEventListener implements KogitoEventListener {
             CompensationScopeInstance scopeInstance;
             if (compensationScope.getContextContainerId().equals(process.getId())) {
                 // process level compensation
-                scopeInstance = (CompensationScopeInstance) instance.getContextInstance(compensationScope);
+                scopeInstance = (CompensationScopeInstance) instance.getContextInstance(compensationScope.getType());
             } else {
                 // nested compensation
                 Stack<NodeInstance> generatedInstances;

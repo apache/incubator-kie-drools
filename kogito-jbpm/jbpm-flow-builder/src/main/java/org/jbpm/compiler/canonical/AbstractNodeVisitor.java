@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -367,4 +368,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
         return new LambdaExpr(new Parameter(new UnknownType(), KCONTEXT_VAR), actionBody);
     }
 
+    protected void visitCompensationScope(ContextContainer process, BlockStmt body) {
+        visitCompensationScope(process, body, getNodeId((T) process));
+    }
 }

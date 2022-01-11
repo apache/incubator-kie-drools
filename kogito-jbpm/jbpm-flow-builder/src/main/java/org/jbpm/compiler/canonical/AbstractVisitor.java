@@ -18,8 +18,13 @@ package org.jbpm.compiler.canonical;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.kie.api.definition.process.NodeContainer;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -35,6 +40,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.utils.StringEscapeUtils;
 
+import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_ADD_COMPENSATION_CONTEXT;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VARIABLE;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_METADATA;
 
@@ -105,5 +111,24 @@ public abstract class AbstractVisitor {
                         tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
             }
         }
+    }
+
+    protected final void visitCompensationScope(ContextContainer contextContainer, BlockStmt body, String factoryField) {
+        Context context = getContext(contextContainer);
+        if (context != null && context instanceof CompensationScope) {
+            String contextId = ((CompensationScope) context).getContextContainerId();
+            body.addStatement(getFactoryMethod(factoryField, METHOD_ADD_COMPENSATION_CONTEXT, new StringLiteralExpr(contextId)));
+        }
+    }
+
+    private Context getContext(ContextContainer contextContainer) {
+        Context context = contextContainer.getDefaultContext(CompensationScope.COMPENSATION_SCOPE);
+        if (context == null && contextContainer instanceof KogitoNode) {
+            NodeContainer parentContainer = ((KogitoNode) contextContainer).getParentContainer();
+            if (parentContainer instanceof ContextContainer) {
+                return getContext((ContextContainer) parentContainer);
+            }
+        }
+        return context;
     }
 }

@@ -28,11 +28,10 @@ import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
-import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
-import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -81,7 +80,6 @@ import static org.jbpm.ruleflow.core.Metadata.ASSOCIATION;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory.METHOD_ASSOCIATION;
 import static org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory.METHOD_CONNECTION;
-import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_ADD_COMPENSATION_CONTEXT;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_DYNAMIC;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_ERROR_EXCEPTION_HANDLER;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_GLOBAL;
@@ -265,13 +263,8 @@ public class ProcessVisitor extends AbstractVisitor {
     }
 
     private void visitCompensationScope(Process process, BlockStmt body) {
-        Boolean isCompensation = (Boolean) process.getMetaData().get(Metadata.COMPENSATION);
-        if (Boolean.TRUE.equals(isCompensation)) {
-            Context context = ((org.jbpm.workflow.core.WorkflowProcess) process).getDefaultContext(CompensationScope.COMPENSATION_SCOPE);
-            if (context instanceof CompensationScope) {
-                String contextId = ((CompensationScope) context).getContextContainerId();
-                body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_ADD_COMPENSATION_CONTEXT, new StringLiteralExpr(contextId)));
-            }
+        if (process instanceof RuleFlowProcess) {
+            visitCompensationScope((RuleFlowProcess) process, body, FACTORY_FIELD_NAME);
         }
     }
 

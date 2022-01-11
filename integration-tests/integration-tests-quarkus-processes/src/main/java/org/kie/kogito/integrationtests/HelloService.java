@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.kie.kogito.integrationtests.excetpion.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,9 @@ public class HelloService {
     public String hello(String name) throws IOException {
         if (name.equals("exception")) {
             throw new IOException("what kind of name is that?");
+        }
+        if (name.equals("error")) {
+            throw new ServiceException("Service Error");
         }
         logMethodCall("hello", name);
         return "Hello " + name + "!";
@@ -69,4 +73,7 @@ public class HelloService {
         LOGGER.info("HelloService.{} invoked with params: {}", method, arguments);
     }
 
+    public String echo(String input) {
+        return input;
+    }
 }

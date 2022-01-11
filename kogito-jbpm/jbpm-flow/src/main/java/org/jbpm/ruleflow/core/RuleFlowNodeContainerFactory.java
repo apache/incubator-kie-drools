@@ -18,6 +18,7 @@ package org.jbpm.ruleflow.core;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.datatype.DataType;
@@ -219,5 +220,16 @@ public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContain
             contextContainer.setDefaultContext(scope);
         }
         return scopeClass.cast(scope);
+    }
+
+    public RuleFlowNodeContainerFactory<T, P> addCompensationContext(String contextId) {
+        if (node instanceof ContextContainer) {
+            CompensationScope compensationScope = new CompensationScope();
+            ContextContainer contextNode = (ContextContainer) node;
+            contextNode.addContext(compensationScope);
+            contextNode.setDefaultContext(compensationScope);
+            compensationScope.setContextContainerId(contextId);
+        }
+        return this;
     }
 }

@@ -25,7 +25,6 @@ import java.util.Optional;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
-import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.variable.Variable;
@@ -198,14 +197,6 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         Swimlane swimlane = new Swimlane();
         swimlane.setName(name);
         getRuleFlowProcess().getSwimlaneContext().addSwimlane(swimlane);
-        return this;
-    }
-
-    public RuleFlowProcessFactory addCompensationContext(String contextId) {
-        CompensationScope compensationScope = new CompensationScope();
-        compensationScope.setContextContainerId(contextId);
-        getRuleFlowProcess().addContext(compensationScope);
-        getRuleFlowProcess().setDefaultContext(compensationScope);
         return this;
     }
 
