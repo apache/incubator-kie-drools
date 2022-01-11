@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 
 import io.smallrye.context.SmallRyeManagedExecutor;
 

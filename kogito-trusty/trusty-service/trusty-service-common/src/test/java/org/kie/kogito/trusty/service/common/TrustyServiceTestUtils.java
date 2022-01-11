@@ -26,11 +26,11 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
-import org.kie.kogito.tracing.decision.event.model.ModelEvent;
-import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
-import org.kie.kogito.tracing.decision.event.trace.TraceHeader;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.tracing.event.model.ModelEvent;
+import org.kie.kogito.tracing.event.trace.TraceEvent;
+import org.kie.kogito.tracing.event.trace.TraceHeader;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,7 +45,8 @@ public class TrustyServiceTestUtils {
     public static final String CORRECT_CLOUDEVENT_ID = "correct-cloud-event-id";
     public static final String CLOUDEVENT_WITH_ERRORS_ID = "cloud-event-with-errors-id";
 
-    public static final ObjectMapper MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
+    public static final ObjectMapper MAPPER =
+            new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
 
     public static CloudEvent buildCloudEvent(TraceEvent traceEvent) {
         return CloudEventUtils.build(
@@ -124,8 +125,8 @@ public class TrustyServiceTestUtils {
         return readResourceAsString("/requests/counterfactualWithStructuredModelRequest.json");
     }
 
-    public static ModelMetadata getModelIdentifier() {
-        return new ModelMetadata("groupId", "artifactId", "version", "name", "namespace");
+    public static DMNModelMetadata getModelIdentifier() {
+        return new DMNModelMetadata("groupId", "artifactId", "version", "dmnVersion", "name", "namespace");
     }
 
     private static void setExecutionId(TraceEvent traceEvent, String executionId) {
@@ -143,7 +144,7 @@ public class TrustyServiceTestUtils {
         try {
             return MAPPER.readValue(TrustyServiceTestUtils.class.getResource(name), clazz);
         } catch (IOException e) {
-            throw new RuntimeException("Can't read test resource");
+            throw new RuntimeException("Can't read test resource " + name, e);
         }
     }
 
@@ -151,7 +152,7 @@ public class TrustyServiceTestUtils {
         try {
             return readFromInputStream(TrustyServiceTestUtils.class.getResourceAsStream(name));
         } catch (IOException e) {
-            throw new RuntimeException("Can't read test resource");
+            throw new RuntimeException("Can't read test resource " + name, e);
         }
     }
 

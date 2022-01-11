@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.explainability.api.NamedTypedValue;
-import org.kie.kogito.tracing.decision.event.message.MessageLevel;
-import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
-import org.kie.kogito.tracing.decision.event.trace.TraceInputValue;
-import org.kie.kogito.tracing.decision.event.trace.TraceOutputValue;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+import org.kie.kogito.tracing.event.message.MessageLevel;
+import org.kie.kogito.tracing.event.trace.TraceEvent;
+import org.kie.kogito.tracing.event.trace.TraceInputValue;
+import org.kie.kogito.tracing.event.trace.TraceOutputValue;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 
 public class TraceEventConverter {
 
@@ -57,7 +57,8 @@ public class TraceEventConverter {
     }
 
     public static DecisionInput toInput(TraceInputValue eventInput) {
-        return new DecisionInput(eventInput.getId(), eventInput.getName(), eventInput.getValue());
+        return new DecisionInput(eventInput.getId(), eventInput.getName(),
+                eventInput.getValue());
     }
 
     public static DecisionOutcome toOutcome(TraceOutputValue eventOutput) {
@@ -80,7 +81,7 @@ public class TraceEventConverter {
         return outputs != null && outputs.stream().noneMatch(o -> "failed".equalsIgnoreCase(o.getStatus()) || messageListHasErrors(o.getMessages()));
     }
 
-    private static boolean messageListHasErrors(List<org.kie.kogito.tracing.decision.event.message.Message> messages) {
+    private static boolean messageListHasErrors(List<org.kie.kogito.tracing.event.message.Message> messages) {
         return messages != null && messages.stream().anyMatch(m -> m.getLevel() == MessageLevel.ERROR);
     }
 }

@@ -8,6 +8,7 @@
   "executedModelName": "Traffic Violation",
   "executedModelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
   "executionType": "DECISION",
+  "@type": "DECISION",
   "inputs": [
     {
       "id": "_1929CBD5-40E0-442D-B909-49CEDE0101DC",

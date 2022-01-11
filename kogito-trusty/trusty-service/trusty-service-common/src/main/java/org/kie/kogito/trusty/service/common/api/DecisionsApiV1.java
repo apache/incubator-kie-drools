@@ -34,12 +34,13 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.kie.kogito.trusty.service.common.TrustyService;
-import org.kie.kogito.trusty.service.common.responses.DecisionOutcomesResponse;
-import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.service.common.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.service.common.responses.ResponseUtils;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionHeaderResponse;
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionOutcomesResponse;
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionStructuredInputsResponse;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 
 @Path("executions/decisions")
 public class DecisionsApiV1 {
@@ -110,7 +111,7 @@ public class DecisionsApiV1 {
                     required = true,
                     schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
         return retrieveDecision(executionId)
-                .map(obj -> Response.ok(new DecisionOutcomesResponse(ResponseUtils.executionHeaderResponseFrom(obj), obj.getOutcomes())).build())
+                .map(obj -> Response.ok(new DecisionOutcomesResponse((DecisionHeaderResponse) ResponseUtils.executionHeaderResponseFrom(obj), obj.getOutcomes())).build())
                 .orElseGet(this::buildBadRequestResponse);
     }
 

@@ -30,7 +30,7 @@ import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
 import org.kie.kogito.trusty.service.common.messaging.BaseEventConsumer;
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

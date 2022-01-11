@@ -1,6 +1,6 @@
 [
   {
-    "name": "org.kie.kogito.tracing.decision.event.model.ModelEvent",
+    "name": "org.kie.kogito.tracing.event.model.ModelEvent",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -9,7 +9,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.trace.TraceEvent",
+    "name" : "org.kie.kogito.tracing.event.trace.TraceEvent",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -18,7 +18,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.trace.TraceHeader",
+    "name" : "org.kie.kogito.tracing.event.trace.TraceHeader",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -27,7 +27,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.trace.TraceInputValue",
+    "name" : "org.kie.kogito.tracing.event.trace.TraceInputValue",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -36,7 +36,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.trace.TraceOutputValue",
+    "name" : "org.kie.kogito.tracing.event.trace.TraceOutputValue",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -45,7 +45,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.trace.TraceResourceId",
+    "name" : "org.kie.kogito.tracing.event.trace.TraceResourceId",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -54,7 +54,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.trace.TraceExecutionStep",
+    "name" : "org.kie.kogito.tracing.event.trace.TraceExecutionStep",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -117,7 +117,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.message.Message",
+    "name" : "org.kie.kogito.tracing.event.message.Message",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -126,7 +126,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.message.MessageLevel",
+    "name" : "org.kie.kogito.tracing.event.message.MessageLevel",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -135,7 +135,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.message.MessageCategory",
+    "name" : "org.kie.kogito.tracing.event.message.MessageCategory",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -144,7 +144,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.message.MessageFEELEvent",
+    "name" : "org.kie.kogito.tracing.event.message.models.DecisionMessage",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -153,7 +153,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.message.MessageExceptionField",
+    "name" : "org.kie.kogito.tracing.event.message.MessageFEELEvent",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -162,7 +162,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity",
+    "name" : "org.kie.kogito.tracing.event.message.MessageExceptionField",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -171,7 +171,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.trace.TraceExecutionStepType",
+    "name" : "org.kie.kogito.tracing.event.message.MessageFEELEventSeverity",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -180,7 +180,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.kogito.tracing.decision.event.trace.TraceExecutionStep",
+    "name" : "org.kie.kogito.tracing.event.trace.TraceExecutionStepType",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -208,7 +208,7 @@
     "allPublicClasses" : true
   },
   {
-    "name": "org.kie.kogito.trusty.storage.api.model.Decision",
+    "name": "org.kie.kogito.trusty.storage.api.model.decision.Decision",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -217,7 +217,7 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.storage.api.model.DecisionInput",
+    "name": "org.kie.kogito.trusty.storage.api.model.decision.DecisionInput",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -226,7 +226,7 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.storage.api.model.DecisionOutcome",
+    "name": "org.kie.kogito.trusty.storage.api.model.Outcome",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -235,7 +235,34 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata",
+    "name": "org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "org.kie.kogito.trusty.storage.api.model.process.ProcessOutcome",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "org.kie.kogito.trusty.storage.api.model.ModelWithMetadata",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -253,7 +280,7 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.storage.api.model.ExecutionType",
+    "name": "org.kie.kogito.trusty.service.common.responses.ExecutionType",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -280,7 +307,7 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.service.common.responses.DecisionOutcomesResponse",
+    "name": "org.kie.kogito.trusty.service.common.responses.OutcomesResponse",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -289,7 +316,43 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse",
+    "name": "org.kie.kogito.trusty.service.common.responses.decision.DecisionOutcomesResponse",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "org.kie.kogito.trusty.service.common.responses.StructuredInputsResponse",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "org.kie.kogito.trusty.service.common.responses.decision.DecisionStructuredInputsResponse",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "org.kie.kogito.trusty.service.common.responses.process.ProcessOutcomesResponse",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "org.kie.kogito.trusty.service.common.responses.process.ProcessStructuredInputsResponse",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -307,7 +370,7 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.service.common.responses.ExecutionsResponse",
+    "name": "org.kie.kogito.trusty.service.common.responses.decision.DecisionHeaderResponse",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -316,7 +379,16 @@
     "allPublicFields": true
   },
   {
-    "name": "org.kie.kogito.trusty.service.common.responses.ExecutionType",
+    "name": "org.kie.kogito.trusty.service.common.responses.process.ProcessHeaderResponse",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "org.kie.kogito.trusty.service.common.responses.ExecutionsResponse",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

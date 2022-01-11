@@ -24,7 +24,7 @@ import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -63,7 +63,7 @@ public class ModelEventConsumerIT {
     public void eventLoopIsNotStoppedWithException() {
         doThrow(new RuntimeException("Something really bad"))
                 .when(trustyService)
-                .storeModel(any(ModelMetadata.class), any(DMNModelWithMetadata.class));
+                .storeModel(any(DMNModelWithMetadata.class));
 
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectModelEvent()),
                 KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
@@ -71,6 +71,6 @@ public class ModelEventConsumerIT {
                 KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
 
         verify(trustyService, timeout(3000).times(2))
-                .storeModel(any(ModelMetadata.class), any(DMNModelWithMetadata.class));
+                .storeModel(any(DMNModelWithMetadata.class));
     }
 }

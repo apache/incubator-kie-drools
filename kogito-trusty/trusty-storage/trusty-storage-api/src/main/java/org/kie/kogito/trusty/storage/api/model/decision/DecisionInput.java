@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.trusty.storage.api.model.decision;
 
-package org.kie.kogito.trusty.storage.api.model;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.trusty.storage.api.model.Input;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * The execution enum type.
+ * The <b>Decision</b> implementation of <code>Input</code>.
  */
-public enum ExecutionType {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DecisionInput extends Input {
 
-    /**
-     * An execution of a decision.
-     */
-    DECISION("DECISION"),
+    public DecisionInput() {
+    }
 
-    /**
-     * An execution of a process.
-     */
-    PROCESS("PROCESS");
-
-    private String type;
-
-    ExecutionType(String type) {
-        this.type = type;
+    public DecisionInput(String id, String name, TypedValue value) {
+        super(id, name, value);
     }
 }

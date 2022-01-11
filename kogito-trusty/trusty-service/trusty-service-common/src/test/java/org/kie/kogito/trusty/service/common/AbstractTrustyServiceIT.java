@@ -41,12 +41,12 @@ import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.explainability.api.SaliencyModel;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -75,7 +75,7 @@ public abstract class AbstractTrustyServiceIT {
         trustyStorageService.getCounterfactualResultStorage().clear();
         trustyStorageService.getLIMEResultStorage().clear();
         trustyStorageService.getDecisionsStorage().clear();
-        trustyStorageService.getModelStorage().clear();
+        trustyStorageService.getModelStorage(DMNModelWithMetadata.class).clear();
     }
 
     @Test
@@ -647,20 +647,16 @@ public abstract class AbstractTrustyServiceIT {
 
     private void storeModel(String model) {
         DMNModelWithMetadata dmnModelWithMetadata = new DMNModelWithMetadata("groupId", "artifactId", "modelVersion", "dmnVersion", "name", "namespace", model);
-        ModelMetadata identifier = new ModelMetadata("groupId",
-                "artifactId",
-                "version",
-                "name",
-                "namespace");
-        trustyService.storeModel(identifier, dmnModelWithMetadata);
+        trustyService.storeModel(dmnModelWithMetadata);
     }
 
     private DMNModelWithMetadata getModel() {
-        ModelMetadata identifier = new ModelMetadata("groupId",
+        DMNModelMetadata identifier = new DMNModelMetadata("groupId",
                 "artifactId",
                 "version",
+                "dmnVersion",
                 "name",
                 "namespace");
-        return trustyService.getModelById(identifier);
+        return trustyService.getModelById(identifier, DMNModelWithMetadata.class);
     }
 }

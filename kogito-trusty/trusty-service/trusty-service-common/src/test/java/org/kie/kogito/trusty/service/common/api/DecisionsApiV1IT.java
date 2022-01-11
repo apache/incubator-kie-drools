@@ -26,21 +26,21 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.ModelDomain;
 import org.kie.kogito.explainability.api.NamedTypedValue;
-import org.kie.kogito.tracing.decision.event.message.Message;
-import org.kie.kogito.tracing.decision.event.message.MessageCategory;
-import org.kie.kogito.tracing.decision.event.message.MessageExceptionField;
-import org.kie.kogito.tracing.decision.event.message.MessageLevel;
+import org.kie.kogito.tracing.event.message.Message;
+import org.kie.kogito.tracing.event.message.MessageCategory;
+import org.kie.kogito.tracing.event.message.MessageExceptionField;
+import org.kie.kogito.tracing.event.message.MessageLevel;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.service.common.TrustyService;
-import org.kie.kogito.trusty.service.common.responses.DecisionOutcomesResponse;
-import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse;
-import org.kie.kogito.trusty.service.common.responses.ExecutionHeaderResponse;
-import org.kie.kogito.trusty.service.common.responses.ExecutionType;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionHeaderResponse;
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionOutcomesResponse;
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionStructuredInputsResponse;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,7 +69,8 @@ class DecisionsApiV1IT {
     private static final String TEST_SOURCE_URL = "http://localhost:8080/" + TEST_MODEL_NAME;
     private static final String TEST_OUTCOME_ID = "FirstOutcome";
     private static final long TEST_EXECUTION_TIMESTAMP = 1591692950000L;
-    private static final OffsetDateTime TEST_EXECUTION_DATE = OffsetDateTime.ofInstant(Instant.ofEpochMilli(TEST_EXECUTION_TIMESTAMP), ZoneId.of("UTC"));
+    private static final OffsetDateTime TEST_EXECUTION_DATE =
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(TEST_EXECUTION_TIMESTAMP), ZoneId.of("UTC"));
 
     @InjectMock
     TrustyService trustyService;
@@ -142,7 +143,7 @@ class DecisionsApiV1IT {
 
     private void assertGetExecutionByIdCorrectResponse(ListStatus inputsStatus, ListStatus outcomesStatus) throws Exception {
         mockServiceWithDecision(inputsStatus, outcomesStatus);
-        ExecutionHeaderResponse response = get().as(ExecutionHeaderResponse.class);
+        DecisionHeaderResponse response = get().as(DecisionHeaderResponse.class);
         assertExecutionHeaderResponse(buildExecutionHeaderResponse(), response);
     }
 
@@ -211,12 +212,13 @@ class DecisionsApiV1IT {
         assertCollection(expected.getOutcomes(), actual.getOutcomes(), this::assertDecisionOutcomeResponse);
     }
 
-    private void assertDecisionStructuredInputResponse(DecisionStructuredInputsResponse expected, DecisionStructuredInputsResponse actual) {
+    private void assertDecisionStructuredInputResponse(DecisionStructuredInputsResponse expected,
+            DecisionStructuredInputsResponse actual) {
         assertNotNull(actual);
         assertCollection(expected.getInputs(), actual.getInputs(), this::assertTypedValueResponse);
     }
 
-    private void assertExecutionHeaderResponse(ExecutionHeaderResponse expected, ExecutionHeaderResponse actual) {
+    private void assertExecutionHeaderResponse(DecisionHeaderResponse expected, DecisionHeaderResponse actual) {
         assertNotNull(actual);
         assertSame(expected.getExecutionType(), actual.getExecutionType());
         assertEquals(expected.getExecutionId(), actual.getExecutionId());
@@ -293,8 +295,10 @@ class DecisionsApiV1IT {
 
             case FULL:
                 decision.setInputs(List.of(
-                        new DecisionInput("1", "first", new UnitValue("string", "string", mapper.readTree("\"Hello\""))),
-                        new DecisionInput("2", "second", new UnitValue("number", "number", mapper.readTree("12345")))));
+                        new DecisionInput("1", "first", new UnitValue("string", "string",
+                                mapper.readTree("\"Hello\""))),
+                        new DecisionInput("2", "second", new UnitValue("number", "number",
+                                mapper.readTree("12345")))));
         }
 
         switch (outcomesStatus) {
@@ -306,12 +310,18 @@ class DecisionsApiV1IT {
                 decision.setOutcomes(List.of(
                         new DecisionOutcome(
                                 TEST_OUTCOME_ID, "ONE", "SUCCEEDED",
-                                new UnitValue("string", "string", mapper.readTree("\"The First Outcome\"")),
+                                new UnitValue("string", "string", mapper.readTree("\"The First " +
+                                        "Outcome\"")),
                                 Collections.emptyList(),
-                                List.of(new Message(
-                                        MessageLevel.WARNING, MessageCategory.INTERNAL, "TEST", "testSrc", "Test message", null,
-                                        new MessageExceptionField("TestException", "Test exception message",
-                                                new MessageExceptionField("TestExceptionCause", "Test exception cause message", null)))))));
+                                List.of(getMessage(MessageLevel.WARNING,
+                                        MessageCategory.INTERNAL, "TEST", "testSrc", "Test message",
+                                        getMessageExceptionField("TestException", "Test exception message",
+                                                getMessageExceptionField(
+                                                        "TestExceptionCause",
+                                                        "Test exception " +
+                                                                "cause " +
+                                                                "message",
+                                                        null)))))));
         }
 
         return decision;
@@ -321,11 +331,30 @@ class DecisionsApiV1IT {
         ObjectMapper mapper = new ObjectMapper();
         return new DecisionOutcome(
                 TEST_OUTCOME_ID, "ONE", "SUCCEEDED",
-                new UnitValue("string", "string", mapper.readTree("\"The First Outcome\"")),
+                new UnitValue("string", "string", mapper.readTree("\"The First " +
+                        "Outcome\"")),
                 Collections.emptyList(),
-                List.of(new Message(MessageLevel.WARNING, MessageCategory.INTERNAL, "TEST", "testSrc", "Test message", null,
-                        new MessageExceptionField("TestException", "Test exception message",
-                                new MessageExceptionField("TestExceptionCause", "Test exception cause message", null)))));
+                List.of(getMessage(MessageLevel.WARNING,
+                        MessageCategory.INTERNAL,
+                        "TEST",
+                        "testSrc",
+                        "Test message",
+                        getMessageExceptionField("TestException", "Test exception message",
+                                getMessageExceptionField("TestExceptionCause", "Test " +
+                                        "exception cause message", null)))));
+    }
+
+    private Message getMessage(MessageLevel messageLevel, MessageCategory messageCategory, String type,
+            String sourceId, String text, MessageExceptionField exception) {
+        return new Message(messageLevel,
+                messageCategory, type, sourceId, text, exception,
+                ModelDomain.DECISION) {
+        };
+    }
+
+    private MessageExceptionField getMessageExceptionField(String className, String message,
+            MessageExceptionField cause) {
+        return new MessageExceptionField(className, message, cause);
     }
 
     private DecisionOutcomesResponse buildDecisionOutcomesResponse(ListStatus outcomesStatus) throws JsonProcessingException {
@@ -335,7 +364,8 @@ class DecisionsApiV1IT {
             case EMPTY:
                 return new DecisionOutcomesResponse(buildExecutionHeaderResponse(), Collections.emptyList());
             case FULL:
-                return new DecisionOutcomesResponse(buildExecutionHeaderResponse(), List.of(buildDecisionOutcomeResponse()));
+                return new DecisionOutcomesResponse(buildExecutionHeaderResponse(),
+                        List.of(buildDecisionOutcomeResponse()));
         }
         throw new IllegalStateException();
     }
@@ -350,22 +380,23 @@ class DecisionsApiV1IT {
                 ObjectMapper mapper = new ObjectMapper();
                 return new DecisionStructuredInputsResponse(List.of(
                         new DecisionInput("first", "first",
-                                new UnitValue("string", "string", mapper.readTree("\"Hello\""))),
+                                new UnitValue("string", "string", mapper.readTree(
+                                        "\"Hello\""))),
                         new DecisionInput("second", "second",
-                                new UnitValue("number", "number", mapper.readTree("12345")))));
+                                new UnitValue("number", "number", mapper.readTree(
+                                        "12345")))));
         }
         throw new IllegalStateException();
     }
 
-    private ExecutionHeaderResponse buildExecutionHeaderResponse() {
-        return new ExecutionHeaderResponse(
+    private DecisionHeaderResponse buildExecutionHeaderResponse() {
+        return new DecisionHeaderResponse(
                 TEST_EXECUTION_ID,
                 TEST_EXECUTION_DATE,
                 true,
                 null,
                 TEST_MODEL_NAME,
-                TEST_MODEL_NAMESPACE,
-                ExecutionType.DECISION);
+                TEST_MODEL_NAMESPACE);
     }
 
     private Response get() {
@@ -381,11 +412,13 @@ class DecisionsApiV1IT {
     }
 
     private void mockServiceWithDecision(ListStatus inputsStatus, ListStatus outcomesStatus) throws Exception {
-        when(trustyService.getDecisionById(eq(TEST_EXECUTION_ID))).thenReturn(buildValidDecision(inputsStatus, outcomesStatus));
+        when(trustyService.getDecisionById(eq(TEST_EXECUTION_ID))).thenReturn(buildValidDecision(inputsStatus,
+                outcomesStatus));
     }
 
     private void mockServiceWithoutDecision() {
-        when(trustyService.getDecisionById(anyString())).thenThrow(new IllegalArgumentException("Execution does not exist."));
+        when(trustyService.getDecisionById(anyString())).thenThrow(new IllegalArgumentException("Execution does not " +
+                "exist."));
     }
 
     private enum ListStatus {

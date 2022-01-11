@@ -26,7 +26,7 @@ import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -50,7 +50,7 @@ public abstract class AbstractModelEventConsumerIT {
 
     @BeforeEach
     public void setup() {
-        trustyStorageService.getModelStorage().clear();
+        trustyStorageService.getModelStorage(DMNModelWithMetadata.class).clear();
         kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
     }
 
@@ -67,9 +67,10 @@ public abstract class AbstractModelEventConsumerIT {
                 KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
         await()
                 .atMost(5, SECONDS)
-                .untilAsserted(() -> assertDoesNotThrow(() -> trustyService.getModelById(TrustyServiceTestUtils.getModelIdentifier())));
+                .untilAsserted(() -> assertDoesNotThrow(() -> trustyService.getModelById(TrustyServiceTestUtils.getModelIdentifier(), DMNModelWithMetadata.class)));
 
-        DMNModelWithMetadata storedDefinition = trustyService.getModelById(TrustyServiceTestUtils.getModelIdentifier());
+        DMNModelWithMetadata storedDefinition =
+                trustyService.getModelById(TrustyServiceTestUtils.getModelIdentifier(), DMNModelWithMetadata.class);
         assertNotNull(storedDefinition);
         assertEquals("definition", storedDefinition.getModel());
         assertEquals("name", storedDefinition.getName());

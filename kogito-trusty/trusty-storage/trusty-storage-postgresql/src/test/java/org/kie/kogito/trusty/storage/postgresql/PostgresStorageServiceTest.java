@@ -20,8 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

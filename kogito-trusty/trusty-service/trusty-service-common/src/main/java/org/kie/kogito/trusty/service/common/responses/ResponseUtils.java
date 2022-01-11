@@ -20,7 +20,10 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionHeaderResponse;
+import org.kie.kogito.trusty.service.common.responses.process.ProcessHeaderResponse;
 import org.kie.kogito.trusty.storage.api.model.Execution;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 
 public class ResponseUtils {
 
@@ -28,23 +31,34 @@ public class ResponseUtils {
     }
 
     public static ExecutionHeaderResponse executionHeaderResponseFrom(Execution execution) {
-        OffsetDateTime ldt = OffsetDateTime.ofInstant((Instant.ofEpochMilli(execution.getExecutionTimestamp())), ZoneOffset.UTC);
-        return new ExecutionHeaderResponse(execution.getExecutionId(),
+        OffsetDateTime ldt = OffsetDateTime.ofInstant((Instant.ofEpochMilli(execution.getExecutionTimestamp())),
+                ZoneOffset.UTC);
+        switch (execution.getExecutionType()) {
+            case DECISION:
+                return getDecisionHeaderResponse(ldt, (Decision) execution);
+            case PROCESS:
+                return getProcessHeaderResponse(ldt, (Decision) execution);
+            default:
+                throw new IllegalArgumentException("Unmanaged ExecutionType " + execution.getExecutionType());
+        }
+    }
+
+    private static ExecutionHeaderResponse getDecisionHeaderResponse(OffsetDateTime ldt, Decision execution) {
+        return new DecisionHeaderResponse(execution.getExecutionId(),
                 ldt,
                 execution.hasSucceeded(),
                 execution.getExecutorName(),
                 execution.getExecutedModelName(),
-                execution.getExecutedModelNamespace(),
-                executionTypeFrom(execution.getExecutionType()));
+                execution.getExecutedModelNamespace());
     }
 
-    private static ExecutionType executionTypeFrom(org.kie.kogito.trusty.storage.api.model.ExecutionType executionType) {
-        switch (executionType) {
-            case DECISION:
-                return ExecutionType.DECISION;
-            case PROCESS:
-                return ExecutionType.PROCESS;
-        }
-        throw new IllegalStateException();
+    private static ExecutionHeaderResponse getProcessHeaderResponse(OffsetDateTime ldt, Decision execution) {
+        return new ProcessHeaderResponse(execution.getExecutionId(),
+                ldt,
+                execution.hasSucceeded(),
+                execution.getExecutorName(),
+                execution.getExecutedModelName(),
+                execution.getExecutedModelNamespace());
     }
+
 }

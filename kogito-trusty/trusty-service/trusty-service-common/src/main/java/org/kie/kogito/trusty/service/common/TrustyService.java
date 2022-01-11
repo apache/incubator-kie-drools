@@ -24,10 +24,10 @@ import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
 import org.kie.kogito.explainability.api.NamedTypedValue;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.ModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.ModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 
 /**
  * The trusty service interface.
@@ -100,21 +100,23 @@ public interface TrustyService {
 
     /**
      * Stores a Model definition.
-     *
-     * @param modelMetadata The model metadata.
-     * @param dmnModelWithMetadata The DMNModel to be stored.
-     * @throws IllegalArgumentException Throws IllegalArgumentException in case the model is already present in the system.
+     * 
+     * @param modelWithMetadata The DMNModel to be stored.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the model is already present in the
+     *         system.
      */
-    void storeModel(ModelMetadata modelMetadata, DMNModelWithMetadata dmnModelWithMetadata);
+    <T extends ModelMetadata, E extends ModelWithMetadata<T>> void storeModel(E modelWithMetadata);
 
     /**
      * Gets a model by model id.
      *
      * @param modelMetadata The model metadata.
+     * @param modelWithMetadataClass: The actual <b>Class</b> of the <code>ModelWithMetadata</code> to return
      * @return The model definition.
-     * @throws IllegalArgumentException Throws IllegalArgumentException in case the modelId is not present in the system.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the modelId is not present in the
+     *         system.
      */
-    DMNModelWithMetadata getModelById(ModelMetadata modelMetadata);
+    <T extends ModelMetadata, E extends ModelWithMetadata<T>> E getModelById(T modelMetadata, Class<E> modelWithMetadataClass);
 
     /**
      * Requests calculation of the Counterfactuals for an execution.

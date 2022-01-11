@@ -20,8 +20,9 @@ import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.ModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.ModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 
 public interface TrustyStorageService {
 
@@ -50,7 +51,7 @@ public interface TrustyStorageService {
      *
      * @return The Storage for model definitions.
      */
-    Storage<String, DMNModelWithMetadata> getModelStorage();
+    <T extends ModelMetadata, E extends ModelWithMetadata<T>> Storage<String, E> getModelStorage(Class<E> modelWithMetadata);
 
     /**
      * Gets the Counterfactual requests storage.

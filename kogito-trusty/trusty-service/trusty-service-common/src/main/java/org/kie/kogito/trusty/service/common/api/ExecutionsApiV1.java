@@ -45,13 +45,13 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import org.kie.kogito.trusty.service.common.TrustyService;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.service.common.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.service.common.responses.ExecutionsResponse;
 import org.kie.kogito.trusty.service.common.responses.ResponseUtils;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,7 +182,10 @@ public class ExecutionsApiV1 {
         try {
             Optional<Decision> decision = retrieveDecision(executionId);
             //TODO GAV components are provided but unused. See https://issues.redhat.com/browse/FAI-239
-            return decision.map(d -> trustyService.getModelById(new ModelMetadata(null, null, null, d.getExecutedModelName(), d.getExecutedModelNamespace())));
+            return decision.map(d -> trustyService.getModelById(
+                    new DMNModelMetadata(null, null, null, null, d.getExecutedModelName(),
+                            d.getExecutedModelNamespace()),
+                    DMNModelWithMetadata.class));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

@@ -21,10 +21,11 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelMetadata;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ModelIdentifierTest {
+public class DMNModelMetadataIdentifierTest {
 
     private static Stream<Arguments> provideParametersForModelIdCreator() {
         return Stream.of(
@@ -44,9 +45,10 @@ public class ModelIdentifierTest {
             final String name,
             final String namespace,
             final String expected) {
-        ModelMetadata modelIdentifier = new ModelMetadata(groupId,
+        DMNModelMetadata modelIdentifier = new DMNModelMetadata(groupId,
                 artifactId,
                 version,
+                "dmnVersion",
                 name,
                 namespace);
         assertEquals(expected, modelIdentifier.getIdentifier());

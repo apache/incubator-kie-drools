@@ -20,18 +20,18 @@ import java.text.ParseException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.common.TrustyService;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.service.common.responses.ExecutionsResponse;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
-import org.kie.kogito.trusty.storage.api.model.ExecutionType;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.mockito.Mockito;
 
 import io.quarkus.test.junit.QuarkusTest;
@@ -95,13 +95,24 @@ class ExecutionsApiV1IT {
 
     @Test
     void givenARequestWhenExecutionEndpointIsCalledThenTheExecutionHeaderIsReturned() throws ParseException {
-        Execution execution = new Execution("test1", "http://localhost:8081/model/service", "http://localhost:8081",
-                OffsetDateTime.parse("2020-01-01T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant().toEpochMilli(),
-                true, "name", "model", "namespace", ExecutionType.DECISION);
-        Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class)))
+        Execution execution = new Decision("test1",
+                "http://localhost:8081/model/service",
+                "http://localhost:8081",
+                OffsetDateTime.parse("2020-01-01T00:00:00Z",
+                        DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant().toEpochMilli(),
+                true,
+                "name",
+                "model",
+                "namespace",
+                Collections.emptyList(),
+                Collections.emptyList());
+        Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class),
+                any(Integer.class), any(Integer.class), any(String.class)))
                 .thenReturn(new MatchedExecutionHeaders(List.of(execution), 1));
 
-        ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z").as(ExecutionsResponse.class);
+        ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/executions?from=2000-01" +
+                "-01T00:00:00Z&to=2021" +
+                "-01-01T00:00:00Z").as(ExecutionsResponse.class);
 
         Assertions.assertEquals(1, response.getHeaders().size());
     }
@@ -147,12 +158,13 @@ class ExecutionsApiV1IT {
 
     @Test
     void givenARequestWithExistingModelWhenModelEndpointIsCalledThenTheModelIsReturned() {
-        DMNModelWithMetadata dmnModelWithMetadata = new DMNModelWithMetadata("groupId", "artifactId", "modelVersion", "dmnVersion", "name", "namespace", "definition");
+        DMNModelWithMetadata dmnModelWithMetadata = new DMNModelWithMetadata("groupId", "artifactId", "modelVersion",
+                "dmnVersion", "name", "namespace", "definition");
         final Decision decision = mock(Decision.class);
         when(decision.getExecutedModelName()).thenReturn("name");
         when(decision.getExecutedModelNamespace()).thenReturn("namespace");
         when(executionService.getDecisionById(anyString())).thenReturn(decision);
-        when(executionService.getModelById(any(ModelMetadata.class))).thenReturn(dmnModelWithMetadata);
+        when(executionService.getModelById(any(DMNModelMetadata.class), eq(DMNModelWithMetadata.class))).thenReturn(dmnModelWithMetadata);
 
         DMNModelWithMetadata response = given().contentType(ContentType.TEXT).when().get("/executions/123/model").as(DMNModelWithMetadata.class);
         assertEquals(dmnModelWithMetadata.getModel(), response.getModel());
@@ -171,7 +183,7 @@ class ExecutionsApiV1IT {
 
     @Test
     void givenARequestWithoutExistingModelWhenModelEndpointIsCalledThenBadRequestIsReturned() {
-        when(executionService.getModelById(any(ModelMetadata.class))).thenThrow(new IllegalArgumentException("Model does not exist."));
+        when(executionService.getModelById(any(DMNModelMetadata.class), eq(DMNModelWithMetadata.class))).thenThrow(new IllegalArgumentException("Model does not exist."));
 
         given().contentType(ContentType.TEXT).when().get("/executions/123/model").then().statusCode(400);
     }
@@ -179,9 +191,15 @@ class ExecutionsApiV1IT {
     private List<Execution> generateExecutions(int size) {
         ArrayList<Execution> executions = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            executions.add(new Execution(String.format("test-%d", i), "http://localhost:8081/model/service", "http://localhost:8081",
+            executions.add(new Decision(String.format("test-%d", i),
+                    "http://localhost:8081/model/service", "http://localhost:8081",
                     OffsetDateTime.parse("2020-01-01T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME).plusDays(i).toInstant().toEpochMilli(),
-                    true, "name", "model", "namespace", ExecutionType.DECISION));
+                    true,
+                    "name",
+                    "model",
+                    "namespace",
+                    Collections.emptyList(),
+                    Collections.emptyList()));
         }
         return executions;
     }

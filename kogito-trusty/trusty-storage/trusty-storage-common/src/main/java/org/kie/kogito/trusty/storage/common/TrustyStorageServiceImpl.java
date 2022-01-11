@@ -24,8 +24,9 @@ import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.ModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.ModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 
 @ApplicationScoped
 public class TrustyStorageServiceImpl implements TrustyStorageService {
@@ -44,8 +45,8 @@ public class TrustyStorageServiceImpl implements TrustyStorageService {
     }
 
     @Override
-    public Storage<String, DMNModelWithMetadata> getModelStorage() {
-        return storageService.getCache(MODELS_STORAGE, DMNModelWithMetadata.class);
+    public <T extends ModelMetadata, E extends ModelWithMetadata<T>> Storage<String, E> getModelStorage(Class<E> modelWithMetadata) {
+        return storageService.getCache(MODELS_STORAGE, modelWithMetadata);
     }
 
     @Override

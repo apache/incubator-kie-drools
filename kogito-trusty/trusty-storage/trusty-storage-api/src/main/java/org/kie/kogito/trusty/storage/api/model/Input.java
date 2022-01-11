@@ -21,7 +21,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DecisionInput {
+/**
+ * Base abstract class for <b>Input</b>
+ * 
+ * @param <T>
+ * @param <E>
+ */
+public abstract class Input {
 
     public static final String ID_FIELD = "id";
     public static final String NAME_FIELD = "name";
@@ -36,10 +42,10 @@ public class DecisionInput {
     @JsonProperty(VALUE_FIELD)
     private TypedValue value;
 
-    public DecisionInput() {
+    public Input() {
     }
 
-    public DecisionInput(String id, String name, TypedValue value) {
+    public Input(String id, String name, TypedValue value) {
         this.id = id;
         this.name = name;
         this.value = value;

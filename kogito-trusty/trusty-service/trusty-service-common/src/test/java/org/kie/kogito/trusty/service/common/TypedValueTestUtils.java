@@ -28,8 +28,8 @@ import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

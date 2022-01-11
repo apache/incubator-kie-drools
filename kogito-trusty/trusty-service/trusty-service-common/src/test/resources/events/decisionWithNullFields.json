@@ -9,5 +9,6 @@
   "executedModelNamespace":"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
   "executionType":"DECISION",
   "inputs":null,
-  "outcomes":null
+  "outcomes":null,
+  "@type": "DECISION"
 }

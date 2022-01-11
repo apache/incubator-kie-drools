@@ -25,12 +25,13 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.decision.DecisionModelMetadata;
-import org.kie.kogito.tracing.decision.event.model.ModelEvent;
+import org.kie.kogito.tracing.event.model.ModelEvent;
+import org.kie.kogito.tracing.event.model.models.DecisionModelEvent;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.messaging.BaseEventConsumer;
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,17 +75,25 @@ public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
 
     @Override
     protected void internalHandleCloudEvent(CloudEvent cloudEvent, ModelEvent payload) {
-        final DecisionModelMetadata decisionModelMetadata = payload.getDecisionModelMetadata();
-        if (decisionModelMetadata.getType().equals(DecisionModelMetadata.Type.DMN)) {
-            ModelMetadata identifier = new ModelMetadata(payload.getGav().getGroupId(),
-                    payload.getGav().getArtifactId(),
-                    payload.getGav().getVersion(),
-                    payload.getName(),
-                    payload.getNamespace());
-            DMNModelWithMetadata dmnModelWithMetadata = DMNModelWithMetadata.fromCloudEvent(payload);
-            service.storeModel(identifier, dmnModelWithMetadata);
-        } else {
-            LOG.error("Unsupported DecisionModelType type {}", decisionModelMetadata.getType());
+        final org.kie.kogito.event.ModelMetadata modelMetadata = payload.getModelMetadata();
+        switch (modelMetadata.getModelDomain()) {
+            case DECISION:
+                internalHandleDecisionModelEvent((DecisionModelEvent) payload);
+                break;
+            default:
+                LOG.error("Unsupported ModelMetadata type {}", modelMetadata.getModelDomain());
         }
+    }
+
+    private void internalHandleDecisionModelEvent(DecisionModelEvent decisionModelEvent) {
+        DMNModelMetadata identifier = new DMNModelMetadata(decisionModelEvent.getGav().getGroupId(),
+                decisionModelEvent.getGav().getArtifactId(),
+                decisionModelEvent.getGav().getVersion(),
+                decisionModelEvent.getModelMetadata().getSpecVersion(),
+                decisionModelEvent.getName(),
+                decisionModelEvent.getNamespace());
+        DMNModelWithMetadata dmnModelWithMetadata = new DMNModelWithMetadata(identifier,
+                decisionModelEvent.getDefinition());
+        service.storeModel(dmnModelWithMetadata);
     }
 }

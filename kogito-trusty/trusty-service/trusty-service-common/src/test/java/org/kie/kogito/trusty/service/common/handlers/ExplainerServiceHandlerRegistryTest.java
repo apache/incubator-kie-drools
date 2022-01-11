@@ -26,7 +26,7 @@ import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

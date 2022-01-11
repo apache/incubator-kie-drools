@@ -46,8 +46,8 @@ import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.handlers.LIMESaliencyConverter;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualResultsResponse;
-import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionStructuredInputsResponse;
 
 @Path("executions/decisions")
 public class ExplainabilityApiV1 {

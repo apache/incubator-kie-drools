@@ -19,7 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

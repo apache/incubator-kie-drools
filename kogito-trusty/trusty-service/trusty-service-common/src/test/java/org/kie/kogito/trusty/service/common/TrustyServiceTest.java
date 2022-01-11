@@ -53,14 +53,14 @@ import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainerServ
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandler;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
 import org.kie.kogito.trusty.service.common.handlers.LIMEExplainerServiceHandler;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.messaging.outgoing.ExplainabilityRequestProducer;
 import org.kie.kogito.trusty.service.common.mocks.StorageImplMock;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.mockito.ArgumentCaptor;
 
@@ -297,37 +297,41 @@ public class TrustyServiceTest {
         Storage storageMock = mock(Storage.class);
 
         when(storageMock.put(any(Object.class), any(Object.class))).thenReturn(model);
-        when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
+        when(trustyStorageServiceMock.getModelStorage(DMNModelWithMetadata.class)).thenReturn(storageMock);
 
-        Assertions.assertDoesNotThrow(() -> trustyService.storeModel(buildDmnModelIdentifier(), buildDmnModel(model)));
+        Assertions.assertDoesNotThrow(() -> trustyService.storeModel(buildDmnModel(model)));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void givenAModelWhenStoreModelIsCalledMoreThanOnceForSameModelThenExceptionIsThrown() {
-        ModelMetadata modelIdentifier = buildDmnModelIdentifier();
         String model = TEST_MODEL;
         Storage storageMock = mock(Storage.class);
 
+        DMNModelWithMetadata dmnModelWithMetadata = buildDmnModel(model);
+        DMNModelMetadata modelIdentifier = dmnModelWithMetadata.getModelMetaData();
+
         when(storageMock.containsKey(modelIdentifier.getIdentifier())).thenReturn(true);
         when(storageMock.put(any(Object.class), any(Object.class))).thenReturn(model);
-        when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
+        when(trustyStorageServiceMock.getModelStorage(DMNModelWithMetadata.class)).thenReturn(storageMock);
 
-        assertThrows(IllegalArgumentException.class, () -> trustyService.storeModel(modelIdentifier, buildDmnModel(model)));
+        assertThrows(IllegalArgumentException.class, () -> trustyService.storeModel(dmnModelWithMetadata));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void givenAModelWhenAModelIsStoredAndRetrievedByIdThenTheOriginalObjectIsReturned() {
-        ModelMetadata modelIdentifier = buildDmnModelIdentifier();
         String model = TEST_MODEL;
         Storage storageMock = new StorageImplMock(String.class);
 
-        when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
+        when(trustyStorageServiceMock.getModelStorage(DMNModelWithMetadata.class)).thenReturn(storageMock);
 
-        trustyService.storeModel(modelIdentifier, buildDmnModel(model));
+        DMNModelWithMetadata dmnModelWithMetadata = buildDmnModel(model);
+        DMNModelMetadata modelIdentifier = dmnModelWithMetadata.getModelMetaData();
 
-        DMNModelWithMetadata result = trustyService.getModelById(modelIdentifier);
+        trustyService.storeModel(buildDmnModel(model));
+
+        DMNModelWithMetadata result = trustyService.getModelById(modelIdentifier, DMNModelWithMetadata.class);
 
         assertEquals(model, result.getModel());
     }
@@ -335,13 +339,14 @@ public class TrustyServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void whenAModelIsNotStoredAndRetrievedByIdThenExceptionIsThrown() {
-        ModelMetadata modelIdentifier = buildDmnModelIdentifier();
+        DMNModelMetadata modelIdentifier = buildDmnModelIdentifier();
         Storage storageMock = mock(Storage.class);
 
         when(storageMock.containsKey(modelIdentifier.getIdentifier())).thenReturn(false);
-        when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
+        when(trustyStorageServiceMock.getModelStorage(DMNModelWithMetadata.class)).thenReturn(storageMock);
 
-        assertThrows(IllegalArgumentException.class, () -> trustyService.getModelById(modelIdentifier));
+        assertThrows(IllegalArgumentException.class, () -> trustyService.getModelById(modelIdentifier,
+                DMNModelWithMetadata.class));
     }
 
     @Test
@@ -659,10 +664,10 @@ public class TrustyServiceTest {
     }
 
     private DMNModelWithMetadata buildDmnModel(String model) {
-        return new DMNModelWithMetadata("groupId", "artifactId", "modelVersion", "dmnVersion", "name", "namespace", model);
+        return new DMNModelWithMetadata(buildDmnModelIdentifier(), model);
     }
 
-    private ModelMetadata buildDmnModelIdentifier() {
-        return new ModelMetadata("groupId", "artifactId", "version", "name", "namespace");
+    private DMNModelMetadata buildDmnModelIdentifier() {
+        return new DMNModelMetadata("groupId", "artifactId", "version", "dmnVersion", "name", "namespace");
     }
 }

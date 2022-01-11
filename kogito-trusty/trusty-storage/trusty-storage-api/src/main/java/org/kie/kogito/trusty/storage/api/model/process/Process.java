@@ -14,36 +14,40 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.trusty.storage.api.model;
+package org.kie.kogito.trusty.storage.api.model.process;
 
 import java.util.Collection;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.kie.kogito.ModelDomain;
+import org.kie.kogito.trusty.storage.api.model.Execution;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * A decision.
+ * A <b>Process</b> <code>Execution</code>
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Decision extends Execution {
+public final class Process extends Execution {
 
     public static final String INPUTS_FIELD = "inputs";
     public static final String OUTCOMES_FIELD = "outcomes";
 
+    @JsonProperty(EXECUTED_MODEL_NAMESPACE_FIELD)
+    private String executedModelNamespace;
+
     @JsonProperty(INPUTS_FIELD)
-    private Collection<DecisionInput> inputs;
+    private Collection<ProcessInput> inputs;
 
     @JsonProperty(OUTCOMES_FIELD)
-    private Collection<DecisionOutcome> outcomes;
+    private Collection<ProcessOutcome> outcomes;
 
-    public Decision() {
-        super(ExecutionType.DECISION);
+    public Process() {
+        super(ModelDomain.PROCESS);
     }
 
-    public Decision(@NotNull String executionId,
+    public Process(@NotNull String executionId,
             String sourceUrl,
             String serviceUrl,
             Long executionTimestamp,
@@ -51,27 +55,46 @@ public class Decision extends Execution {
             String executorName,
             String executedModelName,
             String executedModelNamespace,
-            List<DecisionInput> inputs,
-            List<DecisionOutcome> outcomes) {
+            List<ProcessInput> inputs,
+            List<ProcessOutcome> outcomes) {
         super(executionId, sourceUrl, serviceUrl, executionTimestamp, hasSucceeded, executorName,
-                executedModelName, executedModelNamespace, ExecutionType.DECISION);
+                executedModelName, ModelDomain.PROCESS);
+        this.executedModelNamespace = executedModelNamespace;
         this.inputs = inputs;
         this.outcomes = outcomes;
     }
 
-    public Collection<DecisionInput> getInputs() {
+    /**
+     * Gets the namespace of the executed model.
+     * 
+     * @return The namespace of the executed model.
+     */
+    public String getExecutedModelNamespace() {
+        return executedModelNamespace;
+    }
+
+    /**
+     * Sets the executed model namespace.
+     * 
+     * @param executedModelNamespace The executed model namespace.
+     */
+    public void setExecutedModelNamespace(String executedModelNamespace) {
+        this.executedModelNamespace = executedModelNamespace;
+    }
+
+    public Collection<ProcessInput> getInputs() {
         return inputs;
     }
 
-    public void setInputs(Collection<DecisionInput> inputs) {
+    public void setInputs(Collection<ProcessInput> inputs) {
         this.inputs = inputs;
     }
 
-    public Collection<DecisionOutcome> getOutcomes() {
+    public Collection<ProcessOutcome> getOutcomes() {
         return outcomes;
     }
 
-    public void setOutcomes(Collection<DecisionOutcome> outcomes) {
+    public void setOutcomes(Collection<ProcessOutcome> outcomes) {
         this.outcomes = outcomes;
     }
 }

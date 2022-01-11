@@ -18,13 +18,26 @@ package org.kie.kogito.trusty.service.common.responses;
 
 import java.time.OffsetDateTime;
 
+import org.kie.kogito.ModelDomain;
+import org.kie.kogito.trusty.service.common.responses.decision.DecisionHeaderResponse;
+import org.kie.kogito.trusty.service.common.responses.process.ProcessHeaderResponse;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
- * An execution header.
+ * Base abstract class for <b>ExecutionHeaderResponse</b>
  */
-public class ExecutionHeaderResponse {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "@type", visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = DecisionHeaderResponse.class, name = "DECISION"),
+        @JsonSubTypes.Type(value = ProcessHeaderResponse.class, name = "PROCESS")
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
+public abstract class ExecutionHeaderResponse {
 
     @JsonProperty("executionId")
     private String executionId;
@@ -42,13 +55,13 @@ public class ExecutionHeaderResponse {
     @JsonProperty("executedModelName")
     private String executedModelName;
 
-    @JsonProperty("executedModelNamespace")
-    private String executedModelNamespace;
-
     @JsonProperty("executionType")
-    private ExecutionType executionType;
+    private ModelDomain executionType;
 
-    private ExecutionHeaderResponse() {
+    @JsonProperty("@type")
+    private ModelDomain modelDomain;
+
+    protected ExecutionHeaderResponse() {
     }
 
     public ExecutionHeaderResponse(String executionId,
@@ -56,15 +69,14 @@ public class ExecutionHeaderResponse {
             Boolean hasSucceeded,
             String executorName,
             String executedModelName,
-            String executedModelNamespace,
-            ExecutionType executionType) {
+            ModelDomain modelDomain) {
         this.executionId = executionId;
         this.executionDate = executionDate;
         this.hasSucceeded = hasSucceeded;
         this.executorName = executorName;
         this.executedModelName = executedModelName;
-        this.executedModelNamespace = executedModelNamespace;
-        this.executionType = executionType;
+        this.executionType = modelDomain;
+        this.modelDomain = modelDomain;
     }
 
     /**
@@ -113,20 +125,11 @@ public class ExecutionHeaderResponse {
     }
 
     /**
-     * Gets the namespace of the executed model.
-     *
-     * @return The namespace of the executed model.
-     */
-    public String getExecutedModelNamespace() {
-        return executedModelNamespace;
-    }
-
-    /**
      * Gets the execution type.
      *
      * @return The execution type.
      */
-    public ExecutionType getExecutionType() {
+    public ModelDomain getExecutionType() {
         return executionType;
     }
 }

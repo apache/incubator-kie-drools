@@ -1,4 +1,4 @@
-package org.kie.kogito.trusty.storage.api.model;
+package org.kie.kogito.trusty.storage.api.model.decision;
 
 /* @Indexed */
 message Decision {

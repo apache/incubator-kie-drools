@@ -26,8 +26,8 @@ import org.kie.kogito.explainability.api.CounterfactualSearchDomainValue;
 import org.kie.kogito.explainability.api.NamedTypedValue;
 import org.kie.kogito.tracing.typedvalue.BaseTypedValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 
 public class CounterfactualParameterValidation {
 

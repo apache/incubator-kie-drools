@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
-import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 
 import io.smallrye.context.SmallRyeManagedExecutor;
 
@@ -100,7 +100,7 @@ class ModelEventConsumerTest {
                 .pollInterval(Duration.ofSeconds(1))
                 .untilAsserted(
                         () -> {
-                            verify(trustyService, times(wantedNumberOfServiceInvocations)).storeModel(any(), any());
+                            verify(trustyService, times(wantedNumberOfServiceInvocations)).storeModel(any());
                             verify(message, times(1)).ack();
                         });
     }

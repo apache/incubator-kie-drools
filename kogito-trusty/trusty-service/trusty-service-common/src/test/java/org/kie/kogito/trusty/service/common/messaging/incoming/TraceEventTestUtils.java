@@ -23,12 +23,12 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.explainability.api.NamedTypedValue;
-import org.kie.kogito.tracing.decision.event.message.Message;
-import org.kie.kogito.tracing.decision.event.message.MessageExceptionField;
+import org.kie.kogito.tracing.event.message.Message;
+import org.kie.kogito.tracing.event.message.MessageExceptionField;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

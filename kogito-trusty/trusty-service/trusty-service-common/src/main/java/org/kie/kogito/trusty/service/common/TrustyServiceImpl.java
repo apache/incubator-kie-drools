@@ -40,14 +40,14 @@ import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelMetadata;
 import org.kie.kogito.trusty.service.common.messaging.outgoing.ExplainabilityRequestProducer;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
-import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Execution;
+import org.kie.kogito.trusty.storage.api.model.ModelMetadata;
+import org.kie.kogito.trusty.storage.api.model.ModelWithMetadata;
+import org.kie.kogito.trusty.storage.api.model.decision.Decision;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,17 +177,18 @@ public class TrustyServiceImpl implements TrustyService {
     }
 
     @Override
-    public void storeModel(ModelMetadata modelMetadata, DMNModelWithMetadata dmnModelWithMetadata) {
-        final Storage<String, DMNModelWithMetadata> storage = storageService.getModelStorage();
-        if (storage.containsKey(modelMetadata.getIdentifier())) {
-            throw new IllegalArgumentException(String.format("A model with ID %s is already present in the storage.", modelMetadata.getIdentifier()));
+    public <T extends ModelMetadata, E extends ModelWithMetadata<T>> void storeModel(E modelWithMetadata) {
+        final Storage<String, E> storage = storageService.getModelStorage((Class<E>) modelWithMetadata.getClass());
+        if (storage.containsKey(modelWithMetadata.getIdentifier())) {
+            throw new IllegalArgumentException(String.format("A model with ID %s is already present in the storage.",
+                    modelWithMetadata.getIdentifier()));
         }
-        storage.put(modelMetadata.getIdentifier(), dmnModelWithMetadata);
+        storage.put(modelWithMetadata.getIdentifier(), modelWithMetadata);
     }
 
     @Override
-    public DMNModelWithMetadata getModelById(ModelMetadata modelMetadata) {
-        final Storage<String, DMNModelWithMetadata> storage = storageService.getModelStorage();
+    public <T extends ModelMetadata, E extends ModelWithMetadata<T>> E getModelById(T modelMetadata, Class<E> modelWithMetadataClass) {
+        final Storage<String, E> storage = storageService.getModelStorage(modelWithMetadataClass);
         if (!storage.containsKey(modelMetadata.getIdentifier())) {
             throw new IllegalArgumentException(String.format("A model with ID %s does not exist in the storage.", modelMetadata.getIdentifier()));
         }
