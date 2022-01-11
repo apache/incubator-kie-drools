@@ -25,13 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.mock.DMNDecisionResultMock;
 import org.kie.kogito.monitoring.core.common.system.metrics.DMNResultMetricsBuilder;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
@@ -53,11 +51,6 @@ public class DMNResultMetricsBuilderTest {
     public void setUp() {
         registry = new SimpleMeterRegistry();
         dmnResultMetricsBuilder = new DMNResultMetricsBuilder(KogitoGAV.EMPTY_GAV, registry);
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        MonitoringRegistry.getDefaultMeterRegistry().remove(registry);
     }
 
     @Test

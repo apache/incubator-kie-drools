@@ -8,7 +8,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <name>Kogito :: Add-Ons :: Monitoring Core Api</name>
+  <name>Kogito :: Add-Ons :: Monitoring Core</name>
 
   <artifactId>kogito-addons-monitoring-core</artifactId>
 
@@ -29,7 +29,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>grafana-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.micrometer</groupId>
       <artifactId>micrometer-core</artifactId>

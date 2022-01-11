@@ -21,10 +21,10 @@ import javax.inject.Singleton;
 
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollectorProvider;
 
+import io.micrometer.core.instrument.Metrics;
 import io.quarkus.runtime.Startup;
 
 @Singleton
@@ -38,7 +38,7 @@ public class QuarkusSystemMetricsCollectorProvider implements SystemMetricsColle
 
     @PostConstruct
     public void init() {
-        systemMetricsCollector = new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
+        systemMetricsCollector = new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), Metrics.globalRegistry);
     }
 
     public SystemMetricsCollector get() {

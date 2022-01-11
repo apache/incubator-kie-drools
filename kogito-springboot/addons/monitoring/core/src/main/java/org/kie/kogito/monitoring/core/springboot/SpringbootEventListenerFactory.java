@@ -20,7 +20,6 @@ import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.drools.core.config.DefaultRuleEventListenerConfig;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.monitoring.core.common.Constants;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.process.MetricsProcessEventListener;
 import org.kie.kogito.monitoring.core.common.rule.RuleMetricsListenerConfig;
 import org.slf4j.Logger;
@@ -29,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import io.micrometer.core.instrument.Metrics;
 
 @Configuration
 public class SpringbootEventListenerFactory {
@@ -49,7 +50,9 @@ public class SpringbootEventListenerFactory {
             matchIfMissing = true)
     public KogitoProcessEventListener produceProcessListener() {
         LOGGER.debug("Producing default listener for process monitoring.");
-        return new MetricsProcessEventListener("default-process-monitoring-listener", configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
+        return new MetricsProcessEventListener("default-process-monitoring-listener",
+                configBean.getGav().orElse(KogitoGAV.EMPTY_GAV),
+                Metrics.globalRegistry);
     }
 
     @ConditionalOnProperty(
@@ -59,6 +62,6 @@ public class SpringbootEventListenerFactory {
     @Bean
     public DefaultRuleEventListenerConfig produceRuleListener() {
         LOGGER.debug("Producing default listener for rule monitoring.");
-        return new RuleMetricsListenerConfig(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
+        return new RuleMetricsListenerConfig(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), Metrics.globalRegistry);
     }
 }

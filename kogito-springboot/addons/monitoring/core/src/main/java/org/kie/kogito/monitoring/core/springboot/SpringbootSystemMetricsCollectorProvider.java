@@ -19,11 +19,12 @@ import javax.annotation.PostConstruct;
 
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollectorProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import io.micrometer.core.instrument.Metrics;
 
 @Component
 public class SpringbootSystemMetricsCollectorProvider implements SystemMetricsCollectorProvider {
@@ -35,7 +36,8 @@ public class SpringbootSystemMetricsCollectorProvider implements SystemMetricsCo
 
     @PostConstruct
     public void init() {
-        systemMetricsCollector = new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
+        systemMetricsCollector = new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV),
+                Metrics.globalRegistry);
     }
 
     @Override

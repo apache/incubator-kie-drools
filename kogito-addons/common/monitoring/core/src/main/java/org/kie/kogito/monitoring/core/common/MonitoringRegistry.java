@@ -15,22 +15,11 @@
  */
 package org.kie.kogito.monitoring.core.common;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
+/**
+ * This class must always have exact FQCN as <code>org.kie.kogito.monitoring.core.common.MonitoringRegistry</code>
+ *
+ * @see org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery
+ */
+public interface MonitoringRegistry {
 
-public class MonitoringRegistry {
-
-    private static CompositeMeterRegistry compositeMeterRegistry = Metrics.globalRegistry;
-
-    private MonitoringRegistry() {
-    }
-
-    public static void addRegistry(MeterRegistry registry) {
-        compositeMeterRegistry.add(registry);
-    }
-
-    public static CompositeMeterRegistry getDefaultMeterRegistry() {
-        return compositeMeterRegistry;
-    }
 }

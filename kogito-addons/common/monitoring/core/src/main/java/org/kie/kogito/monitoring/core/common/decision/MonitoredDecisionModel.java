@@ -24,10 +24,10 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.decision.DecisionModel;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.system.metrics.DMNResultMetricsBuilder;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
 
 import static org.kie.kogito.monitoring.core.common.Constants.SKIP_MONITORING;
 
@@ -42,7 +42,7 @@ public class MonitoredDecisionModel implements DecisionModel {
     }
 
     public MonitoredDecisionModel(DecisionModel originalModel, KogitoGAV gav) {
-        this(originalModel, gav, MonitoringRegistry.getDefaultMeterRegistry());
+        this(originalModel, gav, Metrics.globalRegistry);
     }
 
     protected MonitoredDecisionModel(DecisionModel originalModel, DMNResultMetricsBuilder dmnResultMetricsBuilder) {

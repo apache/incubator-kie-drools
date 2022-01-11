@@ -26,9 +26,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.monitoring.core.common.Constants;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
+
+import io.micrometer.core.instrument.Metrics;
 
 @Provider
 public class QuarkusMetricsFilterRegister implements DynamicFeature {
@@ -53,7 +54,8 @@ public class QuarkusMetricsFilterRegister implements DynamicFeature {
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
         if (httpInterceptorUseDefault.isResolvable() && httpInterceptorUseDefault.get()) {
-            SystemMetricsCollector systemMetricsCollector = new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
+            SystemMetricsCollector systemMetricsCollector =
+                    new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), Metrics.globalRegistry);
             MetricsInterceptor metricsInterceptor = new MetricsInterceptor(systemMetricsCollector);
             context.register(new QuarkusMetricsInterceptor(metricsInterceptor));
         }
