@@ -78,7 +78,7 @@ module.exports = {
             '../../node_modules/@kogito-apps/consoles-common/dist/static'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/components-common/dist/src/static'
+            '../../node_modules/@kogito-apps/components-common/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/jobs-management/dist/static'
@@ -100,6 +100,12 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/form-displayer/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-form/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-definition-list/dist/static'
           ),
           path.resolve(
             '../../node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf'
@@ -161,7 +167,7 @@ module.exports = {
             '../../node_modules/@kogito-apps/consoles-common/dist/static'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/components-common/dist/src/static'
+            '../../node_modules/@kogito-apps/components-common/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/jobs-management/dist/static'
@@ -184,6 +190,12 @@ module.exports = {
           path.resolve(
             '../../node_modules/@kogito-apps/task-form/dist/static'
           ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-form/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-definition-list/dist/static'
+          )
         ],
         use: [
           {

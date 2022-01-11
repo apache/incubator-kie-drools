@@ -27,11 +27,13 @@ import {
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { CustomForm } from '../../../types';
 import { generateFormData } from '../utils/TaskFormDataUtils';
-import FormFooter from '../FormFooter/FormFooter';
-import { FormAction } from '../utils';
 import { TaskFormDriver, User } from '../../../api';
 import { Bullseye, Stack, StackItem } from '@patternfly/react-core';
-import { KogitoSpinner } from '@kogito-apps/components-common';
+import {
+  KogitoSpinner,
+  FormAction,
+  FormFooter
+} from '@kogito-apps/components-common';
 import { buildTaskFormContext } from './utils/utils';
 
 export interface CustomTaskFormDisplayerProps {

@@ -20,6 +20,7 @@ import merge from 'lodash/merge';
 import unset from 'lodash/unset';
 import set from 'lodash/set';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
+import { JSONSchema7 } from 'json-schema';
 
 export type TaskDataAssignments = {
   inputs: string[];
@@ -95,6 +96,10 @@ function checkAssignment(property: any, assignmentExpr: string): boolean {
   }
   return false;
 }
+
+export type TaskFormSchema = JSONSchema7 & {
+  phases?: string[];
+};
 
 export function readSchemaAssignments(
   formSchema: Record<string, any>,

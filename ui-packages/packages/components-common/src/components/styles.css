@@ -23,3 +23,7 @@
     overflow:hidden;
     margin-left: 5px;
 }
+
+.kogito-components-common__form-footer-padding-top {
+    padding-top: 20px;
+}

@@ -22,6 +22,8 @@ export interface DevUIAppContext {
   getAllUsers(): User[];
   switchUser(userId: string): void;
   onUserChange(listener: UserChangeListener): UnSubscribeHandler;
+  getDevUIUrl(): string;
+  getOpenApiPath(): string;
 }
 
 export interface UserChangeListener {
@@ -36,12 +38,24 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   private users: User[];
   private currentUser: User;
   private readonly userListeners: UserChangeListener[] = [];
+  private readonly devUIUrl: string;
+  private readonly openApiPath: string;
 
-  constructor(users) {
+  constructor(users, url, path) {
+    this.devUIUrl = url;
+    this.openApiPath = path;
     this.users = users;
     if (users.length > 0) {
       this.currentUser = users[0];
     }
+  }
+
+  getDevUIUrl(): string {
+    return this.devUIUrl;
+  }
+
+  getOpenApiPath(): string {
+    return this.openApiPath;
   }
 
   getCurrentUser(): User {

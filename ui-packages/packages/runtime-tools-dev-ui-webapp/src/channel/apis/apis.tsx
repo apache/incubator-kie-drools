@@ -25,6 +25,9 @@ import {
 import { FormInfo } from '@kogito-apps/forms-list';
 import axios from 'axios';
 import { Form, FormContent } from '@kogito-apps/form-details';
+import SwaggerParser from '@apidevtools/swagger-parser';
+import { createProcessDefinitionList } from '../../utils/Utils';
+import { ProcessDefinition } from '@kogito-apps/process-definition-list';
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
@@ -328,6 +331,77 @@ export const saveFormContent = (
       .post(`/forms/${formName}`, content)
       .then(result => {
         resolve();
+      })
+      .catch(error => reject(error));
+  });
+};
+
+export const getProcessDefinitionList = (
+  devUIUrl: string,
+  openApiPath: string
+): Promise<ProcessDefinition[]> => {
+  return new Promise((resolve, reject) => {
+    SwaggerParser.parse(`${devUIUrl}${openApiPath}`)
+      .then(response => {
+        const processDefinitionObjs = [];
+        const paths = response.paths;
+        const regexPattern = /^\/[A-Za-z]+\/schema/;
+        Object.getOwnPropertyNames(paths)
+          .filter(path => regexPattern.test(path.toString()))
+          .forEach(url => {
+            let processArray = url.split('/');
+            processArray = processArray.filter(name => name.length !== 0);
+            /* istanbul ignore else*/
+            if (
+              Object.prototype.hasOwnProperty.call(
+                paths[`/${processArray[0]}`],
+                'post'
+              )
+            ) {
+              processDefinitionObjs.push({ [url]: paths[url] });
+            }
+          });
+        resolve(createProcessDefinitionList(processDefinitionObjs, devUIUrl));
+      })
+      .catch(err => reject(err));
+  });
+};
+
+export const getProcessSchema = (
+  processDefinitionData: ProcessDefinition
+): Promise<Record<string, any>> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`${processDefinitionData.endpoint}/schema`)
+      .then(response => {
+        /* istanbul ignore else*/
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
+
+export const startProcessInstance = (
+  formData: any,
+  businessKey: string,
+  processDefinitionData: ProcessDefinition
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const requestURL = `${processDefinitionData.endpoint}${
+      businessKey.length > 0 ? `?businessKey=${businessKey}` : ''
+    }`;
+    axios
+      .post(requestURL, JSON.stringify(formData), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        resolve(response.data.id);
       })
       .catch(error => reject(error));
   });

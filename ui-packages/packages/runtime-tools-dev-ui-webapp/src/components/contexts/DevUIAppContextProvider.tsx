@@ -22,12 +22,19 @@ import RuntimeToolsDevUIAppContext, {
 
 interface IOwnProps {
   users: User[];
+  devUIUrl: string;
+  openApiPath: string;
 }
 
-const DevUIAppContextProvider: React.FC<IOwnProps> = ({ users, children }) => {
+const DevUIAppContextProvider: React.FC<IOwnProps> = ({
+  users,
+  devUIUrl,
+  openApiPath,
+  children
+}) => {
   return (
     <RuntimeToolsDevUIAppContext.Provider
-      value={new DevUIAppContextImpl(users)}
+      value={new DevUIAppContextImpl(users, devUIUrl, openApiPath)}
     >
       {children}
     </RuntimeToolsDevUIAppContext.Provider>

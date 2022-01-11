@@ -225,7 +225,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
         >
           <NavItem
             isActive={false}
-            key="process-instances-nav"
+            key="processes-nav"
           >
             <li
               className="pf-c-nav__item"
@@ -237,16 +237,16 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
               <Link
                 aria-current={null}
                 className="pf-c-nav__link"
-                data-ouia-navigation-name="process-instances"
+                data-ouia-navigation-name="processes"
                 onClick={[Function]}
                 tabIndex={null}
-                to="/ProcessInstances"
+                to="/Processes"
               >
                 <LinkAnchor
                   aria-current={null}
                   className="pf-c-nav__link"
-                  data-ouia-navigation-name="process-instances"
-                  href="/ProcessInstances"
+                  data-ouia-navigation-name="processes"
+                  href="/Processes"
                   navigate={[Function]}
                   onClick={[Function]}
                   tabIndex={null}
@@ -254,8 +254,8 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                   <a
                     aria-current={null}
                     className="pf-c-nav__link"
-                    data-ouia-navigation-name="process-instances"
-                    href="/ProcessInstances"
+                    data-ouia-navigation-name="processes"
+                    href="/Processes"
                     onClick={[Function]}
                     tabIndex={null}
                   >
@@ -426,7 +426,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
         >
           <NavItem
             isActive={false}
-            key="process-instances-nav"
+            key="processes-nav"
           >
             <li
               className="pf-c-nav__item"
@@ -438,16 +438,16 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
               <Link
                 aria-current={null}
                 className="pf-c-nav__link"
-                data-ouia-navigation-name="process-instances"
+                data-ouia-navigation-name="processes"
                 onClick={[Function]}
                 tabIndex={null}
-                to="/ProcessInstances"
+                to="/Processes"
               >
                 <LinkAnchor
                   aria-current={null}
                   className="pf-c-nav__link"
-                  data-ouia-navigation-name="process-instances"
-                  href="/ProcessInstances"
+                  data-ouia-navigation-name="processes"
+                  href="/Processes"
                   navigate={[Function]}
                   onClick={[Function]}
                   tabIndex={null}
@@ -455,8 +455,8 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                   <a
                     aria-current={null}
                     className="pf-c-nav__link"
-                    data-ouia-navigation-name="process-instances"
-                    href="/ProcessInstances"
+                    data-ouia-navigation-name="processes"
+                    href="/Processes"
                     onClick={[Function]}
                     tabIndex={null}
                   >
@@ -599,9 +599,9 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
 </DevUINav>
 `;
 
-exports[`DevUINav tests Snapshot testing with process list props 1`] = `
+exports[`DevUINav tests Snapshot testing with processes props 1`] = `
 <DevUINav
-  pathname="/ProcessInstances"
+  pathname="/Processes"
 >
   <Nav
     aria-label="Nav"
@@ -627,7 +627,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
         >
           <NavItem
             isActive={true}
-            key="process-instances-nav"
+            key="processes-nav"
           >
             <li
               className="pf-c-nav__item"
@@ -639,16 +639,16 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
               <Link
                 aria-current="page"
                 className="pf-c-nav__link pf-m-current"
-                data-ouia-navigation-name="process-instances"
+                data-ouia-navigation-name="processes"
                 onClick={[Function]}
                 tabIndex={null}
-                to="/ProcessInstances"
+                to="/Processes"
               >
                 <LinkAnchor
                   aria-current="page"
                   className="pf-c-nav__link pf-m-current"
-                  data-ouia-navigation-name="process-instances"
-                  href="/ProcessInstances"
+                  data-ouia-navigation-name="processes"
+                  href="/Processes"
                   navigate={[Function]}
                   onClick={[Function]}
                   tabIndex={null}
@@ -656,8 +656,8 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                   <a
                     aria-current="page"
                     className="pf-c-nav__link pf-m-current"
-                    data-ouia-navigation-name="process-instances"
-                    href="/ProcessInstances"
+                    data-ouia-navigation-name="processes"
+                    href="/Processes"
                     onClick={[Function]}
                     tabIndex={null}
                   >

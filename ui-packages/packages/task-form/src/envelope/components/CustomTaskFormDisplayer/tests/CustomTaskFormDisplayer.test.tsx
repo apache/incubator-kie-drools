@@ -25,8 +25,7 @@ import { TaskFormDriver } from '../../../../api';
 import { MockedTaskFormDriver } from '../../../../embedded/tests/mocks/Mocks';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
 import { CustomForm, FormType } from '../../../../types';
-import { KogitoSpinner } from '@kogito-apps/components-common';
-import FormFooter from '../../FormFooter/FormFooter';
+import { KogitoSpinner, FormFooter } from '@kogito-apps/components-common';
 import {
   EmbeddedFormDisplayer,
   FormOpenedState,
@@ -44,19 +43,16 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/components-common'),
-    {
-      KogitoSpinner: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    KogitoSpinner: () => {
+      return <MockedComponent />;
+    },
+    FormFooter: () => {
+      return <MockedComponent />;
     }
-  )
-));
-
-jest.mock('../../FormFooter/FormFooter');
+  })
+);
 
 Date.now = jest.fn(() => 1592000000000);
 

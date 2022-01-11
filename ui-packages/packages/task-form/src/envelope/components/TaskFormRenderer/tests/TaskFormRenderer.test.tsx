@@ -21,9 +21,19 @@ import TaskFormRenderer from '../TaskFormRenderer';
 import { mount } from 'enzyme';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
-import FormRenderer from '../../FormRenderer/FormRenderer';
+import { FormRenderer } from '@kogito-apps/components-common';
 
-jest.mock('../../FormRenderer/FormRenderer');
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    FormRenderer: () => {
+      return <MockedComponent />;
+    }
+  })
+);
 
 const userTaskInstance: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -200,7 +210,6 @@ describe('TaskFormRenderer Test', () => {
     wrapper = wrapper.update();
 
     renderer = wrapper.find(TaskFormRenderer).find(FormRenderer);
-
     renderer.props().onSubmit(formData);
 
     expect(doSubmit).toHaveBeenCalledWith('complete', formData);

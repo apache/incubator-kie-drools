@@ -32,7 +32,9 @@ describe('DevUILayout tests', () => {
     const client = new ApolloClientMock();
     const props = {
       apolloClient: client,
-      users: [{ id: 'John snow', groups: ['admin'] }]
+      users: [{ id: 'John snow', groups: ['admin'] }],
+      devUIUrl: 'http://localhost:8080',
+      openApiPath: '/docs/opeapi.json'
     };
     const wrapper = mount(
       <DevUILayout {...props}>

@@ -1,5 +1,7 @@
 // HTTP SERVER
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerApiDoc = require('./MockData/openAPI/openapi.json')
 var cors = require('cors');
 const app = express();
 const { ApolloServer, gql } = require('apollo-server-express');
@@ -15,6 +17,12 @@ const config = require('./config');
 const data = require('./MockData/graphql');
 const controller = require('./MockData/controllers');
 const typeDefs = require('./MockData/types');
+
+const swaggerOptions = {
+  swaggerOptions: {
+      url: "/q/openapi.json",
+  },
+}
 
 function setPort(port = 4000) {
   app.set('port', parseInt(port, 10));
@@ -39,6 +47,8 @@ app.use(
     optionsSuccessStatus: 200
   })
 );
+app.get("/q/openapi.json", (req, res) => res.json(swaggerApiDoc));
+app.use('/docs', swaggerUi.serveFiles(null,swaggerOptions), swaggerUi.setup(null,swaggerOptions));
 
 //Rest Api's
 // http://localhost:4000/management/processes/{processId}/instances/{processInstanceId}/error
@@ -86,8 +96,11 @@ app.get('/:processId/:taskName/schema', controller.getTaskDefinitionForm);
 
 app.get('/forms/list', controller.getForms);
 
-app.get('/forms/:formName',controller.getFormContent);
-app.post('/forms/:formName',controller.saveFormContent);
+app.get('/forms/:formName', controller.getFormContent);
+app.post('/forms/:formName', controller.saveFormContent);
+
+app.post('/hiring', controller.startProcessInstance);
+app.get('/:processName/schema', controller.getProcessFormSchema);
 
 const taskDetailsError = ['5cead49f-7649-410a-89ff-840cc52adf52'];
 

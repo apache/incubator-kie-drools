@@ -218,20 +218,24 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
       <div
         className="kogito-task-console__task-details-page"
       >
-        <MockedFormNotification
+        <FormNotification
           notification={
             Object {
               "close": [Function],
-              "customAction": Object {
-                "label": "Go to Task Inbox",
-                "onClick": [Function],
-              },
+              "customActions": Array [
+                Object {
+                  "label": "Go to Task Inbox",
+                  "onClick": [Function],
+                },
+              ],
               "details": "Extra info!",
               "message": "Task 'Apply for visa' couldn't transition to phase 'complete'.",
               "type": "error",
             }
           }
-        />
+        >
+          <MockedComponent />
+        </FormNotification>
       </div>
     </section>
   </PageSection>
@@ -1221,20 +1225,24 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
       <div
         className="kogito-task-console__task-details-page"
       >
-        <MockedFormNotification
+        <FormNotification
           notification={
             Object {
               "close": [Function],
-              "customAction": Object {
-                "label": "Go to Task Inbox",
-                "onClick": [Function],
-              },
+              "customActions": Array [
+                Object {
+                  "label": "Go to Task Inbox",
+                  "onClick": [Function],
+                },
+              ],
               "details": undefined,
               "message": "Task 'Apply for visa' successfully transitioned to phase 'complete'.",
               "type": "success",
             }
           }
-        />
+        >
+          <MockedComponent />
+        </FormNotification>
       </div>
     </section>
   </PageSection>

@@ -26,7 +26,6 @@ import { TaskInboxGatewayApi } from '../../../../channel/TaskInbox';
 import * as TaskInboxContext from '../../../../channel/TaskInbox/TaskInboxContext';
 import TaskDetailsPage from '../TaskDetailsPage';
 import TaskFormContainer from '../../../containers/TaskFormContainer/TaskFormContainer';
-import FormNotification from '../components/FormNotification/FormNotification';
 
 import { Button, DrawerPanelContent } from '@patternfly/react-core';
 
@@ -84,7 +83,6 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('../components/FormNotification/FormNotification');
 jest.mock('../../../containers/TaskFormContainer/TaskFormContainer');
 
 jest.mock('@patternfly/react-core', () => ({
@@ -106,6 +104,9 @@ jest.mock('@kogito-apps/components-common', () => ({
     return <MockedComponent />;
   },
   ServerErrors: () => {
+    return <MockedComponent />;
+  },
+  FormNotification: () => {
     return <MockedComponent />;
   }
 }));
@@ -230,7 +231,7 @@ describe('TaskDetailsPage tests', () => {
 
     expect(wrapper.find(TaskDetailsPage)).toMatchSnapshot();
 
-    const notificationComponent = wrapper.find(FormNotification);
+    const notificationComponent = wrapper.find('FormNotification');
     expect(notificationComponent.exists()).toBeTruthy();
 
     const notification = notificationComponent.props().notification;
@@ -250,7 +251,7 @@ describe('TaskDetailsPage tests', () => {
     wrapper = wrapper.update().find(TaskDetailsPage);
     expect(wrapper.find(TaskDetailsPage)).toMatchSnapshot();
 
-    expect(wrapper.find(FormNotification).exists()).toBeFalsy();
+    expect(wrapper.find('FormNotification').exists()).toBeFalsy();
   });
 
   it('Success notification - go to inbox link', async () => {
@@ -270,7 +271,7 @@ describe('TaskDetailsPage tests', () => {
 
     wrapper = wrapper.update().find(TaskDetailsPage);
 
-    const notificationComponent = wrapper.find(FormNotification);
+    const notificationComponent = wrapper.find('FormNotification');
     expect(notificationComponent.exists()).toBeTruthy();
 
     const notification = notificationComponent.props().notification;
@@ -279,7 +280,7 @@ describe('TaskDetailsPage tests', () => {
     expect(notification.type).toStrictEqual('success');
 
     await act(async () => {
-      notification.customAction.onClick();
+      notification.customActions[0].onClick();
       wait();
     });
 
@@ -305,7 +306,7 @@ describe('TaskDetailsPage tests', () => {
 
     expect(wrapper.find(TaskDetailsPage)).toMatchSnapshot();
 
-    const notificationComponent = wrapper.find(FormNotification);
+    const notificationComponent = wrapper.find('FormNotification');
     expect(notificationComponent.exists()).toBeTruthy();
 
     const notification = notificationComponent.props().notification;
@@ -326,7 +327,7 @@ describe('TaskDetailsPage tests', () => {
 
     expect(wrapper.find(TaskDetailsPage)).toMatchSnapshot();
 
-    expect(wrapper.find(FormNotification).exists()).toBeFalsy();
+    expect(wrapper.find('FormNotification').exists()).toBeFalsy();
   });
 
   it('Task details Drawer', async () => {

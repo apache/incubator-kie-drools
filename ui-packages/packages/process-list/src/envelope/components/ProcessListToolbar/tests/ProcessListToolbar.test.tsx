@@ -31,7 +31,7 @@ import {
 import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';
 import { shallow } from 'enzyme';
 import wait from 'waait';
-import TestProcessListDriver from '../../ProcessListPage/tests/mocks/TestProcessListDriver';
+import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessListDriver';
 import axios from 'axios';
 import _ from 'lodash';
 jest.mock('axios');

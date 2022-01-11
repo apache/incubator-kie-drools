@@ -952,11 +952,11 @@ exports[`DevUIRoutes tests page not found page test 1`] = `
 </MemoryRouter>
 `;
 
-exports[`DevUIRoutes tests process list test 1`] = `
+exports[`DevUIRoutes tests processes test 1`] = `
 <MemoryRouter
   initialEntries={
     Array [
-      "/ProcessInstances",
+      "/Processes",
     ]
   }
   keyLength={0}
@@ -971,7 +971,7 @@ exports[`DevUIRoutes tests process list test 1`] = `
         "entries": Array [
           Object {
             "hash": "",
-            "pathname": "/ProcessInstances",
+            "pathname": "/Processes",
             "search": "",
             "state": undefined,
           },
@@ -984,7 +984,7 @@ exports[`DevUIRoutes tests process list test 1`] = `
         "listen": [Function],
         "location": Object {
           "hash": "",
-          "pathname": "/ProcessInstances",
+          "pathname": "/Processes",
           "search": "",
           "state": undefined,
         },
@@ -1003,22 +1003,22 @@ exports[`DevUIRoutes tests process list test 1`] = `
             Object {
               "isExact": true,
               "params": Object {},
-              "path": "/ProcessInstances",
-              "url": "/ProcessInstances",
+              "path": "/Processes",
+              "url": "/Processes",
             }
           }
           exact={true}
           location={
             Object {
               "hash": "",
-              "pathname": "/ProcessInstances",
+              "pathname": "/Processes",
               "search": "",
               "state": undefined,
             }
           }
-          path="/ProcessInstances"
+          path="/Processes"
         >
-          <MockedProcessListPage
+          <MockedProcessesPage
             history={
               Object {
                 "action": "POP",
@@ -1028,7 +1028,7 @@ exports[`DevUIRoutes tests process list test 1`] = `
                 "entries": Array [
                   Object {
                     "hash": "",
-                    "pathname": "/ProcessInstances",
+                    "pathname": "/Processes",
                     "search": "",
                     "state": undefined,
                   },
@@ -1041,7 +1041,7 @@ exports[`DevUIRoutes tests process list test 1`] = `
                 "listen": [Function],
                 "location": Object {
                   "hash": "",
-                  "pathname": "/ProcessInstances",
+                  "pathname": "/Processes",
                   "search": "",
                   "state": undefined,
                 },
@@ -1052,7 +1052,7 @@ exports[`DevUIRoutes tests process list test 1`] = `
             location={
               Object {
                 "hash": "",
-                "pathname": "/ProcessInstances",
+                "pathname": "/Processes",
                 "search": "",
                 "state": undefined,
               }
@@ -1061,8 +1061,8 @@ exports[`DevUIRoutes tests process list test 1`] = `
               Object {
                 "isExact": true,
                 "params": Object {},
-                "path": "/ProcessInstances",
-                "url": "/ProcessInstances",
+                "path": "/Processes",
+                "url": "/Processes",
               }
             }
           />

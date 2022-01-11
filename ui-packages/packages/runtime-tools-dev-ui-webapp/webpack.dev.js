@@ -90,6 +90,12 @@ module.exports = merge(common, {
             '../../node_modules/@kogito-apps/form-displayer/dist/envelope/components/styles.css'
           ),
           path.resolve(
+            '../../node_modules/@kogito-apps/process-form/dist/envelope/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-definition-list/dist/envelope/styles.css'
+          ),
+          path.resolve(
             '../../node_modules/react-calendar/dist/Calendar.css'
           ),
           path.resolve(

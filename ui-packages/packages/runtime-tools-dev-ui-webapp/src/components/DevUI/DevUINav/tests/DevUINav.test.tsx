@@ -20,17 +20,17 @@ import DevUINav from '../DevUINav';
 import { MemoryRouter } from 'react-router-dom';
 
 describe('DevUINav tests', () => {
-  it('Snapshot testing with process list props', () => {
+  it('Snapshot testing with processes props', () => {
     const wrapper = mount(
       <MemoryRouter>
-        <DevUINav pathname={'/ProcessInstances'} />
+        <DevUINav pathname={'/Processes'} />
       </MemoryRouter>
     );
 
     expect(wrapper.find('DevUINav')).toMatchSnapshot();
 
     const DevUINavWrapper = wrapper.findWhere(
-      nested => nested.key() === 'process-instances-nav'
+      nested => nested.key() === 'processes-nav'
     );
 
     expect(DevUINavWrapper.exists()).toBeTruthy();

@@ -24,7 +24,7 @@ exports[`ProcessListEnvelopeView tests Snapshot 2`] = `
     }
   }
 >
-  <MockedProcessListPage
+  <MockedProcessList
     driver={
       ProcessListEnvelopeViewDriver {
         "channelApi": Object {

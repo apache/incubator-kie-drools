@@ -30,16 +30,10 @@
   "dependencies": {
     "@kogito-apps/components-common": "^1.0.0",
     "@kogito-apps/patternfly-base": "^1.0.0",
-    "@kogito-apps/task-console-shared": "^1.0.0",
-    "ajv": "^6.12.6",
-    "uniforms": "^3.5.5",
-    "uniforms-bridge-json-schema": "^3.5.5",
-    "uniforms-patternfly": "^4.7.3"
+    "@kogito-apps/task-console-shared": "^1.0.0"
   },
   "devDependencies": {
-    "@kogito-apps/ouia-tools": "^1.0.0",
-    "babel-loader": "8.1.0",
-    "react-docgen-typescript-loader": "3.7.2"
+    "@kogito-apps/ouia-tools": "^1.0.0"
   },
   "jest": {
     "setupFiles": [
@@ -69,7 +63,7 @@
     ],
     "transformIgnorePatterns": [],
     "transform": {
-      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.jsx?$": "../../config/Jest-config/babel-jest-wrapper.js",
       "^.+\\.(ts|tsx)$": "ts-jest",
       "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
     },

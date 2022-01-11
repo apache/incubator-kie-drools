@@ -16,6 +16,7 @@
 
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
+  createProcessDefinitionList,
   getTaskEndpointSecurityParams,
   getTaskSchemaEndPoint,
   resolveTaskPriority,
@@ -96,5 +97,22 @@ describe('Utils tests', () => {
     expect(LowResult).toEqual('10 - Low');
     const OtherResult = resolveTaskPriority('15');
     expect(OtherResult).toEqual('15');
+  });
+
+  it('test create process definition list', () => {
+    const processDefinitionObjs = [
+      {
+        '/hiring/schema': {
+          get: {}
+        }
+      }
+    ];
+    const processDefinitionList = createProcessDefinitionList(
+      processDefinitionObjs,
+      'http://localhost:8080'
+    );
+    expect(processDefinitionList).toStrictEqual([
+      { processName: 'hiring', endpoint: 'http://localhost:8080/hiring' }
+    ]);
   });
 });

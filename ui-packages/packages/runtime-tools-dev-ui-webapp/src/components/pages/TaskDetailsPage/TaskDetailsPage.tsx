@@ -40,7 +40,9 @@ import {
   KogitoSpinner,
   ServerErrors,
   KogitoEmptyState,
-  KogitoEmptyStateType
+  KogitoEmptyStateType,
+  FormNotification,
+  Notification
 } from '@kogito-apps/components-common';
 import {
   OUIAProps,
@@ -52,9 +54,6 @@ import { UserTaskInstance, TaskState } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../channel/TaskInbox';
 import { useTaskInboxGatewayApi } from '../../../channel/TaskInbox/TaskInboxContext';
 import TaskFormContainer from '../../containers/TaskFormContainer/TaskFormContainer';
-import FormNotification, {
-  Notification
-} from './components/FormNotification/FormNotification';
 import '../../styles.css';
 import { EmbeddedTaskDetails } from '@kogito-apps/task-details';
 
@@ -80,7 +79,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
     return ouiaPageTypeAndObjectId('task-details-page', taskId);
   });
 
-  const loatTask = async () => {
+  const loadTask = async () => {
     try {
       const task = await taskInboxGatewayApi.getTaskById(taskId);
       setUserTask(task);
@@ -92,7 +91,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
   };
 
   useEffect(() => {
-    loatTask();
+    loadTask();
   }, []);
 
   const showNotification = (
@@ -104,13 +103,15 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
       type: notificationType,
       message: submitMessage,
       details: notificationDetails,
-      customAction: {
-        label: 'Go to Task Inbox',
-        onClick: () => {
-          setNotification(null);
-          goToInbox();
+      customActions: [
+        {
+          label: 'Go to Task Inbox',
+          onClick: () => {
+            setNotification(null);
+            goToInbox();
+          }
         }
-      },
+      ],
       close: () => {
         setNotification(null);
       }

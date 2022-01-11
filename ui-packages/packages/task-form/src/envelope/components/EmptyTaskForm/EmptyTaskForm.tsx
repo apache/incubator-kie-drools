@@ -27,7 +27,7 @@ import {
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { convertActionsToButton } from '../utils/FormActionsUtils';
+import { convertActionsToButton } from '@kogito-apps/components-common';
 
 interface IOwnProps {
   userTask: UserTaskInstance;

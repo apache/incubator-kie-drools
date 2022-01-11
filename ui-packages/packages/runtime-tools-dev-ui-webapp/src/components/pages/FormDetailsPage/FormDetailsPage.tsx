@@ -28,11 +28,8 @@ import '../../styles.css';
 import { useHistory } from 'react-router-dom';
 import { FormInfo } from '@kogito-apps/forms-list';
 import { PageTitle } from '@kogito-apps/consoles-common';
+import { FormNotification, Notification } from '@kogito-apps/components-common';
 import Moment from 'react-moment';
-import FormNotification, {
-  Notification
-} from '../TaskDetailsPage/components/FormNotification/FormNotification';
-
 const FormDetailsPage: React.FC<OUIAProps> = () => {
   const [notification, setNotification] = useState<Notification>();
 

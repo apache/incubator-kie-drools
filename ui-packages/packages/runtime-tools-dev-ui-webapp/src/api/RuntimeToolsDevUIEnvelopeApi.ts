@@ -35,4 +35,6 @@ export interface RuntimeToolsDevUIInitArgs {
   users: User[];
   dataIndexUrl: string;
   page: string;
+  devUIUrl: string;
+  openApiPath: string;
 }

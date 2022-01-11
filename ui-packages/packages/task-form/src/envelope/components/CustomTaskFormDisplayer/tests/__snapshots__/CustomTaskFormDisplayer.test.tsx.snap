@@ -822,7 +822,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 2`] = `
           <div
             className="pf-l-stack__item"
           >
-            <MockedFormFooter
+            <FormFooter
               actions={
                 Array [
                   Object {
@@ -836,7 +836,9 @@ exports[`CustomTaskFormDisplayer Test Rendering form 2`] = `
                 ]
               }
               enabled={true}
-            />
+            >
+              <MockedComponent />
+            </FormFooter>
           </div>
         </StackItem>
       </div>

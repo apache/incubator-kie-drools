@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedProcessForm tests Snapshot 1`] = `
+<ForwardRef
+  driver={
+    Object {
+      "getProcessFormSchema": [MockFunction],
+      "startProcess": [MockFunction],
+    }
+  }
+  processDefinition={null}
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <div />
+  </ForwardRef>
+</ForwardRef>
+`;

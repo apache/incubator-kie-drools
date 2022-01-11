@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessFormContainer tests Snapshot 1`] = `
+<ProcessFormContainer
+  onSubmitError={[MockFunction]}
+  onSubmitSuccess={[MockFunction]}
+  processDefinitionData={
+    Object {
+      "endpoint": "http://localhost:4000",
+      "processName": "process1",
+    }
+  }
+>
+  <ForwardRef
+    data-ouia-component-type="process-form-container"
+    data-ouia-safe={true}
+    driver={
+      Object {
+        "getProcessFormSchema": [Function],
+        "startProcess": [Function],
+      }
+    }
+    processDefinition={
+      Object {
+        "endpoint": "http://localhost:4000",
+        "processName": "process1",
+      }
+    }
+    targetOrigin="*"
+  >
+    <ForwardRef>
+      <div />
+    </ForwardRef>
+  </ForwardRef>
+</ProcessFormContainer>
+`;

@@ -1,0 +1,329 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessList test Envelope not connected 1`] = `
+<ProcessList
+  driver={
+    TestProcessListDriver {
+      "applyFilter": [MockFunction],
+      "applySorting": [MockFunction],
+      "childProcessInstances": Array [],
+      "getQueryLimit": [Function],
+      "initialLoad": [MockFunction],
+      "limit": 10,
+      "offset": 0,
+      "processInstances": Array [
+        Object {
+          "addons": Array [],
+          "businessKey": "HT221",
+          "childProcessInstances": Array [],
+          "end": 2019-10-22T05:40:44.089Z,
+          "endpoint": "http://localhost:4000",
+          "error": Object {
+            "message": "some thing went wrong",
+            "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-34578e904e6b",
+          },
+          "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+          "lastUpdate": 2019-10-22T05:40:44.089Z,
+          "nodes": Array [],
+          "parentProcessInstance": null,
+          "parentProcessInstanceId": null,
+          "processId": "travels",
+          "processName": "Travels",
+          "roles": Array [],
+          "rootProcessInstanceId": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+          "serviceUrl": "http://localhost:4000",
+          "start": 2019-10-22T05:40:44.089Z,
+          "state": "ACTIVE",
+          "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+        },
+        Object {
+          "addons": Array [
+            "jobs-management",
+            "prometheus-monitoring",
+            "process-management",
+          ],
+          "businessKey": "PT221",
+          "childProcessInstances": Array [],
+          "endpoint": "http://localhost:4000",
+          "error": Object {
+            "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim idest laborum.",
+            "nodeDefinitionId": "_a23e6c20-02c2-4c2b-8c5c-e988a0adf87c",
+          },
+          "id": "a23e6c20-02c2-4c2b-8c5c-e988a0adf863",
+          "lastUpdate": 2019-10-22T05:40:44.089Z,
+          "nodes": Array [],
+          "parentProcessInstance": null,
+          "parentProcessInstanceId": null,
+          "processId": "travels",
+          "processName": "Travels",
+          "roles": Array [],
+          "rootProcessInstanceId": null,
+          "serviceUrl": "http://localhost:4000",
+          "start": 2019-10-22T05:40:44.089Z,
+          "state": "ACTIVE",
+          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+        },
+        Object {
+          "addons": Array [],
+          "businessKey": "BVS12",
+          "childProcessInstances": Array [],
+          "endpoint": "http://localhost:4000",
+          "error": Object {
+            "message": "some thing went wrong",
+            "nodeDefinitionId": "a23e6c20-02c2-4c2b-8c5c-e988a0adf823",
+          },
+          "id": "a23e6c20-02c2-4c2b-8c5c-e988a0adf862",
+          "lastUpdate": 2019-10-22T05:40:44.089Z,
+          "nodes": Array [],
+          "parentProcessInstance": null,
+          "parentProcessInstanceId": null,
+          "processId": "travels",
+          "processName": "Travels",
+          "roles": Array [],
+          "rootProcessInstanceId": null,
+          "serviceUrl": null,
+          "start": 2019-10-22T05:40:44.089Z,
+          "state": "ACTIVE",
+          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+        },
+      ],
+      "query": [MockFunction],
+    }
+  }
+  isEnvelopeConnectedToChannel={false}
+>
+  <div
+    data-ouia-component-type="process-list"
+    data-ouia-safe={false}
+  >
+    <MockedProcessListToolbar
+      applyFilter={[Function]}
+      driver={
+        TestProcessListDriver {
+          "applyFilter": [MockFunction],
+          "applySorting": [MockFunction],
+          "childProcessInstances": Array [],
+          "getQueryLimit": [Function],
+          "initialLoad": [MockFunction],
+          "limit": 10,
+          "offset": 0,
+          "processInstances": Array [
+            Object {
+              "addons": Array [],
+              "businessKey": "HT221",
+              "childProcessInstances": Array [],
+              "end": 2019-10-22T05:40:44.089Z,
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "message": "some thing went wrong",
+                "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-34578e904e6b",
+              },
+              "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+              "lastUpdate": 2019-10-22T05:40:44.089Z,
+              "nodes": Array [],
+              "parentProcessInstance": null,
+              "parentProcessInstanceId": null,
+              "processId": "travels",
+              "processName": "Travels",
+              "roles": Array [],
+              "rootProcessInstanceId": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+              "serviceUrl": "http://localhost:4000",
+              "start": 2019-10-22T05:40:44.089Z,
+              "state": "ACTIVE",
+              "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+            },
+            Object {
+              "addons": Array [
+                "jobs-management",
+                "prometheus-monitoring",
+                "process-management",
+              ],
+              "businessKey": "PT221",
+              "childProcessInstances": Array [],
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim idest laborum.",
+                "nodeDefinitionId": "_a23e6c20-02c2-4c2b-8c5c-e988a0adf87c",
+              },
+              "id": "a23e6c20-02c2-4c2b-8c5c-e988a0adf863",
+              "lastUpdate": 2019-10-22T05:40:44.089Z,
+              "nodes": Array [],
+              "parentProcessInstance": null,
+              "parentProcessInstanceId": null,
+              "processId": "travels",
+              "processName": "Travels",
+              "roles": Array [],
+              "rootProcessInstanceId": null,
+              "serviceUrl": "http://localhost:4000",
+              "start": 2019-10-22T05:40:44.089Z,
+              "state": "ACTIVE",
+              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+            },
+            Object {
+              "addons": Array [],
+              "businessKey": "BVS12",
+              "childProcessInstances": Array [],
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "message": "some thing went wrong",
+                "nodeDefinitionId": "a23e6c20-02c2-4c2b-8c5c-e988a0adf823",
+              },
+              "id": "a23e6c20-02c2-4c2b-8c5c-e988a0adf862",
+              "lastUpdate": 2019-10-22T05:40:44.089Z,
+              "nodes": Array [],
+              "parentProcessInstance": null,
+              "parentProcessInstanceId": null,
+              "processId": "travels",
+              "processName": "Travels",
+              "roles": Array [],
+              "rootProcessInstanceId": null,
+              "serviceUrl": null,
+              "start": 2019-10-22T05:40:44.089Z,
+              "state": "ACTIVE",
+              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+            },
+          ],
+          "query": [MockFunction],
+        }
+      }
+      filters={
+        Object {
+          "businessKey": Array [],
+          "status": Array [
+            "ACTIVE",
+          ],
+        }
+      }
+      isAllChecked={false}
+      processInstances={Array []}
+      processStates={
+        Array [
+          "ACTIVE",
+        ]
+      }
+      refresh={[Function]}
+      selectedInstances={Array []}
+      setFilters={[Function]}
+      setIsAllChecked={[Function]}
+      setProcessInstances={[Function]}
+      setProcessStates={[Function]}
+      setSelectedInstances={[Function]}
+    />
+    <MockedProcessListTable
+      driver={
+        TestProcessListDriver {
+          "applyFilter": [MockFunction],
+          "applySorting": [MockFunction],
+          "childProcessInstances": Array [],
+          "getQueryLimit": [Function],
+          "initialLoad": [MockFunction],
+          "limit": 10,
+          "offset": 0,
+          "processInstances": Array [
+            Object {
+              "addons": Array [],
+              "businessKey": "HT221",
+              "childProcessInstances": Array [],
+              "end": 2019-10-22T05:40:44.089Z,
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "message": "some thing went wrong",
+                "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-34578e904e6b",
+              },
+              "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+              "lastUpdate": 2019-10-22T05:40:44.089Z,
+              "nodes": Array [],
+              "parentProcessInstance": null,
+              "parentProcessInstanceId": null,
+              "processId": "travels",
+              "processName": "Travels",
+              "roles": Array [],
+              "rootProcessInstanceId": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+              "serviceUrl": "http://localhost:4000",
+              "start": 2019-10-22T05:40:44.089Z,
+              "state": "ACTIVE",
+              "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+            },
+            Object {
+              "addons": Array [
+                "jobs-management",
+                "prometheus-monitoring",
+                "process-management",
+              ],
+              "businessKey": "PT221",
+              "childProcessInstances": Array [],
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim idest laborum.",
+                "nodeDefinitionId": "_a23e6c20-02c2-4c2b-8c5c-e988a0adf87c",
+              },
+              "id": "a23e6c20-02c2-4c2b-8c5c-e988a0adf863",
+              "lastUpdate": 2019-10-22T05:40:44.089Z,
+              "nodes": Array [],
+              "parentProcessInstance": null,
+              "parentProcessInstanceId": null,
+              "processId": "travels",
+              "processName": "Travels",
+              "roles": Array [],
+              "rootProcessInstanceId": null,
+              "serviceUrl": "http://localhost:4000",
+              "start": 2019-10-22T05:40:44.089Z,
+              "state": "ACTIVE",
+              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+            },
+            Object {
+              "addons": Array [],
+              "businessKey": "BVS12",
+              "childProcessInstances": Array [],
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "message": "some thing went wrong",
+                "nodeDefinitionId": "a23e6c20-02c2-4c2b-8c5c-e988a0adf823",
+              },
+              "id": "a23e6c20-02c2-4c2b-8c5c-e988a0adf862",
+              "lastUpdate": 2019-10-22T05:40:44.089Z,
+              "nodes": Array [],
+              "parentProcessInstance": null,
+              "parentProcessInstanceId": null,
+              "processId": "travels",
+              "processName": "Travels",
+              "roles": Array [],
+              "rootProcessInstanceId": null,
+              "serviceUrl": null,
+              "start": 2019-10-22T05:40:44.089Z,
+              "state": "ACTIVE",
+              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+            },
+          ],
+          "query": [MockFunction],
+        }
+      }
+      expanded={Object {}}
+      isLoading={true}
+      onSort={[Function]}
+      processInstances={Array []}
+      selectableInstances={0}
+      selectedInstances={Array []}
+      setExpanded={[Function]}
+      setIsAllChecked={[Function]}
+      setProcessInstances={[Function]}
+      setSelectableInstances={[Function]}
+      setSelectedInstances={[Function]}
+      sortBy={
+        Object {
+          "lastUpdate": "DESC",
+        }
+      }
+    />
+  </div>
+</ProcessList>
+`;
+
+exports[`ProcessList test error page 1`] = `
+<ServerErrors
+  error={[Error: 404 error]}
+  variant="large"
+>
+  <MockedComponent />
+</ServerErrors>
+`;

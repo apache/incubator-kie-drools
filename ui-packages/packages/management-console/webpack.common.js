@@ -113,6 +113,12 @@ module.exports = {
           path.resolve(
             '../../node_modules/@kogito-apps/common/dist/static'
           ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/components-common/dist/src/static'
+        )
         ],
         use: [
           {

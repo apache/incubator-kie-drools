@@ -18,7 +18,7 @@ import * as React from 'react';
 import { useImperativeHandle, useState } from 'react';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
 import { ProcessListChannelApi, ProcessListState } from '../api';
-import ProcessListPage from './components/ProcessListPage/ProcessListPage';
+import ProcessList from './components/ProcessList/ProcessList';
 import ProcessListEnvelopeViewDriver from './ProcessListEnvelopeViewDriver';
 import '@patternfly/patternfly/patternfly.css';
 
@@ -54,7 +54,7 @@ export const ProcessListEnvelopeView = React.forwardRef<
 
   return (
     <React.Fragment>
-      <ProcessListPage
+      <ProcessList
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
         driver={new ProcessListEnvelopeViewDriver(props.channelApi)}
         initialState={processInitialState}

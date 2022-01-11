@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessFormEnvelopeView tests Snapshot 1`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": Object {},
+      "requests": Object {
+        "processForm__getProcessFormSchema": [MockFunction],
+        "processForm__startProcess": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <MockedProcessForm
+    driver={
+      ProcessFormEnvelopeViewDriver {
+        "channelApi": Object {
+          "notifications": Object {},
+          "requests": Object {
+            "processForm__getProcessFormSchema": [MockFunction],
+            "processForm__startProcess": [MockFunction],
+          },
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+      }
+    }
+    isEnvelopeConnectedToChannel={true}
+    processDefinition={
+      Object {
+        "endpoint": "http://localhost:4000",
+        "processName": "process1",
+      }
+    }
+  />
+</ForwardRef>
+`;

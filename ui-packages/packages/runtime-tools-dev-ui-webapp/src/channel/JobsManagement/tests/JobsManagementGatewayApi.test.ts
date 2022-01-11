@@ -115,7 +115,10 @@ describe('JobsManagementChannelApiImpl tests', () => {
   it('bulkCancel', async () => {
     const successJobs = [];
     const failedJobs = [job];
-    (performMultipleCancel as jest.Mock).mockReturnValue({ successJobs, failedJobs });
+    (performMultipleCancel as jest.Mock).mockReturnValue({
+      successJobs,
+      failedJobs
+    });
     const result = await gatewayApi.bulkCancel([job]);
 
     expect(result).toEqual({ successJobs, failedJobs });

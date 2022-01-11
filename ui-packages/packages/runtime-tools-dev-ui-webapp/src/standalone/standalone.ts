@@ -33,6 +33,8 @@ export interface Consoles {
     users: User[];
     dataIndexUrl: string;
     page: string;
+    devUIUrl: string;
+    openApiPath: string;
     origin?: string;
   }) => StandaloneDevUIApi;
 }
@@ -65,6 +67,8 @@ const createEnvelopeServer = (
   users: User[],
   dataIndexUrl: string,
   page: string,
+  devUIUrl: string,
+  openApiPath: string,
   origin?: string
 ) => {
   const defaultOrigin =
@@ -84,7 +88,9 @@ const createEnvelopeServer = (
         {
           users,
           dataIndexUrl,
-          page
+          page,
+          devUIUrl,
+          openApiPath
         }
       );
     }
@@ -96,6 +102,8 @@ export function open(args: {
   users: User[];
   dataIndexUrl: string;
   page: string;
+  devUIUrl: string;
+  openApiPath: string;
   origin?: string;
 }): StandaloneDevUIApi {
   const iframe = document.createElement('iframe');
@@ -110,6 +118,8 @@ export function open(args: {
     args.users,
     args.dataIndexUrl,
     args.page,
+    args.devUIUrl,
+    args.openApiPath,
     args.origin
   );
 

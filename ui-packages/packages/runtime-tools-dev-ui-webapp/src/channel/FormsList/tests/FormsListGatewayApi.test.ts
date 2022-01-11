@@ -30,7 +30,7 @@ let gatewayApi: FormsListGatewayApi;
 describe('FormsListGatewayApi tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    gatewayApi = new FormsListGatewayApiImpl({});
+    gatewayApi = new FormsListGatewayApiImpl();
   });
 
   it('applyFilter', async () => {

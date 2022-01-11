@@ -16,7 +16,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import TestProcessListDriver from '../../ProcessListPage/tests/mocks/TestProcessListDriver';
+import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessListDriver';
 import { childProcessInstances } from './mocks/Mocks';
 import ProcessListChildTable from '../ProcessListChildTable';
 import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';

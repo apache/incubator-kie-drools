@@ -138,7 +138,7 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
     data-ouia-component-type="task-form-renderer"
     data-ouia-safe={true}
   >
-    <MockedFormRenderer
+    <FormRenderer
       formActions={
         Array [
           Object {
@@ -283,7 +283,9 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
       }
       onSubmit={[Function]}
       readOnly={false}
-    />
+    >
+      <MockedComponent />
+    </FormRenderer>
   </div>
 </TaskFormRenderer>
 `;

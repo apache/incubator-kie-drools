@@ -4,6 +4,8 @@
         "declarationDir": "./dist",
         "declaration": true,
         "outDir": "dist",
+        "target": "es5",
+        "esModuleInterop": true
     },
     "include": [
         "src/",
@@ -12,6 +14,7 @@
     "exclude": [
         "src/**/*.test.ts",
         "src/**/*.test.tsx",
-        "src/**/__mocks__"
+        "src/**/__mocks__",
+        "src/**/tests"
     ] 
 }

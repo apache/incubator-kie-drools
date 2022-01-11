@@ -28,11 +28,16 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@kogito-apps/patternfly-base": "^1.0.0"
+    "@kogito-apps/patternfly-base": "^1.0.0",
+    "ajv": "^6.12.6",
+    "uniforms": "^3.5.5",
+    "uniforms-bridge-json-schema": "^3.5.5",
+    "uniforms-patternfly": "^4.7.3"
   },
   "devDependencies": {
     "@kogito-apps/ouia-tools": "^1.0.0",
-    "react-docgen-typescript-loader": "3.7.2"
+    "babel-loader": "8.1.0",
+    "@types/json-schema": "7.0.7"
   },
   "jest": {
     "setupFiles": [
@@ -50,11 +55,20 @@
       "./src/graphql",
       "dist/"
     ],
-    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
+    "coverageReporters": [
+      [
+        "lcov",
+        {
+          "projectRoot": "../../"
+        }
+      ]
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
+    "transformIgnorePatterns": [],
     "transform": {
+      "^.+\\.jsx?$": "../../config/Jest-config/babel-jest-wrapper.js",
       "^.+\\.(ts|tsx)$": "ts-jest",
       "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
     },

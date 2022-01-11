@@ -35,7 +35,9 @@
           container: document.getElementById("envelope-app"),
           users: {info:userInfo.arrayRepresentation.raw},
           dataIndexUrl: "{config:property('kogito.data-index.url')}/graphql",
-          page: "Forms"
+          page: "Forms",
+          devUIUrl: "http://localhost:{config:property('quarkus.http.port') or '8080'}",
+          openApiPath: "{config:property('quarkus.smallrye-openapi.path') or '/q/openapi.json'}"
       })
   </script>
   {/body}

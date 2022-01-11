@@ -15,6 +15,7 @@
  */
 
 import { GraphQL, User } from '@kogito-apps/consoles-common';
+import { ProcessDefinition } from '@kogito-apps/process-definition-list';
 
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
@@ -99,4 +100,20 @@ export const getActiveTaskStates = (): string[] => {
     );
   }
   return ['Ready', 'Reserved'];
+};
+
+export const createProcessDefinitionList = (
+  processDefinitionObjs,
+  url: string
+): ProcessDefinition[] => {
+  const processDefinitionList = [];
+  processDefinitionObjs.forEach(processDefObj => {
+    const processName = Object.keys(processDefObj)[0].split('/')[1];
+    const endpoint = `${url}/${processName}`;
+    processDefinitionList.push({
+      processName,
+      endpoint
+    });
+  });
+  return processDefinitionList;
 };

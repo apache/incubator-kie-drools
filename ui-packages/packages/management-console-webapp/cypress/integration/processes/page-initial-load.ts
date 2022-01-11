@@ -60,7 +60,7 @@ describe('Process List Page test', () => {
                     });
                 });
             });
-          cy.ouiaType('process-list-page')
+          cy.ouiaType('process-list')
             .should('exist')
             .within($page => {
               cy.ouiaType('process-list-toolbar').should('be.visible');
@@ -74,7 +74,7 @@ describe('Process List Page test', () => {
   });
   describe('Data presentation', () => {
     it('Table Layout', () => {
-      cy.ouiaType('process-list-page').within($page => {
+      cy.ouiaType('process-list').within($page => {
         cy.ouiaType('process-list-table')
           .ouiaSafe()
           .ouiaType('process-list-row')
@@ -106,7 +106,7 @@ describe('Process List Page test', () => {
       });
     });
     it('Process-list-item expanded.', () => {
-      cy.ouiaType('process-list-page').within($page => {
+      cy.ouiaType('process-list').within($page => {
         cy.ouiaType('load-more')
           .scrollIntoView()
           .should('be.visible')
@@ -153,7 +153,7 @@ describe('Process List Page test', () => {
       });
     });
     it('Load More', () => {
-      cy.ouiaType('process-list-page').within($page => {
+      cy.ouiaType('process-list').within($page => {
         cy.ouiaType('process-list-table')
           .ouiaSafe()
           .ouiaType('process-list-row')

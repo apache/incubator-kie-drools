@@ -20,6 +20,8 @@ import wait from 'waait';
 import {
   getFormContent,
   getForms,
+  getProcessDefinitionList,
+  getProcessSchema,
   getSvg,
   getTriggerableNodes,
   handleJobReschedule,
@@ -32,7 +34,8 @@ import {
   handleProcessSkip,
   handleProcessVariableUpdate,
   jobCancel,
-  performMultipleCancel
+  performMultipleCancel,
+  startProcessInstance
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
@@ -44,9 +47,11 @@ import {
 import { processInstance } from '../../ProcessList/tests/ProcessListGatewayApi.test';
 import { Form } from '@kogito-apps/form-details';
 import { FormType } from '@kogito-apps/forms-list';
+import * as SwaggerParser from '@apidevtools/swagger-parser';
 
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 jest.mock('axios');
+jest.mock('@apidevtools/swagger-parser');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const processInstances = [
   {
@@ -883,5 +888,83 @@ describe('handle node instance cancel', () => {
         errorMessage: 'failed to load data'
       });
     }
+  });
+
+  it('swager parser success', async () => {
+    SwaggerParser.parse['mockImplementation'](() =>
+      Promise.resolve({
+        paths: {
+          '/hiring/schema': {
+            get: {},
+            post: {}
+          },
+          '/hiring': {
+            get: {},
+            post: {}
+          }
+        }
+      })
+    );
+    const result = await getProcessDefinitionList(
+      'http://localhost:8080',
+      '/docs/openapi.json'
+    );
+    expect(result).toStrictEqual([
+      { processName: 'hiring', endpoint: 'http://localhost:8080/hiring' }
+    ]);
+  });
+  it('start process instance success', async () => {
+    const formData = {
+      candidate: {
+        name: 'person1',
+        age: 15
+      }
+    };
+    mockedAxios.post.mockResolvedValue({
+      data: {
+        id: '1234'
+      }
+    });
+    const processDefinitioData = {
+      processName: 'process1',
+      endpoint: 'http://localhost:8080/hiring'
+    };
+    const result = await startProcessInstance(
+      formData,
+      'AAA',
+      processDefinitioData
+    );
+    expect(result).toEqual('1234');
+  });
+
+  it('get process schema success', async () => {
+    const schema = {
+      type: 'object',
+      properties: {
+        visaApplication: {
+          type: 'object',
+          properties: {
+            firstName: { type: 'string' },
+            lastName: { type: 'string' },
+            city: {
+              type: 'string'
+            },
+            country: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    };
+    mockedAxios.get.mockResolvedValue({
+      data: schema,
+      status: 200
+    });
+    const processDefinitioData = {
+      processName: 'process1',
+      endpoint: 'http://localhost:8080/hiring'
+    };
+    const result = await getProcessSchema(processDefinitioData);
+    expect(result).toStrictEqual(schema);
   });
 });

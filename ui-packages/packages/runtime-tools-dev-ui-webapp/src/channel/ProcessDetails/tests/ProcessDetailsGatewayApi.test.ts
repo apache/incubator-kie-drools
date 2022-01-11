@@ -1,4 +1,5 @@
-3/*
+3;
+/*
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -181,7 +182,10 @@ describe('ProcessDetailsGatewayApi tests', () => {
   it('rescheduleJob', async () => {
     const modalTitle = 'success';
     const modalContent = `Reschedule of job: 'eff4ee-11qw23-6675-pokau97-qwedjut45a0fj_0' is successful`;
-    (handleJobReschedule as jest.Mock).mockReturnValueOnce({ modalTitle, modalContent });
+    (handleJobReschedule as jest.Mock).mockReturnValueOnce({
+      modalTitle,
+      modalContent
+    });
     const repeatInterval = 0;
     const repeatLimit = 0;
     const scheduleDate = new Date('2021-08-27T03:35:50.147Z');

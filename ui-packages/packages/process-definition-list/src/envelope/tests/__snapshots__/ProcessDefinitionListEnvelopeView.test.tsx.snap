@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessDefinitionListEnvelopeView tests Snapshot 1`] = `null`;
+
+exports[`ProcessDefinitionListEnvelopeView tests Snapshot 2`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": [MockFunction],
+      "requests": Object {
+        "processDefinitionList__getProcessDefinitionFilter": [MockFunction],
+        "processDefinitionList__getProcessDefinitionsQuery": [MockFunction],
+        "processDefinitionList__openProcessForm": [MockFunction],
+        "processDefinitionList__setProcessDefinitionFilter": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <MockedProcessDefinitionList
+    driver={
+      ProcessDefinitionListEnvelopeViewDriver {
+        "channelApi": Object {
+          "notifications": [MockFunction],
+          "requests": Object {
+            "processDefinitionList__getProcessDefinitionFilter": [MockFunction],
+            "processDefinitionList__getProcessDefinitionsQuery": [MockFunction],
+            "processDefinitionList__openProcessForm": [MockFunction],
+            "processDefinitionList__setProcessDefinitionFilter": [MockFunction],
+          },
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+      }
+    }
+    isEnvelopeConnectedToChannel={true}
+  />
+</ForwardRef>
+`;

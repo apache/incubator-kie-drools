@@ -129,7 +129,10 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/task-form/dist/static'
-          )
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/components-common/dist/static'
+        )
         ],
         use: [
           {

@@ -27,13 +27,10 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
   return (
     <Nav aria-label="Nav" theme="dark">
       <NavList>
-        <NavItem
-          key={'process-instances-nav'}
-          isActive={pathname === '/ProcessInstances'}
-        >
+        <NavItem key={'processes-nav'} isActive={pathname === '/Processes'}>
           <Link
-            to="/ProcessInstances"
-            {...ouiaAttribute('data-ouia-navigation-name', 'process-instances')}
+            to="/Processes"
+            {...ouiaAttribute('data-ouia-navigation-name', 'processes')}
           >
             Processes
           </Link>

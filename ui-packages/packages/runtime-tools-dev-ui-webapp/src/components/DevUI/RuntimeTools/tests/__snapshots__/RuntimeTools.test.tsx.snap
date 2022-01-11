@@ -3,7 +3,9 @@
 exports[`Runtime Tools tests Snapshot tests with default props 1`] = `
 <RuntimeTools
   dataIndex="http:localhost:4000"
+  devUIUrl="http://localhost:8080"
   navigate="JobsManagement"
+  openApiPath="/docs/openapi.json"
   users={
     Array [
       Object {
@@ -230,6 +232,8 @@ exports[`Runtime Tools tests Snapshot tests with default props 1`] = `
         "watchQuery": [Function],
       }
     }
+    devUIUrl="http://localhost:8080"
+    openApiPath="/docs/openapi.json"
     users={
       Array [
         Object {

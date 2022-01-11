@@ -41,20 +41,16 @@ import { TaskFormInitArgs } from '../../api';
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@kogito-apps/components-common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/components-common'),
-    {
-      KogitoEmptyState: () => {
-        return <MockedComponent />;
-      },
-      KogitoSpinner: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    KogitoEmptyState: () => {
+      return <MockedComponent />;
+    },
+    KogitoSpinner: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 jest.mock('../components/TaskForm/TaskForm');
 jest.mock('../components/CustomTaskFormDisplayer/CustomTaskFormDisplayer');

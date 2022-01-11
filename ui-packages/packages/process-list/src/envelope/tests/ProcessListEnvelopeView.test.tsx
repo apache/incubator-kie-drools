@@ -21,9 +21,9 @@ import { MockedMessageBusClientApi } from './mocks/Mocks';
 import ProcessListEnvelopeView, {
   ProcessListEnvelopeViewApi
 } from '../ProcessListEnvelopeView';
-import ProcessListPage from '../components/ProcessListPage/ProcessListPage';
+import ProcessListPage from '../components/ProcessList/ProcessList';
 
-jest.mock('../components/ProcessListPage/ProcessListPage');
+jest.mock('../components/ProcessList/ProcessList');
 
 describe('ProcessListEnvelopeView tests', () => {
   it('Snapshot', () => {

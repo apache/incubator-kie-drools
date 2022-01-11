@@ -23,7 +23,7 @@ import { Button, Checkbox } from '@patternfly/react-core';
 import _ from 'lodash';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
-import TestProcessListDriver from '../../ProcessListPage/tests/mocks/TestProcessListDriver';
+import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessListDriver';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../ProcessListChildTable/ProcessListChildTable');

@@ -62,7 +62,7 @@
     ],
     "transformIgnorePatterns": [],
     "transform": {
-      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.jsx?$": "../../config/Jest-config/babel-jest-wrapper.js",
       "^.+\\.(ts|tsx)$": "ts-jest",
       "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
     },

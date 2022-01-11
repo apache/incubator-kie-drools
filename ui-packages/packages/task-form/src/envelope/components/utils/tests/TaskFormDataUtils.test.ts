@@ -20,7 +20,7 @@ import {
   parseTaskSchema,
   readSchemaAssignments
 } from '../TaskFormDataUtils';
-import { SCHEMA_VERSION } from '../../../../types';
+import { SCHEMA_VERSION } from '@kogito-apps/components-common';
 
 const userTask = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
