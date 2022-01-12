@@ -16,12 +16,12 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.6.0.Final</version.io.quarkus>
-    <version.io.quarkus.quarkus-test-maven>2.6.0.Final</version.io.quarkus.quarkus-test-maven>
+    <version.io.quarkus>2.6.2.Final</version.io.quarkus>
+    <version.io.quarkus.quarkus-test-maven>2.6.2.Final</version.io.quarkus.quarkus-test-maven>
     <version.org.springframework.boot>2.3.10.RELEASE</version.org.springframework.boot>
 
     <!-- dependencies versions -->
-    <version.com.fasterxml.jackson>2.12.5</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.12.6</version.com.fasterxml.jackson>
     <version.com.jayway.jsonpath>2.6.0</version.com.jayway.jsonpath>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20210928</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>1.0.1</version.io.quarkiverse.jackson-jq>
@@ -31,7 +31,7 @@
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
     <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
-    <version.com.google.protobuf>3.19.1</version.com.google.protobuf>
+    <version.com.google.protobuf>3.19.2</version.com.google.protobuf>
     <!-- currently required for integration test only -->
     <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
 
@@ -53,7 +53,7 @@
     <version.io.fabric8.kubernetes-client>5.8.0</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.8.1</version.io.micrometer>
     <version.io.serverlessworkflow>2.0.0.Final</version.io.serverlessworkflow>
-    <version.io.smallrye-open-api-core>2.1.16</version.io.smallrye-open-api-core>
+    <version.io.smallrye-open-api-core>2.1.17</version.io.smallrye-open-api-core>
     <version.io.smallrye.reactive.mutiny-vertx-web-client>2.16.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
     <version.io.vertx>4.2.2</version.io.vertx>
