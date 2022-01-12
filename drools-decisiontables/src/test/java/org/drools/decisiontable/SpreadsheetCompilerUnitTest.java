@@ -201,7 +201,7 @@ public class SpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
         assertTrue( drl.indexOf( "myObject.setIsValid(10-Jul-1974)" ) > -1 );
         assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")" ) > -1 );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(colors.get(\"red\")), myObject.size () > 12\\\")" ) > -1 );
 
         assertTrue( drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ) > -1 );
         assertTrue( drl.indexOf( "b: Bar() eval(myObject.size() < 9)" ) > -1 );
