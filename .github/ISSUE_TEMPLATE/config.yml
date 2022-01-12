@@ -1,0 +1,14 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Jira 
+    url: https://issues.redhat.com/projects/KOGITO
+    about: Kogito Jira Board
+  - name: Question
+    url: https://stackoverflow.com/questions/ask?tags=kogito
+    about: I have a question about how to use Kogito.
+  - name: Kogito Zulip chat
+    url: https://kie.zulipchat.com/
+    about: If you prefer live chat with the developers, we have a Zulip chat where we all hang out.
+  - name: Kogito Development mailing list 
+    url: https://groups.google.com/g/kogito-development
+    about: You can also ask questions on our mailing list.
