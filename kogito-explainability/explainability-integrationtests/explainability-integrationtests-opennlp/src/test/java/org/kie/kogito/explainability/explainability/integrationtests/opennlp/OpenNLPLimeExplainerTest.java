@@ -165,7 +165,8 @@ class OpenNLPLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         long seed = 0;
-        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true).withSampling(false);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true)
+                .withSampling(false).withStepCountLimit(30);
         Random random = new Random();
         LimeConfig limeConfig = new LimeConfig()
                 .withSamples(10)
@@ -180,7 +181,7 @@ class OpenNLPLimeExplainerTest {
         Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
 
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
-                0.9, 0.8));
+                0.8, 0.8));
     }
 
     @Test
@@ -190,7 +191,8 @@ class OpenNLPLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         long seed = 0;
-        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true).forImpactScore().withSampling(false);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true)
+                .forImpactScore().withSampling(false).withStepCountLimit(30);
         Random random = new Random();
         LimeConfig limeConfig = new LimeConfig()
                 .withSamples(10)
@@ -207,7 +209,8 @@ class OpenNLPLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         long seed = 0;
-        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true).withSampling(false);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true)
+                .withSampling(false).withStepCountLimit(30).withWeightedStability(0.4, 0.6);
         Random random = new Random();
         LimeConfig limeConfig = new LimeConfig()
                 .withSamples(10)
@@ -221,6 +224,6 @@ class OpenNLPLimeExplainerTest {
         Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
 
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
-                0.8, 0.9));
+                0.9, 0.8));
     }
 }

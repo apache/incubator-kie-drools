@@ -103,7 +103,8 @@ class TrafficViolationDmnLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         long seed = 0;
-        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true).withSampling(false);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true)
+                .withSampling(false).withStepCountLimit(30);
         Random random = new Random();
         PerturbationContext perturbationContext = new PerturbationContext(seed, random, 1);
         LimeConfig initialConfig = new LimeConfig()
@@ -130,7 +131,8 @@ class TrafficViolationDmnLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 10)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         long seed = 0;
-        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true).forImpactScore().withSampling(false);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true)
+                .forImpactScore().withSampling(false).withStepCountLimit(20);
 
         Random random = new Random();
         PerturbationContext perturbationContext = new PerturbationContext(seed, random, 1);
@@ -152,9 +154,8 @@ class TrafficViolationDmnLimeExplainerTest {
         Random random = new Random();
 
         LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer()
-                .withDeterministicExecution(true)
-                .withSampling(false)
-                .withWeightedStability(0.4, 0.6);
+                .withDeterministicExecution(true).withSampling(false).withWeightedStability(0.4, 0.6)
+                .withStepCountLimit(20);
 
         PerturbationContext perturbationContext = new PerturbationContext(seed, random, 2);
         LimeConfig initialConfig = new LimeConfig()
@@ -170,7 +171,7 @@ class TrafficViolationDmnLimeExplainerTest {
         Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
 
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
-                0.6, 0.4));
+                0.4, 0.6));
     }
 
     private PredictionProvider getModel() {

@@ -97,10 +97,11 @@ class LoanEligibilityDmnLimeExplainerTest {
         List<PredictionInput> samples = DmnTestUtils.randomLoanEligibilityInputs();
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
-        int seed = 0;
-        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true);
+        long seed = 0;
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true)
+                .withStepCountLimit(20);
         Random random = new Random();
-        PerturbationContext perturbationContext = new PerturbationContext(0L, random, 1);
+        PerturbationContext perturbationContext = new PerturbationContext(seed, random, 1);
         LimeConfig initialConfig = new LimeConfig()
                 .withPerturbationContext(perturbationContext);
         LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
@@ -124,7 +125,8 @@ class LoanEligibilityDmnLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 10)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         long seed = 0;
-        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true).forImpactScore().withSampling(false);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true)
+                .forImpactScore().withSampling(false).withStepCountLimit(20);
         Random random = new Random();
         PerturbationContext perturbationContext = new PerturbationContext(seed, random, 1);
         LimeConfig initialConfig = new LimeConfig()
@@ -144,7 +146,8 @@ class LoanEligibilityDmnLimeExplainerTest {
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
 
         long seed = 0;
-        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true).withWeightedStability(0.4, 0.6);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withDeterministicExecution(true)
+                .withWeightedStability(0.4, 0.6).withStepCountLimit(10);
         Random random = new Random();
         PerturbationContext perturbationContext = new PerturbationContext(seed, random, 1);
         LimeConfig initialConfig = new LimeConfig()
@@ -160,7 +163,7 @@ class LoanEligibilityDmnLimeExplainerTest {
         Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
 
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
-                0.4, 0.6));
+                0.6, 0.4));
     }
 
     private PredictionProvider getModel() {

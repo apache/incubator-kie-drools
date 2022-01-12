@@ -192,7 +192,7 @@ class PmmlRegressionLimeExplainerTest {
                 PMML4Result result = pmmlModel.execute(logisticRegressionIrisRuntime);
                 String species = result.getResultVariables().get("Species").toString();
                 double score = Double.parseDouble(result.getResultVariables().get("Probability_" + species).toString());
-                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value(species), 1d)));
+                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value(species), score)));
                 outputs.add(predictionOutput);
             }
             return outputs;
