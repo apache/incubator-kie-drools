@@ -20,11 +20,9 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -50,16 +48,10 @@ class EventFlowIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
-    String kafkaBootstrapServers;
-
     ObjectMapper objectMapper;
-
-    KafkaTestClient kafkaClient;
 
     @BeforeEach
     void setup() {
-        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
         objectMapper = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule()).configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
     }
 
@@ -89,7 +81,15 @@ class EventFlowIT {
                 .get("/" + flowName + "/{id}", id)
                 .then()
                 .statusCode(200);
-        kafkaClient.produce(generateCloudEvent(id, eventType), eventType);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(generateCloudEvent(id, eventType))
+                .post("/" + eventType)
+                .then()
+                .statusCode(202);
+
         await()
                 .atLeast(1, SECONDS)
                 .atMost(30, SECONDS)
@@ -100,7 +100,6 @@ class EventFlowIT {
                         .get("/" + flowName + "/{id}", id)
                         .then()
                         .statusCode(404));
-
     }
 
     private String generateCloudEvent(String id, String type) {
@@ -111,7 +110,7 @@ class EventFlowIT {
                     .withType(type)
                     .withTime(OffsetDateTime.now())
                     .withExtension("kogitoprocrefid", id)
-                    .withData(objectMapper.writeValueAsBytes(Collections.singletonMap("move", "This has been injected by the event")))
+                    .withData(objectMapper.writeValueAsBytes(Collections.singletonMap(type, "This has been injected by the event")))
                     .build());
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
