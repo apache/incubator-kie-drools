@@ -19,5 +19,5 @@ jobs:
         organization-url: 'https://kie.zulipchat.com'
         to: 'kogito'
         type: 'stream'
-        topic: 'GitHub Issues ${{ github.event.issue.id }} - ${{ github.event.issue.title }}'
+        topic: 'GitHub Issues - ${{ github.event.issue.title }}'
         content: ${{ env.CONTENT }}
