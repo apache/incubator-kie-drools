@@ -115,10 +115,10 @@ type
 @after {
     helper.popScope();
 }
-    : sk=Identifier {$sk.getText().equals("list");} LT type GT                                                        #listType
-    | sk=Identifier {$sk.getText().equals("context");} LT Identifier COLON type ( COMMA Identifier COLON type )* GT   #contextType
+    : {_input.LT(1).getText().equals("list")}? sk=Identifier LT type GT                                                        #listType
+    | {_input.LT(1).getText().equals("context")}? sk=Identifier LT Identifier COLON type ( COMMA Identifier COLON type )* GT   #contextType
     | FUNCTION                                                                                                        #qnType
-    | FUNCTION LT type ( COMMA type )* GT RARROW type                                                                 #functionType
+    | FUNCTION LT (type ( COMMA type )*)? GT RARROW type                                                              #functionType
     | qualifiedName                                                                                                   #qnType
     ;
 

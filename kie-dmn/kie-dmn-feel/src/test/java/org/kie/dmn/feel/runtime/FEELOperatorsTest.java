@@ -102,6 +102,16 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {"{ f : function(age : number) age > 18, r : f instance of function<number> -> Any }.r", Boolean.TRUE , null},
                 {"{ f : function(age : number) age > 18, r : f instance of function<Any> -> Any }.r", Boolean.FALSE , null},
                 {"{ f : function(age : Any) true       , r : f instance of function<number> -> Any }.r", Boolean.TRUE , null},
+                {"null instance of function<> -> Any", Boolean.FALSE , null},
+                {"{a: \"foo\"} instance of context<a: string>", Boolean.TRUE , null},
+                {"{a: null} instance of context<a: string>", Boolean.TRUE , null},
+                {"{a: \"123\", b: 123} instance of context<a: string>", Boolean.TRUE , null},
+                {"{a: \"123\"} instance of context<a: number>", Boolean.FALSE , null},
+                {"{a: {b: 123}} instance of context<a: context<b: number>>", Boolean.TRUE , null},
+                {"{a: {b: 123}} instance of context<a: context<b: string>>", Boolean.FALSE , null},
+                {"(function(a: context<a: string>) {b: \"b\", c: \"c\"}) instance of function<context<a: string, b: string>>->context<b: string>", Boolean.TRUE , null},
+                {"(function(a: context<a: string, b: string>) \"foo\") instance of function<context<a: string>>->string", Boolean.FALSE , null},
+                {"(function(a: context<a: string>, b: context<a: string, b: string>) \"foo\") instance of function<context<a: string, b: string>,context<a: string, b: string, c: string>>->string", Boolean.TRUE , null},
         };
         return addAdditionalParameters(cases, false);
     }
