@@ -19,6 +19,10 @@ package org.drools.core.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
@@ -45,7 +49,12 @@ import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.phreak.AddRemoveRule.createLeftTupleTupleSets;
+import static org.drools.core.phreak.AddRemoveRule.findPathToFlush;
+import static org.drools.core.phreak.AddRemoveRule.findPathsToFlushFromRia;
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
+import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
+import static org.drools.core.phreak.AddRemoveRule.forceFlushPath;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
@@ -181,8 +190,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
                 SegmentUtilities.createChildSegments( wm,
-                                                      sm,
-                                                      liaNode.getSinkPropagator() );
+                        sm,
+                        liaNode.getSinkPropagator() );
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -207,7 +216,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         leftTuple.setPropagationContext( context );
 
         if ( sm.getRootNode() == liaNode ) {
-            doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
+            doInsertSegmentMemoryWithFlush(wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode());
         } else {
             // sm points to lia child sm, so iterate for all remaining children
             // all peer tuples must be created before propagation, or eager evaluation subnetworks have problem
@@ -219,25 +228,37 @@ public class LeftInputAdapterNode extends LeftTupleSource
             }
 
             sm = originaSm;
-            doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
+            Set<PathMemory> pathsToFlush = new HashSet<>();
+            pathsToFlush.addAll( doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() ) );
             if ( sm.getRootNode() != liaNode ) {
                 // sm points to lia child sm, so iterate for all remaining children
                 peer = leftTuple;
                 for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                     peer = peer.getPeer();
-                    doInsertSegmentMemory( wm, notifySegment, lm, sm, peer, liaNode.isStreamMode() );
+                    pathsToFlush.addAll( doInsertSegmentMemory( wm, notifySegment, lm, sm, peer, liaNode.isStreamMode() ) );
                 }
+            }
+
+            for (PathMemory outPmem : pathsToFlush) {
+                forceFlushPath(wm, outPmem);
             }
         }
     }
 
-    public static void doInsertSegmentMemory( InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
-                                               SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
-        if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode, Tuple.INSERT ) ) {
+    public static void doInsertSegmentMemoryWithFlush(InternalWorkingMemory wm, boolean notifySegment, LiaNodeMemory lm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
+        for (PathMemory outPmem : doInsertSegmentMemory(wm, notifySegment, lm, sm, leftTuple, streamMode )) {
+            forceFlushPath(wm, outPmem);
+        }
+    }
+
+    public static List<PathMemory> doInsertSegmentMemory(InternalWorkingMemory wm, boolean linkOrNotify, LiaNodeMemory lm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
+        PathMemory pmem = findPathToFlush(sm, leftTuple, streamMode);
+        if ( pmem != null ) {
+            forceFlushLeftTuple( pmem, sm, wm, createLeftTupleTupleSets(leftTuple, Tuple.INSERT) );
             if ( linkOrNotify ) {
                 lm.setNodeDirty( wm );
             }
-            return;
+            return findPathsToFlushFromRia(wm, pmem);
         }
 
         // mask check is necessary if insert is a result of a modify
@@ -247,8 +268,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // staged is empty, so notify rule, to force re-evaluation.
             lm.setNodeDirty(wm);
         }
+        return Collections.emptyList();
     }
-
+    
     public static void doDeleteObject(LeftTuple leftTuple,
                                       PropagationContext context,
                                       SegmentMemory sm,
