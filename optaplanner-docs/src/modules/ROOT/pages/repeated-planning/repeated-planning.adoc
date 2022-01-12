@@ -211,7 +211,7 @@ In the example above, if `pinned` is `true`, the lecture will not be assigned to
 [[configureAPinningFilter]]
 ==== Configure a `PinningFilter`
 
-Alternatively, to pin some planning entities down, add a `PinningFilter` that returns `true` if an entity is movable, and `false` if it is pinned.
+Alternatively, to pin some planning entities down, add a `PinningFilter` that returns `true` if an entity is pinned, and `false` if it is movable.
 This is more flexible and more verbose than the `@PlanningPin` approach.
 
 For example on the nurse rostering example:
