@@ -3,7 +3,7 @@ contact_links:
   - name: Jira 
     url: https://issues.redhat.com/projects/KOGITO
     about: Kogito Jira Board
-   - name: Question
+  - name: Question
     url: https://stackoverflow.com/questions/ask?tags=kogito
     about: I have a question about how to use Kogito.
   - name: Kogito Zulip chat
