@@ -54,7 +54,7 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
+import org.optaplanner.core.impl.score.director.drl.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.impl.score.stream.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;

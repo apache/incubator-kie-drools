@@ -51,19 +51,19 @@ import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.holder.BendableBigDecimalScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.BendableLongScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.BendableScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.HardMediumSoftBigDecimalScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.HardMediumSoftLongScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.HardMediumSoftScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.HardSoftBigDecimalScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.HardSoftLongScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.HardSoftScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.SimpleBigDecimalScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.SimpleLongScoreHolderImpl;
-import org.optaplanner.core.impl.score.director.drools.holder.SimpleScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.DrlScoreDirector;
+import org.optaplanner.core.impl.score.director.drl.holder.BendableBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.BendableLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.BendableScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardMediumSoftBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardMediumSoftLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardMediumSoftScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardSoftBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardSoftLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardSoftScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.SimpleBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.SimpleLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.SimpleScoreHolderImpl;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -190,7 +190,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     /**
      * Requires a custom rule event listener to be added as event listener on {@link KieSession},
      * otherwise the score changes caused by the constraint matches would not be undone.
-     * See {@link DroolsScoreDirector#setWorkingSolution(Object)} for an example.
+     * See {@link DrlScoreDirector#setWorkingSolution(Object)} for an example.
      *
      * @param kcontext The rule for which to register the match.
      * @param constraintUndoListener The operation to run to undo the match.

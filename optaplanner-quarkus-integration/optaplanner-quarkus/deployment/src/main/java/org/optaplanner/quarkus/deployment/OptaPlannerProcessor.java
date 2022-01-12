@@ -18,6 +18,7 @@ package org.optaplanner.quarkus.deployment;
 
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
 import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
 import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
@@ -84,8 +86,10 @@ import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
 import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeBuild;
 import io.quarkus.deployment.recording.RecorderContext;
+import io.quarkus.deployment.util.ServiceUtil;
 import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.MethodDescriptor;
@@ -101,6 +105,21 @@ class OptaPlannerProcessor {
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem("optaplanner");
+    }
+
+    @BuildStep
+    void registerScoreDirectorFactorySpi(BuildProducer<ServiceProviderBuildItem> services) {
+        String serviceName = ScoreDirectorFactoryService.class.getName();
+        String service = "META-INF/services/" + serviceName;
+        try {
+            // Find out all the provider implementation classes listed in the service files.
+            Set<String> implementations =
+                    ServiceUtil.classNamesNamedIn(Thread.currentThread().getContextClassLoader(), service);
+            // Register every listed implementation class, so they can be instantiated in native-image at run-time.
+            services.produce(new ServiceProviderBuildItem(serviceName, implementations.toArray(new String[0])));
+        } catch (IOException e) {
+            throw new IllegalStateException("Impossible state: Failed registering score directors.", e);
+        }
     }
 
     @BuildStep

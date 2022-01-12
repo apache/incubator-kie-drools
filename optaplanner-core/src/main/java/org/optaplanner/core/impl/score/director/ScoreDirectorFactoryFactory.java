@@ -16,46 +16,28 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import static org.optaplanner.core.impl.score.director.ScoreDirectorType.*;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.ancompiler.KieBaseUpdaterANC;
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.modelcompiler.ExecutableModelProject;
-import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.conf.KieBaseMutabilityOption;
-import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.utils.KieHelper;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
-import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>> {
-
-    private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
 
     private final ScoreDirectorFactoryConfig config;
 
@@ -95,16 +77,27 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
     protected AbstractScoreDirectorFactory<Solution_, Score_> decideMultipleScoreDirectorFactories(
             ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
-        EasyScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory =
-                buildEasyScoreDirectorFactory(solutionDescriptor);
-        AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
-                buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
-        IncrementalScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
-                buildIncrementalScoreDirectorFactory(solutionDescriptor);
-        DroolsScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(
-                classLoader, solutionDescriptor);
+        // Load all known Score Director Factories via SPI.
+        ServiceLoader<ScoreDirectorFactoryService> scoreDirectorFactoryServiceLoader =
+                ServiceLoader.load(ScoreDirectorFactoryService.class);
+        Map<ScoreDirectorType, AbstractScoreDirectorFactory<Solution_, Score_>> scoreDirectorFactoryMap =
+                new EnumMap<>(ScoreDirectorType.class);
+        for (ScoreDirectorFactoryService<Solution_, Score_> service : scoreDirectorFactoryServiceLoader) {
+            AbstractScoreDirectorFactory<Solution_, Score_> factory =
+                    service.buildScoreDirectorFactory(classLoader, solutionDescriptor, config);
+            if (factory != null) {
+                scoreDirectorFactoryMap.put(service.getSupportedScoreDirectorType(), factory);
+            }
+        }
+        AbstractScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory = scoreDirectorFactoryMap.get(EASY);
+        AbstractScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
+                scoreDirectorFactoryMap.get(CONSTRAINT_STREAMS);
+        AbstractScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
+                scoreDirectorFactoryMap.get(INCREMENTAL);
+        AbstractScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory =
+                scoreDirectorFactoryMap.get(DRL);
 
-        checkMultipleScoreDirectorFactoryTypes(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
+        assertOnlyOneScoreDirectorFactory(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory);
 
         AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
@@ -132,10 +125,10 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         return scoreDirectorFactory;
     }
 
-    private void checkMultipleScoreDirectorFactoryTypes(EasyScoreDirectorFactory easyScoreDirectorFactory,
-            AbstractConstraintStreamScoreDirectorFactory constraintStreamScoreDirectorFactory,
-            IncrementalScoreDirectorFactory incrementalScoreDirectorFactory,
-            DroolsScoreDirectorFactory droolsScoreDirectorFactory) {
+    private void assertOnlyOneScoreDirectorFactory(ScoreDirectorFactory<Solution_> easyScoreDirectorFactory,
+            ScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory,
+            ScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory,
+            ScoreDirectorFactory<Solution_> droolsScoreDirectorFactory) {
         if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
                 .filter(Objects::nonNull).count() > 1) {
@@ -168,30 +161,6 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
     }
 
-    protected EasyScoreDirectorFactory<Solution_, Score_> buildEasyScoreDirectorFactory(
-            SolutionDescriptor<Solution_> solutionDescriptor) {
-        if (config.getEasyScoreCalculatorClass() != null) {
-            if (!EasyScoreCalculator.class.isAssignableFrom(config.getEasyScoreCalculatorClass())) {
-                throw new IllegalArgumentException(
-                        "The easyScoreCalculatorClass (" + config.getEasyScoreCalculatorClass()
-                                + ") does not implement " + EasyScoreCalculator.class.getSimpleName() + ".");
-            }
-            EasyScoreCalculator<Solution_, Score_> easyScoreCalculator = ConfigUtils.newInstance(config,
-                    "easyScoreCalculatorClass", config.getEasyScoreCalculatorClass());
-            ConfigUtils.applyCustomProperties(easyScoreCalculator, "easyScoreCalculatorClass",
-                    config.getEasyScoreCalculatorCustomProperties(), "easyScoreCalculatorCustomProperties");
-            return new EasyScoreDirectorFactory<>(solutionDescriptor, easyScoreCalculator);
-        } else {
-            if (config.getEasyScoreCalculatorCustomProperties() != null) {
-                throw new IllegalStateException(
-                        "If there is no easyScoreCalculatorClass (" + config.getEasyScoreCalculatorClass()
-                                + "), then there can be no easyScoreCalculatorCustomProperties ("
-                                + config.getEasyScoreCalculatorCustomProperties() + ") either.");
-            }
-            return null;
-        }
-    }
-
     private void validateNoDroolsAlphaNetworkCompilation() {
         if (config.getDroolsAlphaNetworkCompilationEnabled() != null) {
             throw new IllegalStateException("If there is no scoreDrl (" + config.getScoreDrlList()
@@ -210,151 +179,6 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                     + config.getConstraintStreamImplType() + "), there can be no gizmoKieBaseSupplier ("
                     + config.getGizmoKieBaseSupplier() + ") either.");
         }
-    }
-
-    protected AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> buildConstraintStreamScoreDirectorFactory(
-            SolutionDescriptor<Solution_> solutionDescriptor) {
-        if (config.getConstraintProviderClass() != null) {
-            if (!ConstraintProvider.class.isAssignableFrom(config.getConstraintProviderClass())) {
-                throw new IllegalArgumentException(
-                        "The constraintProviderClass (" + config.getConstraintProviderClass()
-                                + ") does not implement " + ConstraintProvider.class.getSimpleName() + ".");
-            }
-            ConstraintProvider constraintProvider = ConfigUtils.newInstance(config,
-                    "constraintProviderClass", config.getConstraintProviderClass());
-            ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
-                    config.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");
-            ConstraintStreamImplType constraintStreamImplType_ =
-                    Objects.requireNonNullElse(config.getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
-            switch (constraintStreamImplType_) {
-                case BAVET:
-                    return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
-                case DROOLS:
-                    if (config.getGizmoKieBaseSupplier() != null) {
-                        return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                config.getGizmoKieBaseSupplier(),
-                                config.isDroolsAlphaNetworkCompilationEnabled());
-                    }
-                    return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                            config.isDroolsAlphaNetworkCompilationEnabled());
-                default:
-                    throw new IllegalStateException(
-                            "The constraintStreamImplType (" + constraintStreamImplType_ + ") is not implemented.");
-            }
-        } else {
-            if (config.getConstraintProviderCustomProperties() != null) {
-                throw new IllegalStateException("If there is no constraintProviderClass (" + config.getConstraintProviderClass()
-                        + "), then there can be no constraintProviderCustomProperties ("
-                        + config.getConstraintProviderCustomProperties() + ") either.");
-            }
-            return null;
-        }
-    }
-
-    protected IncrementalScoreDirectorFactory<Solution_, Score_> buildIncrementalScoreDirectorFactory(
-            SolutionDescriptor<Solution_> solutionDescriptor) {
-        if (config.getIncrementalScoreCalculatorClass() != null) {
-            if (!IncrementalScoreCalculator.class.isAssignableFrom(config.getIncrementalScoreCalculatorClass())) {
-                throw new IllegalArgumentException(
-                        "The incrementalScoreCalculatorClass (" + config.getIncrementalScoreCalculatorClass()
-                                + ") does not implement " + IncrementalScoreCalculator.class.getSimpleName() + ".");
-            }
-            return new IncrementalScoreDirectorFactory<>(
-                    solutionDescriptor,
-                    () -> {
-                        IncrementalScoreCalculator<Solution_, Score_> incrementalScoreCalculator = ConfigUtils.newInstance(
-                                config,
-                                "incrementalScoreCalculatorClass",
-                                config.getIncrementalScoreCalculatorClass());
-                        ConfigUtils.applyCustomProperties(
-                                incrementalScoreCalculator,
-                                "incrementalScoreCalculatorClass",
-                                config.getIncrementalScoreCalculatorCustomProperties(),
-                                "incrementalScoreCalculatorCustomProperties");
-                        return incrementalScoreCalculator;
-                    });
-        } else {
-            if (config.getIncrementalScoreCalculatorCustomProperties() != null) {
-                throw new IllegalStateException(
-                        "If there is no incrementalScoreCalculatorClass (" + config.getIncrementalScoreCalculatorClass()
-                                + "), then there can be no incrementalScoreCalculatorCustomProperties ("
-                                + config.getIncrementalScoreCalculatorCustomProperties() + ") either.");
-            }
-            return null;
-        }
-    }
-
-    protected DroolsScoreDirectorFactory<Solution_, Score_> buildDroolsScoreDirectorFactory(ClassLoader classLoader,
-            SolutionDescriptor<Solution_> solutionDescriptor) {
-        boolean generateDroolsTestOnError =
-                Boolean.parseBoolean(System.getProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "false"));
-
-        if (ConfigUtils.isEmptyCollection(config.getScoreDrlList())
-                && ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
-            if (config.getKieBaseConfigurationProperties() != null) {
-                throw new IllegalArgumentException(
-                        "If kieBaseConfigurationProperties (" + config.getKieBaseConfigurationProperties()
-                                + ") is not null, the scoreDrlList (" + config.getScoreDrlList()
-                                + ") or the scoreDrlFileList (" + config.getScoreDrlFileList() + ") must not be empty.");
-            }
-            if (generateDroolsTestOnError) {
-                throw new IllegalArgumentException(
-                        "If " + GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME + " system property (" +
-                                generateDroolsTestOnError + ") is set, the scoreDrlList (" + config.getScoreDrlList()
-                                + ") or the scoreDrlFileList (" + config.getScoreDrlFileList() + ") must not be empty.");
-            }
-            return null;
-        }
-
-        try {
-            KieBase kieBase;
-            if (config.getGizmoKieBaseSupplier() != null) {
-                kieBase = config.getGizmoKieBaseSupplier().get();
-            } else {
-                // Can't put this code in KieBaseExtractor since it reference
-                // KieRuntimeBuilder, which is an optional dependency
-                KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
-                        .setClassLoader(classLoader);
-                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
-                    for (String scoreDrl : config.getScoreDrlList()) {
-                        if (scoreDrl == null) {
-                            throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
-                        }
-                        kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
-                    }
-                }
-                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
-                    for (File scoreDrlFile : config.getScoreDrlFileList()) {
-                        kieHelper.addResource(new FileSystemResource(scoreDrlFile));
-                    }
-                }
-                KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(KieServices.get());
-                kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // Performance improvement.
-                kieBase = kieHelper.build(ExecutableModelProject.class, kieBaseConfiguration);
-            }
-
-            if (config.isDroolsAlphaNetworkCompilationEnabled()) {
-                KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
-            }
-            if (generateDroolsTestOnError) {
-                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
-                        config.getScoreDrlFileList());
-            } else {
-                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
-            }
-        } catch (Exception ex) {
-            throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
-        }
-    }
-
-    private KieBaseConfiguration buildKieBaseConfiguration(KieServices kieServices) {
-        KieBaseConfiguration kieBaseConfiguration = kieServices.newKieBaseConfiguration();
-        if (config.getKieBaseConfigurationProperties() != null) {
-            for (Map.Entry<String, String> entry : config.getKieBaseConfigurationProperties().entrySet()) {
-                kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
-            }
-        }
-        return kieBaseConfiguration;
     }
 
 }

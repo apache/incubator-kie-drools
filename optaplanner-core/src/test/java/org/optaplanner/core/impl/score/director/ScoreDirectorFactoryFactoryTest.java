@@ -38,6 +38,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.ConstraintStreamsScoreDirectorFactoryService;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -122,9 +123,9 @@ class ScoreDirectorFactoryFactoryTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
                 .withDroolsAlphaNetworkCompilationEnabled(true);
-        ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
-        AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
-                factoryFactory.buildConstraintStreamScoreDirectorFactory(TestdataSolution.buildSolutionDescriptor());
+        InnerScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
+                new ConstraintStreamsScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
+                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config);
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
@@ -182,9 +183,9 @@ class ScoreDirectorFactoryFactoryTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
                 .withDroolsAlphaNetworkCompilationEnabled(false);
-        ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
-        AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
-                factoryFactory.buildConstraintStreamScoreDirectorFactory(TestdataSolution.buildSolutionDescriptor());
+        InnerScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
+                new ConstraintStreamsScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
+                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config);
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
@@ -196,9 +197,9 @@ class ScoreDirectorFactoryFactoryTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
                 .withConstraintStreamImplType(ConstraintStreamImplType.BAVET);
-        ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
         AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
-                factoryFactory.buildConstraintStreamScoreDirectorFactory(TestdataSolution.buildSolutionDescriptor());
+                (AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) new ConstraintStreamsScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
+                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config);
         assertThat(scoreDirectorFactory).isInstanceOf(BavetConstraintStreamScoreDirectorFactory.class);
     }
 
