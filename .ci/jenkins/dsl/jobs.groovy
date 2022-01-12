@@ -85,6 +85,7 @@ setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
 if (!Utils.isMainBranch(this)) {
     setupDeployJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
     setupPromoteJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
+    setupPostReleaseJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
 }
 
 if (Utils.isMainBranch(this)) {
@@ -253,6 +254,35 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
             env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
 
             env('PROPERTIES_FILE_NAME', 'deployment.properties')
+            env('GITHUB_CLI_VERSION', '0.11.1')
+        }
+    }
+}
+
+void setupPostReleaseJob(String jobFolder, KogitoJobType jobType) {
+    KogitoJobTemplate.createPipelineJob(this, getJobParams('optaplanner-post-release', jobFolder, "${JENKINS_PATH}/Jenkinsfile.post-release", 'Optaplanner Post Release')).with {
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+
+            stringParam('PROJECT_VERSION', '', 'Project version.')
+            stringParam('GIT_TAG', '', 'Git tag to use')
+
+            booleanParam('SEND_NOTIFICATION', true, 'In case you want the pipeline to send a notification on CI channel for this run.')
+        }
+
+        environmentVariables {
+            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
+
+            env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
+
+            env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
+            env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
+
+            env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
+            env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
+
             env('GITHUB_CLI_VERSION', '0.11.1')
         }
     }

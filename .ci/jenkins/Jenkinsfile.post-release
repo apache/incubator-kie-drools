@@ -1,10 +1,8 @@
 import org.jenkinsci.plugins.workflow.libs.Library
+
 @Library('jenkins-pipeline-shared-libraries')_
 
 import org.kie.jenkins.MavenCommand
-
-deployProperties = [:]
-pipelineProperties = [:]
 
 String optaplannerRepository = 'optaplanner'
 String quickstartsRepository = 'optaplanner-quickstarts'
@@ -47,14 +45,10 @@ pipeline {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
-                    readDeployProperties()
+                    // Verify version is set and if on right release branch
+                    assert getProjectVersion()
 
-                    if (isRelease()) {
-                        // Verify version is set and if on right release branch
-                        assert getProjectVersion()
-
-                        assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
-                    }
+                    assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
 
                     installGithubCLI()
                 }
@@ -62,9 +56,6 @@ pipeline {
         }
 
         stage('Reset Quickstarts stable branch') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     dir(quickstartsRepository) {
@@ -77,9 +68,6 @@ pipeline {
         }
 
         stage('Upload OptaPlanner distribution from Quickstarts') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     dir(optaplannerRepository) {
@@ -94,26 +82,25 @@ pipeline {
         }
 
         stage('Update OptaPlanner website') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     final String websiteRepository = 'optaplanner-website'
                     String prLink = null
+                    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
                     dir("$websiteRepository-bot") {
-                        String prBranchName = createWebsitePrBranch(websiteRepository)
+                        checkoutRepo(websiteRepository, 'main') // there is no other branch
+                        githubscm.createBranch(prBranchName)
 
                         // Update versions in links on the website and in the docs.
                         sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
 
                         // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
-                        String optaplannerRoot = "$WORKSPACE/optaplanner"
+                        String optaplannerRoot = "${WORKSPACE}/${optaplannerRepository}"
                         String optaplannerWebsiteModule = 'optaplanner-website-root'
-                        String optaplannerWebsiteXsd = "$optaplannerWebsiteModule/content/xsd"
+                        String optaplannerWebsiteXsd = "${optaplannerWebsiteModule}/content/xsd"
                         String optaplannerWebsiteDocs = 'optaplanner-website-docs'
-                        sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd $optaplannerWebsiteXsd/solver/solver-8.xsd"
-                        sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd $optaplannerWebsiteXsd/benchmark/benchmark-8.xsd"
+                        sh "cp ${optaplannerRoot}/optaplanner-core/target/classes/solver.xsd ${optaplannerWebsiteXsd}/solver/solver-8.xsd"
+                        sh "cp ${optaplannerRoot}/optaplanner-benchmark/target/classes/benchmark.xsd ${optaplannerWebsiteXsd}/benchmark/benchmark-8.xsd"
 
                         // Add changed files, commit, open and merge PR
                         prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}",
@@ -123,6 +110,7 @@ pipeline {
                     dir(websiteRepository) {
                         checkoutRepo(websiteRepository, 'main')
                         mergeAndPush(prLink, 'main')
+                        githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
                     }
                 }
             }
@@ -142,66 +130,19 @@ pipeline {
 }
 
 void sendNotification() {
-    if (params.SEND_NOTIFICATION) {
-        mailer.sendMarkdownTestSummaryNotification('Promote', "[${getBuildBranch()}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
-    } else {
-        echo 'No notification sent per configuration'
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// Deployment properties
-//////////////////////////////////////////////////////////////////////////////
-
-void readDeployProperties() {
-    String deployUrl = params.DEPLOY_BUILD_URL
-    if (deployUrl != '') {
-        if (!deployUrl.endsWith('/')) {
-            deployUrl += '/'
-        }
-        sh "wget ${deployUrl}artifact/${env.PROPERTIES_FILE_NAME} -O ${env.PROPERTIES_FILE_NAME}"
-        deployProperties = readProperties file: env.PROPERTIES_FILE_NAME
-        // echo all properties
-        echo deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
-    }
-}
-
-boolean hasDeployProperty(String key) {
-    return deployProperties[key] != null
-}
-
-String getDeployProperty(String key) {
-    if (hasDeployProperty(key)) {
-        return deployProperties[key]
-    }
-    return ''
-}
-
-String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
-    if (params[paramKey] != '') {
-        return params[paramKey]
-    }
-    return getDeployProperty(deployPropertyKey)
+    mailer.sendMarkdownTestSummaryNotification('Post-release', "[${getBuildBranch()}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], 'cc @*optaplanner-team*')
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Getter / Setter
 //////////////////////////////////////////////////////////////////////////////
 
-boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()
-}
-
 boolean isNotTestingBuild() {
     return getGitAuthor() == 'kiegroup'
 }
 
-boolean isRelease() {
-    return env.RELEASE.toBoolean()
-}
-
 String getProjectVersion() {
-    return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
+    return params.PROJECT_VERSION
 }
 
 String getNextMicroSnapshotVersion(String currentVersion) {
@@ -213,7 +154,7 @@ String getNextMinorSnapshotVersion(String currentVersion) {
 }
 
 String getGitTag() {
-    return params.GIT_TAG != '' ? params.GIT_TAG : getProjectVersion()
+    return params.GIT_TAG
 }
 
 String getBuildBranch() {
@@ -226,22 +167,6 @@ String getGitAuthor() {
 
 String getGitAuthorCredsID() {
     return env.AUTHOR_CREDS_ID
-}
-
-String getBotAuthorCredsID() {
-    return env.BOT_CREDENTIALS_ID
-}
-
-String getDeployPrLink(String repo) {
-    return getDeployProperty("${repo}.pr.link")
-}
-
-String getPipelinePrLink(String repo) {
-    return pipelineProperties["${repo}.pr.link"]
-}
-
-void setPipelinePrLink(String repo, String value) {
-    pipelineProperties["${repo}.pr.link"] = value
 }
 
 String getSnapshotBranch() {
@@ -259,10 +184,6 @@ void checkoutRepo(String repo, String branch) {
     sh "git checkout ${branch}"
 }
 
-void checkoutRepo(String repo) {
-    checkoutRepo(repo, getBuildBranch())
-}
-
 void checkoutTag(String repo, String tagName, String localBranchName = tagName) {
     deleteDir()
     checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
@@ -277,28 +198,12 @@ void mergeAndPush(String prLink, String targetBranch) {
     }
 }
 
-void mergeAndPush(String prLink) {
-    mergeAndPush(prLink, getBuildBranch())
-}
-
-void tagLatest() {
-    if (getGitTag() != '') {
-        githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
-    }
-}
-
-void prepareForPR(String repo) {
-    checkoutRepo(repo)
-    githubscm.forkRepo(getBotAuthorCredsID())
-    githubscm.createBranch(getSnapshotBranch())
-}
-
 String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch, String targetBranch) {
     def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}"
 
     githubscm.commitChanges(commitMsg, precommit)
-    githubscm.pushObject('origin', localBranch, getBotAuthorCredsID())
-    return githubscm.createPR(commitMsg, prBody, targetBranch, getBotAuthorCredsID())
+    githubscm.pushObject('origin', localBranch, getGitAuthorCredsID())
+    return githubscm.createPR(commitMsg, prBody, targetBranch, getGitAuthorCredsID())
 }
 
 void commitAndForcePushProtectedBranch(String repo, String branch) {
@@ -313,21 +218,6 @@ void commitAndForcePushProtectedBranch(String repo, String branch) {
         println "[ERROR] Force push branch: ${branch} from repo : ${repo} failed with exception: ${exception}"
         currentBuild.result = 'UNSTABLE'
     }
-}
-
-String commitAndCreatePR(String commitMsg) {
-    return commitAndCreatePR(commitMsg, {
-        githubscm.findAndStageNotIgnoredFiles('pom.xml')
-        githubscm.findAndStageNotIgnoredFiles('build.gradle')
-    }, getSnapshotBranch(), getBuildBranch())
-}
-
-String createWebsitePrBranch(String websiteRepository) {
-    checkoutRepo(websiteRepository, 'main') // there is no other branch
-    githubscm.forkRepo(getBotAuthorCredsID())
-    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
-    githubscm.createBranch(prBranchName)
-    return prBranchName
 }
 
 void installGithubCLI() {
@@ -362,18 +252,6 @@ MavenCommand getMavenCommand() {
         mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
     }
     return mvnCmd
-}
-
-void runMavenDeploy(MavenCommand mvnCmd) {
-    if (shouldDeployToRepository()) {
-        mvnCmd = mvnCmd.clone()
-        if (env.MAVEN_DEPLOY_REPOSITORY) {
-            mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-        }
-        mvnCmd.skipTests(true).run('clean deploy')
-    } else {
-        echo 'Testing environment and no specific deploy repository given => no deployment'
-    }
 }
 
 void removeJbossNexusFromMavenAndGradle() {
