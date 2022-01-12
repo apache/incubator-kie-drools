@@ -30,9 +30,6 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.drl.ast.descr.AttributeDescr;
-import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.RuleBaseConfiguration;
@@ -45,10 +42,9 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -69,7 +65,11 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -164,7 +164,7 @@ public class MVELConsequenceBuilderTest {
 
     @Test
     public void testImperativeCodeError() throws Exception {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setConsequence( "if (cheese.price == 10) { cheese.price = 5; }" );
 
@@ -287,7 +287,7 @@ public class MVELConsequenceBuilderTest {
             assertFalse( parser.getErrors().toString(),
                                 parser.hasErrors() );
 
-            InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools" );
+            InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.drools" );
 
             final RuleDescr ruleDescr = pkgDescr.getRules().get( 0 );
 
@@ -363,7 +363,7 @@ public class MVELConsequenceBuilderTest {
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
         builder = new MVELConsequenceBuilder();
 
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.mvel.compiler.test" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.drools.mvel.compiler.test" );
         pkg.addImport( new ImportDeclaration( Cheese.class.getCanonicalName() ) );
 
         KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();

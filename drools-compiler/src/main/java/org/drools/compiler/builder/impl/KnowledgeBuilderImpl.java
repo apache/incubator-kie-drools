@@ -1497,7 +1497,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 pkg.addFunction(entry.getValue());
             }
         }
-        pkg.getClassFieldAccessorStore().merge(newPkg.getClassFieldAccessorStore());
+        pkg.mergeStore(newPkg);
         pkg.getDialectRuntimeRegistry().onBeforeExecute();
 
         // we have to do this before the merging, as it does some classloader resolving
@@ -2145,7 +2145,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         if (kBase != null) {
             for (InternalKnowledgePackage pkg : kBase.getPackagesMap().values()) {
                 pkg.getDialectRuntimeRegistry().getDialectData("java").setDirty(true);
-                pkg.getClassFieldAccessorStore().wire();
+                pkg.wireStore();
             }
         }
     }

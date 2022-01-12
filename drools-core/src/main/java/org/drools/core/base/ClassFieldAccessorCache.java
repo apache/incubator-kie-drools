@@ -35,8 +35,7 @@ public class ClassFieldAccessorCache {
     private ClassLoader                  classLoader;
 
     public ClassFieldAccessorCache(ClassLoader classLoader) {
-        //        lookup = new HashMap<AccessorKey, LookupEntry>();
-        cacheByClassLoader = new WeakHashMap<ClassLoader, CacheEntry>();
+        this.cacheByClassLoader = new WeakHashMap<>();
         this.classLoader = classLoader;
     }
 
@@ -126,10 +125,14 @@ public class ClassFieldAccessorCache {
         return new AccessorKey( className, fieldName, AccessorKey.AccessorType.FieldAccessor );
     }
 
-    public Class getClass(String className) {
+    private Class getClass(String className) {
+        return getClass(this.classLoader, className);
+    }
+
+    private static Class getClass(ClassLoader cl, String className) {
         try {
             Class<?> primitiveType = convertPrimitiveNameToType( className );
-            return primitiveType != null ? primitiveType : this.classLoader.loadClass( className );
+            return primitiveType != null ? primitiveType : cl.loadClass( className );
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeException( "Unable to resolve class '" + className + "'" );
         }

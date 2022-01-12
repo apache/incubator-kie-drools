@@ -18,10 +18,10 @@ package org.drools.modelcompiler.builder;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
@@ -42,7 +42,7 @@ public class ModelBuilderImplTest {
 
     @Before
     public void setup() {
-        internalKnowledgePackage = new KnowledgePackageImpl("apackage");
+        internalKnowledgePackage = CoreComponentFactory.get().createKnowledgePackage("apackage");
         modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources, CONFIGURATION, RELEASE_ID, false);
         packageRegistry = new PackageRegistry(ModelBuilderImplTest.class.getClassLoader(), CONFIGURATION, internalKnowledgePackage);
     }

@@ -180,7 +180,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                 if (typeRefreshed) {
                     Collection<KiePackage> kiePackages = kBuilder.getKnowledgePackages();
                     for (KiePackage kiePackage : kiePackages) {
-                        ((InternalKnowledgePackage) kiePackage).getClassFieldAccessorStore().wire();
+                        ((InternalKnowledgePackage) kiePackage).wireStore();
                         ((InternalKnowledgePackage) kiePackage).wireTypeDeclarations();
                     }
                 }

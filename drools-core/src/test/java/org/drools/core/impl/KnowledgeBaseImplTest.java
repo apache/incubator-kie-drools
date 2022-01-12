@@ -15,11 +15,11 @@
 
 package org.drools.core.impl;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.junit.Test;
-
 import java.util.Collections;
+
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.reteoo.CoreComponentFactory;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +35,7 @@ public class KnowledgeBaseImplTest {
         assertTrue( base.getPackages().length == 0 );
 
         // add package with function static import into knowledge base
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.drools.test" );
         pkg.addStaticImport( "org.drools.function.myFunction" );
         base.addPackage( pkg );
 

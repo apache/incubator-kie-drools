@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.DescrResource;
+import org.drools.core.reteoo.CoreComponentFactory;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -80,11 +80,11 @@ public class PMMLRuntimeFactoryInternalTest {
     @Test
     public void createKieBaseFromKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        knowledgeBuilder.addPackage(new KnowledgePackageImpl("namespace_1"));
-        knowledgeBuilder.addPackage(new KnowledgePackageImpl("namespace_2"));
+        knowledgeBuilder.addPackage(CoreComponentFactory.get().createKnowledgePackage("namespace_1"));
+        knowledgeBuilder.addPackage(CoreComponentFactory.get().createKnowledgePackage("namespace_2"));
         PMMLPackage pmmlPkg = new PMMLPackageImpl();
         pmmlPkg.addAll(Collections.singleton(new KiePMMLTestingModel("FAKE", Collections.emptyList())));
-        KnowledgePackageImpl pmmlKnowledgePackage = new KnowledgePackageImpl("pmmled_package");
+        InternalKnowledgePackage pmmlKnowledgePackage = CoreComponentFactory.get().createKnowledgePackage("pmmled_package");
         pmmlKnowledgePackage.getResourceTypePackages().put(ResourceType.PMML, pmmlPkg);
         KieBase retrieved = PMMLRuntimeFactoryInternal.createKieBase(knowledgeBuilder);
         assertNotNull(retrieved);
@@ -127,7 +127,7 @@ public class PMMLRuntimeFactoryInternalTest {
     public void populateNestedKiePackageList() {
         // Setup kiebase
         KiePMMLModel kiePMMLModel = getKiePMMLModelWithNested("FAKE");
-        KnowledgePackageImpl pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
+        InternalKnowledgePackage pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
         List<KiePackage> kiePackages =  ((HasNestedModels)kiePMMLModel)
                 .getNestedModels()
                 .stream()
@@ -150,7 +150,7 @@ public class PMMLRuntimeFactoryInternalTest {
     public void getKiePackageByFullClassNamePresent() {
         // Setup kiebase
         KiePMMLModel kiePMMLModel = new KiePMMLModelA("FAKE");
-        KnowledgePackageImpl pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
+        InternalKnowledgePackage pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
         InternalKnowledgeBase kieBase = (InternalKnowledgeBase) new KieHelper().build(ExecutableModelProject.class);
         kieBase.addPackage(pmmlKnowledgePackage);
         // Actual test
@@ -160,7 +160,7 @@ public class PMMLRuntimeFactoryInternalTest {
     @Test(expected = KiePMMLException.class)
     public void getKiePackageByFullClassNameNotPresent() {
         // Setup kiebase
-        KnowledgePackageImpl pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(new KiePMMLModelA("FAKE"));
+        InternalKnowledgePackage pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(new KiePMMLModelA("FAKE"));
         InternalKnowledgeBase kieBase = (InternalKnowledgeBase) new KieHelper().build(ExecutableModelProject.class);
         kieBase.addPackage(pmmlKnowledgePackage);
         // Actual test
@@ -173,10 +173,10 @@ public class PMMLRuntimeFactoryInternalTest {
         assertNotNull(((PMMLRuntimeInternalImpl)toValidate).getKnowledgeBase());
     }
 
-    private KnowledgePackageImpl getKnowledgePackageWithPMMLResourceType(KiePMMLModel kiePMMLModel) {
+    private InternalKnowledgePackage getKnowledgePackageWithPMMLResourceType(KiePMMLModel kiePMMLModel) {
         PMMLPackage pmmlPkg = new PMMLPackageImpl();
         pmmlPkg.addAll(Collections.singleton(kiePMMLModel));
-        KnowledgePackageImpl pmmlKnowledgePackage = new KnowledgePackageImpl(kiePMMLModel.getKModulePackageName());
+        InternalKnowledgePackage pmmlKnowledgePackage = CoreComponentFactory.get().createKnowledgePackage(kiePMMLModel.getKModulePackageName());
         pmmlKnowledgePackage.getResourceTypePackages().put(ResourceType.PMML, pmmlPkg);
         return pmmlKnowledgePackage;
     }

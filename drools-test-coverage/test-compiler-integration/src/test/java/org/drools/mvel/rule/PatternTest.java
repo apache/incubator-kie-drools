@@ -14,23 +14,23 @@
 
 package org.drools.mvel.rule;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.test.model.Cheese;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateImpl;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.core.facttemplates.FieldTemplateImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.test.model.Cheese;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class PatternTest {
 
@@ -56,7 +56,7 @@ public class PatternTest {
     @Test
     public void testDeclarationsFactTemplate() throws Exception {
 
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 0,
                                                                 String.class );

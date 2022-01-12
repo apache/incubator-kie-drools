@@ -60,13 +60,13 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.factmodel.GeneratedFact;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.internal.InternalResource;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
 import org.drools.modelcompiler.builder.CanonicalKieBaseUpdater;
@@ -346,7 +346,7 @@ public class CanonicalKieModule implements InternalKieModule {
         for (Process process : processes) {
             InternalKnowledgePackage canonicalKiePkg = (InternalKnowledgePackage) canonicalKiePkgs.getKiePackage(process.getPackageName());
             if (canonicalKiePkg == null) {
-                canonicalKiePkg = new KnowledgePackageImpl(process.getPackageName());
+                canonicalKiePkg = CoreComponentFactory.get().createKnowledgePackage(process.getPackageName());
                 canonicalKiePkgs.addKiePackage(canonicalKiePkg);
             }
             canonicalKiePkg.addProcess(process);

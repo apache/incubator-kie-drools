@@ -41,14 +41,12 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.serialization.protobuf.marshalling.IdentityPlaceholderResolverStrategy;
-import org.drools.serialization.protobuf.marshalling.RuleBaseNodes;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -59,6 +57,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreConstants;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Address;
@@ -71,6 +70,8 @@ import org.drools.mvel.compiler.Message;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Primitives;
 import org.drools.mvel.integrationtests.IteratorToList;
+import org.drools.serialization.protobuf.marshalling.IdentityPlaceholderResolverStrategy;
+import org.drools.serialization.protobuf.marshalling.RuleBaseNodes;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -2210,7 +2211,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test @Ignore("This test is suspicious to say the least...")
     public void testScheduledActivation() {
         InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgePackageImpl impl = new KnowledgePackageImpl( "test" );
+        InternalKnowledgePackage impl = CoreComponentFactory.get().createKnowledgePackage( "test" );
 
         BuildContext buildContext = new BuildContext( knowledgeBase, Collections.emptyList() );
         //simple rule that fires after 10 seconds

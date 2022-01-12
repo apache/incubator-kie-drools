@@ -17,18 +17,20 @@
 package org.drools.core.facttemplates;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FactTemplateFieldExtractorTest {
     @Test
     public void testExtractor() {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
 
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 0,
@@ -89,7 +91,7 @@ public class FactTemplateFieldExtractorTest {
 
     @Test
     public void testDeclaration() {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
 
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 0,

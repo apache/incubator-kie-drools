@@ -27,12 +27,12 @@ import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
-import org.drools.core.impl.KieBaseUpdate;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KieBaseUpdate;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.CanonicalKieModule;
@@ -102,7 +102,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
                 InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
                 if (oldKpkg == null) {
                     try {
-                        oldKpkg = (InternalKnowledgePackage) ctx.kBase.addPackage( new KnowledgePackageImpl( changeSet.getResourceName() ) ).get();
+                        oldKpkg = (InternalKnowledgePackage) ctx.kBase.addPackage( CoreComponentFactory.get().createKnowledgePackage( changeSet.getResourceName() ) ).get();
                     } catch (InterruptedException | ExecutionException e) {
                         throw new RuntimeException( e );
                     }

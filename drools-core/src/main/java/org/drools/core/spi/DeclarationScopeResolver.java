@@ -139,8 +139,8 @@ public class DeclarationScopeResolver {
 
                 // make sure dummy and globalExtractor are wired up to correct ClassObjectType
                 // and set as targets for rewiring
-                pkg.getClassFieldAccessorStore().wireObjectType( classObjectType, dummy );
-                pkg.getClassFieldAccessorStore().wireObjectType( classObjectType, ( AcceptsClassObjectType ) globalExtractor );
+                pkg.wireObjectType( classObjectType, dummy );
+                pkg.wireObjectType( classObjectType, ( AcceptsClassObjectType ) globalExtractor );
             }
             return declaration;
         }

@@ -23,15 +23,9 @@ import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.core.base.ClassFieldAccessor;
-import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.Annotated;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.ClassUtils;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.kie.api.definition.type.Duration;
@@ -87,7 +81,7 @@ public class TypeDeclarationConfigurator {
 
         if ( type.getTypeClassDef() != null ) {
             try {
-                buildFieldAccessors( type, pkgRegistry );
+                pkgRegistry.getPackage().buildFieldAccessors( type );
             } catch ( Throwable e ) {
                 kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error creating field accessors for TypeDeclaration '" + type.getTypeName() +
@@ -110,17 +104,6 @@ public class TypeDeclarationConfigurator {
         wireDurationAccessor( kbuilder, annotated, type, pkgRegistry );
     }
 
-    protected void buildFieldAccessors(TypeDeclaration type, PackageRegistry pkgRegistry)
-            throws SecurityException, IllegalArgumentException {
-        ClassDefinition cd = type.getTypeClassDef();
-        ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
-        for ( FieldDefinition attrDef : cd.getFieldsDefinitions() ) {
-            ClassFieldAccessor accessor = store.getAccessor( cd.getDefinedClass().getName(),
-                                                             attrDef.getName() );
-            attrDef.setReadWriteAccessor( accessor );
-        }
-    }
-
     private static void wireTimestampAccessor( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
         Timestamp timestamp = annotated.getTypedAnnotation(Timestamp.class);
         if ( timestamp != null ) {
@@ -137,7 +120,7 @@ public class TypeDeclarationConfigurator {
 
             AnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, timestampField, pkg );
             if (results != null) {
-                type.setTimestampExtractor(getFieldExtractor( type, timestampField, pkg, results ));
+                type.setTimestampExtractor(pkg.getFieldExtractor( type, timestampField, results.getReturnType() ));
             } else {
                 kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error creating field accessors for timestamp field '" + timestamp +
@@ -162,7 +145,7 @@ public class TypeDeclarationConfigurator {
 
             AnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, durationField, pkg );
             if (results != null) {
-                type.setDurationExtractor(getFieldExtractor( type, durationField, pkg, results ));
+                type.setDurationExtractor(pkg.getFieldExtractor( type, durationField, results.getReturnType() ));
             } else {
                 kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error processing @duration for TypeDeclaration '" + type.getFullName() +
@@ -183,16 +166,5 @@ public class TypeDeclarationConfigurator {
                                                        typeDescr,
                                                        durationField,
                                                        new BoundIdentifiers( type.getTypeClass() ) );
-    }
-
-    private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, InternalKnowledgePackage pkg, AnalysisResult results ) {
-        InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
-                                                                                      type.getTypeClass().getName(),
-                                                                                      timestampField,
-                                                                                      type.isTypesafe(),
-                                                                                      results.getReturnType());
-
-        pkg.getDialectRuntimeRegistry().getDialectData("mvel").compile( reader );
-        return reader;
     }
 }

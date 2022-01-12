@@ -46,6 +46,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
@@ -6569,7 +6571,7 @@ public class Misc2Test {
                      " System.out.println( \"Hello World\" ); " +
                      " end ";
 
-        KnowledgePackageImpl kPackage = new KnowledgePackageImpl( "com.testfacttemplate" );
+        InternalKnowledgePackage kPackage = CoreComponentFactory.get().createKnowledgePackage( "com.testfacttemplate" );
         FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", 0, Integer.class );
         FactTemplate factTemplate = new FactTemplateImpl( kPackage, "TestFactTemplate", new FieldTemplate[]{fieldTemplate} );
 

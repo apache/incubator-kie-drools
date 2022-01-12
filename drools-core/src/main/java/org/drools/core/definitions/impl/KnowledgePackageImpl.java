@@ -36,8 +36,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -109,8 +107,6 @@ public class KnowledgePackageImpl
 
     protected Map<String, WindowDeclaration> windowDeclarations;
 
-    protected ClassFieldAccessorStore classFieldAccessorStore;
-
     protected ResourceTypePackageRegistry resourceTypePackages;
 
     protected Map<String, Object> cloningResources = new HashMap<>();
@@ -152,7 +148,6 @@ public class KnowledgePackageImpl
         this.factTemplates = Collections.emptyMap();
         this.functions = Collections.emptyMap();
         this.dialectRuntimeRegistry = new DialectRuntimeRegistry();
-        this.classFieldAccessorStore = new ClassFieldAccessorStore();
         this.entryPointsIds = Collections.emptySet();
         this.windowDeclarations = Collections.emptyMap();
         this.resourceTypePackages = new ResourceTypePackageRegistry();
@@ -246,7 +241,6 @@ public class KnowledgePackageImpl
 
         try {
             out.writeObject(this.name);
-            out.writeObject(this.classFieldAccessorStore);
             out.writeObject(this.dialectRuntimeRegistry);
             out.writeObject(this.typeDeclarations);
             out.writeObject(this.imports);
@@ -292,8 +286,6 @@ public class KnowledgePackageImpl
                         (byte[]) stream.readObject()));
 
         this.name = (String) in.readObject();
-        this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
-        in.setStore(this.classFieldAccessorStore);
 
         this.dialectRuntimeRegistry = (DialectRuntimeRegistry) in.readObject();
         this.typeDeclarations = (Map) in.readObject();
@@ -337,10 +329,6 @@ public class KnowledgePackageImpl
 
     public DialectRuntimeRegistry getDialectRuntimeRegistry() {
         return this.dialectRuntimeRegistry;
-    }
-
-    public void setDialectRuntimeRegistry(DialectRuntimeRegistry dialectRuntimeRegistry) {
-        this.dialectRuntimeRegistry = dialectRuntimeRegistry;
     }
 
     public void addImport(final ImportDeclaration importDecl) {
@@ -637,14 +625,6 @@ public class KnowledgePackageImpl
         }
     }
 
-    public ClassFieldAccessorStore getClassFieldAccessorStore() {
-        return classFieldAccessorStore;
-    }
-
-    public void setClassFieldAccessorCache(ClassFieldAccessorCache classFieldAccessorCache) {
-        this.classFieldAccessorStore.setClassFieldAccessorCache(classFieldAccessorCache);
-    }
-
     public Set<String> getEntryPointIds() {
         return entryPointsIds;
     }
@@ -664,7 +644,7 @@ public class KnowledgePackageImpl
         if (typeResolver != null && typeResolver.getClassLoader() == classLoader) {
             return;
         }
-        this.typeResolver = new ClassTypeResolver(new HashSet<String>(getImports().keySet()), classLoader, getName());
+        this.typeResolver = new ClassTypeResolver(new HashSet<>(getImports().keySet()), classLoader, getName());
         typeResolver.addImport(getName() + ".*");
         for (String implicitImport : getImplicitImports()) {
             typeResolver.addImplicitImport(implicitImport);
@@ -715,7 +695,7 @@ public class KnowledgePackageImpl
                 if (type.getTypeClassName() != null) {
                     // the type declaration might not have been built up to actual class, if an error was found first
                     // in this case, no accessor would have been wired
-                    classFieldAccessorStore.removeType(type);
+                    removeTypeFromStore(type);
                     dialect.remove(type.getTypeClassName());
                     if (typeResolver != null) {
                         typeResolver.registerClass( type.getTypeClassName(), null );
@@ -727,6 +707,8 @@ public class KnowledgePackageImpl
         }
         return typesToBeRemoved;
     }
+
+    protected void removeTypeFromStore(TypeDeclaration type) {}
 
     public List<RuleImpl> removeRulesGeneratedFromResource(Resource resource) {
         List<RuleImpl> rulesToBeRemoved = getRulesGeneratedFromResource(resource);

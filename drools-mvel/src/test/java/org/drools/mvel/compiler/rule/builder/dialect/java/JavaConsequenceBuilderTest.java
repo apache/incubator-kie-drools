@@ -25,20 +25,20 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.drl.ast.descr.BindingDescr;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.java.JavaAnalysisResult;
@@ -60,7 +60,7 @@ public class JavaConsequenceBuilderTest {
     private RuleDescr ruleDescr;
 
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.drools" );
         pkg.addImport( new ImportDeclaration( "org.drools.mvel.compiler.Cheese" ) );
 
         KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();

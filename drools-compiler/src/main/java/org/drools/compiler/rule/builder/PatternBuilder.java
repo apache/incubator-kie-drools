@@ -263,7 +263,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                   isInternalFact(patternDescr, context));
             if (objectType instanceof ClassObjectType) {
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
-                context.getPkg().getClassFieldAccessorStore().wireObjectType(objectType, (AcceptsClassObjectType) pattern.getDeclaration().getExtractor());
+                context.getPkg().wireObjectType(objectType, (AcceptsClassObjectType) pattern.getDeclaration().getExtractor());
             }
         } else {
             pattern = new Pattern(context.getNextPatternId(),
@@ -296,7 +296,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
     private void processClassObjectType(RuleBuildContext context, ObjectType objectType, Pattern pattern) {
         if (objectType instanceof ClassObjectType) {
             // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
-            context.getPkg().getClassFieldAccessorStore().wireObjectType(objectType, pattern);
+            context.getPkg().wireObjectType(objectType, pattern);
             Class<?> cls = objectType.getClassType();
             if (cls.getPackage() != null && !cls.getPackage().getName().equals("java.lang")) {
                 // register the class in its own package unless it is primitive or belongs to java.lang
@@ -825,7 +825,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                 XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.getIndex(), part.isIterate(), part.isLazy());
 
                 // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
-                context.getPkg().getClassFieldAccessorStore().wireObjectType(currentObjectType, xpathChunk);
+                context.getPkg().wireObjectType(currentObjectType, xpathChunk);
 
                 if (xpathChunk == null) {
                     registerDescrBuildError(context, patternDescr,
@@ -1050,7 +1050,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         }
 
         Class<?> clazz = pattern.getObjectType().getClassType();
-        Class<?> fieldType = context.getPkg().getClassFieldAccessorStore().getFieldType(clazz, leftValue);
+        Class<?> fieldType = context.getPkg().getFieldType(clazz, leftValue);
         return fieldType != null ? ValueType.determineValueType(fieldType) : null;
     }
 
@@ -1622,7 +1622,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                     declaration = createDeclarationObject(context, "this", pattern);
                 } else {
                     declaration = new Declaration("this", pattern);
-                    context.getPkg().getClassFieldAccessorStore().getReader( pattern.getObjectType().getClassName(), expr, declaration );
+                    context.getPkg().getReader( pattern.getObjectType().getClassName(), expr, declaration );
                 }
             }
         } else {
@@ -1710,7 +1710,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                             final String fieldName,
                                             final AcceptsReadAccessor target) {
         if (!ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType())) {
-            context.getPkg().getClassFieldAccessorStore().getReader(objectType.getClassName(), fieldName, target);
+            context.getPkg().getReader(objectType.getClassName(), fieldName, target);
         }
     }
 
@@ -1756,9 +1756,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             }
 
             try {
-                reader = context.getPkg().getClassFieldAccessorStore().getReader(objectType.getClassName(),
-                                                                                 fieldName,
-                                                                                 target);
+                reader = context.getPkg().getReader(objectType.getClassName(), fieldName, target);
             } catch (final Exception e) {
                 if (reportError && context.isTypesafe()) {
                     registerDescrBuildError(context, descr, e,
@@ -1769,8 +1767,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             } finally {
 
                 if (reportError) {
-                    Collection<KnowledgeBuilderResult> results = context.getPkg().getClassFieldAccessorStore()
-                            .getWiringResults(objectType.getClassType(), fieldName);
+                    Collection<KnowledgeBuilderResult> results = context.getPkg().getWiringResults(objectType.getClassType(), fieldName);
                     if (!results.isEmpty()) {
                         for (KnowledgeBuilderResult res : results) {
                             if (res.getSeverity() == ResultSeverity.ERROR) {

@@ -16,12 +16,13 @@
 
 package org.drools.modelcompiler.facttemplate;
 
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateImpl;
 import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.core.facttemplates.FieldTemplateImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.model.Prototype;
 
 public class FactFactory {
@@ -31,10 +32,10 @@ public class FactFactory {
     }
 
     public static Fact createMapBasedFact(Prototype prototype) {
-        return new HashMapFactImpl( prototypeToFactTemplate( prototype, new KnowledgePackageImpl( prototype.getPackage() ) ) );
+        return new HashMapFactImpl( prototypeToFactTemplate( prototype, CoreComponentFactory.get().createKnowledgePackage( prototype.getPackage() ) ) );
     }
 
-    public static FactTemplate prototypeToFactTemplate( Prototype prototype, KnowledgePackageImpl pkg ) {
+    public static FactTemplate prototypeToFactTemplate( Prototype prototype, InternalKnowledgePackage pkg ) {
         FieldTemplate[] fieldTemplates = new FieldTemplate[prototype.getFields().length];
         for (int i = 0; i < prototype.getFields().length; i++) {
             fieldTemplates[i] = new FieldTemplateImpl( prototype.getFields()[i].getName(), i, prototype.getFields()[i].getType() );
