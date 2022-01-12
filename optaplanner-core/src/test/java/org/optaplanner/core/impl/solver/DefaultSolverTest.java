@@ -52,7 +52,10 @@ import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -343,6 +346,128 @@ public class DefaultSolverTest {
                 .isEqualTo(0);
         assertThat(meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
                 .isEqualTo(2);
+    }
+
+    private static class SetTestdataEntityValueCustomPhaseCommand implements CustomPhaseCommand<TestdataHardSoftScoreSolution> {
+        final TestdataEntity entity;
+        final TestdataValue value;
+
+        public SetTestdataEntityValueCustomPhaseCommand(TestdataEntity entity, TestdataValue value) {
+            this.entity = entity;
+            this.value = value;
+        }
+
+        @Override
+        public void changeWorkingSolution(ScoreDirector<TestdataHardSoftScoreSolution> scoreDirector) {
+            TestdataEntity workingEntity = scoreDirector.lookUpWorkingObject(entity);
+            TestdataValue workingValue = scoreDirector.lookUpWorkingObject(value);
+
+            scoreDirector.beforeVariableChanged(workingEntity, "value");
+            workingEntity.setValue(workingValue);
+            scoreDirector.afterVariableChanged(workingEntity, "value");
+            scoreDirector.triggerVariableListeners();
+        }
+    }
+
+    @Test
+    public void solveStepScoreMetrics() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataHardSoftScoreSolution.class, TestdataEntity.class);
+        solverConfig.setScoreDirectorFactoryConfig(
+                new ScoreDirectorFactoryConfig().withConstraintProviderClass(BestScoreMetricConstraintProvider.class));
+        solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0hard/3soft"));
+        solverConfig.setMonitoringConfig(new MonitoringConfig()
+                .withSolverMetricList(List.of(SolverMetric.STEP_SCORE)));
+
+        TestdataHardSoftScoreSolution solution = new TestdataHardSoftScoreSolution("s1");
+        TestdataEntity e1 = new TestdataEntity("e1");
+        TestdataEntity e2 = new TestdataEntity("e2");
+        TestdataEntity e3 = new TestdataEntity("e3");
+        TestdataValue none = new TestdataValue("none");
+        TestdataValue reward = new TestdataValue("reward");
+        solution.setValueList(Arrays.asList(none, reward));
+        solution.setEntityList(Arrays.asList(e1, e2, e3));
+
+        solverConfig.setPhaseConfigList(List.of(
+                // Force OptaPlanner to select "none" value which reward 0 soft
+                new ConstructionHeuristicPhaseConfig()
+                        .withConstructionHeuristicType(ConstructionHeuristicType.FIRST_FIT)
+                        .withMoveSelectorConfigList(
+                                List.of(new ChangeMoveSelectorConfig()
+                                        .withFilterClass(NoneValueSelectionFilter.class))),
+                // Then do a custom phase, to force certain steps to be taken
+                new CustomPhaseConfig()
+                        .withCustomPhaseCommands(
+                                new SetTestdataEntityValueCustomPhaseCommand(e1, reward),
+                                new SetTestdataEntityValueCustomPhaseCommand(e2, reward),
+                                new SetTestdataEntityValueCustomPhaseCommand(e1, none),
+                                new SetTestdataEntityValueCustomPhaseCommand(e1, reward),
+                                new SetTestdataEntityValueCustomPhaseCommand(e3, reward))));
+        SolverFactory<TestdataHardSoftScoreSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        Solver<TestdataHardSoftScoreSolution> solver = solverFactory.buildSolver();
+        ((DefaultSolver<TestdataHardSoftScoreSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetrics"));
+        AtomicInteger step = new AtomicInteger(-1);
+
+        ((DefaultSolver<TestdataHardSoftScoreSolution>) solver)
+                .addPhaseLifecycleListener(new PhaseLifecycleListenerAdapter<TestdataHardSoftScoreSolution>() {
+                    @Override
+                    public void stepEnded(AbstractStepScope<TestdataHardSoftScoreSolution> stepScope) {
+                        super.stepEnded(stepScope);
+                        meterRegistry.publish(solver);
+
+                        // first 3 steps are construction heuristic steps and don't have a step score since it uninitialized
+                        if (step.get() < 2) {
+                            step.incrementAndGet();
+                            return;
+                        }
+
+                        assertThat(
+                                meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".hard.score", "VALUE")
+                                        .intValue())
+                                                .isEqualTo(0);
+
+                        if (step.get() == 2) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(0);
+                        } else if (step.get() == 3) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(1);
+                        } else if (step.get() == 4) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(2);
+                        } else if (step.get() == 5) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(1);
+                        } else if (step.get() == 6) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(2);
+                        }
+                        step.incrementAndGet();
+                    }
+                });
+        solution = solver.solve(solution);
+
+        assertThat(step.get()).isEqualTo(7);
+        meterRegistry.publish(solver);
+        assertThat(solution).isNotNull();
+        assertThat(meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
+                .isEqualTo(0);
+        assertThat(meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
+                .isEqualTo(3);
     }
 
     public static class ErrorThrowingConstraintProvider implements ConstraintProvider {

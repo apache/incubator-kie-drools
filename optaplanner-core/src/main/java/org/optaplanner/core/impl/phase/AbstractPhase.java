@@ -17,10 +17,6 @@
 package org.optaplanner.core.impl.phase;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -41,8 +37,6 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.micrometer.core.instrument.Tags;
-
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see DefaultLocalSearchPhase
@@ -53,7 +47,6 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     protected final int phaseIndex;
     protected final String logIndentation;
-    protected final Map<Tags, List<AtomicReference<Number>>> stepScoreMap = new ConcurrentHashMap<>();
 
     // Called "phaseTermination" to clearly distinguish from "solverTermination" inside AbstractSolver.
     protected final Termination<Solution_> phaseTermination;
@@ -189,7 +182,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
             SolverMetric.registerScoreMetrics(SolverMetric.STEP_SCORE,
                     stepScope.getPhaseScope().getSolverScope().getMonitoringTags(),
                     scoreDefinition,
-                    stepScoreMap,
+                    stepScope.getPhaseScope().getSolverScope().getStepScoreMap(),
                     stepScope.getScore());
         }
     }
