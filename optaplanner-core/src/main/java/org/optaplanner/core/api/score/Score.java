@@ -21,7 +21,6 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
@@ -154,7 +153,6 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
      * For example: {@code -3init/-0hard/-7soft} also returns {@code new int{-0, -7}}
      *
      * @return never null
-     * @see ScoreDefinition#fromLevelNumbers(int, Number[])
      */
     Number[] toLevelNumbers();
 

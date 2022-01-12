@@ -21,7 +21,6 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.ProblemFactChange;
-import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * The ScoreDirector holds the {@link PlanningSolution working solution}
@@ -72,7 +71,7 @@ public interface ScoreDirector<Solution_> {
     /**
      * Translates an entity or fact instance (often from another {@link Thread} or JVM)
      * to this {@link ScoreDirector}'s internal working instance.
-     * Useful for {@link Move#rebase(ScoreDirector)} and in a {@link ProblemFactChange}.
+     * Useful for move rebasing and in a {@link ProblemFactChange}.
      * <p>
      * Matching is determined by the {@link LookUpStrategyType} on {@link PlanningSolution}.
      * Matching uses a {@link PlanningId} by default.
@@ -90,7 +89,7 @@ public interface ScoreDirector<Solution_> {
      * As defined by {@link #lookUpWorkingObject(Object)},
      * but doesn't fail fast if no workingObject was ever added for the externalObject.
      * It's recommended to use {@link #lookUpWorkingObject(Object)} instead,
-     * especially in a {@link Move#rebase(ScoreDirector)} code.
+     * especially in move rebasing code.
      *
      * @param externalObject sometimes null
      * @return null if externalObject is null or if there is no workingObject for externalObject

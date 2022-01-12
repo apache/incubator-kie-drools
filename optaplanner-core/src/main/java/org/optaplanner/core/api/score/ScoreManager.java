@@ -27,9 +27,6 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.impl.score.DefaultScoreManager;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.solver.DefaultSolverFactory;
-import org.optaplanner.core.impl.solver.DefaultSolverManager;
 
 /**
  * A stateless service to help calculate {@link Score}, {@link ConstraintMatchTotal},
@@ -58,10 +55,7 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
      */
     static <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> create(
             SolverFactory<Solution_> solverFactory) {
-        InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
-                        .getScoreDirectorFactory();
-        return new DefaultScoreManager<>(scoreDirectorFactory);
+        return new DefaultScoreManager<>(solverFactory);
     }
 
     /**
@@ -75,7 +69,7 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
      */
     static <Solution_, Score_ extends Score<Score_>, ProblemId_> ScoreManager<Solution_, Score_> create(
             SolverManager<Solution_, ProblemId_> solverManager) {
-        return create(((DefaultSolverManager<Solution_, ProblemId_>) solverManager).getSolverFactory());
+        return new DefaultScoreManager<>(solverManager);
     }
 
     // ************************************************************************

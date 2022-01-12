@@ -27,6 +27,9 @@ import java.util.function.ToLongBiFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> {
@@ -38,6 +41,12 @@ public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> 
      * @return true if the guarantee of distinct tuples is provided
      */
     boolean guaranteesDistinct();
+
+    @Override
+    default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C>... joiners) {
+        BiConstraintStreamHelper<A, B, C> helper = new BiConstraintStreamHelper<>(this);
+        return helper.join(otherStream, joiners);
+    }
 
     @Override
     default BiConstraintStream<A, B> distinct() {

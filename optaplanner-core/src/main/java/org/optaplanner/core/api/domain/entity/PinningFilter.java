@@ -17,11 +17,10 @@
 package org.optaplanner.core.api.domain.entity;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * Decides on accepting or discarding a {@link PlanningEntity}.
- * A pinned {@link PlanningEntity} is never used in a {@link Move}.
+ * A pinned {@link PlanningEntity}'s planning variables are never changed.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Entity_> the entity type, the class with the {@link PlanningEntity} annotation

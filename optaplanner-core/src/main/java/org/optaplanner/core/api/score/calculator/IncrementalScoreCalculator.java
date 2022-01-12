@@ -20,7 +20,6 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * Used for incremental java {@link Score} calculation.
@@ -75,7 +74,7 @@ public interface IncrementalScoreCalculator<Solution_, Score_ extends Score<Scor
 
     /**
      * This method is only called if the {@link Score} cannot be predicted.
-     * The {@link Score} can be predicted for example after an undo {@link Move}.
+     * The {@link Score} can be predicted for example after an undo move.
      *
      * @return never null
      */

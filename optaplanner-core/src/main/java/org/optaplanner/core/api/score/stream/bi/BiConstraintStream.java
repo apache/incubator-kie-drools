@@ -39,7 +39,6 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bi.BiConstraintStreamHelper;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 /**
@@ -170,10 +169,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null, a stream that matches every combination of [A, B] and C for which all the
      *         {@link TriJoiner joiners} are true
      */
-    default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C>... joiners) {
-        BiConstraintStreamHelper<A, B, C> helper = new BiConstraintStreamHelper<>(this);
-        return helper.join(otherStream, joiners);
-    }
+    <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C>... joiners);
 
     /**
      * Create a new {@link TriConstraintStream} for every combination of [A, B] and C.

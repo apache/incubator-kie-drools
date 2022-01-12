@@ -28,13 +28,12 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.ProblemFactChange;
-import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * Specifies that a bean property (or a field) is the id to match
  * when {@link ScoreDirector#lookUpWorkingObject(Object) locating}
  * an externalObject (often from another {@link Thread} or JVM).
- * Used during {@link Move} rebasing and in a {@link ProblemFactChange}.
+ * Used during move rebasing and in a {@link ProblemFactChange}.
  * <p>
  * It is specified on a getter of a java bean property (or directly on a field) of a {@link PlanningEntity} class,
  * {@link ValueRangeProvider planning value} class or any {@link ProblemFactCollectionProperty problem fact} class.

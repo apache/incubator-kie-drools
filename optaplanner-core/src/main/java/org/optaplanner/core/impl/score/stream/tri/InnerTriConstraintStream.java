@@ -22,7 +22,10 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A, B, C> {
@@ -34,6 +37,12 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
      * @return true if the guarantee of distinct tuples is provided
      */
     boolean guaranteesDistinct();
+
+    @Override
+    default <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D>... joiners) {
+        TriConstraintStreamHelper<A, B, C, D> helper = new TriConstraintStreamHelper<>(this);
+        return helper.join(otherStream, joiners);
+    }
 
     @Override
     default TriConstraintStream<A, B, C> distinct() {

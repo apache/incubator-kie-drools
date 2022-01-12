@@ -23,11 +23,6 @@ import java.util.Random;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
-import org.optaplanner.core.impl.domain.valuerange.AbstractUncountableValueRange;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 /**
  * A ValueRange is a set of a values for a {@link PlanningVariable}.
@@ -35,19 +30,12 @@ import org.optaplanner.core.impl.solver.random.RandomUtils;
  * but if the values are numbers, they can also be stored in memory by their bounds
  * to use less memory and provide more opportunities.
  * <p>
+ * ValueRange is stateful.
  * Prefer using {@link CountableValueRange} (which extends this interface) whenever possible.
- * <p>
- * A ValueRange is stateful (unlike a {@link ValueSelector} which is stateless).
- * <p>
  * Implementations must be immutable.
- * <p>
- * An implementation must extend {@link AbstractCountableValueRange} or {@link AbstractUncountableValueRange}
- * to ensure backwards compatibility in future versions.
  *
  * @see ValueRangeFactory
  * @see CountableValueRange
- * @see AbstractCountableValueRange
- * @see AbstractUncountableValueRange
  */
 public interface ValueRange<T> {
 
@@ -70,7 +58,7 @@ public interface ValueRange<T> {
      * Scales well because it does not require caching.
      *
      * @param workingRandom never null, the {@link Random} to use when any random number is needed,
-     *        so {@link EnvironmentMode#REPRODUCIBLE} works correctly. {@link RandomUtils} can be useful too.
+     *        so runs are reproducible.
      * @return never null
      */
     Iterator<T> createRandomIterator(Random workingRandom);

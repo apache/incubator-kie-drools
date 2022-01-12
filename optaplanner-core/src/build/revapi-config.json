@@ -348,6 +348,78 @@
           "methodName": "buildScoreInliner",
           "elementKind": "method",
           "justification": "Does not actually affect public API."
+        },
+        {
+          "code": "java.method.noLongerDefault",
+          "old": "method <C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "new": "method <C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "Now implemented outside of public API; technically not incompatible as nobody should extend this."
+        },
+        {
+          "code": "java.method.nowAbstract",
+          "old": "method <C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "new": "method <C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "Now implemented outside of public API; technically not incompatible as nobody should extend this."
+        },
+        {
+          "code": "java.method.noLongerDefault",
+          "old": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "new": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "Now implemented outside of public API; technically not incompatible as nobody should extend this."
+        },
+        {
+          "code": "java.method.nowAbstract",
+          "old": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "new": "method <D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "Now implemented outside of public API; technically not incompatible as nobody should extend this."
+        },
+        {
+          "code": "java.method.noLongerDefault",
+          "old": "method <B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "new": "method <B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "Now implemented outside of public API; technically not incompatible as nobody should extend this."
+        },
+        {
+          "code": "java.method.nowAbstract",
+          "old": "method <B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "new": "method <B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::join(org.optaplanner.core.api.score.stream.uni.UniConstraintStream<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "oldModifiers": "public default",
+          "newModifiers": "public abstract",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "join",
+          "elementKind": "method",
+          "justification": "Now implemented outside of public API; technically not incompatible as nobody should extend this."
         }
       ]
     }
