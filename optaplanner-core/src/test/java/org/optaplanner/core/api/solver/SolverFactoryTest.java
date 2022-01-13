@@ -165,7 +165,7 @@ class SolverFactoryTest {
         DefaultSolverFactory<TestdataSolution> solverFactory =
                 (DefaultSolverFactory<TestdataSolution>) SolverFactory.<TestdataSolution> create(solverConfig);
         InnerScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
-                (InnerScoreDirectorFactory<TestdataSolution, SimpleScore>) solverFactory.getScoreDirectorFactory();
+                solverFactory.getScoreDirectorFactory();
         assertThat(scoreDirectorFactory).isNotNull();
 
         TestdataSolution solution = new TestdataSolution("s1");

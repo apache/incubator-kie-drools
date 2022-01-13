@@ -1,7 +1,10 @@
 package org.optaplanner.core.impl.score.director.drl;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.core.io.impl.ClassPathResource;
@@ -17,6 +20,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
 import org.optaplanner.core.impl.score.director.ScoreDirectorType;
 import org.optaplanner.core.impl.score.director.drl.testgen.TestGenDrlScoreDirectorFactory;
@@ -32,7 +36,7 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
     }
 
     @Override
-    public DrlScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
+    public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
         boolean generateDroolsTestOnError =
                 Boolean.parseBoolean(System.getProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "false"));
@@ -54,44 +58,54 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
             return null;
         }
 
-        try {
-            KieBase kieBase;
-            if (config.getGizmoKieBaseSupplier() != null) {
-                kieBase = config.getGizmoKieBaseSupplier().get();
-            } else {
-                // Can't put this code in KieBaseExtractor since it reference
-                // KieRuntimeBuilder, which is an optional dependency
-                KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
-                        .setClassLoader(classLoader);
-                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
-                    for (String scoreDrl : config.getScoreDrlList()) {
-                        if (scoreDrl == null) {
-                            throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
-                        }
-                        kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
+        List<String> scoreDrlList = new ArrayList<>();
+        if (config.getGizmoKieBaseSupplier() == null) {
+            if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
+                for (String scoreDrl : config.getScoreDrlList()) {
+                    if (scoreDrl == null) {
+                        throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
                     }
+                    scoreDrlList.add(scoreDrl);
                 }
-                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
-                    for (File scoreDrlFile : config.getScoreDrlFileList()) {
-                        kieHelper.addResource(new FileSystemResource(scoreDrlFile));
-                    }
-                }
-                KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(config, KieServices.get());
-                kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // Performance improvement.
-                kieBase = kieHelper.build(ExecutableModelProject.class, kieBaseConfiguration);
             }
+        }
 
-            if (config.isDroolsAlphaNetworkCompilationEnabled()) {
-                KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
+        return () -> buildScoreDirectorFactory(classLoader, solutionDescriptor, config, scoreDrlList,
+                generateDroolsTestOnError);
+    }
+
+    private DrlScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
+            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config,
+            List<String> scoreDrlList, boolean generateDroolsTestOnError) {
+        KieBase kieBase;
+        if (config.getGizmoKieBaseSupplier() != null) {
+            kieBase = config.getGizmoKieBaseSupplier().get();
+        } else {
+            KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
+                    .setClassLoader(classLoader);
+            scoreDrlList.forEach(scoreDrl -> kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader)));
+            if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
+                for (File scoreDrlFile : config.getScoreDrlFileList()) {
+                    kieHelper.addResource(new FileSystemResource(scoreDrlFile));
+                }
             }
-            if (generateDroolsTestOnError) {
-                return new TestGenDrlScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
-                        config.getScoreDrlFileList());
-            } else {
-                return new DrlScoreDirectorFactory<>(solutionDescriptor, kieBase);
+            KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(config, KieServices.get());
+            kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // Performance improvement.
+            try {
+                kieBase = kieHelper.build(ExecutableModelProject.class, kieBaseConfiguration);
+            } catch (Exception ex) {
+                throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
             }
-        } catch (Exception ex) {
-            throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
+        }
+
+        if (config.isDroolsAlphaNetworkCompilationEnabled()) {
+            KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
+        }
+        if (generateDroolsTestOnError) {
+            return new TestGenDrlScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
+                    config.getScoreDrlFileList());
+        } else {
+            return new DrlScoreDirectorFactory<>(solutionDescriptor, kieBase);
         }
     }
 

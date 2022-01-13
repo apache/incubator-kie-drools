@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -65,24 +66,28 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     private static final long DEFAULT_RANDOM_SEED = 0L;
 
     private final SolverConfig solverConfig;
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
+    private final InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
 
     public DefaultSolverFactory(SolverConfig solverConfig) {
         this.solverConfig = Objects.requireNonNull(solverConfig, "The solverConfig (" + solverConfig + ") cannot be null.");
+        this.solutionDescriptor = buildSolutionDescriptor();
+        // Caching score director factory as it potentially does expensive things (eg. Drools KieBase compilation).
+        this.scoreDirectorFactory = buildScoreDirectorFactory();
     }
 
-    public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
-        return buildScoreDirectorFactory(solverConfig.determineEnvironmentMode());
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
+        return solutionDescriptor;
+    }
+
+    public <Score_ extends Score<Score_>> InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory() {
+        return (InnerScoreDirectorFactory<Solution_, Score_>) scoreDirectorFactory;
     }
 
     @Override
     public Solver<Solution_> buildSolver() {
-        EnvironmentMode environmentMode_ = solverConfig.determineEnvironmentMode();
         boolean daemon_ = Objects.requireNonNullElse(solverConfig.getDaemon(), false);
 
-        RandomFactory randomFactory = buildRandomFactory(environmentMode_);
-        Integer moveThreadCount_ = new MoveThreadCountResolver().resolveMoveThreadCount(solverConfig.getMoveThreadCount());
-        InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory = buildScoreDirectorFactory(environmentMode_);
-        boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
         SolverScope<Solution_> solverScope = new SolverScope<>();
         MonitoringConfig monitoringConfig = solverConfig.determineMetricConfig();
         solverScope.setMonitoringTags(Tags.empty());
@@ -92,7 +97,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             solverScope.setSolverMetricSet(EnumSet.noneOf(SolverMetric.class));
         }
 
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
+        EnvironmentMode environmentMode_ = solverConfig.determineEnvironmentMode();
+        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, environmentMode_.isAsserted()));
 
         if ((solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
                 || solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)) &&
@@ -103,6 +109,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                     SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId());
         }
 
+        Integer moveThreadCount_ = new MoveThreadCountResolver().resolveMoveThreadCount(solverConfig.getMoveThreadCount());
         BestSolutionRecaller<Solution_> bestSolutionRecaller =
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(environmentMode_);
         HeuristicConfigPolicy<Solution_> configPolicy = new HeuristicConfigPolicy.Builder<>(environmentMode_,
@@ -114,30 +121,14 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         Termination<Solution_> termination = TerminationFactory.<Solution_> create(terminationConfig_)
                 .buildTermination(configPolicy, basicPlumbingTermination);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
+
+        RandomFactory randomFactory = buildRandomFactory(environmentMode_);
         return new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
                 termination, phaseList, solverScope,
                 moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
     }
 
-    /**
-     * @param environmentMode never null
-     * @return never null
-     */
-    public InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
-        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
-                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(), ScoreDirectorFactoryConfig::new);
-        ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
-                new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
-        return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
-                solutionDescriptor);
-    }
-
-    /**
-     * @param environmentMode never null
-     * @return never null
-     */
-    public SolutionDescriptor<Solution_> buildSolutionDescriptor(EnvironmentMode environmentMode) {
+    private SolutionDescriptor<Solution_> buildSolutionDescriptor() {
         if (solverConfig.getSolutionClass() == null) {
             throw new IllegalArgumentException("The solver configuration must have a solutionClass (" +
                     solverConfig.getSolutionClass() +
@@ -155,13 +146,25 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                         solverConfig.getGizmoMemberAccessorMap(),
                         solverConfig.getGizmoSolutionClonerMap(),
                         solverConfig.getEntityClassList());
+        EnvironmentMode environmentMode = solverConfig.determineEnvironmentMode();
         if (environmentMode.isAsserted()) {
             solutionDescriptor.setAssertModelForCloning(true);
         }
         return solutionDescriptor;
     }
 
-    protected RandomFactory buildRandomFactory(EnvironmentMode environmentMode_) {
+    private InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory() {
+        EnvironmentMode environmentMode = solverConfig.determineEnvironmentMode();
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
+                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(),
+                        ScoreDirectorFactoryConfig::new);
+        ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
+                new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
+        return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
+                solutionDescriptor);
+    }
+
+    private RandomFactory buildRandomFactory(EnvironmentMode environmentMode_) {
         RandomFactory randomFactory;
         if (solverConfig.getRandomFactoryClass() != null) {
             if (solverConfig.getRandomType() != null || solverConfig.getRandomSeed() != null) {
@@ -182,7 +185,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         return randomFactory;
     }
 
-    protected List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy<Solution_> configPolicy,
+    private List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy<Solution_> configPolicy,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         List<PhaseConfig> phaseConfigList_ = solverConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {

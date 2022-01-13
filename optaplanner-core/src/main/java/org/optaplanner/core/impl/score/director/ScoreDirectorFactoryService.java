@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.score.director;
 
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -22,7 +24,10 @@ public interface ScoreDirectorFactoryService<Solution_, Score_ extends Score<Sco
     ScoreDirectorType getSupportedScoreDirectorType();
 
     /**
-     * Returns a new factory for the score director defined by {@link #getSupportedScoreDirectorType()}.
+     * Returns a {@link Supplier} which returns new instance of a score director defined by
+     * {@link #getSupportedScoreDirectorType()}.
+     * This is done so that the actual factory is only instantiated after all the configuration fail-fasts have been
+     * performed.
      *
      * @param classLoader
      * @param solutionDescriptor never null, solution descriptor provided by the solver
@@ -30,7 +35,7 @@ public interface ScoreDirectorFactoryService<Solution_, Score_ extends Score<Sco
      * @return null when this type is not configured
      * @throws IllegalStateException if the configuration has an issue
      */
-    AbstractScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
+    Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config);
 
 }

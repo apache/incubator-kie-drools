@@ -48,7 +48,7 @@ public interface SolverFactory<Solution_> {
      *
      * @param solverConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
-     * @return never null
+     * @return never null, subsequent changes to the config have no effect on the returned instance
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
@@ -63,7 +63,7 @@ public interface SolverFactory<Solution_> {
      *        as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
-     * @return never null
+     * @return never null, subsequent changes to the config have no effect on the returned instance
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource,
@@ -80,7 +80,7 @@ public interface SolverFactory<Solution_> {
      * it's recommend to use {@link #createFromXmlResource(String)} instead.
      *
      * @param solverConfigFile never null
-     * @return never null
+     * @return never null, subsequent changes to the config have no effect on the returned instance
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
@@ -94,7 +94,7 @@ public interface SolverFactory<Solution_> {
      * @param solverConfigFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
-     * @return never null
+     * @return never null, subsequent changes to the config have no effect on the returned instance
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
@@ -112,7 +112,7 @@ public interface SolverFactory<Solution_> {
      * use {@link #createFromXmlResource(String)} instead.
      *
      * @param solverConfig never null
-     * @return never null
+     * @return never null, subsequent changes to the config have no effect on the returned instance
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {

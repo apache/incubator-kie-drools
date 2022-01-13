@@ -19,8 +19,13 @@ package org.optaplanner.core.impl.solver;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class DefaultSolverFactoryTest {
 
@@ -71,4 +76,29 @@ class DefaultSolverFactoryTest {
                 new DefaultSolverFactory.MoveThreadCountResolver();
         return moveThreadCountResolver.resolveMoveThreadCount(moveThreadCountString);
     }
+
+    @Test
+    void cachesScoreDirectorFactory() {
+        SolverConfig solverConfig =
+                SolverConfig.createFromXmlResource("org/optaplanner/core/config/solver/testdataSolverConfig.xml");
+        DefaultSolverFactory<TestdataSolution> defaultSolverFactory = new DefaultSolverFactory<>(solverConfig);
+
+        SolutionDescriptor<TestdataSolution> solutionDescriptor1 = defaultSolverFactory.getSolutionDescriptor();
+        InnerScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory1 =
+                defaultSolverFactory.getScoreDirectorFactory();
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(solutionDescriptor1).isNotNull();
+            softly.assertThat(scoreDirectorFactory1).isNotNull();
+            softly.assertThat(scoreDirectorFactory1.getSolutionDescriptor()).isSameAs(solutionDescriptor1);
+        });
+
+        SolutionDescriptor<TestdataSolution> solutionDescriptor2 = defaultSolverFactory.getSolutionDescriptor();
+        InnerScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory2 =
+                defaultSolverFactory.getScoreDirectorFactory();
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(solutionDescriptor2).isSameAs(solutionDescriptor1);
+            softly.assertThat(scoreDirectorFactory2).isSameAs(scoreDirectorFactory1);
+        });
+    }
+
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,72 +81,73 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         // Load all known Score Director Factories via SPI.
         ServiceLoader<ScoreDirectorFactoryService> scoreDirectorFactoryServiceLoader =
                 ServiceLoader.load(ScoreDirectorFactoryService.class);
-        Map<ScoreDirectorType, AbstractScoreDirectorFactory<Solution_, Score_>> scoreDirectorFactoryMap =
+        Map<ScoreDirectorType, Supplier<AbstractScoreDirectorFactory<Solution_, Score_>>> scoreDirectorFactorySupplierMap =
                 new EnumMap<>(ScoreDirectorType.class);
         for (ScoreDirectorFactoryService<Solution_, Score_> service : scoreDirectorFactoryServiceLoader) {
-            AbstractScoreDirectorFactory<Solution_, Score_> factory =
+            Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> factory =
                     service.buildScoreDirectorFactory(classLoader, solutionDescriptor, config);
             if (factory != null) {
-                scoreDirectorFactoryMap.put(service.getSupportedScoreDirectorType(), factory);
+                scoreDirectorFactorySupplierMap.put(service.getSupportedScoreDirectorType(), factory);
             }
         }
-        AbstractScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory = scoreDirectorFactoryMap.get(EASY);
-        AbstractScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
-                scoreDirectorFactoryMap.get(CONSTRAINT_STREAMS);
-        AbstractScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
-                scoreDirectorFactoryMap.get(INCREMENTAL);
-        AbstractScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory =
-                scoreDirectorFactoryMap.get(DRL);
+        Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> easyScoreDirectorFactorySupplier =
+                scoreDirectorFactorySupplierMap.get(EASY);
+        Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> constraintStreamScoreDirectorFactorySupplier =
+                scoreDirectorFactorySupplierMap.get(CONSTRAINT_STREAMS);
+        Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> incrementalScoreDirectorFactorySupplier =
+                scoreDirectorFactorySupplierMap.get(INCREMENTAL);
+        Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> drlScoreDirectorFactorySupplier =
+                scoreDirectorFactorySupplierMap.get(DRL);
 
-        assertOnlyOneScoreDirectorFactory(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
-                incrementalScoreDirectorFactory, droolsScoreDirectorFactory);
+        assertOnlyOneScoreDirectorFactory(easyScoreDirectorFactorySupplier,
+                constraintStreamScoreDirectorFactorySupplier, incrementalScoreDirectorFactorySupplier,
+                drlScoreDirectorFactorySupplier);
 
-        AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
-        if (easyScoreDirectorFactory != null) {
+        if (easyScoreDirectorFactorySupplier != null) {
             validateNoDroolsAlphaNetworkCompilation();
             validateNoGizmoKieBaseSupplier();
-            scoreDirectorFactory = easyScoreDirectorFactory;
-        } else if (constraintStreamScoreDirectorFactory != null) {
+            return easyScoreDirectorFactorySupplier.get();
+        } else if (constraintStreamScoreDirectorFactorySupplier != null) {
             if (config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
                 validateNoDroolsAlphaNetworkCompilation();
                 validateNoGizmoKieBaseSupplier();
             }
-            scoreDirectorFactory = constraintStreamScoreDirectorFactory;
-        } else if (incrementalScoreDirectorFactory != null) {
+            return constraintStreamScoreDirectorFactorySupplier.get();
+        } else if (incrementalScoreDirectorFactorySupplier != null) {
             validateNoDroolsAlphaNetworkCompilation();
             validateNoGizmoKieBaseSupplier();
-            scoreDirectorFactory = incrementalScoreDirectorFactory;
-        } else if (droolsScoreDirectorFactory != null) {
-            scoreDirectorFactory = droolsScoreDirectorFactory;
+            return incrementalScoreDirectorFactorySupplier.get();
+        } else if (drlScoreDirectorFactorySupplier != null) {
+            return drlScoreDirectorFactorySupplier.get();
         } else {
             throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
-                    + "easyScoreCalculatorClass, a constraintProviderClass, an incrementalScoreCalculatorClass or a droolsScoreDirectorFactory.");
+                    + "easyScoreCalculatorClass, a constraintProviderClass, an incrementalScoreCalculatorClass "
+                    + "or a drlScoreDirectorFactory.");
         }
-
-        return scoreDirectorFactory;
     }
 
-    private void assertOnlyOneScoreDirectorFactory(ScoreDirectorFactory<Solution_> easyScoreDirectorFactory,
-            ScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory,
-            ScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory,
-            ScoreDirectorFactory<Solution_> droolsScoreDirectorFactory) {
-        if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
-                incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
+    private void assertOnlyOneScoreDirectorFactory(
+            Supplier<? extends ScoreDirectorFactory<Solution_>> easyScoreDirectorFactorySupplier,
+            Supplier<? extends ScoreDirectorFactory<Solution_>> constraintStreamScoreDirectorFactorySupplier,
+            Supplier<? extends ScoreDirectorFactory<Solution_>> incrementalScoreDirectorFactorySupplier,
+            Supplier<? extends ScoreDirectorFactory<Solution_>> droolsScoreDirectorFactorySupplier) {
+        if (Stream.of(easyScoreDirectorFactorySupplier, constraintStreamScoreDirectorFactorySupplier,
+                incrementalScoreDirectorFactorySupplier, droolsScoreDirectorFactorySupplier)
                 .filter(Objects::nonNull).count() > 1) {
             List<String> scoreDirectorFactoryPropertyList = new ArrayList<>(4);
-            if (easyScoreDirectorFactory != null) {
+            if (easyScoreDirectorFactorySupplier != null) {
                 scoreDirectorFactoryPropertyList
                         .add("an easyScoreCalculatorClass (" + config.getEasyScoreCalculatorClass().getName() + ")");
             }
-            if (constraintStreamScoreDirectorFactory != null) {
+            if (constraintStreamScoreDirectorFactorySupplier != null) {
                 scoreDirectorFactoryPropertyList
                         .add("a constraintProviderClass (" + config.getConstraintProviderClass().getName() + ")");
             }
-            if (incrementalScoreDirectorFactory != null) {
+            if (incrementalScoreDirectorFactorySupplier != null) {
                 scoreDirectorFactoryPropertyList.add(
                         "an incrementalScoreCalculatorClass (" + config.getIncrementalScoreCalculatorClass().getName() + ")");
             }
-            if (droolsScoreDirectorFactory != null) {
+            if (droolsScoreDirectorFactorySupplier != null) {
                 String abbreviatedScoreDrlList = ConfigUtils.abbreviate(config.getScoreDrlList());
                 String abbreviatedScoreDrlFileList = config.getScoreDrlFileList() == null ? ""
                         : ConfigUtils.abbreviate(config.getScoreDrlFileList()

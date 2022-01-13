@@ -34,7 +34,6 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -83,8 +82,7 @@ public class ProblemBenchmarksFactory {
                         + (config.getInputSolutionFileList() == null ? 0 : config.getInputSolutionFileList().size()));
         DefaultSolverFactory<Solution_> defaultSolverFactory =
                 new DefaultSolverFactory<>(solverBenchmarkResult.getSolverConfig());
-        SolutionDescriptor<Solution_> solutionDescriptor =
-                defaultSolverFactory.buildSolutionDescriptor(EnvironmentMode.REPRODUCIBLE);
+        SolutionDescriptor<Solution_> solutionDescriptor = defaultSolverFactory.getSolutionDescriptor();
         int extraProblemIndex = 0;
         for (Solution_ extraProblem : extraProblems) {
             if (extraProblem == null) {

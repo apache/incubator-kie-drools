@@ -1,10 +1,13 @@
 package org.optaplanner.core.impl.score.director.incremental;
 
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
 import org.optaplanner.core.impl.score.director.ScoreDirectorType;
 
@@ -17,7 +20,7 @@ public final class IncrementalScoreDirectorFactoryService<Solution_, Score_ exte
     }
 
     @Override
-    public IncrementalScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
+    public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
         if (config.getIncrementalScoreCalculatorClass() != null) {
             if (!IncrementalScoreCalculator.class.isAssignableFrom(config.getIncrementalScoreCalculatorClass())) {
@@ -25,7 +28,7 @@ public final class IncrementalScoreDirectorFactoryService<Solution_, Score_ exte
                         "The incrementalScoreCalculatorClass (" + config.getIncrementalScoreCalculatorClass()
                                 + ") does not implement " + IncrementalScoreCalculator.class.getSimpleName() + ".");
             }
-            return new IncrementalScoreDirectorFactory<>(solutionDescriptor, () -> {
+            return () -> new IncrementalScoreDirectorFactory<>(solutionDescriptor, () -> {
                 IncrementalScoreCalculator<Solution_, Score_> incrementalScoreCalculator = ConfigUtils.newInstance(config,
                         "incrementalScoreCalculatorClass", config.getIncrementalScoreCalculatorClass());
                 ConfigUtils.applyCustomProperties(incrementalScoreCalculator, "incrementalScoreCalculatorClass",
