@@ -21,11 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.BaseDateClassFieldReader;
+import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.util.ClassUtils;
@@ -33,7 +31,7 @@ import org.drools.core.util.ClassUtils;
 /**
  * This is a global variable extractor used to get a global variable value
  */
-public class GlobalExtractor extends BaseDateClassFieldReader
+public class GlobalExtractor extends BaseObjectClassFieldReader
     implements
     InternalReadAccessor,
     AcceptsClassObjectType,
@@ -48,9 +46,7 @@ public class GlobalExtractor extends BaseDateClassFieldReader
 
     public GlobalExtractor(final String identifier,
                            final ObjectType objectType) {
-        super( -1,
-               ((ClassObjectType) objectType).getClassType(),
-               objectType.getValueType() );
+        super( -1, objectType.getClassType(), objectType.getValueType() );
         this.identifier = identifier;
         this.objectType = objectType;
     }
@@ -60,7 +56,7 @@ public class GlobalExtractor extends BaseDateClassFieldReader
         identifier = in.readUTF();
         objectType = (ObjectType) in.readObject();
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setFieldType( objectType.getClassType() );
         setValueType( objectType.getValueType() );
     }
 
@@ -72,7 +68,7 @@ public class GlobalExtractor extends BaseDateClassFieldReader
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setFieldType( objectType.getClassType() );
         setValueType( objectType.getValueType() );
     }
 

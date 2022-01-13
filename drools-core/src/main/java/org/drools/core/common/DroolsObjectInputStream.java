@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.drools.core.base.AccessorKey;
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ReadAccessorSupplier;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
@@ -41,7 +41,7 @@ public class DroolsObjectInputStream extends ObjectInputStream
     private RuleBase ruleBase;
     private InternalWorkingMemory workingMemory;
     private Package pkg;
-    private ClassFieldAccessorStore store;
+    private ReadAccessorSupplier store;
 
     private Map<AccessorKey, List<Consumer<InternalReadAccessor>>> extractorBinders = new HashMap<>();
     
@@ -70,7 +70,6 @@ public class DroolsObjectInputStream extends ObjectInputStream
 
         this.classLoader = classLoader;
         this.clonedByIdentity = clonedByIdentity;
-
     }
 
     public boolean isCloning() {
@@ -133,7 +132,7 @@ public class DroolsObjectInputStream extends ObjectInputStream
         return classLoader;
     }
 
-    public void setStore( ClassFieldAccessorStore store ) {
+    public void setStore( ReadAccessorSupplier store ) {
         this.store = store;
     }
 

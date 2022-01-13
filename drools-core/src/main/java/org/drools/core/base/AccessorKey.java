@@ -21,9 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class AccessorKey
-    implements
-    Externalizable {
+public class AccessorKey implements Externalizable {
+
     private static final long serialVersionUID = 510l;
 
     private String            className;
@@ -39,7 +38,7 @@ public class AccessorKey
                        AccessorType type) {
         super();
         this.className = className;
-        this.fieldName = ClassFieldReader.decapitalizeFieldName(fieldName);
+        this.fieldName = decapitalizeFieldName(fieldName);
 
         final int PRIME = 31;
         int result = 1;
@@ -108,5 +107,33 @@ public class AccessorKey
     
     public enum AccessorType {
         FieldAccessor, ClassObjectType
+    }
+
+    /**
+     * Utility method to take a string and convert it to normal Java variable
+     * name capitalization.  This normally means converting the first
+     * character from upper case to lower case, but in the (unusual) special
+     * case when there is more than one character and both the first and
+     * second characters are upper case, we leave it alone.
+     * <p>
+     * Thus "FooBah" becomes "fooBah" and "X" becomes "x", but "URL" stays
+     * as "URL".
+     *
+     * Taken from
+     *
+     * @param  name The string to be decapitalized.
+     * @return  The decapitalized version of the string.
+     */
+    public static String decapitalizeFieldName(String name) {
+        if (name == null || name.length() == 0) {
+            return name;
+        }
+        if (name.length() > 1 && Character.isUpperCase(name.charAt(1)) &&
+                Character.isUpperCase(name.charAt(0))){
+            return name;
+        }
+        char chars[] = name.toCharArray();
+        chars[0] = Character.toLowerCase(chars[0]);
+        return new String(chars);
     }
 }

@@ -23,12 +23,12 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.ReturnValueExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.mvel.field.FieldFactory;
 import org.mvel2.integration.VariableResolverFactory;
 
 import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
@@ -96,7 +96,7 @@ public class MVELReturnValueExpression
         }
 
         Object value = evaluator.evaluate( handle, factory );
-        return RuntimeComponentFactory.get().getFieldFactory().getFieldValue( value );
+        return FieldFactory.getInstance().getFieldValue( value );
     }
 
 

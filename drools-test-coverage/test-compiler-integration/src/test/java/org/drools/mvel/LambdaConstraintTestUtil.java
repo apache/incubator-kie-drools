@@ -17,6 +17,7 @@ package org.drools.mvel;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
+import org.drools.core.spi.PatternExtractor;
 import org.drools.model.Index;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
@@ -55,8 +56,8 @@ public class LambdaConstraintTestUtil {
         DeclarationImpl<B> declB = new DeclarationImpl<B>(rightClass, varName);
         SingleConstraint2<A, B> singleConstraint = new SingleConstraint2<A, B>(declA, declB, predicate);
         singleConstraint.setIndex(index);
-        Declaration patternDecl = new Declaration(patternName, Pattern.getReadAcessor(new ClassObjectType(patternClass, false)), pattern, false);
-        Declaration varDecl = new Declaration(varName, Pattern.getReadAcessor(new ClassObjectType(rightClass, false)), varPattern, false);
+        Declaration patternDecl = new Declaration(patternName, new PatternExtractor(new ClassObjectType(patternClass, false)), pattern, false);
+        Declaration varDecl = new Declaration(varName, new PatternExtractor(new ClassObjectType(rightClass, false)), varPattern, false);
         ConstraintEvaluator constraintEvaluator = new ConstraintEvaluator(new Declaration[]{patternDecl, varDecl}, singleConstraint);
         return new LambdaConstraint(constraintEvaluator);
     }

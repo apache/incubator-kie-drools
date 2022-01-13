@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.base.AccessorKey;
 import org.drools.core.base.ClassFieldInspector;
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.kie.impl.MessageImpl;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils;
@@ -373,7 +373,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
     private String calcFieldName( String name,
                                   final int offset ) {
         name = name.substring( offset );
-        return ClassFieldReader.decapitalizeFieldName( name );
+        return AccessorKey.decapitalizeFieldName( name );
     }
 
     public Collection<KnowledgeBuilderResult> getInspectionResults( String fieldName ) {
@@ -393,7 +393,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
 
     protected Map<String, Collection<KnowledgeBuilderResult>> getResults() {
         if ( results == null ) {
-            results = new HashMap<String, Collection<KnowledgeBuilderResult>>( );
+            results = new HashMap<>( );
         }
         return results;
     }

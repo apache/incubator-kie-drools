@@ -15,7 +15,7 @@
 package org.drools.mvel.extractors;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.TestBean;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;

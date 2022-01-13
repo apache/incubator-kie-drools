@@ -1242,18 +1242,6 @@ public class SetEvaluatorsDefinition
             return false;
         }
 
-        private boolean contains(byte[] array,
-                                 byte value,
-                                 boolean negate) {
-            for ( int i = 0, length = array.length; i < length; i++ ) {
-                if ( array[i] == value ) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public Class getArrayType() {
             return boolean[].class;
         }

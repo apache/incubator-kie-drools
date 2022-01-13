@@ -22,15 +22,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.DroolsObjectInput;
+import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
 
 /**
  * This is the supertype for the ASM generated classes for accessing a field.
  */
-abstract public class BaseClassFieldReader
-    implements
-    org.drools.core.spi.InternalReadAccessor,
-    Externalizable {
+abstract public class BaseClassFieldReader implements InternalReadAccessor, Externalizable {
 
     private int        index;
 

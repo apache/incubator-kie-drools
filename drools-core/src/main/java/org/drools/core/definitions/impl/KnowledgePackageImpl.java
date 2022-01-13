@@ -302,8 +302,6 @@ public class KnowledgePackageImpl
         this.windowDeclarations = (Map<String, WindowDeclaration>) in.readObject();
         this.resourceTypePackages = (ResourceTypePackageRegistry) in.readObject();
 
-        in.setStore(null);
-
         if (!isDroolsStream) {
             in.close();
         }

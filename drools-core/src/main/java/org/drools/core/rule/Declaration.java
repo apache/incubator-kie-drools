@@ -21,7 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
-import org.drools.core.base.ClassFieldReader;
+import org.drools.core.base.AccessorKeySupplier;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
@@ -138,8 +138,8 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( identifier );
 
-        if (readAccessor instanceof ClassFieldReader ) {
-            out.writeObject( ( (ClassFieldReader) readAccessor ).getAccessorKey() );
+        if (readAccessor instanceof AccessorKeySupplier) {
+            out.writeObject( ( (AccessorKeySupplier) readAccessor ).getAccessorKey() );
         } else {
             out.writeObject( readAccessor );
         }

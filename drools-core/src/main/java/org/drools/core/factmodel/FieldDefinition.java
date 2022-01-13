@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.core.base.FieldAccessor;
 import org.drools.core.factmodel.traits.Alias;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.type.Annotation;
@@ -57,7 +57,7 @@ public class FieldDefinition
 
     private List<AnnotationDefinition> annotations;
 
-    private ClassFieldAccessor accessor   = null;
+    private FieldAccessor accessor   = null;
 
     public FieldDefinition() {
     }
@@ -80,7 +80,7 @@ public class FieldDefinition
         this.key = key;
     }
 
-    public void setReadWriteAccessor(ClassFieldAccessor accessor) {
+    public void setReadWriteAccessor(FieldAccessor accessor) {
         this.accessor = accessor;
     }
 
@@ -89,7 +89,7 @@ public class FieldDefinition
         this.name = (String) in.readObject();
         this.type = (GenericTypeDefinition) in.readObject();
         this.key = in.readBoolean();
-        this.accessor = (ClassFieldAccessor) in.readObject();
+        this.accessor = (FieldAccessor) in.readObject();
         this.annotations = (List<AnnotationDefinition>) in.readObject();
         this.inherited = in.readBoolean();
         this.overriding = (String) in.readObject();
@@ -207,7 +207,7 @@ public class FieldDefinition
     /**
      * @return Returns the field extractor
      */
-    public ClassFieldAccessor getFieldAccessor() {
+    public FieldAccessor getFieldAccessor() {
         return this.accessor;
     }
 
@@ -225,10 +225,8 @@ public class FieldDefinition
      * @param bean the target bean instance where the attribute shall be set
      * @param value the value to set the attribute to
      */
-    public void setValue(Object bean,
-                         Object value) {
-        this.accessor.setValue( bean,
-                value );
+    public void setValue(Object bean, Object value) {
+        this.accessor.setValue( bean, value );
     }
 
     /**
@@ -246,10 +244,8 @@ public class FieldDefinition
         return this.accessor.getValue( bean );
     }
 
-    public void set(Object bean,
-                    Object value) {
-        this.accessor.setValue( bean,
-                value );
+    public void set(Object bean, Object value) {
+        this.accessor.setValue( bean, value );
     }
 
 

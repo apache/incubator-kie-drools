@@ -77,6 +77,7 @@ import org.drools.core.spi.Enabled;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Salience;
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
@@ -155,7 +156,6 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.GroupElement.OR;
-import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
 import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
@@ -907,7 +907,7 @@ public class KiePackagesBuilder {
         Variable boundVar = accPattern.getBoundVariables()[i];
         Declaration declaration;
         if (!isGroupBy && accumulators.length == 1) {
-            declaration = new Declaration(boundVar.getName(), getReadAcessor( new ClassObjectType(boundVar.getType()) ),
+            declaration = new Declaration(boundVar.getName(), new PatternExtractor( new ClassObjectType(boundVar.getType()) ),
                                         pattern, true);
         } else {
             // GroupBy or multi-accumulate always return an array

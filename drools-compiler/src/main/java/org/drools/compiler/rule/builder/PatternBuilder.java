@@ -40,32 +40,14 @@ import org.drools.compiler.compiler.DroolsErrorWrapper;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.lang.DescrDumper;
-import org.drools.drl.ast.descr.AnnotationDescr;
-import org.drools.drl.ast.descr.AtomicExprDescr;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.BehaviorDescr;
-import org.drools.drl.ast.descr.BindingDescr;
-import org.drools.drl.ast.descr.ConnectiveType;
-import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
-import org.drools.drl.ast.descr.EntryPointDescr;
-import org.drools.drl.ast.descr.ExprConstraintDescr;
-import org.drools.drl.ast.descr.ExpressionDescr;
-import org.drools.drl.ast.descr.FromDescr;
-import org.drools.drl.ast.descr.LiteralRestrictionDescr;
-import org.drools.drl.ast.descr.MVELExprDescr;
-import org.drools.drl.ast.descr.OperatorDescr;
-import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.PredicateDescr;
-import org.drools.drl.ast.descr.RelationalExprDescr;
-import org.drools.drl.ast.descr.ReturnValueRestrictionDescr;
+import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.rule.builder.XpathAnalysis.XpathPart;
 import org.drools.compiler.rule.builder.util.ConstraintUtil;
 import org.drools.core.addon.TypeResolver;
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.FieldNameSupplier;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -102,6 +84,24 @@ import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AtomicExprDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.BehaviorDescr;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.ConnectiveType;
+import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
+import org.drools.drl.ast.descr.ExpressionDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.LiteralRestrictionDescr;
+import org.drools.drl.ast.descr.MVELExprDescr;
+import org.drools.drl.ast.descr.OperatorDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.PredicateDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
+import org.drools.drl.ast.descr.ReturnValueRestrictionDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
@@ -1444,8 +1444,8 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
         declr.setReadAccessor(extractor);
 
-        if (!declr.isFromXpathChunk() && typeDeclaration != null && extractor instanceof ClassFieldReader) {
-            addFieldToPatternWatchlist(pattern, typeDeclaration, ((ClassFieldReader) extractor).getFieldName());
+        if (!declr.isFromXpathChunk() && typeDeclaration != null && extractor instanceof FieldNameSupplier) {
+            addFieldToPatternWatchlist(pattern, typeDeclaration, ((FieldNameSupplier) extractor).getFieldName());
         }
     }
 
@@ -1751,7 +1751,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
         if (isGetter || identifierRegexp.matcher(fieldName).matches()) {
             Declaration decl = context.getDeclarationResolver().getDeclarations(context.getRule()).get(fieldName);
-            if (decl != null && decl.getExtractor() instanceof ClassFieldReader && "this".equals(((ClassFieldReader) decl.getExtractor()).getFieldName())) {
+            if (decl != null && decl.getExtractor() instanceof FieldNameSupplier && "this".equals(((FieldNameSupplier) decl.getExtractor()).getFieldName())) {
                 return decl.getExtractor();
             }
 
