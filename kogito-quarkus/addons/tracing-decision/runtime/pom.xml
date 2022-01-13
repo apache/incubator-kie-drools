@@ -21,6 +21,19 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
     </dependency>
+
+    <!-- Needed to trick DevServices into running a PostgreSQL instance for TrustyService -->
+    <!-- This dependency handles starting up Databases for DevServices in DevMode -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-datasource</artifactId>
+    </dependency>
+    <!-- This dependency handles instantiation of a PostgreSQL instance for DevServices in DevMode -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-vertx</artifactId>

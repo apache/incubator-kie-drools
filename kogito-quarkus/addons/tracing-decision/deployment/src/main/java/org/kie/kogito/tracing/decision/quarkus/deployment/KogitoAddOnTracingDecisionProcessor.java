@@ -30,6 +30,7 @@ class KogitoAddOnTracingDecisionProcessor extends RequireCapabilityKogitoAddOnPr
     }
 
     @BuildStep
+    @SuppressWarnings("unused")
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
     }

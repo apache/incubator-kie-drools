@@ -450,7 +450,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-quarkus-messaging-common</artifactId>
@@ -473,7 +472,6 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -641,7 +639,6 @@
         <classifier>javadoc</classifier>
       </dependency>
 
-
       <!-- Monitoring addon     -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -790,7 +787,6 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-
 
       <!-- Grafana API     -->
       <dependency>
@@ -1580,7 +1576,6 @@
         <version>${project.version}</version>
       </dependency>
 
-
       <!-- drools -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -1917,7 +1912,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-
       <!-- Quarkus extension -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -2100,6 +2094,30 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-quarkus-extension-spi</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <!-- Quarkus DevUI addon -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>runtime-tools-quarkus-extension</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>runtime-tools-quarkus-extension</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>runtime-tools-quarkus-extension-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>runtime-tools-quarkus-extension-deployment</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
       </dependency>
 
       <!-- Tracing -->

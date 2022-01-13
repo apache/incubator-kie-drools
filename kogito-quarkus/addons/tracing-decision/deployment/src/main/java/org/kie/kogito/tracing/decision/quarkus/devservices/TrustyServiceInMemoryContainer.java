@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.quarkus.processes.devservices;
+package org.kie.kogito.tracing.decision.quarkus.devservices;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,29 +25,36 @@ import org.testcontainers.utility.DockerImageName;
 import io.quarkus.devservices.common.ConfigureUtil;
 
 /**
- * This container wraps Data Index Service container
+ * This container wraps the TrustyService container
  */
-public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemoryContainer> {
+public class TrustyServiceInMemoryContainer extends GenericContainer<TrustyServiceInMemoryContainer> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrustyServiceInMemoryContainer.class);
 
     public static final int PORT = 8080;
+
     /**
      * This allows other applications to discover the running service and use it instead of starting a new instance.
      */
-    public static final String DEV_SERVICE_LABEL = "kogito-dev-service-data-index";
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexInMemoryContainer.class);
-
+    public static final String DEV_SERVICE_LABEL = "kogito-dev-service-trusty-service";
     private final int fixedExposedPort;
     private final boolean useSharedNetwork;
+
     private String hostName = null;
 
-    public DataIndexInMemoryContainer(DockerImageName dockerImageName, int fixedExposedPort, String serviceName, boolean useSharedNetwork) {
+    public TrustyServiceInMemoryContainer(final DockerImageName dockerImageName,
+            final int fixedExposedPort,
+            final String serviceName,
+            final boolean useSharedNetwork) {
         super(dockerImageName);
         this.fixedExposedPort = fixedExposedPort;
         this.useSharedNetwork = useSharedNetwork;
 
-        if (serviceName != null) { // Only adds the label in dev mode.
+        // Only adds the label in dev mode.
+        if (serviceName != null) {
             withLabel(DEV_SERVICE_LABEL, serviceName);
         }
+
         withPrivilegedMode(true);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
     }
@@ -57,14 +64,14 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
         super.configure();
 
         if (useSharedNetwork) {
-            hostName = ConfigureUtil.configureSharedNetwork(this, "data-index");
+            hostName = ConfigureUtil.configureSharedNetwork(this, "trusty-service");
             return;
         }
 
         if (fixedExposedPort > 0) {
             addFixedExposedPort(fixedExposedPort, PORT);
         } else {
-            addExposedPorts(PORT);
+            addExposedPort(PORT);
         }
     }
 
