@@ -48,4 +48,20 @@ public interface PMMLRuntime {
      */
     Optional<PMMLModel> getPMMLModel(final String modelName);
 
+    /**
+     * Add the given <code>PMMLListener</code> to the current <code>PMMLRuntime</code>
+     * That listener, in turn, will be added to any <code>PMMLContext</code> passed
+     * to the <code>evaluate</code> method
+     * @param toAdd
+     */
+    void addPMMLListener(final PMMLListener toAdd);
+
+    /**
+     * Remove the given <code>PMMLListener</code> from the current <code>PMMLRuntime</code>.
+     * That listener, in turn, will not be added anymore to <code>PMMLContext</code>s passed
+     * to the <code>evaluate</code> method
+     * @param toRemove
+     */
+    void removePMMLListener(final PMMLListener toRemove);
+
 }

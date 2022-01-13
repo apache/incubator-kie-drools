@@ -18,9 +18,11 @@ package org.kie.pmml.commons.testingutility;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLListener;
 
 public class PMMLContextTest implements PMMLContext {
 
@@ -135,5 +137,15 @@ public class PMMLContextTest implements PMMLContext {
     @Override
     public Map<String, Object> getOutputFieldsMap() {
         return outputFieldsMap;
+    }
+
+    @Override
+    public void addPMMLListener(PMMLListener toAdd) {
+
+    }
+
+    @Override
+    public Set<PMMLListener> getPMMLListeners() {
+        return null;
     }
 }

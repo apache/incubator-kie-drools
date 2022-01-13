@@ -17,13 +17,16 @@ package org.kie.pmml.evaluator.core;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLListener;
 
 public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
@@ -32,6 +35,7 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     private final Map<String, Object> commonTransformationMap = new HashMap<>();
     private final Map<String, Object> localTransformationMap = new HashMap<>();
     private final Map<String, Object> outputFieldsMap = new HashMap<>();
+    private final Set<PMMLListener> pmmlListeners = new HashSet<>();
 
     private Object predictedDisplayValue;
     private Object entityId;
@@ -41,6 +45,11 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     public PMMLContextImpl(final PMMLRequestData pmmlRequestData) {
         super();
         set(PMML_REQUEST_DATA, pmmlRequestData);
+    }
+
+    public PMMLContextImpl(final PMMLRequestData pmmlRequestData, final Set<PMMLListener> pmmlListeners) {
+        this(pmmlRequestData);
+        this.pmmlListeners.addAll(pmmlListeners);
     }
 
     @Override
@@ -63,16 +72,28 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
         commonTransformationMap.put(fieldName, commonTranformation);
     }
 
+    /**
+     * Returns an <b>unmodifiable map</b> of <code>missingValueReplacedMap</code>
+     * @return
+     */
     @Override
     public Map<String, Object> getMissingValueReplacedMap() {
         return Collections.unmodifiableMap(missingValueReplacedMap);
     }
 
+    /**
+     * Returns an <b>unmodifiable map</b> of <code>commonTransformationMap</code>
+     * @return
+     */
     @Override
     public Map<String, Object> getCommonTransformationMap() {
         return Collections.unmodifiableMap(commonTransformationMap);
     }
 
+    /**
+     * Returns an <b>unmodifiable map</b> of <code>localTransformationMap</code>
+     * @return
+     */
     @Override
     public Map<String, Object> getLocalTransformationMap() {
         return Collections.unmodifiableMap(localTransformationMap);
@@ -126,6 +147,10 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
         this.affinity = affinity;
     }
 
+    /**
+     * Returns an <b>unmodifiable map</b> of probabilities, or an empty one
+     * @return
+     */
     @Override
     public Map<String, Double> getProbabilityMap() {
         final LinkedHashMap<String, Double> probabilityResultMap = getProbabilityResultMap();
@@ -146,5 +171,19 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     @Override
     public Map<String, Object> getOutputFieldsMap() {
         return outputFieldsMap;
+    }
+
+    @Override
+    public void addPMMLListener(final PMMLListener toAdd) {
+        pmmlListeners.add(toAdd);
+    }
+
+    /**
+     * Returns an <b>unmodifiable set</b> of <code>pmmlListeners</code>
+     * @return
+     */
+    @Override
+    public Set<PMMLListener> getPMMLListeners() {
+        return Collections.unmodifiableSet(pmmlListeners);
     }
 }

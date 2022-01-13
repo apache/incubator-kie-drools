@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -38,6 +39,7 @@ import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -55,6 +57,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.api.enums.ResultCode.FAIL;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
+import static org.kie.pmml.evaluator.core.utils.PMMLListenerUtils.stepExecuted;
 
 /**
  * Default <code>PMMLModelExecutor</code> for <b>Mining</b>
@@ -225,6 +228,55 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         }
     }
 
+    void populateInputDataWithSegmentResult(final PMML4Result pmml4Result,
+                                            final PMMLContext pmmlContext,
+                                            final MULTIPLE_MODEL_METHOD multipleModelMethod,
+                                            final KiePMMLSegment segment,
+                                            final LinkedHashMap<String, KiePMMLNameValueProbabilityMapTuple> toPopulate) {
+        pmml4Result.getResultVariables().forEach((s, o) -> pmmlContext.getRequestData().addRequestParam(s, o));
+
+        PMML4ResultProbabilityMapTuple pmml4ResultTuple = new PMML4ResultProbabilityMapTuple(pmml4Result,
+                                                                                             pmmlContext.getProbabilityMap());
+
+        KiePMMLNameValue predictionValue = getKiePMMLNameValue(pmml4ResultTuple.pmml4Result,
+                                                               multipleModelMethod,
+                                                               segment.getWeight());
+        List<KiePMMLNameValue> probabilityValues = getKiePMMLNameValues(pmml4ResultTuple.probabilityResultMap,
+                                                                        multipleModelMethod,
+                                                                        segment.getWeight());
+        toPopulate.put(segment.getId(), new KiePMMLNameValueProbabilityMapTuple(predictionValue,
+                                                                                probabilityValues));
+        addStep(() -> getStep(segment, pmml4Result), pmmlContext);
+    }
+
+    /**
+     * Send the given <code>PMMLStep</code>
+     * to the <code>PMMLContext</code>
+     * @param stepSupplier
+     * @param pmmlContext
+     */
+    void addStep(final Supplier<PMMLStep> stepSupplier, final PMMLContext pmmlContext) {
+        stepExecuted(stepSupplier, pmmlContext);
+    }
+
+    /**
+     * Return a <code>PMMLStep</code> out of the given <code>KiePMMLSegment</code> and
+     * <code>PMML4Result</code>
+     * @param segment
+     * @param pmml4Result
+     * @return
+     */
+    PMMLStep getStep(final KiePMMLSegment segment, final PMML4Result pmml4Result) {
+        PMMLStep toReturn = new PMMLMiningModelStep();
+        toReturn.addInfo("SEGMENT", segment.getName());
+        toReturn.addInfo("MODEL", segment.getModel().getName());
+        toReturn.addInfo("RESULT CODE", pmml4Result.getResultCode());
+        if (ResultCode.OK.getName().equals(pmml4Result.getResultCode())) {
+            toReturn.addInfo("RESULT", pmml4Result.getResultVariables().get(pmml4Result.getResultObjectName()));
+        }
+        return toReturn;
+    }
+
     /**
      * Evaluate the whole <code>KiePMMLMiningModel</code>
      * Being it a <b>meta</b> model, it actually works as the top-level PMML model,
@@ -244,21 +296,11 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
             Optional<PMML4Result> segmentResult = evaluateSegment(segment, pmmlContext,
                                                                   knowledgeBase,
                                                                   toEvaluate.getName());
-            segmentResult.ifPresent(pmml4Result -> {
-                pmml4Result.getResultVariables().forEach((s, o) -> pmmlContext.getRequestData().addRequestParam(s, o));
-
-                PMML4ResultProbabilityMapTuple pmml4ResultTuple = new PMML4ResultProbabilityMapTuple(pmml4Result,
-                                                                                                     pmmlContext.getProbabilityMap());
-
-                KiePMMLNameValue predictionValue = getKiePMMLNameValue(pmml4ResultTuple.pmml4Result,
-                                                                       multipleModelMethod,
-                                                                       segment.getWeight());
-                List<KiePMMLNameValue> probabilityValues = getKiePMMLNameValues(pmml4ResultTuple.probabilityResultMap,
-                                                                                multipleModelMethod,
-                                                                                segment.getWeight());
-                inputData.put(segment.getId(), new KiePMMLNameValueProbabilityMapTuple(predictionValue,
-                                                                                       probabilityValues));
-            });
+            segmentResult.ifPresent(pmml4Result -> populateInputDataWithSegmentResult(pmml4Result,
+                                                                                      pmmlContext,
+                                                                                      multipleModelMethod,
+                                                                                      segment,
+                                                                                      inputData));
         }
         return getPMML4Result(toEvaluate, inputData, pmmlContext);
     }
