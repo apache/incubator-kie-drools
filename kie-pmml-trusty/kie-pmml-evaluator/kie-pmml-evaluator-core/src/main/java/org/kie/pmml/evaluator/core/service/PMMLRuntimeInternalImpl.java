@@ -16,6 +16,7 @@
 package org.kie.pmml.evaluator.core.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -42,9 +43,9 @@ import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.enums.PMML_STEP.AFTER_PREPROCESS;
-import static org.kie.pmml.api.enums.PMML_STEP.BEFORE_POSTPROCESS;
 import static org.kie.pmml.api.enums.PMML_STEP.END;
+import static org.kie.pmml.api.enums.PMML_STEP.POST_EVALUATION_TRANSFORMATIONS;
+import static org.kie.pmml.api.enums.PMML_STEP.PRE_EVALUATION_TRANSFORMATIONS;
 import static org.kie.pmml.api.enums.PMML_STEP.START;
 import static org.kie.pmml.evaluator.core.utils.PMMLListenerUtils.stepExecuted;
 import static org.kie.pmml.evaluator.core.utils.PostProcess.postProcess;
@@ -108,6 +109,11 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         pmmlListeners.remove(toRemove);
     }
 
+    @Override
+    public Set<PMMLListener> getPMMLListeners() {
+        return Collections.unmodifiableSet(pmmlListeners);
+    }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected PMML4Result evaluate(final KiePMMLModel model, final PMMLContext context) {
         if (logger.isDebugEnabled()) {
@@ -116,12 +122,12 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         pmmlListeners.forEach(context::addPMMLListener);
         addStep(() -> getStep(START, model, context.getRequestData()), context);
         final ProcessingDTO processingDTO = preProcess(model, context);
-        addStep(() -> getStep(AFTER_PREPROCESS, model, context.getRequestData()), context);
+        addStep(() -> getStep(PRE_EVALUATION_TRANSFORMATIONS, model, context.getRequestData()), context);
         PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
                 .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s",
                                                                       model.getPmmlMODEL())));
         PMML4Result toReturn = executor.evaluate(knowledgeBase, model, context);
-        addStep(() -> getStep(BEFORE_POSTPROCESS, model, context.getRequestData()), context);
+        addStep(() -> getStep(POST_EVALUATION_TRANSFORMATIONS, model, context.getRequestData()), context);
         postProcess(toReturn, model, context, processingDTO);
         addStep(() -> getStep(END, model, context.getRequestData()), context);
         return toReturn;

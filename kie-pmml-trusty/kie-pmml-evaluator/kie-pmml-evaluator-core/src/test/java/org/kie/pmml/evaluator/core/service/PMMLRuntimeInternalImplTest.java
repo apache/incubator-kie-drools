@@ -144,13 +144,6 @@ public class PMMLRuntimeInternalImplTest {
     }
 
     @Test
-    public void evaluateWithoutListeners() {
-        final PMMLRequestData requestData = getPMMLRequestData();
-        final PMMLContext pmmlContext = new PMMLContextImpl(requestData);
-        pmmlRuntime.evaluate(modelMock, pmmlContext);
-    }
-
-    @Test
     public void getStep() {
         final PMMLRequestData requestData = getPMMLRequestData();
         Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {

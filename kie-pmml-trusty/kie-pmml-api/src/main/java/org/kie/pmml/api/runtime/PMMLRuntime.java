@@ -17,10 +17,10 @@ package org.kie.pmml.api.runtime;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.models.PMMLModel;
-import org.kie.pmml.api.models.PMMLModelImpl;
 
 public interface PMMLRuntime {
 
@@ -64,4 +64,9 @@ public interface PMMLRuntime {
      */
     void removePMMLListener(final PMMLListener toRemove);
 
+    /**
+     * Returns an <b>unmodifiable set</b> of the <code>PMMLListener</code>s registered with the
+     * current instance
+     */
+    Set<PMMLListener> getPMMLListeners();
 }
