@@ -25,7 +25,8 @@ import DevUILayout from '../DevUILayout/DevUILayout';
 import ReactDOM from 'react-dom';
 interface IOwnProps {
   users: User[];
-  dataIndex: string;
+  dataIndexUrl: string;
+  trustyServiceUrl: string;
   navigate: string;
   devUIUrl: string;
   openApiPath: string;
@@ -33,7 +34,8 @@ interface IOwnProps {
 
 const RuntimeTools: React.FC<IOwnProps> = ({
   users,
-  dataIndex,
+  dataIndexUrl,
+  trustyServiceUrl,
   navigate,
   devUIUrl,
   openApiPath
@@ -41,7 +43,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   const httpLink = new HttpLink({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uri: dataIndex
+    uri: dataIndexUrl
   });
 
   const fallbackUI = onError(({ networkError }: any) => {
@@ -77,7 +79,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       devUIUrl={devUIUrl}
       openApiPath={openApiPath}
     >
-      <DevUIRoutes navigate={navigate} />
+      <DevUIRoutes navigate={navigate} trustyServiceUrl={trustyServiceUrl} />
     </DevUILayout>
   );
 };

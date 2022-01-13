@@ -71,8 +71,7 @@ describe('DevUINav tests', () => {
     expect(DevUINavWrapper.props().isActive).toBeTruthy();
   });
 
-  // re-include the following test when the Audit application will be ready
-  it.skip('Snapshot testing audit investigation link props', () => {
+  it('Snapshot testing audit investigation link props', () => {
     const wrapper = mount(
       <MemoryRouter>
         <DevUINav pathname={'/Audit'} />

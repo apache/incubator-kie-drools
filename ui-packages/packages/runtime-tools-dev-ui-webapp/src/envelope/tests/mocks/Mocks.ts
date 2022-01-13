@@ -74,6 +74,7 @@ export const MockedRuntimeToolsDevUIEnvelopeViewApi = jest.fn<
   []
 >(() => ({
   setDataIndexUrl: jest.fn(),
+  setTrustyServiceUrl: jest.fn(),
   setUsers: jest.fn(),
   navigateTo: jest.fn()
 }));

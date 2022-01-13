@@ -52,6 +52,7 @@ describe('JobsManagementEnvelopeApiImpl tests', () => {
       {
         users: [],
         dataIndexUrl: '',
+        trustyServiceUrl: '',
         page: '',
         devUIUrl: '',
         openApiPath: ''

@@ -46,6 +46,7 @@ jest.mock('@kogito-apps/trusty', () => ({
 }));
 
 const props = {
+  trustyServiceUrl: 'http://url-to-service',
   navigate: 'JobsManagement'
 };
 describe('DevUIRoutes tests', () => {
@@ -119,7 +120,18 @@ describe('DevUIRoutes tests', () => {
     const route = wrapper.find(Route);
     expect(route.exists()).toBeTruthy();
 
-    expect(wrapper.find('TrustyApp').exists()).toBeTruthy();
+    const trusty = wrapper.find('TrustyApp');
+    expect(trusty.exists()).toBeTruthy();
+
+    const trustyProps = trusty.props();
+    expect(trustyProps).not.toBeUndefined();
+    expect(trustyProps['containerConfiguration']).not.toBeUndefined();
+    expect(
+      trustyProps['containerConfiguration']['serverRoot']
+    ).not.toBeUndefined();
+    expect(trustyProps['containerConfiguration']['serverRoot']).toEqual(
+      props.trustyServiceUrl
+    );
   });
 
   it('no data page test', () => {

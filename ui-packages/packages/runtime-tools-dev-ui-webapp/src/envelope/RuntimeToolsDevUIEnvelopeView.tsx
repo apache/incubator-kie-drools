@@ -23,7 +23,8 @@ import { User } from '@kogito-apps/consoles-common';
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
   RuntimeToolsDevUIEnvelopeViewApi
 >((props, forwardingRef) => {
-  const [dataIndex, setDataIndex] = React.useState('');
+  const [dataIndexUrl, setDataIndexUrl] = React.useState('');
+  const [trustyServiceUrl, setTrustyServiceUrl] = React.useState('');
   const [DevUiUsers, setDevUiUsers] = React.useState<User[]>([]);
   const [navigate, setNavigate] = React.useState<string>('');
   const [devUIUrl, setDevUIUrl] = React.useState<string>('');
@@ -34,7 +35,10 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
     () => {
       return {
         setDataIndexUrl: dataIndexUrl => {
-          setDataIndex(dataIndexUrl);
+          setDataIndexUrl(dataIndexUrl);
+        },
+        setTrustyServiceUrl: trustyServiceUrl => {
+          setTrustyServiceUrl(trustyServiceUrl);
         },
         setUsers: users => {
           setDevUiUsers(users);
@@ -54,13 +58,14 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
   );
   return (
     <>
-      {dataIndex.length > 0 &&
+      {dataIndexUrl.length > 0 &&
         navigate.length > 0 &&
         devUIUrl.length > 0 &&
         openApiPath.length > 0 && (
           <RuntimeTools
             users={DevUiUsers}
-            dataIndex={dataIndex}
+            dataIndexUrl={dataIndexUrl}
+            trustyServiceUrl={trustyServiceUrl}
             navigate={navigate}
             openApiPath={openApiPath}
             devUIUrl={devUIUrl}

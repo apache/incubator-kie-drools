@@ -27,10 +27,11 @@ import { TrustyApp } from '@kogito-apps/trusty';
 import ProcessFormPage from '../../pages/ProcessFormPage/ProcessFormPage';
 
 interface IOwnProps {
+  trustyServiceUrl: string;
   navigate: string;
 }
 
-const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
+const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, navigate }) => {
   return (
     <Switch>
       <Route exact path="/" render={() => <Redirect to={`/${navigate}`} />} />
@@ -56,6 +57,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
           explanationEnabled={false}
           containerConfiguration={{
             pageWrapper: false,
+            serverRoot: trustyServiceUrl,
             basePath: '/Audit',
             excludeReactRouter: true,
             useHrefLinks: false

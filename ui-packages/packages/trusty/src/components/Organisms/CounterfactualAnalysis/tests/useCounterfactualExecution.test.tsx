@@ -8,10 +8,28 @@ import {
   CFSearchInput,
   RemoteDataStatus
 } from '../../../../types';
-import { AxiosPromise } from "axios";
+import { AxiosPromise } from 'axios';
+import { TrustyContext } from '../../../Templates/TrustyApp/TrustyApp';
+import React from 'react';
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
+
+const contextWrapper = ({ children }) => (
+  <TrustyContext.Provider
+    value={{
+      config: {
+        counterfactualEnabled: false,
+        useHrefLinks: false,
+        explanationEnabled: false,
+        serverRoot: 'http://url-to-service',
+        basePath: '/'
+      }
+    }}
+  >
+    {children}
+  </TrustyContext.Provider>
+);
 
 beforeEach(() => {
   apiMock.mockClear();
@@ -108,14 +126,27 @@ describe('useCounterfactualExecution', () => {
     };
 
     apiMock
-      .mockImplementationOnce(() => Promise.resolve(CFAnalysisResponse) as AxiosPromise)
-      .mockImplementationOnce(() => Promise.resolve(CFResultsOne) as AxiosPromise)
-      .mockImplementationOnce(() => Promise.resolve(CFResultsTwo) as AxiosPromise)
-      .mockImplementationOnce(() => Promise.resolve(CFResultsThree) as AxiosPromise);
+      .mockImplementationOnce(
+        () => Promise.resolve(CFAnalysisResponse) as AxiosPromise
+      )
+      .mockImplementationOnce(
+        () => Promise.resolve(CFResultsOne) as AxiosPromise
+      )
+      .mockImplementationOnce(
+        () => Promise.resolve(CFResultsTwo) as AxiosPromise
+      )
+      .mockImplementationOnce(
+        () => Promise.resolve(CFResultsThree) as AxiosPromise
+      );
 
-    const { result } = renderHook(() => {
-      return useCounterfactualExecution('7ffd3240-2ad4-4999-b67c-9437efcd449a');
-    });
+    const { result } = renderHook(
+      () => {
+        return useCounterfactualExecution(
+          '7ffd3240-2ad4-4999-b67c-9437efcd449a'
+        );
+      },
+      { wrapper: contextWrapper }
+    );
 
     expect(result.current.cfAnalysis).toStrictEqual({
       status: RemoteDataStatus.NOT_ASKED

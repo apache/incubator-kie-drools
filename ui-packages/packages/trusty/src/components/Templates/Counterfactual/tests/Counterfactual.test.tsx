@@ -11,6 +11,7 @@ import { MemoryRouter } from 'react-router';
 import useInputData from '../../InputData/useInputData';
 import useDecisionOutcomes from '../../AuditDetail/useDecisionOutcomes';
 import Counterfactual from '../Counterfactual';
+import { TrustyContext } from '../../TrustyApp/TrustyApp';
 
 const executionId = 'b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000';
 
@@ -106,7 +107,19 @@ describe('Counterfactual', () => {
           }
         ]}
       >
-        <Counterfactual />
+        <TrustyContext.Provider
+          value={{
+            config: {
+              counterfactualEnabled: false,
+              useHrefLinks: false,
+              explanationEnabled: false,
+              serverRoot: 'http://url-to-service',
+              basePath: '/'
+            }
+          }}
+        >
+          <Counterfactual />
+        </TrustyContext.Provider>
       </MemoryRouter>
     );
 

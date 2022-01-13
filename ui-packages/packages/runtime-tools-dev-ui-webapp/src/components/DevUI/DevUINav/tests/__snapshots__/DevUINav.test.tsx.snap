@@ -28,27 +28,28 @@ exports[`DevUINav tests Snapshot testing audit investigation link props 1`] = `
         >
           <NavItem
             isActive={false}
-            key="process-instances-nav"
+            key="processes-nav"
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-13"
+              data-ouia-component-id="OUIA-Generated-NavItem-16"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current={null}
                 className="pf-c-nav__link"
-                data-ouia-navigation-name="process-instances"
+                data-ouia-navigation-name="processes"
                 onClick={[Function]}
                 tabIndex={null}
-                to="/ProcessInstances"
+                to="/Processes"
               >
                 <LinkAnchor
                   aria-current={null}
                   className="pf-c-nav__link"
-                  data-ouia-navigation-name="process-instances"
-                  href="/ProcessInstances"
+                  data-ouia-navigation-name="processes"
+                  href="/Processes"
                   navigate={[Function]}
                   onClick={[Function]}
                   tabIndex={null}
@@ -56,8 +57,8 @@ exports[`DevUINav tests Snapshot testing audit investigation link props 1`] = `
                   <a
                     aria-current={null}
                     className="pf-c-nav__link"
-                    data-ouia-navigation-name="process-instances"
-                    href="/ProcessInstances"
+                    data-ouia-navigation-name="processes"
+                    href="/Processes"
                     onClick={[Function]}
                     tabIndex={null}
                   >
@@ -73,9 +74,10 @@ exports[`DevUINav tests Snapshot testing audit investigation link props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-14"
+              data-ouia-component-id="OUIA-Generated-NavItem-17"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current={null}
@@ -114,9 +116,10 @@ exports[`DevUINav tests Snapshot testing audit investigation link props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-15"
+              data-ouia-component-id="OUIA-Generated-NavItem-18"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current={null}
@@ -155,9 +158,10 @@ exports[`DevUINav tests Snapshot testing audit investigation link props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-16"
+              data-ouia-component-id="OUIA-Generated-NavItem-19"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
+              onMouseOver={[Function]}
             >
               <Link
                 aria-current={null}
@@ -185,6 +189,48 @@ exports[`DevUINav tests Snapshot testing audit investigation link props 1`] = `
                     tabIndex={null}
                   >
                     Forms
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+          <NavItem
+            isActive={true}
+            key="audit-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-20"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+              onMouseOver={[Function]}
+            >
+              <Link
+                aria-current="page"
+                className="pf-c-nav__link pf-m-current"
+                data-ouia-navigation-name="audit-nav"
+                onClick={[Function]}
+                tabIndex={null}
+                to="/Audit"
+              >
+                <LinkAnchor
+                  aria-current="page"
+                  className="pf-c-nav__link pf-m-current"
+                  data-ouia-navigation-name="audit-nav"
+                  href="/Audit"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                  tabIndex={null}
+                >
+                  <a
+                    aria-current="page"
+                    className="pf-c-nav__link pf-m-current"
+                    data-ouia-navigation-name="audit-nav"
+                    href="/Audit"
+                    onClick={[Function]}
+                    tabIndex={null}
+                  >
+                    Audit investigation
                   </a>
                 </LinkAnchor>
               </Link>
@@ -229,7 +275,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-9"
+              data-ouia-component-id="OUIA-Generated-NavItem-11"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
               onMouseOver={[Function]}
@@ -271,7 +317,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-10"
+              data-ouia-component-id="OUIA-Generated-NavItem-12"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
               onMouseOver={[Function]}
@@ -313,7 +359,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-11"
+              data-ouia-component-id="OUIA-Generated-NavItem-13"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
               onMouseOver={[Function]}
@@ -355,7 +401,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-12"
+              data-ouia-component-id="OUIA-Generated-NavItem-14"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
               onMouseOver={[Function]}
@@ -386,6 +432,48 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                     tabIndex={null}
                   >
                     Forms
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+          <NavItem
+            isActive={false}
+            key="audit-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-15"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+              onMouseOver={[Function]}
+            >
+              <Link
+                aria-current={null}
+                className="pf-c-nav__link"
+                data-ouia-navigation-name="audit-nav"
+                onClick={[Function]}
+                tabIndex={null}
+                to="/Audit"
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="pf-c-nav__link"
+                  data-ouia-navigation-name="audit-nav"
+                  href="/Audit"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                  tabIndex={null}
+                >
+                  <a
+                    aria-current={null}
+                    className="pf-c-nav__link"
+                    data-ouia-navigation-name="audit-nav"
+                    href="/Audit"
+                    onClick={[Function]}
+                    tabIndex={null}
+                  >
+                    Audit investigation
                   </a>
                 </LinkAnchor>
               </Link>
@@ -430,7 +518,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-5"
+              data-ouia-component-id="OUIA-Generated-NavItem-6"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
               onMouseOver={[Function]}
@@ -472,7 +560,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-6"
+              data-ouia-component-id="OUIA-Generated-NavItem-7"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
               onMouseOver={[Function]}
@@ -514,7 +602,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-7"
+              data-ouia-component-id="OUIA-Generated-NavItem-8"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
               onMouseOver={[Function]}
@@ -556,7 +644,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-8"
+              data-ouia-component-id="OUIA-Generated-NavItem-9"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
               onMouseOver={[Function]}
@@ -587,6 +675,48 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                     tabIndex={null}
                   >
                     Forms
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+          <NavItem
+            isActive={false}
+            key="audit-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-10"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+              onMouseOver={[Function]}
+            >
+              <Link
+                aria-current={null}
+                className="pf-c-nav__link"
+                data-ouia-navigation-name="audit-nav"
+                onClick={[Function]}
+                tabIndex={null}
+                to="/Audit"
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="pf-c-nav__link"
+                  data-ouia-navigation-name="audit-nav"
+                  href="/Audit"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                  tabIndex={null}
+                >
+                  <a
+                    aria-current={null}
+                    className="pf-c-nav__link"
+                    data-ouia-navigation-name="audit-nav"
+                    href="/Audit"
+                    onClick={[Function]}
+                    tabIndex={null}
+                  >
+                    Audit investigation
                   </a>
                 </LinkAnchor>
               </Link>
@@ -788,6 +918,48 @@ exports[`DevUINav tests Snapshot testing with processes props 1`] = `
                     tabIndex={null}
                   >
                     Forms
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+          <NavItem
+            isActive={false}
+            key="audit-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-5"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+              onMouseOver={[Function]}
+            >
+              <Link
+                aria-current={null}
+                className="pf-c-nav__link"
+                data-ouia-navigation-name="audit-nav"
+                onClick={[Function]}
+                tabIndex={null}
+                to="/Audit"
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="pf-c-nav__link"
+                  data-ouia-navigation-name="audit-nav"
+                  href="/Audit"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                  tabIndex={null}
+                >
+                  <a
+                    aria-current={null}
+                    className="pf-c-nav__link"
+                    data-ouia-navigation-name="audit-nav"
+                    href="/Audit"
+                    onClick={[Function]}
+                    tabIndex={null}
+                  >
+                    Audit investigation
                   </a>
                 </LinkAnchor>
               </Link>

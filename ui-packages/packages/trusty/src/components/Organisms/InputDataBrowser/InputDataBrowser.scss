@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .input-browser {
   &__section-list {
     margin: 0 0 var(--pf-global--spacer--lg) 0;
@@ -124,7 +126,7 @@
 
 .data {
   &__label {
-    font-size: (15/16) + rem;
+    font-size: math.div(15, 16) + rem;
     display: block;
     color: var(--pf-global--Color--200);
   }

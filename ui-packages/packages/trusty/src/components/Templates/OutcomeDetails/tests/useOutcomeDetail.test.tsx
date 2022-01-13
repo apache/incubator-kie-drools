@@ -3,10 +3,28 @@ import useOutcomeDetail from '../useOutcomeDetail';
 import { act } from 'react-test-renderer';
 import * as api from '../../../../utils/api/httpClient';
 import { RemoteDataStatus } from '../../../../types';
-import { AxiosPromise } from "axios";
+import { AxiosPromise } from 'axios';
+import { TrustyContext } from '../../TrustyApp/TrustyApp';
+import React from 'react';
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
+
+const contextWrapper = ({ children }) => (
+  <TrustyContext.Provider
+    value={{
+      config: {
+        counterfactualEnabled: false,
+        useHrefLinks: false,
+        explanationEnabled: false,
+        serverRoot: 'http://url-to-service',
+        basePath: '/'
+      }
+    }}
+  >
+    {children}
+  </TrustyContext.Provider>
+);
 
 beforeEach(() => {
   apiMock.mockClear();
@@ -46,13 +64,16 @@ describe('useOutcomeDetail', () => {
 
     apiMock.mockImplementation(() => Promise.resolve(details) as AxiosPromise);
 
-    const { result } = renderHook(() => {
-      // tslint:disable-next-line:react-hooks-nesting
-      return useOutcomeDetail(
-        'b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000',
-        '_c6e56793-68d0-4683-b34b-5e9d69e7d0d4'
-      );
-    });
+    const { result } = renderHook(
+      () => {
+        // tslint:disable-next-line:react-hooks-nesting
+        return useOutcomeDetail(
+          'b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000',
+          '_c6e56793-68d0-4683-b34b-5e9d69e7d0d4'
+        );
+      },
+      { wrapper: contextWrapper }
+    );
 
     expect(result.current).toStrictEqual({ status: RemoteDataStatus.LOADING });
 

@@ -27,10 +27,11 @@ describe('Runtime Tools tests', () => {
       <MemoryRouter initialEntries={['/']} keyLength={0}>
         <RuntimeTools
           users={[{ id: 'John snow', groups: ['admin'] }]}
-          dataIndex={'http:localhost:4000'}
-          navigate="JobsManagement"
-          devUIUrl="http://localhost:8080"
-          openApiPath="/docs/openapi.json"
+          dataIndexUrl='http:localhost:4000'
+          trustyServiceUrl='http://localhost:1336'
+          navigate='JobsManagement'
+          devUIUrl='http://localhost:8080'
+          openApiPath='/docs/openapi.json'
         />
       </MemoryRouter>
     );

@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   callOnceHandler,
   EXECUTIONS_PATH
 } from '../../../utils/api/httpClient';
 import { Executions, RemoteData, RemoteDataStatus } from '../../../types';
 import axios, { AxiosRequestConfig } from 'axios';
+import { TrustyContext } from '../TrustyApp/TrustyApp';
 
 type useExecutionsParameters = {
   searchString: string;
@@ -20,6 +21,8 @@ const useExecutions = (parameters: useExecutionsParameters) => {
     status: RemoteDataStatus.NOT_ASKED
   });
 
+  const baseUrl = useContext(TrustyContext).config.serverRoot;
+
   const getExecutions = useMemo(() => callOnceHandler(), []);
 
   const loadExecutions = useCallback(() => {
@@ -27,6 +30,7 @@ const useExecutions = (parameters: useExecutionsParameters) => {
     setExecutions({ status: RemoteDataStatus.LOADING });
 
     const config: AxiosRequestConfig = {
+      baseURL: baseUrl,
       url: EXECUTIONS_PATH,
       method: 'get',
       params: { search: searchString, from, to, limit, offset }

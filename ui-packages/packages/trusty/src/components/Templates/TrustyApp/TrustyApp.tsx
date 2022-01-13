@@ -48,6 +48,8 @@ type TrustyAppProps = {
 type ContainerConfigurationProps = {
   /** Include the page layout wrapper with sidebar navigation and breadcrumbs */
   pageWrapper?: boolean;
+  /** Use an optional Server root for all REST operations */
+  serverRoot: string;
   /** Use an optional base path for internal routes */
   basePath?: string;
   /**
@@ -63,11 +65,15 @@ type ContainerConfigurationProps = {
 };
 
 const TrustyApp: React.FC<TrustyAppProps> = props => {
+  const baseUrl =
+    window.TRUSTY_ENDPOINT || process.env.KOGITO_TRUSTY_API_HTTP_URL;
+
   const {
     counterfactualEnabled,
     explanationEnabled,
     containerConfiguration: {
       pageWrapper = true,
+      serverRoot = baseUrl,
       basePath = '',
       excludeReactRouter = false,
       useHrefLinks = true
@@ -80,6 +86,7 @@ const TrustyApp: React.FC<TrustyAppProps> = props => {
         config: {
           counterfactualEnabled,
           explanationEnabled,
+          serverRoot: serverRoot,
           basePath: basePath,
           useHrefLinks
         }

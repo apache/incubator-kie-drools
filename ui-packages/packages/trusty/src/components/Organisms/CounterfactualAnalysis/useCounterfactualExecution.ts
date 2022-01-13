@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
 import {
   CFAnalysisExecution,
@@ -10,6 +10,7 @@ import {
   RemoteDataStatus
 } from '../../../types';
 import { AxiosRequestConfig } from 'axios';
+import { TrustyContext } from '../../Templates/TrustyApp/TrustyApp';
 
 const useCounterfactualExecution = (executionId: string) => {
   const [cfAnalysis, setCFAnalysis] = useState<
@@ -20,6 +21,8 @@ const useCounterfactualExecution = (executionId: string) => {
   const [cfResults, setCFResults] = useState<CFAnalysisResultsSets>();
   const [counterfactualId, setCounterfactualId] = useState();
   const [resultsPolling, setResultsPolling] = useState<number | null>(null);
+
+  const baseUrl = useContext(TrustyContext).config.serverRoot;
 
   const runCFAnalysis = useCallback(
     (parameters: { goals: CFGoal[]; searchDomains: CFSearchInput[] }) => {
@@ -36,6 +39,7 @@ const useCounterfactualExecution = (executionId: string) => {
         .map(({ role, ...rest }) => rest);
 
       const config: AxiosRequestConfig = {
+        baseURL: baseUrl,
         url: `${EXECUTIONS_PATH}/decisions/${executionId}/explanations/counterfactuals`,
         method: 'post',
         data: {
@@ -68,6 +72,7 @@ const useCounterfactualExecution = (executionId: string) => {
     let isMounted = true;
 
     const config: AxiosRequestConfig = {
+      baseURL: baseUrl,
       url: `${EXECUTIONS_PATH}/decisions/${executionId}/explanations/counterfactuals/${counterfactualId}`,
       method: 'get'
     };

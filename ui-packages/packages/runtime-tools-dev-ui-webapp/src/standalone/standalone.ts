@@ -32,6 +32,7 @@ export interface Consoles {
     container: Element;
     users: User[];
     dataIndexUrl: string;
+    trustyServiceUrl: string;
     page: string;
     devUIUrl: string;
     openApiPath: string;
@@ -66,6 +67,7 @@ const createEnvelopeServer = (
   iframe: HTMLIFrameElement,
   users: User[],
   dataIndexUrl: string,
+  trustyServiceUrl: string,
   page: string,
   devUIUrl: string,
   openApiPath: string,
@@ -88,6 +90,7 @@ const createEnvelopeServer = (
         {
           users,
           dataIndexUrl,
+          trustyServiceUrl,
           page,
           devUIUrl,
           openApiPath
@@ -101,6 +104,7 @@ export function open(args: {
   container: Element;
   users: User[];
   dataIndexUrl: string;
+  trustyServiceUrl: string;
   page: string;
   devUIUrl: string;
   openApiPath: string;
@@ -117,6 +121,7 @@ export function open(args: {
     iframe,
     args.users,
     args.dataIndexUrl,
+    args.trustyServiceUrl,
     args.page,
     args.devUIUrl,
     args.openApiPath,

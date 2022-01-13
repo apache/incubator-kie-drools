@@ -43,6 +43,7 @@ exports[`DevUIRoutes tests Test Jobs management route 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route
@@ -164,6 +165,7 @@ exports[`DevUIRoutes tests Test NoData route 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route
@@ -288,6 +290,7 @@ exports[`DevUIRoutes tests Test PageNotFound route 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route
@@ -416,6 +419,7 @@ exports[`DevUIRoutes tests audit investigation page test 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route
@@ -443,6 +447,7 @@ exports[`DevUIRoutes tests audit investigation page test 1`] = `
                 "basePath": "/Audit",
                 "excludeReactRouter": true,
                 "pageWrapper": false,
+                "serverRoot": "http://url-to-service",
                 "useHrefLinks": false,
               }
             }
@@ -501,6 +506,7 @@ exports[`DevUIRoutes tests forms list page test 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route
@@ -622,6 +628,7 @@ exports[`DevUIRoutes tests jobs management page test 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route
@@ -743,6 +750,7 @@ exports[`DevUIRoutes tests no data page test 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route
@@ -867,6 +875,7 @@ exports[`DevUIRoutes tests page not found page test 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route
@@ -995,6 +1004,7 @@ exports[`DevUIRoutes tests processes test 1`] = `
   >
     <DevUIRoutes
       navigate="JobsManagement"
+      trustyServiceUrl="http://url-to-service"
     >
       <Switch>
         <Route

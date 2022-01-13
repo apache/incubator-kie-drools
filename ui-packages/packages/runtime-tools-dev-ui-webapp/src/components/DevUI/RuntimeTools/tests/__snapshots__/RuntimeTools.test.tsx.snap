@@ -2,10 +2,11 @@
 
 exports[`Runtime Tools tests Snapshot tests with default props 1`] = `
 <RuntimeTools
-  dataIndex="http:localhost:4000"
+  dataIndexUrl="http:localhost:4000"
   devUIUrl="http://localhost:8080"
   navigate="JobsManagement"
   openApiPath="/docs/openapi.json"
+  trustyServiceUrl="http://localhost:1336"
   users={
     Array [
       Object {

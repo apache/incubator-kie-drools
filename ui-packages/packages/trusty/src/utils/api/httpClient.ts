@@ -7,7 +7,6 @@ declare global {
 }
 
 export const httpClient = axios.create({
-  baseURL: window.TRUSTY_ENDPOINT || process.env.KOGITO_TRUSTY_API_HTTP_URL,
   timeout: 5000,
   headers: {}
 });

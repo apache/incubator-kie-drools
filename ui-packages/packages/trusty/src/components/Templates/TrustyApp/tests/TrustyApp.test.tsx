@@ -23,6 +23,7 @@ describe('TrustyApp', () => {
           explanationEnabled={true}
           counterfactualEnabled={true}
           containerConfiguration={{
+            serverRoot: 'http://url-to-service',
             excludeReactRouter: true,
             pageWrapper: false
           }}
@@ -47,6 +48,7 @@ describe('TrustyApp', () => {
           explanationEnabled={true}
           counterfactualEnabled={true}
           containerConfiguration={{
+            serverRoot: 'http://url-to-service',
             excludeReactRouter: true,
             pageWrapper: true
           }}
@@ -73,6 +75,7 @@ describe('TrustyApp', () => {
           containerConfiguration={{
             excludeReactRouter: true,
             pageWrapper: true,
+            serverRoot: 'http://url-to-service',
             basePath: '/trusty-base-path'
           }}
         />
@@ -101,6 +104,7 @@ describe('TrustyApp', () => {
           explanationEnabled={true}
           counterfactualEnabled={true}
           containerConfiguration={{
+            serverRoot: 'http://url-to-service',
             excludeReactRouter: true,
             pageWrapper: true
           }}
@@ -130,6 +134,7 @@ describe('TrustyApp', () => {
           explanationEnabled={true}
           counterfactualEnabled={true}
           containerConfiguration={{
+            serverRoot: 'http://url-to-service',
             excludeReactRouter: true
           }}
         />
@@ -149,6 +154,7 @@ describe('TrustyApp', () => {
         explanationEnabled={true}
         counterfactualEnabled={true}
         containerConfiguration={{
+          serverRoot: 'http://url-to-service',
           excludeReactRouter: false
         }}
       />
@@ -171,6 +177,7 @@ describe('TrustyApp', () => {
           explanationEnabled={true}
           counterfactualEnabled={true}
           containerConfiguration={{
+            serverRoot: 'http://url-to-service',
             excludeReactRouter: true
           }}
         />
