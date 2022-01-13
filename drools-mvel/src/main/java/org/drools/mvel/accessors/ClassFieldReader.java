@@ -30,6 +30,8 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
 
+import static org.drools.core.util.StringUtils.lcFirstForBean;
+
 /**
  * This provides access to fields, and what their numerical index/object type is.
  * This is basically a wrapper class around dynamically generated subclasses of
@@ -50,7 +52,7 @@ public class ClassFieldReader implements Externalizable, InternalReadAccessor, F
     public ClassFieldReader(final String className,
                             final String fieldName) {
         this.className = className;
-        this.fieldName = AccessorKey.decapitalizeFieldName(fieldName);
+        this.fieldName = lcFirstForBean(fieldName);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
