@@ -16,7 +16,6 @@
 
 package org.kie.kogito.jobs.service.resource;
 
-import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -24,7 +23,6 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InfinispanJobResourceIT extends BaseJobResourceIT {
 
 }

@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>jobs-service-common</artifactId>
-  <name>Kogito Apps :: Jobs Service Common</name>
+  <name>Kogito Apps :: Jobs Service :: Common</name>
   <description>Jobs Service (Timers and Async Jobs) Common</description>
 
   <dependencies>
@@ -180,45 +180,6 @@
           <execution>
             <goals>
               <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-            <configuration>
-              <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
-                <exclude>**/Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>testWithKeycloak</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-            <configuration>
-              <includes>
-                <include>**/Keycloak*IT.java</include>
-              </includes>
-              <systemPropertyVariables>
-                <quarkus.test.profile>keycloak</quarkus.test.profile>
-                <quarkus.http.auth.policy.role-policy1.roles-allowed>confidential</quarkus.http.auth.policy.role-policy1.roles-allowed>
-                <quarkus.http.auth.permission.roles1.paths>/*</quarkus.http.auth.permission.roles1.paths>
-                <quarkus.http.auth.permission.roles1.policy>role-policy1</quarkus.http.auth.permission.roles1.policy>
-              </systemPropertyVariables>
-            </configuration>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
-              <goal>verify</goal>
             </goals>
           </execution>
         </executions>

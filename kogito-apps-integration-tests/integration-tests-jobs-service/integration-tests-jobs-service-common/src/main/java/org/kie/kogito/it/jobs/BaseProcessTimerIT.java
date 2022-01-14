@@ -15,15 +15,17 @@
  */
 package org.kie.kogito.it.jobs;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Test;
 
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.with;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 public abstract class BaseProcessTimerIT {
@@ -31,8 +33,11 @@ public abstract class BaseProcessTimerIT {
     public static final String TIMERS = "timers";
     public static final String TIMERS_CYCLE = "timerscycle";
     public static final String TIMERS_ON_TASK = "timersOnTask";
-    public static final int TIMEOUT = 10;
-    public static final int POLL_INTERVAL = 1;
+    public static final Duration TIMEOUT = Duration.ofSeconds(10);
+
+    static {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
 
     //Timers Tests
     @Test
@@ -40,8 +45,7 @@ public abstract class BaseProcessTimerIT {
         String id = createTimer(new RequestPayload("PT02S"), TIMERS);
         Object id2 = getTimerById(id, TIMERS);
         assertThat(id).isEqualTo(id2);
-        with().pollDelay(POLL_INTERVAL, SECONDS)
-                .atMost(TIMEOUT, SECONDS)
+        await().atMost(TIMEOUT)
                 .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS));
     }
 
@@ -59,8 +63,7 @@ public abstract class BaseProcessTimerIT {
         String id = createTimer(new RequestPayload("R2/PT1S"), TIMERS_CYCLE);
         String id2 = getTimerById(id, TIMERS_CYCLE);
         assertThat(id).isEqualTo(id2);
-        with().pollDelay(POLL_INTERVAL, SECONDS)
-                .atMost(TIMEOUT, SECONDS)
+        await().atMost(TIMEOUT)
                 .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS));
     }
 
@@ -78,8 +81,7 @@ public abstract class BaseProcessTimerIT {
         String id = createTimer(new RequestPayload("PT02S"), TIMERS_ON_TASK);
         String id2 = getTimerById(id, TIMERS_ON_TASK);
         assertThat(id).isEqualTo(id2);
-        with().pollDelay(POLL_INTERVAL, SECONDS)
-                .atMost(TIMEOUT, SECONDS)
+        await().atMost(TIMEOUT)
                 .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS_ON_TASK));
     }
 

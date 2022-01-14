@@ -16,17 +16,11 @@
 
 package org.kie.kogito.jobs.service.resource;
 
-import org.junit.jupiter.api.TestInstance;
-import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
-
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(KeycloakQuarkusTestResource.class)
-@QuarkusTestResource(MongoDBQuarkusTestResource.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestProfile(KeycloakQuarkusTestProfile.class)
 public class KeycloakMongoDBJobServiceIT extends BaseKeycloakJobServiceIT {
 
 }

@@ -16,17 +16,11 @@
 
 package org.kie.kogito.jobs.service.resource;
 
-import org.junit.jupiter.api.TestInstance;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
-
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(KeycloakQuarkusTestResource.class)
-@QuarkusTestResource(InfinispanQuarkusTestResource.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestProfile(KeycloakQuarkusTestProfile.class)
 class KeycloakInfinispanJobServiceIT extends BaseKeycloakJobServiceIT {
 
 }

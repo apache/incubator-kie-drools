@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 @QuarkusTest
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
+@QuarkusTestResource(value = KafkaQuarkusTestResource.class, restrictToAnnotatedClass = true)
 class KafkaConfigurationIT {
 
     private KafkaConfiguration tested;

@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
@@ -33,7 +32,6 @@ import static org.awaitility.Awaitility.await;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InfinispanJobRepositoryIT extends BaseJobRepositoryTest {
 
     @Inject

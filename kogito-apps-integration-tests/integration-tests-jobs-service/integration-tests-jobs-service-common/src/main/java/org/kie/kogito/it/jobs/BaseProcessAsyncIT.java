@@ -15,22 +15,27 @@
  */
 package org.kie.kogito.it.jobs;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Test;
 
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.with;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 
 public abstract class BaseProcessAsyncIT {
 
     public static final String ASYNC = "async";
-    public static final int TIMEOUT = 10;
-    public static final int POLL_INTERVAL = 1;
+    public static final Duration TIMEOUT = Duration.ofSeconds(10);
+
+    static {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
 
     @Test
     public void testAsync() {
@@ -41,8 +46,7 @@ public abstract class BaseProcessAsyncIT {
         created.body("bye", nullValue());
 
         //check started and executed the hello async task
-        with().pollDelay(POLL_INTERVAL, SECONDS)
-                .atMost(TIMEOUT, SECONDS)
+        await().atMost(TIMEOUT)
                 .untilAsserted(() -> {
                     ValidatableResponse response = getById(ASYNC, id);
                     response.body("hello", equalTo("Hello Tiago"));
@@ -53,14 +57,12 @@ public abstract class BaseProcessAsyncIT {
         ValidatableResponse complete = signal(ASYNC, id, "bye");
         complete.body("bye", nullValue());
 
-        with().pollInterval(POLL_INTERVAL, SECONDS)
-                .atMost(TIMEOUT, SECONDS)
+        await().atMost(TIMEOUT)
                 .untilAsserted(() -> getById(ASYNC, id).body("bye", equalTo("Bye Tiago")));
 
         signal(ASYNC, id, "complete");
         //check completed and removed
-        with().pollInterval(POLL_INTERVAL, SECONDS)
-                .atMost(TIMEOUT, SECONDS)
+        await().atMost(TIMEOUT)
                 .untilAsserted(() -> getWithStatusCode(ASYNC, id, 404));
     }
 

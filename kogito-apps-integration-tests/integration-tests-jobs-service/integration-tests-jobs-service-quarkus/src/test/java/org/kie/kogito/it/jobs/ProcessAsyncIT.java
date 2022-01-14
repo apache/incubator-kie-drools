@@ -15,10 +15,8 @@
  */
 package org.kie.kogito.it.jobs;
 
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.test.resources.JobServiceQuarkusTestResource;
 import org.kie.kogito.test.resources.KogitoServiceRandomPortQuarkusTestResource;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -26,6 +24,5 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @QuarkusTestResource(KogitoServiceRandomPortQuarkusTestResource.class)
 @QuarkusTestResource(JobServiceQuarkusTestResource.class)
-@ExtendWith(MockitoExtension.class)
 public class ProcessAsyncIT extends BaseProcessAsyncIT {
 }

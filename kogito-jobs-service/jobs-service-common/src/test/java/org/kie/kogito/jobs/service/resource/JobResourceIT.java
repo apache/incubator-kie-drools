@@ -16,12 +16,9 @@
 
 package org.kie.kogito.jobs.service.resource;
 
-import org.junit.jupiter.api.TestInstance;
-
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class JobResourceIT extends BaseJobResourceIT {
 
 }
