@@ -357,8 +357,6 @@ public class KnowledgeBaseImpl implements RuleBase {
             InternalKnowledgePackage pkg = this.pkgs.get( newPkg.getName() );
             if ( pkg == null ) {
                 pkg = CoreComponentFactory.get().createKnowledgePackage(newPkg.getName());
-
-                // @TODO we really should have a single root cache
                 pkg.setClassFieldAccessorCache( this.classFieldAccessorCache );
                 pkgs.put( pkg.getName(), pkg );
             }
@@ -397,7 +395,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             pkg.getDialectRuntimeRegistry().onBeforeExecute();
 
             // with the classloader recreated for all byte[] classes, we should now merge and wire any new accessors
-            pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
+            pkg.mergeStore( newPkg );
         }
 
 

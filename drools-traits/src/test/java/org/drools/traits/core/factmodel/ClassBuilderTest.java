@@ -27,7 +27,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;

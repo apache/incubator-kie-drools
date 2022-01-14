@@ -16,13 +16,14 @@
 package org.drools.core.definitions;
 
 import java.io.Externalizable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.impl.RuleBase;
@@ -32,11 +33,16 @@ import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
+import org.drools.core.spi.AcceptsClassObjectType;
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public interface InternalKnowledgePackage extends KiePackage,
                                                   Externalizable {
@@ -124,8 +130,6 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     DialectRuntimeRegistry getDialectRuntimeRegistry();
 
-    void setDialectRuntimeRegistry(DialectRuntimeRegistry dialectRuntimeRegistry);
-
     RuleImpl getRule(String name);
 
     FactType getFactType(String typeName);
@@ -144,10 +148,6 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     RuleUnitDescriptionLoader getRuleUnitDescriptionLoader();
 
-    ClassFieldAccessorStore getClassFieldAccessorStore();
-
-    void setClassFieldAccessorCache(ClassFieldAccessorCache classFieldAccessorCache);
-
     InternalKnowledgePackage deepCloneIfAlreadyInUse(ClassLoader classLoader);
 
     void mergeTraitRegistry(RuleBase knowledgeBase);
@@ -155,4 +155,23 @@ public interface InternalKnowledgePackage extends KiePackage,
     void addCloningResource(String key, Object resource);
 
     void wireTypeDeclarations();
+
+    default void mergeStore(InternalKnowledgePackage newPkg) { }
+    default void wireStore() { }
+
+    default void buildFieldAccessors(TypeDeclaration type) { }
+
+    default void removeClass( Class<?> cls ) { }
+
+    default ObjectType wireObjectType(ObjectType objectType, AcceptsClassObjectType extractor) { return null; }
+
+    default Class<?> getFieldType(Class<?> clazz, String leftValue) { return null; }
+
+    default InternalReadAccessor getReader(String className, String fieldName, AcceptsReadAccessor target) { return null; }
+
+    default Collection<KnowledgeBuilderResult> getWiringResults(Class<?> classType, String fieldName) { return Collections.emptyList(); }
+
+    default InternalReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, Class<?> returnType ) { return null; }
+
+    default void setClassFieldAccessorCache(ClassFieldAccessorCache classFieldAccessorCache) { }
 }

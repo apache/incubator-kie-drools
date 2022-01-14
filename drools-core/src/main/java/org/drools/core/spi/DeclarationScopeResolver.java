@@ -16,7 +16,6 @@
 
 package org.drools.core.spi;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -45,17 +44,16 @@ public class DeclarationScopeResolver {
     private Optional<RuleUnitDescription> ruleUnitDescr = Optional.empty();
 
     protected DeclarationScopeResolver() {
-        this( new HashMap<String, Class<?>>(), new Stack<RuleConditionElement>() );
+        this( new HashMap<>(), new Stack<>() );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
-                                    final Stack<RuleConditionElement> buildStack) {
+    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap, final Stack<RuleConditionElement> buildStack) {
         this( globalMap, buildStack, null );
     }
 
     public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
                                     final InternalKnowledgePackage pkg) {
-        this( globalMap, new Stack<RuleConditionElement>(), pkg );
+        this( globalMap, new Stack<>(), pkg );
     }
 
     private DeclarationScopeResolver(Map<String, Class<?>> globalMap,
@@ -92,8 +90,7 @@ public class DeclarationScopeResolver {
 
     }
 
-    private Map<String, Declaration> getAllExtendedDeclaration(RuleImpl rule,
-                                                               Map<String, Declaration> dec) {
+    private Map<String, Declaration> getAllExtendedDeclaration(RuleImpl rule, Map<String, Declaration> dec) {
         dec.putAll( rule.getLhs().getInnerDeclarations() );
         if ( null != rule.getParent() ) {
             return getAllExtendedDeclaration( rule.getParent(),
@@ -114,8 +111,7 @@ public class DeclarationScopeResolver {
         if ( rule != null && rule.getParent() != null ) {
             // recursive algorithm for each parent
             //     -> lhs.getInnerDeclarations()
-            Declaration parentDeclaration = getExtendedDeclaration( rule.getParent(),
-                                                                    identifier );
+            Declaration parentDeclaration = getExtendedDeclaration( rule.getParent(), identifier );
             if ( null != parentDeclaration ) {
                 return parentDeclaration;
             }
@@ -130,17 +126,14 @@ public class DeclarationScopeResolver {
             final Pattern dummy = new Pattern( 0,
                                                classObjectType );
 
-            InternalReadAccessor globalExtractor = getReadAcessor( identifier,
-                                                                   classObjectType );
-            declaration = new Declaration( identifier,
-                                           globalExtractor,
-                                           dummy );
+            InternalReadAccessor globalExtractor = new GlobalExtractor( identifier, classObjectType );//FieldAccessorFactory.get().getGlobalReadAccessor( identifier, classObjectType );
+            declaration = new Declaration( identifier, globalExtractor, dummy );
             if ( pkg != null ) {
 
                 // make sure dummy and globalExtractor are wired up to correct ClassObjectType
                 // and set as targets for rewiring
-                pkg.getClassFieldAccessorStore().wireObjectType( classObjectType, dummy );
-                pkg.getClassFieldAccessorStore().wireObjectType( classObjectType, ( AcceptsClassObjectType ) globalExtractor );
+                pkg.wireObjectType( classObjectType, dummy );
+                pkg.wireObjectType( classObjectType, ( AcceptsClassObjectType ) globalExtractor );
             }
             return declaration;
         }
@@ -162,28 +155,6 @@ public class DeclarationScopeResolver {
 
     public boolean hasDataSource( String name ) {
         return ruleUnitDescr.map( descr -> descr.hasDataSource( name )).orElse( false );
-    }
-
-    private static InternalReadAccessor getReadAcessor( String identifier,
-                                                        ObjectType objectType ) {
-        Class returnType = ((ClassObjectType) objectType).getClassType();
-
-        if (Number.class.isAssignableFrom( returnType ) ||
-                ( returnType == byte.class ||
-                  returnType == short.class ||
-                  returnType == int.class ||
-                  returnType == long.class ||
-                  returnType == float.class ||
-                  returnType == double.class ) ) {
-            return new GlobalNumberExtractor(identifier,
-                                             objectType);
-         } else if (  Date.class.isAssignableFrom( returnType) ) {
-          return new GlobalDateExtractor(identifier,
-                                         objectType);
-        } else {
-          return new GlobalExtractor(identifier,
-                                     objectType);
-        }
     }
 
     public boolean available(RuleImpl rule,
@@ -251,7 +222,7 @@ public class DeclarationScopeResolver {
      * RuleConditionElement in the build stack
      */
     public Map<String, Declaration> getDeclarations(RuleImpl rule, String consequenceName) {
-        Map<String, Declaration> declarations = new HashMap<String, Declaration>();
+        Map<String, Declaration> declarations = new HashMap<>();
         for (RuleConditionElement aBuildStack : this.buildStack) {
             // if we are inside of an OR we don't want each previous stack entry added because we can't see those variables
             if (aBuildStack instanceof GroupElement && ((GroupElement)aBuildStack).getType() == GroupElement.Type.OR) {
@@ -276,7 +247,7 @@ public class DeclarationScopeResolver {
     }
 
     public static Map<String,Class<?>> getDeclarationClasses( final Map<String, Declaration> declarations) {
-        final Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
+        final Map<String, Class<?>> classes = new HashMap<>();
         for ( Map.Entry<String, Declaration> decl : declarations.entrySet() ) {
             Class<?> declarationClass = decl.getValue().getDeclarationClass();
             // the declaration class could be null when there's a compilation error

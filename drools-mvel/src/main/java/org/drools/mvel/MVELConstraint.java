@@ -32,7 +32,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassFieldReader;
+import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.DroolsObjectInputStream;

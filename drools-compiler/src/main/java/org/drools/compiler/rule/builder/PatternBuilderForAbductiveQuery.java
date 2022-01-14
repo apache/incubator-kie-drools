@@ -41,7 +41,7 @@ public class PatternBuilderForAbductiveQuery extends PatternBuilderForQuery {
 
             returnName = types[ numParams ];
             Class<?> abductionReturnKlass = query.getAbductionClass(annotationClass -> getTypedAnnotation(queryDescr, annotationClass ));
-            ObjectType objectType = context.getPkg().getClassFieldAccessorStore().wireObjectType( new ClassObjectType( abductionReturnKlass, false ), (AcceptsClassObjectType) query);
+            ObjectType objectType = context.getPkg().wireObjectType( new ClassObjectType( abductionReturnKlass, false ), (AcceptsClassObjectType) query);
 
             query.setReturnType( objectType, params, args, declarations);
         } catch ( NoSuchMethodException e ) {

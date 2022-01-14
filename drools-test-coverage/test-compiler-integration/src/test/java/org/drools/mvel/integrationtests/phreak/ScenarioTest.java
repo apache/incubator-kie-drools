@@ -20,11 +20,11 @@ import java.util.Collections;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -745,7 +745,7 @@ public class ScenarioTest {
         BuildContext buildContext = new BuildContext( rbase, Collections.emptyList() );
 
         RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.pkg1" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "java", new JavaDialectRuntimeData() );
         pkg.addRule( rule );
         buildContext.setRule( rule );

@@ -26,13 +26,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PredicateExpression;
-import org.drools.core.spi.Restriction;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
@@ -44,7 +42,6 @@ import org.kie.internal.security.KiePolicyHelper;
  */
 public class PredicateConstraint extends MutableTypeConstraint
     implements
-    Restriction,
     Wireable,
     Externalizable {
 

@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ClassFieldReader;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;

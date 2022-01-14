@@ -23,6 +23,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
 
@@ -35,8 +37,7 @@ public class ClassFieldAccessorCache {
     private ClassLoader                  classLoader;
 
     public ClassFieldAccessorCache(ClassLoader classLoader) {
-        //        lookup = new HashMap<AccessorKey, LookupEntry>();
-        cacheByClassLoader = new WeakHashMap<ClassLoader, CacheEntry>();
+        this.cacheByClassLoader = new WeakHashMap<>();
         this.classLoader = classLoader;
     }
 
@@ -90,46 +91,42 @@ public class ClassFieldAccessorCache {
 
     }
     
-    public BaseClassFieldReader getReadAcessor(ClassFieldReader reader) {
+    public InternalReadAccessor getReadAccessor(String className, String fieldName) {
         // get the ReaderAccessor for this key
-        Class cls = getClass( reader.getClassName() );
-        return getCacheEntry( cls ).getReadAccessor( getAccessorKey( reader ), cls );
+        Class cls = getClass( className );
+        return getCacheEntry( cls ).getReadAccessor( getAccessorKey( className, fieldName ), cls );
     }
 
-    public void setReadAcessor(ClassFieldReader reader, BaseClassFieldReader readAccessor) {
+    public void setReadAcessor(String className, String fieldName, InternalReadAccessor readAccessor) {
         // get the ReaderAccessor for this key
-        Class cls = getClass( reader.getClassName() );
-        getCacheEntry( cls ).setReadAccessor( getAccessorKey( reader ), readAccessor );
+        Class cls = getClass( className );
+        getCacheEntry( cls ).setReadAccessor( getAccessorKey( className, fieldName ), readAccessor );
     }
 
-    private AccessorKey getAccessorKey( ClassFieldReader reader ) {
-        String className = reader.getClassName();
-        String fieldName = reader.getFieldName();
+    private AccessorKey getAccessorKey( String className, String fieldName ) {
         return new AccessorKey( className, fieldName, AccessorKey.AccessorType.FieldAccessor );
     }
 
-    public BaseClassFieldWriter getWriteAcessor(ClassFieldWriter writer) {
+    public WriteAccessor getWriteAccessor(String className, String fieldName) {
         // get the ReaderAccessor for this key
-        Class cls = getClass( writer.getClassName() );
-        return getCacheEntry( cls ).getWriteAccessor( getAccessorKey( writer ), cls );
+        Class cls = getClass( className );
+        return getCacheEntry( cls ).getWriteAccessor( getAccessorKey( className, fieldName ), cls );
     }
 
-    public void setWriteAcessor(ClassFieldWriter writer, BaseClassFieldWriter writeAccessor ) {
+    public void setWriteAcessor(String className, String fieldName, BaseClassFieldWriter writeAccessor ) {
         // get the ReaderAccessor for this key
-        Class cls = getClass( writer.getClassName() );
-        getCacheEntry( cls ).setWriteAccessor( getAccessorKey( writer ), writeAccessor );
+        Class cls = getClass( className );
+        getCacheEntry( cls ).setWriteAccessor( getAccessorKey( className, fieldName ), writeAccessor );
     }
 
-    private AccessorKey getAccessorKey( ClassFieldWriter writer ) {
-        String className = writer.getClassName();
-        String fieldName = writer.getFieldName();
-        return new AccessorKey( className, fieldName, AccessorKey.AccessorType.FieldAccessor );
+    private Class getClass(String className) {
+        return getClass(this.classLoader, className);
     }
 
-    public Class getClass(String className) {
+    private static Class getClass(ClassLoader cl, String className) {
         try {
             Class<?> primitiveType = convertPrimitiveNameToType( className );
-            return primitiveType != null ? primitiveType : this.classLoader.loadClass( className );
+            return primitiveType != null ? primitiveType : cl.loadClass( className );
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeException( "Unable to resolve class '" + className + "'" );
         }
@@ -152,8 +149,8 @@ public class ClassFieldAccessorCache {
 
     public static class CacheEntry {
         private final ByteArrayClassLoader byteArrayClassLoader;
-        private final ConcurrentMap<AccessorKey, BaseClassFieldReader>   readCache   = new ConcurrentHashMap<>();
-        private final ConcurrentMap<AccessorKey, BaseClassFieldWriter>   writeCache  = new ConcurrentHashMap<>();
+        private final ConcurrentMap<AccessorKey, InternalReadAccessor> readCache  = new ConcurrentHashMap<>();
+        private final ConcurrentMap<AccessorKey, WriteAccessor> writeCache = new ConcurrentHashMap<>();
 
         private final ConcurrentMap<Class< ? >, ClassFieldInspector>     inspectors  = new ConcurrentHashMap<>();
 
@@ -172,16 +169,12 @@ public class ClassFieldAccessorCache {
             return byteArrayClassLoader;
         }
 
-        public BaseClassFieldReader getReadAccessor(AccessorKey key,
-                                                    Class cls) {
-            BaseClassFieldReader reader = this.readCache.get( key );
+        public InternalReadAccessor getReadAccessor(AccessorKey key, Class cls) {
+            InternalReadAccessor reader = this.readCache.get( key );
             if ( reader == null ) {
-                reader = FieldAccessorFactory.get().getClassFieldReader( cls,
-                                                                        key.getFieldName(),
-                                                                        this );
+                reader = FieldAccessorFactory.get().getClassFieldReader( cls, key.getFieldName(), this );
                 if ( reader != null ) {
-                    BaseClassFieldReader existingReader = this.readCache.putIfAbsent( key,
-                                                                                      reader );
+                    InternalReadAccessor existingReader = this.readCache.putIfAbsent( key, reader );
                     if ( existingReader != null ) {
                         // Raced, use the (now) existing entry
                         reader = existingReader;
@@ -192,20 +185,16 @@ public class ClassFieldAccessorCache {
             return reader;
         }
 
-        public void setReadAccessor(AccessorKey key, BaseClassFieldReader reader) {
+        public void setReadAccessor(AccessorKey key, InternalReadAccessor reader) {
             this.readCache.put( key, reader );
         }
 
-        public BaseClassFieldWriter getWriteAccessor(AccessorKey key,
-                                                     Class cls) {
-            BaseClassFieldWriter writer = this.writeCache.get( key );
+        public WriteAccessor getWriteAccessor(AccessorKey key, Class cls) {
+            WriteAccessor writer = this.writeCache.get( key );
             if ( writer == null ) {
-                writer = FieldAccessorFactory.get().getClassFieldWriter( cls,
-                                                                        key.getFieldName(),
-                                                                        this );
+                writer = FieldAccessorFactory.get().getClassFieldWriter( cls, key.getFieldName(), this );
                 if ( writer != null ) {
-                    BaseClassFieldWriter existingWriter = this.writeCache.putIfAbsent( key,
-                                                                                       writer );
+                    WriteAccessor existingWriter = this.writeCache.putIfAbsent( key, writer );
                     if ( existingWriter != null ) {
                         // Raced, use the (now) existing entry
                         writer = existingWriter;

@@ -16,7 +16,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.base.FieldDataFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.InternalWorkingMemory;
@@ -55,8 +54,6 @@ public interface RuntimeComponentFactory {
     NamedEntryPointFactory getNamedEntryPointFactory();
 
     FactHandleFactory getFactHandleFactoryService();
-
-    FieldDataFactory getFieldFactory();
 
     TraitRegistry getTraitRegistry(RuleBase knowledgeBase);
 

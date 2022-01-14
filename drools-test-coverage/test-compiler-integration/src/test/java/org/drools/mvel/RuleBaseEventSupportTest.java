@@ -21,18 +21,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.test.model.Cheese;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -159,7 +159,7 @@ public class RuleBaseEventSupportTest {
             }
         } );
 
-        pkg = new KnowledgePackageImpl( "org.drools.test1" );
+        pkg = CoreComponentFactory.get().createKnowledgePackage( "org.drools.test1" );
         pkg.addRule( rule1 );
         pkg.addRule( rule2 );
 

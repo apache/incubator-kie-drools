@@ -176,7 +176,7 @@ public class StringUtils {
     }
 
     public static String lcFirstForBean(String s) {
-        return s.length() > 1 && Character.isUpperCase( s.charAt( 1 ) ) ? s : lcFirst(s);
+        return s == null || s.isEmpty() || (s.length() > 1 && Character.isUpperCase( s.charAt( 1 ) )) ? s : lcFirst(s);
     }
 
     // Empty checks

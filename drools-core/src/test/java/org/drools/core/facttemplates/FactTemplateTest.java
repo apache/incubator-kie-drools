@@ -17,15 +17,19 @@
 package org.drools.core.facttemplates;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 
 public class FactTemplateTest {
     @Test
     public void testFieldsAndGetters() {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 0,
                                                                 String.class );
@@ -66,7 +70,7 @@ public class FactTemplateTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
 
         // Create cheese1 with name and price fields
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
@@ -120,7 +124,7 @@ public class FactTemplateTest {
 
     @Test
     public void testFacts() {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 0,
                                                                 String.class );

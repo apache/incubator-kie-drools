@@ -30,14 +30,15 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import static org.junit.Assert.*;
-
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.GroupElement;
+import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class DroolsObjectIOTest {
 
@@ -150,7 +151,7 @@ public class DroolsObjectIOTest {
 
     @Test
     public void testStreaming() throws Exception {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl("test");
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("test");
 
         byte[]  buf = marshal(pkg);
         assertEquals(unmarshal(buf), pkg);

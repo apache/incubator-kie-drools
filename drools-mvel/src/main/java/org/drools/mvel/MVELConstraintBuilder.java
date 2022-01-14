@@ -34,19 +34,13 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.kie.util.BeanCreator;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.BindingDescr;
-import org.drools.drl.ast.descr.LiteralRestrictionDescr;
-import org.drools.drl.ast.descr.OperatorDescr;
-import org.drools.drl.ast.descr.PredicateDescr;
-import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.FieldFactory;
+import org.drools.mvel.field.FieldFactory;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
@@ -66,6 +60,12 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.LiteralRestrictionDescr;
+import org.drools.drl.ast.descr.OperatorDescr;
+import org.drools.drl.ast.descr.PredicateDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.builder.MVELAnalysisResult;
 import org.drools.mvel.builder.MVELBeanCreator;
@@ -86,6 +86,7 @@ import org.mvel2.util.CompatibilityStrategy;
 import org.mvel2.util.NullType;
 import org.mvel2.util.PropertyTools;
 
+import static org.drools.compiler.lang.DescrDumper.WM_ARGUMENT;
 import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
 import static org.drools.compiler.rule.builder.PatternBuilder.buildOperators;
 import static org.drools.compiler.rule.builder.PatternBuilder.getOperators;
@@ -94,7 +95,6 @@ import static org.drools.compiler.rule.builder.PatternBuilder.registerDescrBuild
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
-import static org.drools.compiler.lang.DescrDumper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 import static org.drools.mvel.builder.MVELExprAnalyzer.analyze;
@@ -706,7 +706,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                 return null;
             }
 
-            reader = context.getPkg().getClassFieldAccessorStore().getMVELReader(context.getPkg().getName(),
+            reader = ((MVELKnowledgePackageImpl) context.getPkg()).getClassFieldAccessorStore().getMVELReader(context.getPkg().getName(),
                     objectType.getClassName(),
                     fieldName,
                     context.isTypesafe(),

@@ -19,8 +19,6 @@ package org.drools.kiesession.factory;
 import java.io.Serializable;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.base.FieldDataFactory;
-import org.drools.core.base.FieldFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.DefaultNamedEntryPointFactory;
@@ -60,7 +58,6 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
     private final WorkingMemoryFactory wmFactory = PhreakWorkingMemoryFactory.getInstance();
     private final AgendaFactory agendaFactory = DefaultAgendaFactory.getInstance();
     private final AgendaGroupFactory agendaGroupFactory = PriorityQueueAgendaGroupFactory.getInstance();
-    private final FieldDataFactory fieldFactory = FieldFactory.getInstance();
 
     public FactHandleFactory getFactHandleFactoryService() {
         return handleFactory;
@@ -80,10 +77,6 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
 
     public AgendaGroupFactory getAgendaGroupFactory() {
         return agendaGroupFactory;
-    }
-
-    public FieldDataFactory getFieldFactory() {
-        return fieldFactory;
     }
 
     public TraitFactory getTraitFactory(RuleBase knowledgeBase) {

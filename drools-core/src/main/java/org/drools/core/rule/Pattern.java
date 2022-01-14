@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,11 +37,8 @@ import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Constraint.ConstraintType;
-import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
-import org.drools.core.spi.SelfDateExtractor;
-import org.drools.core.spi.SelfNumberExtractor;
 import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
@@ -134,13 +130,9 @@ public class Pattern
         this.objectIndex = objectIndex;
         this.objectType = objectType;
         if (identifier != null && (!identifier.equals(""))) {
-            this.declaration = new Declaration(identifier,
-                                               getReadAcessor(objectType),
-                                               this,
-                                               isInternalFact);
-            this.declarations = new HashMap<String, Declaration>();
-            this.declarations.put(this.declaration.getIdentifier(),
-                                  this.declaration );
+            this.declaration = new Declaration(identifier, new PatternExtractor(objectType), this, isInternalFact);
+            this.declarations = new HashMap<>();
+            this.declarations.put(this.declaration.getIdentifier(), this.declaration );
         } else {
             this.declaration = null;
         }        
@@ -192,34 +184,12 @@ public class Pattern
         out.writeObject(xPath);
     }
     
-    public static InternalReadAccessor getReadAcessor(ObjectType objectType) {
-        if ( !(objectType instanceof ClassObjectType) ) {
-            return new PatternExtractor(objectType);
-        }
-        ClassObjectType classObjectType = ((ClassObjectType) objectType);
-        Class returnType = classObjectType.getClassType();
-        
-        if (Number.class.isAssignableFrom( returnType ) ||
-                ( returnType == byte.class ||
-                  returnType == short.class ||
-                  returnType == int.class ||
-                  returnType == long.class ||
-                  returnType == float.class ||
-                  returnType == double.class ) ) {            
-            return new SelfNumberExtractor(classObjectType);
-         } else if (  Date.class.isAssignableFrom( returnType ) ) {
-            return new SelfDateExtractor(classObjectType);
-        } else {
-            return new PatternExtractor(objectType);
-        }        
-    }
-    
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
     }
 
     public Declaration[] getRequiredDeclarations() {
-        Set<Declaration> decl = new HashSet<Declaration>();
+        Set<Declaration> decl = new HashSet<>();
         for( Constraint constr : this.constraints ) {
             Collections.addAll( decl, constr.getRequiredDeclarations() );
         }

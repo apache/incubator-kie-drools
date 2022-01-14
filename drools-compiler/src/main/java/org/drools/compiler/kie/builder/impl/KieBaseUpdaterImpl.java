@@ -171,7 +171,7 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
         for (Class<?> cls : ctx.modifiedClasses) {
             InternalKnowledgePackage kpackage = ( (InternalKnowledgePackage) ctx.kBase.getKiePackage(cls.getPackage().getName() ) );
             if (kpackage != null) {
-                kpackage.getClassFieldAccessorStore().removeClass( cls );
+                kpackage.removeClass( cls );
             }
         }
     }

@@ -1,9 +1,9 @@
 package org.drools.mvel;
 
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ClassFieldReader;
-import org.drools.core.base.FieldFactory;
-import org.drools.core.base.field.LongFieldImpl;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldReader;
+import org.drools.mvel.field.FieldFactory;
+import org.drools.mvel.field.LongFieldImpl;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;

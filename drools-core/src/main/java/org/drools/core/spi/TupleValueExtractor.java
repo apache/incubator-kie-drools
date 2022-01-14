@@ -28,8 +28,4 @@ public interface TupleValueExtractor extends Cloneable {
     Object getValue( ReteEvaluator reteEvaluator, Tuple tuple );
 
     TupleValueExtractor clone();
-
-    default TupleValueExtractor cloneWithPattern() {
-        return clone();
-    }
 }

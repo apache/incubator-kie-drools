@@ -45,6 +45,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplateObjectType;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.AsyncReceive;
 import org.drools.core.rule.AsyncSend;
@@ -76,6 +77,7 @@ import org.drools.core.spi.Enabled;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Salience;
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
@@ -154,7 +156,6 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.GroupElement.OR;
-import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
 import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
@@ -195,28 +196,28 @@ public class KiePackagesBuilder {
     public CanonicalKiePackages build() {
         for (Model model : models) {
             for (EntryPoint entryPoint : model.getEntryPoints()) {
-                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( model.getName(), this::createKiePackage );
+                InternalKnowledgePackage pkg = packages.computeIfAbsent( model.getName(), this::createKiePackage );
                 pkg.addEntryPointId( entryPoint.getName() );
             }
 
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
-                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
+                InternalKnowledgePackage pkg = packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
                 pkg.addTypeDeclaration( createTypeDeclaration( metaType, getPropertySpecificOption(), pkg.getTypeResolver() ) );
             }
 
             for (Global global : model.getGlobals()) {
-                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( global.getPackage(), this::createKiePackage );
+                InternalKnowledgePackage pkg = packages.computeIfAbsent( global.getPackage(), this::createKiePackage );
                 pkg.addGlobal( global.getName(), global.getType() );
             }
 
             for (Query query : model.getQueries()) {
-                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( query.getPackage(), this::createKiePackage );
+                InternalKnowledgePackage pkg = packages.computeIfAbsent( query.getPackage(), this::createKiePackage );
                 pkg.addRule( compileQuery( pkg, query ) );
             }
 
             int ruleCounter = 0;
             for (Rule rule : model.getRules()) {
-                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( rule.getPackage(), this::createKiePackage );
+                InternalKnowledgePackage pkg = packages.computeIfAbsent( rule.getPackage(), this::createKiePackage );
                 for (RuleImpl ruleImpl : compileRule( pkg, rule ) ) {
                     ruleImpl.setLoadOrder( ruleCounter++ );
                     pkg.addRule( ruleImpl );
@@ -230,14 +231,14 @@ public class KiePackagesBuilder {
         return configuration.getClassLoader();
     }
 
-    private KnowledgePackageImpl createKiePackage(String name) {
-        KnowledgePackageImpl kpkg = new KnowledgePackageImpl( name );
+    private InternalKnowledgePackage createKiePackage(String name) {
+        InternalKnowledgePackage kpkg = CoreComponentFactory.get().createKnowledgePackage( name );
         kpkg.setClassFieldAccessorCache(new ClassFieldAccessorCache( getClassLoader() ) );
         kpkg.setClassLoader( getClassLoader() );
         return kpkg;
     }
 
-    private List<RuleImpl> compileRule( KnowledgePackageImpl pkg, Rule rule ) {
+    private List<RuleImpl> compileRule( InternalKnowledgePackage pkg, Rule rule ) {
         RuleImpl ruleImpl = new RuleImpl( rule.getName() );
         ruleImpl.setPackage( pkg.getName() );
         ruleImpl.setPackage( rule.getPackage() );
@@ -342,7 +343,7 @@ public class KiePackagesBuilder {
         });
     }
 
-    private QueryImpl compileQuery( KnowledgePackageImpl pkg, Query query ) {
+    private QueryImpl compileQuery( InternalKnowledgePackage pkg, Query query ) {
         QueryImpl queryImpl = new QueryImpl( query.getName() );
         queryImpl.setPackage( query.getPackage() );
         RuleContext ctx = new RuleContext( this, pkg, queryImpl );
@@ -906,7 +907,7 @@ public class KiePackagesBuilder {
         Variable boundVar = accPattern.getBoundVariables()[i];
         Declaration declaration;
         if (!isGroupBy && accumulators.length == 1) {
-            declaration = new Declaration(boundVar.getName(), getReadAcessor( new ClassObjectType(boundVar.getType()) ),
+            declaration = new Declaration(boundVar.getName(), new PatternExtractor( new ClassObjectType(boundVar.getType()) ),
                                         pattern, true);
         } else {
             // GroupBy or multi-accumulate always return an array

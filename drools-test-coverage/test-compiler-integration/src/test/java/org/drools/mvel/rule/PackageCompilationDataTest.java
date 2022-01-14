@@ -21,12 +21,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.security.CodeSource;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.JavaDialectRuntimeData;
@@ -66,8 +64,8 @@ public class PackageCompilationDataTest {
 
         KnowledgeBaseImpl kBase = new KnowledgeBaseImpl( "xxx", null );
 
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl("org.drools");
-        pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("org.drools");
+        pkg.setClassLoader( Thread.currentThread().getContextClassLoader() );
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
         data.onAdd(pkg.getDialectRuntimeRegistry(), kBase.getRootClassLoader());
         pkg.getDialectRuntimeRegistry().setDialectData("java", data);

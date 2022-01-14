@@ -21,9 +21,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class AccessorKey
-    implements
-    Externalizable {
+import static org.drools.core.util.StringUtils.lcFirstForBean;
+
+public class AccessorKey implements Externalizable {
+
     private static final long serialVersionUID = 510l;
 
     private String            className;
@@ -39,7 +40,7 @@ public class AccessorKey
                        AccessorType type) {
         super();
         this.className = className;
-        this.fieldName = ClassFieldReader.decapitalizeFieldName(fieldName);
+        this.fieldName = lcFirstForBean(fieldName);
 
         final int PRIME = 31;
         int result = 1;

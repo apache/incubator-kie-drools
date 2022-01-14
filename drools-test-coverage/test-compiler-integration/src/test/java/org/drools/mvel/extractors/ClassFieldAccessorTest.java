@@ -14,10 +14,10 @@
 
 package org.drools.mvel.extractors;
 
-import org.drools.core.base.ClassFieldAccessor;
+import org.drools.mvel.accessors.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ClassFieldReader;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.core.base.ConcreteChild;
 import org.drools.core.util.asm.BeanInherit;
 import org.drools.core.util.asm.InterfaceChild;

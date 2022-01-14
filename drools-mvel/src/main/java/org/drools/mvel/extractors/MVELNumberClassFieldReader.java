@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.base.extractors.BaseNumberClassFieldReader;
+import org.drools.mvel.accessors.BaseNumberClassFieldReader;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.mvel.MVELDialectRuntimeData;

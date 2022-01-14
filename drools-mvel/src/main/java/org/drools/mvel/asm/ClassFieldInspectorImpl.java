@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.base.ClassFieldInspector;
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.kie.impl.MessageImpl;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils;
@@ -47,6 +46,8 @@ import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
+
+import static org.drools.core.util.StringUtils.lcFirstForBean;
 
 /**
  * Visit a POJO user class, and extract the property getter methods that are public, in the 
@@ -373,7 +374,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
     private String calcFieldName( String name,
                                   final int offset ) {
         name = name.substring( offset );
-        return ClassFieldReader.decapitalizeFieldName( name );
+        return lcFirstForBean( name );
     }
 
     public Collection<KnowledgeBuilderResult> getInspectionResults( String fieldName ) {
@@ -393,7 +394,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
 
     protected Map<String, Collection<KnowledgeBuilderResult>> getResults() {
         if ( results == null ) {
-            results = new HashMap<String, Collection<KnowledgeBuilderResult>>( );
+            results = new HashMap<>( );
         }
         return results;
     }

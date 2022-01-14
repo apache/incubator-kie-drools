@@ -381,7 +381,7 @@ public class LogicTransformer {
         }
     }
 
-    void applyOrTransformation(final GroupElement parent) throws InvalidPatternException {
+    public void applyOrTransformation(final GroupElement parent) throws InvalidPatternException {
         final Transformation transformation = this.orTransformations.get( parent.getType() );
 
         if ( transformation == null ) {

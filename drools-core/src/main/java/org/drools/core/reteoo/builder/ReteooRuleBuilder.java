@@ -38,13 +38,13 @@ import org.drools.core.rule.AsyncReceive;
 import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.ConditionalBranch;
-import org.drools.core.rule.DefaultLogicTransformerFactory;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Forall;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.InvalidPatternException;
+import org.drools.core.rule.LogicTransformer;
 import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryElement;
@@ -114,8 +114,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         final List<TerminalNode> nodes = new ArrayList<>();
 
         // transform rule and gets the array of subrules
-        final GroupElement[] subrules = rule.getTransformedLhs( new DefaultLogicTransformerFactory().getLogicTransformer(),
-                                                                kBase.getGlobals() );
+        final GroupElement[] subrules = rule.getTransformedLhs( LogicTransformer.getInstance(), kBase.getGlobals() );
 
         for (int i = 0; i < subrules.length; i++) {
 

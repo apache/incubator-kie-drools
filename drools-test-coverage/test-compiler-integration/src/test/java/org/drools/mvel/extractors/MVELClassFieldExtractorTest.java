@@ -17,7 +17,7 @@ package org.drools.mvel.extractors;
 import java.util.Vector;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.test.model.Address;
 import org.drools.core.test.model.Person;
 import org.drools.mvel.MVELDialectRuntimeData;

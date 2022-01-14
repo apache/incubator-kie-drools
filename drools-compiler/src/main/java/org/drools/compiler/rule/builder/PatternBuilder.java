@@ -40,32 +40,14 @@ import org.drools.compiler.compiler.DroolsErrorWrapper;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.lang.DescrDumper;
-import org.drools.drl.ast.descr.AnnotationDescr;
-import org.drools.drl.ast.descr.AtomicExprDescr;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.BehaviorDescr;
-import org.drools.drl.ast.descr.BindingDescr;
-import org.drools.drl.ast.descr.ConnectiveType;
-import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
-import org.drools.drl.ast.descr.EntryPointDescr;
-import org.drools.drl.ast.descr.ExprConstraintDescr;
-import org.drools.drl.ast.descr.ExpressionDescr;
-import org.drools.drl.ast.descr.FromDescr;
-import org.drools.drl.ast.descr.LiteralRestrictionDescr;
-import org.drools.drl.ast.descr.MVELExprDescr;
-import org.drools.drl.ast.descr.OperatorDescr;
-import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.PredicateDescr;
-import org.drools.drl.ast.descr.RelationalExprDescr;
-import org.drools.drl.ast.descr.ReturnValueRestrictionDescr;
+import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.rule.builder.XpathAnalysis.XpathPart;
 import org.drools.compiler.rule.builder.util.ConstraintUtil;
 import org.drools.core.addon.TypeResolver;
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.FieldNameSupplier;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -102,6 +84,24 @@ import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AtomicExprDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.BehaviorDescr;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.ConnectiveType;
+import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
+import org.drools.drl.ast.descr.ExpressionDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.LiteralRestrictionDescr;
+import org.drools.drl.ast.descr.MVELExprDescr;
+import org.drools.drl.ast.descr.OperatorDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.PredicateDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
+import org.drools.drl.ast.descr.ReturnValueRestrictionDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
@@ -263,7 +263,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                   isInternalFact(patternDescr, context));
             if (objectType instanceof ClassObjectType) {
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
-                context.getPkg().getClassFieldAccessorStore().wireObjectType(objectType, (AcceptsClassObjectType) pattern.getDeclaration().getExtractor());
+                context.getPkg().wireObjectType(objectType, (AcceptsClassObjectType) pattern.getDeclaration().getExtractor());
             }
         } else {
             pattern = new Pattern(context.getNextPatternId(),
@@ -296,7 +296,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
     private void processClassObjectType(RuleBuildContext context, ObjectType objectType, Pattern pattern) {
         if (objectType instanceof ClassObjectType) {
             // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
-            context.getPkg().getClassFieldAccessorStore().wireObjectType(objectType, pattern);
+            context.getPkg().wireObjectType(objectType, pattern);
             Class<?> cls = objectType.getClassType();
             if (cls.getPackage() != null && !cls.getPackage().getName().equals("java.lang")) {
                 // register the class in its own package unless it is primitive or belongs to java.lang
@@ -825,7 +825,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                 XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.getIndex(), part.isIterate(), part.isLazy());
 
                 // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
-                context.getPkg().getClassFieldAccessorStore().wireObjectType(currentObjectType, xpathChunk);
+                context.getPkg().wireObjectType(currentObjectType, xpathChunk);
 
                 if (xpathChunk == null) {
                     registerDescrBuildError(context, patternDescr,
@@ -1050,7 +1050,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         }
 
         Class<?> clazz = pattern.getObjectType().getClassType();
-        Class<?> fieldType = context.getPkg().getClassFieldAccessorStore().getFieldType(clazz, leftValue);
+        Class<?> fieldType = context.getPkg().getFieldType(clazz, leftValue);
         return fieldType != null ? ValueType.determineValueType(fieldType) : null;
     }
 
@@ -1444,8 +1444,8 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
         declr.setReadAccessor(extractor);
 
-        if (!declr.isFromXpathChunk() && typeDeclaration != null && extractor instanceof ClassFieldReader) {
-            addFieldToPatternWatchlist(pattern, typeDeclaration, ((ClassFieldReader) extractor).getFieldName());
+        if (!declr.isFromXpathChunk() && typeDeclaration != null && extractor instanceof FieldNameSupplier) {
+            addFieldToPatternWatchlist(pattern, typeDeclaration, ((FieldNameSupplier) extractor).getFieldName());
         }
     }
 
@@ -1622,7 +1622,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                     declaration = createDeclarationObject(context, "this", pattern);
                 } else {
                     declaration = new Declaration("this", pattern);
-                    context.getPkg().getClassFieldAccessorStore().getReader( pattern.getObjectType().getClassName(), expr, declaration );
+                    context.getPkg().getReader( pattern.getObjectType().getClassName(), expr, declaration );
                 }
             }
         } else {
@@ -1710,7 +1710,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                             final String fieldName,
                                             final AcceptsReadAccessor target) {
         if (!ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType())) {
-            context.getPkg().getClassFieldAccessorStore().getReader(objectType.getClassName(), fieldName, target);
+            context.getPkg().getReader(objectType.getClassName(), fieldName, target);
         }
     }
 
@@ -1751,14 +1751,12 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
         if (isGetter || identifierRegexp.matcher(fieldName).matches()) {
             Declaration decl = context.getDeclarationResolver().getDeclarations(context.getRule()).get(fieldName);
-            if (decl != null && decl.getExtractor() instanceof ClassFieldReader && "this".equals(((ClassFieldReader) decl.getExtractor()).getFieldName())) {
+            if (decl != null && decl.getExtractor() instanceof FieldNameSupplier && "this".equals(((FieldNameSupplier) decl.getExtractor()).getFieldName())) {
                 return decl.getExtractor();
             }
 
             try {
-                reader = context.getPkg().getClassFieldAccessorStore().getReader(objectType.getClassName(),
-                                                                                 fieldName,
-                                                                                 target);
+                reader = context.getPkg().getReader(objectType.getClassName(), fieldName, target);
             } catch (final Exception e) {
                 if (reportError && context.isTypesafe()) {
                     registerDescrBuildError(context, descr, e,
@@ -1769,8 +1767,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             } finally {
 
                 if (reportError) {
-                    Collection<KnowledgeBuilderResult> results = context.getPkg().getClassFieldAccessorStore()
-                            .getWiringResults(objectType.getClassType(), fieldName);
+                    Collection<KnowledgeBuilderResult> results = context.getPkg().getWiringResults(objectType.getClassType(), fieldName);
                     if (!results.isEmpty()) {
                         for (KnowledgeBuilderResult res : results) {
                             if (res.getSeverity() == ResultSeverity.ERROR) {

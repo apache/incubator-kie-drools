@@ -29,8 +29,8 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.ClassFieldAccessor;
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldAccessor;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;

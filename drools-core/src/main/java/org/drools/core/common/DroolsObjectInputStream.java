@@ -25,12 +25,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.drools.core.base.AccessorKey;
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ClassFieldReader;
+import org.drools.core.base.ReadAccessorSupplier;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
@@ -43,7 +41,7 @@ public class DroolsObjectInputStream extends ObjectInputStream
     private RuleBase ruleBase;
     private InternalWorkingMemory workingMemory;
     private Package pkg;
-    private ClassFieldAccessorStore store;
+    private ReadAccessorSupplier store;
 
     private Map<AccessorKey, List<Consumer<InternalReadAccessor>>> extractorBinders = new HashMap<>();
     
@@ -72,7 +70,6 @@ public class DroolsObjectInputStream extends ObjectInputStream
 
         this.classLoader = classLoader;
         this.clonedByIdentity = clonedByIdentity;
-
     }
 
     public boolean isCloning() {
@@ -135,7 +132,7 @@ public class DroolsObjectInputStream extends ObjectInputStream
         return classLoader;
     }
 
-    public void setStore( ClassFieldAccessorStore store ) {
+    public void setStore( ReadAccessorSupplier store ) {
         this.store = store;
     }
 
@@ -153,17 +150,6 @@ public class DroolsObjectInputStream extends ObjectInputStream
         } else {
             binder.accept( (InternalReadAccessor) accessor );
         }
-    }
-
-    public void bindAllExtractors(RuleBase kbase) {
-        extractorBinders.forEach( (k, l) -> {
-            ClassFieldReader extractor = kbase.getPackagesMap().values().stream()
-                                              .map( pkg -> pkg.getClassFieldAccessorStore().getReader( k ) )
-                                              .filter( Objects::nonNull )
-                                              .findFirst()
-                                              .orElseThrow( () -> new RuntimeException( "Unknown extractor for " + k ) );
-            l.forEach( binder -> binder.accept( extractor ) );
-        } );
     }
 
     public void setClassLoader( ClassLoader classLoader ) {

@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -219,7 +218,7 @@ public class ObjectTypeNodeParser {
     }
 
     /**
-     * Returns the {@link ClassFieldReader} for the hashed AlphaNode. The AlphaNode's constraint has to be a
+     * Returns the ClassFieldReader for the hashed AlphaNode. The AlphaNode's constraint has to be a
      * MvelConstraint. This is the only type of hashed alpha currently supported.
      *
      * @param alphaNode hashed alpha to get reader for

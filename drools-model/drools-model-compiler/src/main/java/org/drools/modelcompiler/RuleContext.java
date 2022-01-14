@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
@@ -39,7 +38,7 @@ import org.drools.model.Variable;
 public class RuleContext {
 
     private final KiePackagesBuilder builder;
-    private final KnowledgePackageImpl pkg;
+    private final InternalKnowledgePackage pkg;
     private final RuleImpl rule;
 
     private final Map<Variable, Declaration> declarations = new HashMap<>();
@@ -52,7 +51,7 @@ public class RuleContext {
 
     private Deque<Set<Variable>> variablesInOrCondition;
 
-    public RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
+    public RuleContext( KiePackagesBuilder builder, InternalKnowledgePackage pkg, RuleImpl rule ) {
         this.builder = builder;
         this.pkg = pkg;
         this.rule = rule;
@@ -65,7 +64,7 @@ public class RuleContext {
         return builder.getKiePackages();
     }
 
-    public KnowledgePackageImpl getPkg() {
+    public InternalKnowledgePackage getPkg() {
         return pkg;
     }
 

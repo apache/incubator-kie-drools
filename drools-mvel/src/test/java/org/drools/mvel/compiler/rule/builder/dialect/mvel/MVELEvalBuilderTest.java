@@ -22,16 +22,13 @@ import java.util.Map;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.drl.ast.descr.EvalDescr;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
@@ -40,6 +37,9 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.drl.ast.descr.EvalDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -65,7 +65,7 @@ public class MVELEvalBuilderTest {
 
     @Test
     public void testSimpleExpression() {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
         KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );

@@ -24,11 +24,10 @@ import java.io.ObjectOutput;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -36,10 +35,11 @@ import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.WindowDeclaration;
+import org.drools.mvel.MVELKnowledgePackageImpl;
 import org.drools.traits.core.factmodel.TraitRegistryImpl;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
-public class TraitKnowledgePackageImpl extends KnowledgePackageImpl {
+public class TraitKnowledgePackageImpl extends MVELKnowledgePackageImpl {
 
     private TraitRegistryImpl traitRegistry;
 

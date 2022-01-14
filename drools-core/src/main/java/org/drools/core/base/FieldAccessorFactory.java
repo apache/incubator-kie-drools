@@ -14,6 +14,8 @@
 
 package org.drools.core.base;
 
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 import org.kie.api.internal.utils.ServiceRegistry;
 
 import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
@@ -32,6 +34,6 @@ public interface FieldAccessorFactory {
         return Holder.fieldFactory;
     }
 
-    BaseClassFieldReader getClassFieldReader(Class< ? > clazz, String fieldName, ClassFieldAccessorCache.CacheEntry cache);
-    BaseClassFieldWriter getClassFieldWriter(Class< ? > clazz, String fieldName, ClassFieldAccessorCache.CacheEntry cache);
+    InternalReadAccessor getClassFieldReader(Class< ? > clazz, String fieldName, ClassFieldAccessorCache.CacheEntry cache);
+    WriteAccessor getClassFieldWriter(Class< ? > clazz, String fieldName, ClassFieldAccessorCache.CacheEntry cache);
 }

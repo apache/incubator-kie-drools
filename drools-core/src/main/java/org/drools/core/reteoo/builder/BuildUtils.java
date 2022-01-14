@@ -17,7 +17,6 @@
 package org.drools.core.reteoo.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.AbstractCompositeConstraint;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.IntervalProviderConstraint;
@@ -319,9 +317,6 @@ public class BuildUtils {
                         }
                     }
                 }
-            } else if ( obj instanceof AbstractCompositeConstraint ) {
-                gatherTemporalRelationships( Arrays.asList( ((AbstractCompositeConstraint) obj).getBetaConstraints() ),
-                                             temporal );
             }
         }
     }

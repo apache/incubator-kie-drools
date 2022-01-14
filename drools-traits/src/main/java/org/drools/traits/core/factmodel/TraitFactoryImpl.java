@@ -20,17 +20,18 @@ import java.io.Externalizable;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.HierarchyEncoder;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.mvel.MVELKnowledgePackageImpl;
 import org.kie.api.KieBase;
 import org.mvel2.asm.Opcodes;
 
@@ -105,11 +106,11 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
     protected ClassFieldAccessorStore getClassFieldAccessorStore() {
         InternalKnowledgePackage traitPackage = ruleBase.getPackagesMap().get(PACKAGE);
         if ( traitPackage == null ) {
-            traitPackage = new KnowledgePackageImpl(PACKAGE);
+            traitPackage = CoreComponentFactory.get().createKnowledgePackage(PACKAGE);
             traitPackage.setClassFieldAccessorCache( ruleBase.getClassFieldAccessorCache() );
             ruleBase.getPackagesMap().put(PACKAGE, traitPackage );
         }
-        return traitPackage.getClassFieldAccessorStore();
+        return ((MVELKnowledgePackageImpl)traitPackage).getClassFieldAccessorStore();
     }
 
     @Override

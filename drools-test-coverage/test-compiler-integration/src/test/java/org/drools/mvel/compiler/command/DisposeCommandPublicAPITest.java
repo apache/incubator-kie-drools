@@ -1,14 +1,13 @@
 package org.drools.mvel.compiler.command;
 
-import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +24,8 @@ public class DisposeCommandPublicAPITest {
         InternalKnowledgePackage pkg;
         kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        pkg = new KnowledgePackageImpl("org.droos.test");
-        pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
+        pkg = CoreComponentFactory.get().createKnowledgePackage("org.droos.test");
+        pkg.setClassLoader(Thread.currentThread().getContextClassLoader());
 
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
         data.onAdd(pkg.getDialectRuntimeRegistry(), kBase.getRootClassLoader());
