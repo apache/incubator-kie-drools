@@ -455,7 +455,7 @@ public class ConfigUtils {
                     + ") has a member (" + member + ") with a @" + PlanningId.class.getSimpleName()
                     + " annotation that returns a type (" + memberAccessor.getType()
                     + ") that does not implement " + Comparable.class.getSimpleName() + ".\n"
-                    + "Maybe use an " + Integer.class.getSimpleName()
+                    + "Maybe use a " + Long.class.getSimpleName()
                     + " or " + String.class.getSimpleName() + " type instead.");
         }
         return memberAccessor;
