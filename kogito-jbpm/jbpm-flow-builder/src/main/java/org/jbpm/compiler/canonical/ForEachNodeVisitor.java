@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
@@ -31,7 +30,6 @@ import org.jbpm.workflow.core.node.ForEachNode;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -104,8 +102,8 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode
             body.addStatement(getFactoryMethod(getNodeId(node), "expressionLanguage", new StringLiteralExpr(node.getExpressionLanguage())));
         }
 
-        if (node.getCompletionAction() instanceof Supplier) {
-            body.addStatement(getFactoryMethod(getNodeId(node), "completionAction", ((Supplier<Expression>) node.getCompletionAction()).get()));
+        if (node.getCompletionAction() instanceof ExpressionSupplier) {
+            body.addStatement(getFactoryMethod(getNodeId(node), "completionAction", ((ExpressionSupplier) node.getCompletionAction()).get(node, metadata)));
         }
 
         // visit nodes

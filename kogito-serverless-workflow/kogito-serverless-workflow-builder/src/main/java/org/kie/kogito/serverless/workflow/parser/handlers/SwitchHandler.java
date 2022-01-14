@@ -26,7 +26,6 @@ import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.node.Split;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
-import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
@@ -35,6 +34,8 @@ import io.serverlessworkflow.api.states.SwitchState;
 import io.serverlessworkflow.api.switchconditions.DataCondition;
 import io.serverlessworkflow.api.switchconditions.EventCondition;
 import io.serverlessworkflow.api.transitions.Transition;
+
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 
 public class SwitchHandler extends StateHandler<SwitchState> {
 
@@ -138,7 +139,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
     private void addConstraint(NodeFactory<?, ?> startNode, long targetId, DataCondition condition) {
         ((SplitFactory<?>) startNode).constraintBuilder(targetId, concatId(startNode.getNode().getId(), targetId),
                 "DROOLS_DEFAULT", workflow.getExpressionLang(), ServerlessWorkflowUtils.conditionScript(condition.getCondition())).withDefault(isDefaultCondition(state, condition))
-                .metadata(Metadata.VARIABLE, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
+                .metadata(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR);
     }
 
     private EndNodeFactory<?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, List<ProduceEvent> produceEvents) {
@@ -146,7 +147,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
         if (produceEvents == null || produceEvents.isEmpty()) {
             endNodeFactory.terminate(true);
         } else {
-            ServerlessWorkflowParser.sendEventNode(endNodeFactory, eventDefinition(produceEvents.get(0).getEventRef()));
+            sendEventNode(endNodeFactory, produceEvents.get(0));
         }
         return endNodeFactory;
     }

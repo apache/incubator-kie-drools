@@ -15,14 +15,15 @@
  */
 package org.kie.kogito.serverless.workflow.suppliers;
 
-import java.util.function.Supplier;
-
+import org.jbpm.compiler.canonical.ExpressionSupplier;
+import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.SysoutAction;
 
 import com.github.javaparser.ast.expr.Expression;
 
-public class SysoutActionSupplier extends SysoutAction implements Supplier<Expression> {
+public class SysoutActionSupplier extends SysoutAction implements ExpressionSupplier {
 
     private final Expression expression;
 
@@ -32,7 +33,7 @@ public class SysoutActionSupplier extends SysoutAction implements Supplier<Expre
     }
 
     @Override
-    public Expression get() {
+    public Expression get(KogitoNode node, ProcessMetaData metadata) {
         return expression;
     }
 

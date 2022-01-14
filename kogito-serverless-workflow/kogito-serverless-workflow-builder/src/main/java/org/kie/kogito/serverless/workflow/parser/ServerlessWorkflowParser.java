@@ -132,14 +132,15 @@ public class ServerlessWorkflowParser {
                 .defaultContext(variableScope);
     }
 
-    public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T sendEventNode(T actionNode,
-            EventDefinition eventDefinition) {
+    public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T sendEventNode(NodeFactory<T, P> actionNode,
+            EventDefinition eventDefinition, String inputVar) {
         return actionNode
                 .name(eventDefinition.getName())
-                .metaData(Metadata.TRIGGER_TYPE, "ProduceMessage")
-                .metaData(Metadata.MAPPING_VARIABLE, DEFAULT_WORKFLOW_VAR)
+                .metaData(Metadata.EVENT_TYPE, "message")
+                .metaData(Metadata.MAPPING_VARIABLE, inputVar)
                 .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
-                .metaData(Metadata.MESSAGE_TYPE, JSON_NODE);
+                .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
+                .metaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
     }
 
     public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T messageNode(T nodeFactory, EventDefinition eventDefinition, String inputVar) {
@@ -150,6 +151,5 @@ public class ServerlessWorkflowParser {
                 .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
                 .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage");
-
     }
 }

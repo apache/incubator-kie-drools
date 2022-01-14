@@ -48,6 +48,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.actions.Action;
+import io.serverlessworkflow.api.events.EventRef;
 import io.serverlessworkflow.api.filters.ActionDataFilter;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
@@ -116,19 +117,26 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
             resultExpr = actionFilter.getResults();
             toExpr = actionFilter.getToStateData();
         }
-        return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
-                (factory, inputVar, outputVar) -> getActionNode(factory, action, inputVar, outputVar, collectVar, extraVariables));
+        if (action.getFunctionRef() != null) {
+            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
+                    (factory, inputVar, outputVar) -> getActionNode(factory, action.getFunctionRef(), inputVar, outputVar, collectVar, extraVariables));
+        } else if (action.getEventRef() != null) {
+            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
+                    (factory, inputVar, outputVar) -> getActionNode(factory, action.getEventRef(), inputVar));
+        } else {
+            throw new IllegalArgumentException("Action node " + action.getName() + " of state " + state.getName() + " does not have function or event defined");
+        }
     }
 
     private NodeFactory<?, ?> getActionNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
-            Action action, String inputVar, String outputVar, String collectVar, String... extraVariables) {
+            EventRef eventRef, String inputVar) {
+        return sendEventNode(embeddedSubProcess.actionNode(parserContext.newId()), eventDefinition(eventRef.getTriggerEventRef()), eventRef.getData(), inputVar);
+    }
 
-        FunctionRef functionRef = action.getFunctionRef();
+    private NodeFactory<?, ?> getActionNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
+            FunctionRef functionRef, String inputVar, String outputVar, String collectVar, String... extraVariables) {
         JsonNode functionArgs = functionRef.getArguments();
         String actionName = functionRef.getRefName();
-        if (workflow.getFunctions() == null) {
-            throw new IllegalArgumentException("cannot find function " + actionName + " because funtions are not defined");
-        }
         FunctionDefinition actionFunction = workflow.getFunctions().getFunctionDefs()
                 .stream()
                 .filter(wf -> wf.getName().equals(actionName))

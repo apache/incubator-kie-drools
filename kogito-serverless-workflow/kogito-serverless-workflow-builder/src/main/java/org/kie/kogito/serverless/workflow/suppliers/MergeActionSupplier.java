@@ -15,14 +15,15 @@
  */
 package org.kie.kogito.serverless.workflow.suppliers;
 
-import java.util.function.Supplier;
-
+import org.jbpm.compiler.canonical.ExpressionSupplier;
+import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.MergeAction;
 
 import com.github.javaparser.ast.expr.Expression;
 
-public class MergeActionSupplier extends MergeAction implements Supplier<Expression> {
+public class MergeActionSupplier extends MergeAction implements ExpressionSupplier {
 
     private Expression expression;
 
@@ -33,7 +34,7 @@ public class MergeActionSupplier extends MergeAction implements Supplier<Express
     }
 
     @Override
-    public Expression get() {
+    public Expression get(KogitoNode node, ProcessMetaData metadata) {
         return expression;
 
     }

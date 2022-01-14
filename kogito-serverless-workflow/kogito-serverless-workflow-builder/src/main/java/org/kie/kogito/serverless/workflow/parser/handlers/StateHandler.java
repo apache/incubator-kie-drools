@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.instance.impl.actions.HandleMessageAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
@@ -33,6 +32,7 @@ import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.ruleflow.core.factory.JoinFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
+import org.jbpm.ruleflow.core.factory.SupportsAction;
 import org.jbpm.workflow.core.node.Join;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
@@ -40,6 +40,7 @@ import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.MergeActionSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.ProduceEventActionSupplier;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -96,13 +97,23 @@ public abstract class StateHandler<S extends State> {
             if (produceEvents == null || produceEvents.isEmpty()) {
                 endNodeFactory.terminate(true);
             } else {
-                ServerlessWorkflowParser.sendEventNode(
-                        endNodeFactory.terminate(false).action(new HandleMessageAction(
-                                ServerlessWorkflowParser.JSON_NODE, DEFAULT_WORKFLOW_VAR)),
-                        eventDefinition(produceEvents.get(0).getEventRef()));
+                sendEventNode(endNodeFactory.terminate(false), produceEvents.get(0));
             }
             endNodeFactory.done();
         }
+    }
+
+    protected final NodeFactory<?, ?> sendEventNode(NodeFactory<?, ?> actionNode, ProduceEvent event) {
+        return sendEventNode(actionNode, eventDefinition(event.getEventRef()), event.getData(), DEFAULT_WORKFLOW_VAR);
+    }
+
+    protected final NodeFactory<?, ?> sendEventNode(NodeFactory<?, ?> actionNode,
+            EventDefinition eventDefinition,
+            String data,
+            String defaultWorkflowVar) {
+        assert (actionNode instanceof SupportsAction);
+        ((SupportsAction) actionNode).action(new ProduceEventActionSupplier(workflow.getExpressionLang(), data));
+        return ServerlessWorkflowParser.sendEventNode(actionNode, eventDefinition, defaultWorkflowVar);
     }
 
     private void handleCompensation(RuleFlowNodeContainerFactory<?, ?> factory) {
@@ -291,11 +302,11 @@ public abstract class StateHandler<S extends State> {
             } else {
                 final ActionNodeFactory<?> actionNode = factory.actionNode(parserContext.newId());
                 NodeFactory<?, ?> endNode = actionNode;
-                ServerlessWorkflowParser.sendEventNode(actionNode, eventDefinition(produceEvents.get(0).getEventRef()));
+                sendEventNode(actionNode, produceEvents.get(0));
                 if (produceEvents.size() > 1) {
                     ListIterator<ProduceEvent> iter = produceEvents.listIterator(1);
                     while (iter.hasNext()) {
-                        endNode = connect(endNode, ServerlessWorkflowParser.sendEventNode(factory.actionNode(parserContext.newId()), eventDefinition(iter.next().getEventRef())));
+                        endNode = connect(endNode, sendEventNode(factory.actionNode(parserContext.newId()), iter.next()));
                     }
                 }
                 factory.connection(sourceId, actionNode.getNode().getId());

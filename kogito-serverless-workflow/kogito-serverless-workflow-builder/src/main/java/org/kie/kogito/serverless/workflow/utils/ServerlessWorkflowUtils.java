@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.util.Optional;
+
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,6 @@ public class ServerlessWorkflowUtils {
     public static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String APP_PROPERTIES_FUNCTIONS_BASE = "functions.";
     public static final String APP_PROPERTIES_STATES_BASE = "states.";
-
     public static final String OPENAPI_OPERATION_SEPARATOR = "#";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowUtils.class);
@@ -51,7 +52,6 @@ public class ServerlessWorkflowUtils {
         if (conditionStr.endsWith("}}")) {
             conditionStr = conditionStr.substring(0, conditionStr.length() - 2);
         }
-
         return conditionStr.trim();
     }
 
@@ -70,15 +70,15 @@ public class ServerlessWorkflowUtils {
     }
 
     public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, KogitoBuildContext context, String defaultValue) {
-        if (function != null && function.getMetadata() != null && function.getMetadata().containsKey(metadataKey)) {
-            return function.getMetadata().get(metadataKey);
+        if (function != null) {
+            if (function.getMetadata() != null && function.getMetadata().containsKey(metadataKey)) {
+                return function.getMetadata().get(metadataKey);
+            }
+            Optional<String> propValue = context.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey);
+            if (propValue.isPresent()) {
+                return propValue.get();
+            }
         }
-
-        if (function != null && context != null &&
-                context.getApplicationProperties().contains(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey)) {
-            return context.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey).get();
-        }
-
         LOGGER.warn("Could not resolve function metadata: {}", metadataKey);
         return defaultValue;
     }
@@ -90,10 +90,7 @@ public class ServerlessWorkflowUtils {
      * @return the OpenApi URI if found, or an empty string if not
      */
     public static String getOpenApiURI(FunctionDefinition function) {
-        if (isOpenApiOperation(function)) {
-            return function.getOperation().substring(0, function.getOperation().indexOf(OPENAPI_OPERATION_SEPARATOR));
-        }
-        return "";
+        return isOpenApiOperation(function) ? function.getOperation().substring(0, function.getOperation().indexOf(OPENAPI_OPERATION_SEPARATOR)) : "";
     }
 
     /**
@@ -104,10 +101,7 @@ public class ServerlessWorkflowUtils {
      */
     public static String getOpenApiOperationId(FunctionDefinition function) {
         final String uri = getOpenApiURI(function);
-        if (uri.isEmpty()) {
-            return "";
-        }
-        return function.getOperation().substring(uri.length() + 1);
+        return uri.isEmpty() ? uri : function.getOperation().substring(uri.length() + 1);
     }
 
     /**

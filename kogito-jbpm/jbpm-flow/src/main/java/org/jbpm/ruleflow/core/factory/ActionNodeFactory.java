@@ -22,7 +22,7 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 
-public class ActionNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<ActionNodeFactory<T>, T> {
+public class ActionNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<ActionNodeFactory<T>, T> implements SupportsAction<ActionNodeFactory<T>, T> {
 
     public static final String METHOD_ACTION = "action";
 
@@ -60,6 +60,7 @@ public class ActionNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ext
         return this;
     }
 
+    @Override
     public ActionNodeFactory<T> action(Action action) {
         DroolsAction droolsAction = new DroolsAction();
         droolsAction.setMetaData("Action", action);

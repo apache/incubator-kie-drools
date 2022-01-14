@@ -15,20 +15,20 @@
  */
 package org.kie.kogito.serverless.workflow.suppliers;
 
-import java.util.function.Supplier;
-
+import org.jbpm.compiler.canonical.ExpressionSupplier;
+import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.ExpressionAction;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
-public class ExpressionActionSupplier extends ExpressionAction implements Supplier<Expression> {
+public class ExpressionActionSupplier extends ExpressionAction implements ExpressionSupplier {
 
     public static Builder of(String lang, String expr) {
         return new Builder(lang, expr);
-
     }
 
     public static class Builder {
@@ -80,7 +80,7 @@ public class ExpressionActionSupplier extends ExpressionAction implements Suppli
     }
 
     @Override
-    public Expression get() {
+    public Expression get(KogitoNode node, ProcessMetaData metadata) {
         return expression;
     }
 }

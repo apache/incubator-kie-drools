@@ -15,9 +15,10 @@
  */
 package org.kie.kogito.serverless.workflow.suppliers;
 
-import java.util.function.Supplier;
-
+import org.jbpm.compiler.canonical.ExpressionSupplier;
+import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.actions.InjectAction;
 
@@ -25,16 +26,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.expr.Expression;
 
-public class InjectActionSupplier extends InjectAction implements Supplier<Expression> {
+public class InjectActionSupplier extends InjectAction implements ExpressionSupplier {
 
     public InjectActionSupplier(JsonNode node) {
         super(node);
     }
 
     @Override
-    public Expression get() {
+    public Expression get(KogitoNode kogitoNode, ProcessMetaData metadata) {
         try {
-            return SupplierUtils.getExpression(InjectAction.class, ObjectMapperFactory.get().writeValueAsString(node).replace("\"", "\\\""));
+            return SupplierUtils.getExpression(InjectAction.class, ObjectMapperFactory.get().writeValueAsString(this.node).replace("\"", "\\\""));
         } catch (JsonProcessingException e) {
             throw new IllegalStateException(e);
         }

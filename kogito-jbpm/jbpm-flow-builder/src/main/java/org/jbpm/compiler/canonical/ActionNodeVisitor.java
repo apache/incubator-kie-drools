@@ -16,12 +16,11 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Optional;
 
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.actions.ProcessInstanceCompensationAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
@@ -31,7 +30,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -60,6 +58,7 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
         body.addStatement(getAssignedFactoryMethod(factoryField, ActionNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, "Script"));
 
+        Optional<ExpressionSupplier> supplierAction = getAction(node, ExpressionSupplier.class);
         if (isIntermediateCompensation(node)) {
             ProcessInstanceCompensationAction action = (ProcessInstanceCompensationAction) node.getAction().getMetaData(Metadata.ACTION);
             String compensateNode = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + metadata.getProcessId();
@@ -68,9 +67,10 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
             }
             LambdaExpr lambda = buildCompensationLambdaExpr(compensateNode);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
+        } else if (supplierAction.isPresent()) {
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, supplierAction.get().get(node, metadata)));
         } else if (node.getMetaData(TRIGGER_REF) != null) { // if there is trigger defined on end event create TriggerMetaData for it
-            LambdaExpr lambda = buildLambdaExpr(node, metadata);
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildProducerAction(node, metadata)));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildAction((String) node.getMetaData(REF),
                     (String) node.getMetaData(VARIABLE), (String) node.getMetaData(MAPPING_VARIABLE_INPUT), (String) node.getMetaData(CUSTOM_SCOPE))));
@@ -93,11 +93,6 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
                     new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
                     actionBody);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
-        } else if (node.getAction() instanceof DroolsAction) {
-            Action action = (Action) node.getAction().getMetaData("Action");
-            if (action instanceof Supplier) {
-                body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, ((Supplier<Expression>) action).get()));
-            }
         }
         addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
@@ -110,5 +105,10 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
 
     private String getActionConsequence(DroolsAction action) {
         return ((DroolsConsequenceAction) action).getConsequence();
+    }
+
+    protected <T> Optional<T> getAction(ActionNode node, Class<T> actionClass) {
+        Object action = node.getAction().getMetaData("Action");
+        return actionClass.isInstance(action) ? Optional.of(actionClass.cast(action)) : Optional.empty();
     }
 }

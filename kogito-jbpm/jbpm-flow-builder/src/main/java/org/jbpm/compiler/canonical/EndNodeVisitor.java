@@ -59,7 +59,8 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_TERMINATE, new BooleanLiteralExpr(node.isTerminate())));
 
         // if there is trigger defined on end event create TriggerMetaData for it
-        Optional<ProcessInstanceCompensationAction> compensationAction = getCompensationAction(node);
+        Optional<ProcessInstanceCompensationAction> compensationAction = getAction(node, ProcessInstanceCompensationAction.class);
+        Optional<ExpressionSupplier> supplier = getAction(node, ExpressionSupplier.class);
         if (compensationAction.isPresent()) {
             String compensateNode = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + metadata.getProcessId();
             if (compensationAction.get().getActivityRef() != null) {
@@ -67,9 +68,10 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
             }
             LambdaExpr lambda = buildCompensationLambdaExpr(compensateNode);
             body.addStatement(getFactoryMethod(getNodeId(node), ActionNodeFactory.METHOD_ACTION, lambda));
+        } else if (supplier.isPresent()) {
+            body.addStatement(getFactoryMethod(getNodeId(node), ActionNodeFactory.METHOD_ACTION, supplier.get().get(node, metadata)));
         } else if (node.getMetaData(TRIGGER_REF) != null) {
-            LambdaExpr lambda = buildLambdaExpr(node, metadata);
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildProducerAction(node, metadata)));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildAction((String) node.getMetaData(REF),
                     (String) node.getMetaData(VARIABLE), (String) node.getMetaData(MAPPING_VARIABLE_INPUT), (String) node.getMetaData(CUSTOM_SCOPE))));
@@ -79,7 +81,7 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
-    private Optional<ProcessInstanceCompensationAction> getCompensationAction(EndNode node) {
+    private <T> Optional<T> getAction(EndNode node, Class<T> actionClass) {
         List<DroolsAction> actions = node.getActions(ExtendedNodeImpl.EVENT_NODE_ENTER);
         if (actions == null || actions.isEmpty()) {
             return Optional.empty();
@@ -88,8 +90,8 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
                 .filter(a -> a instanceof DroolsConsequenceAction)
                 .map(d -> d.getMetaData(Metadata.ACTION))
                 .filter(Objects::nonNull)
-                .filter(a -> a instanceof ProcessInstanceCompensationAction)
+                .filter(actionClass::isInstance)
                 .map(a -> (ProcessInstanceCompensationAction) a)
-                .findFirst();
+                .findFirst().map(actionClass::cast);
     }
 }
