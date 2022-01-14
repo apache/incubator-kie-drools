@@ -23,7 +23,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
@@ -45,7 +45,7 @@ public class MVELDecisionBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testSimpleAction() throws Exception {
-        final InternalKnowledgePackage pkg = new KnowledgePackageImpl("pkg1");
+        final InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("pkg1");
 
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText("list.add( 'hello world' )");

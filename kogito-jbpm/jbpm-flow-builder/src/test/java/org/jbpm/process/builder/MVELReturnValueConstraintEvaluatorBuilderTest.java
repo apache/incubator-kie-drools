@@ -22,7 +22,7 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ReturnValueDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
@@ -42,7 +42,7 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
 
     @Test
     public void testSimpleReturnValueConstraintEvaluator() throws Exception {
-        final InternalKnowledgePackage pkg = new KnowledgePackageImpl("pkg1");
+        final InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("pkg1");
 
         ReturnValueDescr descr = new ReturnValueDescr();
         descr.setText("return value");

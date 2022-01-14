@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.mvel.java.JavaDialect;
@@ -45,7 +45,7 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testSimpleAction() throws Exception {
-        final InternalKnowledgePackage pkg = new KnowledgePackageImpl("pkg1");
+        final InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("pkg1");
 
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText("list.add( \"hello world\" );");

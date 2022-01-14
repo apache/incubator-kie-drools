@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.jbpm.process.core.Context;
@@ -116,7 +116,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testPackageRuleFlows() throws Exception {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl("boo");
+        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("boo");
         Process rf = new MockRuleFlow("1");
         pkg.addProcess(rf);
         assertTrue(pkg.getRuleFlows().containsKey("1"));
