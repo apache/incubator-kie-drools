@@ -102,6 +102,9 @@ under the License.
     <requiredProperty key="artifactId">
       <defaultValue>kie-pmml-models-drools-${artifactModelName}</defaultValue>
     </requiredProperty>
+    <requiredProperty key="modelNameLowerCase">
+      <defaultValue>${artifactModelName}</defaultValue>
+    </requiredProperty>
     <requiredProperty key="modelNameUppercase">
       <defaultValue>${modelNameInternal.toUpperCase()}</defaultValue>
     </requiredProperty>

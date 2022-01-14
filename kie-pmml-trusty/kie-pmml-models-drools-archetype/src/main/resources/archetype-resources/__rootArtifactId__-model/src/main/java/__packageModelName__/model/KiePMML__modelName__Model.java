@@ -1,8 +1,11 @@
 #set($symbol_pound='#')
 #set($symbol_dollar='$')
 #set($symbol_escape='\' )
+#set($str="")
+#set($dt=$str.getClass().forName("java.util.Date").newInstance())
+#set($year=$dt.getYear()+1900)
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright ${year} Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +24,18 @@ package  ${package}.${packageModelName}.model;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 
 public class KiePMML${modelName}Model extends KiePMMLDroolsModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.${modelNameUppercase}_MODEL;
 
+    protected KiePMML${modelName}Model(String modelName, List<KiePMMLExtension> extensions) {
+        super(modelName, extensions);
+    }
 
     public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
         return new Builder(name, extensions, miningFunction);
@@ -37,16 +43,6 @@ public class KiePMML${modelName}Model extends KiePMMLDroolsModel {
 
     public static PMML_MODEL getPmmlModelType() {
         return PMML_MODEL_TYPE;
-    }
-
-    private KiePMML${modelName}Model(String modelName, List<KiePMMLExtension> extensions) {
-        super(modelName, extensions);
-    }
-
-    @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
-        // TODO
-        throw new UnsupportedOperationException();
     }
 
     public static class Builder extends KiePMMLDroolsModel.Builder<KiePMML${modelName}Model>{
