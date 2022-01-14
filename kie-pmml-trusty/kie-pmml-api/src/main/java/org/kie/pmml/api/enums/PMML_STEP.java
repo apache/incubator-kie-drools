@@ -22,7 +22,7 @@ package org.kie.pmml.api.enums;
 public enum PMML_STEP {
 
     START,
-    PRE_EVALUATION_TRANSFORMATIONS,
-    POST_EVALUATION_TRANSFORMATIONS,
-    END;
+    PRE_EVALUATION,
+    POST_EVALUATION,
+    END
 }
