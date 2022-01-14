@@ -169,6 +169,7 @@ will always work, but is slow compared to direct access. Alternatively, you can 
 using Gizmo, which will generate bytecode that directly access the
 fields/methods of your domain without reflection. However, it comes with some restrictions:
 
+* All fields in the domain must be public.
 * The planning annotations can only be on public fields and
   public getters.
 * io.quarkus.gizmo:gizmo must be on the classpath.
