@@ -106,4 +106,3 @@ Clustering model
 4. Input field type must be numerical (_integer_ / _double_)
 5. Target field type must be _string_
 
-
