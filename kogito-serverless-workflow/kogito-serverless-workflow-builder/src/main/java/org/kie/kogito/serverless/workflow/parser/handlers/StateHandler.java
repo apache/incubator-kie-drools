@@ -174,7 +174,6 @@ public abstract class StateHandler<S extends State> {
         StateDataFilter stateFilter = state.getStateDataFilter();
         if (stateFilter != null) {
             String input = stateFilter.getInput();
-
             if (input != null) {
                 ActionNodeFactory<?> actionNode = handleStateFilter(factory, input);
                 factory.connection(actionNode.getNode().getId(), node.getNode().getId());
@@ -230,7 +229,11 @@ public abstract class StateHandler<S extends State> {
             }
             boundaryNode.eventType(eventType).name("Error-" + node.getNode().getName() + "-" + error.getCode());
             factory.exceptionHandler(eventType, error.getCode());
-            handleTransitions(factory, error.getTransition(), boundaryNode.getNode().getId());
+            if (error.getEnd() != null) {
+                connect(boundaryNode, endNodeFactory(factory, error.getEnd().getProduceEvents()));
+            } else {
+                handleTransitions(factory, error.getTransition(), boundaryNode.getNode().getId());
+            }
         }
     }
 
@@ -405,6 +408,16 @@ public abstract class StateHandler<S extends State> {
         return workflow.getEvents().getEventDefs().stream()
                 .filter(wt -> wt.getName().equals(eventName))
                 .findFirst().orElseThrow(() -> new NoSuchElementException("No event for " + eventName));
+    }
+
+    protected EndNodeFactory<?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, List<ProduceEvent> produceEvents) {
+        EndNodeFactory<?> endNodeFactory = factory.endNode(parserContext.newId());
+        if (produceEvents == null || produceEvents.isEmpty()) {
+            endNodeFactory.terminate(true);
+        } else {
+            sendEventNode(endNodeFactory, produceEvents.get(0));
+        }
+        return endNodeFactory;
     }
 
     private long compensationEvent(RuleFlowNodeContainerFactory<?, ?> factory, long sourceId) {

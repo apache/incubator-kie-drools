@@ -73,24 +73,25 @@ public class SwitchHandler extends StateHandler<SwitchState> {
             long sourceId) {
         super.handleTransitions(factory, transition, sourceId);
         if (!state.getDataConditions().isEmpty()) {
-            finalizeDataBasedSwitchState(factory, getNode());
+            finalizeDataBasedSwitchState(factory);
         } else {
-            finalizeEventBasedSwitchState(factory, getNode());
+            finalizeEventBasedSwitchState(factory);
         }
     }
 
-    private void finalizeEventBasedSwitchState(RuleFlowNodeContainerFactory<?, ?> factory, NodeFactory<?, ?> startNode) {
+    private void finalizeEventBasedSwitchState(RuleFlowNodeContainerFactory<?, ?> factory) {
         List<EventCondition> conditions = state.getEventConditions();
         for (EventCondition eventCondition : conditions) {
             StateHandler<?> targetState = parserContext.getStateHandler(eventCondition.getTransition());
             MakeNodeResult eventNode =
                     filterAndMergeNode(factory, eventCondition.getEventDataFilter(), (f, inputVar, outputVar) -> consumeEventNode(f, eventCondition.getEventRef(), inputVar, outputVar));
-            factory.connection(startNode.getNode().getId(), eventNode.getIncomingNode().getNode().getId());
+            factory.connection(getNode().getNode().getId(), eventNode.getIncomingNode().getNode().getId());
             targetState.connect(factory, eventNode.getOutgoingNode().getNode().getId());
         }
     }
 
-    private void finalizeDataBasedSwitchState(RuleFlowNodeContainerFactory<?, ?> factory, NodeFactory<?, ?> startNode) {
+    private void finalizeDataBasedSwitchState(RuleFlowNodeContainerFactory<?, ?> factory) {
+        final NodeFactory<?, ?> startNode = getNode();
         final long splitId = startNode.getNode().getId();
         // set default connection
         if (state.getDefault() != null) {
@@ -99,8 +100,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
             if (stateHandler != null) {
                 startNode.metaData(XORSPLITDEFAULT, concatId(splitId, stateHandler.getNode().getNode().getId()));
             } else if (state.getDefault().getEnd() != null) {
-                EndNodeFactory<?> endNodeFactory = endNodeFactory(factory, state.getDefault().getEnd().getProduceEvents());
-                endNodeFactory.done().connection(splitId, endNodeFactory.getNode().getId());
+                EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, state.getDefault().getEnd().getProduceEvents());
                 startNode.metaData(XORSPLITDEFAULT, concatId(splitId, endNodeFactory.getNode().getId()));
             }
         }
@@ -121,8 +121,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
                 @Override
                 public void onEmptyTarget() {
                     if (condition.getEnd() != null) {
-                        EndNodeFactory<?> endNodeFactory = endNodeFactory(factory, condition.getEnd().getProduceEvents());
-                        endNodeFactory.done().connection(splitId, endNodeFactory.getNode().getId());
+                        EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, condition.getEnd().getProduceEvents());
                         addConstraint(startNode, endNodeFactory.getNode().getId(), condition);
                     } else {
                         throw new IllegalArgumentException("Invalid condition, not transition not end");
@@ -130,6 +129,12 @@ public class SwitchHandler extends StateHandler<SwitchState> {
                 }
             }));
         }
+    }
+
+    private EndNodeFactory<?> endIt(long sourceNodeId, RuleFlowNodeContainerFactory<?, ?> factory, List<ProduceEvent> produceEvents) {
+        EndNodeFactory<?> endNodeFactory = endNodeFactory(factory, produceEvents);
+        endNodeFactory.done().connection(sourceNodeId, endNodeFactory.getNode().getId());
+        return endNodeFactory;
     }
 
     private void addConstraint(RuleFlowNodeContainerFactory<?, ?> factory, NodeFactory<?, ?> startNode, StateHandler<?> stateHandler, DataCondition condition) {
@@ -140,16 +145,6 @@ public class SwitchHandler extends StateHandler<SwitchState> {
         ((SplitFactory<?>) startNode).constraintBuilder(targetId, concatId(startNode.getNode().getId(), targetId),
                 "DROOLS_DEFAULT", workflow.getExpressionLang(), ServerlessWorkflowUtils.conditionScript(condition.getCondition())).withDefault(isDefaultCondition(state, condition))
                 .metadata(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR);
-    }
-
-    private EndNodeFactory<?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, List<ProduceEvent> produceEvents) {
-        EndNodeFactory<?> endNodeFactory = factory.endNode(parserContext.newId());
-        if (produceEvents == null || produceEvents.isEmpty()) {
-            endNodeFactory.terminate(true);
-        } else {
-            sendEventNode(endNodeFactory, produceEvents.get(0));
-        }
-        return endNodeFactory;
     }
 
     private static String concatId(long start, long end) {
