@@ -58,6 +58,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
+import static java.util.function.Predicate.not;
 
 public class DecisionRestResourceGenerator {
 
@@ -201,7 +202,7 @@ public class DecisionRestResourceGenerator {
         }
         final String DMN_DEFINITIONS_JSON = "/dmnDefinitions.json";
         // MP / Quarkus
-        final String Q_CTX_PATH = context.getApplicationProperty("quarkus.http.root-path").orElse("");
+        final String Q_CTX_PATH = context.getApplicationProperty("quarkus.http.root-path").filter(not("/"::equals)).orElse("");
         processAnnForRef(dmnMethod,
                 "org.eclipse.microprofile.openapi.annotations.parameters.RequestBody",
                 "org.eclipse.microprofile.openapi.annotations.media.Schema",
@@ -213,7 +214,7 @@ public class DecisionRestResourceGenerator {
                 Q_CTX_PATH + DMN_DEFINITIONS_JSON + outputRef,
                 !mpAnnPresent);
         // io.swagger / SB
-        final String SB_CTX_PATH = context.getApplicationProperty("server.servlet.context-path").orElse("");
+        final String SB_CTX_PATH = context.getApplicationProperty("server.servlet.context-path").filter(not("/"::equals)).orElse("");
         processAnnForRef(dmnMethod,
                 "io.swagger.v3.oas.annotations.parameters.RequestBody",
                 "io.swagger.v3.oas.annotations.media.Schema",

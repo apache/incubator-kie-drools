@@ -62,6 +62,23 @@ class OASIT {
     }
 
     @Test
+    public void testOASisSwaggerUICompatible() {
+        String url = rootUrl.toString() + "/q/openapi"; // default location since Quarkus v1.10
+        ParseOptions parseOptions = new ParseOptions();
+        parseOptions.setResolve(false); // we want the actual OAS file (something ~like http://localhost:8080/q/openapi) as read by the Swagger UI on fetch.
+        SwaggerParseResult result = new OpenAPIV3Parser().readLocation(url, null, parseOptions);
+        assertThat(result.getMessages()).isEmpty();
+
+        final String DMN_MODEL_NAME = "basicAdd";
+
+        OpenAPI openAPI = result.getOpenAPI();
+        PathItem p1 = openAPI.getPaths().get("/" + DMN_MODEL_NAME);
+        assertThat(p1).isNotNull();
+        assertThat(p1.getPost().getRequestBody().getContent().get("application/json").getSchema().get$ref()).startsWith("/dmnDefinitions.json#");
+        assertThat(p1.getPost().getResponses().getDefault().getContent().get("application/json").getSchema().get$ref()).startsWith("/dmnDefinitions.json#");
+    }
+
+    @Test
     public void testOASdmnDefinitions() {
         RestAssured.given()
                 .get("/dmnDefinitions.json")

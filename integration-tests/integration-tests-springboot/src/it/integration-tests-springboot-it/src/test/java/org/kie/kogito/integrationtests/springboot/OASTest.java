@@ -59,6 +59,25 @@ class OASTest extends BaseRestTest {
         assertThat(p2).isNotNull();
         assertThat(p2.getPost()).isNotNull(); // only POST for ../dmnresult expected.
     }
+    
+    @Test
+    public void testOASisSwaggerUICompatible() {
+        String url = RestAssured.baseURI + ":" + RestAssured.port + "/v3/api-docs"; // default location from org.springdoc:springdoc-openapi-ui as used in archetype
+        ParseOptions parseOptions = new ParseOptions();
+        parseOptions.setResolve(false); // we want the actual OAS file (something ~like http://localhost:8080/v3/api-docs) as read by the Swagger UI on fetch.
+        SwaggerParseResult result = new OpenAPIV3Parser().readLocation(url, null, parseOptions);
+
+        List<String> messages = result.getMessages();
+        assertThat(messages).isEmpty();
+
+        final String DMN_MODEL_NAME = "basicAdd";
+
+        OpenAPI openAPI = result.getOpenAPI();
+        PathItem p1 = openAPI.getPaths().get("/" + DMN_MODEL_NAME);
+        assertThat(p1).isNotNull();
+        assertThat(p1.getPost().getRequestBody().getContent().get("application/json").getSchema().get$ref()).startsWith("/dmnDefinitions.json#");
+        assertThat(p1.getPost().getResponses().getDefault().getContent().get("application/json").getSchema().get$ref()).startsWith("/dmnDefinitions.json#");
+    }
 
     @Test
     public void testOASdmnDefinitions() {
