@@ -24,12 +24,22 @@ public abstract class ExceptionScopeInstance extends AbstractContextInstance {
 
     private static final long serialVersionUID = 510l;
 
+    @Override
     public String getContextType() {
         return ExceptionScope.EXCEPTION_SCOPE;
     }
 
     public ExceptionScope getExceptionScope() {
         return (ExceptionScope) getContext();
+    }
+
+    public void handleException(Throwable exception, KogitoProcessContext params) {
+        ExceptionHandler handler = getExceptionScope().getExceptionHandler(exception);
+        if (handler == null) {
+            throw new IllegalArgumentException(
+                    "Could not find ExceptionHandler for " + exception);
+        }
+        handleException(handler, exception.getClass().getCanonicalName(), params);
     }
 
     public void handleException(String exception, KogitoProcessContext params) {

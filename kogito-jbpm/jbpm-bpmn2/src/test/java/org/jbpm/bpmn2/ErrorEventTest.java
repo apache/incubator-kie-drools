@@ -358,7 +358,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         KogitoProcessInstance processInstance = kruntime.startProcess("com.sample.bpmn.hello");
-        assertEquals(KogitoProcessInstance.STATE_ERROR, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     @Test

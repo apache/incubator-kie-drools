@@ -15,8 +15,11 @@
  */
 package org.jbpm.process.core.context.exception;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
@@ -29,6 +32,7 @@ public class ExceptionScope extends AbstractContext {
 
     protected Map<String, ExceptionHandler> exceptionHandlers = new HashMap<String, ExceptionHandler>();
 
+    @Override
     public String getType() {
         return EXCEPTION_SCOPE;
     }
@@ -43,6 +47,31 @@ public class ExceptionScope extends AbstractContext {
             result = exceptionHandlers.get(null);
         }
         return result;
+    }
+
+    public ExceptionHandler getExceptionHandler(Throwable exception) {
+        Class<?> exceptionClass = exception.getClass();
+        ExceptionHandler handler = exceptionHandlers.get(exceptionClass.getName());
+
+        if (handler == null) {
+            Collection<ExceptionHandlerPolicy> policies = ExceptionHandlerPolicyFactory.getHandlerPolicies();
+            handler = exceptionHandlers.entrySet().stream().filter(e -> test(policies, e.getKey(), exception)).findFirst().map(Entry::getValue).orElse(null);
+        }
+        if (handler == null) {
+            handler = exceptionHandlers.get(null);
+        }
+        return handler;
+    }
+
+    private boolean test(Collection<ExceptionHandlerPolicy> policies, String className, Throwable exception) {
+        if (className == null)
+            return false;
+        Iterator<ExceptionHandlerPolicy> iter = policies.iterator();
+        boolean found = false;
+        while (!found && iter.hasNext()) {
+            found = iter.next().test(className, exception);
+        }
+        return found;
     }
 
     public void removeExceptionHandler(String exception) {
@@ -60,9 +89,12 @@ public class ExceptionScope extends AbstractContext {
         this.exceptionHandlers = exceptionHandlers;
     }
 
+    @Override
     public Context resolveContext(Object param) {
         if (param instanceof String) {
             return getExceptionHandler((String) param) == null ? null : this;
+        } else if (param instanceof Throwable) {
+            return getExceptionHandler((Throwable) param) == null ? null : this;
         }
         throw new IllegalArgumentException(
                 "ExceptionScopes can only resolve exception names: " + param);

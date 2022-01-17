@@ -55,7 +55,6 @@ import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
 import org.kie.kogito.drools.core.common.KogitoInternalAgenda;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.RuleUnitInstance;
@@ -186,41 +185,12 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     }
 
     private void handleException(Throwable e) {
-        ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(e);
+        ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, e);
         if (exceptionScopeInstance != null) {
-            KogitoProcessContextImpl context = new KogitoProcessContextImpl(this.getProcessInstance().getKnowledgeRuntime());
-            context.setProcessInstance(this.getProcessInstance());
-            context.setNodeInstance(this);
-            context.getContextData().put("Exception", getProcessInstance().getFaultData());
-            exceptionScopeInstance.handleException(e.getClass().getName(), context);
+            exceptionScopeInstance.handleException(e, getProcessContext(e));
         } else {
-            Throwable rootCause = getRootException(e);
-            if (rootCause != null) {
-                exceptionScopeInstance = getExceptionScopeInstance(rootCause);
-                if (exceptionScopeInstance != null) {
-                    KogitoProcessContextImpl context = new KogitoProcessContextImpl(this.getProcessInstance().getKnowledgeRuntime());
-                    context.setProcessInstance(this.getProcessInstance());
-                    context.setNodeInstance(this);
-                    context.getContextData().put("Exception", rootCause);
-                    exceptionScopeInstance.handleException(rootCause.getClass().getName(), context);
-
-                    return;
-                }
-            }
             throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
         }
-    }
-
-    private ExceptionScopeInstance getExceptionScopeInstance(Throwable e) {
-        return (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, e.getClass().getName());
-    }
-
-    protected Throwable getRootException(Throwable exception) {
-        Throwable rootException = exception;
-        while (rootException.getCause() != null) {
-            rootException = rootException.getCause();
-        }
-        return rootException;
     }
 
     @Override

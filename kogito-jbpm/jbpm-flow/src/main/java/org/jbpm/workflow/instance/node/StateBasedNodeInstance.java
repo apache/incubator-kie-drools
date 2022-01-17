@@ -33,6 +33,7 @@ import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
@@ -43,6 +44,7 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.kogito.drools.core.common.KogitoInternalAgenda;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.DurationExpirationTime;
@@ -439,5 +441,11 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         }
 
         return null;
+    }
+
+    protected final KogitoProcessContext getProcessContext(Throwable e) {
+        KogitoProcessContext context = ContextFactory.fromNode(this);
+        context.getContextData().put("Exception", e);
+        return context;
     }
 }

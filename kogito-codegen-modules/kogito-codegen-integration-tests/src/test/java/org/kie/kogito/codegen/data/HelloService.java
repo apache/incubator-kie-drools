@@ -74,8 +74,8 @@ public class HelloService {
             System.out.println("Mocking Throw Error1 (IllegalArgumentException)");
             throw new IllegalArgumentException();
         } else if ("error2".equals(errorType)) {
-            System.out.println("Mocking Throw Error2 (RuntimeException)");
-            throw new RuntimeException();
+            System.out.println("Mocking Throw Error2 (IllegalStateException)");
+            throw new IllegalStateException();
         }
         System.out.println("Mocking Throw Generic Error (UnsupportedOperationException)");
         throw new UnsupportedOperationException();
