@@ -15,7 +15,6 @@
     "@kogito-apps/common": "1.0.0",
     "@kogito-apps/patternfly-base": "^1.0.0",
     "@kogito-tooling/kie-editors-standalone": "^0.10.0",
-    "@patternfly/react-charts": "6.12.12",
     "@testing-library/react": "^10.4.7",
     "@testing-library/react-hooks": "^3.3.0",
     "@types/react-custom-scrollbars": "^4.0.7",
@@ -24,7 +23,6 @@
     "react-custom-scrollbars": "^4.2.1",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
-    "typescript": "~3.8.3",
     "use-react-router-breadcrumbs": "^1.0.4"
   },
   "scripts": {

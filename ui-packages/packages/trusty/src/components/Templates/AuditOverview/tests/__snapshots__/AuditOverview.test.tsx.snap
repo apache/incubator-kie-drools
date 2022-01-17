@@ -22,7 +22,7 @@ exports[`Audit overview renders correctly a list of executions 1`] = `
   <PageSection
     isFilled={true}
   >
-    <Component
+    <AuditToolbarTop
       fromDate="2020-01-01"
       page={1}
       pageSize={10}
@@ -56,7 +56,7 @@ exports[`Audit overview renders correctly a list of executions 1`] = `
         }
       }
     />
-    <Component
+    <AuditToolbarBottom
       page={1}
       pageSize={10}
       setPage={[Function]}
