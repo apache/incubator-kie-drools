@@ -15,18 +15,39 @@
  */
 package org.kie.kogito.explainability.local.counterfactual.entities;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedBinaryEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedBooleanEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedCategoricalEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedCompositeEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedCurrencyEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedDoubleEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedDurationEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedIntegerEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedTextEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedTimeEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedURIEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedVectorEntity;
+import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -123,6 +144,110 @@ class SimilarityTest {
         final Random random = new Random(seed);
         final boolean value = random.nextBoolean();
         final CounterfactualEntity x = FixedBooleanEntity.from(FeatureFactory.newBooleanFeature("x", value));
+
+        assertEquals(HIGHEST_SIMILARITY, x.similarity());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void fixedBinarySimilarity(int seed) {
+        byte[] bytes = RandomUtils.nextBytes(20);
+        final CounterfactualEntity x = FixedBinaryEntity.from(FeatureFactory.newBinaryFeature("x", ByteBuffer.wrap(bytes)));
+
+        assertEquals(HIGHEST_SIMILARITY, x.similarity());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void fixedCurrencySimilarity(int seed) {
+        final Random random = new Random(seed);
+        final Set<Currency> currenciesSet = Currency.getAvailableCurrencies();
+        final Currency[] currenciesArray = currenciesSet.toArray(new Currency[currenciesSet.size()]);
+        final int index = random.nextInt(currenciesArray.length);
+        final CounterfactualEntity x = FixedCurrencyEntity.from(FeatureFactory.newCurrencyFeature("x", currenciesArray[index]));
+
+        assertEquals(HIGHEST_SIMILARITY, x.similarity());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void fixedDurationSimilarity(int seed) {
+        final Random random = new Random(seed);
+        final Duration duration = Duration.ofDays(Math.abs(random.nextLong()) % 1000);
+        final CounterfactualEntity x = FixedDurationEntity.from(FeatureFactory.newDurationFeature("x", duration));
+
+        assertEquals(HIGHEST_SIMILARITY, x.similarity());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void fixedTextSimilarity(int seed) {
+        final Random random = new Random(seed);
+        final String text = UUID.randomUUID().toString();
+        final CounterfactualEntity x = FixedTextEntity.from(FeatureFactory.newTextFeature("x", text));
+
+        assertEquals(HIGHEST_SIMILARITY, x.similarity());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void fixedTimeSimilarity(int seed) {
+        final Random random = new Random(seed);
+        final LocalTime time = LocalTime.of(random.nextInt(23), random.nextInt(59));
+        final CounterfactualEntity x = FixedTimeEntity.from(FeatureFactory.newTimeFeature("x", time));
+
+        assertEquals(HIGHEST_SIMILARITY, x.similarity());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void fixedURISimilarity(int seed) throws URISyntaxException {
+        final Random random = new Random(seed);
+        final URI uri = new URI(new StringBuilder()
+                .append("https://")
+                .append(RandomStringUtils.randomAlphabetic(10))
+                .append(".")
+                .append(RandomStringUtils.randomAlphabetic(3))
+                .append("/")
+                .append(RandomStringUtils.randomAlphanumeric(10))
+                .toString());
+        final CounterfactualEntity x = FixedURIEntity.from(FeatureFactory.newURIFeature("x", uri));
+
+        assertEquals(HIGHEST_SIMILARITY, x.similarity());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void fixedVectorSimilarity(int seed) throws URISyntaxException {
+        final Random random = new Random(seed);
+        final int size = 1 + random.nextInt(100);
+        final double[] array = random.doubles(size, -1000, 1000).toArray();
+        final CounterfactualEntity x = FixedVectorEntity.from(FeatureFactory.newVectorFeature("x", array));
+
+        assertEquals(HIGHEST_SIMILARITY, x.similarity());
+    }
+
+    @Test
+    void fixedCompositeSimilarity() {
+        List<Map<String, Object>> transactions = new ArrayList<>();
+        Map<String, Object> t1 = new HashMap<>();
+        t1.put("Card Type", "Prepaid");
+        t1.put("Location", "Global");
+        t1.put("Amount", 141);
+        t1.put("Auth Code", "Denied");
+        transactions.add(t1);
+        Map<String, Object> t2 = new HashMap<>();
+        t2.put("Card Type", "Debit");
+        t2.put("Location", "Local");
+        t2.put("Amount", 19);
+        t2.put("Auth Code", "Approved");
+        transactions.add(t2);
+        Map<String, Object> map = new HashMap<>();
+        map.put("Transactions", transactions);
+
+        List<Feature> features = new ArrayList<>();
+        features.add(FeatureFactory.newCompositeFeature("context", map));
+        final CounterfactualEntity x = FixedCompositeEntity.from(FeatureFactory.newCompositeFeature("x", features));
 
         assertEquals(HIGHEST_SIMILARITY, x.similarity());
     }
