@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
 
 import io.quarkus.devservices.common.ConfigureUtil;
@@ -50,6 +51,7 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
         }
         withPrivilegedMode(true);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
+        withImagePullPolicy("latest".equalsIgnoreCase(dockerImageName.getVersionPart()) ? PullPolicy.alwaysPull() : PullPolicy.defaultPolicy());
     }
 
     @Override
