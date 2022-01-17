@@ -17,9 +17,11 @@ package org.kie.kogito.pmml;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -31,6 +33,7 @@ import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -94,6 +97,7 @@ class PmmlPredictionModelTest {
         return new PMMLRuntime() {
 
             private final List<PMMLModel> models = Collections.singletonList(PMML_MODEL);
+            private final Set<PMMLListener> pmmlListeners = new HashSet<>();
 
             @Override
             public List<PMMLModel> getPMMLModels() {
@@ -103,6 +107,21 @@ class PmmlPredictionModelTest {
             @Override
             public Optional<PMMLModel> getPMMLModel(String s) {
                 return models.stream().filter(model -> model.getName().equals(s)).findFirst();
+            }
+
+            @Override
+            public void addPMMLListener(PMMLListener toAdd) {
+                pmmlListeners.add(toAdd);
+            }
+
+            @Override
+            public void removePMMLListener(PMMLListener toRemove) {
+                pmmlListeners.remove(toRemove);
+            }
+
+            @Override
+            public Set<PMMLListener> getPMMLListeners() {
+                return Collections.unmodifiableSet(pmmlListeners);
             }
 
             @Override
