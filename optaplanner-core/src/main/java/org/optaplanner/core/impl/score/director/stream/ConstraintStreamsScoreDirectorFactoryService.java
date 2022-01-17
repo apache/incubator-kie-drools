@@ -44,7 +44,8 @@ public final class ConstraintStreamsScoreDirectorFactoryService<Solution_, Score
                         boolean isDroolsAlphaNetworkEnabled = config.isDroolsAlphaNetworkCompilationEnabled();
                         if (config.getGizmoKieBaseSupplier() != null) {
                             return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                    config.getGizmoKieBaseSupplier(), isDroolsAlphaNetworkEnabled);
+                                    (KieBaseDescriptor<Solution_>) config.getGizmoKieBaseSupplier(),
+                                    isDroolsAlphaNetworkEnabled);
                         }
                         return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
                                 isDroolsAlphaNetworkEnabled);

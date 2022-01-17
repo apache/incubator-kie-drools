@@ -29,11 +29,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.quarkus.KieRuntimeBuilderMock;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.test.QuarkusUnitTest;
 
 public class OptaPlannerProcessorConstraintsDrlDefaultTest {
@@ -41,13 +39,8 @@ public class OptaPlannerProcessorConstraintsDrlDefaultTest {
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addClasses(TestdataQuarkusEntity.class,
-                            TestdataQuarkusSolution.class, KieRuntimeBuilderMock.class)
-                    .addAsResource("org/optaplanner/quarkus/constraints/defaultConstraints.drl", "constraints.drl"))
-            .addBuildChainCustomizer(buildChainBuilder -> buildChainBuilder.addBuildStep(context -> {
-                context.produce(CapabilityBuildItem.class,
-                        new CapabilityBuildItem("org.kie.kogito.rules"));
-            }).produces(CapabilityBuildItem.class).build());
+                    .addClasses(TestdataQuarkusEntity.class, TestdataQuarkusSolution.class)
+                    .addAsResource("org/optaplanner/quarkus/constraints/defaultConstraints.drl", "constraints.drl"));
 
     @Inject
     SolverConfig solverConfig;

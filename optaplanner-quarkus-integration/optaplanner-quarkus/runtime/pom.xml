@@ -44,16 +44,6 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-wiring-static</artifactId>
     </dependency>
-    <dependency> <!-- Optional for when DRL needs to be used. -->
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency> <!-- Optional for when DRL needs to be used. -->
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-legacy-api</artifactId>
-      <optional>true</optional>
-    </dependency>
     <dependency>
       <groupId>org.graalvm.nativeimage</groupId>
       <artifactId>svm</artifactId>

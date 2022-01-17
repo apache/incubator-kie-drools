@@ -52,7 +52,6 @@ import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExten
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 import org.optaplanner.quarkus.testdata.gizmo.DummyVariableListener;
 
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.test.QuarkusUnitTest;
 
 public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
@@ -78,10 +77,7 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
                             DummyMoveIteratorFactory.class,
                             DummyMoveListFactory.class,
                             DummySolutionPartitioner.class,
-                            DummyValueFilter.class))
-            .addBuildChainCustomizer(buildChainBuilder -> buildChainBuilder.addBuildStep(context -> {
-                context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("org.kie.kogito.rules"));
-            }).produces(CapabilityBuildItem.class).build());
+                            DummyValueFilter.class));
 
     @Inject
     OptaPlannerGizmoBeanFactory gizmoBeanFactory;

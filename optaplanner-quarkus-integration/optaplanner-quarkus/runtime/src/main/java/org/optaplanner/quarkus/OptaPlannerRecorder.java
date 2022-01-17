@@ -26,7 +26,6 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
-import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 
 import io.quarkus.arc.Arc;
 import io.quarkus.runtime.RuntimeValue;
@@ -37,38 +36,30 @@ public class OptaPlannerRecorder {
 
     public Supplier<SolverConfig> solverConfigSupplier(final SolverConfig solverConfig,
             Map<String, RuntimeValue<MemberAccessor>> generatedGizmoMemberAccessorMap,
-            Map<String, RuntimeValue<SolutionCloner>> generatedGizmoSolutionClonerMap,
-            RuntimeValue<OptaPlannerDroolsInitializer> droolsInitializer) {
-        return new Supplier<SolverConfig>() {
-            @Override
-            public SolverConfig get() {
-                OptaPlannerRuntimeConfig optaPlannerRuntimeConfig =
-                        Arc.container().instance(OptaPlannerRuntimeConfig.class).get();
-                updateSolverConfigWithRuntimeProperties(solverConfig, optaPlannerRuntimeConfig);
-                Map<String, MemberAccessor> memberAccessorMap = new HashMap<>();
-                Map<String, SolutionCloner> solutionClonerMap = new HashMap<>();
-                generatedGizmoMemberAccessorMap
-                        .forEach((className, runtimeValue) -> memberAccessorMap.put(className, runtimeValue.getValue()));
-                generatedGizmoSolutionClonerMap
-                        .forEach((className, runtimeValue) -> solutionClonerMap.put(className, runtimeValue.getValue()));
+            Map<String, RuntimeValue<SolutionCloner>> generatedGizmoSolutionClonerMap) {
+        return () -> {
+            OptaPlannerRuntimeConfig optaPlannerRuntimeConfig =
+                    Arc.container().instance(OptaPlannerRuntimeConfig.class).get();
+            updateSolverConfigWithRuntimeProperties(solverConfig, optaPlannerRuntimeConfig);
+            Map<String, MemberAccessor> memberAccessorMap = new HashMap<>();
+            Map<String, SolutionCloner> solutionClonerMap = new HashMap<>();
+            generatedGizmoMemberAccessorMap
+                    .forEach((className, runtimeValue) -> memberAccessorMap.put(className, runtimeValue.getValue()));
+            generatedGizmoSolutionClonerMap
+                    .forEach((className, runtimeValue) -> solutionClonerMap.put(className, runtimeValue.getValue()));
 
-                solverConfig.setGizmoMemberAccessorMap(memberAccessorMap);
-                solverConfig.setGizmoSolutionClonerMap(solutionClonerMap);
-                droolsInitializer.getValue().setup(solverConfig.getScoreDirectorFactoryConfig());
-                return solverConfig;
-            }
+            solverConfig.setGizmoMemberAccessorMap(memberAccessorMap);
+            solverConfig.setGizmoSolutionClonerMap(solutionClonerMap);
+            return solverConfig;
         };
     }
 
     public Supplier<SolverManagerConfig> solverManagerConfig(final SolverManagerConfig solverManagerConfig) {
-        return new Supplier<SolverManagerConfig>() {
-            @Override
-            public SolverManagerConfig get() {
-                OptaPlannerRuntimeConfig optaPlannerRuntimeConfig =
-                        Arc.container().instance(OptaPlannerRuntimeConfig.class).get();
-                updateSolverManagerConfigWithRuntimeProperties(solverManagerConfig, optaPlannerRuntimeConfig);
-                return solverManagerConfig;
-            }
+        return () -> {
+            OptaPlannerRuntimeConfig optaPlannerRuntimeConfig =
+                    Arc.container().instance(OptaPlannerRuntimeConfig.class).get();
+            updateSolverManagerConfigWithRuntimeProperties(solverManagerConfig, optaPlannerRuntimeConfig);
+            return solverManagerConfig;
         };
     }
 

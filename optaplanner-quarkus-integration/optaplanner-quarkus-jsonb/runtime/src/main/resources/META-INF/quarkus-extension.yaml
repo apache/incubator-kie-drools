@@ -3,7 +3,6 @@ name: "OptaPlanner JSON-B"
 metadata:
   keywords:
     - "optaplanner"
-    - "kogito"
     - "jsonb"
     - "json-b"
     - "json"

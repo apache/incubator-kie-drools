@@ -72,8 +72,6 @@ import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
-import io.quarkus.deployment.Capabilities;
-import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -184,8 +182,7 @@ class OptaPlannerProcessor {
     @BuildStep
     @Record(STATIC_INIT)
     SolverConfigBuildItem recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
-            DetermineIfNativeBuildItem determineIfNative,
-            CombinedIndexBuildItem combinedIndex, Capabilities capabilities,
+            DetermineIfNativeBuildItem determineIfNative, CombinedIndexBuildItem combinedIndex,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans,
@@ -226,7 +223,7 @@ class OptaPlannerProcessor {
             solverConfig = new SolverConfig();
         }
 
-        applySolverProperties(recorderContext, indexView, solverConfig, capabilities);
+        applySolverProperties(recorderContext, indexView, solverConfig);
         assertNoMemberAnnotationWithoutClassAnnotation(indexView);
 
         if (solverConfig.getSolutionClass() != null) {
@@ -275,8 +272,7 @@ class OptaPlannerProcessor {
                         GizmoMemberAccessorEntityEnhancer.getGeneratedGizmoMemberAccessorMap(recorderContext,
                                 generatedGizmoClasses.generatedGizmoMemberAccessorClassSet),
                         GizmoMemberAccessorEntityEnhancer.getGeneratedSolutionClonerMap(recorderContext,
-                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet),
-                        GizmoMemberAccessorEntityEnhancer.getDroolsInitializer(recorderContext)))
+                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet)))
                 .done());
 
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverManagerConfig.class)
@@ -367,15 +363,14 @@ class OptaPlannerProcessor {
         }
     }
 
-    private void applySolverProperties(RecorderContext recorderContext,
-            IndexView indexView, SolverConfig solverConfig, Capabilities capabilities) {
+    private void applySolverProperties(RecorderContext recorderContext, IndexView indexView, SolverConfig solverConfig) {
         if (solverConfig.getSolutionClass() == null) {
             solverConfig.setSolutionClass(findSolutionClass(recorderContext, indexView));
         }
         if (solverConfig.getEntityClassList() == null) {
             solverConfig.setEntityClassList(findEntityClassList(recorderContext, indexView));
         }
-        applyScoreDirectorFactoryProperties(indexView, solverConfig, capabilities);
+        applyScoreDirectorFactoryProperties(indexView, solverConfig);
         optaPlannerBuildTimeConfig.solver.environmentMode.ifPresent(solverConfig::setEnvironmentMode);
         optaPlannerBuildTimeConfig.solver.daemon.ifPresent(solverConfig::setDaemon);
         optaPlannerBuildTimeConfig.solver.domainAccessType.ifPresent(solverConfig::setDomainAccessType);
@@ -485,8 +480,7 @@ class OptaPlannerProcessor {
         }
     }
 
-    protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig,
-            Capabilities capabilities) {
+    protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig) {
         Optional<String> constraintsDrlFromProperty = constraintsDrl();
         Optional<String> defaultConstraintsDrl = defaultConstraintsDrl();
         Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.map(Optional::of).orElse(defaultConstraintsDrl);
@@ -503,26 +497,6 @@ class OptaPlannerProcessor {
                     defaultConstraintsDrl.ifPresent(resolvedConstraintsDrl -> scoreDirectorFactoryConfig
                             .setScoreDrlList(Collections.singletonList(resolvedConstraintsDrl)));
                 }
-            }
-        }
-
-        if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null) {
-            boolean isKogitoExtensionPresent = capabilities.isPresent("org.kie.kogito.rules");
-            if (!isKogitoExtensionPresent) {
-                throw new IllegalStateException(
-                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not "
-                                + "on the classpath.\n"
-                                + "Maybe add the dependency org.kie.kogito:kogito-quarkus-rules"
-                                + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
-            }
-            // TODO: Remove this check when https://issues.redhat.com/browse/PLANNER-2572 is resolved.
-            boolean isResteasyJacksonExtensionPresent = capabilities.isPresent(Capability.RESTEASY_JSON_JACKSON);
-            if (!isResteasyJacksonExtensionPresent) {
-                throw new IllegalStateException(
-                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules requires "
-                                + "also io.quarkus:quarkus-resteasy-jackson to be on the classpath.\n"
-                                + "Maybe add the dependency io.quarkus:quarkus-resteasy-jackson"
-                                + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
         }
 
@@ -689,8 +663,6 @@ class OptaPlannerProcessor {
         }
 
         GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet, transformers);
-        GizmoMemberAccessorEntityEnhancer.generateKieRuntimeBuilder(beanClassOutput,
-                solverConfig, unremovableBeans, transformers);
         return new GeneratedGizmoClasses(generatedMemberAccessorsClassNameSet, gizmoSolutionClonerClassNameSet);
     }
 

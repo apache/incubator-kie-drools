@@ -3,7 +3,6 @@ name: "OptaPlanner"
 metadata:
   keywords:
     - "optaplanner"
-    - "kogito"
     - "constraint-solver"
     - "artificial-intelligence"
     - "employee-rostering"

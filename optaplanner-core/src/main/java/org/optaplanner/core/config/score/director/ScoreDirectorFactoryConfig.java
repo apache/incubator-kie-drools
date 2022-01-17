@@ -38,7 +38,6 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
-import org.optaplanner.core.impl.score.director.drl.KieRuntimeBuilderWrapper;
 
 @XmlType(propOrder = {
         "easyScoreCalculatorClass",
@@ -172,22 +171,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     }
 
     /**
-     * @deprecated in favor of {@link #getGizmoKieBaseSupplier}
-     */
-    @Deprecated(forRemoval = true)
-    public KieRuntimeBuilderWrapper getGizmoKieRuntimeBuilderWrapper() {
-        return (KieRuntimeBuilderWrapper) getGizmoKieBaseSupplier();
-    }
-
-    /**
-     * @deprecated in favor of {@link #setGizmoKieBaseSupplier}
-     */
-    @Deprecated(forRemoval = true)
-    public void setGizmoKieRuntimeBuilderWrapper(KieRuntimeBuilderWrapper kieRuntimeBuilderWrapper) {
-        setGizmoKieBaseSupplier(kieRuntimeBuilderWrapper);
-    }
-
-    /**
      * For internal use only, get the generated Gizmo KieBaseSupplier.
      */
     public Supplier<KieBase> getGizmoKieBaseSupplier() {
@@ -290,15 +273,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public ScoreDirectorFactoryConfig withScoreDrlFiles(File... scoreDrlFiles) {
         this.scoreDrlFileList = Arrays.asList(scoreDrlFiles);
-        return this;
-    }
-
-    /**
-     * @deprecated in favor of {@link #withGizmoKieBaseSupplier}
-     */
-    @Deprecated(forRemoval = true)
-    public ScoreDirectorFactoryConfig withGizmoKieRuntimeBuilderWrapper(KieRuntimeBuilderWrapper kieRuntimeBuilderWrapper) {
-        setGizmoKieBaseSupplier(kieRuntimeBuilderWrapper);
         return this;
     }
 

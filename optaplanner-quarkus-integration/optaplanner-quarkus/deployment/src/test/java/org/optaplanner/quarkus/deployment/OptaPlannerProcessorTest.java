@@ -22,23 +22,14 @@ import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 import java.util.Optional;
-import java.util.Set;
 
 import org.jboss.jandex.IndexView;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 
-import io.quarkus.deployment.Capabilities;
-import io.quarkus.deployment.Capability;
-
 class OptaPlannerProcessorTest {
-
-    // TODO: Remove the Capability.RESTEASY_JSON_JACKSON after https://issues.redhat.com/browse/PLANNER-2572 is resolved.
-    private final static Set<String> KOGITO_CAPABILITIES =
-            Set.of("org.kie.kogito.rules", Capability.RESTEASY_JSON_JACKSON);
 
     @Test
     void customScoreDrl_overrides_solverConfig() {
@@ -48,8 +39,7 @@ class OptaPlannerProcessorTest {
         OptaPlannerProcessor optaPlannerProcessor = mockOptaPlannerProcessor();
         when(optaPlannerProcessor.constraintsDrl()).thenReturn(Optional.of("some.drl"));
 
-        Capabilities capabilities = new Capabilities(KOGITO_CAPABILITIES);
-        optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig, capabilities);
+        optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList()).containsExactly("some.drl");
     }
 
@@ -63,8 +53,7 @@ class OptaPlannerProcessorTest {
         when(optaPlannerProcessor.defaultConstraintsDrl())
                 .thenReturn(Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL));
 
-        Capabilities capabilities = new Capabilities(KOGITO_CAPABILITIES);
-        optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig, capabilities);
+        optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
                 .containsExactly("config_constraints.drl");
     }
@@ -78,30 +67,7 @@ class OptaPlannerProcessorTest {
         when(optaPlannerProcessor.defaultConstraintsDrl())
                 .thenReturn(Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL));
 
-        Capabilities capabilities = new Capabilities(KOGITO_CAPABILITIES);
-        optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig, capabilities);
-        assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
-                .containsExactly(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
-    }
-
-    @Test
-    void error_if_drools_is_used_and_kogito_rules_capability_is_not_present() {
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-        SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
-        OptaPlannerProcessor optaPlannerProcessor = mockOptaPlannerProcessor();
-        when(optaPlannerProcessor.constraintsDrl()).thenReturn(Optional.empty());
-        when(optaPlannerProcessor.defaultConstraintsDrl())
-                .thenReturn(Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL));
-
-        Capabilities capabilities = new Capabilities(Collections.emptySet());
-        assertThatCode(() -> optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig,
-                capabilities))
-                        .isInstanceOf(IllegalStateException.class)
-                        .hasMessage(
-                                "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not on the classpath."
-                                        + "\nMaybe add the dependency org.kie.kogito:kogito-quarkus-rules"
-                                        + "\nMaybe use a " + ConstraintProvider.class.getSimpleName()
-                                        + " instead of the scoreDRL.");
+        optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
                 .containsExactly(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
     }
@@ -116,21 +82,19 @@ class OptaPlannerProcessorTest {
         when(optaPlannerProcessor.defaultConstraintsDrl())
                 .thenReturn(Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL));
 
-        Capabilities capabilities = new Capabilities(KOGITO_CAPABILITIES);
-        assertThatCode(() -> optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig,
-                capabilities))
-                        .isInstanceOf(IllegalStateException.class)
-                        .hasMessage(
-                                "Using kieBaseConfigurationProperties ("
-                                        + scoreDirectorFactoryConfig.getKieBaseConfigurationProperties()
-                                        + ") in Quarkus, which is unsupported.");
+        assertThatCode(() -> optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(
+                        "Using kieBaseConfigurationProperties ("
+                                + scoreDirectorFactoryConfig.getKieBaseConfigurationProperties()
+                                + ") in Quarkus, which is unsupported.");
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
                 .containsExactly(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
     }
 
     private OptaPlannerProcessor mockOptaPlannerProcessor() {
         OptaPlannerProcessor optaPlannerProcessor = mock(OptaPlannerProcessor.class);
-        doCallRealMethod().when(optaPlannerProcessor).applyScoreDirectorFactoryProperties(any(), any(), any());
+        doCallRealMethod().when(optaPlannerProcessor).applyScoreDirectorFactoryProperties(any(), any());
         return optaPlannerProcessor;
     }
 }

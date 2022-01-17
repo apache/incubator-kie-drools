@@ -91,67 +91,12 @@
         <scope>import</scope>
       </dependency>
       <!-- SNAPSHOT and KIE dependencies -->
-      <!-- TODO use kogito-bom instead once Kogito excludes are obsolete https://issues.redhat.com/browse/KOGITO-3735 -->
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-api</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-dmn-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-timer</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-pmml-api-dependencies</artifactId>
-          </exclusion>
-          <exclusion>
-            <!-- TODO remove jackson exclusion after fix https://issues.redhat.com/browse/KOGITO-3794 -->
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-kie-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-legacy-api</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-drools</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-timer</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-rules</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-rules-deployment</artifactId>
-        <version>${version.org.kie.kogito}</version>
       </dependency>
       <!-- Normal dependencies versions-->
       <dependency>
@@ -606,7 +551,7 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>${version.surefire.plugin}</version>
       </plugin>
-      <!-- Do not move to full profile. Otherwise upstream Kogito dependency changes can break our build without Kogito CI catching it. -->
+      <!-- Do not move to full profile. Otherwise upstream dependency changes can break our build without CI catching it. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

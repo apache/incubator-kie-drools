@@ -33,11 +33,6 @@
       <artifactId>kie-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-legacy-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
     </dependency>

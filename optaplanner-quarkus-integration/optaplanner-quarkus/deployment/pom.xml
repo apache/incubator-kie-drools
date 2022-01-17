@@ -67,22 +67,6 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Required to test Quarkus with constraints DRL.
-         kogito-quarkus-rules/kogito-quarkus-rules-deployment does
-         not pick Drools files in extension tests, but does in normal tests
-         so we mock it functionality via drools-core-dynamic for tests
-         in this module (and test drools with kogito-quarkus-rules
-         in a separate module) -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-legacy-api</artifactId>
-    </dependency>
-    <!-- TODO: Remove this dependency when https://issues.redhat.com/browse/PLANNER-2572 is resolved. -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jackson</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wiring-dynamic</artifactId>

@@ -167,19 +167,6 @@ class ScoreDirectorFactoryFactoryTest {
     }
 
     @Test
-    void constraintStreamsKieBaseSupplierNotKieBaseDescriptor_throws() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
-                .withConstraintProviderClass(TestdataConstraintProvider.class)
-                .withGizmoKieBaseSupplier(() -> null);
-        ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
-        assertThatCode(() -> factoryFactory.buildScoreDirectorFactory(ScoreDirectorFactoryFactoryTest.class.getClassLoader(),
-                EnvironmentMode.FAST_ASSERT,
-                TestdataSolution.buildSolutionDescriptor()))
-                        .hasMessageContainingAll("The kieBaseSupplier (",
-                                ") is not a KieBaseDescriptor. Maybe remove calls to ScoreDirectorFactoryConfig.setKieBaseSupplier(Supplier)?");
-    }
-
-    @Test
     void constraintStreamsDroolsWithAlphaNetworkCompilationDisabled() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withConstraintProviderClass(TestdataConstraintProvider.class)

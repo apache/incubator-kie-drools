@@ -28,27 +28,13 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
-    <!-- TODO: Remove this dependency when https://issues.redhat.com/browse/PLANNER-2572 is resolved. -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-rules</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-quarkus</artifactId>
     </dependency>
-    <!-- Kogito Drools is necessary to support DRL in Quarkus -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-legacy-api</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wiring-dynamic</artifactId>
     </dependency>
 
     <!-- test dependencies -->
@@ -96,41 +82,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>native</id>
-      <activation>
-        <property>
-          <name>native</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <configuration>
-              <skip>false</skip>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <systemPropertyVariables>
-                    <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                  </systemPropertyVariables>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <quarkus.package.type>native</quarkus.package.type>
-      </properties>
-    </profile>
-  </profiles>
 </project>
