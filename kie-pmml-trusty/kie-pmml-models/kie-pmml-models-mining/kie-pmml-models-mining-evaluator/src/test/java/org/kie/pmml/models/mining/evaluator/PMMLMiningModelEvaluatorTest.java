@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +33,12 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.models.PMMLStep;
+import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -42,9 +49,11 @@ import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
+import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -64,6 +73,10 @@ import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.WEIGH
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.WEIGHTED_MAJORITY_VOTE;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.WEIGHTED_MEDIAN;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.WEIGHTED_SUM;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 public class PMMLMiningModelEvaluatorTest {
 
@@ -307,6 +320,56 @@ public class PMMLMiningModelEvaluatorTest {
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES).build();
         evaluator.validateMining(kiePMMLMiningModel);
+    }
+
+    @Test
+    public void addStep() {
+        PMMLStep step = mock(PMMLStep.class);
+        Set<PMMLListener> pmmlListenersMock = IntStream.range(0, 3).mapToObj(i -> mock(PMMLListener.class)).collect(Collectors.toSet());
+        PMMLContext pmmlContextMock = mock(PMMLContext.class);
+        when(pmmlContextMock.getPMMLListeners()).thenReturn(pmmlListenersMock);
+        evaluator.addStep(() -> step, pmmlContextMock);
+        pmmlListenersMock.forEach(pmmlListenerMock -> verify(pmmlListenerMock).stepExecuted(step));
+    }
+
+    @Test
+    public void getStep() {
+        final String modelName = "MODEL_NAME";
+        KiePMMLModel modelMock = mock(KiePMMLModel.class);
+        when(modelMock.getName()).thenReturn(modelName);
+        final String segmentName = "SEGMENT_NAME";
+        KiePMMLSegment segmentMock = mock(KiePMMLSegment.class);
+        when(segmentMock.getName()).thenReturn(segmentName);
+        when(segmentMock.getModel()).thenReturn(modelMock);
+        final String resultObjectName = "RESULT_OBJECT_NAME";
+        final String resultObjectValue = "RESULT_OBJECT_VALUE";
+        ResultCode resultCode = OK;
+        PMML4Result pmml4Result = new PMML4Result();
+        pmml4Result.setResultCode(resultCode.getName());
+        pmml4Result.setResultObjectName(resultObjectName);
+        pmml4Result.getResultVariables().put(resultObjectName, resultObjectValue);
+        PMMLStep retrieved = evaluator.getStep(segmentMock, pmml4Result);
+        assertNotNull(retrieved);
+        assertTrue(retrieved instanceof PMMLMiningModelStep);
+        Map<String, Object> retrievedInfo = retrieved.getInfo();
+        assertNotNull(retrievedInfo);
+        assertEquals(segmentName, retrievedInfo.get("SEGMENT"));
+        assertEquals(modelName, retrievedInfo.get("MODEL"));
+        assertEquals(resultCode.getName(), retrievedInfo.get("RESULT CODE"));
+        assertEquals(resultObjectValue, retrievedInfo.get("RESULT"));
+
+        resultCode = FAIL;
+        pmml4Result = new PMML4Result();
+        pmml4Result.setResultCode(resultCode.getName());
+        retrieved = evaluator.getStep(segmentMock, pmml4Result);
+        assertNotNull(retrieved);
+        assertTrue(retrieved instanceof PMMLMiningModelStep);
+        retrievedInfo = retrieved.getInfo();
+        assertNotNull(retrievedInfo);
+        assertEquals(segmentName, retrievedInfo.get("SEGMENT"));
+        assertEquals(modelName, retrievedInfo.get("MODEL"));
+        assertEquals(resultCode.getName(), retrievedInfo.get("RESULT CODE"));
+        assertFalse(retrievedInfo.containsKey("RESULT"));
     }
 
     private PMML4Result getPMML4Result(Object rawObject) {

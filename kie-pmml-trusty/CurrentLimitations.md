@@ -105,3 +105,4 @@ Clustering model
 3. Only _euclidean_ and _squaredEuclidean_ aggregation functions are implemented
 4. Input field type must be numerical (_integer_ / _double_)
 5. Target field type must be _string_
+

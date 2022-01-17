@@ -16,16 +16,22 @@
 package org.kie.pmml.models.tests;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.PMMLRuntimeFactory;
+import org.kie.pmml.api.models.PMMLStep;
+import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 
+import static org.junit.Assert.assertEquals;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 public class AbstractPMMLTest {
@@ -48,8 +54,45 @@ public class AbstractPMMLTest {
         return pmmlRequestDataBuilder.build();
     }
 
-    protected PMML4Result evaluate(PMMLRuntime pmmlRuntime, final Map<String, Object> inputData, String modelName) {
+    protected PMML4Result evaluate(final PMMLRuntime pmmlRuntime,
+                                   final Map<String, Object> inputData,
+                                   final String modelName) {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData));
     }
+
+    protected PMML4Result evaluate(final PMMLRuntime pmmlRuntime,
+                                   final Map<String, Object> inputData,
+                                   final String modelName,
+                                   final Set<PMMLListener> pmmlListeners) {
+        final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
+        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData, pmmlListeners));
+    }
+
+    protected PMMLListenerTest getPMMLListener() {
+        return new PMMLListenerTest();
+    }
+
+    protected void commonValidateListeners(final Set<PMMLListener> toValidate, final List<PMMLStep> expectedSteps) {
+        toValidate.forEach(listener -> commonValidateListener((PMMLListenerTest) listener, expectedSteps));
+    }
+
+    private void commonValidateListener(final PMMLListenerTest toValidate, final List<PMMLStep> expectedSteps) {
+        assertEquals(expectedSteps, toValidate.getSteps());
+    }
+
+    protected static class PMMLListenerTest implements PMMLListener {
+
+        private List<PMMLStep> steps = new ArrayList<>();
+
+        public List<PMMLStep> getSteps() {
+            return steps;
+        }
+
+        @Override
+        public void stepExecuted(PMMLStep step) {
+            steps.add(step);
+        }
+    }
+
 }
