@@ -46,6 +46,16 @@ public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
         return dh;
     }
 
+    public DataHandle findHandle(long id) {
+        for (DataHandle dh : store.values()) {
+            DataHandleImpl dhi = (DataHandleImpl) dh;
+            if (dhi.getId() == id) {
+                return dh;
+            }
+        }
+        throw new IllegalArgumentException("Cannot find id");
+    }
+
     @Override
     public void update(DataHandle handle, T object) {
         entryPointSubscribers.forEach(s -> s.update(handle, handle.getObject()));

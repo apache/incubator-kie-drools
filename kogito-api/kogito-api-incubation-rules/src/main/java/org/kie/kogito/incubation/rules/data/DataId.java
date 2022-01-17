@@ -13,36 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.incubation.rules;
+package org.kie.kogito.incubation.rules.data;
 
 import org.kie.kogito.incubation.common.LocalId;
-import org.kie.kogito.incubation.common.LocalUri;
 import org.kie.kogito.incubation.common.LocalUriId;
 
-public class RuleUnitId extends LocalUriId implements LocalId {
-    public static final String PREFIX = "rule-units";
+public class DataId extends LocalUriId implements LocalId {
 
-    private final String ruleUnitId;
+    public static final String PREFIX = "data";
+    private final DataSourceId parent;
+    private final String dataId;
 
-    RuleUnitId(String ruleUnitId) {
-        super(LocalUri.Root.append(PREFIX).append(ruleUnitId));
-        this.ruleUnitId = ruleUnitId;
+    public DataId(DataSourceId parent, String dataId) {
+        super(parent.asLocalUri().append(PREFIX).append(dataId));
+        this.parent = parent;
+        this.dataId = dataId;
     }
 
-    public String ruleUnitId() {
-        return ruleUnitId;
+    public DataSourceId dataSourceId() {
+        return dataSourceId();
     }
 
-    @Override
-    public LocalId toLocalId() {
-        return this;
-    }
-
-    public RuleUnitInstanceIds instances() {
-        return new RuleUnitInstanceIds(this);
-    }
-
-    public QueryIds queries() {
-        return new QueryIds(this);
+    public String dataId() {
+        return dataId;
     }
 }

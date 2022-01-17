@@ -42,5 +42,5 @@ package org.kie.kogito.incubation.common;
  * <p>
  * {@see MapDataContext}
  */
-public interface DataContext extends Castable {
+public interface DataContext extends Castable, ReferenceContext {
 }

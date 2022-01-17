@@ -16,33 +16,25 @@
 package org.kie.kogito.incubation.rules;
 
 import org.kie.kogito.incubation.common.LocalId;
-import org.kie.kogito.incubation.common.LocalUri;
 import org.kie.kogito.incubation.common.LocalUriId;
 
-public class RuleUnitId extends LocalUriId implements LocalId {
-    public static final String PREFIX = "rule-units";
+public class InstanceQueryId extends LocalUriId implements LocalId {
+    public static final String PREFIX = "queries";
 
-    private final String ruleUnitId;
+    private final RuleUnitInstanceId ruleUnitInstanceId;
+    private final String queryId;
 
-    RuleUnitId(String ruleUnitId) {
-        super(LocalUri.Root.append(PREFIX).append(ruleUnitId));
-        this.ruleUnitId = ruleUnitId;
+    public InstanceQueryId(RuleUnitInstanceId ruleUnitInstanceId, String queryId) {
+        super(ruleUnitInstanceId.asLocalUri().append(PREFIX).append(queryId));
+        this.ruleUnitInstanceId = ruleUnitInstanceId;
+        this.queryId = queryId;
     }
 
-    public String ruleUnitId() {
-        return ruleUnitId;
+    public RuleUnitInstanceId ruleUnitInstanceId() {
+        return ruleUnitInstanceId;
     }
 
-    @Override
-    public LocalId toLocalId() {
-        return this;
-    }
-
-    public RuleUnitInstanceIds instances() {
-        return new RuleUnitInstanceIds(this);
-    }
-
-    public QueryIds queries() {
-        return new QueryIds(this);
+    public String queryId() {
+        return queryId;
     }
 }
