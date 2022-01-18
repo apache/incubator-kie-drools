@@ -526,15 +526,33 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 minutesSpentLimit != null ||
                 hoursSpentLimit != null ||
                 daysSpentLimit != null ||
-                bestScoreLimit != null ||
                 unimprovedSpentLimit != null ||
                 unimprovedMillisecondsSpentLimit != null ||
                 unimprovedSecondsSpentLimit != null ||
                 unimprovedMinutesSpentLimit != null ||
                 unimprovedHoursSpentLimit != null ||
                 unimprovedDaysSpentLimit != null ||
+                bestScoreLimit != null ||
+                bestScoreFeasible != null ||
                 stepCountLimit != null ||
-                terminationConfigList != null;
+                unimprovedStepCountLimit != null ||
+                scoreCalculationCountLimit != null ||
+                isTerminationListConfigured();
+    }
+
+    private boolean isTerminationListConfigured() {
+        if (terminationConfigList == null || terminationCompositionStyle == null) {
+            return false;
+        }
+
+        switch (terminationCompositionStyle) {
+            case AND:
+                return terminationConfigList.stream().allMatch(TerminationConfig::isConfigured);
+            case OR:
+                return terminationConfigList.stream().anyMatch(TerminationConfig::isConfigured);
+            default:
+                throw new IllegalStateException("Unhandled case (" + terminationCompositionStyle + ").");
+        }
     }
 
     @Override

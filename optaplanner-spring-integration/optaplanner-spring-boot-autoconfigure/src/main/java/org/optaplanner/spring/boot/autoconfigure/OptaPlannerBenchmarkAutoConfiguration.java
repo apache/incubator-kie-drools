@@ -72,7 +72,7 @@ public class OptaPlannerBenchmarkAutoConfiguration
                     .createFromXmlResource(optaPlannerProperties.getBenchmark().getSolverBenchmarkConfigXml(), beanClassLoader);
         } else if (beanClassLoader.getResource(BenchmarkProperties.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL) != null) {
             benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(
-                    OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL, beanClassLoader);
+                    OptaPlannerProperties.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL, beanClassLoader);
         } else {
             benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig);
             benchmarkConfig.setBenchmarkDirectory(new File(BenchmarkProperties.DEFAULT_BENCHMARK_RESULT_DIRECTORY));

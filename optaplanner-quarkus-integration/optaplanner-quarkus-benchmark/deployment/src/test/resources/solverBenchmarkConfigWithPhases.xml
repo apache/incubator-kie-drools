@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
+    <solverBenchmark>
+        <name>First Fit and Local Search</name>
+        <solver>
+            <constructionHeuristic>
+                <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+            </constructionHeuristic>
+            <localSearch>
+                <termination>
+                    <millisecondsSpentLimit>5</millisecondsSpentLimit>
+                </termination>
+            </localSearch>
+        </solver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>First Fit and Two Local Search</name>
+        <solver>
+            <constructionHeuristic>
+                <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+            </constructionHeuristic>
+            <localSearch>
+                <termination>
+                    <millisecondsSpentLimit>5</millisecondsSpentLimit>
+                </termination>
+            </localSearch>
+            <localSearch>
+                <termination>
+                    <millisecondsSpentLimit>5</millisecondsSpentLimit>
+                </termination>
+            </localSearch>
+        </solver>
+    </solverBenchmark>
+</plannerBenchmark>

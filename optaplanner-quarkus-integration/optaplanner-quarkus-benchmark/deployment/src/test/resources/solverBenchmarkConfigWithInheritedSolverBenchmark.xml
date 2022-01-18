@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
+    <inheritedSolverBenchmark>
+        <solver>
+            <entityClass>org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusEntity</entityClass>
+            <termination>
+                <millisecondsSpentLimit>5</millisecondsSpentLimit>
+            </termination>
+        </solver>
+    </inheritedSolverBenchmark>
+
+    <solverBenchmark>
+        <name>Inherits Solution Class</name>
+        <solver>
+            <constructionHeuristic>
+                <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+            </constructionHeuristic>
+            <localSearch />
+        </solver>
+    </solverBenchmark>
+
+    <solverBenchmark>
+        <name>Does Not Inherit Solution Class</name>
+        <solver>
+            <!-- Using a Constraint Provider class since if there was two planning solution class, autocomplete cannot be used -->
+            <solutionClass>org.optaplanner.benchmark.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider</solutionClass>
+            <constructionHeuristic>
+                <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+            </constructionHeuristic>
+            <localSearch />
+        </solver>
+    </solverBenchmark>
+</plannerBenchmark>

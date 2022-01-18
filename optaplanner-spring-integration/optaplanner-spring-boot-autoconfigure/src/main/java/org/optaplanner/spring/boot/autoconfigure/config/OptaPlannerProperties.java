@@ -26,6 +26,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class OptaPlannerProperties {
 
     public static final String DEFAULT_SOLVER_CONFIG_URL = "solverConfig.xml";
+    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG_URL = "solverBenchmarkConfig.xml";
     public static final String DEFAULT_CONSTRAINTS_DRL_URL = "constraints.drl";
     public static final String SCORE_DRL_PROPERTY = "optaplanner.score-drl";
 

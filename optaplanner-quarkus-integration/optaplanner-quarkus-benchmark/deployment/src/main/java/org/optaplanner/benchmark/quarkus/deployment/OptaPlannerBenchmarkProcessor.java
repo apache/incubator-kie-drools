@@ -79,7 +79,7 @@ class OptaPlannerBenchmarkProcessor {
             benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(
                     OptaPlannerBenchmarkBuildTimeConfig.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL);
         } else {
-            benchmarkConfig = new PlannerBenchmarkConfig();
+            benchmarkConfig = null;
         }
         syntheticBeans.produce(SyntheticBeanBuildItem.configure(PlannerBenchmarkConfig.class)
                 .supplier(recorder.benchmarkConfigSupplier(benchmarkConfig))
