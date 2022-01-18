@@ -85,7 +85,11 @@ public class StaticServiceRegistry implements ServiceRegistry {
         // marshalling
         registerService(org.kie.api.marshalling.KieMarshallers.class.getCanonicalName(), "org.drools.serialization.protobuf.MarshallerProviderImpl", false);
         registerService("org.drools.compiler.kie.builder.impl.CompilationCacheProvider", "org.drools.serialization.protobuf.CompilationCacheProviderImpl", false);
-    }
+
+        // rule units
+        registerService("org.kie.kogito.rules.DataSource$Factory", "org.drools.ruleunits.impl.factory.DataSourceFactoryImpl", false);
+        registerService("org.kie.internal.ruleunit.RuleUnitComponentFactory", "org.drools.ruleunits.impl.factory.RuleUnitComponentFactoryImpl", false);
+        registerService("org.drools.core.reteoo.RuntimeComponentFactory", "org.drools.ruleunits.impl.factory.RuleUnitRuntimeComponentFactory", false);    }
 
     protected void registerService(String service, String implementation, boolean mandatory) {
         try {

@@ -597,12 +597,6 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
                                             String processInstanceId) {
-        return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, (Object) processInstanceId);
-    }
-
-    protected boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
-                                            String ruleName,
-                                            Object processInstanceId) {
         propagationList.flush();
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
@@ -632,7 +626,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     private boolean checkProcessInstance(Activation activation,
-                                         Object processInstanceId) {
+                                         String processInstanceId) {
         final Map<String, Declaration> declarations = activation.getSubRule().getOuterDeclarations();
         for ( Declaration declaration : declarations.values() ) {
             if ( "processInstance".equals( declaration.getIdentifier() )
@@ -646,7 +640,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         return true;
     }
 
-    protected boolean sameProcessInstance( Object processInstanceId, ProcessInstance value ) {
+    protected boolean sameProcessInstance( String processInstanceId, ProcessInstance value ) {
         return processInstanceId.equals( value.getId());
     }
 
