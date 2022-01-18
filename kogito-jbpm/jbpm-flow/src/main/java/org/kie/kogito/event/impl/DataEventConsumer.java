@@ -44,7 +44,7 @@ public class DataEventConsumer<D, M extends Model> implements EventConsumer<M> {
     @Override
     public CompletionStage<Void> consume(Application application, Process<M> process, Object eventData, String trigger) {
         //TODO right now it is only possible to start a new process instance when not using cloudevent
-        return CompletableFuture.runAsync(() -> processService.createProcessInstance(process, function.get().apply((D) eventData), null, trigger, null), executorService);
+        return CompletableFuture.runAsync(() -> processService.createProcessInstance(process, null, function.get().apply((D) eventData), null, trigger, null), executorService);
     }
 
 }

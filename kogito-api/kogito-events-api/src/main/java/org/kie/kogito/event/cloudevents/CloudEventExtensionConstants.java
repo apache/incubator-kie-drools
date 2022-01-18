@@ -39,6 +39,7 @@ public final class CloudEventExtensionConstants {
     public static final String PROCESS_USER_TASK_INSTANCE_STATE = "kogitousertaskist";
     public static final String RULE_UNIT_ID = "kogitoruleunitid";
     public static final String RULE_UNIT_QUERY = "kogitoruleunitquery";
+    public static final String BUSINESS_KEY = "kogitobusinesskey";
     public static final String ADDONS = "kogitoaddons";
 
     private CloudEventExtensionConstants() {

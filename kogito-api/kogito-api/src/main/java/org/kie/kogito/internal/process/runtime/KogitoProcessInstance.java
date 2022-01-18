@@ -92,4 +92,11 @@ public interface KogitoProcessInstance extends ProcessInstance, KogitoEventListe
      * @return the process instance description
      */
     String getDescription();
+
+    /**
+     * Returns optional business key of the process instance
+     * 
+     * @return the business key or null if not set
+     */
+    String getBusinessKey();
 }

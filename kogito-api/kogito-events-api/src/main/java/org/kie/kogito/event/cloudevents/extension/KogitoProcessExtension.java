@@ -46,7 +46,8 @@ public class KogitoProcessExtension implements CloudEventExtension {
                     CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID,
                     CloudEventExtensionConstants.PROCESS_INSTANCE_STATE,
                     CloudEventExtensionConstants.PROCESS_REFERENCE_ID,
-                    CloudEventExtensionConstants.PROCESS_START_FROM_NODE));
+                    CloudEventExtensionConstants.PROCESS_START_FROM_NODE,
+                    CloudEventExtensionConstants.BUSINESS_KEY));
 
     private final Map<String, String> innerValues;
     private String kogitoProcessInstanceId;
@@ -58,6 +59,7 @@ public class KogitoProcessExtension implements CloudEventExtension {
     private String kogitoProcessInstanceState;
     private String kogitoReferenceId;
     private String kogitoStartFromNode;
+    private String kogitoBusinessKey;
 
     public KogitoProcessExtension() {
         this.innerValues = new HashMap<>();
@@ -148,6 +150,15 @@ public class KogitoProcessExtension implements CloudEventExtension {
         this.innerValues.put(CloudEventExtensionConstants.PROCESS_START_FROM_NODE, this.kogitoStartFromNode);
     }
 
+    public void setKogitoBusinessKey(String kogitoBusinessKey) {
+        this.kogitoBusinessKey = kogitoBusinessKey;
+        this.innerValues.put(CloudEventExtensionConstants.BUSINESS_KEY, this.kogitoBusinessKey);
+    }
+
+    public String getBusinessKey() {
+        return this.kogitoBusinessKey;
+    }
+
     /**
      * @return every extension attribute as a map populated accordingly
      */
@@ -166,6 +177,7 @@ public class KogitoProcessExtension implements CloudEventExtension {
         this.setKogitoRootProcessId(getExtension(extensions, CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID));
         this.setKogitoRootProcessInstanceId(getExtension(extensions, CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID));
         this.setKogitoStartFromNode(getExtension(extensions, CloudEventExtensionConstants.PROCESS_START_FROM_NODE));
+        this.setKogitoBusinessKey(getExtension(extensions, CloudEventExtensionConstants.BUSINESS_KEY));
     }
 
     private String getExtension(CloudEventExtensions extensions, String key) {
@@ -199,13 +211,14 @@ public class KogitoProcessExtension implements CloudEventExtension {
                 Objects.equals(kogitoParentProcessinstanceId, that.kogitoParentProcessinstanceId) &&
                 Objects.equals(kogitoProcessInstanceState, that.kogitoProcessInstanceState) &&
                 Objects.equals(kogitoReferenceId, that.kogitoReferenceId) &&
-                Objects.equals(kogitoStartFromNode, that.kogitoStartFromNode);
+                Objects.equals(kogitoStartFromNode, that.kogitoStartFromNode) &&
+                Objects.equals(kogitoBusinessKey, that.kogitoBusinessKey);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons, kogitoParentProcessinstanceId, kogitoProcessInstanceState,
-                kogitoReferenceId, kogitoStartFromNode);
+                kogitoReferenceId, kogitoStartFromNode, kogitoBusinessKey);
     }
 
     @Override

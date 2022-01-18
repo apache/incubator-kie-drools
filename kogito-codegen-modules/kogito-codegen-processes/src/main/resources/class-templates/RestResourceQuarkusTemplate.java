@@ -70,7 +70,7 @@ public class $Type$Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createResource_$name$(@Context HttpHeaders httpHeaders,
                                           @Context UriInfo uriInfo,
-                                          @QueryParam("businessKey") String businessKey,
+                                          @QueryParam("businessKey") @DefaultValue("") String businessKey,
                                           $Type$Input resource) {
         ProcessInstance<$Type$> pi = processService.createProcessInstance(process,
                                                                           businessKey,

@@ -287,6 +287,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     }
 
     @Override
+    public String getBusinessKey() {
+        return correlationKey;
+    }
+
+    @Override
     public NodeInstance getNodeInstance(final org.kie.api.definition.process.Node node) {
         // async continuation handling
         org.kie.api.definition.process.Node actualNode = resolveAsync(node);

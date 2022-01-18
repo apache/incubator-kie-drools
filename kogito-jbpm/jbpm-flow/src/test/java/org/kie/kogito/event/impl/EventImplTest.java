@@ -178,7 +178,7 @@ public class EventImplTest {
         consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe")), trigger).toCompletableFuture().get();
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
-        verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(),
+        verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.isNull(), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(),
                 processInstanceId.capture());
         assertEquals(trigger, signal.getValue());
         assertEquals("1", processInstanceId.getValue());
@@ -192,7 +192,8 @@ public class EventImplTest {
         consumer.consume(application, process, new DummyEvent("pepe"), trigger).toCompletableFuture().get();
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
-        verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(), Mockito.isNull());
+        verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.isNull(), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(),
+                Mockito.isNull());
         assertEquals(trigger, signal.getValue());
     }
 

@@ -94,7 +94,7 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
     }
 
     private ProcessInstance<M> startNewInstance(Process<M> process, M model, T cloudEvent, String trigger) {
-        return processService.createProcessInstance(process, model, cloudEvent.getKogitoStartFromNode(), trigger, cloudEvent.getKogitoProcessinstanceId());
+        return processService.createProcessInstance(process, cloudEvent.getKogitoBusinessKey(), model, cloudEvent.getKogitoStartFromNode(), trigger, cloudEvent.getKogitoProcessinstanceId());
     }
 
     private boolean ignoredMessageType(T cloudEvent, String type) {

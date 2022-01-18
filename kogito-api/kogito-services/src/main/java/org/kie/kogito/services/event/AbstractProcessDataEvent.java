@@ -39,6 +39,10 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoStartFromNode;
 
+    @JsonProperty(CloudEventExtensionConstants.BUSINESS_KEY)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    protected String kogitoBusinessKey;
+
     public AbstractProcessDataEvent() {
     }
 
@@ -109,6 +113,7 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
         this.kogitoParentProcessinstanceId = kogitoParentProcessinstanceId;
         this.kogitoProcessinstanceState = kogitoProcessinstanceState;
         this.kogitoReferenceId = kogitoReferenceId;
+
     }
 
     public String getKogitoParentProcessinstanceId() {
@@ -123,6 +128,10 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
         return this.kogitoReferenceId;
     }
 
+    public String getKogitoBusinessKey() {
+        return this.kogitoBusinessKey;
+    }
+
     public void setKogitoStartFromNode(String kogitoStartFromNode) {
         this.kogitoStartFromNode = kogitoStartFromNode;
     }
@@ -135,7 +144,8 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
     public String toString() {
         return "AbstractProcessDataEvent [kogitoParentProcessinstanceId=" + kogitoParentProcessinstanceId +
                 ", kogitoProcessinstanceState=" + kogitoProcessinstanceState + ", kogitoReferenceId=" +
-                kogitoReferenceId + ", kogitoStartFromNode=" + kogitoStartFromNode + ", getSource()=" + getSource() +
+                kogitoReferenceId + ", kogitoBusinessKey=" +
+                kogitoBusinessKey + ", kogitoStartFromNode=" + kogitoStartFromNode + ", getSource()=" + getSource() +
                 ", getSpecVersion()=" + getSpecVersion() + ", getId()=" + getId() + ", getType()=" + getType() +
                 ", getTime()=" + getTime() + ", getData()=" + getData() + ", getKogitoProcessinstanceId()=" +
                 getKogitoProcessinstanceId() + ", getKogitoRootProcessinstanceId()=" +

@@ -15,7 +15,11 @@
  */
 package org.kie.kogito.process.impl;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -67,14 +71,14 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process,
+    public <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey,
             T model,
             String startFromNodeId,
             String trigger,
             String kogitoReferenceId) {
 
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            ProcessInstance<T> pi = process.createInstance(model);
+            ProcessInstance<T> pi = process.createInstance(businessKey, model);
             if (startFromNodeId != null) {
                 pi.startFrom(startFromNodeId, kogitoReferenceId);
             } else {

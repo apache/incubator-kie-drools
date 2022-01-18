@@ -43,6 +43,7 @@ public class ProcessMeta extends KogitoProcessExtension {
             meta.setKogitoRootProcessId(pi.getRootProcessId());
             meta.setKogitoProcessInstanceState(String.valueOf(pi.getState()));
             meta.setKogitoReferenceId(pi.getReferenceId());
+            meta.setKogitoBusinessKey(pi.getBusinessKey());
         }
         return meta;
     }
