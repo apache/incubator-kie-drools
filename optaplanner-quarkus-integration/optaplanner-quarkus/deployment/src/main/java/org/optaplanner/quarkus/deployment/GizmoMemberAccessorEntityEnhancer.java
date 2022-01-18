@@ -164,17 +164,15 @@ public class GizmoMemberAccessorEntityEnhancer {
      * Generates the bytecode for the member accessor for the specified field.
      * Additionally enhances the class that declares the field with public simple
      * getters/setters methods for the field if the field is private.
-     *
+     * 
      * @param annotationInstance The annotations on the field
-     * @param indexView The index view (needed to get default values of annotations)
      * @param classOutput Where to output the bytecode
      * @param classInfo The declaring class for the field
      * @param fieldInfo The field to generate the MemberAccessor for
      * @param transformers BuildProducer of BytecodeTransformers
      */
-    public static String generateFieldAccessor(AnnotationInstance annotationInstance, IndexView indexView,
-            ClassOutput classOutput, ClassInfo classInfo,
-            FieldInfo fieldInfo, BuildProducer<BytecodeTransformerBuildItem> transformers)
+    public static String generateFieldAccessor(AnnotationInstance annotationInstance, ClassOutput classOutput,
+            ClassInfo classInfo, FieldInfo fieldInfo, BuildProducer<BytecodeTransformerBuildItem> transformers)
             throws ClassNotFoundException, NoSuchFieldException {
         Class<?> declaringClass = Class.forName(fieldInfo.declaringClass().name().toString(), false,
                 Thread.currentThread().getContextClassLoader());
@@ -242,17 +240,15 @@ public class GizmoMemberAccessorEntityEnhancer {
      * Additionally enhances the class that declares the method with public simple
      * read/(optionally write if getter method and setter present) methods for the method
      * if the method is private.
-     *
+     * 
      * @param annotationInstance The annotations on the field
-     * @param indexView The index view (needed to get default values of annotations)
      * @param classOutput Where to output the bytecode
      * @param classInfo The declaring class for the field
      * @param methodInfo The method to generate the MemberAccessor for
      * @param transformers BuildProducer of BytecodeTransformers
      */
-    public static String generateMethodAccessor(AnnotationInstance annotationInstance, IndexView indexView,
-            ClassOutput classOutput, ClassInfo classInfo,
-            MethodInfo methodInfo, BuildProducer<BytecodeTransformerBuildItem> transformers)
+    public static String generateMethodAccessor(AnnotationInstance annotationInstance, ClassOutput classOutput,
+            ClassInfo classInfo, MethodInfo methodInfo, BuildProducer<BytecodeTransformerBuildItem> transformers)
             throws ClassNotFoundException, NoSuchMethodException {
         Class<?> declaringClass = Class.forName(methodInfo.declaringClass().name().toString(), false,
                 Thread.currentThread().getContextClassLoader());
@@ -290,10 +286,8 @@ public class GizmoMemberAccessorEntityEnhancer {
         return generatedClassName;
     }
 
-    public static String generateSolutionCloner(SolutionDescriptor solutionDescriptor,
-            ClassOutput classOutput,
-            IndexView indexView,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) {
+    public static String generateSolutionCloner(SolutionDescriptor solutionDescriptor, ClassOutput classOutput,
+            IndexView indexView, BuildProducer<BytecodeTransformerBuildItem> transformers) {
         String generatedClassName = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
         try (ClassCreator classCreator = ClassCreator
                 .builder()
@@ -302,8 +296,6 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .classOutput(classOutput)
                 .setFinal(true)
                 .build()) {
-
-            Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
 
             List<Class<?>> solutionSubclassesList =
                     indexView.getAllKnownSubclasses(DotName.createSimple(solutionDescriptor.getSolutionClass().getName()))
@@ -318,6 +310,9 @@ public class GizmoMemberAccessorEntityEnhancer {
                                 }
                             }).collect(Collectors.toCollection(ArrayList::new));
             solutionSubclassesList.add(solutionDescriptor.getSolutionClass());
+
+            Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap =
+                    new HashMap<>();
 
             for (Class<?> solutionSubclass : solutionSubclassesList) {
                 getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
@@ -372,8 +367,7 @@ public class GizmoMemberAccessorEntityEnhancer {
     }
 
     private static GizmoSolutionOrEntityDescriptor getGizmoSolutionOrEntityDescriptorForEntity(
-            SolutionDescriptor solutionDescriptor,
-            Class<?> entityClass,
+            SolutionDescriptor solutionDescriptor, Class<?> entityClass,
             Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedMap,
             BuildProducer<BytecodeTransformerBuildItem> transformers) {
         Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();

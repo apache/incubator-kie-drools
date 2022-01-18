@@ -20,11 +20,16 @@ Every score constraint is written as one or more score rules.
 *** Defining them in decision tables
 **** Excel (XLS) spreadsheet
 ** Performance optimizations in future versions for free
-*** In every release, the Drools rule engine tends to become faster
 * Disadvantages:
 ** DRL learning curve
 ** Usage of DRL
 *** Polyglot fear can prohibit the use of a new language such as DRL in some organizations
+
+[NOTE]
+====
+Drools score calculation is not supported in Quarkus native mode.
+Consider switching to xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams].
+====
 
 
 [[droolsScoreRulesConfiguration]]
