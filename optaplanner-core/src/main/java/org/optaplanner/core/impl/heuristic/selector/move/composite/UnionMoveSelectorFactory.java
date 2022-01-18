@@ -39,7 +39,7 @@ public class UnionMoveSelectorFactory<Solution_>
     @Override
     public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector<Solution_>> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
+        List<MoveSelector<Solution_>> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorList(),
                 configPolicy, minimumCacheType, randomSelection);
 
         SelectionProbabilityWeightFactory<Solution_, MoveSelector<Solution_>> selectorProbabilityWeightFactory;
@@ -54,9 +54,9 @@ public class UnionMoveSelectorFactory<Solution_>
                     "selectorProbabilityWeightFactoryClass", config.getSelectorProbabilityWeightFactoryClass());
         } else if (randomSelection) {
             Map<MoveSelector<Solution_>, Double> fixedProbabilityWeightMap =
-                    new HashMap<>(config.getMoveSelectorConfigList().size());
-            for (int i = 0; i < config.getMoveSelectorConfigList().size(); i++) {
-                MoveSelectorConfig<?> innerMoveSelectorConfig = config.getMoveSelectorConfigList().get(i);
+                    new HashMap<>(config.getMoveSelectorList().size());
+            for (int i = 0; i < config.getMoveSelectorList().size(); i++) {
+                MoveSelectorConfig<?> innerMoveSelectorConfig = config.getMoveSelectorList().get(i);
                 MoveSelector<Solution_> moveSelector = moveSelectorList.get(i);
                 Double fixedProbabilityWeight = innerMoveSelectorConfig.getFixedProbabilityWeight();
                 if (fixedProbabilityWeight == null) {

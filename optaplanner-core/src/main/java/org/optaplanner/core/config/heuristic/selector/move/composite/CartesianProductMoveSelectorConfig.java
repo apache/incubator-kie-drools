@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.composite;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -65,6 +66,10 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
 
     private Boolean ignoreEmptyChildIterators = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public CartesianProductMoveSelectorConfig() {
     }
 
@@ -72,11 +77,29 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
         this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
+    /**
+     * @deprecated in favor of {@link #getMoveSelectorList()}.
+     * @return sometimes null
+     */
+    @Deprecated
     public List<MoveSelectorConfig> getMoveSelectorConfigList() {
+        return getMoveSelectorList();
+    }
+
+    /**
+     * @deprecated in favor of {@link #setMoveSelectorList(List)}.
+     * @param moveSelectorConfigList sometimes null
+     */
+    @Deprecated
+    public void setMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
+        setMoveSelectorList(moveSelectorConfigList);
+    }
+
+    public List<MoveSelectorConfig> getMoveSelectorList() {
         return moveSelectorConfigList;
     }
 
-    public void setMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
+    public void setMoveSelectorList(List<MoveSelectorConfig> moveSelectorConfigList) {
         this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
@@ -88,6 +111,29 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
         this.ignoreEmptyChildIterators = ignoreEmptyChildIterators;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public CartesianProductMoveSelectorConfig withMoveSelectorList(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
+        return this;
+    }
+
+    public CartesianProductMoveSelectorConfig withMoveSelectors(MoveSelectorConfig... moveSelectorConfigs) {
+        this.moveSelectorConfigList = Arrays.asList(moveSelectorConfigs);
+        return this;
+    }
+
+    public CartesianProductMoveSelectorConfig withIgnoreEmptyChildIterators(Boolean ignoreEmptyChildIterators) {
+        this.ignoreEmptyChildIterators = ignoreEmptyChildIterators;
+        return this;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
     public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
@@ -98,8 +144,8 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     @Override
     public CartesianProductMoveSelectorConfig inherit(CartesianProductMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
-                moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
+        moveSelectorConfigList =
+                ConfigUtils.inheritMergeableListConfig(moveSelectorConfigList, inheritedConfig.getMoveSelectorList());
         ignoreEmptyChildIterators = ConfigUtils.inheritOverwritableProperty(
                 ignoreEmptyChildIterators, inheritedConfig.getIgnoreEmptyChildIterators());
         return this;

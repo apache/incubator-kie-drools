@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.localsearch;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
@@ -211,9 +210,9 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
         }
         if (phaseConfig.getMoveSelectorConfig() == null) {
             // Default to changeMoveSelector and swapMoveSelector
-            UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
-            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(new ChangeMoveSelectorConfig(),
-                    new SwapMoveSelectorConfig()));
+            UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig().withMoveSelectors(
+                    new ChangeMoveSelectorConfig(),
+                    new SwapMoveSelectorConfig());
             moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig)
                     .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         } else {
