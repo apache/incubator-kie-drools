@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -218,6 +217,8 @@ public class DefaultSolverTest {
                                 Meter.Type.COUNTER));
     }
 
+    // TODO: Enable with Micrometer 1.7.8 or later.
+    @Disabled("https://github.com/micrometer-metrics/micrometer/issues/2947")
     @Test
     public void solveMetrics() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
@@ -242,7 +243,7 @@ public class DefaultSolverTest {
                 meterRegistry.publish(solver);
                 assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "ACTIVE_TASKS")).isOne();
                 assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "DURATION").longValue())
-                        .isEqualTo(TimeUnit.SECONDS.toNanos(2));
+                        .isEqualTo(2L);
                 updatedTime.set(true);
             }
         });
