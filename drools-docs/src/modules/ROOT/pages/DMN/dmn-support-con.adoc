@@ -47,5 +47,5 @@ ifdef::DROOLS,JBPM,OP[]
 endif::[]
 
 ifdef::DM,PAM[]
-You can design a new DMN decision service using a {KOGITO} microservice as an alternative for the cloud-native capabilities of DMN decision services. You can migrate your DMN service to a {KOGITO} microservice. For more information about migrating to {KOGITO} microservices, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}#assembly-getting-started-migration-to-kogito-microservices[_{MIGRATION_KOGITO_SERVICES}_].
+You can design a new DMN decision service using a {KOGITO} microservice as an alternative for the cloud-native capabilities of DMN decision services. You can migrate your DMN service to a {KOGITO} microservice. For more information about migrating to {KOGITO} microservices, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}#assembly-migration-to-kogito-microservices[_{MIGRATION_KOGITO_SERVICES}_].
 endif::[]
