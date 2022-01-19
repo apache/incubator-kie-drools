@@ -21,6 +21,7 @@ import java.io.ObjectOutput;
 import java.util.Objects;
 
 import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.DataTypeUtils;
 import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 
 /**
@@ -29,29 +30,31 @@ import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 public class ObjectDataType implements DataType {
 
     private static final long serialVersionUID = 510l;
+    private static final String DEFAULT_TYPE = "java.lang.Object";
 
     private String className;
 
-    private ClassLoader classLoader;
+    private transient ClassLoader classLoader;
 
     private transient Class<?> clazz;
 
     public ObjectDataType() {
+        this(DEFAULT_TYPE);
     }
 
     public ObjectDataType(String className) {
-        setClassName(className);
+        this(className, null);
     }
 
     public ObjectDataType(String className, ClassLoader classLoader) {
-        setClassName(className);
-        setClassLoader(classLoader);
+        Objects.requireNonNull(className);
+        this.className = DataTypeUtils.ensureLangPrefix(className);
+        this.classLoader = classLoader;
     }
 
     public ObjectDataType(Class<?> clazz) {
-        this(clazz.getCanonicalName());
+        this(clazz.getCanonicalName(), clazz.getClassLoader());
         this.clazz = clazz;
-        this.classLoader = clazz.getClassLoader();
     }
 
     public String getClassName() {
@@ -85,25 +88,8 @@ public class ObjectDataType implements DataType {
         if (value == null) {
             return true;
         }
-
-        Class<?> clazz = find(getStringType(), value.getClass().getClassLoader());
-        if (clazz == null) {
-            clazz = find(getStringType(), Thread.currentThread().getContextClassLoader());
-        }
-        if (clazz == null) {
-            throw new IllegalArgumentException("Could not find data type " + className);
-        }
-
+        getObjectClass();
         return clazz.isInstance(value);
-
-    }
-
-    private Class<?> find(String type, ClassLoader classLoader) {
-        try {
-            return Class.forName(type, true, classLoader);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
     }
 
     @Override
@@ -118,7 +104,37 @@ public class ObjectDataType implements DataType {
 
     @Override
     public String getStringType() {
-        return className == null ? "java.lang.Object" : className;
+        return getClassName();
+    }
+
+    @Override
+    public Class<?> getObjectClass() {
+        if (clazz == null) {
+            clazz = findClass(className, classLoader);
+            if (clazz == null) {
+                clazz = findClass(className, Thread.currentThread().getContextClassLoader());
+            }
+        }
+        if (clazz == null) {
+            throw new IllegalArgumentException("Cannot find class " + className);
+        }
+        return clazz;
+    }
+
+    @Override
+    public boolean isAssignableFrom(DataType dataType) {
+        return DataTypeUtils.isAssignableFrom(this, dataType) || className.equals(DEFAULT_TYPE);
+    }
+
+    private static Class<?> findClass(String typeName, ClassLoader cl) {
+        if (cl != null) {
+            try {
+                return Class.forName(typeName, true, cl);
+            } catch (ClassNotFoundException e) {
+                // will return null
+            }
+        }
+        return null;
     }
 
     @Override
@@ -136,18 +152,5 @@ public class ObjectDataType implements DataType {
     @Override
     public int hashCode() {
         return Objects.hash(className);
-    }
-
-    @Override
-    public Class<?> getObjectClass() {
-        if (clazz == null) {
-            ClassLoader cl = classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader();
-            try {
-                clazz = cl.loadClass(className);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-        return clazz;
     }
 }

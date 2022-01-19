@@ -40,4 +40,7 @@ public interface DataType extends Externalizable {
         return Object.class;
     }
 
+    default boolean isAssignableFrom(DataType dataType) {
+        return DataTypeUtils.isAssignableFrom(this, dataType);
+    }
 }

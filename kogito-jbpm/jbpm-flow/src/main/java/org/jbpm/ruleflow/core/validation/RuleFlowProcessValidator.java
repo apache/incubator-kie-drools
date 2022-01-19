@@ -1036,6 +1036,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
     }
 
+    @Override
     public ProcessValidationError[] validateProcess(Process process) {
         if (!(process instanceof RuleFlowProcess)) {
             throw new IllegalArgumentException(
@@ -1100,7 +1101,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
             Variable variable = process.getVariableScope().findVariable(var);
             DataType dataType = DataTypeResolver.fromType(type, Thread.currentThread().getContextClassLoader());
-            if (!variable.getType().equals(dataType)) {
+            if (!variable.getType().isAssignableFrom(dataType)) {
                 addErrorMessage(process, node, errors,
                         format("Target variable '%s':'%s' has different data type from '%s':'%s' in data output assignment", var,
                                 variable.getType().getStringType(),
@@ -1123,7 +1124,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
             Variable variable = process.getVariableScope().findVariable(var);
             DataType dataType = DataTypeResolver.fromType(type, Thread.currentThread().getContextClassLoader());
-            if (!variable.getType().equals(dataType)) {
+            if (!variable.getType().isAssignableFrom(dataType)) {
                 addErrorMessage(process, node, errors,
                         format("Source variable '%s':'%s' has different data type from '%s':'%s' in data input assignment", var,
                                 variable.getType().getStringType(),

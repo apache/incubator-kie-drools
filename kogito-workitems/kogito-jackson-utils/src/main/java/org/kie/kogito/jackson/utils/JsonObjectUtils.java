@@ -38,6 +38,11 @@ import com.fasterxml.jackson.databind.node.ShortNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 public class JsonObjectUtils {
+    /*
+     * Implementation note:
+     * Although we can use directly ObjectMapper.convertValue for implementing fromValue and toJavaValue methods,
+     * the performance gain of avoiding an intermediate buffer is so tempting that we cannot avoid it
+     */
 
     public static JsonNode fromValue(Object value) {
         if (value == null) {
@@ -69,12 +74,14 @@ public class JsonObjectUtils {
         } else if (value instanceof Map) {
             return mapToNode((Map<String, Object>) value);
         } else {
-            return mapToNode(ObjectMapperFactory.get().convertValue(value, Map.class));
+            return ObjectMapperFactory.get().convertValue(value, JsonNode.class);
         }
     }
 
     public static Object toJavaValue(JsonNode jsonNode) {
-        if (jsonNode.isTextual()) {
+        if (jsonNode.isNull()) {
+            return null;
+        } else if (jsonNode.isTextual()) {
             return jsonNode.asText();
         } else if (jsonNode.isBoolean()) {
             return jsonNode.asBoolean();
@@ -82,6 +89,8 @@ public class JsonObjectUtils {
             return jsonNode.asInt();
         } else if (jsonNode.isDouble()) {
             return jsonNode.asDouble();
+        } else if (jsonNode.isNumber()) {
+            return jsonNode.numberValue();
         } else if (jsonNode.isArray()) {
             Collection result = new ArrayList<>();
             for (JsonNode item : ((ArrayNode) jsonNode)) {
@@ -93,7 +102,7 @@ public class JsonObjectUtils {
             jsonNode.fields().forEachRemaining(iter -> result.put(iter.getKey(), toJavaValue(iter.getValue())));
             return result;
         } else {
-            throw new IllegalArgumentException("Cannot convert node " + jsonNode);
+            return ObjectMapperFactory.get().convertValue(jsonNode, Object.class);
         }
     }
 

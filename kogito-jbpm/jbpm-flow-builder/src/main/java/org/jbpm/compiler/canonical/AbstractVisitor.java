@@ -23,10 +23,10 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -96,17 +96,11 @@ public abstract class AbstractVisitor {
                 if (!visitedVariables.add(variable.getName())) {
                     continue;
                 }
-
                 String tags = (String) variable.getMetaData(Variable.VARIABLE_TAGS);
                 Object defaultValue = variable.getValue();
                 body.tryAddImportToParentCompilationUnit(variable.getType().getClass());
-                MethodCallExpr classLoaderMethodCallExpr = new MethodCallExpr()
-                        .setScope(new ClassExpr(new ClassOrInterfaceType(null, contextClass)))
-                        .setName("getClassLoader");
-                MethodCallExpr dataResolver = new MethodCallExpr(null, "org.jbpm.process.core.datatype.DataTypeResolver.fromType",
-                        new NodeList<>(new StringLiteralExpr(variable.getType().getStringType()), classLoaderMethodCallExpr));
-
-                body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()), dataResolver,
+                body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()),
+                        new MethodCallExpr(DataTypeResolver.class.getName() + ".fromClass", new ClassExpr(new ClassOrInterfaceType(null, variable.getType().getStringType()))),
                         defaultValue != null ? new StringLiteralExpr(defaultValue.toString()) : new NullLiteralExpr(), new StringLiteralExpr(Variable.VARIABLE_TAGS),
                         tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
             }

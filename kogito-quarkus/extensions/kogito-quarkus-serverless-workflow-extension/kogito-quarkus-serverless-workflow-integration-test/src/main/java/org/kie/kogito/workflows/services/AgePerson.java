@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.workflows.services;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class AgePerson extends Person {
 
     private int age;

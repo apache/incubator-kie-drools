@@ -51,14 +51,13 @@ public class TypeTransformer {
         this.classLoader = classLoader;
     }
 
-    public Object transform(ClassLoader currentClassLoader, Object toMarshal, String className) throws ClassNotFoundException, IOException {
+    private Object transform(Object toMarshal, Class<?> targetClazz, ClassLoader currentClassLoader, String className) throws ClassNotFoundException, IOException {
         JavaParser parser = new JavaParser();
         ParseResult<Type> unit = parser.parseType(className);
         if (!unit.isSuccessful()) {
             return toMarshal;
         }
         ClassOrInterfaceType type = (ClassOrInterfaceType) unit.getResult().get();
-        Class<?> targetClazz = currentClassLoader.loadClass(toString(type));
         if (Collection.class.isAssignableFrom(targetClazz) && type.getTypeArguments().isPresent()) {
             // it is a generic so we try to read it.
             ClassOrInterfaceType argument = (ClassOrInterfaceType) type.getTypeArguments().get().get(0);
@@ -66,12 +65,15 @@ public class TypeTransformer {
             JavaType targetGenericType = mapper.getTypeFactory().constructCollectionType(List.class, genericType);
             return mapper.convertValue(toMarshal, targetGenericType);
         }
-
         return mapper.convertValue(toMarshal, targetClazz);
     }
 
+    public Object transform(Object toMarshal, Class<?> targetClass) throws IOException, ClassNotFoundException {
+        return transform(toMarshal, targetClass, targetClass.getClassLoader(), targetClass.getName());
+    }
+
     public Object transform(Object toMarshal, String className) throws ClassNotFoundException, IOException {
-        return transform(classLoader, toMarshal, className);
+        return transform(toMarshal, classLoader.loadClass(className), classLoader, className);
     }
 
     private String toString(ClassOrInterfaceType type) {

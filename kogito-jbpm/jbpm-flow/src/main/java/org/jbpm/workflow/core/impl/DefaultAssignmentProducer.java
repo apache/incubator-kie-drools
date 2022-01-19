@@ -77,17 +77,13 @@ public class DefaultAssignmentProducer implements AssignmentProducer {
         if (value != null && !(value instanceof Throwable)) {
             try {
                 if (!dataType.getStringType().endsWith("java.lang.Object") && dataType instanceof ObjectDataType) {
-                    ClassLoader classLoader = ((ObjectDataType) dataType).getClassLoader();
-                    if (classLoader != null) {
-                        value = typeTransformer.transform(classLoader, value, dataType.getStringType());
-                    } else {
-                        value = typeTransformer.transform(value, dataType.getStringType());
-                    }
+                    value = typeTransformer.transform(value, ((ObjectDataType) dataType).getObjectClass());
+
                 } else if (!(dataType instanceof StringDataType) && !(dataType instanceof ObjectDataType)) {
                     value = typeTransformer.transform(value, dataType.getStringType());
                 }
             } catch (Exception e) {
-                logger.trace("error trying to transform value {}", value);
+                logger.debug("error trying to transform value {}", value, e);
             }
         }
 

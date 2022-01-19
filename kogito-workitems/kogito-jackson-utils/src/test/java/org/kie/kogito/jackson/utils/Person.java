@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.workflows.services;
+package org.kie.kogito.jackson.utils;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
-
-@RegisterForReflection
 public class Person {
+
     private String name;
 
     public Person() {
