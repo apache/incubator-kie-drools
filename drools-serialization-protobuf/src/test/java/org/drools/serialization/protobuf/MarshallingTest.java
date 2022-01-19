@@ -57,6 +57,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreConstants;
+import org.drools.core.util.KeyStoreHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.CommonTestMethodBase;
@@ -923,51 +924,39 @@ public class MarshallingTest extends CommonTestMethodBase {
     private void setPublicKeyProperties() {
         // Set the client properties to de-serialise the signed packages
         URL clientKeyStoreURL = getClass().getResource( "droolsClient.keystore" );
-        System.setProperty( KeyStoreConstants.PROP_SIGN,
-                            "true" );
-        System.setProperty( KeyStoreConstants.PROP_PUB_KS_URL,
-                            clientKeyStoreURL.toExternalForm() );
-        System.setProperty( KeyStoreConstants.PROP_PUB_KS_PWD,
-                            "clientpwd" );
+        System.setProperty( KeyStoreConstants.PROP_SIGN, "true" );
+        System.setProperty( KeyStoreConstants.PROP_PUB_KS_URL, clientKeyStoreURL.toExternalForm() );
+        System.setProperty( KeyStoreConstants.PROP_PUB_KS_PWD, "clientpwd" );
+        KeyStoreHelper.reInit();
     }
 
     private void unsetPublicKeyProperties() {
         // Un-set the client properties to de-serialise the signed packages
-        System.setProperty( KeyStoreConstants.PROP_SIGN,
-                            "" );
-        System.setProperty( KeyStoreConstants.PROP_PUB_KS_URL,
-                            "" );
-        System.setProperty( KeyStoreConstants.PROP_PUB_KS_PWD,
-                            "" );
+        System.setProperty( KeyStoreConstants.PROP_SIGN, "" );
+        System.setProperty( KeyStoreConstants.PROP_PUB_KS_URL, "" );
+        System.setProperty( KeyStoreConstants.PROP_PUB_KS_PWD, "" );
+        KeyStoreHelper.reInit();
     }
 
     private void setPrivateKeyProperties() {
         // Set the server properties to serialise the signed packages
         URL serverKeyStoreURL = getClass().getResource( "droolsServer.keystore" );
-        System.setProperty( KeyStoreConstants.PROP_SIGN,
-                            "true" );
-        System.setProperty( KeyStoreConstants.PROP_PVT_KS_URL,
-                            serverKeyStoreURL.toExternalForm() );
-        System.setProperty( KeyStoreConstants.PROP_PVT_KS_PWD,
-                            "serverpwd" );
-        System.setProperty( KeyStoreConstants.PROP_PVT_ALIAS,
-                            "droolsKey" );
-        System.setProperty( KeyStoreConstants.PROP_PVT_PWD,
-                            "keypwd" );
+        System.setProperty( KeyStoreConstants.PROP_SIGN, "true" );
+        System.setProperty( KeyStoreConstants.PROP_PVT_KS_URL, serverKeyStoreURL.toExternalForm() );
+        System.setProperty( KeyStoreConstants.PROP_PVT_KS_PWD, "serverpwd" );
+        System.setProperty( KeyStoreConstants.PROP_PVT_ALIAS, "droolsKey" );
+        System.setProperty( KeyStoreConstants.PROP_PVT_PWD, "keypwd" );
+        KeyStoreHelper.reInit();
     }
 
     private void unsetPrivateKeyProperties() {
         // Un-set the server properties to serialise the signed packages
-        System.setProperty( KeyStoreConstants.PROP_SIGN,
-                            "" );
-        System.setProperty( KeyStoreConstants.PROP_PVT_KS_URL,
-                            "" );
-        System.setProperty( KeyStoreConstants.PROP_PVT_KS_PWD,
-                            "" );
-        System.setProperty( KeyStoreConstants.PROP_PVT_ALIAS,
-                            "" );
-        System.setProperty( KeyStoreConstants.PROP_PVT_PWD,
-                            "" );
+        System.setProperty( KeyStoreConstants.PROP_SIGN, "" );
+        System.setProperty( KeyStoreConstants.PROP_PVT_KS_URL, "" );
+        System.setProperty( KeyStoreConstants.PROP_PVT_KS_PWD, "" );
+        System.setProperty( KeyStoreConstants.PROP_PVT_ALIAS, "" );
+        System.setProperty( KeyStoreConstants.PROP_PVT_PWD, "" );
+        KeyStoreHelper.reInit();
     }
 
     /**

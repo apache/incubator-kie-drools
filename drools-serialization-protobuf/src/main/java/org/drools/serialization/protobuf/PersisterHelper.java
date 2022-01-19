@@ -217,7 +217,7 @@ public class PersisterHelper extends MarshallingHelper {
 
     private static void sign(ProtobufMessages.Header.Builder _header,
                              byte[] buff ) {
-        KeyStoreHelper helper = new KeyStoreHelper();
+        KeyStoreHelper helper = KeyStoreHelper.get();
         if (helper.isSigned()) {
             try {
                 _header.setSignature( ProtobufMessages.Signature.newBuilder()
@@ -305,7 +305,7 @@ public class PersisterHelper extends MarshallingHelper {
 
     private static void checkSignature(Header _header,
                                        byte[] sessionbuff) {
-        KeyStoreHelper helper = new KeyStoreHelper();
+        KeyStoreHelper helper = KeyStoreHelper.get();
         boolean signed = _header.hasSignature();
         if ( helper.isSigned() != signed ) {
             throw new RuntimeException( "This environment is configured to work with " +
