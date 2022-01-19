@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright ${year} Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,17 @@
  */
 package  org.kie.pmml.models.naive_bayes.evaluator;
 
+import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.naive_bayes.model.KiePMMLNaiveBayesModel;
 
 /**
  * Default <code>PMMLModelExecutor</code> for <b>NaiveBayes</b>
  */
-public class PMMLNaiveBayesModelEvaluator implements PMMLModelExecutor {
+public class PMMLNaiveBayesModelEvaluator implements PMMLModelEvaluator<KiePMMLNaiveBayesModel> {
 
     @Override
     public PMML_MODEL getPMMLModelType(){
@@ -34,10 +33,9 @@ public class PMMLNaiveBayesModelEvaluator implements PMMLModelExecutor {
     }
 
     @Override
-    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) {
-        if(!(model instanceof KiePMMLNaiveBayesModel)){
-            throw new KiePMMLModelException("Expected a KiePMMLNaiveBayesModel, received a "+ model.getClass().getName());
-        }
+    public PMML4Result evaluate(final KieBase knowledgeBase,
+                                final KiePMMLNaiveBayesModel model,
+                                final PMMLContext context) {
         // TODO
         throw new UnsupportedOperationException();
     }

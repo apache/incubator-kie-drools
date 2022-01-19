@@ -19,7 +19,7 @@ For model name do follow names as defined inside PMML specs, without trailing "M
 
 Test:
 
-The src/test/resources/projects contains two folder to have IT tests of the archetype itself.
+The src/test/resources/projects contains a folder to have IT test of the archetype itself.
 
 Inside such folder there is
 1. some specifications for the project to be created (archetype.pom.properties, archetype.properties)
@@ -30,7 +30,7 @@ During "archetype:integration-test" goal, what happen is
 1. a project is generated based on the given specifications
 2. the generated project is compared (file by file) with the reference one
 3. if the comparison is successful, the generated project goes through the phase describe inside "goal.txt"
-4. Being the above "verify", the project is compiled and tested.
+4. Being the above "compile", the project is compiled but not tested.
 
 If reference and generated project differs for number or content of files, a specific error is printed out in console
 If the generated project does not compile (due to some modification in the underlying models) a usual "compilation error" is printed out in console.
