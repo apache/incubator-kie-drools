@@ -63,8 +63,8 @@ public class SegmentPropagator {
     private static void processPeers(SegmentMemory sourceSegment, TupleSets<LeftTuple> leftTuples) {
         SegmentMemory firstSmem = sourceSegment.getFirst();
 
-        processPeerDeletes( leftTuples, leftTuples.getDeleteFirst(), firstSmem );
-        processPeerDeletes( leftTuples, leftTuples.getNormalizedDeleteFirst(), firstSmem );
+        processPeerDeletes( leftTuples.getDeleteFirst(), firstSmem );
+        processPeerDeletes( leftTuples.getNormalizedDeleteFirst(), firstSmem );
         processPeerUpdates( leftTuples, firstSmem );
         processPeerInserts( leftTuples, firstSmem );
 
@@ -117,27 +117,29 @@ public class SegmentPropagator {
         }
     }
 
-    private static void updateChildLeftTupleDuringInsert(LeftTuple childLeftTuple,
-                                                        TupleSets<LeftTuple> stagedLeftTuples,
-                                                        TupleSets<LeftTuple> trgLeftTuples) {
+    private static void updateChildLeftTupleDuringInsert(LeftTuple childLeftTuple, TupleSets<LeftTuple> stagedLeftTuples, TupleSets<LeftTuple> trgLeftTuples) {
         switch ( childLeftTuple.getStagedType() ) {
-            // handle clash when they re already staged entries
+            // handle clash with already staged entries
             case LeftTuple.INSERT:
-                // was staged as insert before, remove it from staging and now process
+                // Was insert before, should continue as insert
                 stagedLeftTuples.removeInsert( childLeftTuple );
+                trgLeftTuples.addInsert( childLeftTuple );
                 break;
             case LeftTuple.UPDATE:
-                throw new IllegalStateException("It should not be possible that an existing udpate is staged, when an insert is later requested.");
-        }
-
-        if ( hasNodeMemory( childLeftTuple.getTupleSink() ) ) {
-            trgLeftTuples.addInsert(childLeftTuple);
-        } else {
-            trgLeftTuples.addUpdate(childLeftTuple);
+                stagedLeftTuples.removeUpdate( childLeftTuple );
+                trgLeftTuples.addUpdate( childLeftTuple );
+                break;
+            default:
+                // no clash, so just add
+                if ( hasNodeMemory( childLeftTuple.getTupleSink() ) ) {
+                    trgLeftTuples.addInsert(childLeftTuple);
+                } else {
+                    trgLeftTuples.addUpdate(childLeftTuple);
+                }
         }
     }
 
-    private static void processPeerDeletes( TupleSets<LeftTuple> leftTuples, LeftTuple leftTuple, SegmentMemory firstSmem ) {
+    private static void processPeerDeletes( LeftTuple leftTuple, SegmentMemory firstSmem ) {
         for (; leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {
