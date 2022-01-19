@@ -47,7 +47,7 @@ public class BeforeEvaluateAllEventImpl implements BeforeEvaluateAllEvent {
     }
     
     @Override
-	public String toString() {
+    public String toString() {
 		return "BeforeEvaluateAllEventImpl{ modelNamespace=" + modelNamespace + ", modelName=" + modelName + "}";
     }
 
