@@ -573,4 +573,63 @@ public class UpdateTest {
 
         ksession.dispose();
     }
+
+    public static class Firings {
+        private final List<String> list = new ArrayList<>();
+
+        public List<String> getList() {
+            return list;
+        }
+    }
+
+    @Test
+    public void testPeerUpdate() {
+        // DROOLS-6783
+        final String str =
+                "import " + Firings.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "  Integer()\n" +
+                "  $f : Firings( list not contains \"R1\" )\n" +
+                "then\n" +
+                "  $f.getList().add(\"R1\");\n" +
+                "  update($f);\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 agenda-group \"x\" when\n" +
+                "  Integer()\n" +
+                "  Firings( $l : list )\n" +
+                "  String()\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 agenda-group \"x\" when\n" +
+                "  Integer()\n" +
+                "  Firings( $l : list )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R4 when\n" +
+                "  Integer()\n" +
+                "  Firings( $l : list )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R5 when\n" +
+                "  Integer()\n" +
+                "  $f : Firings( list not contains \"R5\" )\n" +
+                "then\n" +
+                "  $f.getList().add(\"R5\");\n" +
+                "  update($f);\n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
+
+        ksession.insert(1);
+        ksession.insert(new Firings());
+
+        ksession.getAgenda().getAgendaGroup("x").setFocus();
+        assertEquals( 5, ksession.fireAllRules() );
+    }
 }
