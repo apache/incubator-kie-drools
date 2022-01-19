@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.decisiontables;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -297,7 +299,8 @@ public class DecisionTableImpl implements DecisionTable {
     }
 
     private List<Object> evaluateResults(EvaluationContext ctx, FEEL feel, Object[] params, List<DTDecisionRule> matchingDecisionRules) {
-        List<Object> results = matchingDecisionRules.stream().map( dr -> hitToOutput( ctx, feel, dr ) ).collect( Collectors.toList());
+    	Stream<Object> s = matchingDecisionRules.stream().map( dr -> hitToOutput( ctx, feel, dr ) );
+        List<Object> results = hitPolicy == HitPolicy.FIRST ? s.findFirst().map(Arrays::asList).orElse(Collections.emptyList()) : s.collect( Collectors.toList());
         return results;
     }
 
