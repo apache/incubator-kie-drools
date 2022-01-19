@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNContext;
@@ -393,5 +394,20 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         return dmnResult;
+    }
+    
+    @Test
+    public void testShortCircuitFIRST() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("First DT not stopping.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_e56151c4-d522-4974-88e8-f6c88ffaaba4", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        Assertions.assertThat(result.getAll()).extracting("First Decision Table.nn abs").isEqualTo(BigDecimal.ZERO);
     }
 }
