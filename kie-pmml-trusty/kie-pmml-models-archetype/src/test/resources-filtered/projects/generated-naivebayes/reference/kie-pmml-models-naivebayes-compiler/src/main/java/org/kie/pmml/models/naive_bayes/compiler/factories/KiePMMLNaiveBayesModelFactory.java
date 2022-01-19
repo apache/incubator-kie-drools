@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright ${year} Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,26 @@
  */
 package  org.kie.pmml.models.naive_bayes.compiler.factories;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.naive_bayes.NaiveBayesModel;
+import java.util.Map;
+
+import org.kie.pmml.models.naive_bayes.compiler.NaiveBayesCompilationDTO;
 import org.kie.pmml.models.naive_bayes.model.KiePMMLNaiveBayesModel;
 
 public class KiePMMLNaiveBayesModelFactory {
 
+    private KiePMMLNaiveBayesModelFactory(){
+        // Avoid instantiation
+    }
 
-    public static KiePMMLNaiveBayesModel getKiePMMLNaiveBayesModel(DataDictionary dataDictionary, NaiveBayesModel model) {
+    public static KiePMMLNaiveBayesModel getKiePMMLNaiveBayesModel(final NaiveBayesCompilationDTO compilationDTO) {
         // TODO
         throw new UnsupportedOperationException();
     }
 
-    private KiePMMLNaiveBayesModelFactory(){
-        // Avoid instantiation
+    public static Map<String, String> getKiePMMLNaiveBayesModelSourcesMap(final NaiveBayesCompilationDTO compilationDTO) {
+        // TODO
+        throw new UnsupportedOperationException();
     }
+
+
 }

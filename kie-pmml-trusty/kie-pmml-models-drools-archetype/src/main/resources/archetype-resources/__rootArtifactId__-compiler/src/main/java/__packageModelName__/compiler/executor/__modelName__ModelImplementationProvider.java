@@ -21,13 +21,13 @@ package ${package}.${packageModelName}.compiler.executor;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.${packageModelName}.${modelName}Model;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
+import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.provider.DroolsModelProvider;
 import ${package}.${packageModelName}.compiler.factories.KiePMML${modelName}ModelFactory;
 import ${package}.${packageModelName}.model.KiePMML${modelName}Model;
@@ -46,34 +46,24 @@ public class ${modelName}ModelImplementationProvider extends DroolsModelProvider
     }
 
     @Override
-    public KiePMML${modelName}Model getKiePMMLDroolsModel(final DataDictionary dataDictionary,
-                                                          final TransformationDictionary transformationDictionary,
-                                                          final ${modelName}Model model,
-                                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                          final String packageName,
-                                                          final HasClassLoader hasClassLoader) {
-        return KiePMML${modelName}ModelFactory.getKiePMML${modelName}Model(dataDictionary,
-                                                                            transformationDictionary,
-                                                                            model,
-                                                                            fieldTypeMap,
-                                                                            packageName,
-                                                                            hasClassLoader);
+    public KiePMML${modelName}Model getKiePMMLDroolsModel(final DroolsCompilationDTO<${modelName}Model> compilationDTO) {
+        try {
+            return KiePMML${modelName}ModelFactory.getKiePMML${modelName}Model(compilationDTO);
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new KiePMMLException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+    public KiePMMLDroolsAST getKiePMMLDroolsAST(final List<Field<?>> fields,
                                                 final ${modelName}Model model,
                                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                 final List<KiePMMLDroolsType> types) {
-        return KiePMML${modelName}ModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
+        return KiePMML${modelName}ModelFactory.getKiePMMLDroolsAST(fields, model, fieldTypeMap, types);
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary,
-                                                               final TransformationDictionary transformationDictionary,
-                                                               final ${modelName}Model model,
-                                                               final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                               final String packageName) {
-        return KiePMML${modelName}ModelFactory.getKiePMML${modelName}ModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DroolsCompilationDTO<${modelName}Model> compilationDTO) {
+        return KiePMML${modelName}ModelFactory.getKiePMML${modelName}ModelSourcesMap(compilationDTO);
     }
 }

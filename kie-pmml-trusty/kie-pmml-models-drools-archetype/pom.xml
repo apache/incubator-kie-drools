@@ -66,6 +66,7 @@
             </goals>
             <configuration>
               <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+              <escapeString>\</escapeString>
               <resources>
                 <resource>
                   <directory>src/test/resources-filtered</directory>
