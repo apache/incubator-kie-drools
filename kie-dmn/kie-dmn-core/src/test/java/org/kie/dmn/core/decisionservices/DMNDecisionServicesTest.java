@@ -628,8 +628,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertSupplyingBandC(runtime, dmnModel);
     }
 
-	private void assertSupplyingBandC(final DMNRuntime runtime, final DMNModel dmnModel) {
-		final DMNContext context = DMNFactory.newContext();
+    private void assertSupplyingBandC(final DMNRuntime runtime, final DMNModel dmnModel) {
+        final DMNContext context = DMNFactory.newContext();
         context.set("B", "inB");
         context.set("C", "inC");
 
@@ -639,8 +639,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decision1"), is("inBinC"));
-	}
-	
+    }
+    
     @Test
     public void testImportingBoxedInvocation() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004boxedInvocation.dmn");
@@ -668,11 +668,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-		assertSupplyingPersonname(runtime, dmnModel);
+        assertSupplyingPersonname(runtime, dmnModel);
     }
 
-	private void assertSupplyingPersonname(final DMNRuntime runtime, final DMNModel dmnModel) {
-		final DMNContext context = DMNFactory.newContext();
+    private void assertSupplyingPersonname(final DMNRuntime runtime, final DMNModel dmnModel) {
+        final DMNContext context = DMNFactory.newContext();
         context.set("Person name", "John Doe");
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
@@ -681,8 +681,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decision1"), is("Hello, John Doe"));
-	}
-	
+    }
+    
     @Test
     public void testImportingWithSameDSNameBoxedInvocation() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDSboxedInvocation.dmn");
@@ -690,7 +690,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-		assertSupplyingPersonname(runtime, dmnModel);
+        assertSupplyingPersonname(runtime, dmnModel);
     }
     
     @Test
@@ -700,6 +700,6 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-		assertSupplyingPersonname(runtime, dmnModel);
+        assertSupplyingPersonname(runtime, dmnModel);
     }
 }
