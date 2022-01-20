@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright ${year} Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,5 +33,12 @@ public class NaiveBayesModelImplementationProviderTest {
     @Test
     public void getKiePMMLModel() throws Exception {
         // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Test
+    public void getKiePMMLModelWithSources() throws Exception {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 }

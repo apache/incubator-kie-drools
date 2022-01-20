@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-naivebayes</artifactId>
-    <version>${project.version}</version>
+    <version>${version.org.kie}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -51,21 +51,20 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-trusty/pom.xml -->
+    <!-- TODO MOVE TO kie-pmml-trusty/kie-pmml-dependencies/pom.xml -->
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-naivebayes-model</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-compiler-commons</artifactId>
-        <classifier>tests</classifier>
-        <version>${project.version}</version>
+        <version>\${version.org.kie}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

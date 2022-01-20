@@ -1,5 +1,5 @@
 /*
-* Copyright 2020 Red Hat, Inc. and/or its affiliates.
+* Copyright ${year} Red Hat, Inc. and/or its affiliates.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,27 +15,55 @@
 */
 package org.kie.pmml.models.naive_bayes.compiler.executor;
 
-import org.dmg.pmml.DataDictionary;
+import java.util.Map;
+
 import org.dmg.pmml.naive_bayes.NaiveBayesModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.models.naive_bayes.compiler.NaiveBayesCompilationDTO;
 import org.kie.pmml.models.naive_bayes.compiler.factories.KiePMMLNaiveBayesModelFactory;
 import org.kie.pmml.models.naive_bayes.model.KiePMMLNaiveBayesModel;
-
-import static org.kie.pmml.models.naive_bayes.model.KiePMMLNaiveBayesModel.PMML_MODEL_TYPE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default <code>ModelImplementationProvider</code> for <b>NaiveBayes</b>
  */
 public class NaiveBayesModelImplementationProvider implements ModelImplementationProvider<NaiveBayesModel,KiePMMLNaiveBayesModel>{
 
+private static final Logger logger = LoggerFactory.getLogger(NaiveBayesModelImplementationProvider.class.getName());
+
+
     @Override
     public PMML_MODEL getPMMLModelType() {
-        return PMML_MODEL_TYPE;
+        logger.trace("getPMMLModelType");
+        return PMML_MODEL.NAIVEBAYES_MODEL;
     }
 
     @Override
-    public KiePMMLNaiveBayesModel getKiePMMLModel(DataDictionary dataDictionary,NaiveBayesModel model, Object kBuilder) {
-        return KiePMMLNaiveBayesModelFactory.getKiePMMLNaiveBayesModel(dataDictionary, model);
+    public KiePMMLNaiveBayesModel getKiePMMLModel(final CompilationDTO<NaiveBayesModel> compilationDTO) {
+        logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
+                    compilationDTO.getFields(),
+                    compilationDTO.getModel(),
+                    compilationDTO.getHasClassloader());
+        return KiePMMLNaiveBayesModelFactory.getKiePMMLNaiveBayesModel(NaiveBayesCompilationDTO.fromCompilationDTO(compilationDTO));
+    }
+
+    @Override
+    public Map<String, String> getSourcesMap(final CompilationDTO<NaiveBayesModel> compilationDTO) {
+        logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
+                    compilationDTO.getFields(),
+                    compilationDTO.getModel(),
+                    compilationDTO.getHasClassloader());
+        try {
+            NaiveBayesCompilationDTO naivebayesCompilationDTO =
+                    NaiveBayesCompilationDTO.fromCompilationDTO(compilationDTO);
+        return
+            KiePMMLNaiveBayesModelFactory.getKiePMMLNaiveBayesModelSourcesMap(naivebayesCompilationDTO);
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
     }
 }

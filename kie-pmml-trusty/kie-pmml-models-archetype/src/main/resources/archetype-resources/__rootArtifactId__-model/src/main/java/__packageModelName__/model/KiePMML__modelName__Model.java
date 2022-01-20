@@ -2,7 +2,7 @@
 #set($symbol_dollar='$')
 #set($symbol_escape='\' )
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright ${year} Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ package  ${package}.${packageModelName}.model;
 import java.util.Collections;
 import java.util.Map;
 
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 public class KiePMML${modelName}Model extends KiePMMLModel {
@@ -31,16 +32,10 @@ public class KiePMML${modelName}Model extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                            final PMMLContext context) {
         // TODO
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        // TODO
-        throw new UnsupportedOperationException();
-    }
-
 
 }
