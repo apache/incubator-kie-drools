@@ -315,7 +315,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId) {
+    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, String processInstanceId) {
         return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, processInstanceId);
     }
 
@@ -404,7 +404,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void activateRuleFlowGroup(final String name,
-                                      long processInstanceId,
+                                      String processInstanceId,
                                       String nodeInstanceId) {
         InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) getRuleFlowGroup( name );
         activateRuleFlowGroup( ruleFlowGroup, processInstanceId, nodeInstanceId );
@@ -596,7 +596,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
-                                            long processInstanceId) {
+                                            String processInstanceId) {
         return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, (Object) processInstanceId);
     }
 

@@ -28,7 +28,7 @@ public abstract class BaseBatchWithProcessFluent<T, E> extends BaseBatchFluent<T
     }
 
     @Override
-    public T startProcessInstance(long processInstanceId) {
+    public T startProcessInstance(String processInstanceId) {
         return (T) this;
     }
 
@@ -38,12 +38,12 @@ public abstract class BaseBatchWithProcessFluent<T, E> extends BaseBatchFluent<T
     }
 
     @Override
-    public T signalEvent(String type, Object event, long processInstanceId) {
+    public T signalEvent(String type, Object event, String processInstanceId) {
         return (T) this;
     }
 
     @Override
-    public T abortProcessInstance(long processInstanceId) {
+    public T abortProcessInstance(String processInstanceId) {
         return (T) this;
     }
 

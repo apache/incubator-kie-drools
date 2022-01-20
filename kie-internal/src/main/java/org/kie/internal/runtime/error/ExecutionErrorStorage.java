@@ -28,7 +28,7 @@ public interface ExecutionErrorStorage {
     
     List<ExecutionError> list(Integer page, Integer pageSize);
     
-    List<ExecutionError> listByProcessInstance(Long processInstanceId, Integer page, Integer pageSize);
+    List<ExecutionError> listByProcessInstance(String processInstanceId, Integer page, Integer pageSize);
     
     List<ExecutionError> listByActivity(String activityName, Integer page, Integer pageSize);
     

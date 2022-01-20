@@ -108,7 +108,7 @@ public interface InternalTaskService extends TaskService {
 
     List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date);
 
-    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName);
+    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(String processInstanceId, List<Status> status, String taskName);
 
     Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds);
 

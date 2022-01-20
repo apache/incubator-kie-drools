@@ -32,7 +32,7 @@ public class WorkItemImpl implements WorkItem, Serializable {
     private int state = 0;
     private Map<String, Object> parameters = new HashMap<String, Object>();
     private Map<String, Object> results = new HashMap<String, Object>();
-    private long processInstanceId;
+    private String processInstanceId;
     private String deploymentId;
     private long nodeInstanceId;
     private long nodeId;
@@ -95,11 +95,11 @@ public class WorkItemImpl implements WorkItem, Serializable {
         return results;
     }
     
-    public void setProcessInstanceId(long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
     
-    public long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 

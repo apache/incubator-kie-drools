@@ -59,7 +59,7 @@ public class WorkItemInfo implements PersistentWorkItem {
 
     private String name;
     private Date   creationDate;
-    private long   processInstanceId;
+    private String processInstanceId;
     private long   state;
     
     @Lob
@@ -99,7 +99,7 @@ public class WorkItemInfo implements PersistentWorkItem {
         return creationDate;
     }
 
-    public long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 

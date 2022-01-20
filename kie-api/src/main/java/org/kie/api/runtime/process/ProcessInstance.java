@@ -67,7 +67,7 @@ public interface ProcessInstance
      * The unique id of this process instance.
      * @return the unique id of this process instance
      */
-    long getId();
+    String getId();
 
     /**
      * The name of the process definition that is related to this process instance.
@@ -85,6 +85,6 @@ public interface ProcessInstance
      * Returns parent process instance id if this process instance has a parent
      * @return the unique id of parent process instance, 0 if this process instance doesn't have a parent
      */
-    long getParentProcessInstanceId();
+    String getParentProcessInstanceId();
 
 }

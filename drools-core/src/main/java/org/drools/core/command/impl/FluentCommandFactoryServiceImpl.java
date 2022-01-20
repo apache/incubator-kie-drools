@@ -170,7 +170,7 @@ public class FluentCommandFactoryServiceImpl {
         return this;
     }
 
-    public FluentCommandFactoryServiceImpl newSignalEvent(long processInstanceId, String type, Object event) {
+    public FluentCommandFactoryServiceImpl newSignalEvent(String processInstanceId, String type, Object event) {
         commands.add( factory.newSignalEvent( processInstanceId, type, event ) );
         return this;
     }

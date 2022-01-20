@@ -57,7 +57,7 @@ public interface AuditTask {
 
     long getProcessInstanceId();
 
-    void setProcessInstanceId(long processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
     String getProcessId();
 

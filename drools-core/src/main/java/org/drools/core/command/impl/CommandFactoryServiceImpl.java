@@ -231,7 +231,7 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
         return new SignalEventCommand( type, event );
     }
 
-    public Command newSignalEvent(long processInstanceId,
+    public Command newSignalEvent(String processInstanceId,
                                String type,
                                Object event) {
         return new SignalEventCommand( processInstanceId, type, event );

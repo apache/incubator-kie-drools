@@ -30,7 +30,7 @@ public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
 
     void setState(int state);
 
-    void setProcessInstanceId(long processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
     void setDeploymentId(String deploymentId);
 

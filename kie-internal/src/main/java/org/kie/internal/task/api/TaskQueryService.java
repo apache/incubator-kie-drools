@@ -90,9 +90,9 @@ public interface TaskQueryService {
 
     List<TaskSummary> getSubTasksByParent(long parentId);
 
-    List<TaskSummary> getTasksByStatusByProcessInstanceId(long processInstanceId, List<Status> status);
+    List<TaskSummary> getTasksByStatusByProcessInstanceId(String processInstanceId, List<Status> status);
 
-    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName);
+    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(String processInstanceId, List<Status> status, String taskName);
 
     int getPendingSubTasksByParent(long parentId);
 
@@ -100,7 +100,7 @@ public interface TaskQueryService {
 
     Task getTaskInstanceById(long taskId);
 
-    List<Long> getTasksByProcessInstanceId(long processInstanceId);
+    List<Long> getTasksByProcessInstanceId(String processInstanceId);
 
     Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds);
 

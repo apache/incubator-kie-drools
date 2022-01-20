@@ -111,6 +111,6 @@ public interface WorkItem {
      *
      * @return the id of the related process instance
      */
-    long getProcessInstanceId();
+    String getProcessInstanceId();
 
 }

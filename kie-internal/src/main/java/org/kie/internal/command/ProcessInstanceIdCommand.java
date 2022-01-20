@@ -18,8 +18,8 @@ package org.kie.internal.command;
 
 public interface ProcessInstanceIdCommand {
 
-    public void setProcessInstanceId(Long procInstId);
+    void setProcessInstanceId(String procInstId);
 
-    public Long getProcessInstanceId();
+    String getProcessInstanceId();
 
 }

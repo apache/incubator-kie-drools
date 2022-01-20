@@ -292,7 +292,7 @@ public class CommandFactory {
                                                            event );
     }
 
-    public static Command newSignalEvent(long processInstanceId,
+    public static Command newSignalEvent(String processInstanceId,
                                          String type,
                                          Object event) {
         return getCommandFactoryProvider().newSignalEvent( processInstanceId,

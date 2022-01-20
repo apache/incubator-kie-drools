@@ -28,7 +28,7 @@ public class ExecutionError implements Serializable {
     
     protected String type;
     protected String deploymentId;
-    protected Long processInstanceId;
+    protected String processInstanceId;
     protected String processId;
     protected Long activityId;
     protected String activityName;
@@ -49,13 +49,13 @@ public class ExecutionError implements Serializable {
         errorId = UUID.randomUUID().toString();
     }
     
-    public ExecutionError(String errorId, String type, String deploymentId, Long processInstanceId, String processId, Long activityId, String activityName, Long jobId, String errorMessage, 
+    public ExecutionError(String errorId, String type, String deploymentId, String processInstanceId, String processId, Long activityId, String activityName, Long jobId, String errorMessage, 
             short acknowledged, String acknowledgedBy, Date acknowledgedAt, 
             Date errorDate) {
         this(errorId, type, deploymentId, processInstanceId, processId, activityId, activityName, jobId, errorMessage, null, acknowledged, acknowledgedBy, acknowledgedAt, errorDate);
     }
     
-    public ExecutionError(String errorId, String type, String deploymentId, Long processInstanceId, String processId, Long activityId, String activityName, Long jobId, String errorMessage, String error, 
+    public ExecutionError(String errorId, String type, String deploymentId, String processInstanceId, String processId, Long activityId, String activityName, Long jobId, String errorMessage, String error, 
             short acknowledged, String acknowledgedBy, Date acknowledgedAt, 
             Date errorDate) {
         this.errorId = errorId;
@@ -98,11 +98,11 @@ public class ExecutionError implements Serializable {
         this.deploymentId = deploymentId;
     }
     
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
     
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
     
@@ -251,7 +251,7 @@ public class ExecutionError implements Serializable {
             return this;
         }
         
-        public Builder processInstanceId(Long piId) {
+        public Builder processInstanceId(String piId) {
             error.setProcessInstanceId(piId);
             return this;
         }

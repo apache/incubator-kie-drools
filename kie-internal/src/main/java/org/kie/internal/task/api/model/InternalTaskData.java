@@ -54,7 +54,7 @@ public interface InternalTaskData extends TaskData {
 
     void setWorkItemId(long workItemId);
 
-    void setProcessInstanceId(long processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
     void setProcessId(String processId);
 
