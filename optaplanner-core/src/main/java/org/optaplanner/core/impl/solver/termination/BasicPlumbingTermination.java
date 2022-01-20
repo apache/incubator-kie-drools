@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.change.ProblemChangeAdapter;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
@@ -35,7 +35,8 @@ public class BasicPlumbingTermination<Solution_> extends AbstractTermination<Sol
     protected final boolean daemon;
 
     protected boolean terminatedEarly = false;
-    protected BlockingQueue<ProblemFactChange<Solution_>> problemFactChangeQueue = new LinkedBlockingQueue<>();
+
+    protected BlockingQueue<ProblemChangeAdapter<Solution_>> problemFactChangeQueue = new LinkedBlockingQueue<>();
 
     protected boolean problemFactChangesBeingProcessed = false;
 
@@ -101,11 +102,11 @@ public class BasicPlumbingTermination<Solution_> extends AbstractTermination<Sol
     /**
      * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
      *
-     * @param problemFactChange never null
+     * @param problemChange never null
      * @return as specified by {@link Collection#add}
      */
-    public synchronized boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-        boolean added = problemFactChangeQueue.add(problemFactChange);
+    public synchronized boolean addProblemChange(ProblemChangeAdapter<Solution_> problemChange) {
+        boolean added = problemFactChangeQueue.add(problemChange);
         notifyAll();
         return added;
     }
@@ -113,16 +114,16 @@ public class BasicPlumbingTermination<Solution_> extends AbstractTermination<Sol
     /**
      * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
      *
-     * @param problemFactChangeList never null
+     * @param problemChangeList never null
      * @return as specified by {@link Collection#add}
      */
-    public synchronized boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
-        boolean added = problemFactChangeQueue.addAll(problemFactChangeList);
+    public synchronized boolean addProblemChanges(List<ProblemChangeAdapter<Solution_>> problemChangeList) {
+        boolean added = problemFactChangeQueue.addAll(problemChangeList);
         notifyAll();
         return added;
     }
 
-    public synchronized BlockingQueue<ProblemFactChange<Solution_>> startProblemFactChangesProcessing() {
+    public synchronized BlockingQueue<ProblemChangeAdapter<Solution_>> startProblemFactChangesProcessing() {
         problemFactChangesBeingProcessed = true;
         return problemFactChangeQueue;
     }

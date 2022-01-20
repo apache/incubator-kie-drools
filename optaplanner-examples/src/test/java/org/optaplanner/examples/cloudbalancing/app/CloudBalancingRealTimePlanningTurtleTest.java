@@ -20,15 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddComputerProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddProcessProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteComputerProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteProcessProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddComputerProblemChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddProcessProblemChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteComputerProblemChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteProcessProblemChange;
 import org.optaplanner.examples.common.app.RealTimePlanningTurtleTest;
 
 public class CloudBalancingRealTimePlanningTurtleTest extends RealTimePlanningTurtleTest<CloudBalance> {
@@ -52,7 +52,7 @@ public class CloudBalancingRealTimePlanningTurtleTest extends RealTimePlanningTu
     }
 
     @Override
-    protected ProblemFactChange<CloudBalance> nextProblemFactChange(Random random) {
+    protected ProblemChange<CloudBalance> nextProblemChange(Random random) {
         boolean capacityTooLow = existingComputerList.size() <= 20
                 || existingComputerList.size() < existingProcessList.size() / 4;
         boolean capacityTooHigh = existingComputerList.size() > existingProcessList.size() / 2;
@@ -60,20 +60,19 @@ public class CloudBalancingRealTimePlanningTurtleTest extends RealTimePlanningTu
             if (capacityTooLow || (!capacityTooHigh && random.nextBoolean())) {
                 CloudComputer computer = generator.generateComputerWithoutId();
                 existingComputerList.add(computer);
-                return new AddComputerProblemFactChange(
-                        computer);
+                return new AddComputerProblemChange(computer);
             } else {
-                return new DeleteComputerProblemFactChange(
+                return new DeleteComputerProblemChange(
                         existingComputerList.remove(random.nextInt(existingComputerList.size())));
             }
         } else {
             if (capacityTooHigh || (!capacityTooLow && random.nextBoolean())) {
                 CloudProcess process = generator.generateProcessWithoutId();
                 existingProcessList.add(process);
-                return new AddProcessProblemFactChange(
+                return new AddProcessProblemChange(
                         process);
             } else {
-                return new DeleteProcessProblemFactChange(
+                return new DeleteProcessProblemChange(
                         existingProcessList.remove(random.nextInt(existingProcessList.size())));
             }
         }

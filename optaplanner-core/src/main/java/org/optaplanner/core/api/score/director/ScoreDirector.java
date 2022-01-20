@@ -20,7 +20,7 @@ import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 
 /**
  * The ScoreDirector holds the {@link PlanningSolution working solution}
@@ -71,7 +71,7 @@ public interface ScoreDirector<Solution_> {
     /**
      * Translates an entity or fact instance (often from another {@link Thread} or JVM)
      * to this {@link ScoreDirector}'s internal working instance.
-     * Useful for move rebasing and in a {@link ProblemFactChange}.
+     * Useful for move rebasing and in a {@link ProblemChange}.
      * <p>
      * Matching is determined by the {@link LookUpStrategyType} on {@link PlanningSolution}.
      * Matching uses a {@link PlanningId} by default.

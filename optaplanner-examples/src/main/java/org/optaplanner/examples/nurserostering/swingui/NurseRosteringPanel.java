@@ -16,8 +16,7 @@
 
 package org.optaplanner.examples.nurserostering.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,15 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.nurserostering.domain.Employee;
@@ -179,8 +170,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                     "Unsupported in GUI", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        doProblemFactChange(scoreDirector -> {
-            NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
+        doProblemChange((nurseRoster, problemChangeDirector) -> {
             NurseRosterParametrization nurseRosterParametrization = nurseRoster.getNurseRosterParametrization();
             List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
             ShiftDate planningWindowStart = nurseRosterParametrization.getPlanningWindowStart();
@@ -198,8 +188,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             List<Shift> refShiftList = planningWindowStart.getShiftList();
             List<Shift> newShiftList = new ArrayList<>(refShiftList.size());
             newShiftDate.setShiftList(newShiftList);
-            nurseRoster.getShiftDateList().add(newShiftDate);
-            scoreDirector.afterProblemFactAdded(newShiftDate);
+            problemChangeDirector.addProblemFact(newShiftDate, nurseRoster.getShiftDateList()::add);
             Shift oldLastShift = nurseRoster.getShiftList().get(nurseRoster.getShiftList().size() - 1);
             long shiftId = oldLastShift.getId() + 1L;
             int shiftIndex = oldLastShift.getIndex() + 1;
@@ -215,32 +204,31 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                 shiftIndex++;
                 newShift.setRequiredEmployeeSize(refShift.getRequiredEmployeeSize());
                 newShiftList.add(newShift);
-                nurseRoster.getShiftList().add(newShift);
-                scoreDirector.afterProblemFactAdded(newShift);
+                problemChangeDirector.addProblemFact(newShift, nurseRoster.getShiftList()::add);
                 for (int indexInShift = 0; indexInShift < newShift.getRequiredEmployeeSize(); indexInShift++) {
                     ShiftAssignment newShiftAssignment = new ShiftAssignment();
                     newShiftAssignment.setId(shiftAssignmentId);
                     shiftAssignmentId++;
                     newShiftAssignment.setShift(newShift);
                     newShiftAssignment.setIndexInShift(indexInShift);
-                    nurseRoster.getShiftAssignmentList().add(newShiftAssignment);
-                    scoreDirector.afterEntityAdded(newShiftAssignment);
+
+                    problemChangeDirector.addEntity(newShiftAssignment, nurseRoster.getShiftAssignmentList()::add);
                 }
             }
             windowStartIndex++;
             ShiftDate newPlanningWindowStart = shiftDateList.get(windowStartIndex);
-            scoreDirector.beforeProblemPropertyChanged(nurseRosterParametrization);
-            nurseRosterParametrization.setPlanningWindowStart(newPlanningWindowStart);
-            nurseRosterParametrization.setLastShiftDate(newShiftDate);
-            scoreDirector.afterProblemPropertyChanged(nurseRosterParametrization);
+            problemChangeDirector.changeProblemProperty(nurseRosterParametrization,
+                    workingNurseRosterParametrization -> {
+                        workingNurseRosterParametrization.setPlanningWindowStart(newPlanningWindowStart);
+                        workingNurseRosterParametrization.setLastShiftDate(newShiftDate);
+                    });
         }, true);
     }
 
     public void deleteEmployee(final Employee employee) {
         logger.info("Scheduling delete of employee ({}).", employee);
-        doProblemFactChange(scoreDirector -> {
-            NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
-            Employee workingEmployee = scoreDirector.lookUpWorkingObject(employee);
+        doProblemChange((nurseRoster, problemChangeDirector) -> {
+            Employee workingEmployee = problemChangeDirector.lookUpWorkingObjectOrFail(employee);
             if (workingEmployee == null) {
                 // The employee has already been deleted (the UI asked to changed the same employee twice), so do nothing
                 return;
@@ -248,9 +236,8 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             // First remove the problem fact from all planning entities that use it
             for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
                 if (shiftAssignment.getEmployee() == workingEmployee) {
-                    scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
-                    shiftAssignment.setEmployee(null);
-                    scoreDirector.afterVariableChanged(shiftAssignment, "employee");
+                    problemChangeDirector.changeVariable(shiftAssignment, "employee",
+                            workingShiftAssignment -> workingShiftAssignment.setEmployee(null));
                 }
             }
             // A SolutionCloner does not clone problem fact lists (such as employeeList)
@@ -258,10 +245,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             ArrayList<Employee> employeeList = new ArrayList<>(nurseRoster.getEmployeeList());
             nurseRoster.setEmployeeList(employeeList);
             // Remove it the problem fact itself
-            scoreDirector.beforeProblemFactRemoved(workingEmployee);
-            employeeList.remove(workingEmployee);
-            scoreDirector.afterProblemFactRemoved(workingEmployee);
-            scoreDirector.triggerVariableListeners();
+            problemChangeDirector.removeProblemFact(workingEmployee, employeeList::remove);
         });
     }
 

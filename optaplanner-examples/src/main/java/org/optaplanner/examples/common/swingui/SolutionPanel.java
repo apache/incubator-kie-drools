@@ -16,20 +16,16 @@
 
 package org.optaplanner.examples.common.swingui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.List;
 
-import javax.swing.JPanel;
-import javax.swing.JViewport;
-import javax.swing.Scrollable;
+import javax.swing.*;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.swing.impl.TangoColorFactory;
 import org.slf4j.Logger;
@@ -204,12 +200,12 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
         return s.toString();
     }
 
-    public void doProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-        doProblemFactChange(problemFactChange, false);
+    public void doProblemChange(ProblemChange<Solution_> problemChange) {
+        doProblemChange(problemChange, false);
     }
 
-    public void doProblemFactChange(ProblemFactChange<Solution_> problemFactChange, boolean reset) {
-        solutionBusiness.doProblemFactChange(problemFactChange);
+    public void doProblemChange(ProblemChange<Solution_> problemChange, boolean reset) {
+        solutionBusiness.doProblemChange(problemChange);
         Solution_ solution = getSolution();
         Score score = solutionBusiness.getScore();
         if (reset) {

@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 
 /**
@@ -89,6 +90,46 @@ public interface Solver<Solution_> {
     boolean isTerminateEarly();
 
     /**
+     * Schedules a {@link ProblemChange} to be processed.
+     * <p>
+     * As a side effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * but not {@link #terminateEarly()}.
+     * <p>
+     * This method is thread-safe.
+     * Follows specifications of {@link BlockingQueue#add(Object)} with by default
+     * a capacity of {@link Integer#MAX_VALUE}.
+     *
+     * @param problemChange never null
+     * @see #addProblemChanges(List)
+     */
+    void addProblemChange(ProblemChange<Solution_> problemChange);
+
+    /**
+     * Schedules multiple {@link ProblemChange}s to be processed.
+     * <p>
+     * As a side effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * but not {@link #terminateEarly()}.
+     * <p>
+     * This method is thread-safe.
+     * Follows specifications of {@link BlockingQueue#add(Object)} with by default
+     * a capacity of {@link Integer#MAX_VALUE}.
+     *
+     * @param problemChangeList never null
+     * @see #addProblemChange(ProblemChange)
+     */
+    void addProblemChanges(List<ProblemChange<Solution_>> problemChangeList);
+
+    /**
+     * Checks if all scheduled {@link ProblemChange}s have been processed.
+     * <p>
+     * This method is thread-safe.
+     *
+     * @return true if there are no {@link ProblemChange}s left to do
+     */
+    boolean isEveryProblemChangeProcessed();
+
+    /**
+     * This method is deprecated.
      * Schedules a {@link ProblemFactChange} to be processed.
      * <p>
      * As a side-effect, this restarts the {@link Solver}, effectively resetting all terminations,
@@ -98,13 +139,16 @@ public interface Solver<Solution_> {
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
      *
+     * @deprecated in favor of {@link #addProblemChange(ProblemChange)}.
      * @param problemFactChange never null
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChanges(List)
      */
+    @Deprecated(forRemoval = true)
     boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
     /**
+     * This method is deprecated.
      * Schedules multiple {@link ProblemFactChange}s to be processed.
      * <p>
      * As a side-effect, this restarts the {@link Solver}, effectively resetting all terminations,
@@ -114,19 +158,24 @@ public interface Solver<Solution_> {
      * Follows specifications of {@link BlockingQueue#addAll(Collection)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
      *
+     * @deprecated in favor of {@link #addProblemChanges(List)}.
      * @param problemFactChangeList never null
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChange(ProblemFactChange)
      */
+    @Deprecated(forRemoval = true)
     boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList);
 
     /**
+     * This method is deprecated.
      * Checks if all scheduled {@link ProblemFactChange}s have been processed.
      * <p>
      * This method is thread-safe.
      *
+     * @deprecated in favor of {@link #isEveryProblemChangeProcessed()}.
      * @return true if there are no {@link ProblemFactChange}s left to do
      */
+    @Deprecated(forRemoval = true)
     boolean isEveryProblemFactChangeProcessed();
 
     /**

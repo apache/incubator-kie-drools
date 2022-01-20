@@ -24,6 +24,7 @@ import java.util.function.Function;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
@@ -303,8 +304,17 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     // TODO Future features
     //    void reloadProblem(ProblemId_ problemId, Function<? super ProblemId_, Solution_> problemFinder);
 
-    // TODO Future features
-    //    void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange);
+    /**
+     * Schedules a {@link ProblemChange} to be processed by the underlying {@link Solver} and returns immediately.
+     * If the solver already terminated or the problemId was never added, throws an exception.
+     * The same applies if the underlying {@link Solver} is not in the {@link SolverStatus#SOLVING_ACTIVE} state.
+     *
+     * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
+     *        or {@link #solveAndListen(Object, Function, Consumer)}
+     * @param problemChange never null
+     * @throws IllegalStateException if there is no solver actively solving the problem associated with the problemId
+     */
+    void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
 
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.
@@ -324,7 +334,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     /**
      * Terminates all solvers, cancels all solver jobs that haven't (re)started yet
-     * and discards all queued {@link ProblemFactChange}s.
+     * and discards all queued {@link ProblemChange}s.
      * Releases all thread pool resources.
      * <p>
      * No new planning problems can be submitted after calling this method.

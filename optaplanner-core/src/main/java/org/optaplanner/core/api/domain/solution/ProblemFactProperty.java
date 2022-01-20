@@ -27,11 +27,11 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 
 /**
  * Specifies that a property (or a field) on a {@link PlanningSolution} class is a problem fact.
- * A problem fact must not change during solving (except through a {@link ProblemFactChange} event).
+ * A problem fact must not change during solving (except through a {@link ProblemChange} event).
  * <p>
  * The constraints in a {@link ConstraintProvider} rely on problem facts for {@link ConstraintFactory#forEach(Class)}.
  * Alternatively, scoreDRL relies on problem facts too.

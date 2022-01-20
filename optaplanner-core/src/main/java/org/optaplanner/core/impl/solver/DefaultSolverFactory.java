@@ -41,8 +41,10 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.PhaseFactory;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
+import org.optaplanner.core.impl.solver.change.DefaultProblemChangeDirector;
 import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -98,7 +100,10 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         }
 
         EnvironmentMode environmentMode_ = solverConfig.determineEnvironmentMode();
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, environmentMode_.isAsserted()));
+        InnerScoreDirector<Solution_, ?> innerScoreDirector =
+                scoreDirectorFactory.buildScoreDirector(true, environmentMode_.isAsserted());
+        solverScope.setScoreDirector(innerScoreDirector);
+        solverScope.setProblemChangeDirector(new DefaultProblemChangeDirector<>(innerScoreDirector));
 
         if ((solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
                 || solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)) &&

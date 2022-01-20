@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -47,6 +48,7 @@ public class SolverScope<Solution_> {
     protected int startingSolverCount;
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_, ?> scoreDirector;
+    private ProblemChangeDirector problemChangeDirector;
     /**
      * Used for capping CPU power usage in multithreaded scenarios.
      */
@@ -69,6 +71,14 @@ public class SolverScope<Solution_> {
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    public ProblemChangeDirector getProblemChangeDirector() {
+        return problemChangeDirector;
+    }
+
+    public void setProblemChangeDirector(ProblemChangeDirector problemChangeDirector) {
+        this.problemChangeDirector = problemChangeDirector;
+    }
 
     public Tags getMonitoringTags() {
         return monitoringTags;

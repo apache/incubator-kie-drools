@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 
 /**
  * Represents a {@link PlanningSolution problem} that has been submitted to solve on the {@link SolverManager}.
@@ -50,8 +51,14 @@ public interface SolverJob<Solution_, ProblemId_> {
     // TODO Future features
     //    void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder);
 
-    // TODO Future features
-    //    void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
+    /**
+     * Schedules a {@link ProblemChange} to be processed by the underlying {@link Solver} and returns immediately.
+     *
+     * @param problemChange never null
+     * @throws IllegalStateException if the underlying {@link Solver} is not in the {@link SolverStatus#SOLVING_ACTIVE}
+     *         state
+     */
+    void addProblemChange(ProblemChange<Solution_> problemChange);
 
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.

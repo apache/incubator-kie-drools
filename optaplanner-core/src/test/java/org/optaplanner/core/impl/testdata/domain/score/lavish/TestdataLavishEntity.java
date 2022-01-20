@@ -28,6 +28,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 @PlanningEntity
 public class TestdataLavishEntity extends TestdataObject {
 
+    public static final String VALUE_FIELD = "value";
+
     public static EntityDescriptor<TestdataLavishSolution> buildEntityDescriptor() {
         return TestdataLavishSolution.buildSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataLavishEntity.class);

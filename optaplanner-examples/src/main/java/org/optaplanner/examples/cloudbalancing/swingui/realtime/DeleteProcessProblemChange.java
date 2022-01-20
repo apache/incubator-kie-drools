@@ -16,36 +16,28 @@
 
 package org.optaplanner.examples.cloudbalancing.swingui.realtime;
 
-import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
+import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-public class AddProcessProblemFactChange implements ProblemFactChange<CloudBalance> {
+public class DeleteProcessProblemChange implements ProblemChange<CloudBalance> {
 
     private final CloudProcess process;
 
-    public AddProcessProblemFactChange(CloudProcess process) {
+    public DeleteProcessProblemChange(CloudProcess process) {
         this.process = process;
     }
 
     @Override
-    public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
-        CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
-        // Set a unique id on the new process
-        long nextProcessId = 0L;
-        for (CloudProcess otherProcess : cloudBalance.getProcessList()) {
-            if (nextProcessId <= otherProcess.getId()) {
-                nextProcessId = otherProcess.getId() + 1L;
-            }
-        }
-        process.setId(nextProcessId);
+    public void doChange(CloudBalance cloudBalance, ProblemChangeDirector problemChangeDirector) {
         // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
-        // Add the planning entity itself
-        scoreDirector.beforeEntityAdded(process);
-        cloudBalance.getProcessList().add(process);
-        scoreDirector.afterEntityAdded(process);
-        scoreDirector.triggerVariableListeners();
+        CloudProcess workingProcess = problemChangeDirector.lookUpWorkingObjectOrFail(process);
+        if (workingProcess == null) {
+            throw new IllegalStateException("A process " + process + " does not exist. Maybe it has been already deleted.");
+        }
+        // Remove the planning entity itself
+        problemChangeDirector.removeEntity(workingProcess, cloudBalance.getProcessList()::remove);
     }
 
 }

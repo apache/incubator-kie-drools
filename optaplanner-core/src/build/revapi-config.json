@@ -420,6 +420,51 @@
           "methodName": "join",
           "elementKind": "method",
           "justification": "Now implemented outside of public API; technically not incompatible as nobody should extend this."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.optaplanner.core.api.solver.Solver<Solution_>::addProblemChange(org.optaplanner.core.api.solver.change.ProblemChange<Solution_>)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "Solver",
+          "methodName": "addProblemChange",
+          "elementKind": "method",
+          "justification": "The problem fact changes have been reworked. Users are not supposed to implement the Solver interface."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.optaplanner.core.api.solver.Solver<Solution_>::addProblemChanges(java.util.List<org.optaplanner.core.api.solver.change.ProblemChange<Solution_>>)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "Solver",
+          "methodName": "addProblemChanges",
+          "elementKind": "method",
+          "justification": "The problem fact changes have been reworked. Users are not supposed to implement the Solver interface."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.optaplanner.core.api.solver.Solver<Solution_>::isEveryProblemChangeProcessed()",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "Solver",
+          "methodName": "isEveryProblemChangeProcessed",
+          "elementKind": "method",
+          "justification": "The problem fact changes have been reworked. Users are not supposed to implement the Solver interface."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.optaplanner.core.api.solver.SolverJob<Solution_, ProblemId_>::addProblemChange(org.optaplanner.core.api.solver.change.ProblemChange<Solution_>)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverJob",
+          "methodName": "addProblemChange",
+          "elementKind": "method",
+          "justification": "Added method to submit problem change. Users are not supposed to implement the SolverJob interface."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.optaplanner.core.api.solver.SolverManager<Solution_, ProblemId_>::addProblemChange(ProblemId_, org.optaplanner.core.api.solver.change.ProblemChange<Solution_>)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverManager",
+          "methodName": "addProblemChange",
+          "elementKind": "method",
+          "justification": "Added method to submit problem change. Users are not supposed to implement the SolverManager interface."
         }
       ]
     }

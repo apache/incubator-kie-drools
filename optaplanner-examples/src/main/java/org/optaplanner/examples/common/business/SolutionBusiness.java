@@ -36,9 +36,10 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.change.ProblemChange;
+import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
@@ -50,6 +51,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.Chained
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
+import org.optaplanner.core.impl.solver.change.DefaultProblemChangeDirector;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -96,6 +98,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     private volatile Solver<Solution_> solver;
     private String solutionFileName = null;
     private InnerScoreDirector<Solution_, Score_> guiScoreDirector;
+    private ProblemChangeDirector problemChangeDirector;
     private ScoreManager<Solution_, Score_> scoreManager;
 
     private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
@@ -212,6 +215,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         this.guiScoreDirector = (InnerScoreDirector<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
                 .getScoreDirectorFactory()
                 .buildScoreDirector();
+        this.problemChangeDirector = new DefaultProblemChangeDirector<>(guiScoreDirector);
     }
 
     public List<File> getUnsolvedFileList() {
@@ -266,7 +270,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
              * because the paint method uses the same problem facts instances as the Solver's workingSolution
              * unlike the planning entities of the bestSolution which are cloned from the Solver's workingSolution
              */
-            if (solver.isEveryProblemFactChangeProcessed()) {
+            if (solver.isEveryProblemChangeProcessed()) {
                 // The final is also needed for thread visibility
                 final Solution_ newBestSolution = event.getNewBestSolution();
                 skipToBestSolutionRef.set(newBestSolution);
@@ -352,11 +356,11 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         guiScoreDirector.calculateScore();
     }
 
-    public void doProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
+    public void doProblemChange(ProblemChange<Solution_> problemChange) {
         if (solver.isSolving()) {
-            solver.addProblemFactChange(problemFactChange);
+            solver.addProblemChange(problemChange);
         } else {
-            problemFactChange.doChange(guiScoreDirector);
+            problemChange.doChange(guiScoreDirector.getWorkingSolution(), problemChangeDirector);
             guiScoreDirector.calculateScore();
         }
     }

@@ -24,6 +24,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 @PlanningEntity
 public class TestdataEntity extends TestdataObject {
 
+    public static final String VALUE_FIELD = "value";
+
     public static EntityDescriptor<TestdataSolution> buildEntityDescriptor() {
         return TestdataSolution.buildSolutionDescriptor().findEntityDescriptorOrFail(TestdataEntity.class);
     }

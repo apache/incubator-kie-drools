@@ -129,9 +129,8 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
 
     public void deleteMachine(final MrMachine machine) {
         logger.info("Scheduling delete of machine ({}).", machine);
-        doProblemFactChange(scoreDirector -> {
-            MachineReassignment machineReassignment = scoreDirector.getWorkingSolution();
-            MrMachine workingMachine = scoreDirector.lookUpWorkingObject(machine);
+        doProblemChange((machineReassignment, problemChangeDirector) -> {
+            MrMachine workingMachine = problemChangeDirector.lookUpWorkingObjectOrFail(machine);
             if (workingMachine == null) {
                 // The machine has already been deleted (the UI asked to changed the same machine twice), so do nothing
                 return;
@@ -139,14 +138,12 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
             // First remove the problem fact from all planning entities that use it
             for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
                 if (processAssignment.getOriginalMachine() == workingMachine) {
-                    scoreDirector.beforeProblemPropertyChanged(processAssignment);
-                    processAssignment.setOriginalMachine(null);
-                    scoreDirector.afterProblemPropertyChanged(processAssignment);
+                    problemChangeDirector.changeProblemProperty(processAssignment,
+                            workingProcessAssignment -> workingProcessAssignment.setOriginalMachine(null));
                 }
                 if (processAssignment.getMachine() == workingMachine) {
-                    scoreDirector.beforeVariableChanged(processAssignment, "machine");
-                    processAssignment.setMachine(null);
-                    scoreDirector.afterVariableChanged(processAssignment, "machine");
+                    problemChangeDirector.changeVariable(processAssignment, "machine",
+                            workingProcessAssignment -> workingProcessAssignment.setMachine(null));
                 }
             }
             // A SolutionCloner does not clone problem fact lists (such as machineList)
@@ -154,10 +151,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
             ArrayList<MrMachine> machineList = new ArrayList<>(machineReassignment.getMachineList());
             machineReassignment.setMachineList(machineList);
             // Remove it the problem fact itself
-            scoreDirector.beforeProblemFactRemoved(workingMachine);
-            machineList.remove(workingMachine);
-            scoreDirector.afterProblemFactRemoved(workingMachine);
-            scoreDirector.triggerVariableListeners();
+            problemChangeDirector.removeProblemFact(workingMachine, machineList::remove);
         });
     }
 

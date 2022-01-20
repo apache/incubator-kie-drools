@@ -37,10 +37,10 @@ import javax.swing.JPanel;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddComputerProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddProcessProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteComputerProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteProcessProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddComputerProblemChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddProcessProblemChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteComputerProblemChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteProcessProblemChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.swing.impl.SwingUtils;
@@ -227,22 +227,22 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
 
     public void addComputer(final CloudComputer computer) {
         logger.info("Scheduling addition of computer ({}).", computer);
-        doProblemFactChange(new AddComputerProblemFactChange(computer));
+        doProblemChange(new AddComputerProblemChange(computer));
     }
 
     public void deleteComputer(final CloudComputer computer) {
         logger.info("Scheduling delete of computer ({}).", computer);
-        doProblemFactChange(new DeleteComputerProblemFactChange(computer));
+        doProblemChange(new DeleteComputerProblemChange(computer));
     }
 
     public void addProcess(final CloudProcess process) {
         logger.info("Scheduling addition of process ({}).", process);
-        doProblemFactChange(new AddProcessProblemFactChange(process));
+        doProblemChange(new AddProcessProblemChange(process));
     }
 
     public void deleteProcess(final CloudProcess process) {
         logger.info("Scheduling delete of process ({}).", process);
-        doProblemFactChange(new DeleteProcessProblemFactChange(process));
+        doProblemChange(new DeleteProcessProblemChange(process));
     }
 
     public JButton createButton(CloudProcess process) {

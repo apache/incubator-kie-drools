@@ -22,16 +22,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.solver.change.ProblemChangeAdapter;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -135,12 +138,34 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-        return basicPlumbingTermination.addProblemFactChange(problemFactChange);
+        return basicPlumbingTermination.addProblemChange(ProblemChangeAdapter.create(problemFactChange));
     }
 
     @Override
     public boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
-        return basicPlumbingTermination.addProblemFactChanges(problemFactChangeList);
+        Objects.requireNonNull(problemFactChangeList,
+                () -> "The list of problem fact changes (" + problemFactChangeList + ") cannot be null.");
+        List<ProblemChangeAdapter<Solution_>> problemChangeAdapterList = problemFactChangeList.stream()
+                .map(ProblemChangeAdapter::create)
+                .collect(Collectors.toList());
+        return basicPlumbingTermination.addProblemChanges(problemChangeAdapterList);
+    }
+
+    @Override
+    public void addProblemChange(ProblemChange<Solution_> problemChange) {
+        basicPlumbingTermination.addProblemChange(ProblemChangeAdapter.create(problemChange));
+    }
+
+    @Override
+    public void addProblemChanges(List<ProblemChange<Solution_>> problemChangeList) {
+        Objects.requireNonNull(problemChangeList,
+                () -> "The list of problem changes (" + problemChangeList + ") cannot be null.");
+        problemChangeList.forEach(this::addProblemChange);
+    }
+
+    @Override
+    public boolean isEveryProblemChangeProcessed() {
+        return basicPlumbingTermination.isEveryProblemFactChangeProcessed();
     }
 
     @Override
@@ -250,14 +275,14 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         if (!restartSolver) {
             return false;
         } else {
-            BlockingQueue<ProblemFactChange<Solution_>> problemFactChangeQueue = basicPlumbingTermination
+            BlockingQueue<ProblemChangeAdapter<Solution_>> problemFactChangeQueue = basicPlumbingTermination
                     .startProblemFactChangesProcessing();
             solverScope.setWorkingSolutionFromBestSolution();
-            Score score = null;
+            Score<?> score = null;
             int stepIndex = 0;
-            ProblemFactChange<Solution_> problemFactChange = problemFactChangeQueue.poll();
+            ProblemChangeAdapter<Solution_> problemFactChange = problemFactChangeQueue.poll();
             while (problemFactChange != null) {
-                score = doProblemFactChange(problemFactChange, stepIndex);
+                score = doProblemChange(problemFactChange, stepIndex);
                 stepIndex++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
@@ -273,11 +298,9 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         }
     }
 
-    private Score doProblemFactChange(ProblemFactChange<Solution_> problemFactChange, int stepIndex) {
-        problemFactChange.doChange(solverScope.getScoreDirector());
-        Score score = solverScope.calculateScore();
-        logger.debug("    Step index ({}), new score ({}) for real-time problem fact change.", stepIndex, score);
+    private Score<?> doProblemChange(ProblemChangeAdapter<Solution_> problemChangeAdapter, int stepIndex) {
+        Score<?> score = problemChangeAdapter.doProblemChange(solverScope);
+        logger.debug("    Step index ({}), new score ({}) for real-time problem change.", stepIndex, score);
         return score;
     }
-
 }

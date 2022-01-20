@@ -24,12 +24,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -664,4 +669,44 @@ public class DefaultSolverTest {
         assertThat(solution.getScore().isSolutionInitialized()).isFalse();
     }
 
+    @Test
+    @Timeout(60)
+    public void solveWithProblemChange() throws InterruptedException {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setDaemon(true); // Avoid terminating the solver too quickly.
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        final int valueCount = 4;
+        TestdataSolution solution = TestdataSolution.generateSolution(valueCount, valueCount);
+
+        AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
+        CountDownLatch solverStarted = new CountDownLatch(1);
+        CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
+        solver.addEventListener(bestSolutionChangedEvent -> {
+            solverStarted.countDown();
+            if (bestSolutionChangedEvent.isEveryProblemChangeProcessed()) {
+                TestdataSolution newBestSolution = bestSolutionChangedEvent.getNewBestSolution();
+                if (newBestSolution.getValueList().size() == valueCount + 1) {
+                    bestSolution.set(newBestSolution);
+                    solutionWithProblemChangeReceived.countDown();
+                }
+            }
+        });
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            solver.solve(solution);
+        });
+
+        solverStarted.await(); // Make sure we submit a ProblemChange only after the Solver started solving.
+        solver.addProblemChange((workingSolution, problemChangeDirector) -> {
+            problemChangeDirector.addProblemFact(new TestdataValue("added value"), solution.getValueList()::add);
+        });
+
+        solutionWithProblemChangeReceived.await();
+        assertThat(bestSolution.get().getValueList()).hasSize(valueCount + 1);
+
+        solver.terminateEarly();
+        executorService.shutdown();
+    }
 }

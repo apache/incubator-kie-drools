@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solver.AbstractSolver;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -69,6 +70,21 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChanges) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void addProblemChange(ProblemChange<Solution_> problemChange) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void addProblemChanges(List<ProblemChange<Solution_>> problemChangeList) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isEveryProblemChangeProcessed() {
         throw new UnsupportedOperationException();
     }
 

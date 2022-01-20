@@ -309,10 +309,10 @@ image::repeated-planning/realTimePlanningVehicleRouting.png[align="center"]
 
 In the example above, three customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55`, and in some cases, after the vehicles have already left.
 
-OptaPlanner can handle such scenarios with `ProblemFactChange` (in combination with <<pinnedPlanningEntities,pinned planning entities>>).
+OptaPlanner can handle such scenarios with `ProblemChange` (in combination with <<pinnedPlanningEntities,pinned planning entities>>).
 
-[[problemFactChange]]
-=== `ProblemFactChange`
+[[problemChange]]
+=== `ProblemChange`
 
 While the `Solver` is solving, one of the problem facts may be changed by an outside event.
 For example, an airplane is delayed and needs the runway at a later time.
@@ -322,7 +322,7 @@ For example, an airplane is delayed and needs the runway at a later time.
 Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it.
 ====
 
-Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible.
+Add a `ProblemChange` to the `Solver`, which it executes in the solver thread as soon as possible.
 For example:
 
 [source,java,options="nowrap"]
@@ -331,9 +331,9 @@ public interface Solver<Solution_> {
 
     ...
 
-    boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
+    boolean addProblemChange(ProblemChange<Solution_> problemChange);
 
-    boolean isEveryProblemFactChangeProcessed();
+    boolean isEveryProblemChangeProcessed();
 
     ...
 
@@ -342,19 +342,19 @@ public interface Solver<Solution_> {
 
 [source,java,options="nowrap"]
 ----
-public interface ProblemFactChange<Solution_> {
+public interface ProblemChange<Solution_> {
 
-    void doChange(ScoreDirector<Solution_> scoreDirector);
+    void doChange(Solution_ workingSolution, ProblemChangeDirector problemChangeDirector);
 
 }
 ----
 
 [WARNING]
 ====
-The `ScoreDirector` must be updated with any change on the problem facts of planning entities in a `ProblemFactChange`.
+The `ScoreDirector` must be updated with any change on the problem facts of planning entities in a `ProblemChange`.
 ====
 
-To write a `ProblemFactChange` correctly, it is important to understand the behavior of xref:planner-configuration/planner-configuration.adoc#cloningASolution[a planning clone].
+To write a `ProblemChange` correctly, it is important to understand the behavior of xref:planner-configuration/planner-configuration.adoc#cloningASolution[a planning clone].
 
 A planning clone of a solution must fulfill these requirements:
 
@@ -364,23 +364,24 @@ Usually it reuses the same instances of the problem facts and problem fact colle
 * The clone must use different, cloned instances of the entities and entity collections.
 Changes to an original Solution entity’s variables must not affect its clone.
 
-[[problemFactChangeExample]]
-==== Cloud balancing `ProblemFactChange` example
+[[problemChangeExample]]
+==== Cloud balancing `ProblemChange` example
 
-Consider the following example of a `ProblemFactChange` implementation in the cloud balancing use case:
+Consider the following example of a `ProblemChange` implementation in the cloud balancing use case:
 
 [source,java,options="nowrap"]
 ----
     public void deleteComputer(final CloudComputer computer) {
-        solver.addProblemFactChange(scoreDirector -> {
-            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
-            CloudComputer workingComputer = scoreDirector.lookUpWorkingObject(computer);
+        solver.addProblemChange((cloudBalance, problemChangeDirector) -> {
+            CloudComputer workingComputer = problemChangeDirector.lookUpWorkingObject(computer);
+            if (workingComputer == null) {
+                throw new IllegalStateException("A computer " + computer + " does not exist. Maybe it has been already deleted.");
+            }
             // First remove the problem fact from all planning entities that use it
             for (CloudProcess process : cloudBalance.getProcessList()) {
                 if (process.getComputer() == workingComputer) {
-                    scoreDirector.beforeVariableChanged(process, "computer");
-                    process.setComputer(null);
-                    scoreDirector.afterVariableChanged(process, "computer");
+                    problemChangeDirector.changeVariable(process, "computer",
+                            workingProcess -> workingProcess.setComputer(null));
                 }
             }
             // A SolutionCloner does not clone problem fact lists (such as computerList)
@@ -388,15 +389,12 @@ Consider the following example of a `ProblemFactChange` implementation in the cl
             ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
             cloudBalance.setComputerList(computerList);
             // Remove the problem fact itself
-            scoreDirector.beforeProblemFactRemoved(workingComputer);
-            computerList.remove(workingComputer);
-            scoreDirector.afterProblemFactRemoved(workingComputer);
-            scoreDirector.triggerVariableListeners();
+            problemChangeDirector.removeProblemFact(workingComputer, computerList::remove);
         });
     }
 ----
 
-. Any change in a `ProblemFactChange` must be done on the `@PlanningSolution` instance of ``scoreDirector.getWorkingSolution()``.
+. Any change in a `ProblemChange` must be done on the `@PlanningSolution` instance of ``scoreDirector.getWorkingSolution()``.
 
 . The `workingSolution` is xref:planner-configuration/planner-configuration.adoc#cloningASolution[a planning clone] of the ``BestSolutionChangedEvent``'s ``bestSolution``.
 * The `workingSolution` in the `Solver` is never the same solution instance as in the rest of your application: it is a planning clone.
@@ -410,7 +408,7 @@ This requires xref:optimization-algorithms/optimization-algorithms.adoc#planning
 . A planning clone does not clone the problem facts, nor the problem fact collections.
 _Therefore the ``__workingSolution__`` and the ``__bestSolution__`` share the same problem fact instances and the same problem fact list instances._
 +
-Any problem fact or problem fact list changed by a `ProblemFactChange` must be problem cloned first (which can imply rerouting references in other problem facts and planning entities).
+Any problem fact or problem fact list changed by a `ProblemChange` must be problem cloned first (which can imply rerouting references in other problem facts and planning entities).
 Otherwise, if the `workingSolution` and `bestSolution` are used in different threads (for example a solver thread and a GUI event thread), a race condition can occur.
 
 [[cloningSolutionsToAvoidRaceConditions]]
@@ -425,7 +423,7 @@ image::repeated-planning/realTimePlanningConcurrencySequenceDiagram.png[align="c
 The process occurs as follows:
 
 . The `Solver` stops.
-. Runs the `ProblemFactChange`.
+. Runs the `ProblemChange`.
 . **restarts**.
 +
 This is a _warm start_ because its initial solution is the adjusted best solution of the previous run.
@@ -448,7 +446,7 @@ Putting the `Solver` in daemon mode has the following effects:
 * If the ``Solver``'s `Termination` terminates, it does not return from `solve()`, but blocks its thread instead (which frees up CPU power).
 ** Except for ``terminateEarly()``, which does make it return from ``solve()``, freeing up system resources and allowing an application to shutdown gracefully.
 ** If a `Solver` starts with an empty planning entity collection, it waits in the blocked state immediately.
-* If a `ProblemFactChange` is added, it goes into the running state, applies the `ProblemFactChange` and runs the `Solver` again.
+* If a `ProblemChange` is added, it goes into the running state, applies the `ProblemChange` and runs the `Solver` again.
 
 To use the `Solver` in daemon mode:
 
@@ -470,14 +468,14 @@ Do not forget to call `Solver.terminateEarly()` when your application needs to s
 
 . Subscribe to the `xref:optimization-algorithms/optimization-algorithms.adoc#SolverEventListener[BestSolutionChangedEvent]` to process new best solutions found by the solver thread.
 +
-A `BestSolutionChangedEvent` does not guarantee that every `ProblemFactChange` has been processed already, nor that the solution is initialized and feasible.
+A `BestSolutionChangedEvent` does not guarantee that every `ProblemChange` has been processed already, nor that the solution is initialized and feasible.
 
 . To ignore ``BestSolutionChangedEvent``s with such invalid solutions, do the following:
 +
 [source,java,options="nowrap"]
 ----
     public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) {
-        if (event.isEveryProblemFactChangeProcessed()
+        if (event.isEveryProblemChangeProcessed()
                 // Ignore infeasible (including uninitialized) solutions
                 && event.getNewBestSolution().getScore().isFeasible()) {
             ...

@@ -23,9 +23,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.TurtleTest;
@@ -70,8 +70,8 @@ public abstract class RealTimePlanningTurtleTest<Solution_> {
         Random random = new Random(37);
         long startSystemTimeMillis = System.currentTimeMillis();
         while (System.currentTimeMillis() - startSystemTimeMillis < 600_000L) {
-            ProblemFactChange<Solution_> factChange = nextProblemFactChange(random);
-            solver.addProblemFactChange(factChange);
+            ProblemChange<Solution_> factChange = nextProblemChange(random);
+            solver.addProblemChange(factChange);
             long sleepMillis = random.nextInt(FREQUENCY);
             if (sleepMillis <= (FREQUENCY / 100)) {
                 sleepMillis = SPENT_LIMIT + 500L;
@@ -88,6 +88,6 @@ public abstract class RealTimePlanningTurtleTest<Solution_> {
         solver.terminateEarly();
     }
 
-    protected abstract ProblemFactChange<Solution_> nextProblemFactChange(Random random);
+    protected abstract ProblemChange<Solution_> nextProblemChange(Random random);
 
 }

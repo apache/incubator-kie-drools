@@ -760,7 +760,7 @@ Any change on the planning entities in a `CustomPhaseCommand` must be notified t
 ====
 Do not change any of the problem facts in a `CustomPhaseCommand`.
 That will corrupt the `Solver` because any previous score or solution was for a different problem.
-To do that, read about xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[repeated planning] and do it with a xref:repeated-planning/repeated-planning.adoc#problemFactChange[ProblemFactChange] instead.
+To do that, read about xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[repeated planning] and do it with a xref:repeated-planning/repeated-planning.adoc#problemChange[ProblemChange] instead.
 ====
 
 Configure the `CustomPhaseCommand` in the solver configuration:

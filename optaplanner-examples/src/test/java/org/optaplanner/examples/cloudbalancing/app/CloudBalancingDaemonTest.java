@@ -36,7 +36,7 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
-import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddProcessProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddProcessProblemChange;
 import org.optaplanner.examples.common.app.LoggingTest;
 
 public class CloudBalancingDaemonTest extends LoggingTest {
@@ -67,7 +67,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         Thread.sleep(500);
         for (int i = 0; i < 8; i++) {
             CloudProcess process = notYetAddedProcessQueue.poll();
-            solver.addProblemFactChange(new AddProcessProblemFactChange(process));
+            solver.addProblemChange(new AddProcessProblemChange(process));
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
@@ -77,7 +77,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         Thread.sleep(1000);
         while (!notYetAddedProcessQueue.isEmpty()) {
             CloudProcess process = notYetAddedProcessQueue.poll();
-            solver.addProblemFactChange(new AddProcessProblemFactChange(process));
+            solver.addProblemChange(new AddProcessProblemChange(process));
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
@@ -90,7 +90,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("SolverThread did not die yet due to an interruption.", e);
         }
-        assertThat(solver.isEveryProblemFactChangeProcessed()).isTrue();
+        assertThat(solver.isEveryProblemChangeProcessed()).isTrue();
         assertThat(currentBestSolution.getProcessList()).hasSize(12);
     }
 

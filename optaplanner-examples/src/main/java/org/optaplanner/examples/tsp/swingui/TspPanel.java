@@ -101,18 +101,12 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         newLocation.setLongitude(longitude);
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
-        doProblemFactChange(scoreDirector -> {
-            TspSolution tspSolution = scoreDirector.getWorkingSolution();
-            scoreDirector.beforeProblemFactAdded(newLocation);
-            tspSolution.getLocationList().add(newLocation);
-            scoreDirector.afterProblemFactAdded(newLocation);
+        doProblemChange((tspSolution, problemChangeDirector) -> {
+            problemChangeDirector.addProblemFact(newLocation, tspSolution.getLocationList()::add);
             Visit newVisit = new Visit();
             newVisit.setId(newLocation.getId());
             newVisit.setLocation(newLocation);
-            scoreDirector.beforeEntityAdded(newVisit);
-            tspSolution.getVisitList().add(newVisit);
-            scoreDirector.afterEntityAdded(newVisit);
-            scoreDirector.triggerVariableListeners();
+            problemChangeDirector.addEntity(newVisit, tspSolution.getVisitList()::add);
         });
     }
 

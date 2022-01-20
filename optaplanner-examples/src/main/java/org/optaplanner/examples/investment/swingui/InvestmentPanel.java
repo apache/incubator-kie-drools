@@ -26,22 +26,12 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW_GROUP1;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.TRAILING_HEADER_ROW;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.*;
+import javax.swing.event.*;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
@@ -308,41 +298,21 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
     }
 
     private void changeStandardDeviationMillisMaximum(final long standardDeviationMillisMaximum) {
-        doProblemFactChange(scoreDirector -> {
-            InvestmentSolution solution = scoreDirector.getWorkingSolution();
+        doProblemChange((solution, problemChangeDirector) -> {
             InvestmentParametrization parametrization = solution.getParametrization();
-            scoreDirector.beforeProblemPropertyChanged(parametrization);
-            parametrization.setStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
-            scoreDirector.afterProblemPropertyChanged(parametrization);
+            problemChangeDirector.changeProblemProperty(parametrization, workingParametrization -> workingParametrization
+                    .setStandardDeviationMillisMaximum(standardDeviationMillisMaximum));
         }, true);
     }
 
     private void changeRegionQuantityMillisMaximum(final Region region, final long quantityMillisMaximum) {
-        doProblemFactChange(scoreDirector -> {
-            InvestmentSolution solution = scoreDirector.getWorkingSolution();
-            for (Region workingRegion : solution.getRegionList()) {
-                if (region.getId().equals(workingRegion.getId())) {
-                    scoreDirector.beforeProblemPropertyChanged(workingRegion);
-                    workingRegion.setQuantityMillisMaximum(quantityMillisMaximum);
-                    scoreDirector.afterProblemPropertyChanged(workingRegion);
-                    break;
-                }
-            }
-        }, true);
+        doProblemChange((solution, problemChangeDirector) -> problemChangeDirector.changeProblemProperty(region,
+                workingRegion -> workingRegion.setQuantityMillisMaximum(quantityMillisMaximum)), true);
     }
 
     private void changeSectorQuantityMillisMaximum(final Sector sector, final long quantityMillisMaximum) {
-        doProblemFactChange(scoreDirector -> {
-            InvestmentSolution solution = scoreDirector.getWorkingSolution();
-            for (Sector workingSector : solution.getSectorList()) {
-                if (sector.getId().equals(workingSector.getId())) {
-                    scoreDirector.beforeProblemPropertyChanged(workingSector);
-                    workingSector.setQuantityMillisMaximum(quantityMillisMaximum);
-                    scoreDirector.afterProblemPropertyChanged(workingSector);
-                    break;
-                }
-            }
-        }, true);
+        doProblemChange((solution, problemChangeDirector) -> problemChangeDirector.changeProblemProperty(sector,
+                workingSector -> workingSector.setQuantityMillisMaximum(quantityMillisMaximum)), true);
     }
 
 }

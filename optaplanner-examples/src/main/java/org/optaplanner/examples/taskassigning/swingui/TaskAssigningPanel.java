@@ -130,25 +130,20 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         }
         logger.debug("Scheduling consumption of all tasks up to {} minutes.", consumedTime);
         previousConsumedTime = consumedTime;
-        doProblemFactChange(scoreDirector -> {
-            TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
-            solution.setFrozenCutoff(consumedTime);
-            for (Task task : solution.getTaskList()) {
+        doProblemChange((taskAssigningSolution, problemChangeDirector) -> {
+            taskAssigningSolution.setFrozenCutoff(consumedTime);
+            for (Task task : taskAssigningSolution.getTaskList()) {
                 if (!task.isPinned()) {
                     if (task.getStartTime() != null && task.getStartTime() < consumedTime) {
-                        scoreDirector.beforeProblemPropertyChanged(task);
-                        task.setPinned(true);
-                        scoreDirector.afterProblemPropertyChanged(task);
+                        problemChangeDirector.changeProblemProperty(task, workingTask -> workingTask.setPinned(true));
                         logger.trace("Consumed task ({}).", task);
                     } else if (task.getReadyTime() < consumedTime) {
                         // Prevent a non-pinned task from being assigned retroactively
-                        scoreDirector.beforeProblemPropertyChanged(task);
-                        task.setReadyTime(consumedTime);
-                        scoreDirector.afterProblemPropertyChanged(task);
+                        problemChangeDirector.changeProblemProperty(task,
+                                workingTask -> workingTask.setReadyTime(consumedTime));
                     }
                 }
             }
-            scoreDirector.triggerVariableListeners();
         });
     }
 
@@ -169,12 +164,11 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         logger.debug("Scheduling production of {} new tasks.", newTaskCount);
         previousProducedTime = producedTime;
         final int readyTime = previousConsumedTime;
-        doProblemFactChange(scoreDirector -> {
-            TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
-            List<TaskType> taskTypeList = solution.getTaskTypeList();
-            List<Customer> customerList = solution.getCustomerList();
+        doProblemChange((taskAssigningSolution, problemChangeDirector) -> {
+            List<TaskType> taskTypeList = taskAssigningSolution.getTaskTypeList();
+            List<Customer> customerList = taskAssigningSolution.getCustomerList();
             Priority[] priorities = Priority.values();
-            List<Task> taskList = solution.getTaskList();
+            List<Task> taskList = taskAssigningSolution.getTaskList();
             for (int i = 0; i < newTaskCount; i++) {
                 Task task = new Task();
                 TaskType taskType = taskTypeList.get(producingRandom.nextInt(taskTypeList.size()));
@@ -198,11 +192,8 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
                 task.setReadyTime(readyTime);
                 task.setPriority(priorities[producingRandom.nextInt(priorities.length)]);
 
-                scoreDirector.beforeEntityAdded(task);
-                taskList.add(task);
-                scoreDirector.afterEntityAdded(task);
+                problemChangeDirector.addEntity(task, taskList::add);
             }
-            scoreDirector.triggerVariableListeners();
         });
     }
 

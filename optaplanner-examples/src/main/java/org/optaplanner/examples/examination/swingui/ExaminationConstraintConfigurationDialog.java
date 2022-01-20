@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.ExaminationConstraintConfiguration;
 
 public class ExaminationConstraintConfigurationDialog extends JDialog {
@@ -128,19 +127,18 @@ public class ExaminationConstraintConfigurationDialog extends JDialog {
         final int frontLoadLastPeriodSize = (Integer) frontLoadLastPeriodSizeField.getValue();
         final int frontLoadPenalty = (Integer) frontLoadPenaltyField.getValue();
         setVisible(false);
-        examinationPanel.doProblemFactChange(scoreDirector -> {
-            Examination examination = scoreDirector.getWorkingSolution();
+        examinationPanel.doProblemChange((examination, problemChangeDirector) -> {
             ExaminationConstraintConfiguration constraintConfiguration = examination.getConstraintConfiguration();
-            scoreDirector.beforeProblemPropertyChanged(constraintConfiguration);
-            constraintConfiguration.setTwoInARowPenalty(twoInARowPenalty);
-            constraintConfiguration.setTwoInADayPenalty(twoInADayPenalty);
-            constraintConfiguration.setPeriodSpreadLength(periodSpreadLength);
-            constraintConfiguration.setPeriodSpreadPenalty(periodSpreadPenalty);
-            constraintConfiguration.setMixedDurationPenalty(mixedDurationPenalty);
-            constraintConfiguration.setFrontLoadLargeTopicSize(frontLoadLargeTopicSize);
-            constraintConfiguration.setFrontLoadLastPeriodSize(frontLoadLastPeriodSize);
-            constraintConfiguration.setFrontLoadPenalty(frontLoadPenalty);
-            scoreDirector.afterProblemPropertyChanged(constraintConfiguration);
+            problemChangeDirector.changeProblemProperty(constraintConfiguration, workingConstraintConfiguration -> {
+                workingConstraintConfiguration.setTwoInARowPenalty(twoInARowPenalty);
+                workingConstraintConfiguration.setTwoInADayPenalty(twoInADayPenalty);
+                workingConstraintConfiguration.setPeriodSpreadLength(periodSpreadLength);
+                workingConstraintConfiguration.setPeriodSpreadPenalty(periodSpreadPenalty);
+                workingConstraintConfiguration.setMixedDurationPenalty(mixedDurationPenalty);
+                workingConstraintConfiguration.setFrontLoadLargeTopicSize(frontLoadLargeTopicSize);
+                workingConstraintConfiguration.setFrontLoadLastPeriodSize(frontLoadLastPeriodSize);
+                workingConstraintConfiguration.setFrontLoadPenalty(frontLoadPenalty);
+            });
         }, true);
     }
 

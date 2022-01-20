@@ -18,22 +18,21 @@ package org.optaplanner.examples.cloudbalancing.swingui.realtime;
 
 import java.util.ArrayList;
 
-import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
+import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 
-public class AddComputerProblemFactChange implements ProblemFactChange<CloudBalance> {
+public class AddComputerProblemChange implements ProblemChange<CloudBalance> {
 
     private final CloudComputer computer;
 
-    public AddComputerProblemFactChange(CloudComputer computer) {
+    public AddComputerProblemChange(CloudComputer computer) {
         this.computer = computer;
     }
 
     @Override
-    public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
-        CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+    public void doChange(CloudBalance cloudBalance, ProblemChangeDirector problemChangeDirector) {
         // Set a unique id on the new computer
         long nextComputerId = 0L;
         for (CloudComputer otherComputer : cloudBalance.getComputerList()) {
@@ -46,9 +45,7 @@ public class AddComputerProblemFactChange implements ProblemFactChange<CloudBala
         // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
         cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
         // Add the problem fact itself
-        scoreDirector.beforeProblemFactAdded(computer);
-        cloudBalance.getComputerList().add(computer);
-        scoreDirector.afterProblemFactAdded(computer);
+        problemChangeDirector.addProblemFact(computer, cloudBalance.getComputerList()::add);
     }
 
 }

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -31,6 +32,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
@@ -141,11 +143,16 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     //        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
     //    }
 
-    // TODO Future features
-    //    @Override
-    //    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-    //        solver.addProblemFactChange(problemFactChange);
-    //    }
+    @Override
+    public void addProblemChange(ProblemChange<Solution_> problemChange) {
+        Objects.requireNonNull(problemChange, () -> "A problem change (" + problemChange + ") must not be null.");
+        if (solverStatus == SolverStatus.NOT_SOLVING) {
+            throw new IllegalStateException("Cannot add the problem change (" + problemChange + ") because the solver job ("
+                    + solverStatus
+                    + ") is not solving.");
+        }
+        solver.addProblemChange(problemChange);
+    }
 
     @Override
     public void terminateEarly() {
@@ -223,7 +230,10 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final class UnlockLockPhaseLifecycleListener extends PhaseLifecycleListenerAdapter<Solution_> {
         @Override
         public void solvingStarted(SolverScope<Solution_> solverScope) {
-            solverStatusModifyingLock.unlock();
+            // The solvingStarted event can be emitted as a result of addProblemChange().
+            if (solverStatusModifyingLock.isLocked()) {
+                solverStatusModifyingLock.unlock();
+            }
         }
     }
 }
