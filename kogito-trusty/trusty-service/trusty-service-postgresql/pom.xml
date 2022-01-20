@@ -15,11 +15,21 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>explainability-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>trusty-service-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>trusty-storage-postgresql</artifactId>
+    </dependency>
+
+    <!-- Build container image -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-container-image-jib</artifactId>
     </dependency>
 
     <dependency>
@@ -54,6 +64,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
