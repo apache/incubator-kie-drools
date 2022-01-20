@@ -45,5 +45,10 @@ public class BeforeEvaluateAllEventImpl implements BeforeEvaluateAllEvent {
     public DMNResult getResult() {
         return result;
     }
+    
+    @Override
+    public String toString() {
+        return "BeforeEvaluateAllEventImpl{ modelNamespace=" + modelNamespace + ", modelName=" + modelName + "}";
+    }
 
 }
