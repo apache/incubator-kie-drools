@@ -23,6 +23,13 @@
                 <include>*_create.sql</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-oracle/src/main/resources</directory>
+            <outputDirectory>oracle</outputDirectory>
+            <includes>
+                <include>*_create.sql</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <files>
         <file>

@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  oracle-compose:
+    image: gvenzl/oracle-xe:21.3.0-slim
+    environment:
+      ORACLE_USER: kogito
+      ORACLE_PASSWORD: kogito
+    ports:
+      - 1521:1521
+    networks:
+      - oracle-compose-network
+    container_name: oracle
+
+networks:
+  oracle-compose-network:
+    driver: bridge

@@ -31,6 +31,7 @@
         <container.image.explainability-service-messaging>org.kie.kogito/explainability-service-messaging:${project.version}</container.image.explainability-service-messaging>
         <container.image.jobs-service>org.kie.kogito/jobs-service-common:${project.version}</container.image.jobs-service>
         <container.image.data-index-service-postgresql>org.kie.kogito/data-index-service-postgresql:${project.version}</container.image.data-index-service-postgresql>
+        <container.image.data-index-service-oracle>org.kie.kogito/data-index-service-oracle:${project.version}</container.image.data-index-service-oracle>
         <container.image.data-index-service-infinispan>org.kie.kogito/data-index-service-infinispan:${project.version}</container.image.data-index-service-infinispan>
         <container.image.data-index-service-mongodb>org.kie.kogito/data-index-service-mongodb:${project.version}</container.image.data-index-service-mongodb>
         <container.image.data-index-service-inmemory>org.kie.kogito/data-index-service-inmemory:${project.version}</container.image.data-index-service-inmemory>
@@ -96,6 +97,7 @@
                             <container.image.kafka>${container.image.kafka}</container.image.kafka>
                             <container.image.redis>${container.image.redis}</container.image.redis>
                             <container.image.data-index-service-postgresql>${container.image.data-index-service-postgresql}</container.image.data-index-service-postgresql>
+                            <container.image.data-index-service-oracle>${container.image.data-index-service-oracle}</container.image.data-index-service-oracle>
                             <container.image.data-index-service-inmemory>${container.image.data-index-service-inmemory}</container.image.data-index-service-inmemory>
                             <container.image.data-index-service-infinispan>${container.image.data-index-service-infinispan}</container.image.data-index-service-infinispan>
                             <container.image.data-index-service-mongodb>${container.image.data-index-service-mongodb}</container.image.data-index-service-mongodb>
