@@ -92,6 +92,10 @@ public class DecisionCodegenTest {
         assertThat(fileNames(generatedFiles)).containsAll(expectedResources);
 
         assertNotEmptySectionCompilationUnit(codeGenerator);
+
+        // the DMN namespace is "decision":	
+        Collection<String> expectedStronglyTypeClassesForReflection = Arrays.asList("decision.InputSet", "decision.TEmployee", "decision.OutputSet", "decision.TAddress", "decision.TPayroll");
+        assertThat(((DecisionContainerGenerator) codeGenerator.section().get()).getClassesForManualReflection()).containsAll(expectedStronglyTypeClassesForReflection);
     }
 
     @ParameterizedTest

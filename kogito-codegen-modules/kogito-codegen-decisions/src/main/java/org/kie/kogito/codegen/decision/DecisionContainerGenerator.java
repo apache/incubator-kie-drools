@@ -16,7 +16,9 @@
 package org.kie.kogito.codegen.decision;
 
 import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -50,14 +52,16 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     private final String applicationCanonicalName;
     private final Collection<CollectedResource> resources;
     private final TemplatedGenerator templatedGenerator;
+    private final List<String> classesForManualReflection = new ArrayList<>();
 
-    public DecisionContainerGenerator(KogitoBuildContext context, String applicationCanonicalName, Collection<CollectedResource> cResources) {
+    public DecisionContainerGenerator(KogitoBuildContext context, String applicationCanonicalName, Collection<CollectedResource> cResources, List<String> classesForManualReflection) {
         super(context, SECTION_CLASS_NAME);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = cResources;
         this.templatedGenerator = TemplatedGenerator.builder()
                 .withTargetTypeName(SECTION_CLASS_NAME)
                 .build(context, "DecisionContainer");
+        this.classesForManualReflection.addAll(classesForManualReflection);
     }
 
     @Override
@@ -125,5 +129,9 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         Expression decisionModelTransformerExpr =
                 context.getAddonsConfig().useMonitoring() ? newObject("org.kie.kogito.monitoring.core.common.decision.MonitoredDecisionModelTransformer") : new NullLiteralExpr();
         initMethod.addArgument(decisionModelTransformerExpr);
+    }
+
+    public List<String> getClassesForManualReflection() {
+        return classesForManualReflection;
     }
 }

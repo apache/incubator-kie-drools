@@ -17,9 +17,15 @@ package org.kie.kogito.quarkus.decisions.deployment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jboss.jandex.DotName;
+import org.kie.kogito.codegen.decision.DecisionContainerGenerator;
+import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
+import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedSourcesBuildItem;
 
+import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
@@ -51,12 +57,28 @@ public class DecisionsAssetsProcessor {
         return result;
     }
 
+    /**
+     * Constrained:
+     * 1. conflicted with having a separate BuildStep with signature: public List<ReflectiveClassBuildItem> reflectiveClassBuildItems() {
+     * so it includes the code from that original method.
+     * 2. need to be triggered by Quarkus AFTER the Kogito Codegen, hence this BuildStep "depends" on KogitoGeneratedSourcesBuildItem.
+     */
     @BuildStep
-    public List<ReflectiveClassBuildItem> reflectiveClassBuildItems() {
-        List<ReflectiveClassBuildItem> result = new ArrayList<>();
-        result.add(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNDecisionResult"));
-        result.add(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNMessage"));
-        result.add(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNResult"));
-        return result;
+    public void stronglyTypeAdditionalClassesForReflection(KogitoGeneratedSourcesBuildItem generatedKogitoClasses, // Constrain 1
+            BuildProducer<ReflectiveClassBuildItem> additionalClassesForReflection,
+            KogitoBuildContextBuildItem kogitoBuildContextBuildItem,
+            Capabilities capabilities) {
+        Optional<DecisionContainerGenerator> decisionContainerOpt = kogitoBuildContextBuildItem.getKogitoBuildContext().getApplicationSections().stream()
+                .filter(DecisionContainerGenerator.class::isInstance).map(DecisionContainerGenerator.class::cast).findFirst();
+        if (decisionContainerOpt.isPresent()) {
+            DecisionContainerGenerator decisionContainerGenerator = decisionContainerOpt.get();
+            for (String fqcn : decisionContainerGenerator.getClassesForManualReflection()) {
+                additionalClassesForReflection.produce(new ReflectiveClassBuildItem(true, true, fqcn));
+            }
+        }
+        // Constrain 2:
+        additionalClassesForReflection.produce(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNDecisionResult"));
+        additionalClassesForReflection.produce(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNMessage"));
+        additionalClassesForReflection.produce(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNResult"));
     }
 }

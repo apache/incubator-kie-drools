@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -87,6 +88,7 @@ public class DecisionCodegen extends AbstractGenerator {
     private final List<CollectedResource> cResources;
     private final List<DMNResource> resources = new ArrayList<>();
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
+    private final List<String> classesForManualReflection = new ArrayList<>();
 
     public DecisionCodegen(KogitoBuildContext context, List<CollectedResource> cResources) {
         super(context, GENERATOR_NAME, new DecisionConfigGenerator(context));
@@ -219,7 +221,14 @@ public class DecisionCodegen extends AbstractGenerator {
                     .processTypes()
                     .generateSourceCodeOfAllTypes();
 
-            allTypesSourceCode.forEach((k, v) -> storeFile(GeneratedFileType.SOURCE, k.replace(".", "/") + ".java", v));
+            for (Entry<String, String> kv : allTypesSourceCode.entrySet()) {
+                String fqcn = kv.getKey();
+                String sourceCode = kv.getValue();
+
+                storeFile(GeneratedFileType.SOURCE, fqcn.replace(".", "/") + ".java", sourceCode);
+                classesForManualReflection.add(fqcn);
+            }
+            LOGGER.debug("classesForManualReflection: {}", classesForManualReflection);
         } catch (Exception e) {
             LOGGER.error("Unable to generate Strongly Typed Input for: {} {}", model.getNamespace(), model.getName());
             throw e;
@@ -266,7 +275,8 @@ public class DecisionCodegen extends AbstractGenerator {
         return Optional.of(new DecisionContainerGenerator(
                 context(),
                 applicationCanonicalName(),
-                this.cResources));
+                this.cResources,
+                this.classesForManualReflection));
     }
 
     @Override
