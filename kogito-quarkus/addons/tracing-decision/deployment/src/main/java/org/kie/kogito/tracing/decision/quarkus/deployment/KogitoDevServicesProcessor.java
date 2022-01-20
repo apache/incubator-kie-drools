@@ -18,7 +18,6 @@ package org.kie.kogito.tracing.decision.quarkus.deployment;
 import java.io.Closeable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -30,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.utility.DockerImageName;
 
+import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.github.dockerjava.api.model.ContainerNetworkSettings;
 import com.github.dockerjava.api.model.ContainerPort;
@@ -89,6 +89,12 @@ public class KogitoDevServicesProcessor {
         DockerClientFactory.lazyClient().listContainersCmd().exec()
                 .forEach(c -> {
                     LOGGER.debug("----> Image: " + c.getImage());
+                    if (Objects.nonNull(c.getNames())) {
+                        Arrays.stream(c.getNames()).forEach(n -> LOGGER.debug(String.format("----> Name: %s", n)));
+                    }
+                    if (Objects.nonNull(c.getLabels())) {
+                        c.getLabels().forEach((key, value) -> LOGGER.debug(String.format("----> Label: [%s]=[%s]", key, value)));
+                    }
                     LOGGER.debug("----> Ports: " + Arrays.stream(c.getPorts()).map(p -> p.getPrivatePort() + ">>" + p.getPublicPort()).collect(Collectors.joining(", ")));
                     LOGGER.debug("----> Network: "
                             + (Objects.isNull(c.getNetworkSettings()) ? ""
@@ -97,58 +103,6 @@ public class KogitoDevServicesProcessor {
                                             .entrySet()
                                             .stream()
                                             .map(n -> String.format("%s=%s [%s]", n.getKey(), n.getValue(), n.getValue().getIpAddress())).collect(Collectors.joining(", "))));
-                });
-
-        //Discover PostgreSQL container
-        LOGGER.info("Discovering DevServices PostgreSQL instance...");
-        DockerClientFactory.lazyClient().listContainersCmd().exec()
-                .stream().filter(container -> container.getImage().contains("postgres"))
-                .findFirst()
-                .ifPresent(container -> {
-                    Optional<Integer> port = Optional.empty();
-                    Optional<String> ipAddress = Optional.empty();
-                    final ContainerPort[] containerPorts = container.getPorts();
-                    final ContainerNetworkSettings networkSettings = container.getNetworkSettings();
-                    if (Objects.nonNull(containerPorts)) {
-                        port = Arrays.stream(containerPorts)
-                                .map(ContainerPort::getPrivatePort)
-                                .filter(Objects::nonNull)
-                                .findFirst();
-                    }
-                    if (Objects.nonNull(networkSettings)) {
-                        ipAddress = networkSettings.getNetworks().values().stream()
-                                .map(ContainerNetwork::getIpAddress)
-                                .filter(Objects::nonNull)
-                                .findFirst();
-                    }
-                    LOGGER.debug(String.format("[PostgreSQL] Private Port: %s", port.orElse(0)));
-                    LOGGER.debug(String.format("[PostgreSQL] IP Address: %s", ipAddress.orElse("<None>")));
-                    if (ipAddress.isPresent() && port.isPresent()) {
-                        final String jdbcUrl = String.format("jdbc:postgresql://%s:%d/default?loggerLevel=OFF", ipAddress.get(), port.get());
-                        devServicesConfig.setDataSourceUrl(jdbcUrl);
-                    }
-                });
-
-        //Discover Kafaka Broker container
-        LOGGER.info("Discovering DevServices Redpanda (Kafka) instance...");
-        DockerClientFactory.lazyClient().listContainersCmd().exec()
-                .stream().filter(container -> container.getImage().contains("vectorized/redpanda"))
-                .findFirst()
-                .ifPresent(container -> {
-                    Optional<String> ipAddress = Optional.empty();
-                    final ContainerPort[] containerPorts = container.getPorts();
-                    final ContainerNetworkSettings networkSettings = container.getNetworkSettings();
-                    if (Objects.nonNull(networkSettings)) {
-                        ipAddress = networkSettings.getNetworks().values().stream()
-                                .map(ContainerNetwork::getIpAddress)
-                                .filter(Objects::nonNull)
-                                .findFirst();
-                    }
-                    LOGGER.debug(String.format("[Kafka] IP Address: %s", ipAddress.orElse("<None>")));
-                    if (ipAddress.isPresent()) {
-                        final String kafkaBootstrapServer = String.format("PLAINTEXT://%s:29092", ipAddress.get());
-                        devServicesConfig.setKafkaBootstrapServer(kafkaBootstrapServer);
-                    }
                 });
 
         final TrustyServiceDevServiceConfig configuration = getConfiguration(buildTimeConfig);
@@ -185,7 +139,7 @@ public class KogitoDevServicesProcessor {
         //Discover TrustyService container
         LOGGER.info("Discovering TrustyService instance...");
         DockerClientFactory.lazyClient().listContainersCmd().exec()
-                .stream().filter(container -> container.getImage().toLowerCase(Locale.ROOT).contains("trusty"))
+                .stream().filter(container -> isTrustyServiceImage(container, configuration))
                 .findFirst()
                 .ifPresent(container -> {
                     Optional<Integer> port = Optional.empty();
@@ -233,6 +187,12 @@ public class KogitoDevServicesProcessor {
                     "DevServices for Kogito TrustyService started at {}",
                     trustyService.getUrl());
         }
+    }
+
+    private boolean isTrustyServiceImage(final Container container,
+            final TrustyServiceDevServiceConfig trustyServiceDevServiceConfig) {
+        final String name = container.getImage();
+        return Objects.equals(trustyServiceDevServiceConfig.imageName, name);
     }
 
     private void shutdownTrustyService() {
