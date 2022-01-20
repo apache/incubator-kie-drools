@@ -81,7 +81,7 @@ public class KeyStoreHelper {
      * Creates a KeyStoreHelper and initialises the KeyStore, by loading its entries.
      * @throws RuntimeException in case any error happens when initialising and loading the keystore.
      */
-    public KeyStoreHelper() {
+    KeyStoreHelper() {
         try {
             this.signed = Boolean.valueOf(System.getProperty(KeyStoreConstants.PROP_SIGN,
                                                              RuleBaseConfiguration.DEFAULT_SIGN_ON_SERIALIZATION)).booleanValue();
@@ -94,6 +94,19 @@ public class KeyStoreHelper {
         } catch (Exception e) {
             throw new RuntimeException("Error initialising KeyStore: " + e.getMessage(), e);
         }
+    }
+
+    private static class KeyStoreHelperHolder {
+        private static KeyStoreHelper INSTANCE = new KeyStoreHelper();
+    }
+
+    public static KeyStoreHelper get() {
+        return KeyStoreHelperHolder.INSTANCE;
+    }
+
+    // only for testing purposes
+    public static void reInit() {
+        KeyStoreHelperHolder.INSTANCE = new KeyStoreHelper();
     }
 
     private void loadPrivateKeyStoreProperties() throws MalformedURLException {

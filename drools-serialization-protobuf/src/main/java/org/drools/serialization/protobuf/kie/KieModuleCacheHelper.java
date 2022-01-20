@@ -51,7 +51,7 @@ public class KieModuleCacheHelper {
     
     private static void sign(KieModuleCache.Header.Builder _header,
                              byte[] buff ) {
-        KeyStoreHelper helper = new KeyStoreHelper();
+        KeyStoreHelper helper = KeyStoreHelper.get();
         if (helper.isSigned()) {
             try {
                 _header.setSignature( KieModuleCache.Signature.newBuilder()
@@ -94,7 +94,7 @@ public class KieModuleCacheHelper {
 
     private static void checkSignature(Header _header,
                                        byte[] sessionbuff) {
-        KeyStoreHelper helper = new KeyStoreHelper();
+        KeyStoreHelper helper = KeyStoreHelper.get();
         boolean signed = _header.hasSignature();
         if ( helper.isSigned() != signed ) {
             throw new RuntimeException( "This environment is configured to work with " +
