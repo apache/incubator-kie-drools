@@ -205,8 +205,9 @@ public class ActionType {
             //Michael Neale:
             // For single standard quotes we escape them - eg they may mean "inches" 
             // as in "I want a Stonehenge replica 19" tall"
-            int idx = content.indexOf( "\"" );
-            if ( idx > 0 && content.indexOf( "\"", idx ) > -1 ) {
+            final int idx = content.indexOf("\"");
+            final long count = content.chars().filter(character -> character == '\"').count();
+            if (idx > 0 && count == 1) {
                 content = content.replace( "\"", "\\\"" );
             }
         }
