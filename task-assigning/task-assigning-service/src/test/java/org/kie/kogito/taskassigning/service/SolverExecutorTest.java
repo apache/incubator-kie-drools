@@ -34,6 +34,7 @@ import org.mockito.Mock;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 
@@ -237,7 +238,20 @@ class SolverExecutorTest extends RunnableBaseTest<SolverExecutor> {
         }
 
         @Override
+        public void addProblemChange(ProblemChange<TaskAssigningSolution> problemFactChange) {
+        }
+
+        @Override
+        public void addProblemChanges(List<ProblemChange<TaskAssigningSolution>> problemFactChanges) {
+        }
+
+        @Override
         public boolean isEveryProblemFactChangeProcessed() {
+            return false;
+        }
+
+        @Override
+        public boolean isEveryProblemChangeProcessed() {
             return false;
         }
 
