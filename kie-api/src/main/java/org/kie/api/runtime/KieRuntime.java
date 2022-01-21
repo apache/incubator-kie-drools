@@ -64,8 +64,4 @@ public interface KieRuntime
     Map< String, Channel> getChannels();
 
     KieSessionConfiguration getSessionConfiguration();
-
-    default ProcessRuntime getProcessRuntime() {
-        return this;
-    }
 }

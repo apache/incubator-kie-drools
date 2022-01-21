@@ -762,7 +762,7 @@ public class XStreamXML {
             String eventType = cmd.getEventType();
             Object event = cmd.getEvent();
 
-            if ( processInstanceId.equals("-1") ) {
+            if ( !"-1".equals(processInstanceId) ) {
                 writer.addAttribute( "process-instance-id", processInstanceId );
             }
 

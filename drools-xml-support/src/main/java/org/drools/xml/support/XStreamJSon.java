@@ -1307,7 +1307,7 @@ public class XStreamJSon {
             String eventType = cmd.getEventType();
             Object event = cmd.getEvent();
 
-            if ( !processInstanceId.equals("-1") ) {
+            if ( !"-1".equals(processInstanceId) ) {
                 writer.startNode( "process-instance-id" );
                 writer.setValue( processInstanceId );
                 writer.endNode();

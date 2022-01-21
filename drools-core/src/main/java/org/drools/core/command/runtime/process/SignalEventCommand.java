@@ -110,7 +110,7 @@ public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInsta
     public Void execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         
-        if (processInstanceId.equals("-1") && correlationKey == null) {
+        if ("-1".equals(processInstanceId) && correlationKey == null) {
             ksession.signalEvent(eventType, event);
         } else {
             ProcessInstance processInstance;
@@ -127,7 +127,7 @@ public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInsta
     }
 
     public String toString() {
-        if (processInstanceId.equals("-1") && correlationKey == null) {
+        if ("-1".equals(processInstanceId) && correlationKey == null) {
             return "ksession.signalEvent(" + eventType + ", " + event + ");"; 
         } else if (correlationKey != null) {
             return "ksession.signalEvent(" + correlationKey + ", " + eventType + ", " + event + ");";
