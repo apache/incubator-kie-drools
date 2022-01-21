@@ -1303,13 +1303,13 @@ public class XStreamJSon {
                             HierarchicalStreamWriter writer,
                             MarshallingContext context) {
             SignalEventCommand cmd = (SignalEventCommand) object;
-            long processInstanceId = cmd.getProcessInstanceId();
+            String processInstanceId = cmd.getProcessInstanceId();
             String eventType = cmd.getEventType();
             Object event = cmd.getEvent();
 
-            if ( processInstanceId != -1 ) {
+            if ( !"-1".equals(processInstanceId) ) {
                 writer.startNode( "process-instance-id" );
-                writer.setValue( Long.toString( processInstanceId ) );
+                writer.setValue( processInstanceId );
                 writer.endNode();
             }
 
@@ -1351,12 +1351,9 @@ public class XStreamJSon {
 
             Command cmd;
             if ( processInstanceId != null ) {
-                cmd = CommandFactory.newSignalEvent( Long.parseLong( processInstanceId ),
-                                                     eventType,
-                                                     event );
+                cmd = CommandFactory.newSignalEvent( processInstanceId, eventType, event );
             } else {
-                cmd = CommandFactory.newSignalEvent( eventType,
-                                                     event );
+                cmd = CommandFactory.newSignalEvent( eventType, event );
             }
 
             return cmd;

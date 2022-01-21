@@ -206,9 +206,9 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      * Returns the process instance with the given id.
      * @return the process instance with the given id
      */
-    ProcessInstance getProcessInstance(long id);
+    ProcessInstance getProcessInstance(String id);
 
-    ProcessInstance getProcessInstance(long id, boolean readOnly);
+    ProcessInstance getProcessInstance(String id, boolean readOnly);
 
     WorkItemManager getWorkItemManager();
 

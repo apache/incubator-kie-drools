@@ -47,6 +47,6 @@ public interface ProcessInstanceIdQueryBuilder<T,R> extends ExtendedParametrized
      * @param processInstanceIdMax the max (upper) date to use in the range
      * @return The current query builder instance
      */
-    public T processInstanceIdRange(Long processInstanceIdMin, Long processInstanceIdMax);
+    public T processInstanceIdRange(String processInstanceIdMin, String processInstanceIdMax);
 
 }

@@ -75,7 +75,7 @@ public interface TaskVariable {
 
     void setTaskId(Long taskId);
 
-    void setProcessInstanceId(Long processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
     void setProcessId(String processId);
 

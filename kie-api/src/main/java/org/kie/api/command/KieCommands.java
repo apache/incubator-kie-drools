@@ -100,7 +100,7 @@ public interface KieCommands {
     Command newSignalEvent(String type,
                            Object event);
 
-    Command newSignalEvent(long processInstanceId,
+    Command newSignalEvent(String processInstanceId,
                            String type,
                            Object event);
 

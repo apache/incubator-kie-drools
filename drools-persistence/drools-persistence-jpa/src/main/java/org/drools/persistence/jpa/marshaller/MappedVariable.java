@@ -41,7 +41,7 @@ public class MappedVariable implements Serializable {
 
     private String variableType;
 
-    private Long processInstanceId;
+    private String processInstanceId;
     private Long taskId;
     private Long workItemId;
 
@@ -49,13 +49,13 @@ public class MappedVariable implements Serializable {
 
     }
 
-    public MappedVariable(Long variableId, String variableType, Long processInstanceId) {
+    public MappedVariable(Long variableId, String variableType, String processInstanceId) {
         this.variableId = variableId;
         this.variableType = variableType;
         this.processInstanceId = processInstanceId;
     }
 
-    public MappedVariable(Long variableId, String variableType, Long processInstanceId, Long taskId, Long workItemId) {
+    public MappedVariable(Long variableId, String variableType, String processInstanceId, Long taskId, Long workItemId) {
         this.variableId = variableId;
         this.variableType = variableType;
         this.processInstanceId = processInstanceId;
@@ -87,11 +87,11 @@ public class MappedVariable implements Serializable {
         this.variableType = variableType;
     }
 
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 

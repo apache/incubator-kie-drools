@@ -335,7 +335,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
                             "Not supporting multiple node instances for the same ruleflow group");
                     }
                     Map.Entry<Object, String> entry = nodeInstances.entrySet().iterator().next();
-                    ProcessInstance processInstance = toStatefulKnowledgeSession().getProcessInstance(entry.getKey());
+                    ProcessInstance processInstance = toStatefulKnowledgeSession().getProcessInstance((String) entry.getKey());
                     AbstractProcessContext context = createProcessContext();
                     context.setProcessInstance(processInstance);
                     String nodeInstance = entry.getValue();
@@ -365,7 +365,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     protected boolean sameNodeInstance( NodeInstance subNodeInstance, String nodeInstanceId ) {
-        return subNodeInstance.getId() == Long.parseLong( nodeInstanceId );
+        return subNodeInstance.getId().equals( nodeInstanceId );
     }
 
     public KieRuntime getKieRuntime() {

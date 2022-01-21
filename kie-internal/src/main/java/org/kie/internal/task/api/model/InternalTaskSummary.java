@@ -26,7 +26,7 @@ public interface InternalTaskSummary extends TaskSummary {
 
     void setId(long id);
 
-    void setProcessInstanceId(long processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
     void setName(String name);
 

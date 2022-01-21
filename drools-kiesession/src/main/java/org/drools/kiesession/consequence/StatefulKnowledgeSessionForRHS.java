@@ -11,6 +11,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -24,14 +25,12 @@ import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
@@ -43,6 +42,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
@@ -50,7 +50,6 @@ import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.drools.core.beliefsystem.Mode;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
@@ -156,7 +155,7 @@ public class StatefulKnowledgeSessionForRHS
         delegate.update(factHandle);
     }
 
-    public void abortProcessInstance(long id) {
+    public void abortProcessInstance(String id) {
         delegate.abortProcessInstance(id);
     }
 
@@ -164,7 +163,7 @@ public class StatefulKnowledgeSessionForRHS
         delegate.signalEvent(type, event);
     }
 
-    public void signalEvent(String type, Object event, long processInstanceId) {
+    public void signalEvent(String type, Object event, String processInstanceId) {
         delegate.signalEvent(type, event, processInstanceId);
     }
 
@@ -221,7 +220,7 @@ public class StatefulKnowledgeSessionForRHS
         return delegate.createProcessInstance(processId, parameters);
     }
 
-    public ProcessInstance startProcessInstance(long processInstanceId) {
+    public ProcessInstance startProcessInstance(String processInstanceId) {
         return delegate.startProcessInstance(processInstanceId);
     }
 
@@ -713,15 +712,11 @@ public class StatefulKnowledgeSessionForRHS
         return delegate.getProcessInstances();
     }
 
-    public ProcessInstance getProcessInstance(Object id) {
+    public ProcessInstance getProcessInstance(String id) {
         return delegate.getProcessInstance(id);
     }
 
-    public ProcessInstance getProcessInstance(long id) {
-        return delegate.getProcessInstance(id);
-    }
-
-    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+    public ProcessInstance getProcessInstance(String id, boolean readOnly) {
         return delegate.getProcessInstance(id, readOnly);
     }
 

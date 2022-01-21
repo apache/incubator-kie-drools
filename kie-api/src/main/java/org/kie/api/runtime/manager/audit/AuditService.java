@@ -56,21 +56,21 @@ public interface AuditService {
      * @param processInstanceId unique identifier of process instance
      * @return process instance log for given process instance id or null if not found
      */
-    ProcessInstanceLog findProcessInstance(long processInstanceId);
+    ProcessInstanceLog findProcessInstance(String processInstanceId);
 
     /**
      * Returns all known subprocess instance logs for given process instance id - considered parent process instance id
      * @param processInstanceId identifier of the parent process instance id
      * @return all process instance logs that are subprocess to a given process instance id
      */
-    List<? extends ProcessInstanceLog> findSubProcessInstances(long processInstanceId);
+    List<? extends ProcessInstanceLog> findSubProcessInstances(String processInstanceId);
 
     /**
      * Returns all node instances that were already triggered for given process instance id
      * @param processInstanceId unique identifier of process instance
      * @return all node instance logs for given process instance id
      */
-    List<? extends NodeInstanceLog> findNodeInstances(long processInstanceId);
+    List<? extends NodeInstanceLog> findNodeInstances(String processInstanceId);
 
     /**
      * @param processInstanceId unique identifier of process instance
@@ -78,14 +78,14 @@ public interface AuditService {
      *        but if not available regular node id shall be used
      * @return all node instances that were already triggered for given process instance id and node identifier
      */
-    List<? extends NodeInstanceLog> findNodeInstances(long processInstanceId, String nodeId);
+    List<? extends NodeInstanceLog> findNodeInstances(String processInstanceId, String nodeId);
 
     /**
      * Returns all variable logs for given process instance id
      * @param processInstanceId unique identifier of process instance
      * @return all variables logs for given process instance or empty list of none were found
      */
-    List<? extends VariableInstanceLog> findVariableInstances(long processInstanceId);
+    List<? extends VariableInstanceLog> findVariableInstances(String processInstanceId);
 
     /**
      * Returns all variable logs for given process instance id and variable identifier
@@ -93,7 +93,7 @@ public interface AuditService {
      * @param variableId variable name
      * @return all variable logs for given process instance and variable identifier or empty list if none were found
      */
-    List<? extends VariableInstanceLog> findVariableInstances(long processInstanceId, String variableId);
+    List<? extends VariableInstanceLog> findVariableInstances(String processInstanceId, String variableId);
 
     /**
      * Returns all variable logs that are identified by variable id regardless of what process instance they belong to

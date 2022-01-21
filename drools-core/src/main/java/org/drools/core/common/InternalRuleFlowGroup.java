@@ -54,9 +54,9 @@ public interface InternalRuleFlowGroup extends InternalAgendaGroup, RuleFlowGrou
 //
 //    boolean isActive();
 //
-//    void addNodeInstance(Long processInstanceId, String nodeInstanceId);
+//    void addNodeInstance(String processInstanceId, String nodeInstanceId);
 //
-//    void removeNodeInstance(Long processInstanceId, String nodeInstanceId);
+//    void removeNodeInstance(String processInstanceId, String nodeInstanceId);
 //
 //    public Activation[] getActivations();
 //

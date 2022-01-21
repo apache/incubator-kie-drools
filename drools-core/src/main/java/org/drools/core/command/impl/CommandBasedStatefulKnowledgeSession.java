@@ -134,20 +134,20 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         return runner.execute( new GetIdCommand() );
     }
 
-    public ProcessInstance getProcessInstance(long id) {
+    public ProcessInstance getProcessInstance(String id) {
         GetProcessInstanceCommand command = new GetProcessInstanceCommand();
         command.setProcessInstanceId( id );
         return runner.execute( command );
     }
 
-    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+    public ProcessInstance getProcessInstance(String id, boolean readOnly) {
         GetProcessInstanceCommand command = new GetProcessInstanceCommand();
         command.setProcessInstanceId( id );
         command.setReadOnly( readOnly );
         return runner.execute( command );
     }
 
-    public void abortProcessInstance(long id) {
+    public void abortProcessInstance(String id) {
         AbortProcessInstanceCommand command = new AbortProcessInstanceCommand();
         command.setProcessInstanceId( id );
         runner.execute( command );
@@ -219,7 +219,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                 }
 
                 @Override
-                public void signalEvent(String type, Object event, long processInstanceId) {
+                public void signalEvent(String type, Object event, String processInstanceId) {
                     SignalEventCommand command = new SignalEventCommand(processInstanceId, type, event);
                     runner.execute(command);
                 }
@@ -248,7 +248,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
 
     public void signalEvent(String type,
                             Object event,
-                            long processInstanceId) {
+                            String processInstanceId) {
         SignalEventCommand command = new SignalEventCommand( processInstanceId,
                                                              type,
                                                              event );
@@ -283,7 +283,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         return runner.execute( command );
 	}
 
-	public ProcessInstance startProcessInstance(long processInstanceId) {
+	public ProcessInstance startProcessInstance(String processInstanceId) {
         StartProcessInstanceCommand command = new StartProcessInstanceCommand();
         command.setProcessInstanceId( processInstanceId );
         return runner.execute( command );

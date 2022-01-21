@@ -31,20 +31,20 @@ import org.kie.api.runtime.manager.Context;
  *  <li><code>get(Long)</code> to get context for specific process instance</li>
  * </ul>
  */
-public class ProcessInstanceIdContext implements Context<Long> {
+public class ProcessInstanceIdContext implements Context<String> {
 
-    private Long processInstanceId;
+    private String processInstanceId;
 
-    public ProcessInstanceIdContext(Long processInstanceId) {
+    public ProcessInstanceIdContext(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
     @Override
-    public Long getContextId() {
+    public String getContextId() {
         return processInstanceId;
     }
 
-    public void setContextId(long id) {
+    public void setContextId(String id) {
         this.processInstanceId = id;
     }
 
@@ -62,7 +62,7 @@ public class ProcessInstanceIdContext implements Context<Long> {
      * @param processInstanceId actual identifier of process instance
      * @return
      */
-    public static ProcessInstanceIdContext get(Long processInstanceId) {
+    public static ProcessInstanceIdContext get(String processInstanceId) {
         return new ProcessInstanceIdContext(processInstanceId);
     }
 

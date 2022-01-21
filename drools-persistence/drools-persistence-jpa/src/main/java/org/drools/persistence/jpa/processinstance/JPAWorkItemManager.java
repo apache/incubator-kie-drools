@@ -258,7 +258,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         this.kruntime.signalEvent( type, event );
     }
 
-    public void signalEvent( String type, Object event, long processInstanceId ) {
+    public void signalEvent( String type, Object event, String processInstanceId ) {
         this.kruntime.signalEvent( type, event, processInstanceId );
     }
 

@@ -109,7 +109,7 @@ public interface ProcessRuntime {
      * @param processInstanceId  the id of the process instance that needs to be started
      * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
      */
-    ProcessInstance startProcessInstance(long processInstanceId);
+    ProcessInstance startProcessInstance(String processInstanceId);
 
     /**
      * Signals the engine that an event has occurred. The type parameter defines
@@ -141,7 +141,7 @@ public interface ProcessRuntime {
      */
     void signalEvent(String type,
                      Object event,
-                     long processInstanceId);
+                     String processInstanceId);
 
     /**
      * Returns a collection of currently active process instances.  Note that only process
@@ -163,7 +163,7 @@ public interface ProcessRuntime {
      * @param processInstanceId the id of the process instance
      * @return the process instance with the given id or <code>null</code> if it cannot be found
      */
-    ProcessInstance getProcessInstance(long processInstanceId);
+    ProcessInstance getProcessInstance(String processInstanceId);
 
     /**
      * Returns the process instance with the given id.  Note that only active process instances
@@ -175,7 +175,7 @@ public interface ProcessRuntime {
      * will not be tracked and updated by the engine
      * @return the process instance with the given id or <code>null</code> if it cannot be found
      */
-    ProcessInstance getProcessInstance(long processInstanceId, boolean readonly);
+    ProcessInstance getProcessInstance(String processInstanceId, boolean readonly);
 
     /**
      * Aborts the process instance with the given id.  If the process instance has been completed
@@ -184,7 +184,7 @@ public interface ProcessRuntime {
      *
      * @param processInstanceId the id of the process instance
      */
-    void abortProcessInstance(long processInstanceId);
+    void abortProcessInstance(String processInstanceId);
 
     /**
      * Returns the <code>WorkItemManager</code> related to this session.  This can be used to

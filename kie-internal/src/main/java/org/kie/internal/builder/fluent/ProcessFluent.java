@@ -70,7 +70,7 @@ public interface ProcessFluent<T, U> {
      * @param processInstanceId  the id of the process instance that needs to be started
      * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
      */
-    T startProcessInstance(long processInstanceId);
+    T startProcessInstance(String processInstanceId);
 
     /**
      * Signals the engine that an event has occurred. The type parameter defines
@@ -102,7 +102,7 @@ public interface ProcessFluent<T, U> {
      */
     T signalEvent(String type,
                      Object event,
-                     long processInstanceId);
+                     String processInstanceId);
 
     /**
      * Aborts the process instance with the given id.  If the process instance has been completed
@@ -111,7 +111,7 @@ public interface ProcessFluent<T, U> {
      *
      * @param processInstanceId the id of the process instance
      */
-    T abortProcessInstance(long processInstanceId);
+    T abortProcessInstance(String processInstanceId);
 
     /**
      * Returns the <code>WorkItemManager</code> related to this session.  This can be used to

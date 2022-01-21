@@ -758,13 +758,12 @@ public class XStreamXML {
                             HierarchicalStreamWriter writer,
                             MarshallingContext context) {
             SignalEventCommand cmd = (SignalEventCommand) object;
-            long processInstanceId = cmd.getProcessInstanceId();
+            String processInstanceId = cmd.getProcessInstanceId();
             String eventType = cmd.getEventType();
             Object event = cmd.getEvent();
 
-            if ( processInstanceId != -1 ) {
-                writer.addAttribute( "process-instance-id",
-                                     Long.toString( processInstanceId ) );
+            if ( !"-1".equals(processInstanceId) ) {
+                writer.addAttribute( "process-instance-id", processInstanceId );
             }
 
             writer.addAttribute( "event-type",
@@ -788,12 +787,9 @@ public class XStreamXML {
 
             Command cmd;
             if ( processInstanceId != null ) {
-                cmd = CommandFactory.newSignalEvent( Long.parseLong( processInstanceId ),
-                                                     eventType,
-                                                     event );
+                cmd = CommandFactory.newSignalEvent( processInstanceId, eventType, event );
             } else {
-                cmd = CommandFactory.newSignalEvent( eventType,
-                                                     event );
+                cmd = CommandFactory.newSignalEvent( eventType, event );
             }
 
             return cmd;

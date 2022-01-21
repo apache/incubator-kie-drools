@@ -54,7 +54,7 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
      * The given processInstanceId and nodeInstanceId define the process context
      * in which this <code>RuleFlowGroup</code> is used.
      */
-    void activateRuleFlowGroup(String name, long processInstanceId, String nodeInstanceId);
+    void activateRuleFlowGroup(String name, String processInstanceId, String nodeInstanceId);
 
     /**
      * Clears all Activations from the Agenda
@@ -91,7 +91,7 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
      */
     boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
-                                            long processInstanceId);
+                                            String processInstanceId);
 
     void setWorkingMemory(final InternalWorkingMemory workingMemory);
 
@@ -153,7 +153,7 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
 
     int sizeOfRuleFlowGroup(String s);
 
-    boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
+    boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, String processInstanceId);
 
     void notifyWaitOnRest();
     Iterator<PropagationEntry> getActionsIterator();
