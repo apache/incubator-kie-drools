@@ -224,4 +224,13 @@ public class DMNMessageImpl implements DMNMessage {
 
         return r;
     }
+    
+    public void setPath(String path) {
+    	this.path = path;
+    }
+    
+    public DMNMessageImpl withPath(String path) {
+    	setPath(path);
+    	return this;
+    }
 }

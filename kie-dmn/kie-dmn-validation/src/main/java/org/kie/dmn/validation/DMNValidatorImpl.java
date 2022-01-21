@@ -41,9 +41,13 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.drools.core.io.impl.FileSystemResource;
+import org.drools.core.io.impl.ReaderResource;
+import org.drools.core.util.IoUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.command.BatchExecutionCommand;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -72,6 +76,7 @@ import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyserFactory;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.command.CommandFactory;
+import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,6 +228,48 @@ public class DMNValidatorImpl implements DMNValidator {
             }
             return results.getMessages();
         }
+        
+        public List<DMNMessage> theseModels(Resource... resources) {
+            DMNMessageManager results = new DefaultDMNMessagesManager();
+            List<DMNResource> models = new ArrayList<>();
+            for (Resource r : resources) {
+            	try {
+                	// We get passed a Resource, which might be constructed from a Reader, so we have only 1-time opportunity to be sure to read it successfully,
+                	// we internalize the content:
+                    String content = readContent( r.getReader() );
+                    if (flags.contains(VALIDATE_SCHEMA)) {
+                    	results.addAll(validator.validateSchema( content, null ));
+                    }
+                    Definitions dmndefs = unmarshalDefinitionsFromReader(validator.dmnCompilerConfig, new StringReader(content));
+                    models.add(new DMNResource(dmndefs, new ResourceWithConfigurationImpl(r, null, x -> {}, y -> {})));
+                } catch (Exception t) {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          results,
+                                          t,
+                                          null,
+                                          Msg.VALIDATION_RUNTIME_PROBLEM,
+                                          t.getMessage());
+                }
+            }
+            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
+                if (results.hasErrors()) {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          results,
+                                          null,
+                                          null,
+                                          Msg.VALIDATION_STOPPED);
+                    return results.getMessages();
+                }
+                DMNAssemblerService.enrichDMNResourcesWithImportsDependencies(models, Collections.emptyList());
+                models = DMNResourceDependenciesSorter.sort(models);
+                // TODO validateDefinitions(models, results);
+            }
+            return results.getMessages();
+        }
 
         @Override
         public List<DMNMessage> theseModels(Reader... readers) {
@@ -232,7 +279,7 @@ public class DMNValidatorImpl implements DMNValidator {
                 try {
                     String content = readContent(reader);
                     if (flags.contains(VALIDATE_SCHEMA)) {
-                        results.addAll(validator.validateSchema(new StringReader(content)));
+                        results.addAll(validator.validateSchema( content, null ));
                     }
                     Definitions dmndefs = unmarshalDefinitionsFromReader(validator.dmnCompilerConfig, new StringReader(content));
                     models.add(dmndefs);
@@ -400,7 +447,7 @@ public class DMNValidatorImpl implements DMNValidator {
         DMNMessageManager results = new DefaultDMNMessagesManager(  );
         EnumSet<Validation> flags = EnumSet.copyOf( Arrays.asList( options ) );
         if( flags.contains( VALIDATE_SCHEMA ) ) {
-            results.addAll( validateSchema( xmlFile ) );
+            results.addAll( validateSchema( IoUtils.readFileAsString(xmlFile), xmlFile.getPath() ) );
         }
         if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
             Definitions dmndefs = null;
@@ -432,9 +479,11 @@ public class DMNValidatorImpl implements DMNValidator {
         DMNMessageManager results = new DefaultDMNMessagesManager(  );
         EnumSet<Validation> flags = EnumSet.copyOf( Arrays.asList( options ) );
         try {
+        	// We get passed a Resource, which might be constructed from a Reader, so we have only 1-time opportunity to be sure to read it successfully,
+        	// we internalize the content:
             String content = readContent( reader );
             if( flags.contains( VALIDATE_SCHEMA ) ) {
-                results.addAll( validateSchema( new StringReader( content ) ) );
+                results.addAll( validateSchema( content, null ) );
             }
             if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
                 Definitions dmndefs = unmarshalDefinitionsFromReader(dmnCompilerConfig, new StringReader(content));
@@ -483,33 +532,9 @@ public class DMNValidatorImpl implements DMNValidator {
         }
     }
 
-    private List<DMNMessage> validateSchema(File xmlFile) {
+    private List<DMNMessage> validateSchema(String xml, String path) {
         List<DMNMessage> problems = new ArrayList<>();
         try {
-            DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(new FileReader(xmlFile));
-            Source s = new StreamSource(xmlFile);
-            switch (inferDMNVersion) {
-                case DMN_v1_1:
-                    return validateSchema(s, schemav1_1);
-                case DMN_v1_2:
-                    return validateSchema(s, schemav1_2);
-                case DMN_v1_3:
-                    return validateSchema(s, schemav1_3);
-                case DMN_v1_4:
-                case UNKNOWN:
-                default:
-                    return validateSchema(s, schemav1_4);
-            }
-        } catch (Exception e) {
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
-        }
-        return problems;
-    }
-
-    private List<DMNMessage> validateSchema(Reader reader) {
-        List<DMNMessage> problems = new ArrayList<>();
-        try (BufferedReader buffer = new BufferedReader(reader)) {
-            String xml = buffer.lines().collect(Collectors.joining("\n"));
             DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(new StringReader(xml));
             Source s = new StreamSource(new StringReader(xml));
             switch (inferDMNVersion) {
@@ -525,12 +550,12 @@ public class DMNValidatorImpl implements DMNValidator {
                     return validateSchema(s, schemav1_4);
             }
         } catch (Exception e) {
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
+            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
         }
         return problems;
     }
 
-    private List<DMNMessage> validateSchema(Source s, Schema s2) {
+    private List<DMNMessage> validateSchema(Source s, Schema s2) throws SAXException, IOException {
         Schema using = overrideSchema != null ? overrideSchema : s2;
         List<DMNMessage> problems = new ArrayList<>();
         try {
