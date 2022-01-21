@@ -16,7 +16,12 @@
 
 package org.kie.dmn.validation;
 
-import java.io.BufferedReader;
+import static java.util.stream.Collectors.toList;
+import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -41,8 +46,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.core.io.impl.ReaderResource;
 import org.drools.core.util.IoUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
@@ -81,12 +84,6 @@ import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import static java.util.stream.Collectors.toList;
-import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 public class DMNValidatorImpl implements DMNValidator {
     public static final Logger LOG = LoggerFactory.getLogger(DMNValidatorImpl.class);
@@ -536,37 +533,38 @@ public class DMNValidatorImpl implements DMNValidator {
         List<DMNMessage> problems = new ArrayList<>();
         try {
             DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(new StringReader(xml));
+            Schema usingSchema = determineSchema(inferDMNVersion);
             Source s = new StreamSource(new StringReader(xml));
-            switch (inferDMNVersion) {
-                case DMN_v1_1:
-                    return validateSchema(s, schemav1_1);
-                case DMN_v1_2:
-                    return validateSchema(s, schemav1_2);
-                case DMN_v1_3:
-                    return validateSchema(s, schemav1_3);
-                case DMN_v1_4:
-                case UNKNOWN:
-                default:
-                    return validateSchema(s, schemav1_4);
-            }
+            validateSchema(s, usingSchema);
         } catch (Exception e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
         }
         return problems;
     }
-
-    private List<DMNMessage> validateSchema(Source s, Schema s2) throws SAXException, IOException {
-        Schema using = overrideSchema != null ? overrideSchema : s2;
-        List<DMNMessage> problems = new ArrayList<>();
-        try {
-            Validator validator = using.newValidator();
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            validator.validate(s);
-        } catch (SAXException | IOException e) {
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
+    
+    private Schema determineSchema(DMN_VERSION dmnVersion) {
+        if (overrideSchema != null) {
+            return overrideSchema;
         }
-        return problems;
+        switch (dmnVersion) {
+            case DMN_v1_1:
+                return schemav1_1;
+            case DMN_v1_2:
+                return schemav1_2;
+            case DMN_v1_3:
+                return schemav1_3;
+            case DMN_v1_4:
+            case UNKNOWN:
+            default:
+                return schemav1_4;
+        }
+    }
+
+    private void validateSchema(Source s, Schema using) throws SAXException, IOException {
+        Validator validator = using.newValidator();
+        validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        validator.validate(s);
     }
 
     private List<DMNMessage> validateModel(Definitions dmnModel, List<Definitions> otherModel_Definitions) {
