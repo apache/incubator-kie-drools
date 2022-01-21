@@ -19,10 +19,10 @@ import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.instance.ContextInstanceContainer;
+import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.instance.NodeInstance;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {

@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.impl.humantask.DeadlineHelper;
@@ -35,7 +36,6 @@ import org.jbpm.process.instance.impl.humantask.ScheduleInfo;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.TimerJobId;
@@ -211,12 +211,12 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     }
 
     private KogitoProcessEventSupport getEventSupport() {
-        return KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime()
+        return InternalProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime()
                 .getProcessRuntime()).getProcessEventSupport();
     }
 
     private JobsService getJobsService() {
-        return KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime()
+        return InternalProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime()
                 .getProcessRuntime()).getJobsService();
     }
 

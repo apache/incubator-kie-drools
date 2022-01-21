@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.drools.core.audit;
+package org.jbpm.audit;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

@@ -81,11 +81,6 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     }
 
     @Override
-    public void setProcessInstanceId(long processInstanceId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public int getState() {
         return state;
     }
@@ -132,13 +127,13 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     }
 
     @Override
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
+    public String getProcessInstanceId() {
+        return processInstanceId;
     }
 
     @Override
-    public long getProcessInstanceId() {
-        throw new UnsupportedOperationException();
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     @Override

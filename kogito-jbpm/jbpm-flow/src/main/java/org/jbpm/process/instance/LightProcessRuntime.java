@@ -208,12 +208,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         return (Collection<ProcessInstance>) (Object) processInstanceManager.getProcessInstances();
     }
 
-    @Override
-    public void abortProcessInstance(long l) {
-        throw new UnsupportedOperationException("org.jbpm.process.instance.LightProcessRuntime.abortProcessInstance -> TODO");
-
-    }
-
     public KogitoProcessInstance getProcessInstance(String id) {
         return getProcessInstance(id, false);
     }
@@ -525,7 +519,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     @Override
-    public ProcessInstance startProcessInstance(long l) {
+    public ProcessInstance startProcessInstance(String l) {
         throw new UnsupportedOperationException();
     }
 
@@ -536,21 +530,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
 
     @Override
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(long l) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(long l, boolean b) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void signalEvent(String s, Object o, long l) {
         throw new UnsupportedOperationException();
     }
 }

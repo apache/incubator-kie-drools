@@ -17,6 +17,7 @@ package org.jbpm.test.util;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.RuleBaseFactory;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,7 +38,7 @@ public abstract class AbstractBaseTest {
     }
 
     public KogitoProcessRuntime createKogitoProcessRuntime() {
-        return KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession());
+        return InternalProcessRuntime.asKogitoProcessRuntime(createKieSession());
     }
 
     @Deprecated

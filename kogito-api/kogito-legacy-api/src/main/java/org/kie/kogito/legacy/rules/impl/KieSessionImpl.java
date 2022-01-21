@@ -355,7 +355,7 @@ public class KieSessionImpl implements KieSession, RuleEventManager {
     }
 
     @Override
-    public ProcessInstance startProcessInstance(long l) {
+    public ProcessInstance startProcessInstance(String l) {
         throw new UnsupportedOperationException();
     }
 
@@ -365,7 +365,7 @@ public class KieSessionImpl implements KieSession, RuleEventManager {
     }
 
     @Override
-    public void signalEvent(String s, Object o, long l) {
+    public void signalEvent(String s, Object o, String l) {
         throw new UnsupportedOperationException();
     }
 
@@ -375,17 +375,17 @@ public class KieSessionImpl implements KieSession, RuleEventManager {
     }
 
     @Override
-    public ProcessInstance getProcessInstance(long l) {
+    public ProcessInstance getProcessInstance(String l) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ProcessInstance getProcessInstance(long l, boolean b) {
+    public ProcessInstance getProcessInstance(String l, boolean b) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void abortProcessInstance(long l) {
+    public void abortProcessInstance(String l) {
         throw new UnsupportedOperationException();
     }
 

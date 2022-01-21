@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.drools.core.audit.event;
+package org.jbpm.audit.event;
 
-import org.drools.core.audit.event.RuleFlowNodeLogEvent;
+import org.drools.core.audit.event.RuleFlowLogEvent;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
-public class KogitoRuleFlowNodeLogEvent extends RuleFlowNodeLogEvent {
+/**
+ * A ruleflow event logged by the WorkingMemoryLogger.
+ * It is a snapshot of the event as it was thrown by the working memory.
+ * It contains the process name and id.
+ */
+public class KogitoRuleFlowLogEvent extends RuleFlowLogEvent {
 
-    public KogitoRuleFlowNodeLogEvent(final int type,
-            final String nodeId,
-            final String nodeName,
-            final String nodeInstanceId,
+    public KogitoRuleFlowLogEvent(final int type,
             ProcessInstance processInstance) {
-        super(type, nodeId, nodeName, nodeInstanceId,
-                processInstance.getProcessId(), processInstance.getProcessName(), ((KogitoProcessInstance) processInstance).getStringId());
+        super(type, processInstance.getProcessId(), processInstance.getProcessName(), ((KogitoProcessInstance) processInstance).getStringId());
     }
-
 }

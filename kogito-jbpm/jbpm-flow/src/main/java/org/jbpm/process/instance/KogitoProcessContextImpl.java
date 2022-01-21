@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.drools.core.spi;
+package org.jbpm.process.instance;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class KogitoProcessContextImpl extends AbstractProcessContext implements 
 
     @Override
     public KogitoProcessRuntime getKogitoProcessRuntime() {
-        return KogitoProcessRuntime.asKogitoProcessRuntime(getKieRuntime());
+        return InternalProcessRuntime.asKogitoProcessRuntime(getKieRuntime());
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.jbpm.bpmn2;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -63,7 +64,7 @@ public class KogitoSetProcessInstanceVariablesCommand implements ExecutableComma
     }
 
     public Void execute(Context context) {
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(((RegistryContext) context).lookup(KieSession.class));
+        KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(((RegistryContext) context).lookup(KieSession.class));
         KogitoProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
         if (processInstance != null) {
             if (variables != null) {

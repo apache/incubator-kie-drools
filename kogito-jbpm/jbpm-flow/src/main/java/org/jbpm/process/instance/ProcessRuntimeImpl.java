@@ -208,7 +208,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     @Override
-    public ProcessInstance startProcessInstance(long l) {
+    public ProcessInstance startProcessInstance(String l) {
         throw new UnsupportedOperationException();
     }
 
@@ -280,17 +280,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     @Override
-    public ProcessInstance getProcessInstance(long l) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(long l, boolean b) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void abortProcessInstance(long l) {
+    public void abortProcessInstance(String l) {
         throw new UnsupportedOperationException();
     }
 
@@ -428,7 +418,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     @Override
-    public void signalEvent(String s, Object o, long l) {
+    public void signalEvent(String s, Object o, String l) {
         throw new UnsupportedOperationException();
     }
 

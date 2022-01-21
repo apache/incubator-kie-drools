@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jbpm.bpmn2.objects.Status;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
@@ -56,7 +57,7 @@ public class OneProcessPerThreadTest {
             kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultiThreadServiceProcess.bpmn"), ResourceType.BPMN2);
             KieBase kbase = kbuilder.newKieBase();
 
-            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
+            KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
             kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Log", new KogitoWorkItemHandler() {
                 public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {

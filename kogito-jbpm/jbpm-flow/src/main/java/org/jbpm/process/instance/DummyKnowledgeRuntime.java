@@ -267,12 +267,6 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
     }
 
     @Override
-    public ProcessInstance startProcessInstance(long l) {
-        throw new UnsupportedOperationException("org.jbpm.process.instance.DummyKnowledgeRuntime.startProcessInstance -> TODO");
-
-    }
-
-    @Override
     public KogitoProcessInstance startProcessInstance(String processInstanceId) {
         return processRuntime.getKogitoProcessRuntime().startProcessInstance(processInstanceId);
     }
@@ -288,12 +282,6 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
     }
 
     @Override
-    public void signalEvent(String s, Object o, long l) {
-        throw new UnsupportedOperationException("org.jbpm.process.instance.DummyKnowledgeRuntime.signalEvent -> TODO");
-
-    }
-
-    @Override
     public void signalEvent(String type, Object event, String processInstanceId) {
         processRuntime.getKogitoProcessRuntime().signalEvent(type, event, processInstanceId);
     }
@@ -306,24 +294,6 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
     @Override
     public Collection<KogitoProcessInstance> getKogitoProcessInstances() {
         return null;
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(long l) {
-        throw new UnsupportedOperationException("org.jbpm.process.instance.DummyKnowledgeRuntime.getProcessInstance -> TODO");
-
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(long l, boolean b) {
-        throw new UnsupportedOperationException("org.jbpm.process.instance.DummyKnowledgeRuntime.getProcessInstance -> TODO");
-
-    }
-
-    @Override
-    public void abortProcessInstance(long l) {
-        throw new UnsupportedOperationException("org.jbpm.process.instance.DummyKnowledgeRuntime.abortProcessInstance -> TODO");
-
     }
 
     @Override

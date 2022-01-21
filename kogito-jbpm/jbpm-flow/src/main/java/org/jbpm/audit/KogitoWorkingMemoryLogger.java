@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.drools.core.audit;
+package org.jbpm.audit;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -42,6 +42,9 @@ import org.drools.core.spi.Tuple;
 import org.drools.kiesession.audit.WorkingMemoryLogger;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
+import org.jbpm.audit.event.KogitoRuleFlowLogEvent;
+import org.jbpm.audit.event.KogitoRuleFlowNodeLogEvent;
+import org.jbpm.audit.event.KogitoRuleFlowVariableLogEvent;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.event.KieRuntimeEventManager;
@@ -88,9 +91,6 @@ import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.command.RegistryContext;
-import org.kie.kogito.drools.core.audit.event.KogitoRuleFlowLogEvent;
-import org.kie.kogito.drools.core.audit.event.KogitoRuleFlowNodeLogEvent;
-import org.kie.kogito.drools.core.audit.event.KogitoRuleFlowVariableLogEvent;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 

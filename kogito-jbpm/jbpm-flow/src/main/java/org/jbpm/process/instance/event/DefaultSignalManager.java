@@ -33,7 +33,6 @@ import org.drools.core.phreak.PropagationEntry;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.kogito.drools.core.KogitoWorkingMemory;
 import org.kie.kogito.signal.SignalManager;
 
 public class DefaultSignalManager implements SignalManager {
@@ -89,7 +88,7 @@ public class DefaultSignalManager implements SignalManager {
     }
 
     public void signalEvent(String processInstanceId, String type, Object event) {
-        ProcessInstance processInstance = ((KogitoWorkingMemory) kruntime).getProcessInstance(processInstanceId);
+        ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
         if (processInstance != null) {
             processInstance.signalEvent(type, event);
         }
@@ -117,14 +116,14 @@ public class DefaultSignalManager implements SignalManager {
         }
 
         public void execute(ReteEvaluator reteEvaluator) {
-            ProcessInstance processInstance = ((KogitoWorkingMemory) reteEvaluator).getProcessInstance(processInstanceId);
+            ProcessInstance processInstance = ((InternalKnowledgeRuntime) reteEvaluator).getProcessInstance(processInstanceId);
             if (processInstance != null) {
                 processInstance.signalEvent(type, event);
             }
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
-            ProcessInstance processInstance = ((KogitoWorkingMemory) kruntime).getProcessInstance(processInstanceId);
+            ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
             if (processInstance != null) {
                 processInstance.signalEvent(type, event);
             }

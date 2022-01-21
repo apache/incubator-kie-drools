@@ -30,6 +30,10 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.mvel.MVELSafeHelper;
+import org.jbpm.audit.KogitoWorkingMemoryInMemoryLogger;
+import org.jbpm.audit.event.KogitoRuleFlowLogEvent;
+import org.jbpm.audit.event.KogitoRuleFlowNodeLogEvent;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
@@ -51,9 +55,6 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
-import org.kie.kogito.drools.core.audit.KogitoWorkingMemoryInMemoryLogger;
-import org.kie.kogito.drools.core.audit.event.KogitoRuleFlowLogEvent;
-import org.kie.kogito.drools.core.audit.event.KogitoRuleFlowNodeLogEvent;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -115,11 +116,11 @@ public abstract class JbpmBpmn2TestCase {
     }
 
     protected KogitoProcessRuntime createKogitoProcessRuntime(String... process) throws Exception {
-        return KogitoProcessRuntime.asKogitoProcessRuntime(createKnowledgeSession(process));
+        return InternalProcessRuntime.asKogitoProcessRuntime(createKnowledgeSession(process));
     }
 
     protected KogitoProcessRuntime createKogitoProcessRuntime(Resource... process) throws Exception {
-        return KogitoProcessRuntime.asKogitoProcessRuntime(createKnowledgeSession(createKnowledgeBaseFromResources(process)));
+        return InternalProcessRuntime.asKogitoProcessRuntime(createKnowledgeSession(createKnowledgeBaseFromResources(process)));
     }
 
     private KieBase createKnowledgeBaseWithoutDumper(String... process) throws Exception {

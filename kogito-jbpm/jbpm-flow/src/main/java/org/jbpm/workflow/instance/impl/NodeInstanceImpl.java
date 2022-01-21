@@ -94,8 +94,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
 
     @Override
-    public long getId() {
-        throw new UnsupportedOperationException();
+    public String getId() {
+        return this.id;
     }
 
     @Override

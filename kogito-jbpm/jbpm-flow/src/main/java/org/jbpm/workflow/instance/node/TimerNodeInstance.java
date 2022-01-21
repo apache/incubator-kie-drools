@@ -28,7 +28,6 @@ import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
@@ -78,7 +77,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
                         getProcessInstance().getProcessId(),
                         getProcessInstance().getRootProcessId(),
                         Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null));
-        JobsService jobService = KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
+        JobsService jobService = InternalProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
         timerId = jobService.scheduleProcessInstanceJob(jobDescription);
     }
 

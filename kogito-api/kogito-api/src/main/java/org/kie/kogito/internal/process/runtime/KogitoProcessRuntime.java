@@ -22,7 +22,6 @@ import org.kie.api.KieBase;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
@@ -32,10 +31,6 @@ public interface KogitoProcessRuntime {
 
     interface Provider {
         KogitoProcessRuntime getKogitoProcessRuntime();
-    }
-
-    static KogitoProcessRuntime asKogitoProcessRuntime(ProcessRuntime kogitoProcessRuntimeProvider) {
-        return kogitoProcessRuntimeProvider instanceof KogitoProcessRuntime ? (KogitoProcessRuntime) kogitoProcessRuntimeProvider : ((Provider) kogitoProcessRuntimeProvider).getKogitoProcessRuntime();
     }
 
     /**

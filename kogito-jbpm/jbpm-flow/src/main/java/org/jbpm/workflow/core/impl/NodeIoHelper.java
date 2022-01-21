@@ -24,13 +24,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.jbpm.process.core.impl.DataTransformerRegistry;
+import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.process.instance.impl.AssignmentProducer;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.runtime.process.DataTransformer;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

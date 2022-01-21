@@ -77,7 +77,6 @@ import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
@@ -539,7 +538,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         timerInstance.setPeriod(0);
         if (useTimerSLATracking()) {
             ProcessInstanceJobDescription description = ProcessInstanceJobDescription.of(new TimerJobId(-1L), DurationExpirationTime.after(duration), getStringId(), getProcessId());
-            timerInstance.setId((KogitoProcessRuntime.asKogitoProcessRuntime(kruntime.getProcessRuntime()).getJobsService().scheduleProcessInstanceJob(description)));
+            timerInstance.setId((InternalProcessRuntime.asKogitoProcessRuntime(kruntime.getProcessRuntime()).getJobsService().scheduleProcessInstanceJob(description)));
         }
         return timerInstance;
     }

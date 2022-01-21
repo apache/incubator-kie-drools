@@ -28,6 +28,7 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
@@ -82,7 +83,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(builder.getKnowledgePackages());
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
+        KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -179,7 +180,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(builder.getKnowledgePackages());
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
+        KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -290,7 +291,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(builder.getKnowledgePackages());
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
+        KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);

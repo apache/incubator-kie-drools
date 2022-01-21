@@ -18,6 +18,7 @@ package org.jbpm.workflow.instance.node;
 import java.util.Date;
 import java.util.Map;
 
+import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.Node;
@@ -25,7 +26,6 @@ import org.jbpm.workflow.core.impl.NodeIoHelper;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 /**

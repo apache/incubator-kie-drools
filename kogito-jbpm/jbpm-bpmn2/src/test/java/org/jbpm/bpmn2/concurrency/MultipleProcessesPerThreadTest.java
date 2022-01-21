@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.jbpm.bpmn2.objects.Status;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -85,7 +86,7 @@ public class MultipleProcessesPerThreadTest {
                 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
                 kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultiThreadServiceProcess-Timer.bpmn", getClass()), ResourceType.BPMN2);
 
-                kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbuilder.newKieBase().newKieSession());
+                kruntime = InternalProcessRuntime.asKogitoProcessRuntime(kbuilder.newKieBase().newKieSession());
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("Unable to set up knowlede base or session.", e);
@@ -138,7 +139,7 @@ public class MultipleProcessesPerThreadTest {
                 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
                 kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultiThreadServiceProcess-Task.bpmn", getClass()), ResourceType.BPMN2);
 
-                kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbuilder.newKieBase().newKieSession());
+                kruntime = InternalProcessRuntime.asKogitoProcessRuntime(kbuilder.newKieBase().newKieSession());
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("Unable to set up knowlede base or session.", e);

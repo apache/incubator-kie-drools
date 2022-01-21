@@ -24,7 +24,6 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
@@ -53,6 +52,8 @@ import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jbpm.process.instance.InternalProcessRuntime.asKogitoProcessRuntime;
 
 public class DynamicUtils {
 
@@ -143,7 +144,7 @@ public class DynamicUtils {
 
                 public Void execute(Context context) {
                     StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup(KieSession.class);
-                    KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+                    KogitoProcessRuntime kruntime = asKogitoProcessRuntime(ksession);
                     WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) kruntime.getProcessInstance(processInstance.getStringId());
                     workItemNodeInstance.setProcessInstance(realProcessInstance);
                     if (dynamicContext == null) {
@@ -168,7 +169,7 @@ public class DynamicUtils {
     private static void executeWorkItem(StatefulKnowledgeSessionImpl ksession,
             KogitoWorkItemImpl workItem,
             WorkItemNodeInstance workItemNodeInstance) {
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        KogitoProcessRuntime kruntime = asKogitoProcessRuntime(ksession);
         KogitoProcessEventSupport eventSupport = kruntime.getProcessEventSupport();
         eventSupport.fireBeforeNodeTriggered(workItemNodeInstance, ksession);
         ((InternalKogitoWorkItemManager) kruntime.getKogitoWorkItemManager()).internalExecuteWorkItem(workItem);
@@ -235,7 +236,7 @@ public class DynamicUtils {
 
                 public String execute(Context context) {
                     StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup(KieSession.class);
-                    KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+                    KogitoProcessRuntime kruntime = asKogitoProcessRuntime(ksession);
                     WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) kruntime.getProcessInstance(processInstance.getStringId());
                     subProcessNodeInstance.setProcessInstance(realProcessInstance);
                     if (dynamicContext == null) {
@@ -288,13 +289,13 @@ public class DynamicUtils {
                         parameters);
             }
 
-            ((ProcessInstanceImpl) subProcessInstance).setMetaData("ParentProcessInstanceId",
+            subProcessInstance.setMetaData("ParentProcessInstanceId",
                     processInstance.getStringId());
-            ((ProcessInstanceImpl) subProcessInstance).setParentProcessInstanceId(processInstance.getStringId());
+            subProcessInstance.setParentProcessInstanceId(processInstance.getStringId());
 
             KogitoStatefulKnowledgeSessionImpl kogitoSession = (KogitoStatefulKnowledgeSessionImpl) ksession;
             String subProcessInstanceId = subProcessInstance.getStringId();
-            subProcessInstance = (ProcessInstance) kogitoSession.getKogitoProcessRuntime().startProcessInstance(subProcessInstanceId);
+            subProcessInstance = (ProcessInstance) asKogitoProcessRuntime(kogitoSession).startProcessInstance(subProcessInstanceId);
             subProcessNodeInstance.internalSetProcessInstanceId(subProcessInstanceId);
 
             eventSupport.fireAfterNodeTriggered(subProcessNodeInstance,

@@ -75,10 +75,10 @@ public class KogitoRuntimeLoggerFactory {
     @SuppressWarnings("unchecked")
     private static void loadProvider() {
         try {
-            Class<KieLoggers> cls = (Class<KieLoggers>) Class.forName("org.kie.kogito.drools.core.audit.KogitoKnowledgeRuntimeLoggerProviderImpl");
+            Class<KieLoggers> cls = (Class<KieLoggers>) Class.forName("org.jbpm.audit.KogitoKnowledgeRuntimeLoggerProviderImpl");
             setKnowledgeRuntimeLoggerProvider(cls.newInstance());
         } catch (Exception e) {
-            throw new RuntimeException("Provider org.drools.core.audit.KogitoKnowledgeRuntimeLoggerProviderImpl could not be set.", e);
+            throw new RuntimeException("Provider org.jbpm.audit.KogitoKnowledgeRuntimeLoggerProviderImpl could not be set.", e);
         }
     }
 }

@@ -20,30 +20,21 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.spi.AbstractProcessContext;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
-import org.drools.kiesession.consequence.StatefulKnowledgeSessionForRHS;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.Application;
-import org.kie.kogito.drools.core.KogitoWorkingMemory;
 import org.kie.kogito.drools.core.factory.KogitoDefaultFactHandle;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.drools.core.time.KogitoTimerServiceFactory;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.rules.RuleUnits;
 
-public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl implements KogitoWorkingMemory, KogitoProcessRuntime.Provider {
+public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl {
 
     private Application application;
 
@@ -64,28 +55,8 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
     }
 
     @Override
-    public KogitoProcessRuntime getKogitoProcessRuntime() {
-        return ((KogitoProcessRuntime.Provider) getProcessRuntime()).getKogitoProcessRuntime();
-    }
-
-    @Override
     protected TimerService createTimerService() {
         return KogitoTimerServiceFactory.getTimerService(this.config);
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(Object processInstanceId) {
-        return getProcessInstance((String) processInstanceId);
-    }
-
-    @Override
-    public KogitoProcessInstance getProcessInstance(String processInstanceId) {
-        return getKogitoProcessRuntime().getProcessInstance(processInstanceId);
-    }
-
-    @Override
-    public KogitoProcessInstance getProcessInstance(String processInstanceId, boolean readonly) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -161,42 +132,6 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
                     this.activation.getRule(),
                     this.activation.getTuple().getTupleSink(),
                     fhState);
-        }
-
-        @Override
-        protected boolean sameNodeInstance(NodeInstance subNodeInstance, String nodeInstanceId) {
-            return ((KogitoNodeInstance) subNodeInstance).getStringId().equals(nodeInstanceId);
-        }
-
-        @Override
-        protected AbstractProcessContext createProcessContext() {
-            return new KogitoProcessContextImpl(toStatefulKnowledgeSession());
-        }
-
-        @Override
-        protected KogitoReteEvaluatorForRHS toStatefulKnowledgeSession() {
-            return new KogitoReteEvaluatorForRHS((KogitoStatefulKnowledgeSessionImpl) reteEvaluator);
-        }
-    }
-
-    public static class KogitoReteEvaluatorForRHS extends StatefulKnowledgeSessionForRHS implements KogitoProcessRuntime.Provider {
-
-        public KogitoReteEvaluatorForRHS(KogitoStatefulKnowledgeSessionImpl delegate) {
-            super(delegate);
-        }
-
-        @Override
-        public ProcessInstance getProcessInstance(long id) {
-            throw new UnsupportedOperationException();
-        }
-
-        public ProcessInstance getProcessInstance(String id) {
-            return ((KogitoStatefulKnowledgeSessionImpl) delegate).getProcessInstance(id);
-        }
-
-        @Override
-        public KogitoProcessRuntime getKogitoProcessRuntime() {
-            return ((KogitoProcessRuntime.Provider) delegate).getKogitoProcessRuntime();
         }
     }
 }

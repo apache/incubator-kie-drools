@@ -56,13 +56,8 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     private String description;
     private String rootProcessId;
 
-    /**
-     * @Deprecated use getStringId instead.
-     * @throws UnsupportedOperationException if called
-     */
-    @Deprecated
-    public long getId() {
-        throw new UnsupportedOperationException();
+    public String getId() {
+        return this.id;
     }
 
     public String getStringId() {
@@ -289,13 +284,9 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
         this.outcome = outcome;
     }
 
-    /**
-     * @Deprecated use getParentProcessInstanceStringId instead.
-     * @throws UnsupportedOperationException if called
-     */
     @Override
-    public long getParentProcessInstanceId() {
-        throw new UnsupportedOperationException();
+    public String getParentProcessInstanceId() {
+        return parentProcessInstanceId;
     }
 
     @Override

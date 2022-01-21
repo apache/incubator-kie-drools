@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
@@ -417,7 +418,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10000)
+    @Timeout(10)
     public void testInclusiveSplitAndJoinWithTimer() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
         kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinWithTimer.bpmn2");
@@ -1464,7 +1465,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         }
 
         public Object execute(Context context) {
-            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(((RegistryContext) context).lookup(KieSession.class));
+            KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(((RegistryContext) context).lookup(KieSession.class));
 
             org.jbpm.process.instance.ProcessInstance processInstance =
                     (org.jbpm.process.instance.ProcessInstance) kruntime.getProcessInstance(processInstanceId);

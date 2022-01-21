@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.drools.core.audit.event;
+package org.jbpm.audit.event;
 
 import org.drools.core.audit.event.RuleFlowVariableLogEvent;
 import org.kie.api.runtime.process.ProcessInstance;

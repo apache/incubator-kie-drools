@@ -28,6 +28,7 @@ import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
+import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
@@ -35,7 +36,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 

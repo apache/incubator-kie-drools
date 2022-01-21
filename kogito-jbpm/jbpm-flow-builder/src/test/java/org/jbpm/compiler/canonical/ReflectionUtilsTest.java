@@ -19,8 +19,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

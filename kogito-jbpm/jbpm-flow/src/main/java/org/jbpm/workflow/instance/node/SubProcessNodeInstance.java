@@ -26,6 +26,8 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.StartProcessHelper;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
@@ -41,7 +43,6 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
@@ -106,7 +107,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
             throw new RuntimeException("Could not find process " + processId);
         } else {
-            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime());
+            KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime());
             if (getSubProcessNode().getMetaData("MICollectionInput") != null) {
                 // remove foreach input variable to avoid problems when running in variable strict mode
                 parameters.remove(getSubProcessNode().getMetaData("MICollectionInput"));
@@ -153,7 +154,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     public void cancel() {
         super.cancel();
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
-            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime());
+            KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime());
 
             ProcessInstance processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
 

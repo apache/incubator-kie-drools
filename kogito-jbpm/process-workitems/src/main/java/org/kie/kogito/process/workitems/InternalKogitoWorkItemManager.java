@@ -68,11 +68,6 @@ public interface InternalKogitoWorkItemManager extends org.drools.core.process.i
     }
 
     @Override
-    default void signalEvent(String s, Object o, long l) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     default void retryWorkItem(Long aLong, Map<String, Object> map) {
         throw new UnsupportedOperationException();
     }

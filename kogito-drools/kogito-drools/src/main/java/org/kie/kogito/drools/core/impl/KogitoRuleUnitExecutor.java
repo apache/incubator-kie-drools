@@ -21,16 +21,12 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleUnitExecutorImpl;
-import org.drools.core.spi.AbstractProcessContext;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.Application;
 import org.kie.kogito.drools.core.factory.KogitoDefaultFactHandle;
-import org.kie.kogito.drools.core.spi.KogitoProcessContextImpl;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.rules.RuleUnits;
 
 public class KogitoRuleUnitExecutor extends RuleUnitExecutorImpl {
@@ -116,16 +112,6 @@ public class KogitoRuleUnitExecutor extends RuleUnitExecutorImpl {
                     this.activation.getRule(),
                     this.activation.getTuple().getTupleSink(),
                     fhState);
-        }
-
-        @Override
-        protected boolean sameNodeInstance(NodeInstance subNodeInstance, String nodeInstanceId) {
-            return ((KogitoNodeInstance) subNodeInstance).getStringId().equals(nodeInstanceId);
-        }
-
-        @Override
-        protected AbstractProcessContext createProcessContext() {
-            return new KogitoProcessContextImpl(toStatefulKnowledgeSession());
         }
     }
 }
