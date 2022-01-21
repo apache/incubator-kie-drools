@@ -14,7 +14,7 @@
   <bpmn2:itemDefinition id="__6B621BB3-56F3-43DF-B6C5-D61599190E18_NotCompletedReassignInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__6B621BB3-56F3-43DF-B6C5-D61599190E18_NotStartedNotifyInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__6B621BB3-56F3-43DF-B6C5-D61599190E18_NotCompletedNotifyInputXItem" structureRef="Object"/>
-  <bpmn2:interface id="_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0_ServiceInterface" name="io.quarkus.it.kogito.jbpm.JbpmHotReloadTestHelper" implementationRef="io.quarkus.it.kogito.jbpm.JbpmHotReloadTestHelper">
+  <bpmn2:interface id="_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0_ServiceInterface" name="io.quarkus.it.kogito.process.HotReloadTestHelper" implementationRef="io.quarkus.it.kogito.process.HotReloadTestHelper">
     <bpmn2:operation id="_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0_ServiceOperation" name="toUpper" implementationRef="toUpper"/>
   </bpmn2:interface>
   <bpmn2:process id="text_process" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="text_process" isExecutable="true" processType="Public">
@@ -80,7 +80,7 @@
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
     </bpmn2:userTask>
-    <bpmn2:serviceTask id="_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0" drools:serviceimplementation="Java" drools:serviceinterface="io.quarkus.it.kogito.jbpm.JbpmHotReloadTestHelper" drools:serviceoperation="toUpper" name="Process Text" implementation="Java" operationRef="_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0_ServiceOperation">
+    <bpmn2:serviceTask id="_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0" drools:serviceimplementation="Java" drools:serviceinterface="io.quarkus.it.kogito.process.HotReloadTestHelper" drools:serviceoperation="toUpper" name="Process Text" implementation="Java" operationRef="_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0_ServiceOperation">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Process Text]]></drools:metaValue>

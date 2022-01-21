@@ -47,6 +47,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-jackson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
+        </dependency>
         <!-- this is used implicitly by hot reload tests so let's make Maven aware of it -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -61,7 +65,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
 
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -104,6 +107,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>

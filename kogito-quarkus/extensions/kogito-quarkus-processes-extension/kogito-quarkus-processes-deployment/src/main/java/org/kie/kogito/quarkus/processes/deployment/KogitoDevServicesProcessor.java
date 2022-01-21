@@ -74,6 +74,10 @@ public class KogitoDevServicesProcessor {
 
         DataIndexDevServiceConfig configuration = getConfiguration(buildTimeConfig);
 
+        if (configuration.devServicesEnabled && isDockerWorking.getAsBoolean()) {
+            additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DataIndexEventPublisher.class).build());
+        }
+
         if (closeable != null) {
             boolean shouldShutdown = !configuration.equals(cfg);
             if (!shouldShutdown) {
@@ -93,7 +97,6 @@ public class KogitoDevServicesProcessor {
             if (dataIndex != null) {
                 closeable = dataIndex.getCloseable();
                 systemProperties.produce(new SystemPropertyBuildItem(KOGITO_DATA_INDEX, dataIndex.getUrl()));
-                additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DataIndexEventPublisher.class).build());
             }
             compressor.close();
         } catch (Throwable t) {

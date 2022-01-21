@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.quarkus.it.kogito.jbpm;
+package io.quarkus.it.kogito.process;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class HotReloadIT {
+public class HotReloadTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -41,7 +41,7 @@ public class HotReloadIT {
     private static final String PACKAGE = "io.quarkus.it.kogito.jbpm";
     private static final String PACKAGE_FOLDER = PACKAGE.replace('.', '/');
     private static final String RESOURCE_FILE = PACKAGE_FOLDER + "/text-process.bpmn";
-    private static final String HTTP_TEST_PORT = "65535";
+    public static final String HTTP_TEST_PORT = "65535";
 
     private static final String PROCESS_NAME = "text_process";
 
@@ -50,14 +50,12 @@ public class HotReloadIT {
             .setArchiveProducer(
                     () -> ShrinkWrap
                             .create(JavaArchive.class)
-                            .addClass(CalculationService.class)
-                            .addClass(Order.class)
-                            .addAsResource("text-process.txt", RESOURCE_FILE)
-                            .addClass(JbpmHotReloadTestHelper.class));
+                            .addClass(HotReloadTestHelper.class)
+                            .addAsResource("text-process.bpmn", RESOURCE_FILE));
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testServletChange() {
+    public void testJavaFileChange() {
 
         String payload = "{\"mytext\": \"HeLlO\"}";
 
@@ -89,7 +87,7 @@ public class HotReloadIT {
         assertEquals(2, result.size());
         assertEquals("HELLO", result.get("mytext"));
 
-        test.modifySourceFile(JbpmHotReloadTestHelper.class, s -> s.replace("toUpperCase", "toLowerCase"));
+        test.modifySourceFile(HotReloadTestHelper.class, s -> s.replace("toUpperCase", "toLowerCase"));
 
         id = given()
                 .baseUri("http://localhost:" + HTTP_TEST_PORT)

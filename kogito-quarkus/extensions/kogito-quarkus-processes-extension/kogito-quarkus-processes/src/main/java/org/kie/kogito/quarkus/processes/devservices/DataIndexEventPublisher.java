@@ -17,6 +17,7 @@
 package org.kie.kogito.quarkus.processes.devservices;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -39,7 +40,7 @@ public class DataIndexEventPublisher implements EventPublisher {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexEventPublisher.class);
 
     @ConfigProperty(name = KOGITO_DATA_INDEX)
-    String dataIndexUrl;
+    Optional<String> dataIndexUrl;
 
     @Inject
     Vertx vertx;
@@ -53,10 +54,14 @@ public class DataIndexEventPublisher implements EventPublisher {
 
     @Override
     public void publish(DataEvent<?> event) {
+        if (dataIndexUrl.isEmpty()) {
+            return;
+        }
+
         LOGGER.debug("Sending event to data index: {}", event);
         switch (event.getType()) {
             case "ProcessInstanceEvent":
-                webClient.postAbs(dataIndexUrl + "/processes")
+                webClient.postAbs(dataIndexUrl.get() + "/processes")
                         .expect(ResponsePredicate.SC_ACCEPTED)
                         .sendJson(event, result -> {
                             if (result.failed()) {
@@ -67,7 +72,7 @@ public class DataIndexEventPublisher implements EventPublisher {
                         });
                 break;
             case "UserTaskInstanceEvent":
-                webClient.postAbs(dataIndexUrl + "/tasks")
+                webClient.postAbs(dataIndexUrl.get() + "/tasks")
                         .expect(ResponsePredicate.SC_ACCEPTED)
                         .sendJson(event, result -> {
                             if (result.failed()) {
