@@ -28,6 +28,20 @@ public class ExpressionHandlerUtils {
     private ExpressionHandlerUtils() {
     }
 
+    private static final String EXPR_PREFIX = "${";
+    private static final String EXPR_SUFFIX = "}";
+
+    public static String trimExpr(String expr) {
+        expr = expr.trim();
+        if (expr.startsWith(EXPR_PREFIX)) {
+            expr = expr.substring(EXPR_PREFIX.length());
+            if (expr.endsWith(EXPR_SUFFIX)) {
+                expr = expr.substring(0, expr.length() - EXPR_SUFFIX.length());
+            }
+        }
+        return expr;
+    }
+
     public static void assign(JsonNode context, JsonNode target, JsonNode value, String expr) {
         if (context.isObject()) {
             Optional<String> varName = fallbackVarToName(expr);

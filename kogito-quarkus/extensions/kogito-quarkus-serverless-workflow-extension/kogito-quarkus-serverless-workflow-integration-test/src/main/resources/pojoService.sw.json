@@ -34,7 +34,7 @@
           "functionRef": {
             "refName": "getPerson",
             "arguments": {
-              "name": ".person"
+              "name": "${.person}"
             }
           } 
         }],
@@ -44,7 +44,7 @@
       "name": "finish",
       "type": "operation",
       "stateDataFilter" :  {
-         "input" : "{name : .name}"
+         "input" : "${{name : .name}}"
       },
       "actions": [
         {

@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 import org.kie.kogito.process.workitems.impl.expr.Expression;
 import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
+import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.slf4j.LoggerFactory;
 
 import net.thisptr.jackson.jq.BuiltinFunctionLoader;
@@ -51,7 +52,7 @@ public class JqExpressionHandler implements ExpressionHandler {
 
     @Override
     public Expression get(String expr) {
-        return new JqExpression(scopeSupplier, expr);
+        return new JqExpression(scopeSupplier, ExpressionHandlerUtils.trimExpr(expr));
     }
 
     @Override

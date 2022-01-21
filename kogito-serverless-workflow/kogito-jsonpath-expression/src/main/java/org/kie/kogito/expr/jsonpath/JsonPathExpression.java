@@ -47,7 +47,7 @@ public class JsonPathExpression implements Expression {
 
     public JsonPathExpression(String expr) {
         jsonPath = JsonPath.using(jsonPathConfig);
-        this.expr = expr;
+        this.expr = ExpressionHandlerUtils.trimExpr(expr);
     }
 
     @Override
