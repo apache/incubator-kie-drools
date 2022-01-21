@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -128,6 +129,16 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     private Collection<CompositePackageDescr> findPackages( Collection<CompositePackageDescr> compositePackages ) {
         if (compositePackages != null && !compositePackages.isEmpty()) {
+            if (compositePackagesMap != null) {
+                for (Map.Entry<String, CompositePackageDescr> entry : compositePackagesMap.entrySet()) {
+                    Optional<CompositePackageDescr> optPkg = compositePackages.stream().filter(pkg -> pkg.getNamespace().equals(entry.getKey()) ).findFirst();
+                    if (optPkg.isPresent()) {
+                        optPkg.get().addPackageDescr(entry.getValue().getResource(), entry.getValue());
+                    } else {
+                        compositePackages.add(entry.getValue());
+                    }
+                }
+            }
             return compositePackages;
         }
         if (compositePackagesMap != null) {
