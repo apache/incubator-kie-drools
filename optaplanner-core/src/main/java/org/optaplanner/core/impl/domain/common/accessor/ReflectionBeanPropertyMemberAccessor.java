@@ -118,28 +118,9 @@ public final class ReflectionBeanPropertyMemberAccessor implements MemberAccesso
         return "slow access with reflection";
     }
 
-    // ************************************************************************
-    // AnnotatedElement methods
-    // ************************************************************************
-
-    @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
-        return getterMethod.isAnnotationPresent(annotationClass);
-    }
-
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         return getterMethod.getAnnotation(annotationClass);
-    }
-
-    @Override
-    public Annotation[] getAnnotations() {
-        return getterMethod.getAnnotations();
-    }
-
-    @Override
-    public Annotation[] getDeclaredAnnotations() {
-        return getterMethod.getDeclaredAnnotations();
     }
 
     @Override

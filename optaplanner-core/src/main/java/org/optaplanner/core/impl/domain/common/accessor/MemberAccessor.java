@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.common.accessor;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -30,7 +31,7 @@ import java.lang.reflect.Type;
  * @see ReflectionFieldMemberAccessor
  * @see ReflectionMethodMemberAccessor
  */
-public interface MemberAccessor extends AnnotatedElement {
+public interface MemberAccessor {
 
     Class<?> getDeclaringClass();
 
@@ -52,5 +53,10 @@ public interface MemberAccessor extends AnnotatedElement {
     void executeSetter(Object bean, Object value);
 
     String getSpeedNote();
+
+    /**
+     * As defined in {@link AnnotatedElement#getAnnotation(Class)}.
+     */
+    <T extends Annotation> T getAnnotation(Class<T> annotationClass);
 
 }

@@ -84,28 +84,9 @@ public final class ReflectionFieldMemberAccessor implements MemberAccessor {
         return "slow access with reflection";
     }
 
-    // ************************************************************************
-    // AnnotatedElement methods
-    // ************************************************************************
-
-    @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
-        return field.isAnnotationPresent(annotationClass);
-    }
-
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         return field.getAnnotation(annotationClass);
-    }
-
-    @Override
-    public Annotation[] getAnnotations() {
-        return field.getAnnotations();
-    }
-
-    @Override
-    public Annotation[] getDeclaredAnnotations() {
-        return field.getDeclaredAnnotations();
     }
 
     @Override

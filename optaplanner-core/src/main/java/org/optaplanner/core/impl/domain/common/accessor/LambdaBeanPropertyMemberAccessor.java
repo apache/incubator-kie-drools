@@ -152,28 +152,9 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
         return "pretty fast access with LambdaMetafactory";
     }
 
-    // ************************************************************************
-    // AnnotatedElement methods
-    // ************************************************************************
-
-    @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
-        return getterMethod.isAnnotationPresent(annotationClass);
-    }
-
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         return getterMethod.getAnnotation(annotationClass);
-    }
-
-    @Override
-    public Annotation[] getAnnotations() {
-        return getterMethod.getAnnotations();
-    }
-
-    @Override
-    public Annotation[] getDeclaredAnnotations() {
-        return getterMethod.getDeclaredAnnotations();
     }
 
     @Override

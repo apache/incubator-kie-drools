@@ -98,28 +98,9 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
         throw new UnsupportedOperationException();
     }
 
-    // ************************************************************************
-    // AnnotatedElement methods
-    // ************************************************************************
-
-    @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
-        return readMethod.isAnnotationPresent(annotationClass);
-    }
-
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         return readMethod.getAnnotation(annotationClass);
-    }
-
-    @Override
-    public Annotation[] getAnnotations() {
-        return readMethod.getAnnotations();
-    }
-
-    @Override
-    public Annotation[] getDeclaredAnnotations() {
-        return readMethod.getDeclaredAnnotations();
     }
 
     @Override

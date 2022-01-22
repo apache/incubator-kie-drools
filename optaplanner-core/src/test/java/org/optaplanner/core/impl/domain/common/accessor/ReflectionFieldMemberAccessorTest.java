@@ -31,7 +31,7 @@ public class ReflectionFieldMemberAccessorTest {
                 TestdataFieldAnnotatedEntity.class.getDeclaredField("value"));
         assertThat(memberAccessor.getName()).isEqualTo("value");
         assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);
-        assertThat(memberAccessor.isAnnotationPresent(PlanningVariable.class)).isTrue();
+        assertThat(memberAccessor.getAnnotation(PlanningVariable.class)).isNotNull();
 
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
