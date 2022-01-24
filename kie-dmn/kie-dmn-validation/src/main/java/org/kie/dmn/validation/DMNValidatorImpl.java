@@ -657,7 +657,8 @@ public class DMNValidatorImpl implements DMNValidator {
             DMNModel model = compiler.compile( dmnModel.getResAndConfig().getResource() );
             if (model != null) {
                 List<DTAnalysis> vs = dmnDTValidator.analyse(model, flags);
-                List<DMNMessage> results = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
+                String path = dmnModel.getResAndConfig().getResource().getSourcePath();
+                List<DMNMessage> results = vs.stream().flatMap(a -> a.asDMNMessages().stream()).map(m -> ((DMNMessageImpl) m).withPath(path)).collect(Collectors.toList());
                 return results;
             } else {
                 throw new IllegalStateException("Compiled model is null!");
