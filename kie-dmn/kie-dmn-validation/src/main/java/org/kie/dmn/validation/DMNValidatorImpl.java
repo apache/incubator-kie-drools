@@ -250,11 +250,15 @@ public class DMNValidatorImpl implements DMNValidator {
                                           Msg.VALIDATION_STOPPED);
                     return results.getMessages();
                 }
-                DMNAssemblerService.enrichDMNResourcesWithImportsDependencies(models, Collections.emptyList());
-                models = DMNResourceDependenciesSorter.sort(models);
-                validateDMNResources(models, results);
+                extracted(results, models);
             }
             return results.getMessages();
+        }
+
+        private void extracted(DMNMessageManager results, List<DMNResource> models) {
+            DMNAssemblerService.enrichDMNResourcesWithImportsDependencies(models, Collections.emptyList());
+            models = DMNResourceDependenciesSorter.sort(models);
+            validateDMNResources(models, results);
         }
 
         @Override
@@ -286,7 +290,8 @@ public class DMNValidatorImpl implements DMNValidator {
                                           Msg.VALIDATION_STOPPED);
                     return results.getMessages();
                 }
-                validateDefinitions(internalValidatorSortModels(Arrays.asList(models)), results);
+                List<DMNResource> dmnRs = Arrays.stream(models).map(d -> wrapDefinitions(d, null)).collect(Collectors.toList());
+                extracted(results, dmnRs);
             }
             return results.getMessages();
         }
