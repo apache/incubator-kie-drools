@@ -241,10 +241,10 @@ public class DMNValidatorImpl implements DMNValidator {
                 	// we internalize the content:
                     String content = readContent( r.getReader() );
                     if (flags.contains(VALIDATE_SCHEMA)) {
-                    	results.addAll(validator.validateSchema( content, null ));
+                    	results.addAll(validator.validateSchema( content, r.getSourcePath() ));
                     }
-                    Definitions dmndefs = unmarshalDefinitionsFromReader(validator.dmnCompilerConfig, new StringReader(content));
-                    models.add(new DMNResource(dmndefs, new ResourceWithConfigurationImpl(r, null, x -> {}, y -> {})));
+                    DMNResource dmnResource = unmarshallDMNResource(validator.dmnCompilerConfig, r, content);
+                    models.add(dmnResource);
                 } catch (Exception t) {
                     MsgUtil.reportMessage(LOG,
                                           DMNMessage.Severity.ERROR,
@@ -269,7 +269,7 @@ public class DMNValidatorImpl implements DMNValidator {
                 }
                 DMNAssemblerService.enrichDMNResourcesWithImportsDependencies(models, Collections.emptyList());
                 models = DMNResourceDependenciesSorter.sort(models);
-                // TODO validateDefinitions(models, results);
+                validateDMNResources(models, results);
             }
             return results.getMessages();
         }
@@ -341,6 +341,51 @@ public class DMNValidatorImpl implements DMNValidator {
             return results.getMessages();
         }
 
+        private void validateDMNResources(List<DMNResource> models, DMNMessageManager results) {
+            List<DMNResource> otherModel_DMNResources = new ArrayList<>();
+            List<DMNModel> otherModel_DMNModels = new ArrayList<>();
+            for (DMNResource dmnR : models) {
+                try {
+                    if (flags.contains(VALIDATE_MODEL)) {
+                        results.addAll(validator.validateModel(dmnR, otherModel_DMNResources));
+                        otherModel_DMNResources.add(dmnR);
+                    }
+                    if (flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
+                        DMNCompilerImpl compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
+                        Function<String, Reader> relativeResolver = null;
+                        if (importResolver != null) {
+                            relativeResolver = locationURI -> importResolver.newReader(dmnR.getDefinitions().getNamespace(),
+                                                                                       dmnR.getDefinitions().getName(),
+                                                                                       locationURI);
+                        }
+                        DMNModel model = compiler.compile( dmnR.getDefinitions(), otherModel_DMNModels, dmnR.getResAndConfig().getResource(), relativeResolver ); // must use this internal method to ensure the Definitions model is the same (identity wise)
+                        if (model != null) {
+                            results.addAll(model.getMessages());
+                            otherModel_DMNModels.add(model);
+                            if (flags.contains(ANALYZE_DECISION_TABLE)) {
+                                List<DTAnalysis> vs = validator.dmnDTValidator.analyse(model, flags);
+                                String path = dmnR.getResAndConfig().getResource().getSourcePath();
+                                List<DMNMessage> dtAnalysisResults = vs.stream().flatMap(a -> a.asDMNMessages().stream()).map(m -> ((DMNMessageImpl) m).withPath(path)).collect(Collectors.toList());
+                                results.addAllUnfiltered(dtAnalysisResults);
+                            }
+                        } else {
+                            throw new IllegalStateException("Compiled model is null!");
+                        }
+                    }
+                } catch (Throwable t) {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          results,
+                                          t,
+                                          null,
+                                          Msg.VALIDATION_RUNTIME_PROBLEM,
+                                          t.getMessage());
+                }
+            }
+        }
+        
+        @Deprecated
         private void validateDefinitions(List<Definitions> definitions, DMNMessageManager results) {
             List<Definitions> otherModel_Definitions = new ArrayList<>();
             List<DMNModel> otherModel_DMNModels = new ArrayList<>();
@@ -665,10 +710,10 @@ public class DMNValidatorImpl implements DMNValidator {
         return reporter.getMessages().getMessages();
     }
 
-    private List<DMNMessage> validateCompilation(DMNResource dmnModel) {
-        if( dmnModel != null ) {
+    private List<DMNMessage> validateCompilation(DMNResource dmnR) {
+        if( dmnR != null ) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
-            DMNModel model = compiler.compile( dmnModel.getDefinitions(), dmnModel.getResAndConfig().getResource(), Collections.emptyList() ); // must use this internal method to ensure the Definitions model is the same (identity wise)
+            DMNModel model = compiler.compile( dmnR.getDefinitions(), dmnR.getResAndConfig().getResource(), Collections.emptyList() ); // must use this internal method to ensure the Definitions model is the same (identity wise)
             if( model != null ) {
                 return model.getMessages();
             } else {
@@ -692,13 +737,13 @@ public class DMNValidatorImpl implements DMNValidator {
         return Collections.emptyList();
     }
 
-    private List<DMNMessage> analyseDT(DMNResource dmnModel, Set<Validation> flags) {
-        if (dmnModel != null) {
+    private List<DMNMessage> analyseDT(DMNResource dmnR, Set<Validation> flags) {
+        if (dmnR != null) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
-            DMNModel model = compiler.compile( dmnModel.getDefinitions(), dmnModel.getResAndConfig().getResource(), Collections.emptyList() ); // must use this internal method to ensure the Definitions model is the same (identity wise)
+            DMNModel model = compiler.compile( dmnR.getDefinitions(), dmnR.getResAndConfig().getResource(), Collections.emptyList() ); // must use this internal method to ensure the Definitions model is the same (identity wise)
             if (model != null) {
                 List<DTAnalysis> vs = dmnDTValidator.analyse(model, flags);
-                String path = dmnModel.getResAndConfig().getResource().getSourcePath();
+                String path = dmnR.getResAndConfig().getResource().getSourcePath();
                 List<DMNMessage> results = vs.stream().flatMap(a -> a.asDMNMessages().stream()).map(m -> ((DMNMessageImpl) m).withPath(path)).collect(Collectors.toList());
                 return results;
             } else {
