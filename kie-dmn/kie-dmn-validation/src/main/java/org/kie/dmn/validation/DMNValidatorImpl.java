@@ -46,7 +46,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.drools.core.util.IoUtils;
+import org.drools.core.io.impl.FileSystemResource;
+import org.drools.core.io.impl.ReaderResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.command.BatchExecutionCommand;
@@ -441,29 +442,7 @@ public class DMNValidatorImpl implements DMNValidator {
 
     @Override
     public List<DMNMessage> validate(File xmlFile, Validation... options) {
-        DMNMessageManager results = new DefaultDMNMessagesManager( null );
-        EnumSet<Validation> flags = EnumSet.copyOf( Arrays.asList( options ) );
-        if( flags.contains( VALIDATE_SCHEMA ) ) {
-            results.addAll( validateSchema( IoUtils.readFileAsString(xmlFile), xmlFile.getPath() ) );
-        }
-        if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
-            Definitions dmndefs = null;
-            try {
-                dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new FileReader(xmlFile));
-                dmndefs.normalize();
-                validateModelCompilation( dmndefs, results, flags );
-            } catch ( Throwable t ) {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      null,
-                                      results,
-                                      t,
-                                      null,
-                                      Msg.VALIDATION_RUNTIME_PROBLEM,
-                                      t.getMessage());
-            }
-        }
-        return results.getMessages();
+        return validate(new FileSystemResource(xmlFile), options);
     }
 
     @Override
@@ -473,18 +452,26 @@ public class DMNValidatorImpl implements DMNValidator {
 
     @Override
     public List<DMNMessage> validate(Reader reader, Validation... options) {
-        DMNMessageManager results = new DefaultDMNMessagesManager( null );
+        return validate(new ReaderResource(reader), options);
+    }
+    
+    public List<DMNMessage> validate(Resource resource) {
+        return validate( resource, VALIDATE_MODEL );
+    }
+    
+    public List<DMNMessage> validate(Resource resource, Validation... options) {
+        DMNMessageManager results = new DefaultDMNMessagesManager( resource );
         EnumSet<Validation> flags = EnumSet.copyOf( Arrays.asList( options ) );
         try {
-        	// We get passed a Resource, which might be constructed from a Reader, so we have only 1-time opportunity to be sure to read it successfully,
-        	// we internalize the content:
-            String content = readContent( reader );
+            // We get passed a Resource, which might be constructed from a Reader, so we have only 1-time opportunity to be sure to read it successfully,
+            // we internalize the content:
+            String content = readContent( resource.getReader() );
             if( flags.contains( VALIDATE_SCHEMA ) ) {
-                results.addAll( validateSchema( content, null ) );
+                results.addAll( validateSchema( content, resource.getSourcePath() ) );
             }
             if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
-                Definitions dmndefs = unmarshalDefinitionsFromReader(dmnCompilerConfig, new StringReader(content));
-                validateModelCompilation( dmndefs, results, flags );
+                DMNResource dmnResource = unmarshallDMNResource(dmnCompilerConfig, resource, content);
+                validateModelCompilation( dmnResource, results, flags );
             }
         } catch ( Throwable t ) {
             MsgUtil.reportMessage(LOG,
