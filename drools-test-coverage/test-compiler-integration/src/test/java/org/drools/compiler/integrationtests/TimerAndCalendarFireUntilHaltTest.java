@@ -192,7 +192,6 @@ public class TimerAndCalendarFireUntilHaltTest {
         listener = new RecordingRulesListener();
         ksession.addEventListener(listener);
         timeService = ksession.getSessionClock();
-        timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
     }
 
     private void startEngine() throws InterruptedException {
