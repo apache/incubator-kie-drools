@@ -215,6 +215,7 @@ public class DMNValidatorImpl implements DMNValidator {
             return theseModels(array);
         }
         
+        @Override
         public List<DMNMessage> theseModels(Resource... resources) {
             DMNMessageManager results = new DefaultDMNMessagesManager( null ); // this collector span multiple resources.
             List<DMNResource> models = new ArrayList<>();
@@ -250,12 +251,12 @@ public class DMNValidatorImpl implements DMNValidator {
                                           Msg.VALIDATION_STOPPED);
                     return results.getMessages();
                 }
-                extracted(results, models);
+                processDMNResourcesAndValidate(results, models);
             }
             return results.getMessages();
         }
 
-        private void extracted(DMNMessageManager results, List<DMNResource> models) {
+        private void processDMNResourcesAndValidate(DMNMessageManager results, List<DMNResource> models) {
             DMNAssemblerService.enrichDMNResourcesWithImportsDependencies(models, Collections.emptyList());
             models = DMNResourceDependenciesSorter.sort(models);
             validateDMNResources(models, results);
@@ -291,7 +292,7 @@ public class DMNValidatorImpl implements DMNValidator {
                     return results.getMessages();
                 }
                 List<DMNResource> dmnRs = Arrays.stream(models).map(d -> wrapDefinitions(d, null)).collect(Collectors.toList());
-                extracted(results, dmnRs);
+                processDMNResourcesAndValidate(results, dmnRs);
             }
             return results.getMessages();
         }
@@ -460,10 +461,12 @@ public class DMNValidatorImpl implements DMNValidator {
         return validate(new ReaderResource(reader), options);
     }
     
+    @Override
     public List<DMNMessage> validate(Resource resource) {
         return validate( resource, VALIDATE_MODEL );
     }
     
+    @Override
     public List<DMNMessage> validate(Resource resource, Validation... options) {
         DMNMessageManager results = new DefaultDMNMessagesManager( resource );
         EnumSet<Validation> flags = EnumSet.copyOf( Arrays.asList( options ) );

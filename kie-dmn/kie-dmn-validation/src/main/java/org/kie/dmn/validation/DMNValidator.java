@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.xml.validation.Schema;
 
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.model.api.Definitions;
 
@@ -81,7 +82,10 @@ public interface DMNValidator {
      *
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
+     * 
+     * @deprecated Use {@link #validate(Resource)} instead
      */
+    @Deprecated
     List<DMNMessage> validate( File xmlFile );
 
     /**
@@ -95,7 +99,10 @@ public interface DMNValidator {
      *
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
+     * 
+     * @deprecated Use {@link #validate(Resource, Validation...)} instead
      */
+    @Deprecated
     List<DMNMessage> validate( File xmlFile, Validation... options );
 
     /**
@@ -108,7 +115,10 @@ public interface DMNValidator {
      *
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
+     * 
+     * @deprecated Use {@link #validate(Resource)} instead
      */
+    @Deprecated
     List<DMNMessage> validate( Reader reader );
 
     /**
@@ -122,9 +132,40 @@ public interface DMNValidator {
      *
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
+     * 
+     * @deprecated Use {@link #validate(Resource, Validation...)} instead
      */
+    @Deprecated
     List<DMNMessage> validate( Reader reader, Validation... options );
 
+
+    /**
+     * Validate the model and return the results. This
+     * is the same as invoking method
+     * {@link #validate(Resource, Validation...)}
+     * with option <code>Validation.VALIDATE_MODEL</code>
+     *
+     * @param reader a reader for the model to validate
+     *
+     * @return returns a list of messages from the validation, or an empty
+     *         list otherwise.
+     */
+    List<DMNMessage> validate(Resource resource);
+
+    /**
+     * Validate the model and return the results. The options field
+     * defines which validations to apply. E.g.:
+     *
+     * <code>validate( resource, VALIDATE_MODEL, VALIDATE_COMPILATION )</code>
+     *
+     * @param resource the {@link Resource} containing the DMN model to validate
+     * @param options selects which validations to apply
+     *
+     * @return returns a list of messages from the validation, or an empty
+     *         list otherwise.
+     */
+    List<DMNMessage> validate(Resource resource, Validation... options);
+    
     /**
      * Release all resources associated with this DMNValidator.
      */
@@ -156,7 +197,10 @@ public interface DMNValidator {
          *
          * @return returns a list of messages from the validation, or an empty
          *         list otherwise.
+         *         
+         * @deprecated use {@link ValidatorBuilder#theseModels(Resource...)} instead.
          */
+        @Deprecated
         List<DMNMessage> theseModels(File... files);
 
         /**
@@ -168,9 +212,24 @@ public interface DMNValidator {
          *
          * @return returns a list of messages from the validation, or an empty
          *         list otherwise.
+         *         
+         * @deprecated use {@link ValidatorBuilder#theseModels(Resource...)} instead.
          */
+        @Deprecated
         List<DMNMessage> theseModels(Reader... readers);
 
+        /**
+         * Validate the models and return the results. 
+         * 
+         * @see DMNValidator#validateUsing(Validation...)
+         * 
+         * @param resources the {@link Resource} containing the DMN models to validate
+         *
+         * @return returns a list of messages from the validation, or an empty
+         *         list otherwise.
+         */
+        List<DMNMessage> theseModels(Resource... resources);
+        
         /**
          * Validate the models and return the results. 
          * 
