@@ -28,7 +28,7 @@ public class HelloService {
     private static final Logger LOGGER = LoggerFactory.getLogger(HelloService.class);
 
     public String hello(String name) throws IOException {
-        if (name.equals("exception")) {
+        if ("exception".equals(name)) {
             throw new IOException("what kind of name is that?");
         }
         logMethodCall("hello", name);

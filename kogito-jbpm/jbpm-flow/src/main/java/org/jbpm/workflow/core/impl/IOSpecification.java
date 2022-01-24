@@ -144,4 +144,8 @@ public class IOSpecification implements Serializable {
         return dataInputs.stream().anyMatch(e -> e.getLabel().equals(label));
     }
 
+    public boolean containsOutputLabel(String label) {
+        return dataOutputs.stream().anyMatch(e -> e.getLabel().equals(label));
+    }
+
 }

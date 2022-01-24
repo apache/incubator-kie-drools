@@ -798,7 +798,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             String structureRef = itemDefinition != null ? itemDefinition.getStructureRef() : null;
             DataDefinition input = new DataDefinition(id, name, structureRef);
             multiInstanceSpecification.setInputDataItem(input);
-            ioSpecification.getDataInputs().add(input);
+            if (!ioSpecification.containsInputLabel(input.getLabel())) {
+                ioSpecification.getDataInputs().add(input);
+            }
         });
 
         readSingleChildElementByTag(multiInstanceNode, "outputDataItem").ifPresent(outputDataItem -> {
@@ -809,7 +811,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             String structureRef = itemDefinition != null ? itemDefinition.getStructureRef() : null;
             DataDefinition output = new DataDefinition(id, name, structureRef);
             multiInstanceSpecification.setOutputDataItem(output);
-            ioSpecification.getDataOutputs().add(output);
+            if (!ioSpecification.containsOutputLabel(output.getLabel())) {
+                ioSpecification.getDataOutputs().add(output);
+            }
         });
 
         readSingleChildElementByTag(multiInstanceNode, "loopDataOutputRef").ifPresent(loopDataOutputRef -> {

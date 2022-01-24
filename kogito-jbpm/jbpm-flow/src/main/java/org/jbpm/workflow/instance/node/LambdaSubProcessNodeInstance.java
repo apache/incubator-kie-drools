@@ -97,7 +97,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         if (!getSubProcessNode().isWaitForCompletion()) {
             triggerCompleted();
         } else if (processInstance.status() == ProcessInstance.STATE_COMPLETED || processInstance.status() == ProcessInstance.STATE_ABORTED) {
-            triggerCompleted();
+            processInstanceCompleted((ProcessInstanceImpl) pi);
         } else {
             addProcessListener();
         }

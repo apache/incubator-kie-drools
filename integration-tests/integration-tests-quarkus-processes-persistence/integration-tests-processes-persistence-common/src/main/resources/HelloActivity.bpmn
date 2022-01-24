@@ -7,7 +7,7 @@
   <bpmn2:interface id="_F0FA249C-853B-4F78-91CB-24275587D66D_ServiceInterface" name="org.kie.kogito.HelloService" implementationRef="org.kie.kogito.HelloService">
     <bpmn2:operation id="_F0FA249C-853B-4F78-91CB-24275587D66D_ServiceOperation" name="hello" implementationRef="hello"/>
   </bpmn2:interface>
-  <bpmn2:process id="hello" drools:packageName="org.kie.kogito" drools:version="1.0" drools:adHoc="true" name="hello" isExecutable="true" processType="Public">
+  <bpmn2:process id="helloActivity" drools:packageName="org.kie.kogito" drools:version="1.0" drools:adHoc="false" name="hello" isExecutable="true" processType="Public">
     <bpmn2:property id="var1" itemSubjectRef="_var1Item" name="var1"/>
     <bpmn2:property id="var2" itemSubjectRef="_var2Item" name="var2"/>
     <bpmn2:property id="person" itemSubjectRef="_personItem" name="person"/>

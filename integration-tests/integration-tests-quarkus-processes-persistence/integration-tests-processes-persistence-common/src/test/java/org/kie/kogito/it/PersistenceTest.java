@@ -33,7 +33,8 @@ public abstract class PersistenceTest {
 
     public static final String PROCESS_ID = "hello";
     public static String PROCESS_EMBEDDED_ID = "embedded";
-    public static String PROCESS_MULTIPLEINSTANCES_ID = "MultipleInstanceSubProcess";
+    public static String PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID = "MultipleInstanceEmbeddedSubProcess";
+    public static String PROCESS_MULTIPLE_INSTANCES_ID = "MultipleInstanceSubProcess";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -71,12 +72,6 @@ public abstract class PersistenceTest {
                 .path("id");
 
         assertEquals(createdPid, pid);
-
-        given().contentType(ContentType.JSON)
-                .when()
-                .delete("/management/processes/{processId}/instances/{processInstanceId}", PROCESS_ID, pid)
-                .then()
-                .statusCode(200);
 
         given().contentType(ContentType.JSON)
                 .when()
@@ -133,9 +128,9 @@ public abstract class PersistenceTest {
     }
 
     @Test
-    void testMultipleInstance() {
+    void testMultipleEmbeddedInstance() {
         String pId = given().contentType(ContentType.JSON)
-                .pathParam("processId", PROCESS_MULTIPLEINSTANCES_ID)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID)
                 .when()
                 .post("/{processId}")
                 .then()
@@ -148,7 +143,7 @@ public abstract class PersistenceTest {
                 .contentType(ContentType.JSON)
                 .queryParam("user", "admin")
                 .pathParam("pId", pId)
-                .pathParam("processId", PROCESS_MULTIPLEINSTANCES_ID)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID)
                 .when()
                 .get("/{processId}/{pId}/tasks")
                 .then()
@@ -159,7 +154,7 @@ public abstract class PersistenceTest {
         given().contentType(ContentType.JSON)
                 .pathParam("pId", pId)
                 .pathParam("taskId", taskId)
-                .pathParam("processId", PROCESS_MULTIPLEINSTANCES_ID)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID)
                 .queryParam("user", "admin")
                 .body("{}")
                 .when()
@@ -168,7 +163,28 @@ public abstract class PersistenceTest {
                 .statusCode(200);
 
         given().contentType(ContentType.JSON)
-                .pathParam("processId", PROCESS_MULTIPLEINSTANCES_ID)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID)
+                .pathParam("pId", pId)
+                .when()
+                .get("/{processId}/{pId}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    void testMultipleInstance() {
+        String pId = given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_ID)
+                .when()
+                .post("/{processId}")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .extract()
+                .path("id");
+
+        given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_ID)
                 .pathParam("pId", pId)
                 .when()
                 .get("/{processId}/{pId}")

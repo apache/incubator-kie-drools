@@ -77,13 +77,11 @@ public class DataDefinition implements Serializable {
     }
 
     public static DataDefinition toSimpleDefinition(String id) {
-        DataDefinition def = null;
         if (id.contains("#{")) {
-            def = new DataDefinition(id);
+            return new DataDefinition(id);
         } else {
-            def = new DataDefinition(id, id, "java.lang.Object");
+            return new DataDefinition(id, id, "java.lang.Object");
         }
-        return def;
     }
 
     public boolean hasExpression() {

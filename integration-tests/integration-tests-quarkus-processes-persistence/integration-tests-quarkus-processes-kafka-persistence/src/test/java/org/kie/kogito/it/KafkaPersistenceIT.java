@@ -27,6 +27,7 @@ import static org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource.KOG
 @QuarkusTestResource(value = KafkaQuarkusTestResource.class, initArgs = { @ResourceArg(name = KOGITO_KAFKA_TOPICS, value = KafkaPersistenceIT.TOPICS) })
 public class KafkaPersistenceIT extends PersistenceTest {
 
-    public static final String TOPICS = "kogito.process.hello,kogito.process.embedded,kogito.process.MultipleInstanceSubProcess";
+    public static final String TOPICS =
+            "kogito.process.hello,kogito.process.embedded,kogito.process.MultipleInstanceSubProcess,kogito.process.MultipleInstanceEmbeddedSubProcess,kogito.process.helloActivity";
 
 }
