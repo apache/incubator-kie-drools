@@ -68,5 +68,10 @@ export class RuntimeToolsDevUIEnvelopeApiImpl
       this.args.view().setDevUIUrl(initArgs.devUIUrl);
     this.args.view().setOpenApiPath &&
       this.args.view().setOpenApiPath(initArgs.openApiPath);
+
+    // Ensure these are set last. This is a workaround to ensure views are corrected configured with other properties
+    // from the DevUIAppContext before they are rendered. i.e. use of DevUIAppContext is not responsive to updates.
+    this.args.view().setProcessEnabled(initArgs.isProcessEnabled);
+    this.args.view().setTracingEnabled(initArgs.isTracingEnabled);
   };
 }

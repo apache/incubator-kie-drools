@@ -46,6 +46,14 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-multipart-deployment</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-common-deployment</artifactId>
+    </dependency>
 
     <!-- Undertow is needed so that the static resource serving can correctly locate CP resources from `META-INF/resources` of the application, as it would be normally expected.
          See https://issues.redhat.com/browse/KOGITO-3477 -->

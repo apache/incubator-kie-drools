@@ -17,8 +17,10 @@ package org.kie.kogito.runtime.tools.quarkus.extension.deployment;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Optional;
 
+import org.kie.kogito.quarkus.addons.common.deployment.TrustyServiceAvailableBuildItem;
+import org.kie.kogito.quarkus.common.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.user.UserInfoSupplier;
 
 import io.quarkus.deployment.IsDevelopment;
@@ -32,8 +34,8 @@ import io.quarkus.deployment.builditem.ShutdownContextBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.util.WebJarUtil;
-import io.quarkus.devconsole.spi.DevConsoleRouteBuildItem;
 import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
+import io.quarkus.devconsole.spi.DevConsoleTemplateInfoBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
 import io.quarkus.vertx.http.runtime.devmode.DevConsoleRecorder;
@@ -62,7 +64,6 @@ public class DevConsoleProcessor {
     @BuildStep(onlyIf = IsDevelopment.class)
     @Record(ExecutionTime.RUNTIME_INIT)
     public void deployStaticResources(final DevConsoleRecorder recorder,
-            final List<DevConsoleRouteBuildItem> routes,
             final CurateOutcomeBuildItem curateOutcomeBuildItem,
             final LiveReloadBuildItem liveReloadBuildItem,
             final LaunchModeBuildItem launchMode,
@@ -85,5 +86,21 @@ public class DevConsoleProcessor {
                 .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
+    }
+
+    @SuppressWarnings("unused")
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public void isProcessEnabled(final BuildProducer<DevConsoleTemplateInfoBuildItem> devConsoleTemplateInfoBuildItemBuildProducer,
+            final Optional<KogitoDataIndexServiceAvailableBuildItem> dataIndexServiceAvailableBuildItem) {
+        devConsoleTemplateInfoBuildItemBuildProducer.produce(new DevConsoleTemplateInfoBuildItem("isProcessEnabled",
+                dataIndexServiceAvailableBuildItem.isPresent()));
+    }
+
+    @SuppressWarnings("unused")
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public void isTracingEnabled(final BuildProducer<DevConsoleTemplateInfoBuildItem> devConsoleTemplateInfoBuildItemBuildProducer,
+            final Optional<TrustyServiceAvailableBuildItem> trustyServiceAvailableBuildItem) {
+        devConsoleTemplateInfoBuildItemBuildProducer.produce(new DevConsoleTemplateInfoBuildItem("isTracingEnabled",
+                trustyServiceAvailableBuildItem.isPresent()));
     }
 }

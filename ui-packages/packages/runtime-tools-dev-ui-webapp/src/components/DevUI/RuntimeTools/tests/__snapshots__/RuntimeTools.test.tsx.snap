@@ -4,6 +4,8 @@ exports[`Runtime Tools tests Snapshot tests with default props 1`] = `
 <RuntimeTools
   dataIndexUrl="http:localhost:4000"
   devUIUrl="http://localhost:8080"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
   navigate="JobsManagement"
   openApiPath="/docs/openapi.json"
   trustyServiceUrl="http://localhost:1336"
@@ -234,6 +236,8 @@ exports[`Runtime Tools tests Snapshot tests with default props 1`] = `
       }
     }
     devUIUrl="http://localhost:8080"
+    isProcessEnabled={true}
+    isTracingEnabled={true}
     openApiPath="/docs/openapi.json"
     users={
       Array [

@@ -20,7 +20,7 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { MemoryRouter } from 'react-router';
 import { User, PageLayout } from '@kogito-apps/consoles-common';
-import ConsolesNav from '../DevUINav/DevUINav';
+import DevUINav from '../DevUINav/DevUINav';
 import JobsManagementContextProvider from '../../../channel/JobsManagement/JobsManagementContextProvider';
 import ProcessDetailsContextProvider from '../../../channel/ProcessDetails/ProcessDetailsContextProvider';
 import ProcessListContextProvider from '../../../channel/ProcessList/ProcessListContextProvider';
@@ -34,6 +34,8 @@ import ProcessFormContextProvider from '../../../channel/ProcessForm/ProcessForm
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
+  isProcessEnabled: boolean;
+  isTracingEnabled: boolean;
   users: User[];
   children: React.ReactElement;
   devUIUrl: string;
@@ -42,6 +44,8 @@ interface IOwnProps {
 
 const DevUILayout: React.FC<IOwnProps> = ({
   apolloClient,
+  isProcessEnabled,
+  isTracingEnabled,
   users,
   devUIUrl,
   openApiPath,
@@ -52,7 +56,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
       <PageLayout
         pageNavOpen={true}
         withHeader={false}
-        PageNav={<ConsolesNav pathname={routeProps.location.pathname} />}
+        PageNav={<DevUINav pathname={routeProps.location.pathname} />}
       >
         {children}
       </PageLayout>
@@ -65,6 +69,8 @@ const DevUILayout: React.FC<IOwnProps> = ({
         users={users}
         devUIUrl={devUIUrl}
         openApiPath={openApiPath}
+        isProcessEnabled={isProcessEnabled}
+        isTracingEnabled={isTracingEnabled}
       >
         <TaskConsoleContextsProvider apolloClient={apolloClient}>
           <TaskFormContextProvider>

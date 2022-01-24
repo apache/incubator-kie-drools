@@ -1,12 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot 1`] = `null`;
+exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process and Tracing enabled 1`] = `null`;
 
-exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot 2`] = `
+exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process and Tracing enabled 2`] = `
 <ForwardRef>
   <RuntimeTools
     dataIndexUrl="http://localhost:4000"
     devUIUrl="http://localhost:8080"
+    isProcessEnabled={true}
+    isTracingEnabled={true}
     navigate="test"
     openApiPath="/docs/openapi.json"
     trustyServiceUrl="http://localhost:1336"
@@ -14,3 +16,37 @@ exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot 2`] = `
   />
 </ForwardRef>
 `;
+
+exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process disabled, Trusty disabled 1`] = `<ForwardRef />`;
+
+exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process disabled, Trusty enabled 1`] = `
+<ForwardRef>
+  <RuntimeTools
+    dataIndexUrl="http://localhost:4000"
+    devUIUrl=""
+    isProcessEnabled={false}
+    isTracingEnabled={true}
+    navigate="test"
+    openApiPath=""
+    trustyServiceUrl="http://localhost:8081"
+    users={Array []}
+  />
+</ForwardRef>
+`;
+
+exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process enabled, Trusty disabled 1`] = `
+<ForwardRef>
+  <RuntimeTools
+    dataIndexUrl="http://localhost:4000"
+    devUIUrl=""
+    isProcessEnabled={true}
+    isTracingEnabled={false}
+    navigate="test"
+    openApiPath=""
+    trustyServiceUrl="http://localhost:8081"
+    users={Array []}
+  />
+</ForwardRef>
+`;
+
+exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process enabled, Trusty enabled, navitageTo empty 1`] = `<ForwardRef />`;

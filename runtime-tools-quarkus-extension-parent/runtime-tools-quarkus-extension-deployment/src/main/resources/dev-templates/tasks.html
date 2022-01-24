@@ -33,9 +33,11 @@ height: calc(100vh - 98px);
 <script>
     const devUI = RuntimeToolsDevUI.open({
         container: document.getElementById("envelope-app"),
+        isProcessEnabled: {info:isProcessEnabled},
+        isTracingEnabled: {info:isTracingEnabled},
         users: {info:userInfo.arrayRepresentation.raw},
-        dataIndexUrl: "{config:property('kogito.data-index.url')}/graphql",
-        trustyServiceUrl: "{config:property('kogito.trusty.http.url')}",
+        dataIndexUrl: "{config:property('kogito.data-index.url') ?: 'http://localhost:8180'}/graphql",
+        trustyServiceUrl: "{config:property('kogito.trusty.http.url') ?: 'http://localhost:1336'}",
         page: "TaskInbox",
         devUIUrl: "http://localhost:{config:property('quarkus.http.port') or '8080'}",
         openApiPath: "{config:property('quarkus.smallrye-openapi.path') or '/q/openapi.json'}"

@@ -73,6 +73,8 @@ export const MockedRuntimeToolsDevUIEnvelopeViewApi = jest.fn<
   RuntimeToolsDevUIEnvelopeViewApi,
   []
 >(() => ({
+  setProcessEnabled: jest.fn(),
+  setTracingEnabled: jest.fn(),
   setDataIndexUrl: jest.fn(),
   setTrustyServiceUrl: jest.fn(),
   setUsers: jest.fn(),

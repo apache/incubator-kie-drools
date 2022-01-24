@@ -1,103 +1,70 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DevUIRoutes tests Test Jobs management route 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "/",
-    ]
-  }
-  keyLength={0}
+exports[`DevUIRoutes tests::Process and Tracing enabled Test Jobs management route 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
 >
-  <Router
-    history={
-      Object {
-        "action": "REPLACE",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "pathname": "/JobsManagement",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "/JobsManagement",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
-      }
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "/",
+      ]
     }
+    keyLength={0}
   >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
-    >
-      <Switch>
-        <Route
-          component={[Function]}
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {},
-              "path": "/JobsManagement",
-              "url": "/JobsManagement",
-            }
-          }
-          exact={true}
-          location={
+    <Router
+      history={
+        Object {
+          "action": "REPLACE",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "/JobsManagement",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="/JobsManagement"
-        >
-          <MockedJobsManagementPage
-            history={
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "/JobsManagement",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            component={[Function]}
+            computedMatch={
               Object {
-                "action": "REPLACE",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/JobsManagement",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/JobsManagement",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
+                "isExact": true,
+                "params": Object {},
+                "path": "/JobsManagement",
+                "url": "/JobsManagement",
               }
             }
+            exact={true}
+            key="3"
             location={
               Object {
                 "hash": "",
@@ -106,121 +73,127 @@ exports[`DevUIRoutes tests Test Jobs management route 1`] = `
                 "state": undefined,
               }
             }
-            match={
-              Object {
-                "isExact": true,
-                "params": Object {},
-                "path": "/JobsManagement",
-                "url": "/JobsManagement",
+            path="/JobsManagement"
+          >
+            <MockedJobsManagementPage
+              history={
+                Object {
+                  "action": "REPLACE",
+                  "block": [Function],
+                  "canGo": [Function],
+                  "createHref": [Function],
+                  "entries": Array [
+                    Object {
+                      "hash": "",
+                      "pathname": "/JobsManagement",
+                      "search": "",
+                      "state": undefined,
+                    },
+                  ],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "index": 0,
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
+                    "hash": "",
+                    "pathname": "/JobsManagement",
+                    "search": "",
+                    "state": undefined,
+                  },
+                  "push": [Function],
+                  "replace": [Function],
+                }
               }
-            }
-          />
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "/JobsManagement",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              match={
+                Object {
+                  "isExact": true,
+                  "params": Object {},
+                  "path": "/JobsManagement",
+                  "url": "/JobsManagement",
+                }
+              }
+            />
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
 `;
 
-exports[`DevUIRoutes tests Test NoData route 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "/NoData",
-    ]
-  }
-  keyLength={0}
+exports[`DevUIRoutes tests::Process and Tracing enabled Test NoData route 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
 >
-  <Router
-    history={
-      Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "pathname": "/NoData",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "/NoData",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
-      }
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "/NoData",
+      ]
     }
+    keyLength={0}
   >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
-    >
-      <Switch>
-        <Route
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {},
-              "path": "/NoData",
-              "url": "/NoData",
-            }
-          }
-          location={
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "/NoData",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="/NoData"
-          render={[Function]}
-        >
-          <NoData
-            defaultButton="Go to jobs management"
-            defaultPath="/JobsManagement"
-            history={
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "/NoData",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            computedMatch={
               Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/NoData",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/NoData",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
+                "isExact": true,
+                "params": Object {},
+                "path": "/NoData",
+                "url": "/NoData",
               }
             }
+            key="10"
             location={
               Object {
                 "hash": "",
@@ -229,134 +202,124 @@ exports[`DevUIRoutes tests Test NoData route 1`] = `
                 "state": undefined,
               }
             }
-            match={
-              Object {
-                "isExact": true,
-                "params": Object {},
-                "path": "/NoData",
-                "url": "/NoData",
-              }
-            }
+            path="/NoData"
+            render={[Function]}
           >
-            <MockedComponent />
-          </NoData>
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
+            <NoData
+              defaultButton="Go to jobs management"
+              defaultPath="/JobsManagement"
+              history={
+                Object {
+                  "action": "POP",
+                  "block": [Function],
+                  "canGo": [Function],
+                  "createHref": [Function],
+                  "entries": Array [
+                    Object {
+                      "hash": "",
+                      "pathname": "/NoData",
+                      "search": "",
+                      "state": undefined,
+                    },
+                  ],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "index": 0,
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
+                    "hash": "",
+                    "pathname": "/NoData",
+                    "search": "",
+                    "state": undefined,
+                  },
+                  "push": [Function],
+                  "replace": [Function],
+                }
+              }
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "/NoData",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              match={
+                Object {
+                  "isExact": true,
+                  "params": Object {},
+                  "path": "/NoData",
+                  "url": "/NoData",
+                }
+              }
+            >
+              <MockedComponent />
+            </NoData>
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
 `;
 
-exports[`DevUIRoutes tests Test PageNotFound route 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "*",
-    ]
-  }
-  keyLength={0}
+exports[`DevUIRoutes tests::Process and Tracing enabled Test PageNotFound route 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
 >
-  <Router
-    history={
-      Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "pathname": "*",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "*",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
-      }
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "*",
+      ]
     }
+    keyLength={0}
   >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
-    >
-      <Switch>
-        <Route
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {
-                "0": "*",
-              },
-              "path": "*",
-              "url": "*",
-            }
-          }
-          location={
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "*",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="*"
-          render={[Function]}
-        >
-          <PageNotFound
-            defaultButton="Go to jobs management"
-            defaultPath="/JobsManagement"
-            history={
-              Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "*",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "*",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
-              }
-            }
-            location={
-              Object {
-                "hash": "",
-                "pathname": "*",
-                "search": "",
-                "state": undefined,
-              }
-            }
-            match={
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "*",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            computedMatch={
               Object {
                 "isExact": true,
                 "params": Object {
@@ -366,201 +329,241 @@ exports[`DevUIRoutes tests Test PageNotFound route 1`] = `
                 "url": "*",
               }
             }
+            key="11"
+            location={
+              Object {
+                "hash": "",
+                "pathname": "*",
+                "search": "",
+                "state": undefined,
+              }
+            }
+            path="*"
+            render={[Function]}
           >
-            <MockedComponent />
-          </PageNotFound>
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
+            <PageNotFound
+              defaultButton="Go to jobs management"
+              defaultPath="/JobsManagement"
+              history={
+                Object {
+                  "action": "POP",
+                  "block": [Function],
+                  "canGo": [Function],
+                  "createHref": [Function],
+                  "entries": Array [
+                    Object {
+                      "hash": "",
+                      "pathname": "*",
+                      "search": "",
+                      "state": undefined,
+                    },
+                  ],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "index": 0,
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
+                    "hash": "",
+                    "pathname": "*",
+                    "search": "",
+                    "state": undefined,
+                  },
+                  "push": [Function],
+                  "replace": [Function],
+                }
+              }
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "*",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              match={
+                Object {
+                  "isExact": true,
+                  "params": Object {
+                    "0": "*",
+                  },
+                  "path": "*",
+                  "url": "*",
+                }
+              }
+            >
+              <MockedComponent />
+            </PageNotFound>
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
 `;
 
-exports[`DevUIRoutes tests audit investigation page test 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "/Audit",
-    ]
-  }
-  keyLength={0}
+exports[`DevUIRoutes tests::Process and Tracing enabled audit investigation page test 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
 >
-  <Router
-    history={
-      Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "pathname": "/Audit",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "/Audit",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
-      }
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "/Audit",
+      ]
     }
+    keyLength={0}
   >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
-    >
-      <Switch>
-        <Route
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {},
-              "path": "/Audit",
-              "url": "/Audit",
-            }
-          }
-          location={
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "/Audit",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="/Audit"
-        >
-          <TrustyApp
-            containerConfiguration={
-              Object {
-                "basePath": "/Audit",
-                "excludeReactRouter": true,
-                "pageWrapper": false,
-                "serverRoot": "http://url-to-service",
-                "useHrefLinks": false,
-              }
-            }
-            counterfactualEnabled={false}
-            explanationEnabled={false}
-          >
-            <MockedComponent />
-          </TrustyApp>
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
-`;
-
-exports[`DevUIRoutes tests forms list page test 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "/Forms",
-    ]
-  }
-  keyLength={0}
->
-  <Router
-    history={
-      Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
             "hash": "",
-            "pathname": "/Forms",
+            "pathname": "/Audit",
             "search": "",
             "state": undefined,
           },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "/Forms",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
+          "push": [Function],
+          "replace": [Function],
+        }
       }
-    }
-  >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
     >
-      <Switch>
-        <Route
-          component={[Function]}
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {},
-              "path": "/Forms",
-              "url": "/Forms",
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            computedMatch={
+              Object {
+                "isExact": true,
+                "params": Object {},
+                "path": "/Audit",
+                "url": "/Audit",
+              }
             }
-          }
-          exact={true}
-          location={
+            key="9"
+            location={
+              Object {
+                "hash": "",
+                "pathname": "/Audit",
+                "search": "",
+                "state": undefined,
+              }
+            }
+            path="/Audit"
+          >
+            <TrustyApp
+              containerConfiguration={
+                Object {
+                  "basePath": "/Audit",
+                  "excludeReactRouter": true,
+                  "pageWrapper": false,
+                  "serverRoot": "http://url-to-service",
+                  "useHrefLinks": false,
+                }
+              }
+              counterfactualEnabled={false}
+              explanationEnabled={false}
+            >
+              <MockedComponent />
+            </TrustyApp>
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
+`;
+
+exports[`DevUIRoutes tests::Process and Tracing enabled forms list page test 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
+>
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "/Forms",
+      ]
+    }
+    keyLength={0}
+  >
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "/Forms",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="/Forms"
-        >
-          <MockedFormsListPage
-            history={
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "/Forms",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            component={[Function]}
+            computedMatch={
               Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/Forms",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/Forms",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
+                "isExact": true,
+                "params": Object {},
+                "path": "/Forms",
+                "url": "/Forms",
               }
             }
+            exact={true}
+            key="5"
             location={
               Object {
                 "hash": "",
@@ -569,120 +572,129 @@ exports[`DevUIRoutes tests forms list page test 1`] = `
                 "state": undefined,
               }
             }
-            match={
-              Object {
-                "isExact": true,
-                "params": Object {},
-                "path": "/Forms",
-                "url": "/Forms",
+            path="/Forms"
+          >
+            <MockedFormsListPage
+              history={
+                Object {
+                  "action": "POP",
+                  "block": [Function],
+                  "canGo": [Function],
+                  "createHref": [Function],
+                  "entries": Array [
+                    Object {
+                      "hash": "",
+                      "pathname": "/Forms",
+                      "search": "",
+                      "state": undefined,
+                    },
+                  ],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "index": 0,
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
+                    "hash": "",
+                    "pathname": "/Forms",
+                    "search": "",
+                    "state": undefined,
+                  },
+                  "push": [Function],
+                  "replace": [Function],
+                }
               }
-            }
-          />
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "/Forms",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              match={
+                Object {
+                  "isExact": true,
+                  "params": Object {},
+                  "path": "/Forms",
+                  "url": "/Forms",
+                }
+              }
+            />
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
 `;
 
-exports[`DevUIRoutes tests jobs management page test 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "/JobsManagement",
-    ]
-  }
-  keyLength={0}
+exports[`DevUIRoutes tests::Process and Tracing enabled jobs management page test 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
 >
-  <Router
-    history={
-      Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "pathname": "/JobsManagement",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "/JobsManagement",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
-      }
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "/JobsManagement",
+      ]
     }
+    keyLength={0}
   >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
-    >
-      <Switch>
-        <Route
-          component={[Function]}
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {},
-              "path": "/JobsManagement",
-              "url": "/JobsManagement",
-            }
-          }
-          exact={true}
-          location={
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "/JobsManagement",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="/JobsManagement"
-        >
-          <MockedJobsManagementPage
-            history={
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "/JobsManagement",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            component={[Function]}
+            computedMatch={
               Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/JobsManagement",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/JobsManagement",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
+                "isExact": true,
+                "params": Object {},
+                "path": "/JobsManagement",
+                "url": "/JobsManagement",
               }
             }
+            exact={true}
+            key="3"
             location={
               Object {
                 "hash": "",
@@ -691,121 +703,127 @@ exports[`DevUIRoutes tests jobs management page test 1`] = `
                 "state": undefined,
               }
             }
-            match={
-              Object {
-                "isExact": true,
-                "params": Object {},
-                "path": "/JobsManagement",
-                "url": "/JobsManagement",
+            path="/JobsManagement"
+          >
+            <MockedJobsManagementPage
+              history={
+                Object {
+                  "action": "POP",
+                  "block": [Function],
+                  "canGo": [Function],
+                  "createHref": [Function],
+                  "entries": Array [
+                    Object {
+                      "hash": "",
+                      "pathname": "/JobsManagement",
+                      "search": "",
+                      "state": undefined,
+                    },
+                  ],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "index": 0,
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
+                    "hash": "",
+                    "pathname": "/JobsManagement",
+                    "search": "",
+                    "state": undefined,
+                  },
+                  "push": [Function],
+                  "replace": [Function],
+                }
               }
-            }
-          />
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "/JobsManagement",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              match={
+                Object {
+                  "isExact": true,
+                  "params": Object {},
+                  "path": "/JobsManagement",
+                  "url": "/JobsManagement",
+                }
+              }
+            />
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
 `;
 
-exports[`DevUIRoutes tests no data page test 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "/NoData",
-    ]
-  }
-  keyLength={0}
+exports[`DevUIRoutes tests::Process and Tracing enabled no data page test 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
 >
-  <Router
-    history={
-      Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "pathname": "/NoData",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "/NoData",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
-      }
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "/NoData",
+      ]
     }
+    keyLength={0}
   >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
-    >
-      <Switch>
-        <Route
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {},
-              "path": "/NoData",
-              "url": "/NoData",
-            }
-          }
-          location={
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "/NoData",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="/NoData"
-          render={[Function]}
-        >
-          <NoData
-            defaultButton="Go to jobs management"
-            defaultPath="/JobsManagement"
-            history={
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "/NoData",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            computedMatch={
               Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/NoData",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/NoData",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
+                "isExact": true,
+                "params": Object {},
+                "path": "/NoData",
+                "url": "/NoData",
               }
             }
+            key="10"
             location={
               Object {
                 "hash": "",
@@ -814,134 +832,124 @@ exports[`DevUIRoutes tests no data page test 1`] = `
                 "state": undefined,
               }
             }
-            match={
-              Object {
-                "isExact": true,
-                "params": Object {},
-                "path": "/NoData",
-                "url": "/NoData",
-              }
-            }
+            path="/NoData"
+            render={[Function]}
           >
-            <MockedComponent />
-          </NoData>
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
+            <NoData
+              defaultButton="Go to jobs management"
+              defaultPath="/JobsManagement"
+              history={
+                Object {
+                  "action": "POP",
+                  "block": [Function],
+                  "canGo": [Function],
+                  "createHref": [Function],
+                  "entries": Array [
+                    Object {
+                      "hash": "",
+                      "pathname": "/NoData",
+                      "search": "",
+                      "state": undefined,
+                    },
+                  ],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "index": 0,
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
+                    "hash": "",
+                    "pathname": "/NoData",
+                    "search": "",
+                    "state": undefined,
+                  },
+                  "push": [Function],
+                  "replace": [Function],
+                }
+              }
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "/NoData",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              match={
+                Object {
+                  "isExact": true,
+                  "params": Object {},
+                  "path": "/NoData",
+                  "url": "/NoData",
+                }
+              }
+            >
+              <MockedComponent />
+            </NoData>
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
 `;
 
-exports[`DevUIRoutes tests page not found page test 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "*",
-    ]
-  }
-  keyLength={0}
+exports[`DevUIRoutes tests::Process and Tracing enabled page not found page test 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
 >
-  <Router
-    history={
-      Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "pathname": "*",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "*",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
-      }
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "*",
+      ]
     }
+    keyLength={0}
   >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
-    >
-      <Switch>
-        <Route
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {
-                "0": "*",
-              },
-              "path": "*",
-              "url": "*",
-            }
-          }
-          location={
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "*",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="*"
-          render={[Function]}
-        >
-          <PageNotFound
-            defaultButton="Go to jobs management"
-            defaultPath="/JobsManagement"
-            history={
-              Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "*",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "*",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
-              }
-            }
-            location={
-              Object {
-                "hash": "",
-                "pathname": "*",
-                "search": "",
-                "state": undefined,
-              }
-            }
-            match={
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "*",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            computedMatch={
               Object {
                 "isExact": true,
                 "params": Object {
@@ -951,114 +959,145 @@ exports[`DevUIRoutes tests page not found page test 1`] = `
                 "url": "*",
               }
             }
+            key="11"
+            location={
+              Object {
+                "hash": "",
+                "pathname": "*",
+                "search": "",
+                "state": undefined,
+              }
+            }
+            path="*"
+            render={[Function]}
           >
-            <MockedComponent />
-          </PageNotFound>
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
+            <PageNotFound
+              defaultButton="Go to jobs management"
+              defaultPath="/JobsManagement"
+              history={
+                Object {
+                  "action": "POP",
+                  "block": [Function],
+                  "canGo": [Function],
+                  "createHref": [Function],
+                  "entries": Array [
+                    Object {
+                      "hash": "",
+                      "pathname": "*",
+                      "search": "",
+                      "state": undefined,
+                    },
+                  ],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "index": 0,
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
+                    "hash": "",
+                    "pathname": "*",
+                    "search": "",
+                    "state": undefined,
+                  },
+                  "push": [Function],
+                  "replace": [Function],
+                }
+              }
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "*",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              match={
+                Object {
+                  "isExact": true,
+                  "params": Object {
+                    "0": "*",
+                  },
+                  "path": "*",
+                  "url": "*",
+                }
+              }
+            >
+              <MockedComponent />
+            </PageNotFound>
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
 `;
 
-exports[`DevUIRoutes tests processes test 1`] = `
-<MemoryRouter
-  initialEntries={
-    Array [
-      "/Processes",
-    ]
-  }
-  keyLength={0}
+exports[`DevUIRoutes tests::Process and Tracing enabled processes test 1`] = `
+<DevUIAppContextProvider
+  devUIUrl="http://devUIUrl"
+  isProcessEnabled={true}
+  isTracingEnabled={true}
+  openApiPath="http://openApiPath"
+  users={Array []}
 >
-  <Router
-    history={
-      Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "pathname": "/Processes",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "pathname": "/Processes",
-          "search": "",
-          "state": undefined,
-        },
-        "push": [Function],
-        "replace": [Function],
-      }
+  <MemoryRouter
+    initialEntries={
+      Array [
+        "/Processes",
+      ]
     }
+    keyLength={0}
   >
-    <DevUIRoutes
-      navigate="JobsManagement"
-      trustyServiceUrl="http://url-to-service"
-    >
-      <Switch>
-        <Route
-          component={[Function]}
-          computedMatch={
-            Object {
-              "isExact": true,
-              "params": Object {},
-              "path": "/Processes",
-              "url": "/Processes",
-            }
-          }
-          exact={true}
-          location={
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
             Object {
               "hash": "",
               "pathname": "/Processes",
               "search": "",
               "state": undefined,
-            }
-          }
-          path="/Processes"
-        >
-          <MockedProcessesPage
-            history={
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "/Processes",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <DevUIRoutes
+        navigate="JobsManagement"
+        trustyServiceUrl="http://url-to-service"
+      >
+        <Switch>
+          <Route
+            component={[Function]}
+            computedMatch={
               Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/Processes",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/Processes",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
+                "isExact": true,
+                "params": Object {},
+                "path": "/Processes",
+                "url": "/Processes",
               }
             }
+            exact={true}
+            key="1"
             location={
               Object {
                 "hash": "",
@@ -1067,18 +1106,60 @@ exports[`DevUIRoutes tests processes test 1`] = `
                 "state": undefined,
               }
             }
-            match={
-              Object {
-                "isExact": true,
-                "params": Object {},
-                "path": "/Processes",
-                "url": "/Processes",
+            path="/Processes"
+          >
+            <MockedProcessesPage
+              history={
+                Object {
+                  "action": "POP",
+                  "block": [Function],
+                  "canGo": [Function],
+                  "createHref": [Function],
+                  "entries": Array [
+                    Object {
+                      "hash": "",
+                      "pathname": "/Processes",
+                      "search": "",
+                      "state": undefined,
+                    },
+                  ],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "index": 0,
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
+                    "hash": "",
+                    "pathname": "/Processes",
+                    "search": "",
+                    "state": undefined,
+                  },
+                  "push": [Function],
+                  "replace": [Function],
+                }
               }
-            }
-          />
-        </Route>
-      </Switch>
-    </DevUIRoutes>
-  </Router>
-</MemoryRouter>
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "/Processes",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              match={
+                Object {
+                  "isExact": true,
+                  "params": Object {},
+                  "path": "/Processes",
+                  "url": "/Processes",
+                }
+              }
+            />
+          </Route>
+        </Switch>
+      </DevUIRoutes>
+    </Router>
+  </MemoryRouter>
+</DevUIAppContextProvider>
 `;

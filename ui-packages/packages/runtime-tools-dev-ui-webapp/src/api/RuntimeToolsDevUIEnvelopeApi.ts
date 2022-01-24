@@ -38,4 +38,6 @@ export interface RuntimeToolsDevUIInitArgs {
   page: string;
   devUIUrl: string;
   openApiPath: string;
+  isProcessEnabled: boolean;
+  isTracingEnabled: boolean;
 }

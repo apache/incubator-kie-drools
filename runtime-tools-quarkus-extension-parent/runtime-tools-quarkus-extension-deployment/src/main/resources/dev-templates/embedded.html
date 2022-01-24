@@ -14,6 +14,7 @@
   ~ limitations under the License.
   -->
 
+{#if info:isProcessEnabled}
 <a href="{urlbase}/processInstances" class="badge badge-light">
     <i class="fa fa-project-diagram fa-fw"></i>
     Process Instances <span id="processInstancesCount" class="badge badge-light"/>
@@ -33,10 +34,17 @@
     <i class="fab fa-wpforms fa-fw"></i>
     Forms <span id="formsCount" class="badge badge-light"/>
 </a>
+{/if}
+{#if info:isTracingEnabled}
 <a href="{urlbase}/audit" class="badge badge-light">
     <i class="fab fa-wpforms fa-fw"></i>
     Audit investigation <span id="auditCount" class="badge badge-light"/>
 </a>
+{/if}
+{#if info:isProcessEnabled == false && info:isTracingEnabled == false}
+<p>No Kogito addons detected.</p>
+{/if}
+{#if info:isProcessEnabled}
 <script>
     const fillCount = (resourceType) => {
         fetch("http://localhost:8080/dataindex/" + resourceType + "/count")
@@ -53,3 +61,4 @@
     fillCount("jobs");
     fillCount("forms")
 </script>
+{/if}

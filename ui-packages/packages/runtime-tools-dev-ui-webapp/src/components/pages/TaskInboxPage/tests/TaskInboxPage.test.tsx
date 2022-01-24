@@ -31,7 +31,11 @@ describe('TaskInboxPage tests', () => {
   }));
   it('Snapshot', () => {
     const wrapper = mount(
-      <DevUIAppContextProvider users={[{ id: 'John snow', groups: ['admin'] }]}>
+      <DevUIAppContextProvider
+        isProcessEnabled={true}
+        isTracingEnabled={false}
+        users={[{ id: 'John snow', groups: ['admin'] }]}
+      >
         <TaskInboxContextProvider apolloClient={new MockQueries()}>
           <TaskInboxPage />
         </TaskInboxContextProvider>

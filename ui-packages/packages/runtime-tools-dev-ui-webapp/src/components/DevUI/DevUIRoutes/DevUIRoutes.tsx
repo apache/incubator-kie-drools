@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { JobsManagementPage, ProcessesPage } from '../../pages';
-import { PageNotFound, NoData } from '@kogito-apps/consoles-common';
+import { NoData, PageNotFound } from '@kogito-apps/consoles-common';
 import ProcessDetailsPage from '../../pages/ProcessDetailsPage/ProcessDetailsPage';
 import TaskInboxPage from '../../pages/TaskInboxPage/TaskInboxPage';
 import TaskDetailsPage from '../../pages/TaskDetailsPage/TaskDetailsPage';
@@ -25,67 +25,175 @@ import FormsListPage from '../../pages/FormsListPage/FormsListPage';
 import FormDetailPage from '../../pages/FormDetailsPage/FormDetailsPage';
 import { TrustyApp } from '@kogito-apps/trusty';
 import ProcessFormPage from '../../pages/ProcessFormPage/ProcessFormPage';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface IOwnProps {
   trustyServiceUrl: string;
   navigate: string;
 }
 
+type DevUIRoute = { enabled: () => boolean; node: React.ReactNode };
+
 const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, navigate }) => {
-  return (
-    <Switch>
-      <Route exact path="/" render={() => <Redirect to={`/${navigate}`} />} />
-      <Route exact path="/Processes" component={ProcessesPage} />
-      <Route exact path="/Process/:instanceID" component={ProcessDetailsPage} />
-      <Route exact path="/JobsManagement" component={JobsManagementPage} />
-      <Route exact path="/TaskInbox" component={TaskInboxPage} />
-      <Route exact path="/Forms" component={FormsListPage} />
-      <Route exact path="/Forms/:formName" component={FormDetailPage} />
-      <Route
-        exact
-        path="/ProcessDefinition/Form/:processName"
-        component={ProcessFormPage}
-      />
-      <Route
-        exact
-        path="/TaskDetails/:taskId"
-        render={routeProps => <TaskDetailsPage {...routeProps} />}
-      />
-      <Route path="/Audit">
-        <TrustyApp
-          counterfactualEnabled={false}
-          explanationEnabled={false}
-          containerConfiguration={{
-            pageWrapper: false,
-            serverRoot: trustyServiceUrl,
-            basePath: '/Audit',
-            excludeReactRouter: true,
-            useHrefLinks: false
-          }}
-        />
-      </Route>
-      <Route
-        path="/NoData"
-        render={_props => (
-          <NoData
-            {..._props}
-            defaultPath="/JobsManagement"
-            defaultButton="Go to jobs management"
+  const { isProcessEnabled, isTracingEnabled } = useDevUIAppContext();
+
+  const defaultPath = useMemo(() => {
+    if (isProcessEnabled) {
+      return '/JobsManagement';
+    }
+    if (isTracingEnabled) {
+      return '/Audit';
+    }
+  }, [isProcessEnabled, isTracingEnabled]);
+
+  const defaultButton = useMemo(() => {
+    if (isProcessEnabled) {
+      return 'Go to jobs management';
+    }
+    if (isTracingEnabled) {
+      return 'Go to audit';
+    }
+  }, [isProcessEnabled, isTracingEnabled]);
+
+  const routes: DevUIRoute[] = useMemo(
+    () => [
+      {
+        enabled: () => true,
+        node: (
+          <Route
+            key="0"
+            exact
+            path="/"
+            render={() => <Redirect to={`/${navigate}`} />}
           />
-        )}
-      />
-      <Route
-        path="*"
-        render={_props => (
-          <PageNotFound
-            {..._props}
-            defaultPath="/JobsManagement"
-            defaultButton="Go to jobs management"
+        )
+      },
+      {
+        enabled: () => isProcessEnabled,
+        node: (
+          <Route key="1" exact path="/Processes" component={ProcessesPage} />
+        )
+      },
+      {
+        enabled: () => isProcessEnabled,
+        node: (
+          <Route
+            key="2"
+            exact
+            path="/Process/:instanceID"
+            component={ProcessDetailsPage}
           />
-        )}
-      />
-    </Switch>
+        )
+      },
+      {
+        enabled: () => isProcessEnabled,
+        node: (
+          <Route
+            key="3"
+            exact
+            path="/JobsManagement"
+            component={JobsManagementPage}
+          />
+        )
+      },
+      {
+        enabled: () => isProcessEnabled,
+        node: (
+          <Route key="4" exact path="/TaskInbox" component={TaskInboxPage} />
+        )
+      },
+      {
+        enabled: () => isProcessEnabled,
+        node: <Route key="5" exact path="/Forms" component={FormsListPage} />
+      },
+      {
+        enabled: () => isProcessEnabled,
+        node: (
+          <Route
+            key="6"
+            exact
+            path="/Forms/:formName"
+            component={FormDetailPage}
+          />
+        )
+      },
+      {
+        enabled: () => isProcessEnabled,
+        node: (
+          <Route
+            key="7"
+            exact
+            path="/ProcessDefinition/Form/:processName"
+            component={ProcessFormPage}
+          />
+        )
+      },
+      {
+        enabled: () => isProcessEnabled,
+        node: (
+          <Route
+            key="8"
+            exact
+            path="/TaskDetails/:taskId"
+            render={routeProps => <TaskDetailsPage {...routeProps} />}
+          />
+        )
+      },
+      {
+        enabled: () => isTracingEnabled,
+        node: (
+          <Route key="9" path="/Audit">
+            <TrustyApp
+              counterfactualEnabled={false}
+              explanationEnabled={false}
+              containerConfiguration={{
+                pageWrapper: false,
+                serverRoot: trustyServiceUrl,
+                basePath: '/Audit',
+                excludeReactRouter: true,
+                useHrefLinks: false
+              }}
+            />
+          </Route>
+        )
+      },
+      {
+        enabled: () => true,
+        node: (
+          <Route
+            key="10"
+            path="/NoData"
+            render={_props => (
+              <NoData
+                {..._props}
+                defaultPath={defaultPath}
+                defaultButton={defaultButton}
+              />
+            )}
+          />
+        )
+      },
+      {
+        enabled: () => true,
+        node: (
+          <Route
+            key="11"
+            path="*"
+            render={_props => (
+              <PageNotFound
+                {..._props}
+                defaultPath={defaultPath}
+                defaultButton={defaultButton}
+              />
+            )}
+          />
+        )
+      }
+    ],
+    [isProcessEnabled, isTracingEnabled]
   );
+
+  return <Switch>{routes.filter(r => r.enabled()).map(r => r.node)}</Switch>;
 };
 
 export default DevUIRoutes;

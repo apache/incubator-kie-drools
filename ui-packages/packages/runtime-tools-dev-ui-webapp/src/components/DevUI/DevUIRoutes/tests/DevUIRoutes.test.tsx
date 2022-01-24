@@ -18,6 +18,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import DevUIRoutes from '../DevUIRoutes';
 import { MemoryRouter, Route } from 'react-router-dom';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
 
 jest.mock('../../../pages/ProcessesPage/ProcessesPage');
 jest.mock('../../../pages/JobsManagementPage/JobsManagementPage');
@@ -38,23 +39,33 @@ jest.mock('@kogito-apps/consoles-common', () =>
   })
 );
 
-jest.mock('@kogito-apps/trusty', () => ({
-  ...jest.requireActual('@kogito-apps/trusty'),
-  TrustyApp: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock('@kogito-apps/trusty', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/trusty'), {
+    TrustyApp: () => {
+      return <MockedComponent />;
+    }
+  })
+);
 
 const props = {
   trustyServiceUrl: 'http://url-to-service',
   navigate: 'JobsManagement'
 };
-describe('DevUIRoutes tests', () => {
+
+describe('DevUIRoutes tests::Process and Tracing enabled', () => {
   it('Test Jobs management route', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['/']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -67,9 +78,17 @@ describe('DevUIRoutes tests', () => {
   });
   it('processes test', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['/Processes']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/Processes']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -81,9 +100,17 @@ describe('DevUIRoutes tests', () => {
   });
   it('jobs management page test', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['/JobsManagement']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/JobsManagement']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -96,9 +123,17 @@ describe('DevUIRoutes tests', () => {
 
   it('forms list page test', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['/Forms']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/Forms']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -111,9 +146,17 @@ describe('DevUIRoutes tests', () => {
 
   it('audit investigation page test', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['/Audit']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/Audit']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -136,9 +179,17 @@ describe('DevUIRoutes tests', () => {
 
   it('no data page test', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['/NoData']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/NoData']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -150,9 +201,17 @@ describe('DevUIRoutes tests', () => {
 
   it('page not found page test', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['*']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['*']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -164,9 +223,17 @@ describe('DevUIRoutes tests', () => {
 
   it('Test NoData route', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['/NoData']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/NoData']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -178,9 +245,17 @@ describe('DevUIRoutes tests', () => {
 
   it('Test PageNotFound route', () => {
     const wrapper = mount(
-      <MemoryRouter keyLength={0} initialEntries={['*']}>
-        <DevUIRoutes {...props} />
-      </MemoryRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['*']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -188,5 +263,132 @@ describe('DevUIRoutes tests', () => {
     expect(route.exists()).toBeTruthy();
     const pageNotFound = wrapper.find('PageNotFound');
     expect(pageNotFound.exists()).toBeTruthy();
+  });
+});
+
+describe('DevUIRoutes tests::Sections disabled', () => {
+  it('Test Jobs management route', () => {
+    const wrapper = mount(
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={false}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
+    );
+
+    expect(wrapper.exists('MockedJobsManagementPage')).toBeFalsy();
+    expect(wrapper.exists('PageNotFound')).toBeTruthy();
+    expect(wrapper.find('PageNotFound').props()['defaultPath']).toEqual(
+      '/Audit'
+    );
+    expect(wrapper.find('PageNotFound').props()['defaultButton']).toEqual(
+      'Go to audit'
+    );
+  });
+
+  it('process list test', () => {
+    const wrapper = mount(
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={false}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/ProcessInstances']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
+    );
+
+    expect(wrapper.exists('MockedProcessListPage')).toBeFalsy();
+    expect(wrapper.exists('PageNotFound')).toBeTruthy();
+    expect(wrapper.find('PageNotFound').props()['defaultPath']).toEqual(
+      '/Audit'
+    );
+    expect(wrapper.find('PageNotFound').props()['defaultButton']).toEqual(
+      'Go to audit'
+    );
+  });
+
+  it('jobs management page test', () => {
+    const wrapper = mount(
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={false}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/JobsManagement']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
+    );
+
+    expect(wrapper.exists('MockedJobsManagementPage')).toBeFalsy();
+    expect(wrapper.exists('PageNotFound')).toBeTruthy();
+    expect(wrapper.find('PageNotFound').props()['defaultPath']).toEqual(
+      '/Audit'
+    );
+    expect(wrapper.find('PageNotFound').props()['defaultButton']).toEqual(
+      'Go to audit'
+    );
+  });
+
+  it('forms list page test', () => {
+    const wrapper = mount(
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={false}
+        isTracingEnabled={true}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/Forms']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
+    );
+
+    expect(wrapper.exists('MockedFormsListPage')).toBeFalsy();
+    expect(wrapper.exists('PageNotFound')).toBeTruthy();
+    expect(wrapper.find('PageNotFound').props()['defaultPath']).toEqual(
+      '/Audit'
+    );
+    expect(wrapper.find('PageNotFound').props()['defaultButton']).toEqual(
+      'Go to audit'
+    );
+  });
+
+  it('audit investigation page test', () => {
+    const wrapper = mount(
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={false}
+      >
+        <MemoryRouter keyLength={0} initialEntries={['/Audit']}>
+          <DevUIRoutes {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
+    );
+
+    expect(wrapper.exists('TrustyApp')).toBeFalsy();
+    expect(wrapper.exists('PageNotFound')).toBeTruthy();
+    expect(wrapper.find('PageNotFound').props()['defaultPath']).toEqual(
+      '/JobsManagement'
+    );
+    expect(wrapper.find('PageNotFound').props()['defaultButton']).toEqual(
+      'Go to jobs management'
+    );
   });
 });

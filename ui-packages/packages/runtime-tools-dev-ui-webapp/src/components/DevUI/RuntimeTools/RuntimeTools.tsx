@@ -24,6 +24,8 @@ import DevUIRoutes from '../DevUIRoutes/DevUIRoutes';
 import DevUILayout from '../DevUILayout/DevUILayout';
 import ReactDOM from 'react-dom';
 interface IOwnProps {
+  isProcessEnabled: boolean;
+  isTracingEnabled: boolean;
   users: User[];
   dataIndexUrl: string;
   trustyServiceUrl: string;
@@ -38,7 +40,9 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   trustyServiceUrl,
   navigate,
   devUIUrl,
-  openApiPath
+  openApiPath,
+  isProcessEnabled,
+  isTracingEnabled
 }) => {
   const httpLink = new HttpLink({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -55,6 +59,8 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           users={users}
           devUIUrl={devUIUrl}
           openApiPath={openApiPath}
+          isProcessEnabled={isProcessEnabled}
+          isTracingEnabled={isTracingEnabled}
         >
           <ServerUnavailablePage
             displayName={'Runtime Dev UI'}
@@ -78,6 +84,8 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       users={users}
       devUIUrl={devUIUrl}
       openApiPath={openApiPath}
+      isProcessEnabled={isProcessEnabled}
+      isTracingEnabled={isTracingEnabled}
     >
       <DevUIRoutes navigate={navigate} trustyServiceUrl={trustyServiceUrl} />
     </DevUILayout>

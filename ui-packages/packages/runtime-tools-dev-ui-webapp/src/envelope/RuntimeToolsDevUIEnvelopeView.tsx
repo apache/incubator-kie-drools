@@ -29,6 +29,8 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
   const [navigate, setNavigate] = React.useState<string>('');
   const [devUIUrl, setDevUIUrl] = React.useState<string>('');
   const [openApiPath, setOpenApiPath] = React.useState<string>('');
+  const [isProcessEnabled, setProcessEnabled] = React.useState(false);
+  const [isTracingEnabled, setTracingEnabled] = React.useState(false);
 
   useImperativeHandle(
     forwardingRef,
@@ -51,6 +53,12 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
         },
         setOpenApiPath: path => {
           setOpenApiPath(path);
+        },
+        setProcessEnabled: isProcessEnabled => {
+          setProcessEnabled(isProcessEnabled);
+        },
+        setTracingEnabled: isTracingEnabled => {
+          setTracingEnabled(isTracingEnabled);
         }
       };
     },
@@ -58,19 +66,18 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
   );
   return (
     <>
-      {dataIndexUrl.length > 0 &&
-        navigate.length > 0 &&
-        devUIUrl.length > 0 &&
-        openApiPath.length > 0 && (
-          <RuntimeTools
-            users={DevUiUsers}
-            dataIndexUrl={dataIndexUrl}
-            trustyServiceUrl={trustyServiceUrl}
-            navigate={navigate}
-            openApiPath={openApiPath}
-            devUIUrl={devUIUrl}
-          />
-        )}
+      {(isProcessEnabled || isTracingEnabled) && navigate.length > 0 && (
+        <RuntimeTools
+          users={DevUiUsers}
+          dataIndexUrl={dataIndexUrl}
+          trustyServiceUrl={trustyServiceUrl}
+          navigate={navigate}
+          openApiPath={openApiPath}
+          devUIUrl={devUIUrl}
+          isProcessEnabled={isProcessEnabled}
+          isTracingEnabled={isTracingEnabled}
+        />
+      )}
     </>
   );
 });

@@ -23,4 +23,6 @@ export interface RuntimeToolsDevUIEnvelopeViewApi {
   navigateTo: (page: string) => void;
   setDevUIUrl: (url: string) => void;
   setOpenApiPath: (path: string) => void;
+  setProcessEnabled: (isProcessEnabled: boolean) => void;
+  setTracingEnabled: (isTracingEnabled: boolean) => void;
 }

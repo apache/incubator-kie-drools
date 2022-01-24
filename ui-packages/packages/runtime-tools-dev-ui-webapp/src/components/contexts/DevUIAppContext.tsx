@@ -18,6 +18,8 @@ import React, { useContext } from 'react';
 import { User } from '@kogito-apps/consoles-common';
 
 export interface DevUIAppContext {
+  isProcessEnabled: boolean;
+  isTracingEnabled: boolean;
   getCurrentUser(): User;
   getAllUsers(): User[];
   switchUser(userId: string): void;
@@ -40,11 +42,15 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   private readonly userListeners: UserChangeListener[] = [];
   private readonly devUIUrl: string;
   private readonly openApiPath: string;
+  readonly isProcessEnabled: boolean;
+  readonly isTracingEnabled: boolean;
 
-  constructor(users, url, path) {
+  constructor(users, url, path, isProcessEnabled, isTracingEnabled) {
+    this.users = users;
     this.devUIUrl = url;
     this.openApiPath = path;
-    this.users = users;
+    this.isProcessEnabled = isProcessEnabled;
+    this.isTracingEnabled = isTracingEnabled;
     if (users.length > 0) {
       this.currentUser = users[0];
     }

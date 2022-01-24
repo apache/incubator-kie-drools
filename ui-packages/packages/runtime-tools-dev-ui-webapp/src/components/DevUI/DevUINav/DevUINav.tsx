@@ -18,58 +18,79 @@ import React from 'react';
 import { Nav, NavItem, NavList } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { ouiaAttribute } from '@kogito-apps/ouia-tools';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface IOwnProps {
   pathname: string;
 }
 
 const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
+  const { isProcessEnabled, isTracingEnabled } = useDevUIAppContext();
+
   return (
     <Nav aria-label="Nav" theme="dark">
       <NavList>
-        <NavItem key={'processes-nav'} isActive={pathname === '/Processes'}>
-          <Link
-            to="/Processes"
-            {...ouiaAttribute('data-ouia-navigation-name', 'processes')}
-          >
-            Processes
-          </Link>
-        </NavItem>
-        <NavItem
-          key={'jobs-management-nav'}
-          isActive={pathname === '/JobsManagement'}
-        >
-          <Link
-            to="/JobsManagement"
-            {...ouiaAttribute('data-ouia-navigation-name', 'jobs-management')}
-          >
-            Jobs
-          </Link>
-        </NavItem>
-        <NavItem key={'task-inbox-nav'} isActive={pathname === '/TaskInbox'}>
-          <Link
-            to="/TaskInbox"
-            {...ouiaAttribute('data-ouia-navigation-name', 'task-inbox')}
-          >
-            Tasks
-          </Link>
-        </NavItem>
-        <NavItem key={'forms-list-nav'} isActive={pathname === '/Forms'}>
-          <Link
-            to="/Forms"
-            {...ouiaAttribute('data-ouia-navigation-name', 'forms-list-nav')}
-          >
-            Forms
-          </Link>
-        </NavItem>
-        <NavItem key={'audit-nav'} isActive={pathname.startsWith('/Audit')}>
-          <Link
-            to="/Audit"
-            {...ouiaAttribute('data-ouia-navigation-name', 'audit-nav')}
-          >
-            Audit investigation
-          </Link>
-        </NavItem>
+        {isProcessEnabled && (
+          <>
+            <NavItem key={'processes-nav'} isActive={pathname === '/Processes'}>
+              <Link
+                to="/Processes"
+                {...ouiaAttribute('data-ouia-navigation-name', 'processes-nav')}
+              >
+                Processes
+              </Link>
+            </NavItem>
+            <NavItem
+              key={'jobs-management-nav'}
+              isActive={pathname === '/JobsManagement'}
+            >
+              <Link
+                to="/JobsManagement"
+                {...ouiaAttribute(
+                  'data-ouia-navigation-name',
+                  'jobs-management-nav'
+                )}
+              >
+                Jobs
+              </Link>
+            </NavItem>
+            <NavItem
+              key={'task-inbox-nav'}
+              isActive={pathname === '/TaskInbox'}
+            >
+              <Link
+                to="/TaskInbox"
+                {...ouiaAttribute(
+                  'data-ouia-navigation-name',
+                  'task-inbox-nav'
+                )}
+              >
+                Tasks
+              </Link>
+            </NavItem>
+            <NavItem key={'forms-list-nav'} isActive={pathname === '/Forms'}>
+              <Link
+                to="/Forms"
+                {...ouiaAttribute(
+                  'data-ouia-navigation-name',
+                  'forms-list-nav'
+                )}
+              >
+                Forms
+              </Link>
+            </NavItem>
+          </>
+        )}
+        {isTracingEnabled && (
+          <NavItem key={'audit-nav'} isActive={pathname.startsWith('/Audit')}>
+            <Link
+              to="/Audit"
+              {...ouiaAttribute('data-ouia-navigation-name', 'audit-nav')}
+            >
+              Audit investigation
+            </Link>
+          </NavItem>
+        )}
       </NavList>
     </Nav>
   );
