@@ -510,12 +510,19 @@ public class DMNValidatorImpl implements DMNValidator {
         return content.toString();
     }
 
+    private static DMNResource unmarshallDMNResource(DMNCompilerConfiguration config, Resource resource, String content) {
+        // TODO KOGITO-6145
+        Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(config.getRegisteredExtensions()).unmarshal(content);
+        dmndefs.normalize();
+        return new DMNResource(dmndefs, new ResourceWithConfigurationImpl(resource, null, x -> {}, y -> {}));
+    }
+    
+    @Deprecated
     private static Definitions unmarshalDefinitionsFromReader(DMNCompilerConfiguration config, Reader reader) {
         Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(config.getRegisteredExtensions()).unmarshal(reader);
         dmndefs.normalize();
         return dmndefs;
     }
-
 
     private void validateModelCompilation(Definitions dmnModel, DMNMessageManager results, EnumSet<Validation> flags) {
         if( flags.contains( VALIDATE_MODEL ) ) {
