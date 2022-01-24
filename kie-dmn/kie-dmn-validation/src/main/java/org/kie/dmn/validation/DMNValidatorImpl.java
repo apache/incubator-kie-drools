@@ -23,7 +23,6 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -212,24 +211,8 @@ public class DMNValidatorImpl implements DMNValidator {
 
         @Override
         public List<DMNMessage> theseModels(File... files) {
-            DMNMessageManager results = new DefaultDMNMessagesManager( null );
-            try {
-                Reader[] readers = new Reader[files.length];
-                for (int i = 0; i < files.length; i++) {
-                    readers[i] = new FileReader(files[i]);
-                }
-                results.addAll(theseModels(readers));
-            } catch (Throwable t) {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      null,
-                                      results,
-                                      t,
-                                      null,
-                                      Msg.VALIDATION_RUNTIME_PROBLEM,
-                                      t.getMessage());
-            }
-            return results.getMessages();
+            Resource[] array = Arrays.stream(files).map(FileSystemResource::new).collect(Collectors.toList()).toArray(new Resource[] {});
+            return theseModels(array);
         }
         
         public List<DMNMessage> theseModels(Resource... resources) {
@@ -276,41 +259,8 @@ public class DMNValidatorImpl implements DMNValidator {
 
         @Override
         public List<DMNMessage> theseModels(Reader... readers) {
-            DMNMessageManager results = new DefaultDMNMessagesManager( null );
-            List<Definitions> models = new ArrayList<>();
-            for (Reader reader : readers) {
-                try {
-                    String content = readContent(reader);
-                    if (flags.contains(VALIDATE_SCHEMA)) {
-                        results.addAll(validator.validateSchema( content, null ));
-                    }
-                    Definitions dmndefs = unmarshalDefinitionsFromReader(validator.dmnCompilerConfig, new StringReader(content));
-                    models.add(dmndefs);
-                } catch (Exception t) {
-                    MsgUtil.reportMessage(LOG,
-                                          DMNMessage.Severity.ERROR,
-                                          null,
-                                          results,
-                                          t,
-                                          null,
-                                          Msg.VALIDATION_RUNTIME_PROBLEM,
-                                          t.getMessage());
-                }
-            }
-            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
-                if (results.hasErrors()) {
-                    MsgUtil.reportMessage(LOG,
-                                          DMNMessage.Severity.ERROR,
-                                          null,
-                                          results,
-                                          null,
-                                          null,
-                                          Msg.VALIDATION_STOPPED);
-                    return results.getMessages();
-                }
-                validateDefinitions(internalValidatorSortModels(models), results);
-            }
-            return results.getMessages();
+            Resource[] array = Arrays.stream(readers).map(ReaderResource::new).collect(Collectors.toList()).toArray(new Resource[] {});
+            return theseModels(array);
         }
 
         @Override
