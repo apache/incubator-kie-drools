@@ -46,6 +46,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.io.impl.ReaderResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -497,11 +498,13 @@ public class DMNValidatorImpl implements DMNValidator {
         return content.toString();
     }
 
-    private static DMNResource unmarshallDMNResource(DMNCompilerConfiguration config, Resource resource, String content) {
+    private static DMNResource unmarshallDMNResource(DMNCompilerConfiguration config, Resource originalResource, String content) {
         // TODO KOGITO-6145
+        ByteArrayResource byteArrayResource = new ByteArrayResource(content.getBytes(), null);
+        byteArrayResource.setSourcePath(originalResource.getSourcePath());
         Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(config.getRegisteredExtensions()).unmarshal(content);
         dmndefs.normalize();
-        return new DMNResource(dmndefs, new ResourceWithConfigurationImpl(resource, null, x -> {}, y -> {}));
+        return new DMNResource(dmndefs, new ResourceWithConfigurationImpl(byteArrayResource, null, x -> {}, y -> {}));
     }
     
     private void validateModelCompilation(DMNResource dmnModel, DMNMessageManager results, EnumSet<Validation> flags) {
@@ -613,8 +616,8 @@ public class DMNValidatorImpl implements DMNValidator {
 
     private List<DMNMessage> validateCompilation(DMNResource dmnModel) {
         if( dmnModel != null ) {
-            DMNCompiler compiler = new DMNCompilerImpl(dmnCompilerConfig);
-            DMNModel model = compiler.compile( dmnModel.getResAndConfig().getResource() );
+            DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
+            DMNModel model = compiler.compile( dmnModel.getDefinitions(), dmnModel.getResAndConfig().getResource(), Collections.emptyList() ); // must use this internal method to ensure the Definitions model is the same (identity wise)
             if( model != null ) {
                 return model.getMessages();
             } else {
@@ -641,7 +644,7 @@ public class DMNValidatorImpl implements DMNValidator {
     private List<DMNMessage> analyseDT(DMNResource dmnModel, Set<Validation> flags) {
         if (dmnModel != null) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
-            DMNModel model = compiler.compile( dmnModel.getResAndConfig().getResource() );
+            DMNModel model = compiler.compile( dmnModel.getDefinitions(), dmnModel.getResAndConfig().getResource(), Collections.emptyList() ); // must use this internal method to ensure the Definitions model is the same (identity wise)
             if (model != null) {
                 List<DTAnalysis> vs = dmnDTValidator.analyse(model, flags);
                 String path = dmnModel.getResAndConfig().getResource().getSourcePath();
