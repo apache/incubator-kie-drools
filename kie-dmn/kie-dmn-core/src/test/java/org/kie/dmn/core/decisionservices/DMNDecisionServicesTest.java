@@ -617,4 +617,89 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("my invoke DS1").getResult(), hasEntry(is("outDS1"), is(true)));
     }
+    
+    @Test
+    public void testImportingBasic() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004.dmn");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_346B2E00-71E5-4CEA-ADE1-7A0872481F38", "importing0004");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        assertSupplyingBandC(runtime, dmnModel);
+    }
+
+    private void assertSupplyingBandC(final DMNRuntime runtime, final DMNModel dmnModel) {
+        final DMNContext context = DMNFactory.newContext();
+        context.set("B", "inB");
+        context.set("C", "inC");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision1"), is("inBinC"));
+    }
+    
+    @Test
+    public void testImportingBoxedInvocation() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004boxedInvocation.dmn");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_346B2E00-71E5-4CEA-ADE1-7A0872481F38", "importing0004");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        assertSupplyingBandC(runtime, dmnModel);
+    }
+    
+    @Test
+    public void testImportingBkmBoxedInvocation() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004bkmBoxedInvocation.dmn");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_0CA8CCDE-106B-4805-B0C1-8D8D740C80F7", "importing0004bkmBoxedInvocation");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        assertSupplyingBandC(runtime, dmnModel);
+    }
+    
+    @Test
+    public void testImportingWithSameDSName() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDS.dmn");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        assertSupplyingPersonname(runtime, dmnModel);
+    }
+
+    private void assertSupplyingPersonname(final DMNRuntime runtime, final DMNModel dmnModel) {
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Person name", "John Doe");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision1"), is("Hello, John Doe"));
+    }
+    
+    @Test
+    public void testImportingWithSameDSNameBoxedInvocation() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDSboxedInvocation.dmn");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        assertSupplyingPersonname(runtime, dmnModel);
+    }
+    
+    @Test
+    public void testImportingWithSameDSNameBKMBoxedInvocation() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDSbkmBoxedInvocation.dmn");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        assertSupplyingPersonname(runtime, dmnModel);
+    }
 }

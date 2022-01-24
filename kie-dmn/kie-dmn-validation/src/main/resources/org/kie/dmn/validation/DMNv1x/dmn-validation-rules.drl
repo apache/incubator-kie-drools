@@ -95,6 +95,33 @@ then
   reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.DUPLICATE_DRG_ELEMENT, $x.getName() );
 end
 
+// From DMN Spec: 6.3.3 Import metamodel
+rule IMPORT_NAME_NOT_UNIQUE
+when
+  $x : Import( parent instanceof Definitions )
+  $y : Import( name == $x.name, parent instanceof Definitions, parent == $x.parent, this != $x )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.IMPORT_NAME_NOT_UNIQUE, $x.getName() );
+end
+
+// From DMN Spec: 6.3.3 Import metamodel
+rule IMPORT_NAME_NOT_UNIQUE_WITH_DRG
+when
+  $x : Import( parent instanceof Definitions )
+  $y : DRGElement( name == $x.name, parent instanceof Definitions, parent == $x.parent )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.IMPORT_NAME_NOT_UNIQUE, $x.getName() );
+end
+
+// From DMN Spec: 6.3.3 Import metamodel
+rule IMPORT_NAME_NOT_UNIQUE_WITH_ITEMDEF
+when
+  $x : Import( parent instanceof Definitions )
+  $y : ItemDefinition( name == $x.name, parent instanceof Definitions, parent == $x.parent )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.IMPORT_NAME_NOT_UNIQUE, $x.getName() );
+end
+
 rule FORMAL_PARAM_DUPLICATED
 when
     $fp1 : InformationItem( parent instanceof FunctionDefinition )
