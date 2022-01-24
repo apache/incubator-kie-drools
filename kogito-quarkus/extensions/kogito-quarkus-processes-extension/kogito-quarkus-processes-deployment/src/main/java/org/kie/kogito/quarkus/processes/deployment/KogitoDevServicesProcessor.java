@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.kie.kogito.quarkus.common.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.quarkus.processes.devservices.DataIndexEventPublisher;
 import org.kie.kogito.quarkus.processes.devservices.DataIndexInMemoryContainer;
 import org.slf4j.Logger;
@@ -65,6 +66,7 @@ public class KogitoDevServicesProcessor {
     public void startDataIndexDevService(
             BuildProducer<AdditionalBeanBuildItem> additionalBean,
             BuildProducer<SystemPropertyBuildItem> systemProperties,
+            BuildProducer<KogitoDataIndexServiceAvailableBuildItem> dataIndexServiceAvailableBuildItemBuildProducer,
             LaunchModeBuildItem launchMode,
             KogitoBuildTimeConfig buildTimeConfig,
             List<DevServicesSharedNetworkBuildItem> devServicesSharedNetwork,
@@ -81,6 +83,8 @@ public class KogitoDevServicesProcessor {
         if (closeable != null) {
             boolean shouldShutdown = !configuration.equals(cfg);
             if (!shouldShutdown) {
+                // Signal the service is available when DevServices may have restarted but the service not
+                dataIndexServiceAvailableBuildItemBuildProducer.produce(new KogitoDataIndexServiceAvailableBuildItem());
                 return;
             }
             shutdownDataIndex();
@@ -95,6 +99,8 @@ public class KogitoDevServicesProcessor {
         try {
             dataIndex = startDataIndex(configuration, launchMode, !devServicesSharedNetwork.isEmpty());
             if (dataIndex != null) {
+                // Signal the service is available
+                dataIndexServiceAvailableBuildItemBuildProducer.produce(new KogitoDataIndexServiceAvailableBuildItem());
                 closeable = dataIndex.getCloseable();
                 systemProperties.produce(new SystemPropertyBuildItem(KOGITO_DATA_INDEX, dataIndex.getUrl()));
             }

@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.quarkus.addons.common.deployment.TrustyServiceAvailableBuildItem;
 import org.kie.kogito.tracing.decision.quarkus.devservices.TrustyServiceInMemoryContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,7 @@ public class KogitoDevServicesProcessor {
     public void startTrustyServiceDevService(
             final DevServicesConfig devServicesConfig,
             final BuildProducer<SystemPropertyBuildItem> systemProperties,
+            final BuildProducer<TrustyServiceAvailableBuildItem> trustyServiceAvailableBuildItemBuildProducer,
             final LaunchModeBuildItem launchMode,
             final KogitoBuildTimeConfig buildTimeConfig,
             final List<DevServicesSharedNetworkBuildItem> devServicesSharedNetwork,
@@ -110,6 +112,8 @@ public class KogitoDevServicesProcessor {
         if (closeable != null) {
             boolean shouldShutdown = !configuration.equals(cfg);
             if (!shouldShutdown) {
+                // Signal the service is (still) available when DevServices may have restarted but the service not
+                trustyServiceAvailableBuildItemBuildProducer.produce(new TrustyServiceAvailableBuildItem());
                 return;
             }
             shutdownTrustyService();
@@ -128,6 +132,8 @@ public class KogitoDevServicesProcessor {
                     launchMode,
                     !devServicesSharedNetwork.isEmpty());
             if (trustyService != null) {
+                // Signal the service is available
+                trustyServiceAvailableBuildItemBuildProducer.produce(new TrustyServiceAvailableBuildItem());
                 closeable = trustyService.getCloseable();
             }
             compressor.close();
