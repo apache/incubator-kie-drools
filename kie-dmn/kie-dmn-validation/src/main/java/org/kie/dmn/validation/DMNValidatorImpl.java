@@ -25,10 +25,13 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -46,6 +49,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.drools.core.io.impl.BaseResource;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.io.impl.ReaderResource;
@@ -229,7 +233,7 @@ public class DMNValidatorImpl implements DMNValidator {
         }
         
         public List<DMNMessage> theseModels(Resource... resources) {
-            DMNMessageManager results = new DefaultDMNMessagesManager( null );
+            DMNMessageManager results = new DefaultDMNMessagesManager( null ); // this collector span multiple resources.
             List<DMNResource> models = new ArrayList<>();
             for (Resource r : resources) {
             	try {
@@ -422,7 +426,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                    Msg.FAILED_NO_XML_SOURCE );
         }
         try {
-            validateModelCompilation( dmnModel, results, flags );
+            validateModelCompilation( wrapDefinitions(dmnModel, null), results, flags );
         } catch ( Throwable t ) {
             MsgUtil.reportMessage(LOG,
                                   DMNMessage.Severity.ERROR,
@@ -504,7 +508,54 @@ public class DMNValidatorImpl implements DMNValidator {
         byteArrayResource.setSourcePath(originalResource.getSourcePath());
         Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(config.getRegisteredExtensions()).unmarshal(content);
         dmndefs.normalize();
-        return new DMNResource(dmndefs, new ResourceWithConfigurationImpl(byteArrayResource, null, x -> {}, y -> {}));
+        return wrapDefinitions(dmndefs, originalResource.getSourcePath());
+    }
+    
+    private static DMNResource wrapDefinitions(Definitions dmndefs, String path) {
+        return new DMNResource(dmndefs, new ResourceWithConfigurationImpl(new DMNValidatorResource(path), null, x -> {}, y -> {}));
+    }
+    
+    private static class DMNValidatorResource extends BaseResource {
+        
+        public DMNValidatorResource(String path) {
+            this.setSourcePath(path);
+        }
+
+        @Override
+        public URL getURL() throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean hasURL() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isDirectory() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Collection<Resource> listResources() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getEncoding() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public InputStream getInputStream() throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Reader getReader() throws IOException {
+            throw new UnsupportedOperationException();
+        }
+        
     }
     
     private void validateModelCompilation(DMNResource dmnModel, DMNMessageManager results, EnumSet<Validation> flags) {
