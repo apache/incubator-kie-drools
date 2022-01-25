@@ -63,4 +63,4 @@ This command generates the following dependency in the `pom.xml` file of your {P
 </dependency>
 ----
 --
-. Open or import the project in your VSCode IDE to view the contents.
+. Open or import the project in your VS Code IDE to view the contents.
