@@ -1,0 +1,63 @@
+[id="proc-implementing-message-payload-decorator_{context}"]
+= Implementing message payload decorator for {KOGITO} events add-on
+
+[role="_abstract"]
+Any dependent add-on can implement the https://github.com/kiegroup/kogito-runtimes/blob/main/addons/common/messaging/common/src/main/java/org/kie/kogito/addon/cloudevents/message/MessagePayloadDecorator.java[_MessagePayloadDecorator_].
+
+.Prerequisites
+
+* You have installed the Events add-on in {KOGITO}.
+
+.Procedure
+
+. Create a file named `META-INF/services/org.kie.kogito.add-on.cloudevents.message.MessagePayloadDecorator` in your class path.
+
+. Open the file.
+
+. Enter the full name of your implementation class in the file.
+
+. Save the file.
++
+The `MessagePayloadDecoratorProvider` loads the file upon application start-up and adds the file to the decoration chain. When {KOGITO} calls the `MessagePayloadDecoratorProvider#decorate`, your implementation is part of the decoration algorithm.
+
+. To use the events add-on, add the following code to the `pom.xml` file of your project:
++
+.Events smallrye add-on for {QAURKUS}
+[source,xml]
+----
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-addons-quarkus-events-smallrye</artifactId>
+  <version>1.15</version>
+</dependency>
+----
++
+.Events decisions add-on for {QAURKUS}
+[source,xml]
+----
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-addons-events-decisions</artifactId>
+  <version>1.15</version>
+</dependency>
+----
++
+.Events Kafka add-on for Spring Boot
+[source,xml]
+----
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-addons-springboot-events-kafka</artifactId>
+  <version>1.15</version>
+</dependency>
+----
++
+.Events decisions add-on for Spring Boot
+[source,xml]
+----
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-addons-springboot-events-decisions</artifactId>
+  <version>1.15</version>
+</dependency>
+----

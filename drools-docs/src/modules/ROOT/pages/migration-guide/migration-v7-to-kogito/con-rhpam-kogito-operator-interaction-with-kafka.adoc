@@ -1,0 +1,43 @@
+[id="con-rhpam-kogito-operator-interaction-with-kafka_{context}"]
+= {PRODUCT} {KOGITO} Operator interaction with Kafka
+
+The {PRODUCT} {KOGITO} Operator uses the {AMQ_STREAMS} Operator to automatically configure the {KOGITO} microservice with Kafka.
+
+When you enable an infrastructure mechanism through `KogitoInfra` deployment, the {PRODUCT} {KOGITO} Operator uses the relevant third-party operator to configure the infrastructure.
+
+You must define your custom infrastructure resource and link it in the `KogitoInfra` file. You can specify your custom infrastructure resource in the `spec.resource.name` and `spec.resource.namespace` configurations.
+
+.Example {PRODUCT} {KOGITO} infrastructure resource for custom messaging
+[source,yaml]
+----
+apiVersion: rhpam.kiegroup.org/v1 # Red Hat build of Kogito API for this microservice
+kind: KogitoInfra # Application type
+metadata:
+  name: my-kafka-infra
+spec:
+  resource:
+    apiVersion: kafka.strimzi.io/v1beta2 # AMQ Streams API
+    kind: Kafka	# AMQ Streams Application Type
+    name: my-kafka-instance
+    namespace: my-namespace
+----
+
+In this example, the `KogitoInfra` custom resource connects to the Kafka cluster `my-kafka-instance` from `my-namespace` for event messaging.
+
+To connect {KOGITO} microservice to Kafka, you need to define the `infra` configuration to use the corresponding infrastructure.
+
+.Example of {KOGITO} microservice resource configuration with messaging
+[source,yaml]
+----
+apiVersion: rhpam.kiegroup.org/v1 # Red Hat build of Kogito API for this microservice
+kind: KogitoRuntime # Application type
+metadata:
+  name: example-quarkus # Application name
+spec:
+  image: <final-image-name> # Kogito image name
+  insecureImageRegistry: true # Can be omitted when image is pushed into secured registry with valid certificate
+  infra:
+  - my-kafka-infra
+----
+
+The {PRODUCT} {KOGITO} Operator configures the necessary properties so that your application can connect to the Kafka instance.

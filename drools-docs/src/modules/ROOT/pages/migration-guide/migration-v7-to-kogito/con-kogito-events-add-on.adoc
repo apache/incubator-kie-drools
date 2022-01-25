@@ -1,0 +1,5 @@
+[id="con-kogito-events-add-on_{context}"]
+= {KOGITO} events add-on
+
+[role="_abstract"]
+The events add-on provides a default implementation in supported target platforms for `EventEmitter` and `EventReceiver` interfaces. You can use `EventEmitter` and `EventReceiver` interfaces to enable messaging by process, serverless workflow events, and event decision handling.
