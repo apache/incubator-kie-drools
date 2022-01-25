@@ -1,0 +1,23 @@
+[id="con-kogito-operator-deployment-configs_{context}"]
+= {KOGITO} service properties configuration
+
+When a {KOGITO} microservice is deployed, a `configMap` resource is created for the `application.properties` configuration of the {KOGITO} microservice.
+
+The name of the `configMap` resource consists of the name of the {KOGITO} microservice and the suffix `-properties`, as shown in the following example:
+
+.Example `configMap` resource generated during {KOGITO} microservice deployment
+[source,yaml]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kogito-travel-agency-properties
+data:
+  application.properties : |-
+    property1=value1
+    property2=value2
+----
+
+The `application.properties` data of the `configMap` resource is mounted in a volume to the container of the {KOGITO} microservice. Any runtime properties that you add to the `application.properties` section override the default application configuration properties of the {KOGITO} microservice.
+
+When the `application.properties` data of the `configMap` is changed, a rolling update modifies the deployment and configuration of the {KOGITO} microservice.
