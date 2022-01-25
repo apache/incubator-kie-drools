@@ -17,6 +17,11 @@
     </fileSets>
     <files>
         <file>
+            <source>${path.to.persistence.modules}/jdbc/src/main/resources/sql/create_tables_PostgreSQL.sql</source>
+            <outputDirectory>postgresql</outputDirectory>
+            <destName>runtime_create_jdbc.sql</destName>
+        </file>
+        <file>
             <source>${path.to.persistence.modules}/jdbc/src/main/resources/sql/create_tables_Oracle.sql</source>
             <outputDirectory>oracle</outputDirectory>
             <destName>runtime_create.sql</destName>

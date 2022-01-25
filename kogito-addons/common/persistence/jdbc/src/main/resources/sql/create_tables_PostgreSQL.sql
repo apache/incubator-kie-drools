@@ -1,3 +1,4 @@
+-- To be used with kogito-addons-quarkus-persistence-jdbc for Quarkus or kogito-addons-persistence-jdbc for SpringBoot
 CREATE TABLE process_instances(
     id character(36) NOT NULL,
     payload bytea NOT NULL,
