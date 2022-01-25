@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -135,7 +136,12 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
                     if (optPkg.isPresent()) {
                         optPkg.get().addPackageDescr(entry.getValue().getResource(), entry.getValue());
                     } else {
-                        compositePackages.add(entry.getValue());
+                        try {
+                            compositePackages.add(entry.getValue());
+                        } catch (UnsupportedOperationException uoe) {
+                            compositePackages = new HashSet<>(compositePackages);
+                            compositePackages.add(entry.getValue());
+                        }
                     }
                 }
             }
